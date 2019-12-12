@@ -677,13 +677,13 @@ static unsigned int LocaleIdToCodepage(unsigned int lcid)
 
 namespace
 {
-	// TODO: Why do we have a list here? Seems like it can only ever be one. Unfortunately code is older than svn log, so not sure about origins of this.
 	struct SEnvMapper
 	{
 		HWND hWnd;
 		irr::CIrrDeviceWin32* irrDev;
 	};
-	irr::core::list<SEnvMapper> EnvMap;
+	// NOTE: This is global. We can have more than one Irrlicht Device at same time.
+	irr::core::array<SEnvMapper> EnvMap;
 
 	HKL KEYBOARD_INPUT_HKL=0;
 	unsigned int KEYBOARD_INPUT_CODEPAGE = 1252;
@@ -691,10 +691,13 @@ namespace
 
 irr::CIrrDeviceWin32* getDeviceFromHWnd(HWND hWnd)
 {
-	irr::core::list<SEnvMapper>::Iterator it = EnvMap.begin();
-	for (; it!= EnvMap.end(); ++it)
-		if ((*it).hWnd == hWnd)
-			return (*it).irrDev;
+	const irr::u32 end = EnvMap.size();
+	for ( irr::u32 i=0; i < end; ++i )
+	{
+		const SEnvMapper& env = EnvMap[i];
+		if ( env.hWnd == hWnd )
+			return env.irrDev;
+	}
 
 	return 0;
 }
@@ -1132,13 +1135,11 @@ CIrrDeviceWin32::~CIrrDeviceWin32()
 	delete JoyControl;
 
 	// unregister environment
-
-	irr::core::list<SEnvMapper>::Iterator it = EnvMap.begin();
-	for (; it!= EnvMap.end(); ++it)
+	for (u32 i=0; i< EnvMap.size(); ++i)
 	{
-		if ((*it).hWnd == HWnd)
+		if (EnvMap[i].hWnd == HWnd)
 		{
-			EnvMap.erase(it);
+			EnvMap.erase(i);
 			break;
 		}
 	}
