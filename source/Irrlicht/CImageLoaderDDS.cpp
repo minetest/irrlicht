@@ -826,6 +826,8 @@ IImage* CImageLoaderDDS::loadImage(io::IReadFile* file) const
 					format = ECF_DXT5;
 					break;
 				}
+				default:	// either not compressed or unknown
+					break;
 			}
 
 			if( format != ECF_UNKNOWN )
