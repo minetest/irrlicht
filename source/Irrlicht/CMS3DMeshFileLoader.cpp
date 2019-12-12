@@ -193,7 +193,7 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 
 	u8* buffer = new u8[fileSize];
 	size_t read = file->read(buffer, fileSize);
-	if (read != fileSize)
+	if (read != (size_t)fileSize)
 	{
 		delete [] buffer;
 		os::Printer::log("Could not read full file. Loading failed", file->getFileName(), ELL_ERROR);
