@@ -677,6 +677,7 @@ static unsigned int LocaleIdToCodepage(unsigned int lcid)
 
 namespace
 {
+	// TODO: Why do we have a list here? Seems like it can only ever be one. Unfortunately code is older than svn log, so not sure about origins of this.
 	struct SEnvMapper
 	{
 		HWND hWnd;
@@ -687,17 +688,6 @@ namespace
 	HKL KEYBOARD_INPUT_HKL=0;
 	unsigned int KEYBOARD_INPUT_CODEPAGE = 1252;
 }
-
-SEnvMapper* getEnvMapperFromHWnd(HWND hWnd)
-{
-	irr::core::list<SEnvMapper>::Iterator it = EnvMap.begin();
-	for (; it!= EnvMap.end(); ++it)
-		if ((*it).hWnd == hWnd)
-			return &(*it);
-
-	return 0;
-}
-
 
 irr::CIrrDeviceWin32* getDeviceFromHWnd(HWND hWnd)
 {
