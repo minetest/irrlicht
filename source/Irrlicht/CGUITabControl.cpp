@@ -295,7 +295,7 @@ s32 CGUITabControl::insertTab(s32 idx, IGUITab* tab, bool serializationMode)
 		return -1;
 	// Not allowing to add same tab twice as it would make things complicated (serialization or setting active visible)
 	if ( getTabIndex(tab) >= 0 )
-		return -1; 
+		return -1;
 
 	if ( idx < 0 )
 		idx = (s32)Tabs.size();
@@ -380,7 +380,7 @@ void CGUITabControl::removeTabButNotChild(s32 idx)
 	}
 	else if ( idx == ActiveTabIndex )
 	{
-		if ( idx == Tabs.size() )
+		if ( (u32)idx == Tabs.size() )
 			--ActiveTabIndex;
 		setVisibleTab(ActiveTabIndex);
 	}

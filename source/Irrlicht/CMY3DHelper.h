@@ -188,7 +188,7 @@ int rle_encode (
 {
     unsigned long ret_code;
 
-    unsigned char ch;
+    unsigned char ch=0;
 
     nCodedBytes=0;
     nReadedBytes=0;
@@ -271,7 +271,7 @@ unsigned long process_comp(
      // we start out with 3 repeating bytes
      int len = 3;
 
-     unsigned char ch;
+     unsigned char ch = 0;
 
      // we're starting a repeating chunk - end the non-repeaters
      flush_outbuf(out_buf, out_buf_size);
@@ -338,11 +338,12 @@ void flush_outbuf(unsigned char *out_buf, int out_buf_size)
        put_byte((unsigned char)outbuf[pos++], out_buf, out_buf_size);
 }
 //---------------------------------------------------
-void put_byte(unsigned char ch, unsigned char *out_buf, int out_buf_size)
+void put_byte(unsigned char b, unsigned char *out_buf, int out_buf_size)
 {
     if (nCodedBytes<=(out_buf_size-1))
-    {   out_buf[nCodedBytes++]=ch;
-        out_buf[nCodedBytes]=0;
+    {
+    	out_buf[nCodedBytes++] = b;
+        out_buf[nCodedBytes] = 0;
     }
 }
 //---------------------------------------------------

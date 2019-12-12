@@ -92,7 +92,6 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 	if (!file)
 		return 0;
 
-	video::IImage* image = 0;
 	//Used to point to image rows
 	u8** RowPointers = 0;
 
@@ -222,6 +221,7 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 	}
 
 	// Create the image structure to be filled by png data
+	video::IImage* image = 0;
 	if (ColorType==PNG_COLOR_TYPE_RGB_ALPHA)
 		image = new CImage(ECF_A8R8G8B8, core::dimension2d<u32>(Width, Height));
 	else
