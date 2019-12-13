@@ -134,7 +134,7 @@ namespace gui
 		_IRR_DEPRECATED_ virtual s32 getNumber() const
 		{
 			if (Parent && Parent->getType() == EGUIET_TAB_CONTROL)
-				return static_cast<IGUITabControl* const>(Parent)->getTabIndex(this);
+				return static_cast<IGUITabControl*>(Parent)->getTabIndex(this);
 			return -1;
 		}
 
