@@ -1376,8 +1376,9 @@ public:
 	\param delimiter C-style string of delimiter characters
 	\param countDelimiters Number of delimiter characters
 	\param ignoreEmptyTokens Flag to avoid empty substrings in the result
-	container. If two delimiters occur without a character in between, an
-	empty substring would be placed in the result. If this flag is set,
+	container. If two delimiters occur without a character in between or an
+	empty substring would be placed in the result. Or if a delimiter is the last
+	character an empty substring would be added at the end.	If this flag is set,
 	only non-empty strings are stored.
 	\param keepSeparators Flag which allows to add the separator to the
 	result string. If this flag is true, the concatenation of the
@@ -1400,17 +1401,15 @@ public:
 			{
 				if (array[i] == delimiter[j])
 				{
+					if (i - tokenStartIdx > 0)
+						ret.push_back(string<T,TAlloc>(&array[tokenStartIdx], i - tokenStartIdx));
+					else if ( !ignoreEmptyTokens )
+						ret.push_back(string<T,TAlloc>());
 					if ( keepSeparators )
 					{
-						ret.push_back(string<T,TAlloc>(&array[tokenStartIdx], i+1 - tokenStartIdx));
+						ret.push_back(string<T,TAlloc>(&array[i], 1));
 					}
-					else
-					{
-						if (i - tokenStartIdx > 0)
-							ret.push_back(string<T,TAlloc>(&array[tokenStartIdx], i - tokenStartIdx));
-						else if ( !ignoreEmptyTokens )
-							ret.push_back(string<T,TAlloc>());
-					}
+
 					tokenStartIdx = i+1;
 					break;
 				}
@@ -1418,6 +1417,8 @@ public:
 		}
 		if ((used - 1) > tokenStartIdx)
 			ret.push_back(string<T,TAlloc>(&array[tokenStartIdx], (used - 1) - tokenStartIdx));
+		 else if ( !ignoreEmptyTokens )
+                ret.push_back(string<T,TAlloc>());
 
 		return ret.size()-oldSize;
 	}
