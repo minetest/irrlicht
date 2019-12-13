@@ -25,6 +25,7 @@ compiler, otherwise oldest you have still installed)
 - - create a target directory, like irrlicht-1.8.1 for example
 - - svn export to the target directory
 - - copy the subfolders of doctemp into the doc folder of the target directory
+    careful, this should only be one(!) subfolder (we ended up with copies before, maybe Windows/Linux builds use different names?)
 - - copy all .exe files (except test.exe) from bin\Win32-VisualStudio (.pdb's are not necessary)
 - - copy Irrlicht.dll from bin\Win32-visualstudio 
 - - copy the files in lib\Win32-visualstudio
