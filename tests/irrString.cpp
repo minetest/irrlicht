@@ -20,9 +20,9 @@ static bool testSplit()
 	core::stringw teststring(L"[b]this [/b] is a [color=0xff000000]test[/color].");
 	core::list<core::stringw> parts1;
 	teststring.split<core::list<core::stringw> >(parts1, L"[");
-	core::list<core::stringw> parts2;
-	teststring.split<core::list<core::stringw> >(parts2, L"[", 1, false, true);
-	return (parts1.getSize()==4) && (parts2.getSize()==5);
+	core::array<core::stringw> parts2;
+	teststring.split<core::array<core::stringw> >(parts2, L"[", 1, false, true);
+	return (parts1.size()==4) && (parts2.size()==9);
 }
 
 static bool testFastAlloc()
