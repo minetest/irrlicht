@@ -88,10 +88,10 @@ struct sCompressedVec4
 
 	void setColorf ( const video::SColorf & color )
 	{
-		argb = core::floor32 ( color.a * 255.f ) << 24 |
-				core::floor32 ( color.r * 255.f ) << 16 |
-				core::floor32 ( color.g * 255.f ) << 8  |
-				core::floor32 ( color.b * 255.f );
+		argb = core::floor32_fast( color.a * 255.f ) << 24 |
+				core::floor32_fast( color.r * 255.f ) << 16 |
+				core::floor32_fast( color.g * 255.f ) << 8  |
+				core::floor32_fast( color.b * 255.f );
 	}
 
 	void setVec4 ( const sVec4 & v );
@@ -99,7 +99,7 @@ struct sCompressedVec4
 	// f = a * t + b * ( 1 - t )
 	void interpolate(const sCompressedVec4& a, const sCompressedVec4& b, const f32 t)
 	{
-		argb = PixelBlend32 ( b.argb, a.argb, core::floor32 ( t * 256.f ) );
+		argb = PixelBlend32 ( b.argb, a.argb, core::floor32_fast( t * 256.f ) );
 	}
 
 
@@ -390,10 +390,10 @@ struct sVec3
 
 inline void sCompressedVec4::setVec4 ( const sVec4 & v )
 {
-	argb = core::floor32 ( v.x * 255.f ) << 24 |
-			core::floor32 ( v.y * 255.f ) << 16 |
-			core::floor32 ( v.z * 255.f ) << 8  |
-			core::floor32 ( v.w * 255.f );
+	argb = core::floor32_fast( v.x * 255.f ) << 24 |
+			core::floor32_fast( v.y * 255.f ) << 16 |
+			core::floor32_fast( v.z * 255.f ) << 8  |
+			core::floor32_fast( v.w * 255.f );
 }
 
 

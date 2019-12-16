@@ -8,6 +8,7 @@
 #include "SoftwareDriver2_compile_config.h"
 #include "IReferenceCounted.h"
 #include "irrMath.h"
+#include "irrMathFastCompat.h"
 #include "IImage.h"
 #include "S2DVertex.h"
 #include "rect.h"

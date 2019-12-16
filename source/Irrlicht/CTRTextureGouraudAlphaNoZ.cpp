@@ -115,9 +115,9 @@ CTRTextureGouraudAlphaNoZ::CTRTextureGouraudAlphaNoZ(CBurningVideoDriver* driver
 void CTRTextureGouraudAlphaNoZ::setParam ( u32 index, f32 value)
 {
 #ifdef BURNINGVIDEO_RENDERER_FAST
-	AlphaRef = core::floor32 ( value * 256.f );
+	AlphaRef = core::floor32_fast( value * 256.f );
 #else
-	AlphaRef = u32_to_fixPoint ( core::floor32 ( value * 256.f ) );
+	AlphaRef = u32_to_fixPoint ( core::floor32_fast( value * 256.f ) );
 #endif
 }
 
@@ -154,8 +154,8 @@ void CTRTextureGouraudAlphaNoZ::scanline_bilinear ()
 #endif
 
 	// apply top-left fill-convention, left
-	xStart = core::ceil32( line.x[0] );
-	xEnd = core::ceil32( line.x[1] ) - 1;
+	xStart = core::ceil32_fast( line.x[0] );
+	xEnd = core::ceil32_fast( line.x[1] ) - 1;
 
 	dx = xEnd - xStart;
 
@@ -440,8 +440,8 @@ void CTRTextureGouraudAlphaNoZ::drawTriangle ( const s4DVertex *a,const s4DVerte
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32( a->Pos.y );
-		yEnd = core::ceil32( b->Pos.y ) - 1;
+		yStart = core::ceil32_fast( a->Pos.y );
+		yEnd = core::ceil32_fast( b->Pos.y ) - 1;
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - a->Pos.y;
@@ -599,8 +599,8 @@ void CTRTextureGouraudAlphaNoZ::drawTriangle ( const s4DVertex *a,const s4DVerte
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32( b->Pos.y );
-		yEnd = core::ceil32( c->Pos.y ) - 1;
+		yStart = core::ceil32_fast( b->Pos.y );
+		yEnd = core::ceil32_fast( c->Pos.y ) - 1;
 
 #ifdef SUBTEXEL
 

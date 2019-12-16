@@ -690,8 +690,8 @@ REALINLINE void CBurningShader_Raster_Reference::depthWrite ()
 REALINLINE void CBurningShader_Raster_Reference::scanline2()
 {
 	// apply top-left fill-convention, left
-	pShader.xStart = core::ceil32( line.x[0] );
-	pShader.xEnd = core::ceil32( line.x[1] ) - 1;
+	pShader.xStart = core::ceil32_fast( line.x[0] );
+	pShader.xEnd = core::ceil32_fast( line.x[1] ) - 1;
 
 	pShader.dx = pShader.xEnd - pShader.xStart;
 	if ( pShader.dx < 0 )
@@ -755,8 +755,8 @@ REALINLINE void CBurningShader_Raster_Reference::scanline ()
 	u32 i;
 
 	// apply top-left fill-convention, left
-	pShader.xStart = core::ceil32( line.x[0] );
-	pShader.xEnd = core::ceil32( line.x[1] ) - 1;
+	pShader.xStart = core::ceil32_fast( line.x[0] );
+	pShader.xEnd = core::ceil32_fast( line.x[1] ) - 1;
 
 	pShader.dx = pShader.xEnd - pShader.xStart;
 	if ( pShader.dx < 0 )
@@ -929,8 +929,8 @@ void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4
 		}
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32( a->Pos.y );
-		yEnd = core::ceil32( b->Pos.y ) - 1;
+		yStart = core::ceil32_fast( a->Pos.y );
+		yEnd = core::ceil32_fast( b->Pos.y ) - 1;
 
 		subPixel = ( (f32) yStart ) - a->Pos.y;
 
@@ -1043,8 +1043,8 @@ void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4
 		}
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32( b->Pos.y );
-		yEnd = core::ceil32( c->Pos.y ) - 1;
+		yStart = core::ceil32_fast( b->Pos.y );
+		yEnd = core::ceil32_fast( c->Pos.y ) - 1;
 
 
 		subPixel = ( (f32) yStart ) - b->Pos.y;

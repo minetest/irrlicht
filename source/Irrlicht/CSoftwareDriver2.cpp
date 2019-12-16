@@ -1884,8 +1884,8 @@ void CBurningVideoDriver::draw2DImage(const video::ITexture* texture, const core
 		core::recti clip=ViewPort;
 		if (ViewPort.getSize().Width != ScreenSize.Width)
 		{
-			dest.X=ViewPort.UpperLeftCorner.X+core::round32(destPos.X*ViewPort.getWidth()/(f32)ScreenSize.Width);
-			dest.Y=ViewPort.UpperLeftCorner.Y+core::round32(destPos.Y*ViewPort.getHeight()/(f32)ScreenSize.Height);
+			dest.X=ViewPort.UpperLeftCorner.X+core::round32_fast(destPos.X*ViewPort.getWidth()/(f32)ScreenSize.Width);
+			dest.Y=ViewPort.UpperLeftCorner.Y+core::round32_fast(destPos.Y*ViewPort.getHeight()/(f32)ScreenSize.Height);
 			if (clipRect)
 			{
 				clip.constrainTo(*clipRect);

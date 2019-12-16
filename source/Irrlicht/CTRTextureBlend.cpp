@@ -255,8 +255,8 @@ void CTRTextureBlend::fragment_dst_color_src_alpha ()
 #endif
 
 	// apply top-left fill-convention, left
-	xStart = core::ceil32( line.x[0] );
-	xEnd = core::ceil32( line.x[1] ) - 1;
+	xStart = core::ceil32_fast( line.x[0] );
+	xEnd = core::ceil32_fast( line.x[1] ) - 1;
 
 	dx = xEnd - xStart;
 
@@ -439,8 +439,8 @@ void CTRTextureBlend::fragment_src_color_src_alpha ()
 #endif
 
 	// apply top-left fill-convention, left
-	xStart = core::ceil32( line.x[0] );
-	xEnd = core::ceil32( line.x[1] ) - 1;
+	xStart = core::ceil32_fast( line.x[0] );
+	xEnd = core::ceil32_fast( line.x[1] ) - 1;
 
 	dx = xEnd - xStart;
 
@@ -619,8 +619,8 @@ void CTRTextureBlend::fragment_one_one_minus_src_alpha()
 #endif
 
 	// apply top-left fill-convention, left
-	xStart = core::ceil32( line.x[0] );
-	xEnd = core::ceil32( line.x[1] ) - 1;
+	xStart = core::ceil32_fast( line.x[0] );
+	xEnd = core::ceil32_fast( line.x[1] ) - 1;
 
 	dx = xEnd - xStart;
 
@@ -816,8 +816,8 @@ void CTRTextureBlend::fragment_one_minus_dst_alpha_one ()
 #endif
 
 	// apply top-left fill-convention, left
-	xStart = core::ceil32( line.x[0] );
-	xEnd = core::ceil32( line.x[1] ) - 1;
+	xStart = core::ceil32_fast( line.x[0] );
+	xEnd = core::ceil32_fast( line.x[1] ) - 1;
 
 	dx = xEnd - xStart;
 
@@ -1012,8 +1012,8 @@ void CTRTextureBlend::fragment_src_alpha_one ()
 #endif
 
 	// apply top-left fill-convention, left
-	xStart = core::ceil32( line.x[0] );
-	xEnd = core::ceil32( line.x[1] ) - 1;
+	xStart = core::ceil32_fast( line.x[0] );
+	xEnd = core::ceil32_fast( line.x[1] ) - 1;
 
 	dx = xEnd - xStart;
 
@@ -1239,8 +1239,8 @@ void CTRTextureBlend::fragment_dst_color_one_minus_dst_alpha ()
 #endif
 
 	// apply top-left fill-convention, left
-	xStart = core::ceil32( line.x[0] );
-	xEnd = core::ceil32( line.x[1] ) - 1;
+	xStart = core::ceil32_fast( line.x[0] );
+	xEnd = core::ceil32_fast( line.x[1] ) - 1;
 
 	dx = xEnd - xStart;
 
@@ -1435,8 +1435,8 @@ void CTRTextureBlend::fragment_dst_color_zero ()
 #endif
 
 	// apply top-left fill-convention, left
-	xStart = core::ceil32( line.x[0] );
-	xEnd = core::ceil32( line.x[1] ) - 1;
+	xStart = core::ceil32_fast( line.x[0] );
+	xEnd = core::ceil32_fast( line.x[1] ) - 1;
 
 	dx = xEnd - xStart;
 
@@ -1629,8 +1629,8 @@ void CTRTextureBlend::fragment_dst_color_one ()
 #endif
 
 	// apply top-left fill-convention, left
-	xStart = core::ceil32( line.x[0] );
-	xEnd = core::ceil32( line.x[1] ) - 1;
+	xStart = core::ceil32_fast( line.x[0] );
+	xEnd = core::ceil32_fast( line.x[1] ) - 1;
 
 	dx = xEnd - xStart;
 
@@ -1826,8 +1826,8 @@ void CTRTextureBlend::fragment_zero_one_minus_scr_color ()
 #endif
 
 	// apply top-left fill-convention, left
-	xStart = core::ceil32( line.x[0] );
-	xEnd = core::ceil32( line.x[1] ) - 1;
+	xStart = core::ceil32_fast( line.x[0] );
+	xEnd = core::ceil32_fast( line.x[1] ) - 1;
 
 	dx = xEnd - xStart;
 
@@ -2092,8 +2092,8 @@ void CTRTextureBlend::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32( a->Pos.y );
-		yEnd = core::ceil32( b->Pos.y ) - 1;
+		yStart = core::ceil32_fast( a->Pos.y );
+		yEnd = core::ceil32_fast( b->Pos.y ) - 1;
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - a->Pos.y;
@@ -2251,8 +2251,8 @@ void CTRTextureBlend::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32( b->Pos.y );
-		yEnd = core::ceil32( c->Pos.y ) - 1;
+		yStart = core::ceil32_fast( b->Pos.y );
+		yEnd = core::ceil32_fast( c->Pos.y ) - 1;
 
 #ifdef SUBTEXEL
 

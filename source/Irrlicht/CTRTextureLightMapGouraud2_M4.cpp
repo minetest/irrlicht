@@ -137,8 +137,8 @@ void CTRGTextureLightMap2_M4::scanline_bilinear ()
 #endif
 
 	// apply top-left fill-convention, left
-	xStart = core::ceil32( line.x[0] );
-	xEnd = core::ceil32( line.x[1] ) - 1;
+	xStart = core::ceil32_fast( line.x[0] );
+	xEnd = core::ceil32_fast( line.x[1] ) - 1;
 
 	dx = xEnd - xStart;
 
@@ -379,8 +379,8 @@ void CTRGTextureLightMap2_M4::drawTriangle ( const s4DVertex *a,const s4DVertex 
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32( a->Pos.y );
-		yEnd = core::ceil32( b->Pos.y ) - 1;
+		yStart = core::ceil32_fast( a->Pos.y );
+		yEnd = core::ceil32_fast( b->Pos.y ) - 1;
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - a->Pos.y;
@@ -540,8 +540,8 @@ void CTRGTextureLightMap2_M4::drawTriangle ( const s4DVertex *a,const s4DVertex 
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32( b->Pos.y );
-		yEnd = core::ceil32( c->Pos.y ) - 1;
+		yStart = core::ceil32_fast( b->Pos.y );
+		yEnd = core::ceil32_fast( c->Pos.y ) - 1;
 
 #ifdef SUBTEXEL
 
