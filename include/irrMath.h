@@ -488,20 +488,6 @@ namespace core
 		return floorf( x + 0.5f );
 	}
 
-	REALINLINE void clearFPUException ()
-	{
-#ifdef IRRLICHT_FAST_MATH
-		return;
-	#ifdef feclearexcept
-		feclearexcept(FE_ALL_EXCEPT);
-	#elif defined(_MSC_VER)
-		__asm fnclex;
-	#elif defined(__GNUC__) && defined(__x86__)
-		__asm__ __volatile__ ("fclex \n\t");
-	#endif
-#endif
-	}
-
 	// calculate: sqrt ( x )
 	REALINLINE f32 squareroot(const f32 f)
 	{
