@@ -524,7 +524,7 @@ namespace core
 	REALINLINE f32 reciprocal_squareroot(const f32 f)
 	{
 #if defined ( IRRLICHT_FAST_MATH )
-	#if defined(_MSC_VER)
+	#if defined(_MSC_VER) && !defined(_WIN64)
 		// SSE reciprocal square root estimate, accurate to 12 significant
 		// bits of the mantissa
 		f32 recsqrt;
@@ -561,7 +561,7 @@ namespace core
 		// bi ts of the mantissa
 		// One Newton-Raphson Iteration:
 		// f(i+1) = 2 * rcpss(f) - f * rcpss(f) * rcpss(f)
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && !defined(_WIN64)
 		f32 rec;
 		__asm rcpss xmm0, f               // xmm0 = rcpss(f)
 		__asm movss xmm1, f               // xmm1 = f
@@ -603,7 +603,7 @@ namespace core
 		// bi ts of the mantissa
 		// One Newton-Raphson Iteration:
 		// f(i+1) = 2 * rcpss(f) - f * rcpss(f) * rcpss(f)
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && !defined(_WIN64)
 		f32 rec;
 		__asm rcpss xmm0, f               // xmm0 = rcpss(f)
 		__asm movss xmm1, f               // xmm1 = f
@@ -643,7 +643,7 @@ namespace core
 
 		s32 t;
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && !defined(_WIN64)
 		__asm
 		{
 			fld	x
@@ -675,7 +675,7 @@ namespace core
 
 		s32 t;
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && !defined(_WIN64)
 		__asm
 		{
 			fld	x
@@ -706,7 +706,7 @@ namespace core
 #if defined(IRRLICHT_FAST_MATH)
 		s32 t;
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && !defined(_WIN64)
 		__asm
 		{
 			fld   x
