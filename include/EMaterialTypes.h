@@ -118,9 +118,7 @@ namespace video
 		//! A transparent reflecting material with an optional additional non reflecting texture layer.
 		/** The reflection map should be set as first texture. The
 		transparency depends on the alpha value in the vertex colors. A
-		texture which will not reflect can be set as second texture.
-		Please note that this material type is currently not 100%
-		implemented in OpenGL. */
+		texture which will not reflect can be set as second texture.*/
 		EMT_TRANSPARENT_REFLECTION_2_LAYER,
 
 		//! A solid normal map renderer.

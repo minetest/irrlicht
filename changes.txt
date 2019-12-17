@@ -1,5 +1,6 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- Materials EMT_REFLECTION_2_LAYER and EMT_TRANSPARENT_REFLECTION_2_LAYER on OpenGL are now same as in D3D9. Before GL used a sphere-map for those instead of reflection.
 - Bugfix: CGUIToolBar automatic placement no longer outside of screen when there are modals screens when creating it.
   Or when there are other window elements going over full window-size.
   Thanks to Stephen Lynx for the bugreport and to Sérgio Augusto Vianna for writing a test case with a bug example.
