@@ -250,10 +250,10 @@ namespace video
 	//! Fine-tuning for SMaterial.ZWriteFineControl
 	enum E_ZWRITE_FINE_CONTROL
 	{
-		//! Default. Only write zbuffer when SMaterial::ZBuffer is true and SMaterial::isTransparent() returns false.
+		//! Default. Only write zbuffer when SMaterial::ZWriteEnable is true and SMaterial::isTransparent() returns false.
 		EZI_ONLY_NON_TRANSPARENT,
-		//! Writing will just be based on SMaterial::ZBuffer value, transparency is ignored.
-		//! Needed mostly for certain shader materials as SMaterial::isTransparent will always return false for those.
+		//! Writing will just be based on SMaterial::ZWriteEnable value, transparency is ignored.
+		//! Needed mostly for certain shader materials where SMaterial::isTransparent always returns false.
 		EZI_ZBUFFER_FLAG
 	};
 
