@@ -31,7 +31,7 @@ static bool runTestWithDriver(E_DRIVER_TYPE driverType)
 	mat.MaterialType = EMT_SOLID;
 	mat.Lighting = false;
 	mat.ZBuffer = false;
-	mat.ZWriteEnable = false;
+	mat.ZWriteEnable = video::EZW_OFF;
 	mat.Thickness = 1;
 
 	driver->setMaterial(mat);

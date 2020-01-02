@@ -745,22 +745,16 @@ namespace video
 
 		inline bool getWriteZBuffer(const SMaterial&material) const
 		{
-			if (material.ZWriteEnable)
+			switch ( material.ZWriteEnable )
 			{
-				if (!AllowZWriteOnTransparent)
-				{
-					switch (material.ZWriteFineControl)
-					{
-					case EZI_ONLY_NON_TRANSPARENT:
-						return !material.isTransparent();
-					case EZI_ZBUFFER_FLAG:
-						return true;
-					}
-				}
-				else
+				case video::EZW_OFF:
+					return false;
+				case video::EZW_AUTO:
+					return AllowZWriteOnTransparent || !material.isTransparent();
+				case video::EZW_ON:
 					return true;
 			}
-			return false;
+			return true; // never should get here, but some compilers don't know and complain
 		}
 
 		struct SSurface

@@ -177,7 +177,7 @@ void CBurningVideoDriver::setCurrentShader()
 	ITexture *texture1 = Material.org.getTexture(1);
 
 	bool zMaterialTest = Material.org.ZBuffer != ECFN_DISABLED &&
-						Material.org.ZWriteEnable &&
+						Material.org.ZWriteEnable != video::EZW_OFF &&
 						getWriteZBuffer(Material.org);
 
 	EBurningFFShader shader = zMaterialTest ? ETR_TEXTURE_GOURAUD : ETR_TEXTURE_GOURAUD_NOZ;
@@ -2291,7 +2291,7 @@ void CBurningVideoDriver::drawStencilShadowVolume(const core::array<core::vector
 
 	Material.org.MaterialType = video::EMT_SOLID;
 	Material.org.Lighting = false;
-	Material.org.ZWriteEnable = false;
+	Material.org.ZWriteEnable = video::EZW_OFF;
 	Material.org.ZBuffer = ECFN_LESSEQUAL;
 	LightSpace.Flags &= ~VERTEXTRANSFORM;
 

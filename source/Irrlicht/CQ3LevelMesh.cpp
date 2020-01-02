@@ -718,7 +718,7 @@ s32 CQ3LevelMesh::setShaderFogMaterial( video::SMaterial &material, const tBSPFa
 	material.setTexture(2, 0);
 	material.setTexture(3, 0);
 	material.ZBuffer = video::ECFN_LESSEQUAL;
-	material.ZWriteEnable = false;
+	material.ZWriteEnable = video::EZW_OFF;
 	material.MaterialTypeParam = 0.f;
 
 	s32 shaderState = -1;
@@ -746,7 +746,7 @@ s32 CQ3LevelMesh::setShaderMaterial( video::SMaterial &material, const tBSPFace 
 	material.setTexture(2, 0);
 	material.setTexture(3, 0);
 	material.ZBuffer = video::ECFN_LESSEQUAL;
-	material.ZWriteEnable = true;
+	material.ZWriteEnable = video::EZW_AUTO;
 	material.MaterialTypeParam = 0.f;
 
 	s32 shaderState = -1;
@@ -804,7 +804,7 @@ s32 CQ3LevelMesh::setShaderMaterial( video::SMaterial &material, const tBSPFace 
 
 		if ( group->isDefined( "depthwrite" ) )
 		{
-			material.ZWriteEnable = true;
+			material.ZWriteEnable = video::EZW_ON;
 		}
 
 		SBlendFunc blendfunc ( LoadParam.defaultModulate );

@@ -134,7 +134,7 @@ CBillboardTextSceneNode::CBillboardTextSceneNode(ISceneNode* parent, ISceneManag
 	Material.BackfaceCulling = false;
 	Material.Lighting = false;
 	Material.ZBuffer = video::ECFN_LESSEQUAL;
-	Material.ZWriteEnable = false;
+	Material.ZWriteEnable = video::EZW_OFF;
 
 	if (font)
 	{

@@ -1013,7 +1013,7 @@ void COgreMeshFileLoader::readPass(io::IReadFile* file, OgreTechnique& technique
 		else if (token=="depth_write")
 		{
 			getMaterialToken(file, token);
-			pass.Material.ZWriteEnable=(token=="on");
+			pass.Material.ZWriteEnable=(token=="on") ? video::EZW_ON : video::EZW_OFF;
 		}
 		else if (token=="depth_func")
 		{

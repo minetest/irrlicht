@@ -69,6 +69,13 @@ protected:
 	COpenGLDriver* Driver;
 	IShaderConstantSetCallBack* CallBack;
 
+	// I didn't write this, but here's my understanding:
+	// Those flags seem to be exclusive so far (so could be an enum). 
+	// Maybe the idea was to make them non-exclusive in future (basically having a shader-material)
+	// Actually currently there's not even any need to cache them (probably even slower than not doing so).
+	// They seem to be mostly for downward compatibility. 
+	// I suppose the idea is to use SMaterial.BlendOperation + SMaterial.BlendFactor and a simple non-transparent type as base for more flexibility in the future.
+	// Note that SMaterial.BlendOperation + SMaterial.BlendFactor are in some drivers already evaluated before OnSetMaterial.
 	bool Alpha;
 	bool Blending;
 	bool FixedBlending;

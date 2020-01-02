@@ -247,15 +247,32 @@ namespace video
 		0
 	};
 
-	//! Fine-tuning for SMaterial.ZWriteFineControl
-	enum E_ZWRITE_FINE_CONTROL
+	//! For SMaterial.ZWriteEnable
+	enum E_ZWRITE
 	{
-		//! Default. Only write zbuffer when SMaterial::ZWriteEnable is true and SMaterial::isTransparent() returns false.
-		EZI_ONLY_NON_TRANSPARENT,
-		//! Writing will just be based on SMaterial::ZWriteEnable value, transparency is ignored.
-		//! Needed mostly for certain shader materials where SMaterial::isTransparent always returns false.
-		EZI_ZBUFFER_FLAG
+		//! zwrite always disabled for this material
+		EZW_OFF = 0,
+
+		//! This is the default setting for SMaterial and tries to handle things automatically.
+		//! This is also the value which is set when SMaterial::setFlag(EMF_ZWRITE_ENABLE) is enabled.
+		//! Usually zwriting is enabled non-transparent materials - as far as Irrlicht can recognize those.
+		//! Basically Irrlicht tries to handle the zwriting for you and assumes transparent materials don't need it.
+		//! This is addionally affected by IVideoDriver::setAllowZWriteOnTransparent
+		EZW_AUTO,
+
+		//! zwrite always enabled for this material
+		EZW_ON
 	};
+
+	//! Names for E_ZWRITE
+	const c8* const ZWriteNames[] =
+	{
+		"Off",
+		"Auto",
+		"On",
+		0
+	};
+
 
 
 	//! Maximum number of texture an SMaterial can have.
@@ -296,9 +313,8 @@ namespace video
 			PolygonOffsetFactor(0), PolygonOffsetDirection(EPO_FRONT),
 			PolygonOffsetDepthBias(0.f), PolygonOffsetSlopeScale(0.f),
 			Wireframe(false), PointCloud(false), GouraudShading(true),
-			Lighting(true), ZWriteEnable(true), BackfaceCulling(true), FrontfaceCulling(false),
-			FogEnable(false), NormalizeNormals(false), UseMipMaps(true),
-			ZWriteFineControl(EZI_ONLY_NON_TRANSPARENT)
+			Lighting(true), ZWriteEnable(EZW_AUTO), BackfaceCulling(true), FrontfaceCulling(false),
+			FogEnable(false), NormalizeNormals(false), UseMipMaps(true)
 		{ }
 
 		//! Copy constructor
@@ -354,7 +370,6 @@ namespace video
 			PolygonOffsetDepthBias = other.PolygonOffsetDepthBias;
 			PolygonOffsetSlopeScale = other.PolygonOffsetSlopeScale;
 			UseMipMaps = other.UseMipMaps;
-			ZWriteFineControl = other.ZWriteFineControl;
 
 			return *this;
 		}
@@ -508,12 +523,10 @@ namespace video
 		//! Will this material be lighted? Default: true
 		bool Lighting:1;
 
-		//! Is the zbuffer writable or is it read-only. Default: true.
-		/** This flag is forced to false if the MaterialType is a
-		transparent type and the scene parameter
-		ALLOW_ZWRITE_ON_TRANSPARENT is not set. If you set this parameter
-		to true, make sure that ZBuffer value is other than ECFN_DISABLED */
-		bool ZWriteEnable:1;
+		//! Is the zbuffer writable or is it read-only. Default: EZW_AUTO.
+		/** If this parameter is not EZW_OFF, you probably also want to set ZBuffer 
+		to values other than ECFN_DISABLED */
+		E_ZWRITE ZWriteEnable:2;
 
 		//! Is backface culling enabled? Default: true
 		bool BackfaceCulling:1;
@@ -531,11 +544,6 @@ namespace video
 		//! Shall mipmaps be used if available
 		/** Sometimes, disabling mipmap usage can be useful. Default: true */
 		bool UseMipMaps:1;
-
-		//! Give more control how the ZWriteEnable flag is interpreted
-		/** Note that there is also the global flag AllowZWriteOnTransparent
-		which when set acts like all materials have set EZI_ALLOW_ON_TRANSPARENT. */
-		E_ZWRITE_FINE_CONTROL ZWriteFineControl:1;
 
 		//! Gets the texture transformation matrix for level i
 		/** \param i The desired level. Must not be larger than MATERIAL_MAX_TEXTURES
@@ -603,7 +611,7 @@ namespace video
 				case EMF_ZBUFFER:
 					ZBuffer = value; break;
 				case EMF_ZWRITE_ENABLE:
-					ZWriteEnable = value; break;
+					ZWriteEnable = value ? EZW_AUTO : EZW_OFF; break;
 				case EMF_BACK_FACE_CULLING:
 					BackfaceCulling = value; break;
 				case EMF_FRONT_FACE_CULLING:
@@ -684,7 +692,7 @@ namespace video
 				case EMF_ZBUFFER:
 					return ZBuffer!=ECFN_DISABLED;
 				case EMF_ZWRITE_ENABLE:
-					return ZWriteEnable;
+					return ZWriteEnable != EZW_OFF;
 				case EMF_BACK_FACE_CULLING:
 					return BackfaceCulling;
 				case EMF_FRONT_FACE_CULLING:
@@ -756,8 +764,7 @@ namespace video
 				PolygonOffsetDirection != b.PolygonOffsetDirection ||
 				PolygonOffsetDepthBias != b.PolygonOffsetDepthBias ||
 				PolygonOffsetSlopeScale != b.PolygonOffsetSlopeScale ||
-				UseMipMaps != b.UseMipMaps ||
-				ZWriteFineControl != b.ZWriteFineControl;
+				UseMipMaps != b.UseMipMaps
 				;
 			for (u32 i=0; (i<MATERIAL_MAX_TEXTURES_USED) && !different; ++i)
 			{

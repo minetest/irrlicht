@@ -655,7 +655,7 @@ void CBurningShader_Raster_Reference::setMaterial ( const SBurningShaderMaterial
 	}
 
 	// depth buffer write
-	ShaderParam.SetRenderState( BD3DRS_ZWRITEENABLE, m.ZWriteEnable );
+	ShaderParam.SetRenderState( BD3DRS_ZWRITEENABLE, m.ZWriteEnable != video::EZW_OFF );
 }
 
 /*!

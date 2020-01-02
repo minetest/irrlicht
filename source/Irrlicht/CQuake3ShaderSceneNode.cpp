@@ -368,13 +368,14 @@ void CQuake3ShaderSceneNode::render()
 		material.setTexture(0, tex );
 		material.ZBuffer = getDepthFunction( group->get( "depthfunc" ) );
 
+		// TODO: maybe should be video::EZW_ON instead of EZW_AUTO now (we didn't have that before and I just kept old values here when introducing it to not break anything)
 		if ( group->isDefined( "depthwrite" ) )
 		{
-			material.ZWriteEnable = true;
+			material.ZWriteEnable = video::EZW_AUTO;
 		}
 		else
 		{
-			material.ZWriteEnable = drawCount == 0;
+			material.ZWriteEnable = drawCount == 0 ? video::EZW_AUTO : video::EZW_OFF;
 		}
 
 		//resolve quake3 blendfunction to irrlicht Material Type

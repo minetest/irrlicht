@@ -1065,7 +1065,7 @@ IMesh* CGeometryCreator::createVolumeLightMesh(
 	Buffer->Material.MaterialTypeParam = pack_textureBlendFunc( video::EBF_SRC_COLOR, video::EBF_SRC_ALPHA, video::EMFN_MODULATE_1X );
 
 	Buffer->Material.Lighting = false;
-	Buffer->Material.ZWriteEnable = false;
+	Buffer->Material.ZWriteEnable = video::EZW_OFF;
 
 	Buffer->setDirty(EBT_VERTEX_AND_INDEX);
 

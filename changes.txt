@@ -1,5 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- Material.ZWriteEnable is now of type E_ZWRITE instead of bool. This allows now setting materials to always "on" independent of material type and transparency.
+  This breaks compiling. To have old values replace false with EZW_OFF and true with EWZ_AUTO.
 - Materials EMT_REFLECTION_2_LAYER and EMT_TRANSPARENT_REFLECTION_2_LAYER on OpenGL are now same as in D3D9. Before GL used a sphere-map for those instead of reflection.
 - Bugfix: CGUIToolBar automatic placement no longer outside of screen when there are modals screens when creating it.
   Or when there are other window elements going over full window-size.

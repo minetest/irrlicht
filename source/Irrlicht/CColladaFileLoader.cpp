@@ -1541,7 +1541,7 @@ void CColladaFileLoader::readEffect(io::IXMLReaderUTF8* reader, SColladaEffect *
 	if ((effect->Transparency != 0.0f) && (effect->Transparency != 1.0f))
 	{
 		effect->Mat.MaterialType = irr::video::EMT_TRANSPARENT_VERTEX_ALPHA;
-		effect->Mat.ZWriteEnable = false;
+		effect->Mat.ZWriteEnable = video::EZW_OFF;
 	}
 
 	video::E_TEXTURE_CLAMP twu = video::ETC_REPEAT;
@@ -1658,7 +1658,7 @@ void CColladaFileLoader::readBindMaterialSection(io::IXMLReaderUTF8* reader, con
 						if ((material->Transparency!=0.0f) && (material->Transparency!=1.0f))
 						{
 							toBind[i]->getMaterial().MaterialType = video::EMT_TRANSPARENT_VERTEX_ALPHA;
-							toBind[i]->getMaterial().ZWriteEnable = false;
+							toBind[i]->getMaterial().ZWriteEnable = video::EZW_OFF;
 						}
 					}
 					SceneManager->getMeshManipulator()->setVertexColors(&tmpmesh,material->Mat.DiffuseColor);
