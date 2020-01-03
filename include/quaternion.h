@@ -140,7 +140,7 @@ class quaternion
 		quaternion& makeInverse();
 
 		//! Set this quaternion to the linear interpolation between two quaternions
-		/** NOTE: lerp result is *not* a normalized quaternion. In most cases 
+		/** NOTE: lerp result is *not* a normalized quaternion. In most cases
 		you will want to use lerpN instead as most other quaternion functions expect
 		to work with a normalized quaternion.
 		\param q1 First quaternion to be interpolated.
@@ -152,7 +152,7 @@ class quaternion
 		quaternion& lerp(quaternion q1, quaternion q2, f32 time);
 
 		//! Set this quaternion to the linear interpolation between two quaternions and normalize the result
-		/** 
+		/**
 		\param q1 First quaternion to be interpolated.
 		\param q2 Second quaternion to be interpolated.
 		\param time Progress of interpolation. For time=0 the result is
@@ -585,7 +585,7 @@ inline quaternion& quaternion::normalize()
 {
 	// removed conditional branch since it may slow down and anyway the condition was
 	// false even after normalization in some cases.
-	return (*this *= reciprocal_squareroot ( X*X + Y*Y + Z*Z + W*W ));
+	return (*this *= (f32)reciprocal_squareroot ( (f64)(X*X + Y*Y + Z*Z + W*W) ));
 }
 
 // Set this quaternion to the result of the linear interpolation between two quaternions

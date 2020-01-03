@@ -18,7 +18,7 @@ inline bool compareQ(const core::vector3df& v, const core::vector3df& turn=core:
 		logTestString("Inequality before quat.toEuler(): %f,%f,%f\n", v.X,v.Y,v.Z);
 		return false;
 	}
-	
+
 	q.toEuler(v2);
 	v2*=core::RADTODEG;
 	v2=v2.rotationToDirection(turn);
@@ -110,7 +110,7 @@ bool testQuatEulerMatrix()
 	core::vector3df v6 = mat.getRotationDegrees()*core::DEGTORAD;
 	// make sure comparison matrix is correct
 	result &= v4.equals(v6);
- 
+
 	core::matrix4 mat2 = q1.getMatrix();
 	result &= mat.equals(mat2, 0.0005f);
 
