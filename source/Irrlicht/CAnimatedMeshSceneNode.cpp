@@ -168,7 +168,7 @@ void CAnimatedMeshSceneNode::OnRegisterSceneNode()
 		{
 			const video::SMaterial& material = ReadOnlyMaterials ? Mesh->getMeshBuffer(i)->getMaterial() : Materials[i];
 
-			if ( driver->needsTransparentRenderPass(Materials[i]) )
+			if ( driver->needsTransparentRenderPass(material) )
 				++transparentCount;
 			else
 				++solidCount;
@@ -532,7 +532,7 @@ const core::aabbox3d<f32>& CAnimatedMeshSceneNode::getBoundingBox() const
 }
 
 
-//! returns the material based on the zero based index i. 
+//! returns the material based on the zero based index i.
 video::SMaterial& CAnimatedMeshSceneNode::getMaterial(u32 i)
 {
 	if (i >= Materials.size())

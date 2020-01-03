@@ -71,7 +71,7 @@ void CMeshSceneNode::OnRegisterSceneNode()
 		{
 			const video::SMaterial& material = ReadOnlyMaterials ? Mesh->getMeshBuffer(i)->getMaterial() : Materials[i];
 
-			if ( driver->needsTransparentRenderPass(Materials[i]) )
+			if ( driver->needsTransparentRenderPass(material) )
 				++transparentCount;
 			else
 				++solidCount;
