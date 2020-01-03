@@ -19,7 +19,8 @@ namespace video
 {
 	class ITexture;
 
-	//! Flag for EMT_ONETEXTURE_BLEND, ( BlendFactor ) BlendFunc = source * sourceFactor + dest * destFactor
+	//! Flag for MaterialTypeParam (in combination with EMT_ONETEXTURE_BLEND) or for BlendFactor
+	//! BlendFunc = source * sourceFactor + dest * destFactor
 	enum E_BLEND_FACTOR
 	{
 		EBF_ZERO	= 0,		//!< src & dest	(0, 0, 0, 0)
@@ -431,8 +432,8 @@ namespace video
 		f32 Shininess;
 
 		//! Free parameter, dependent on the material type.
-		/** Mostly ignored, used for example in EMT_PARALLAX_MAP_SOLID
-		and EMT_TRANSPARENT_ALPHA_CHANNEL. */
+		/** Mostly ignored, used for example in EMT_PARALLAX_MAP_SOLID,
+		EMT_TRANSPARENT_ALPHA_CHANNEL and EMT_ONETEXTURE_BLEND. */
 		f32 MaterialTypeParam;
 
 		//! Second free parameter, dependent on the material type.
@@ -474,8 +475,14 @@ namespace video
 
 		//! Store the blend factors
 		/** textureBlendFunc/textureBlendFuncSeparate functions should be used to write
-		properly blending factors to this parameter. If you use EMT_ONETEXTURE_BLEND
-		type for this material, this field should be equal to MaterialTypeParams. */
+		properly blending factors to this parameter. 
+		Due to historical reasons this parameter is not used for material type 
+		EMT_ONETEXTURE_BLEND which uses MaterialTypeParam instead for the blend factor.
+		It's generally used only for materials without any blending otherwise (like EMT_SOLID).
+		It's main use is to allow having shader materials which can enable/disable 
+		blending after they have been created. 
+		When you set this you usually also have to set BlendOperation to a value != EBO_NONE
+		(setting it to EBO_ADD is probably the most common one value). */
 		f32 BlendFactor;
 
 		//! DEPRECATED. Will be removed after Irrlicht 1.9. Please use PolygonOffsetDepthBias instead.

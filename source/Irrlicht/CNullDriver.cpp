@@ -2759,7 +2759,9 @@ bool CNullDriver::needsTransparentRenderPass(const irr::video::SMaterial& materi
 	//      zwrite disabled and getWriteZBuffer calls this function.
 
 	video::IMaterialRenderer* rnd = getMaterialRenderer(material.MaterialType);
-	if (rnd && rnd->isTransparent())
+	// TODO: I suspect IMaterialRenderer::isTransparent also often could use SMaterial as parameter 
+	//       We could for example then get rid of IsTransparent function in SMaterial and move that to the software material renderer.
+	if (rnd && rnd->isTransparent())	
 		return true;
 
 	return false;

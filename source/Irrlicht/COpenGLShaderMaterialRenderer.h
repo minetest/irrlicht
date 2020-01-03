@@ -21,7 +21,7 @@ namespace video
 class COpenGLDriver;
 class IShaderConstantSetCallBack;
 
-//! Class for using vertex and pixel shaders with OpenGL
+//! Class for using vertex and pixel shaders with OpenGL (asm not glsl!)
 class COpenGLShaderMaterialRenderer : public IMaterialRenderer
 {
 public:
