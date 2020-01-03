@@ -79,10 +79,7 @@ void COctreeSceneNode::OnRegisterSceneNode()
 		// count transparent and solid materials in this scene node
 		for (u32 i=0; i<Materials.size(); ++i)
 		{
-			const video::IMaterialRenderer* const rnd =
-				driver->getMaterialRenderer(Materials[i].MaterialType);
-
-			if ((rnd && rnd->isTransparent()) || Materials[i].isTransparent())
+			if (driver->needsTransparentRenderPass(Materials[i]))
 				++transparentCount;
 			else
 				++solidCount;
@@ -145,7 +142,7 @@ void COctreeSceneNode::render()
 	if (!camera)
 		return;
 
-	bool isTransparentPass =
+	const bool isTransparentPass =
 		SceneManager->getSceneNodeRenderPass() == scene::ESNRP_TRANSPARENT;
 	++PassCount;
 
@@ -188,8 +185,7 @@ void COctreeSceneNode::render()
 				if ( 0 == d[i].CurrentSize )
 					continue;
 
-				const video::IMaterialRenderer* const rnd = driver->getMaterialRenderer(Materials[i].MaterialType);
-				const bool transparent = (rnd && rnd->isTransparent());
+				const bool transparent = driver->needsTransparentRenderPass(Materials[i]);
 
 				// only render transparent buffer if this is the transparent render pass
 				// and solid only in solid pass

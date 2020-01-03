@@ -149,7 +149,7 @@ void CAnimatedMeshSceneNode::buildFrameNr(u32 timeMs)
 
 void CAnimatedMeshSceneNode::OnRegisterSceneNode()
 {
-	if (IsVisible)
+	if (IsVisible && Mesh)
 	{
 		// because this node supports rendering of mixed mode meshes consisting of
 		// transparent and solid material at the same time, we need to go through all
@@ -163,12 +163,12 @@ void CAnimatedMeshSceneNode::OnRegisterSceneNode()
 		int solidCount = 0;
 
 		// count transparent and solid materials in this scene node
-		for (u32 i=0; i<Materials.size(); ++i)
+		const u32 numMaterials = ReadOnlyMaterials ? Mesh->getMeshBufferCount() : Materials.size();
+		for (u32 i=0; i<numMaterials; ++i)
 		{
-			video::IMaterialRenderer* rnd =
-				driver->getMaterialRenderer(Materials[i].MaterialType);
+			const video::SMaterial& material = ReadOnlyMaterials ? Mesh->getMeshBuffer(i)->getMaterial() : Materials[i];
 
-			if ((rnd && rnd->isTransparent()) || Materials[i].isTransparent())
+			if ( driver->needsTransparentRenderPass(Materials[i]) )
 				++transparentCount;
 			else
 				++solidCount;
@@ -274,7 +274,7 @@ void CAnimatedMeshSceneNode::render()
 		return;
 
 
-	bool isTransparentPass =
+	const bool isTransparentPass =
 		SceneManager->getSceneNodeRenderPass() == scene::ESNRP_TRANSPARENT;
 
 	++PassCount;
@@ -329,8 +329,7 @@ void CAnimatedMeshSceneNode::render()
 	{
 		for (u32 i=0; i<m->getMeshBufferCount(); ++i)
 		{
-			video::IMaterialRenderer* rnd = driver->getMaterialRenderer(Materials[i].MaterialType);
-			bool transparent = (rnd && rnd->isTransparent());
+			const bool transparent = driver->needsTransparentRenderPass(Materials[i]);
 
 			// only render transparent buffer if this is the transparent render pass
 			// and solid only in solid pass

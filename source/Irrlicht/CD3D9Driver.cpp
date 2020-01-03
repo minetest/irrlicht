@@ -3580,6 +3580,11 @@ bool CD3D9Driver::queryTextureFormat(ECOLOR_FORMAT format) const
 	return getD3DFormatFromColorFormat(format) != D3DFMT_UNKNOWN;
 }
 
+bool CD3D9Driver::needsTransparentRenderPass(const irr::video::SMaterial& material) const
+{
+	return CNullDriver::needsTransparentRenderPass(material) || material.isAlphaBlendOperation();
+}
+
 u32 CD3D9Driver::getD3DBlend(E_BLEND_FACTOR factor) const
 {
 	u32 r = 0;

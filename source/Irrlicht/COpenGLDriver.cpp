@@ -3617,6 +3617,11 @@ bool COpenGLDriver::queryTextureFormat(ECOLOR_FORMAT format) const
 	return getColorFormatParameters(format, dummyInternalFormat, dummyPixelFormat, dummyPixelType, &dummyConverter);
 }
 
+bool COpenGLDriver::needsTransparentRenderPass(const irr::video::SMaterial& material) const
+{
+	return CNullDriver::needsTransparentRenderPass(material) || material.isAlphaBlendOperation();
+}
+
 //! Only used by the internal engine. Used to notify the driver that
 //! the window was resized.
 void COpenGLDriver::OnResize(const core::dimension2d<u32>& size)

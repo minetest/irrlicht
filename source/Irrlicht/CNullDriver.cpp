@@ -2325,7 +2325,7 @@ void CNullDriver::deleteMaterialRenders()
 
 
 //! Returns pointer to material renderer or null
-IMaterialRenderer* CNullDriver::getMaterialRenderer(u32 idx)
+IMaterialRenderer* CNullDriver::getMaterialRenderer(u32 idx) const
 {
 	if ( idx < MaterialRenderers.size() )
 		return MaterialRenderers[idx].Renderer;
@@ -2747,6 +2747,22 @@ void CNullDriver::enableMaterial2D(bool enable)
 core::dimension2du CNullDriver::getMaxTextureSize() const
 {
 	return core::dimension2du(0x10000,0x10000); // maybe large enough
+}
+
+bool CNullDriver::needsTransparentRenderPass(const irr::video::SMaterial& material) const
+{
+	// TODO: I suspect it would be nice if the material had an enum for further control.
+	//		Especially it probably makes sense to allow disabling transparent render pass as soon as material.ZWriteEnable is on.
+	//      But then we might want an enum for the renderpass in material instead of just a transparency flag in material - and that's more work.
+	//      Or we could at least set return false when material.ZWriteEnable is EZW_ON? Still considering that...
+	//		Be careful - this function is deeply connected to getWriteZBuffer as transparent render passes are usually about rendering with
+	//      zwrite disabled and getWriteZBuffer calls this function.
+
+	video::IMaterialRenderer* rnd = getMaterialRenderer(material.MaterialType);
+	if (rnd && rnd->isTransparent())
+		return true;
+
+	return false;
 }
 
 

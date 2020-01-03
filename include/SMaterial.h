@@ -475,7 +475,7 @@ namespace video
 		//! Store the blend factors
 		/** textureBlendFunc/textureBlendFuncSeparate functions should be used to write
 		properly blending factors to this parameter. If you use EMT_ONETEXTURE_BLEND
-		type for this material, this field should be equal to MaterialTypeParam. */
+		type for this material, this field should be equal to MaterialTypeParams. */
 		f32 BlendFactor;
 
 		//! DEPRECATED. Will be removed after Irrlicht 1.9. Please use PolygonOffsetDepthBias instead.
@@ -779,14 +779,9 @@ namespace video
 		inline bool operator==(const SMaterial& b) const
 		{ return !(b!=*this); }
 
-		bool isTransparent() const
+		//! Check if material needs alpha blending
+		bool isAlphaBlendOperation() const
 		{
-			if ( MaterialType==EMT_TRANSPARENT_ADD_COLOR ||
-				MaterialType==EMT_TRANSPARENT_ALPHA_CHANNEL ||
-				MaterialType==EMT_TRANSPARENT_VERTEX_ALPHA ||
-				MaterialType==EMT_TRANSPARENT_REFLECTION_2_LAYER )
-				return true;
-
 			if (BlendOperation != EBO_NONE && BlendFactor != 0.f)
 			{
 				E_BLEND_FACTOR srcRGBFact = EBF_ZERO;
@@ -804,6 +799,19 @@ namespace video
 					return true;
 				}
 			}
+			return false;
+		}
+
+		//! Check for some fixed-function transparent types. Still used internally, but might be deprecated soon.
+		//! You probably should not use this anymore, IVideoDriver::needsTransparentRenderPass is more useful in most situations
+		//! as it asks the material renders directly what they do with the material.
+		bool isTransparent() const
+		{
+			if ( MaterialType==EMT_TRANSPARENT_ADD_COLOR ||
+				MaterialType==EMT_TRANSPARENT_ALPHA_CHANNEL ||
+				MaterialType==EMT_TRANSPARENT_VERTEX_ALPHA ||
+				MaterialType==EMT_TRANSPARENT_REFLECTION_2_LAYER )
+				return true;
 
 			return false;
 		}

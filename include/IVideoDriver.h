@@ -1317,7 +1317,7 @@ namespace video
 		the E_MATERIAL_TYPE enum or a value which was returned by
 		addMaterialRenderer().
 		\return Pointer to material renderer or null if not existing. */
-		virtual IMaterialRenderer* getMaterialRenderer(u32 idx) =0;
+		virtual IMaterialRenderer* getMaterialRenderer(u32 idx) const = 0;
 
 		//! Get amount of currently available material renderers.
 		/** \return Amount of currently available material renderers. */
@@ -1523,6 +1523,9 @@ namespace video
 		//! Check if the driver supports creating textures with the given color format
 		/**	\return True if the format is available, false if not. */
 		virtual bool queryTextureFormat(ECOLOR_FORMAT format) const = 0;
+
+		//! Used by some SceneNodes to check if a material should be rendered in the transparent render pass
+		virtual bool needsTransparentRenderPass(const irr::video::SMaterial& material) const = 0;
 	};
 
 } // end namespace video

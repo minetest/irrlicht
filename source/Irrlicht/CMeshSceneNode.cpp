@@ -52,7 +52,7 @@ CMeshSceneNode::~CMeshSceneNode()
 //! frame
 void CMeshSceneNode::OnRegisterSceneNode()
 {
-	if (IsVisible)
+	if (IsVisible && Mesh)
 	{
 		// because this node supports rendering of mixed mode meshes consisting of
 		// transparent and solid material at the same time, we need to go through all
@@ -66,41 +66,18 @@ void CMeshSceneNode::OnRegisterSceneNode()
 		int solidCount = 0;
 
 		// count transparent and solid materials in this scene node
-		if (ReadOnlyMaterials && Mesh)
+		const u32 numMaterials = ReadOnlyMaterials ? Mesh->getMeshBufferCount() : Materials.size();
+		for (u32 i=0; i<numMaterials; ++i)
 		{
-			// count mesh materials
+			const video::SMaterial& material = ReadOnlyMaterials ? Mesh->getMeshBuffer(i)->getMaterial() : Materials[i];
 
-			for (u32 i=0; i<Mesh->getMeshBufferCount(); ++i)
-			{
-				scene::IMeshBuffer* mb = Mesh->getMeshBuffer(i);
-				video::IMaterialRenderer* rnd = mb ? driver->getMaterialRenderer(mb->getMaterial().MaterialType) : 0;
+			if ( driver->needsTransparentRenderPass(Materials[i]) )
+				++transparentCount;
+			else
+				++solidCount;
 
-				if (rnd && rnd->isTransparent())
-					++transparentCount;
-				else
-					++solidCount;
-
-				if (solidCount && transparentCount)
-					break;
-			}
-		}
-		else
-		{
-			// count copied materials
-
-			for (u32 i=0; i<Materials.size(); ++i)
-			{
-				video::IMaterialRenderer* rnd =
-					driver->getMaterialRenderer(Materials[i].MaterialType);
-
-				if ((rnd && rnd->isTransparent()) || Materials[i].isTransparent())
-					++transparentCount;
-				else
-					++solidCount;
-
-				if (solidCount && transparentCount)
-					break;
-			}
+			if (solidCount && transparentCount)
+				break;
 		}
 
 		// register according to material types counted
@@ -124,7 +101,7 @@ void CMeshSceneNode::render()
 	if (!Mesh || !driver)
 		return;
 
-	bool isTransparentPass =
+	const bool isTransparentPass =
 		SceneManager->getSceneNodeRenderPass() == scene::ESNRP_TRANSPARENT;
 
 	++PassCount;
@@ -165,8 +142,7 @@ void CMeshSceneNode::render()
 			{
 				const video::SMaterial& material = ReadOnlyMaterials ? mb->getMaterial() : Materials[i];
 
-				video::IMaterialRenderer* rnd = driver->getMaterialRenderer(material.MaterialType);
-				bool transparent = (rnd && rnd->isTransparent());
+				const bool transparent = driver->needsTransparentRenderPass(material);
 
 				// only render transparent buffer if this is the transparent render pass
 				// and solid only in solid pass

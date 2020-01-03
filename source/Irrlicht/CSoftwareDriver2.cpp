@@ -178,7 +178,7 @@ void CBurningVideoDriver::setCurrentShader()
 
 	bool zMaterialTest = Material.org.ZBuffer != ECFN_DISABLED &&
 						Material.org.ZWriteEnable != video::EZW_OFF &&
-						getWriteZBuffer(Material.org);
+						( AllowZWriteOnTransparent || !Material.org.isTransparent() );
 
 	EBurningFFShader shader = zMaterialTest ? ETR_TEXTURE_GOURAUD : ETR_TEXTURE_GOURAUD_NOZ;
 
@@ -2379,6 +2379,11 @@ core::dimension2du CBurningVideoDriver::getMaxTextureSize() const
 bool CBurningVideoDriver::queryTextureFormat(ECOLOR_FORMAT format) const
 {
 	return format == BURNINGSHADER_COLOR_FORMAT;
+}
+
+bool CBurningVideoDriver::needsTransparentRenderPass(const irr::video::SMaterial& material) const
+{
+	return CNullDriver::needsTransparentRenderPass(material) || material.isTransparent();
 }
 
 

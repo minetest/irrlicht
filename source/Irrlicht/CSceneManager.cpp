@@ -1377,9 +1377,7 @@ u32 CSceneManager::registerNodeForRendering(ISceneNode* node, E_SCENE_NODE_RENDE
 			taken = 0;
 			for (u32 i=0; i<count; ++i)
 			{
-				video::IMaterialRenderer* rnd =
-					Driver->getMaterialRenderer(node->getMaterial(i).MaterialType);
-				if ((rnd && rnd->isTransparent()) || node->getMaterial(i).isTransparent())
+				if (Driver->needsTransparentRenderPass(node->getMaterial(i)))
 				{
 					// register as transparent node
 					TransparentNodeEntry e(node, camWorldPos);
