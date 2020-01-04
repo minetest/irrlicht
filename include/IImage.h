@@ -243,11 +243,11 @@ public:
 				++i;
 				if ( mipSize.Width == 1 && mipSize.Height == 1 && i < mipLevel)
 					return 0;
-			} 
+			}
 
 			return MipMapsData + dataSize;
 		}
-	
+
 		return 0;
 	}
 
@@ -470,25 +470,29 @@ public:
 		return imageSize;
 	}
 
+// Define to check for all compressed image formats cases in a switch
+#define IRR_CASE_IIMAGE_COMPRESSED_FORMAT\
+	case ECF_DXT1:\
+	case ECF_DXT2:\
+	case ECF_DXT3:\
+	case ECF_DXT4:\
+	case ECF_DXT5:\
+	case ECF_PVRTC_RGB2:\
+	case ECF_PVRTC_ARGB2:\
+	case ECF_PVRTC2_ARGB2:\
+	case ECF_PVRTC_RGB4:\
+	case ECF_PVRTC_ARGB4:\
+	case ECF_PVRTC2_ARGB4:\
+	case ECF_ETC1:\
+	case ECF_ETC2_RGB:\
+	case ECF_ETC2_ARGB:
+
 	//! check if this is compressed color format
 	static bool isCompressedFormat(const ECOLOR_FORMAT format)
 	{
 		switch(format)
 		{
-			case ECF_DXT1:
-			case ECF_DXT2:
-			case ECF_DXT3:
-			case ECF_DXT4:
-			case ECF_DXT5:
-			case ECF_PVRTC_RGB2:
-			case ECF_PVRTC_ARGB2:
-			case ECF_PVRTC2_ARGB2:
-			case ECF_PVRTC_RGB4:
-			case ECF_PVRTC_ARGB4:
-			case ECF_PVRTC2_ARGB4:
-			case ECF_ETC1:
-			case ECF_ETC2_RGB:
-			case ECF_ETC2_ARGB:
+			IRR_CASE_IIMAGE_COMPRESSED_FORMAT
 				return true;
 			default:
 				return false;

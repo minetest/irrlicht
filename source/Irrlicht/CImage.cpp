@@ -74,20 +74,7 @@ void CImage::setPixel(u32 x, u32 y, const SColor &color, bool blend)
 			*dest = blend ? PixelBlend32 ( *dest, color.color ) : color.color;
 		} break;
 
-		case ECF_DXT1:
-		case ECF_DXT2:
-		case ECF_DXT3:
-		case ECF_DXT4:
-		case ECF_DXT5:
-		case ECF_PVRTC_RGB2:
-		case ECF_PVRTC_ARGB2:
-		case ECF_PVRTC2_ARGB2:
-		case ECF_PVRTC_RGB4:
-		case ECF_PVRTC_ARGB4:
-		case ECF_PVRTC2_ARGB4:
-		case ECF_ETC1:
-		case ECF_ETC2_RGB:
-		case ECF_ETC2_ARGB:
+		IRR_CASE_IIMAGE_COMPRESSED_FORMAT
 			os::Printer::log("IImage::setPixel method doesn't work with compressed images.", ELL_WARNING);
 			return;
 
@@ -123,20 +110,7 @@ SColor CImage::getPixel(u32 x, u32 y) const
 			return SColor(255,p[0],p[1],p[2]);
 		}
 
-	case ECF_DXT1:
-	case ECF_DXT2:
-	case ECF_DXT3:
-	case ECF_DXT4:
-	case ECF_DXT5:
-	case ECF_PVRTC_RGB2:
-	case ECF_PVRTC_ARGB2:
-	case ECF_PVRTC2_ARGB2:
-	case ECF_PVRTC_RGB4:
-	case ECF_PVRTC_ARGB4:
-	case ECF_PVRTC2_ARGB4:
-	case ECF_ETC1:
-	case ECF_ETC2_RGB:
-	case ECF_ETC2_ARGB:
+	IRR_CASE_IIMAGE_COMPRESSED_FORMAT
 		os::Printer::log("IImage::getPixel method doesn't work with compressed images.", ELL_WARNING);
 		break;
 
