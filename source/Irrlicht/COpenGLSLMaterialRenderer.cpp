@@ -648,7 +648,7 @@ bool COpenGLSLMaterialRenderer::setPixelShaderConstant(s32 index, const f32* flo
 			{
 				if(floats)
 				{
-					const GLint id = static_cast<const GLint>(*floats);
+					const GLint id = static_cast<GLint>(*floats);
 					Driver->extGlUniform1iv(UniformInfo[index].location, 1, &id);
 				}
 				else
