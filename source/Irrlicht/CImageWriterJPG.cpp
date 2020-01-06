@@ -10,6 +10,7 @@
 #include "IWriteFile.h"
 #include "CImage.h"
 #include "irrString.h"
+#include "os.h"
 
 #ifdef _IRR_COMPILE_WITH_LIBJPEG_
 #include <stdio.h> // required for jpeglib.h
@@ -121,10 +122,9 @@ static bool writeJPEGFile(io::IWriteFile* file, IImage* image, u32 quality)
 		case ECF_R5G6B5:
 			format = CColorConverter::convert_R5G6B5toR8G8B8;
 			break;
-#ifndef _DEBUG
 		default:
+			os::Printer::log("writeJPEGFile does not support image format", ColorFormatNames[image->getColorFormat()], ELL_WARNING);
 			break;
-#endif
 	}
 
 	// couldn't find a color converter
