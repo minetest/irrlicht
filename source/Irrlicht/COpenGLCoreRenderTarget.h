@@ -261,6 +261,9 @@ public:
 					AssignedDepth = false;
 					AssignedStencil = false;
 				}
+#ifdef _DEBUG
+				Driver->testGLError(__LINE__);
+#endif
 
 				RequestDepthStencilUpdate = false;
 			}
