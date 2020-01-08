@@ -1,5 +1,6 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- Fix CPLYMeshFileLoader checking for wrong vertex count when switching between 16/32 bit. Thanks @randomMesh for reporting.
 - Fix bug that AnimatedMeshSceneNode ignored ReadOnlyMaterials flag when checking materials for transparent render passes.
 - Unify checks if materials should use transparent render pass with new IVideoDriver::needsTransparentRenderPass function.
 - Material.ZWriteEnable is now of type E_ZWRITE instead of bool. This allows now setting materials to always "on" independent of material type and transparency.
