@@ -633,8 +633,26 @@ bool COpenGLSLMaterialRenderer::setPixelShaderConstant(s32 index, const f32* flo
 		case GL_FLOAT_MAT2:
 			Driver->extGlUniformMatrix2fv(UniformInfo[index].location, count/4, false, floats);
 			break;
+		case GL_FLOAT_MAT2x3:
+			Driver->extGlUniformMatrix2x3fv(UniformInfo[index].location, count/6, false, floats);
+			break;
+		case GL_FLOAT_MAT2x4:
+			Driver->extGlUniformMatrix2x4fv(UniformInfo[index].location, count/8, false, floats);
+			break;
+		case GL_FLOAT_MAT3x2:
+			Driver->extGlUniformMatrix3x2fv(UniformInfo[index].location, count/6, false, floats);
+			break;
 		case GL_FLOAT_MAT3:
 			Driver->extGlUniformMatrix3fv(UniformInfo[index].location, count/9, false, floats);
+			break;
+		case GL_FLOAT_MAT3x4:
+			Driver->extGlUniformMatrix3x4fv(UniformInfo[index].location, count/12, false, floats);
+			break;
+		case GL_FLOAT_MAT4x2:
+			Driver->extGlUniformMatrix4x2fv(UniformInfo[index].location, count/8, false, floats);
+			break;
+		case GL_FLOAT_MAT4x3:
+			Driver->extGlUniformMatrix4x3fv(UniformInfo[index].location, count/12, false, floats);
 			break;
 		case GL_FLOAT_MAT4:
 			Driver->extGlUniformMatrix4fv(UniformInfo[index].location, count/16, false, floats);

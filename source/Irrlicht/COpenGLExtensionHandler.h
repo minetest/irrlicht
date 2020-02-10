@@ -1128,7 +1128,13 @@ class COpenGLExtensionHandler
 	void extGlUniform3iv(GLint loc, GLsizei count, const GLint *v);
 	void extGlUniform4iv(GLint loc, GLsizei count, const GLint *v);
 	void extGlUniformMatrix2fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v);
+	void extGlUniformMatrix2x3fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v);
+	void extGlUniformMatrix2x4fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v);
+	void extGlUniformMatrix3x2fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v);
 	void extGlUniformMatrix3fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v);
+	void extGlUniformMatrix3x4fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v);
+	void extGlUniformMatrix4x2fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v);
+	void extGlUniformMatrix4x3fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v);
 	void extGlUniformMatrix4fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v);
 	void extGlGetActiveUniformARB(GLhandleARB program, GLuint index, GLsizei maxlength, GLsizei *length, GLint *size, GLenum *type, GLcharARB *name);
 	void extGlGetActiveUniform(GLuint program, GLuint index, GLsizei maxlength, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
@@ -1257,7 +1263,13 @@ class COpenGLExtensionHandler
 		PFNGLUNIFORM3IVARBPROC pGlUniform3ivARB;
 		PFNGLUNIFORM4IVARBPROC pGlUniform4ivARB;
 		PFNGLUNIFORMMATRIX2FVARBPROC pGlUniformMatrix2fvARB;
+		PFNGLUNIFORMMATRIX2X3FVPROC pGlUniformMatrix2x3fv;
+		PFNGLUNIFORMMATRIX2X4FVPROC pGlUniformMatrix2x4fv;
+		PFNGLUNIFORMMATRIX3X2FVPROC pGlUniformMatrix3x2fv;
 		PFNGLUNIFORMMATRIX3FVARBPROC pGlUniformMatrix3fvARB;
+		PFNGLUNIFORMMATRIX3X4FVPROC pGlUniformMatrix3x4fv;
+		PFNGLUNIFORMMATRIX4X2FVPROC pGlUniformMatrix4x2fv;
+		PFNGLUNIFORMMATRIX4X3FVPROC pGlUniformMatrix4x3fv;
 		PFNGLUNIFORMMATRIX4FVARBPROC pGlUniformMatrix4fvARB;
 		PFNGLGETACTIVEUNIFORMARBPROC pGlGetActiveUniformARB;
 		PFNGLGETACTIVEUNIFORMPROC pGlGetActiveUniform;
@@ -1943,6 +1955,36 @@ inline void COpenGLExtensionHandler::extGlUniformMatrix2fv(GLint loc, GLsizei co
 #endif
 }
 
+inline void COpenGLExtensionHandler::extGlUniformMatrix2x3fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat* v)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlUniformMatrix2x3fv)
+		pGlUniformMatrix2x3fv(loc, count, transpose, v);
+	else
+		os::Printer::log("glUniformMatrix2x3fv not supported", ELL_ERROR);
+#endif
+}
+
+inline void COpenGLExtensionHandler::extGlUniformMatrix2x4fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat* v)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlUniformMatrix2x4fv)
+		pGlUniformMatrix2x4fv(loc, count, transpose, v);
+	else
+		os::Printer::log("glUniformMatrix2x4fv not supported", ELL_ERROR);
+#endif
+}
+
+inline void COpenGLExtensionHandler::extGlUniformMatrix3x2fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat* v)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlUniformMatrix3x2fv)
+		pGlUniformMatrix3x2fv(loc, count, transpose, v);
+	else
+		os::Printer::log("glUniformMatrix3x2fv not supported", ELL_ERROR);
+#endif
+}
+
 inline void COpenGLExtensionHandler::extGlUniformMatrix3fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v)
 {
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
@@ -1952,6 +1994,36 @@ inline void COpenGLExtensionHandler::extGlUniformMatrix3fv(GLint loc, GLsizei co
 	glUniformMatrix3fvARB(loc, count, transpose, v);
 #else
 	os::Printer::log("glUniformMatrix3fv not supported", ELL_ERROR);
+#endif
+}
+
+inline void COpenGLExtensionHandler::extGlUniformMatrix3x4fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat* v)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlUniformMatrix3x4fv)
+		pGlUniformMatrix3x4fv(loc, count, transpose, v);
+	else
+		os::Printer::log("glUniformMatrix3x4fv not supported", ELL_ERROR);
+#endif
+}
+
+inline void COpenGLExtensionHandler::extGlUniformMatrix4x2fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat* v)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlUniformMatrix4x2fv)
+		pGlUniformMatrix4x2fv(loc, count, transpose, v);
+	else
+		os::Printer::log("glUniformMatrix4x2fv not supported", ELL_ERROR);
+#endif
+}
+
+inline void COpenGLExtensionHandler::extGlUniformMatrix4x3fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat* v)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlUniformMatrix4x3fv)
+		pGlUniformMatrix4x3fv(loc, count, transpose, v);
+	else
+		os::Printer::log("glUniformMatrix4x3fv not supported", ELL_ERROR);
 #endif
 }
 
