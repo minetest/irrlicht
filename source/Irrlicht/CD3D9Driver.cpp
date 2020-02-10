@@ -3176,6 +3176,19 @@ bool CD3D9Driver::setVertexShaderConstant(s32 index, const s32* ints, int count)
 }
 
 
+//! Uint interface for the above.
+bool CD3D9Driver::setVertexShaderConstant(s32 index, const u32* ints, int count)
+{
+	if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
+	{
+		CD3D9MaterialRenderer* r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
+		return r->setVariable(true, index, ints, count);
+	}
+
+	return false;
+}
+
+
 //! Sets a constant for the pixel shader based on an index.
 bool CD3D9Driver::setPixelShaderConstant(s32 index, const f32* floats, int count)
 {
@@ -3200,6 +3213,20 @@ bool CD3D9Driver::setPixelShaderConstant(s32 index, const s32* ints, int count)
 
 	return false;
 }
+
+
+//! Uint interface for the above.
+bool CD3D9Driver::setPixelShaderConstant(s32 index, const u32* ints, int count)
+{
+	if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
+	{
+		CD3D9MaterialRenderer* r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
+		return r->setVariable(false, index, ints, count);
+	}
+
+	return false;
+}
+
 
 
 //! Adds a new material renderer to the VideoDriver, using pixel and/or

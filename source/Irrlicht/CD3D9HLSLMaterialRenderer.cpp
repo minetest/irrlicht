@@ -370,6 +370,14 @@ bool CD3D9HLSLMaterialRenderer::setVariable(bool vertexShader, s32 index,
 }
 
 
+bool CD3D9HLSLMaterialRenderer::setVariable(bool vertexShader, s32 index,
+					const u32* ints, int count)
+{
+	os::Printer::log("Error DirectX 9 does not support unsigned integer constants in shaders.", ELL_ERROR);
+	return false;
+}
+
+
 bool CD3D9HLSLMaterialRenderer::OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype)
 {
 	if (VSConstantsTable)

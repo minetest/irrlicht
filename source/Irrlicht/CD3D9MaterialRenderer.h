@@ -89,6 +89,13 @@ public:
 		return false;
 	}
 
+	//! Uint interface for the above.
+	virtual bool setVariable(bool vertexShader, s32 index, const u32* ints, int count)
+	{
+		os::Printer::log("Invalid material to set variable in.");
+		return false;
+	}
+
 protected:
 
 	IDirect3DDevice9* pID3DDevice;
