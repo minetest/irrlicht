@@ -86,6 +86,7 @@ static const char* const OpenGLFeatureStrings[] = {
 	"GL_ARB_depth_buffer_float",
 	"GL_ARB_depth_clamp",
 	"GL_ARB_depth_texture",
+	"GL_ARB_direct_state_access",
 	"GL_ARB_draw_buffers",
 	"GL_ARB_draw_buffers_blend",
 	"GL_ARB_draw_elements_base_vertex",
@@ -572,6 +573,7 @@ class COpenGLExtensionHandler
 		IRR_ARB_depth_buffer_float,
 		IRR_ARB_depth_clamp,
 		IRR_ARB_depth_texture,
+		IRR_ARB_direct_state_access,
 		IRR_ARB_draw_buffers,
 		IRR_ARB_draw_buffers_blend,
 		IRR_ARB_draw_elements_base_vertex,
@@ -1188,6 +1190,7 @@ class COpenGLExtensionHandler
     void extGlTextureSubImage2D(GLuint texture, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void* pixels);
     void extGlTextureStorage2D(GLuint texture, GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
     void extGlTextureStorage3D(GLuint texture, GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth);
+	void extGlGetTextureImage(GLuint texture, GLenum target, GLint level, GLenum format, GLenum type, GLsizei bufSize, void* pixels);
     void extGlNamedFramebufferTexture(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level);
     void extGlTextureParameteri(GLuint texture, GLenum pname, GLint param);
     void extGlCreateTextures(GLenum target, GLsizei n, GLuint* textures);
@@ -1347,6 +1350,7 @@ class COpenGLExtensionHandler
         PFNGLTEXTURESTORAGE2DPROC pGlTextureStorage2D;
         PFNGLTEXTURESTORAGE3DPROC pGlTextureStorage3D;
         PFNGLTEXTURESUBIMAGE2DPROC pGlTextureSubImage2D;
+		PFNGLGETTEXTUREIMAGEPROC pGlGetTextureImage;
         PFNGLNAMEDFRAMEBUFFERTEXTUREPROC pGlNamedFramebufferTexture;
         PFNGLTEXTUREPARAMETERIPROC pGlTextureParameteri;
         PFNGLCREATETEXTURESPROC pGlCreateTextures;
@@ -1354,11 +1358,12 @@ class COpenGLExtensionHandler
         PFNGLBINDTEXTURESPROC pGlBindTextures;
         PFNGLGENERATETEXTUREMIPMAPPROC pGlGenerateTextureMipmap;
         // DSA with EXT or functions to simulate it
-        PFNGLTEXTURESUBIMAGE2DEXTPROC pGlTextureSubImage2DEXT;
         PFNGLTEXTURESTORAGE2DEXTPROC pGlTextureStorage2DEXT;
         PFNGLTEXSTORAGE2DPROC pGlTexStorage2D;
         PFNGLTEXTURESTORAGE3DEXTPROC pGlTextureStorage3DEXT;
         PFNGLTEXSTORAGE3DPROC pGlTexStorage3D;
+		PFNGLTEXTURESUBIMAGE2DEXTPROC pGlTextureSubImage2DEXT;
+		PFNGLGETTEXTUREIMAGEEXTPROC pGlGetTextureImageEXT;
         PFNGLNAMEDFRAMEBUFFERTEXTUREEXTPROC pGlNamedFramebufferTextureEXT;
         PFNGLFRAMEBUFFERTEXTUREPROC pGlFramebufferTexture;
         PFNGLGENERATETEXTUREMIPMAPEXTPROC pGlGenerateTextureMipmapEXT;
@@ -2730,7 +2735,7 @@ inline void COpenGLExtensionHandler::irrGlBlendEquationSeparateIndexed(GLuint bu
 
 inline void COpenGLExtensionHandler::extGlTextureSubImage2D(GLuint texture, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void* pixels)
 {
-    if (Version>=450)
+    if (Version>=405 || FeatureAvailable[IRR_ARB_direct_state_access])
     {
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlTextureSubImage2D)
@@ -2784,7 +2789,7 @@ inline void COpenGLExtensionHandler::extGlTextureSubImage2D(GLuint texture, GLen
 
 inline void COpenGLExtensionHandler::extGlTextureStorage2D(GLuint texture, GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height)
 {
-    if (Version>=450)
+    if (Version>=405 || FeatureAvailable[IRR_ARB_direct_state_access])
     {
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlTextureStorage2D)
@@ -2838,7 +2843,7 @@ inline void COpenGLExtensionHandler::extGlTextureStorage2D(GLuint texture, GLenu
 
 inline void COpenGLExtensionHandler::extGlTextureStorage3D(GLuint texture, GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth)
 {
-    if (Version>=450)
+    if (Version>=405 || FeatureAvailable[IRR_ARB_direct_state_access])
     {
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlTextureStorage3D)
@@ -2887,11 +2892,54 @@ inline void COpenGLExtensionHandler::extGlTextureStorage3D(GLuint texture, GLenu
     }
 }
 
+inline void COpenGLExtensionHandler::extGlGetTextureImage(GLuint texture, GLenum target, GLint level, GLenum format, GLenum type, GLsizei bufSize, void* pixels)
+{
+	if (Version>=405 || FeatureAvailable[IRR_ARB_direct_state_access])
+	{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+		if (pGlGetTextureImage)
+			pGlGetTextureImage(texture,level,format,type,bufSize,pixels);
+#else
+		glGetTextureImage(texture,level,format,type,bufSize,pixels);
+#endif // _IRR_OPENGL_USE_EXTPOINTER_
+	}
+	else if (FeatureAvailable[IRR_EXT_direct_state_access])
+	{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+		if (pGlGetTextureImageEXT)
+			pGlGetTextureImageEXT(texture,target,level,format,type,pixels);
+#else
+		glGetTextureImageEXT(texture,target,level,format,type,pixels);
+#endif // _IRR_OPENGL_USE_EXTPOINTER_
+	}
+	else
+	{
+		GLint bound;
+		switch (target)
+		{
+			case GL_TEXTURE_2D_ARRAY:
+				glGetIntegerv(GL_TEXTURE_BINDING_2D_ARRAY, &bound);
+				break;
+			case GL_TEXTURE_3D:
+				glGetIntegerv(GL_TEXTURE_BINDING_3D, &bound);
+				break;
+			case GL_TEXTURE_CUBE_MAP_ARRAY:
+				glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP_ARRAY, &bound);
+				break;
+			default:
+				return;
+		}
+		glBindTexture(target, texture);
+		glGetTexImage(target,level,format,type,pixels);
+		glBindTexture(target, bound);
+	}
+}
+
 inline void COpenGLExtensionHandler::extGlNamedFramebufferTexture(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level)
 {
     if (!needsDSAFramebufferHack)
     {
-        if (Version>=450)
+        if (Version>=405 || FeatureAvailable[IRR_ARB_direct_state_access])
         {
             pGlNamedFramebufferTexture(framebuffer, attachment, texture, level);
             return;
@@ -2925,7 +2973,7 @@ inline void COpenGLExtensionHandler::extGlTextureParameteri(GLuint texture, GLen
 
 inline void COpenGLExtensionHandler::extGlCreateTextures(GLenum target, GLsizei n, GLuint* textures)
 {
-    if (Version>=450)
+    if (Version>=405)
     {
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlCreateTextures)
@@ -2946,7 +2994,7 @@ inline void COpenGLExtensionHandler::extGlCreateFramebuffers(GLsizei n, GLuint* 
 {
     if (!needsDSAFramebufferHack)
     {
-        if (Version>=450)
+        if (Version>=405)
         {
             pGlCreateFramebuffers(n, framebuffers);
             return;
@@ -2963,7 +3011,7 @@ inline void COpenGLExtensionHandler::extGlBindTextures(GLuint first, GLsizei cou
                                         GL_TEXTURE_1D_ARRAY,GL_TEXTURE_2D_ARRAY,GL_TEXTURE_BUFFER, // GL 3.x
                                         GL_TEXTURE_CUBE_MAP_ARRAY,GL_TEXTURE_2D_MULTISAMPLE,GL_TEXTURE_2D_MULTISAMPLE_ARRAY}; // GL 4.x
 
-    if (Version>=440||FeatureAvailable[IRR_ARB_multi_bind])
+    if (Version>=404||FeatureAvailable[IRR_ARB_multi_bind])
     {
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlBindTextures)
@@ -2999,7 +3047,7 @@ inline void COpenGLExtensionHandler::extGlBindTextures(GLuint first, GLsizei cou
 
 inline void COpenGLExtensionHandler::extGlGenerateTextureMipmap(GLuint texture, GLenum target)
 {
-    if (Version>=450)
+    if (Version>=405 || FeatureAvailable[IRR_ARB_direct_state_access])
     {
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlGenerateTextureMipmap)

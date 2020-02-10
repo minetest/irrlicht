@@ -2750,7 +2750,7 @@ void COpenGLDriver::setTextureRenderStates(const SMaterial& material, bool reset
 				statesCache.IsCached = false;
 
 #ifdef GL_VERSION_2_1
-			if (Version >= 210)
+			if (Version >= 201)
 			{
 				if (!statesCache.IsCached || material.TextureLayer[i].LODBias != statesCache.LODBias)
 				{
