@@ -1203,6 +1203,9 @@ class COpenGLExtensionHandler
 	void extGlGetTextureImage(GLuint texture, GLenum target, GLint level, GLenum format, GLenum type, GLsizei bufSize, void* pixels);
     void extGlNamedFramebufferTexture(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level);
     void extGlTextureParameteri(GLuint texture, GLenum pname, GLint param);
+	void extGlTextureParameterf(GLuint texture,	GLenum pname, GLfloat param);
+	void extGlTextureParameteriv(GLuint texture, GLenum pname, const GLint* params);
+	void extGlTextureParameterfv(GLuint texture, GLenum pname, const GLfloat* params);
     void extGlCreateTextures(GLenum target, GLsizei n, GLuint* textures);
     void extGlCreateFramebuffers(GLsizei n, GLuint* framebuffers);
     void extGlBindTextures(GLuint first, GLsizei count, const GLuint *textures, const GLenum* targets);
@@ -1373,6 +1376,10 @@ class COpenGLExtensionHandler
 		PFNGLGETTEXTUREIMAGEPROC pGlGetTextureImage;
         PFNGLNAMEDFRAMEBUFFERTEXTUREPROC pGlNamedFramebufferTexture;
         PFNGLTEXTUREPARAMETERIPROC pGlTextureParameteri;
+		PFNGLTEXTUREPARAMETERFPROC pGlTextureParameterf;
+		PFNGLTEXTUREPARAMETERIVPROC pGlTextureParameteriv;
+		PFNGLTEXTUREPARAMETERFVPROC pGlTextureParameterfv;
+
         PFNGLCREATETEXTURESPROC pGlCreateTextures;
         PFNGLCREATEFRAMEBUFFERSPROC pGlCreateFramebuffers;
         PFNGLBINDTEXTURESPROC pGlBindTextures;
@@ -3086,8 +3093,30 @@ inline void COpenGLExtensionHandler::extGlTextureParameteri(GLuint texture, GLen
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlTextureParameteri)
         pGlTextureParameteri(texture, pname, param);
-#else
-	// TODO
+#endif//_IRR_OPENGL_USE_EXTPOINTER_
+}
+
+inline void COpenGLExtensionHandler::extGlTextureParameterf(GLuint texture, GLenum pname, GLfloat param)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlTextureParameterf)
+		pGlTextureParameterf(texture, pname, param);
+#endif//_IRR_OPENGL_USE_EXTPOINTER_
+}
+
+inline void COpenGLExtensionHandler::extGlTextureParameteriv(GLuint texture, GLenum pname, const GLint* params)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlTextureParameteriv)
+		pGlTextureParameteriv(texture, pname, params);
+#endif//_IRR_OPENGL_USE_EXTPOINTER_
+}
+
+inline void COpenGLExtensionHandler::extGlTextureParameterfv(GLuint texture, GLenum pname, const GLfloat* params)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlTextureParameterfv)
+		pGlTextureParameterfv(texture, pname, params);
 #endif//_IRR_OPENGL_USE_EXTPOINTER_
 }
 
