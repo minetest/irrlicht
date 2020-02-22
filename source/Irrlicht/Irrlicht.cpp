@@ -60,20 +60,10 @@ namespace irr
 		return createDeviceEx(p);
 	}
 
-#if defined(IRRLICHT_FREE_CANVAS)
-	extern "C" IRRLICHT_API IrrlichtDevice* IRRCALLCONV createDeviceEx(const SIrrlichtCreationParameters& _params)
-	{
-		SIrrlichtCreationParameters params = _params;
-		params.WindowResizable = true;
-
-#else
 	extern "C" IRRLICHT_API IrrlichtDevice* IRRCALLCONV createDeviceEx(const SIrrlichtCreationParameters& params)
 	{
 
-#endif
-
 		IrrlichtDevice* dev = 0;
-
 
 #ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
 		if (params.DeviceType == EIDT_WIN32 || (!dev && params.DeviceType == EIDT_BEST))
