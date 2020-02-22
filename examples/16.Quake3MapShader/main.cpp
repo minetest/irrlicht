@@ -335,6 +335,8 @@ int IRRCALLCONV main(int argc, char* argv[])
 		case video::EDT_DIRECT3D9:
 			gui->addImage(driver->getTexture("directxlogo.png"), pos);
 			break;
+		default:
+			break;
 	}
 
 	/*
@@ -355,7 +357,7 @@ int IRRCALLCONV main(int argc, char* argv[])
 		driver->endScene();
 
 		int fps = driver->getFPS();
-		//if (lastFPS != fps)
+		if (1 || lastFPS != fps)
 		{
 			io::IAttributes * const attr = smgr->getParameters();
 			core::stringw str = L"Q3 [";

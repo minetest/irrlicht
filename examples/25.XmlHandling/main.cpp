@@ -142,6 +142,8 @@ public:
 					//we were at the end of the video section so we reset our tag
 					currentSection=L"";
 				break;
+				default:
+					break;
 			}
 		}
 

@@ -228,6 +228,8 @@ int main()
 			vsFileName = mediaPath + "opengl.vsh";
 		}
 		break;
+	default:
+		break;
 	}
 
 	/*

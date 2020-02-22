@@ -180,7 +180,7 @@ private:
 public:
 	SMesh* Mesh;
 
-	TMesh() : Mesh(0), Width(0), Height(0), Scale(1.f)
+	TMesh() : Width(0), Height(0), Scale(1.f), Mesh(0)
 	{
 		Mesh = new SMesh();
 	}
