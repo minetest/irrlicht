@@ -25,7 +25,7 @@ namespace video
 		0xf0,0x70,0xd0,0x50
 	};
 
-IBurningShader::IBurningShader(CBurningVideoDriver* driver)
+void IBurningShader::constructor_IBurningShader(CBurningVideoDriver* driver)
 {
 	#ifdef _DEBUG
 	setDebugName("IBurningShader");
@@ -61,6 +61,11 @@ IBurningShader::IBurningShader(CBurningVideoDriver* driver)
 	TL_Flag = 0;
 }
 
+IBurningShader::IBurningShader(CBurningVideoDriver* driver)
+{
+	constructor_IBurningShader(driver);
+}
+
 //! Constructor
 IBurningShader::IBurningShader(
 	CBurningVideoDriver* driver,
@@ -80,8 +85,8 @@ IBurningShader::IBurningShader(
 	IShaderConstantSetCallBack* callback,
 	E_MATERIAL_TYPE baseMaterial,
 	s32 userData)
-:IBurningShader(driver)
 {
+	constructor_IBurningShader(driver);
 	BaseMaterial = baseMaterial;
 	CallBack = callback;
 	if (CallBack)

@@ -328,6 +328,8 @@ namespace video
 
 	protected:
 
+		void constructor_IBurningShader(CBurningVideoDriver* driver);
+
 		CBurningVideoDriver *Driver;
 		IShaderConstantSetCallBack* CallBack;
 		E_MATERIAL_TYPE BaseMaterial;
