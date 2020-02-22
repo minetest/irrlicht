@@ -88,6 +88,7 @@ u32 CGUIContextMenu::insertItem(u32 idx, const wchar_t* text, s32 commandId, boo
 	s.IsSeparator = (text == 0);
 	s.SubMenu = 0;
 	s.CommandId = commandId;
+	s.PosY = 0;
 
 	if (hasSubMenu)
 	{

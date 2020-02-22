@@ -115,7 +115,9 @@ CTRTextureWire2::CTRTextureWire2(CBurningVideoDriver* driver)
 void CTRTextureWire2::renderLine ( const s4DVertex *a,const s4DVertex *b, int renderZero) const
 {
 	int pitch0 = RenderTarget->getDimension().Width << VIDEO_SAMPLE_GRANULARITY;
+#ifdef USE_ZBUFFER
 	int pitch1 = RenderTarget->getDimension().Width << 2;
+#endif
 
 	//todo:!
 	int aposx = fill_convention_none(a->Pos.x);

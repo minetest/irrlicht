@@ -182,6 +182,8 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 					smoothingGroup=0;
 				else
 					smoothingGroup=core::strtoul10(smooth);
+
+				(void)smoothingGroup; // disable unused variable warnings
 			}
 			break;
 
