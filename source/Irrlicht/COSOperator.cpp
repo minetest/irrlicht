@@ -185,7 +185,8 @@ bool COSOperator::getProcessorSpeedMHz(u32* MHz) const
 	if (file)
 	{
 		char buffer[1024];
-		(void)fread(buffer, 1, 1024, file);
+		size_t r = fread(buffer, 1, 1023, file);
+		buffer[r] = 0;
 		buffer[1023]=0;
 		core::stringc str(buffer);
 		s32 pos = str.find("cpu MHz");
