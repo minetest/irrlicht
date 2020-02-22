@@ -497,6 +497,7 @@ void CDemo::loadSceneData()
 		bill = sm->addBillboardSceneNode(0, core::dimension2d<f32>(100,100),
 			waypoint[r]+ core::vector3df(0,20,0));
 		bill->setMaterialFlag(video::EMF_LIGHTING, false);
+		bill->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
 		bill->setMaterialTexture(0, driver->getTexture(mediaPath + "portal1.bmp"));
 		bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
 		bill->addAnimator(anim);
@@ -583,7 +584,7 @@ void CDemo::createLoadingScreen()
 	const io::path mediaPath = getExampleMediaPath();
 
 	// irrlicht logo
-	device->getGUIEnvironment()->addImage(device->getVideoDriver()->getTexture(mediaPath + "irrlichtlogo2.png"),
+	device->getGUIEnvironment()->addImage(device->getVideoDriver()->getTexture(mediaPath + "irrlichtlogo3.png"),
 		core::position2d<s32>(5,5));
 
 	// loading text
@@ -648,8 +649,8 @@ void CDemo::shoot()
 	else
 	{
 		// doesnt collide with wall
-		core::vector3df start = camera->getPosition();
-		core::vector3df end = (camera->getTarget() - start);
+		start = camera->getPosition();
+		end = (camera->getTarget() - start);
 		end.normalize();
 		start += end*8.0f;
 		end = start + (end * camera->getFarValue());

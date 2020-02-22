@@ -120,7 +120,7 @@ int main()
 	const io::path mediaPath = getExampleMediaPath();
 
 	// add irrlicht logo
-	env->addImage(driver->getTexture(mediaPath + "irrlichtlogo2.png"),
+	env->addImage(driver->getTexture(mediaPath + "irrlichtlogo3.png"),
 		core::position2d<s32>(10,10));
 
 	//set other font

@@ -285,9 +285,9 @@ int main()
 				driver->getTexture(mediaPath + "rockwall.jpg"));
 		room->setMaterialTexture(1, normalMap);
 
-		// Stones don't glitter..
-		room->getMaterial(0).SpecularColor.set(0,0,0,0);
-		room->getMaterial(0).Shininess = 0.f;
+		// Stones don't glitter.. (but specular highlight for EMT_SOLID)
+		//room->getMaterial(0).SpecularColor.set(0,0,0,0);
+		//room->getMaterial(0).Shininess = 0.f;
 
 		room->setMaterialFlag(video::EMF_FOG_ENABLE, true);
 		room->setMaterialType(video::EMT_PARALLAX_MAP_SOLID);
@@ -365,7 +365,7 @@ int main()
 	// add light 1 (more green)
 	scene::ILightSceneNode* light1 =
 		smgr->addLightSceneNode(0, core::vector3df(0,0,0),
-		video::SColorf(0.5f, 1.0f, 0.5f, 0.0f), 800.0f);
+		video::SColorf(0.5f, 1.0f, 0.5f, 0.0f), 400.0f);
 
 	// add fly circle animator to light 1
 	scene::ISceneNodeAnimator* anim =
@@ -398,7 +398,7 @@ int main()
 	// add light 2 (red)
 	scene::ISceneNode* light2 =
 		smgr->addLightSceneNode(0, core::vector3df(0,0,0),
-		video::SColorf(1.0f, 0.2f, 0.2f, 0.0f), 800.0f);
+		video::SColorf(1.0f, 0.2f, 0.2f, 0.0f), 400.0f);
 
 	// add fly circle animator to light 2
 	anim = smgr->createFlyCircleAnimator(core::vector3df(0,150,0), 200.0f,

@@ -70,7 +70,7 @@ bool CMainMenu::run()
 	gui::IGUIListBox* box = guienv->addListBox(core::rect<int>(10,10,220,120), optTab, 1);
 	box->addItem(L"OpenGL 1.5");
 	box->addItem(L"Direct3D 9.0c");
-	box->addItem(L"Burning's Video 0.47");
+	box->addItem(L"Burning's Video 0.5");
 	box->addItem(L"Irrlicht Software Renderer 1.0");
 	switch (driverType )
 	{
@@ -184,6 +184,7 @@ bool CMainMenu::run()
 				{
 					bill->setMaterialFlag(video::EMF_LIGHTING, false);
 					bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
+					bill->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
 					bill->setMaterialTexture(0, driver->getTexture(mediaPath + "particlered.bmp"));
 				}
 				// add fly circle animator to the light
@@ -202,6 +203,7 @@ bool CMainMenu::run()
 				{
 					bill->setMaterialFlag(video::EMF_LIGHTING, false);
 					bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
+					bill->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
 					bill->setMaterialTexture(0, driver->getTexture(mediaPath + "portal1.bmp"));
 				}
 				// add fly circle animator to the light

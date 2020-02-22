@@ -318,7 +318,7 @@ int IRRCALLCONV main(int argc, char* argv[])
 	device->getCursorControl()->setVisible(false);
 
 	// load the engine logo
-	gui->addImage(driver->getTexture("irrlichtlogo2.png"),
+	gui->addImage(driver->getTexture("irrlichtlogo3.png"),
 			core::position2d<s32>(10, 10));
 
 	// show the driver logo
