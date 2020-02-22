@@ -33,9 +33,9 @@
 #define CMP_W
 #define WRITE_W
 
-//#define IPOL_C0
+#define IPOL_C0
 #define IPOL_T0
-//#define IPOL_T1
+#define IPOL_T1
 
 // apply global override
 #ifndef SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
@@ -68,43 +68,48 @@
 
 #endif
 
-
-
 namespace irr
 {
 
 namespace video
 {
 
-class CTRTextureGouraudAdd2 : public IBurningShader
+class CTR_transparent_reflection_2_layer : public IBurningShader
 {
 public:
 
 	//! constructor
-	CTRTextureGouraudAdd2(CBurningVideoDriver* driver);
+	CTR_transparent_reflection_2_layer(CBurningVideoDriver* driver);
 
 	//! draws an indexed triangle list
 	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) _IRR_OVERRIDE_;
-
+	virtual void OnSetMaterial(const SBurningShaderMaterial& material) _IRR_OVERRIDE_;
 
 private:
-	void scanline_bilinear ();
+	void fragmentShader();
+
+	E_MATERIAL_TYPE MaterialType;
+
 };
 
 //! constructor
-CTRTextureGouraudAdd2::CTRTextureGouraudAdd2(CBurningVideoDriver* driver)
+CTR_transparent_reflection_2_layer::CTR_transparent_reflection_2_layer(CBurningVideoDriver* driver)
 : IBurningShader(driver)
 {
 	#ifdef _DEBUG
-	setDebugName("CTRTextureGouraudAdd2");
+	setDebugName("CTR_transparent_reflection_2_layer");
 	#endif
 }
 
+void CTR_transparent_reflection_2_layer::OnSetMaterial(const SBurningShaderMaterial& material)
+{
+	MaterialType = material.org.MaterialType;
 
+}
 
 /*!
 */
-void CTRTextureGouraudAdd2::scanline_bilinear ()
+void CTR_transparent_reflection_2_layer::fragmentShader()
 {
 	tVideoSample *dst;
 
@@ -153,7 +158,7 @@ void CTRTextureGouraudAdd2::scanline_bilinear ()
 	slopeW = (line.w[1] - line.w[0]) * invDeltaX;
 #endif
 #ifdef IPOL_C0
-	slopeC = (line.c[1] - line.c[0]) * invDeltaX;
+	slopeC = (line.c[0][1] - line.c[0][0]) * invDeltaX;
 #endif
 #ifdef IPOL_T0
 	slopeT[0] = (line.t[0][1] - line.t[0][0]) * invDeltaX;
@@ -171,7 +176,7 @@ void CTRTextureGouraudAdd2::scanline_bilinear ()
 	line.w[0] += slopeW * subPixel;
 #endif
 #ifdef IPOL_C0
-	line.c[0] += slopeC * subPixel;
+	line.c[0][0] += slopeC * subPixel;
 #endif
 #ifdef IPOL_T0
 	line.t[0][0] += slopeT[0] * subPixel;
@@ -191,63 +196,52 @@ void CTRTextureGouraudAdd2::scanline_bilinear ()
 
 	f32 inversew = FIX_POINT_F32_MUL;
 
-
-#if defined(BURNINGVIDEO_RENDERER_FAST) && COLOR_MAX==0xff
-	u32 dIndex = ( line.y & 3 ) << 2;
-#else
-	tFixPoint tx0;
-	tFixPoint ty0;
-
 	tFixPoint r0, g0, b0;
 	tFixPoint r1, g1, b1;
+
+#ifdef IPOL_C0
+	tFixPoint a1;
 #endif
 
-
-	for ( s32 i = 0; i <= dx; ++i )
+	switch(MaterialType) {
+	default:
+	case EMT_REFLECTION_2_LAYER:
+	for (s32 i = 0; i <= dx; ++i)
 	{
 #ifdef CMP_Z
-		if ( line.z[0] < z[i] )
+		if (line.z[0] < z[i])
 #endif
 #ifdef CMP_W
-		if ( line.w[0] >= z[i] )
+		if (line.w[0] >= z[i])
 #endif
-
 		{
 
 #ifdef INVERSE_W
-			inversew = fix_inverse32(line.w[0]);
+		inversew = fix_inverse32(line.w[0]);
 #endif
 
-#if defined(BURNINGVIDEO_RENDERER_FAST) && COLOR_MAX==0xff
+		getSample_texture(r0, g0, b0, &IT[0], tofix(line.t[0][0].x, inversew), tofix(line.t[0][0].y, inversew));
+		getSample_texture(r1, g1, b1, &IT[1], tofix(line.t[1][0].x, inversew), tofix(line.t[1][0].y, inversew));
 
-		const tFixPointu d = dithermask [ dIndex | ( i ) & 3 ];
+		r0 = imulFix_tex1(r0, r1);
+		g0 = imulFix_tex1(g0, g1);
+		b0 = imulFix_tex1(b0, b1);
 
-		dst[i] = PixelAdd32 (
-					dst[i],
-				getTexel_plain ( &IT[0],	d + tofix ( line.t[0][0].x,inversew),
-											d + tofix ( line.t[0][0].y,inversew) )
-												);
-#else
-
-			tx0 = tofix ( line.t[0][0].x,inversew);
-			ty0 = tofix ( line.t[0][0].y,inversew);
-			getSample_texture ( r0, g0, b0, &IT[0], tx0,ty0 );
-
-			color_to_fix ( r1, g1, b1, dst[i] );
-
-			dst[i] = fix_to_sample( clampfix_maxcolor ( r1 + r0 ),
-									clampfix_maxcolor ( g1 + g0 ),
-									clampfix_maxcolor ( b1 + b0 )
-								);
+#ifdef IPOL_C0
+		vec4_to_fix(r1, g1, b1, line.c[0][0], inversew);
+		r0 = imulFix_simple(r1, r0);
+		g0 = imulFix_simple(g1, g0);
+		b0 = imulFix_simple(b1, b0);
 #endif
+
+		dst[i] = fix_to_sample(r0, g0, b0);
 
 #ifdef WRITE_Z
-			z[i] = line.z[0];
+		z[i] = line.z[0];
 #endif
 #ifdef WRITE_W
-			z[i] = line.w[0];
+		z[i] = line.w[0];
 #endif
-
 		}
 
 #ifdef IPOL_Z
@@ -257,7 +251,7 @@ void CTRTextureGouraudAdd2::scanline_bilinear ()
 		line.w[0] += slopeW;
 #endif
 #ifdef IPOL_C0
-		line.c[0] += slopeC;
+		line.c[0][0] += slopeC;
 #endif
 #ifdef IPOL_T0
 		line.t[0][0] += slopeT[0];
@@ -266,10 +260,80 @@ void CTRTextureGouraudAdd2::scanline_bilinear ()
 		line.t[1][0] += slopeT[1];
 #endif
 	}
+	break;
+
+	case EMT_TRANSPARENT_REFLECTION_2_LAYER:
+	for (s32 i = 0; i <= dx; ++i)
+	{
+#ifdef CMP_Z
+	if (line.z[0] < z[i])
+#endif
+#ifdef CMP_W
+	if (line.w[0] >= z[i])
+#endif
+	{
+
+#ifdef INVERSE_W
+		inversew = fix_inverse32(line.w[0]);
+#endif
+
+		getSample_texture(r0, g0, b0, &IT[0], tofix(line.t[0][0].x, inversew), tofix(line.t[0][0].y, inversew));
+		getSample_texture(r1, g1, b1, &IT[1], tofix(line.t[1][0].x, inversew), tofix(line.t[1][0].y, inversew));
+
+		r0 = imulFix_tex1(r0, r1);
+		g0 = imulFix_tex1(g0, g1);
+		b0 = imulFix_tex1(b0, b1);
+
+#ifdef IPOL_C0
+		vec4_to_fix(a1, r1, g1, b1, line.c[0][0], inversew);
+		r0 = imulFix_simple(r1, r0);
+		g0 = imulFix_simple(g1, g0);
+		b0 = imulFix_simple(b1, b0);
+
+		//vertex alpha blend EMT_TRANSPARENT_REFLECTION_2_LAYER
+		if (a1 + 2 < FIX_POINT_ONE)
+		{
+			color_to_fix(r1, g1, b1, dst[i]);
+			r0 = r1 + imulFix(a1, r0 - r1);
+			g0 = g1 + imulFix(a1, g0 - g1);
+			b0 = b1 + imulFix(a1, b0 - b1);
+		}
+#endif
+
+		dst[i] = fix_to_sample(r0, g0, b0);
+
+#ifdef WRITE_Z
+		//z[i] = line.z[0];
+#endif
+#ifdef WRITE_W
+		//z[i] = line.w[0];
+#endif
+	}
+
+#ifdef IPOL_Z
+	line.z[0] += slopeZ;
+#endif
+#ifdef IPOL_W
+	line.w[0] += slopeW;
+#endif
+#ifdef IPOL_C0
+	line.c[0][0] += slopeC;
+#endif
+#ifdef IPOL_T0
+	line.t[0][0] += slopeT[0];
+#endif
+#ifdef IPOL_T1
+	line.t[1][0] += slopeT[1];
+#endif
+	}
+	break;
+
+	}
+
 
 }
 
-void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c)
+void CTR_transparent_reflection_2_layer::drawTriangle ( const s4DVertex* burning_restrict a,const s4DVertex* burning_restrict b,const s4DVertex* burning_restrict c )
 {
 	// sort on height, y
 	if ( F32_A_GREATER_B ( a->Pos.y , b->Pos.y ) ) swapVertexPointer(&a, &b);
@@ -283,6 +347,9 @@ void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, co
 	scan.invDeltaY[0] = reciprocal_zero( ca );
 	scan.invDeltaY[1] = reciprocal_zero( ba );
 	scan.invDeltaY[2] = reciprocal_zero( cb );
+
+	if ( F32_LOWER_EQUAL_0 ( scan.invDeltaY[0] ) )
+		return;
 
 	// find if the major edge is left or right aligned
 	f32 temp[4];
@@ -310,8 +377,8 @@ void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 #ifdef IPOL_C0
-	scan.slopeC[0] = (c->Color[0] - a->Color[0]) * scan.invDeltaY[0];
-	scan.c[0] = a->Color[0];
+	scan.slopeC[0][0] = (c->Color[0] - a->Color[0]) * scan.invDeltaY[0];
+	scan.c[0][0] = a->Color[0];
 #endif
 
 #ifdef IPOL_T0
@@ -333,7 +400,7 @@ void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 	// rasterize upper sub-triangle
-	if ( F32_GREATER_0 ( scan.invDeltaY[1] )  )
+	if ( F32_GREATER_0(scan.invDeltaY[1])  )
 	{
 		// calculate slopes for top edge
 		scan.slopeX[1] = (b->Pos.x - a->Pos.x) * scan.invDeltaY[1];
@@ -350,8 +417,8 @@ void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 #ifdef IPOL_C0
-		scan.slopeC[1] = (b->Color[0] - a->Color[0]) * scan.invDeltaY[1];
-		scan.c[1] = a->Color[0];
+		scan.slopeC[0][1] = (b->Color[0] - a->Color[0]) * scan.invDeltaY[1];
+		scan.c[0][1] = a->Color[0];
 #endif
 
 #ifdef IPOL_T0
@@ -386,8 +453,8 @@ void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 #ifdef IPOL_C0
-		scan.c[0] += scan.slopeC[0] * subPixel;
-		scan.c[1] += scan.slopeC[1] * subPixel;
+		scan.c[0][0] += scan.slopeC[0][0] * subPixel;
+		scan.c[0][1] += scan.slopeC[0][1] * subPixel;
 #endif
 
 #ifdef IPOL_T0
@@ -419,8 +486,8 @@ void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 #ifdef IPOL_C0
-			line.c[scan.left] = scan.c[0];
-			line.c[scan.right] = scan.c[1];
+			line.c[0][scan.left] = scan.c[0][0];
+			line.c[0][scan.right] = scan.c[0][1];
 #endif
 
 #ifdef IPOL_T0
@@ -434,7 +501,7 @@ void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 			// render a scanline
-			scanline_bilinear ();
+			fragmentShader();
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];
@@ -450,8 +517,8 @@ void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 #ifdef IPOL_C0
-			scan.c[0] += scan.slopeC[0];
-			scan.c[1] += scan.slopeC[1];
+			scan.c[0][0] += scan.slopeC[0][0];
+			scan.c[0][1] += scan.slopeC[0][1];
 #endif
 
 #ifdef IPOL_T0
@@ -468,10 +535,10 @@ void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, co
 	}
 
 	// rasterize lower sub-triangle
-	if ( (f32) 0.0 != scan.invDeltaY[2] )
+	if ( F32_GREATER_0(scan.invDeltaY[2]) )
 	{
 		// advance to middle point
-		if( (f32) 0.0 != scan.invDeltaY[1] )
+		if( F32_GREATER_0(scan.invDeltaY[1]) )
 		{
 			temp[0] = b->Pos.y - a->Pos.y;	// dy
 
@@ -483,7 +550,7 @@ void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, co
 			scan.w[0] = a->Pos.w + scan.slopeW[0] * temp[0];
 #endif
 #ifdef IPOL_C0
-			scan.c[0] = a->Color[0] + scan.slopeC[0] * temp[0];
+			scan.c[0][0] = a->Color[0] + scan.slopeC[0][0] * temp[0];
 #endif
 #ifdef IPOL_T0
 			scan.t[0][0] = a->Tex[0] + scan.slopeT[0][0] * temp[0];
@@ -509,8 +576,8 @@ void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 #ifdef IPOL_C0
-		scan.slopeC[1] = (c->Color[0] - b->Color[0]) * scan.invDeltaY[2];
-		scan.c[1] = b->Color[0];
+		scan.slopeC[0][1] = (c->Color[0] - b->Color[0]) * scan.invDeltaY[2];
+		scan.c[0][1] = b->Color[0];
 #endif
 
 #ifdef IPOL_T0
@@ -546,8 +613,8 @@ void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 #ifdef IPOL_C0
-		scan.c[0] += scan.slopeC[0] * subPixel;
-		scan.c[1] += scan.slopeC[1] * subPixel;
+		scan.c[0][0] += scan.slopeC[0][0] * subPixel;
+		scan.c[0][1] += scan.slopeC[0][1] * subPixel;
 #endif
 
 #ifdef IPOL_T0
@@ -579,8 +646,8 @@ void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 #ifdef IPOL_C0
-			line.c[scan.left] = scan.c[0];
-			line.c[scan.right] = scan.c[1];
+			line.c[0][scan.left] = scan.c[0][0];
+			line.c[0][scan.right] = scan.c[0][1];
 #endif
 
 #ifdef IPOL_T0
@@ -594,7 +661,7 @@ void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 			// render a scanline
-			scanline_bilinear ();
+			fragmentShader();
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];
@@ -610,8 +677,8 @@ void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 #ifdef IPOL_C0
-			scan.c[0] += scan.slopeC[0];
-			scan.c[1] += scan.slopeC[1];
+			scan.c[0][0] += scan.slopeC[0][0];
+			scan.c[0][1] += scan.slopeC[0][1];
 #endif
 
 #ifdef IPOL_T0
@@ -641,12 +708,14 @@ namespace video
 {
 
 //! creates a flat triangle renderer
-IBurningShader* createTRTextureGouraudAdd2(CBurningVideoDriver* driver)
+IBurningShader* createTriangleRendererTexture_transparent_reflection_2_layer(CBurningVideoDriver* driver)
 {
-	//ETR_TEXTURE_GOURAUD_ADD
-
+	/*
+	ETR_TRANSPARENT_REFLECTION_2_LAYER 
+	Irrlicht EMT_REFLECTION_2_LAYER,EMT_TRANSPARENT_REFLECTION_2_LAYER
+	*/
 	#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
-	return new CTRTextureGouraudAdd2(driver);
+	return new CTR_transparent_reflection_2_layer(driver);
 	#else
 	return 0;
 	#endif // _IRR_COMPILE_WITH_BURNINGSVIDEO_

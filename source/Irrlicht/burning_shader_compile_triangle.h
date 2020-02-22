@@ -1,280 +1,23 @@
-// Copyright (C) 2002-2012 Nikolaus Gebhardt / Thomas Alten
-// This file is part of the "Irrlicht Engine".
-// For conditions of distribution and use, see copyright notice in irrlicht.h
-
-#include "IrrCompileConfig.h"
-#include "IBurningShader.h"
-
-#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
-
-// compile flag for this file
-#undef USE_ZBUFFER
-#undef IPOL_Z
-#undef CMP_Z
-#undef WRITE_Z
-
-#undef IPOL_W
-#undef CMP_W
-#undef WRITE_W
-
-#undef SUBTEXEL
-#undef INVERSE_W
-
-#undef IPOL_C0
-#undef IPOL_T0
-#undef IPOL_T1
-
-// define render case
-#define SUBTEXEL
-#define INVERSE_W
-
-#define USE_ZBUFFER
-#define IPOL_W
-#define CMP_W
-#define WRITE_W
-
-#define IPOL_C0
-#define IPOL_T0
-#define IPOL_T1
-
-// apply global override
-#ifndef SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
-	#undef INVERSE_W
-#endif
-
-#ifndef SOFTWARE_DRIVER_2_SUBTEXEL
-	#undef SUBTEXEL
-#endif
-
-#if BURNING_MATERIAL_MAX_COLORS < 1
-	#undef IPOL_C0
-#endif
+#include "burning_shader_compile_verify.h"
 
 
-#if !defined ( SOFTWARE_DRIVER_2_USE_WBUFFER ) && defined ( USE_ZBUFFER )
-	#ifndef SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
-		#undef IPOL_W
-	#endif
-	#define IPOL_Z
-
-	#ifdef CMP_W
-		#undef CMP_W
-		#define CMP_Z
-	#endif
-
-	#ifdef WRITE_W
-		#undef WRITE_W
-		#define WRITE_Z
-	#endif
-
-#endif
-
-
-namespace irr
-{
-
-namespace video
-{
-
-class CTRTextureDetailMap2 : public IBurningShader
-{
-public:
-
-	//! constructor
-	CTRTextureDetailMap2(CBurningVideoDriver* driver);
-
-	//! draws an indexed triangle list
-	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) _IRR_OVERRIDE_;
-	virtual bool canWireFrame () { return true; }
-
-protected:
-	virtual void scanline_bilinear ();
-
-};
-
-//! constructor
-CTRTextureDetailMap2::CTRTextureDetailMap2(CBurningVideoDriver* driver)
-: IBurningShader(driver)
-{
-	#ifdef _DEBUG
-	setDebugName("CTRTextureDetailMap2");
-	#endif
-}
-
-
-
-/*!
-*/
-void CTRTextureDetailMap2::scanline_bilinear ()
-{
-	tVideoSample *dst;
-
-#ifdef USE_ZBUFFER
-	fp24 *z;
-#endif
-
-	s32 xStart;
-	s32 xEnd;
-	s32 dx;
-
-
-#ifdef SUBTEXEL
-	f32 subPixel;
-#endif
-
-#ifdef IPOL_Z
-	f32 slopeZ;
-#endif
-#ifdef IPOL_W
-	fp24 slopeW;
-#endif
-#ifdef IPOL_C0
-	sVec4 slopeC;
-#endif
-#ifdef IPOL_T0
-	sVec2 slopeT[BURNING_MATERIAL_MAX_TEXTURES];
-#endif
-
-	// apply top-left fill-convention, left
-	xStart = fill_convention_left( line.x[0] );
-	xEnd = fill_convention_right( line.x[1] );
-
-	dx = xEnd - xStart;
-
-	if ( dx < 0 )
-		return;
-
-	// slopes
-	const f32 invDeltaX = reciprocal_zero2( line.x[1] - line.x[0] );
-
-#ifdef IPOL_Z
-	slopeZ = (line.z[1] - line.z[0]) * invDeltaX;
-#endif
-#ifdef IPOL_W
-	slopeW = (line.w[1] - line.w[0]) * invDeltaX;
-#endif
-#ifdef IPOL_C0
-	slopeC = (line.c[0][1] - line.c[0][0]) * invDeltaX;
-#endif
-#ifdef IPOL_T0
-	slopeT[0] = (line.t[0][1] - line.t[0][0]) * invDeltaX;
-#endif
-#ifdef IPOL_T1
-	slopeT[1] = (line.t[1][1] - line.t[1][0]) * invDeltaX;
-#endif
-
-#ifdef SUBTEXEL
-	subPixel = ( (f32) xStart ) - line.x[0];
-#ifdef IPOL_Z
-	line.z[0] += slopeZ * subPixel;
-#endif
-#ifdef IPOL_W
-	line.w[0] += slopeW * subPixel;
-#endif
-#ifdef IPOL_C0
-	line.c[0][0] += slopeC * subPixel;
-#endif
-#ifdef IPOL_T0
-	line.t[0][0] += slopeT[0] * subPixel;
-#endif
-#ifdef IPOL_T1
-	line.t[1][0] += slopeT[1] * subPixel;
-#endif
-#endif
-
-	SOFTWARE_DRIVER_2_CLIPCHECK;
-	dst = (tVideoSample*)RenderTarget->getData() + ( line.y * RenderTarget->getDimension().Width ) + xStart;
-
-#ifdef USE_ZBUFFER
-	z = (fp24*) DepthBuffer->lock() + ( line.y * RenderTarget->getDimension().Width ) + xStart;
-#endif
-
-
-	f32 inversew = FIX_POINT_F32_MUL;
-
-	tFixPoint tx0, tx1;
-	tFixPoint ty0, ty1;
-
-	tFixPoint r0, g0, b0;
-	tFixPoint r1, g1, b1;
-	tFixPoint r2, g2, b2;
-
-
-	for ( s32 i = 0; i <= dx; ++i )
-	{
-		if ( (0 == EdgeTestPass) & i ) break;
-
-#ifdef CMP_Z
-		if ( line.z[0] < z[i] )
-#endif
-#ifdef CMP_W
-		if ( line.w[0] >= z[i] )
-#endif
-
-		{
-#ifdef INVERSE_W
-			inversew = fix_inverse32 ( line.w[0] );
-#endif
-			tx0 = tofix ( line.t[0][0].x,inversew);
-			ty0 = tofix ( line.t[0][0].y,inversew);
-			tx1 = tofix ( line.t[1][0].x,inversew);
-			ty1 = tofix ( line.t[1][0].y,inversew);
-
-			getSample_texture ( r0, g0, b0, &IT[0], tx0,ty0 );
-			getSample_texture ( r1, g1, b1, &IT[1], tx1,ty1 );
-
-			// add signed
-
-			r2 = clampfix_mincolor ( clampfix_maxcolor ( r0 + r1 - FIX_POINT_HALF_COLOR ) );
-			g2 = clampfix_mincolor ( clampfix_maxcolor ( g0 + g1 - FIX_POINT_HALF_COLOR ) );
-			b2 = clampfix_mincolor ( clampfix_maxcolor ( b0 + b1 - FIX_POINT_HALF_COLOR ) );
-
-			dst[i] = fix_to_sample( r2, g2, b2 );
-
-#ifdef WRITE_Z
-			z[i] = line.z[0];
-#endif
-#ifdef WRITE_W
-			z[i] = line.w[0];
-#endif
-
-		}
-
-#ifdef IPOL_Z
-		line.z[0] += slopeZ;
-#endif
-#ifdef IPOL_W
-		line.w[0] += slopeW;
-#endif
-#ifdef IPOL_C0
-		line.c[0][0] += slopeC;
-#endif
-#ifdef IPOL_T0
-		line.t[0][0] += slopeT[0];
-#endif
-#ifdef IPOL_T1
-		line.t[1][0] += slopeT[1];
-#endif
-	}
-
-}
-
-void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c)
+void burning_shader_class::drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c)
 {
 	// sort on height, y
-	if ( F32_A_GREATER_B ( a->Pos.y , b->Pos.y ) ) swapVertexPointer(&a, &b);
-	if ( F32_A_GREATER_B ( b->Pos.y , c->Pos.y ) ) swapVertexPointer(&b, &c);
-	if ( F32_A_GREATER_B ( a->Pos.y , b->Pos.y ) ) swapVertexPointer(&a, &b);
+	if (a->Pos.y > b->Pos.y) swapVertexPointer(&a, &b);
+	if (a->Pos.y > c->Pos.y) swapVertexPointer(&a, &c);
+	if (b->Pos.y > c->Pos.y) swapVertexPointer(&b, &c);
 
 	const f32 ca = c->Pos.y - a->Pos.y;
 	const f32 ba = b->Pos.y - a->Pos.y;
 	const f32 cb = c->Pos.y - b->Pos.y;
-	// calculate delta y of the edges
-	scan.invDeltaY[0] = reciprocal_edge( ca );
-	scan.invDeltaY[1] = reciprocal_edge( ba );
-	scan.invDeltaY[2] = reciprocal_edge( cb );
 
-	if ( F32_LOWER_EQUAL_0 ( scan.invDeltaY[0] ) )
+	// calculate delta y of the edges
+	scan.invDeltaY[0] = reciprocal_edge(ca);
+	scan.invDeltaY[1] = reciprocal_edge(ba);
+	scan.invDeltaY[2] = reciprocal_edge(cb);
+
+	if (F32_LOWER_EQUAL_0(scan.invDeltaY[0]))
 		return;
 
 	// find if the major edge is left or right aligned
@@ -285,7 +28,7 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 	temp[2] = b->Pos.x - a->Pos.x;
 	temp[3] = ba;
 
-	scan.left = ( temp[0] * temp[3] - temp[1] * temp[2] ) > 0.f ? 0 : 1;
+	scan.left = (temp[0] * temp[3] - temp[1] * temp[2]) > 0.f ? 0 : 1;
 	scan.right = 1 - scan.left;
 
 	// calculate slopes for the major edge
@@ -325,8 +68,9 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 	f32 subPixel;
 #endif
 
+
 	// rasterize upper sub-triangle
-	if ( (f32) 0.0 != scan.invDeltaY[1]  )
+	if (F32_GREATER_0(scan.invDeltaY[1]))
 	{
 		// calculate slopes for top edge
 		scan.slopeX[1] = (b->Pos.x - a->Pos.x) * scan.invDeltaY[1];
@@ -358,11 +102,11 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = fill_convention_left( a->Pos.y );
-		yEnd = fill_convention_right( b->Pos.y );
+		yStart = fill_convention_left(a->Pos.y);
+		yEnd = fill_convention_right(b->Pos.y);
 
 #ifdef SUBTEXEL
-		subPixel = ( (f32) yStart ) - a->Pos.y;
+		subPixel = ((f32)yStart) - a->Pos.y;
 
 		// correct to pixel center
 		scan.x[0] += scan.slopeX[0] * subPixel;
@@ -396,7 +140,7 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 #endif
 
 		// rasterize the edge scanlines
-		for( line.y = yStart; line.y <= yEnd; ++line.y)
+		for (line.y = yStart; line.y <= yEnd; ++line.y)
 		{
 			line.x[scan.left] = scan.x[0];
 			line.x[scan.right] = scan.x[1];
@@ -427,7 +171,8 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 #endif
 
 			// render a scanline
-			scanline_bilinear ();
+			(this->*fragmentShader) ();
+			if (EdgeTestPass & edge_test_first_line) break;
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];
@@ -456,15 +201,14 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 			scan.t[1][0] += scan.slopeT[1][0];
 			scan.t[1][1] += scan.slopeT[1][1];
 #endif
-
 		}
 	}
 
 	// rasterize lower sub-triangle
-	if ( (f32) 0.0 != scan.invDeltaY[2] )
+	if (F32_GREATER_0(scan.invDeltaY[2]))
 	{
 		// advance to middle point
-		if( (f32) 0.0 != scan.invDeltaY[1] )
+		if (F32_GREATER_0(scan.invDeltaY[1]))
 		{
 			temp[0] = b->Pos.y - a->Pos.y;	// dy
 
@@ -517,12 +261,12 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = fill_convention_left( b->Pos.y );
-		yEnd = fill_convention_right( c->Pos.y );
+		yStart = fill_convention_left(b->Pos.y);
+		yEnd = fill_convention_right(c->Pos.y);
 
 #ifdef SUBTEXEL
 
-		subPixel = ( (f32) yStart ) - b->Pos.y;
+		subPixel = ((f32)yStart) - b->Pos.y;
 
 		// correct to pixel center
 		scan.x[0] += scan.slopeX[0] * subPixel;
@@ -556,7 +300,7 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 #endif
 
 		// rasterize the edge scanlines
-		for( line.y = yStart; line.y <= yEnd; ++line.y)
+		for (line.y = yStart; line.y <= yEnd; ++line.y)
 		{
 			line.x[scan.left] = scan.x[0];
 			line.x[scan.right] = scan.x[1];
@@ -587,7 +331,8 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 #endif
 
 			// render a scanline
-			scanline_bilinear ();
+			(this->*fragmentShader) ();
+			if (EdgeTestPass & edge_test_first_line) break;
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];
@@ -621,29 +366,3 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 	}
 
 }
-
-} // end namespace video
-} // end namespace irr
-
-#endif // _IRR_COMPILE_WITH_BURNINGSVIDEO_
-
-namespace irr
-{
-namespace video
-{
-
-//! creates a flat triangle renderer
-IBurningShader* createTriangleRendererTextureDetailMap2(CBurningVideoDriver* driver)
-{
-	#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
-	return new CTRTextureDetailMap2(driver);
-	#else
-	return 0;
-	#endif // _IRR_COMPILE_WITH_BURNINGSVIDEO_
-}
-
-
-} // end namespace video
-} // end namespace irr
-
-

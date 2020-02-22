@@ -46,7 +46,7 @@
 	#undef SUBTEXEL
 #endif
 
-#ifndef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
+#if BURNING_MATERIAL_MAX_COLORS < 1
 	#undef IPOL_C0
 #endif
 
@@ -82,19 +82,21 @@ public:
 	CTRTextureLightMap2_M4(CBurningVideoDriver* driver);
 
 	//! draws an indexed triangle list
-	virtual void drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c ) _IRR_OVERRIDE_;
+	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) _IRR_OVERRIDE_;
 
 
 private:
 
-	void drawTriangle_Min ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c );
-	void drawTriangle_Mag ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c );
-
-	void scanline_bilinear ();
+#if defined(SOFTWARE_DRIVER_2_SCANLINE_MAG_MIN)
+	void drawTriangle_Min ( const s4DVertex* burning_restrict a,const s4DVertex* burning_restrict b,const s4DVertex* burning_restrict c );
+	void drawTriangle_Mag ( const s4DVertex* burning_restrict a,const s4DVertex* burning_restrict b,const s4DVertex* burning_restrict c );
 	void scanline_bilinear2_mag ();
 	void scanline_bilinear2_min ();
+#else
+	#define scanline_bilinear2_mag scanline_bilinear
+#endif
 
-	sScanLineData line;
+	void scanline_bilinear ();
 
 };
 
@@ -109,14 +111,14 @@ CTRTextureLightMap2_M4::CTRTextureLightMap2_M4(CBurningVideoDriver* driver)
 
 /*!
 */
-REALINLINE void CTRTextureLightMap2_M4::scanline_bilinear2_mag ()
+void CTRTextureLightMap2_M4::scanline_bilinear2_mag ()
 {
 	tVideoSample *dst;
 	fp24 *z;
 
 	// apply top-left fill-convention, left
-	const s32 xStart = irr::core::ceil32_fast( line.x[0] );
-	const s32 xEnd = irr::core::ceil32_fast( line.x[1] ) - 1;
+	const s32 xStart = fill_convention_left(line.x[0]);
+	const s32 xEnd = fill_convention_right(line.x[1]);
 	s32 dx;
 	s32 i;
 
@@ -125,8 +127,10 @@ REALINLINE void CTRTextureLightMap2_M4::scanline_bilinear2_mag ()
 	if ( dx < 0 )
 		return;
 
+	SOFTWARE_DRIVER_2_CLIPCHECK;
+
 	// slopes
-	const f32 invDeltaX = core::reciprocal_approxim ( line.x[1] - line.x[0] );
+	const f32 invDeltaX = reciprocal_zero2( line.x[1] - line.x[0] );
 
 	// search z-buffer for first not occulled pixel
 	i = ( line.y * RenderTarget->getDimension().Width ) + xStart;
@@ -229,11 +233,7 @@ REALINLINE void CTRTextureLightMap2_M4::scanline_bilinear2_mag ()
 			getSample_texture ( r1, g1, b1, &IT[1], tofix ( line.t[1][0].x,inversew), tofix ( line.t[1][0].y,inversew) );
 
 #endif
-
-			dst[i] = fix_to_color ( clampfix_maxcolor ( imulFix_tex4 ( r0, r1 ) ),
-									clampfix_maxcolor ( imulFix_tex4 ( g0, g1 ) ),
-									clampfix_maxcolor ( imulFix_tex4 ( b0, b1 ) )
-								);
+			dst[i] = fix_to_sample(imulFix_tex4(r0, r1), imulFix_tex4(g0, g1), imulFix_tex4(b0, b1));
 		}
 
 #ifdef IPOL_W
@@ -248,7 +248,8 @@ REALINLINE void CTRTextureLightMap2_M4::scanline_bilinear2_mag ()
 }
 
 
-REALINLINE void CTRTextureLightMap2_M4::scanline_bilinear2_min ()
+#if defined (SOFTWARE_DRIVER_2_SCANLINE_MAG_MIN)
+void CTRTextureLightMap2_M4::scanline_bilinear2_min ()
 {
 	tVideoSample *dst;
 	fp24 *z;
@@ -260,15 +261,17 @@ REALINLINE void CTRTextureLightMap2_M4::scanline_bilinear2_min ()
 
 
 	// apply top-left fill-convention, left
-	xStart = core::ceil32_fast( line.x[0] );
-	xEnd = core::ceil32_fast( line.x[1] ) - 1;
+	xStart = fill_convention_left(line.x[0]);
+	xEnd = fill_convention_right(line.x[1]);
 
 	dx = xEnd - xStart;
 	if ( dx < 0 )
 		return;
 
+	SOFTWARE_DRIVER_2_CLIPCHECK;
+
 	// slopes
-	const f32 invDeltaX = core::reciprocal_approxim ( line.x[1] - line.x[0] );
+	const f32 invDeltaX = reciprocal_zero2( line.x[1] - line.x[0] );
 
 	// search z-buffer for first not occulled pixel
 	z = (fp24*) DepthBuffer->lock() + ( line.y * RenderTarget->getDimension().Width ) + xStart;
@@ -315,6 +318,7 @@ REALINLINE void CTRTextureLightMap2_M4::scanline_bilinear2_min ()
 	line.z[0] = a;
 	line.z[1] = b;
 #endif
+
 	dst = (tVideoSample*)RenderTarget->getData() + ( line.y * RenderTarget->getDimension().Width ) + xStart;
 
 	a = (f32) i + subPixel;
@@ -352,10 +356,7 @@ REALINLINE void CTRTextureLightMap2_M4::scanline_bilinear2_min ()
 			getTexel_fix ( r0, g0, b0, &IT[0], tofix ( line.t[0][0].x,inversew), tofix ( line.t[0][0].y,inversew) );
 			getTexel_fix ( r1, g1, b1, &IT[1], tofix ( line.t[1][0].x,inversew), tofix ( line.t[1][0].y,inversew) );
 
-			dst[i] = fix_to_color ( clampfix_maxcolor ( imulFix_tex4 ( r0, r1 ) ),
-									clampfix_maxcolor ( imulFix_tex4 ( g0, g1 ) ),
-									clampfix_maxcolor ( imulFix_tex4 ( b0, b1 ) )
-								);
+			dst[i] = fix_to_sample(imulFix_tex4(r0, r1), imulFix_tex4(g0, g1), imulFix_tex4(b0, b1));
 		}
 
 #ifdef IPOL_W
@@ -369,21 +370,20 @@ REALINLINE void CTRTextureLightMap2_M4::scanline_bilinear2_min ()
 
 }
 
-//#ifdef BURNINGVIDEO_RENDERER_FAST
-#if 1
-
-void CTRTextureLightMap2_M4::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c )
+void CTRTextureLightMap2_M4::drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c)
 {
-	if ( IT[0].lodLevel <= 2 )
-		drawTriangle_Mag ( a, b, c );
+	if (IT[0].lodFactor < 4)
+	{
+		drawTriangle_Mag(a, b, c);
+	}
 	else
-		drawTriangle_Min ( a, b, c );
+	{
+		drawTriangle_Min(a, b, c);
+	}
 }
 
-void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c )
+void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex* burning_restrict a,const s4DVertex* burning_restrict b,const s4DVertex* burning_restrict c )
 {
-	sScanConvertData scan;
-
 	// sort on height, y
 	if ( F32_A_GREATER_B ( a->Pos.y , b->Pos.y ) ) swapVertexPointer(&a, &b);
 	if ( F32_A_GREATER_B ( b->Pos.y , c->Pos.y ) ) swapVertexPointer(&b, &c);
@@ -393,9 +393,9 @@ void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex *a,const s4DVert
 	const f32 ba = b->Pos.y - a->Pos.y;
 	const f32 cb = c->Pos.y - b->Pos.y;
 	// calculate delta y of the edges
-	scan.invDeltaY[0] = core::reciprocal( ca );
-	scan.invDeltaY[1] = core::reciprocal( ba );
-	scan.invDeltaY[2] = core::reciprocal( cb );
+	scan.invDeltaY[0] = reciprocal_zero( ca );
+	scan.invDeltaY[1] = reciprocal_zero( ba );
+	scan.invDeltaY[2] = reciprocal_zero( cb );
 
 	if ( F32_LOWER_EQUAL_0 ( scan.invDeltaY[0] )  )
 		return;
@@ -481,8 +481,8 @@ void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex *a,const s4DVert
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32_fast( a->Pos.y );
-		yEnd = core::ceil32_fast( b->Pos.y ) - 1;
+		yStart = fill_convention_left( a->Pos.y );
+		yEnd = fill_convention_right( b->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - a->Pos.y;
@@ -641,8 +641,8 @@ void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex *a,const s4DVert
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32_fast( b->Pos.y );
-		yEnd = core::ceil32_fast( c->Pos.y ) - 1;
+		yStart = fill_convention_left( b->Pos.y );
+		yEnd = fill_convention_right( c->Pos.y );
 
 #ifdef SUBTEXEL
 
@@ -746,16 +746,15 @@ void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex *a,const s4DVert
 
 }
 
-void CTRTextureLightMap2_M4::drawTriangle_Mag ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c )
+void CTRTextureLightMap2_M4::drawTriangle_Mag ( const s4DVertex* burning_restrict a,const s4DVertex* burning_restrict b,const s4DVertex* burning_restrict c )
 
-#else
+#else //#if defined (SOFTWARE_DRIVER_2_SCANLINE_MAG_MIN)
 
-void CTRTextureLightMap2_M4::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c )
+void CTRTextureLightMap2_M4::drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c)
 
 #endif
 
 {
-	sScanConvertData scan;
 
 	// sort on height, y
 	if ( F32_A_GREATER_B ( a->Pos.y , b->Pos.y ) ) swapVertexPointer(&a, &b);
@@ -765,13 +764,17 @@ void CTRTextureLightMap2_M4::drawTriangle ( const s4DVertex *a,const s4DVertex *
 	const f32 ca = c->Pos.y - a->Pos.y;
 	const f32 ba = b->Pos.y - a->Pos.y;
 	const f32 cb = c->Pos.y - b->Pos.y;
-	// calculate delta y of the edges
-	scan.invDeltaY[0] = core::reciprocal( ca );
-	scan.invDeltaY[1] = core::reciprocal( ba );
-	scan.invDeltaY[2] = core::reciprocal( cb );
 
-	if ( F32_LOWER_EQUAL_0 ( scan.invDeltaY[0] )  )
+	if ( F32_LOWER_EQUAL_0 ( ca )  )
 		return;
+
+	// calculate delta y of the edges
+	scan.invDeltaY[0] = reciprocal_zero( ca );
+	scan.invDeltaY[1] = reciprocal_zero( ba );
+	scan.invDeltaY[2] = reciprocal_zero( cb );
+
+	//if ( F32_LOWER_EQUAL_0 ( scan.invDeltaY[0] )  )
+	//	return;
 
 	// find if the major edge is left or right aligned
 	f32 temp[4];
@@ -855,8 +858,8 @@ void CTRTextureLightMap2_M4::drawTriangle ( const s4DVertex *a,const s4DVertex *
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32_fast( a->Pos.y );
-		yEnd = core::ceil32_fast( b->Pos.y ) - 1;
+		yStart = fill_convention_left( a->Pos.y );
+		yEnd = fill_convention_right( b->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - a->Pos.y;
@@ -1015,8 +1018,8 @@ void CTRTextureLightMap2_M4::drawTriangle ( const s4DVertex *a,const s4DVertex *
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32_fast( b->Pos.y );
-		yEnd = core::ceil32_fast( c->Pos.y ) - 1;
+		yStart = fill_convention_left( b->Pos.y );
+		yEnd = fill_convention_right( c->Pos.y );
 
 #ifdef SUBTEXEL
 
@@ -1119,6 +1122,8 @@ void CTRTextureLightMap2_M4::drawTriangle ( const s4DVertex *a,const s4DVertex *
 	}
 
 }
+
+#undef scanline_bilinear2_mag
 
 } // end namespace video
 } // end namespace irr

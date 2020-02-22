@@ -21,6 +21,7 @@
 #undef INVERSE_W
 
 #undef IPOL_C0
+#undef IPOL_C1
 #undef IPOL_T0
 #undef IPOL_T1
 #undef IPOL_T2
@@ -36,6 +37,7 @@
 #define WRITE_W
 
 #define IPOL_C0
+#define IPOL_C1
 #define IPOL_T0
 #define IPOL_T1
 #define IPOL_L0
@@ -49,8 +51,16 @@
 	#undef SUBTEXEL
 #endif
 
-#ifndef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
+#if BURNING_MATERIAL_MAX_COLORS < 1
 	#undef IPOL_C0
+#endif
+
+#if BURNING_MATERIAL_MAX_COLORS < 2
+	#undef IPOL_C1
+#endif
+
+#if BURNING_MATERIAL_MAX_LIGHT_TANGENT < 1
+	#undef IPOL_L0
 #endif
 
 #if !defined ( SOFTWARE_DRIVER_2_USE_WBUFFER ) && defined ( USE_ZBUFFER )
@@ -87,14 +97,11 @@ public:
 	CTRNormalMap(CBurningVideoDriver* driver);
 
 	//! draws an indexed triangle list
-	virtual void drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c ) _IRR_OVERRIDE_;
-
+	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) _IRR_OVERRIDE_;
+	virtual void OnSetMaterial(const SBurningShaderMaterial& material) _IRR_OVERRIDE_;
 
 private:
-	void scanline_bilinear ();
-
-	sScanConvertData scan;
-	sScanLineData line;
+	void fragmentShader();
 
 };
 
@@ -108,10 +115,13 @@ CTRNormalMap::CTRNormalMap(CBurningVideoDriver* driver)
 }
 
 
+void CTRNormalMap::OnSetMaterial(const SBurningShaderMaterial& material)
+{
+}
 
 /*!
 */
-void CTRNormalMap::scanline_bilinear ()
+void CTRNormalMap::fragmentShader()
 {
 	tVideoSample *dst;
 
@@ -135,18 +145,18 @@ void CTRNormalMap::scanline_bilinear ()
 	fp24 slopeW;
 #endif
 #ifdef IPOL_C0
-	sVec4 slopeC[MATERIAL_MAX_COLORS];
+	sVec4 slopeC[BURNING_MATERIAL_MAX_COLORS];
 #endif
 #ifdef IPOL_T0
 	sVec2 slopeT[BURNING_MATERIAL_MAX_TEXTURES];
 #endif
 #ifdef IPOL_L0
-	sVec3 slopeL[BURNING_MATERIAL_MAX_TANGENT];
+	sVec3Pack_unpack slopeL[BURNING_MATERIAL_MAX_LIGHT_TANGENT];
 #endif
 
 	// apply top-left fill-convention, left
-	xStart = core::ceil32_fast( line.x[0] );
-	xEnd = core::ceil32_fast( line.x[1] ) - 1;
+	xStart = fill_convention_left( line.x[0] );
+	xEnd = fill_convention_right( line.x[1] );
 
 	dx = xEnd - xStart;
 
@@ -154,7 +164,7 @@ void CTRNormalMap::scanline_bilinear ()
 		return;
 
 	// slopes
-	const f32 invDeltaX = core::reciprocal_approxim ( line.x[1] - line.x[0] );
+	const f32 invDeltaX = reciprocal_zero2( line.x[1] - line.x[0] );
 
 #ifdef IPOL_Z
 	slopeZ = (line.z[1] - line.z[0]) * invDeltaX;
@@ -164,6 +174,9 @@ void CTRNormalMap::scanline_bilinear ()
 #endif
 #ifdef IPOL_C0
 	slopeC[0] = (line.c[0][1] - line.c[0][0]) * invDeltaX;
+#endif
+#ifdef IPOL_C1
+	slopeC[1] = (line.c[1][1] - line.c[1][0]) * invDeltaX;
 #endif
 #ifdef IPOL_T0
 	slopeT[0] = (line.t[0][1] - line.t[0][0]) * invDeltaX;
@@ -189,6 +202,9 @@ void CTRNormalMap::scanline_bilinear ()
 #ifdef IPOL_C0
 	line.c[0][0] += slopeC[0] * subPixel;
 #endif
+#ifdef IPOL_C1
+	line.c[1][0] += slopeC[1] * subPixel;
+#endif
 #ifdef IPOL_T0
 	line.t[0][0] += slopeT[0] * subPixel;
 #endif
@@ -203,6 +219,7 @@ void CTRNormalMap::scanline_bilinear ()
 #endif
 #endif
 
+	SOFTWARE_DRIVER_2_CLIPCHECK;
 	dst = (tVideoSample*)RenderTarget->getData() + ( line.y * RenderTarget->getDimension().Width ) + xStart;
 
 #ifdef USE_ZBUFFER
@@ -210,7 +227,7 @@ void CTRNormalMap::scanline_bilinear ()
 #endif
 
 
-	f32 inversew;
+	f32 inversew = FIX_POINT_F32_MUL;
 
 	tFixPoint tx0, tx1;
 	tFixPoint ty0, ty1;
@@ -219,15 +236,20 @@ void CTRNormalMap::scanline_bilinear ()
 	tFixPoint r1, g1, b1;
 	tFixPoint r2, g2, b2;
 
+#ifdef IPOL_L0
 	tFixPoint lx, ly, lz;
-	tFixPoint ndotl;
-
-	sVec3 light;
+#endif
+	tFixPoint ndotl = FIX_POINT_ONE;
 
 
 #ifdef IPOL_C0
-	tFixPoint r3, g3, b3;
+	tFixPoint a3,r3, g3, b3;
 #endif
+
+#ifdef IPOL_C1
+	tFixPoint aFog = FIX_POINT_ONE;
+#endif
+
 
 	for ( s32 i = 0; i <= dx; i++ )
 	{
@@ -240,6 +262,34 @@ void CTRNormalMap::scanline_bilinear ()
 		{
 #ifdef INVERSE_W
 			inversew = fix_inverse32 ( line.w[0] );
+#endif
+
+#ifdef IPOL_C0
+		//vertex alpha blend ( and omit depthwrite ,hacky..)
+		a3 = tofix(line.c[0][0].x, inversew);
+		if (a3 + 2 >= FIX_POINT_ONE)
+		{
+#ifdef WRITE_Z
+			z[i] = line.z[0];
+#endif
+#ifdef WRITE_W
+			z[i] = line.w[0];
+#endif
+		}
+#endif
+
+#ifdef IPOL_C1
+			//complete inside fog
+			if (TL_Flag & TL_FOG)
+			{
+				aFog = tofix(line.c[1][0].a, inversew);
+				if (aFog <= 0)
+				{
+					dst[i] = fog_color_sample;
+					continue;
+				}
+			}
+#endif
 
 			tx0 = tofix ( line.t[0][0].x,inversew);
 			ty0 = tofix ( line.t[0][0].y,inversew);
@@ -247,26 +297,7 @@ void CTRNormalMap::scanline_bilinear ()
 			ty1 = tofix ( line.t[1][0].y,inversew);
 
 
-#ifdef IPOL_C0
-			r3 = tofix ( line.c[0][0].y ,inversew );
-			g3 = tofix ( line.c[0][0].z ,inversew );
-			b3 = tofix ( line.c[0][0].w ,inversew );
-#endif
-
-#else
-			inversew = FIX_POINT_F32_MUL;
-			tx0 = tofix(line.t[0][0].x, inversew);
-			ty0 = tofix(line.t[0][0].y, inversew);
-			tx1 = tofix(line.t[1][0].x, inversew);
-			ty1 = tofix(line.t[1][0].y, inversew);
-
-#ifdef IPOL_C0
-			r3 = tofix ( line.c[0][0].y );
-			g3 = tofix ( line.c[0][0].z );
-			b3 = tofix ( line.c[0][0].w );
-#endif
-
-#endif
+			// diffuse map
 			getSample_texture ( r0, g0, b0, &IT[0], tx0, ty0 );
 
 			// normal map
@@ -276,23 +307,22 @@ void CTRNormalMap::scanline_bilinear ()
 			g1 = ( g1 - FIX_POINT_HALF_COLOR) >> (COLOR_MAX_LOG2-1);
 			b1 = ( b1 - FIX_POINT_HALF_COLOR) >> (COLOR_MAX_LOG2-1);
 
-/*
-			sVec3 l = line.l[0][0] * inversew;
-			l.setLength( 2.f );
-
-			lx = tofix ( l.x - 0.5f );
-			ly = tofix ( l.y - 0.5f );
-			lz = tofix ( l.z - 0.5f );
-*/
-
+#ifdef IPOL_L0
 			lx = tofix ( line.l[0][0].x, inversew );
 			ly = tofix ( line.l[0][0].y, inversew );
 			lz = tofix ( line.l[0][0].z, inversew );
 
 			// DOT 3 Normal Map light in tangent space
-			ndotl = saturateFix ( FIX_POINT_HALF_COLOR +  (( imulFix ( r1, lx ) + imulFix ( g1, ly ) + imulFix ( b1, lz ) ) << (COLOR_MAX_LOG2-1)) );
+			ndotl = saturateFix ( FIX_POINT_HALF_COLOR +  ((imulFix_simple(r1,lx) + imulFix_simple(g1,ly) + imulFix_simple(b1,lz) ) << (COLOR_MAX_LOG2-1)) );
+#endif
 
 #ifdef IPOL_C0
+
+			//getSample_color(a3,r3,g3,b3, line.c[0][0],inversew);
+			//a3 = tofix(line.c[0][0].x, inversew);
+			r3 = tofix(line.c[0][0].y, inversew);
+			g3 = tofix(line.c[0][0].z, inversew);
+			b3 = tofix(line.c[0][0].w, inversew);
 
 			// N . L
 			r2 = imulFix ( imulFix_tex1 ( r0, ndotl ), r3 );
@@ -307,27 +337,34 @@ void CTRNormalMap::scanline_bilinear ()
 			g2 = clampfix_maxcolor ( clampfix_mincolor ( imulFix ( g0 + a4, g3 ) ) );
 			b2 = clampfix_maxcolor ( clampfix_mincolor ( imulFix ( b0 + a4, b3 ) ) );
 */
+			//vertex alpha blend ( and omit depthwrite ,hacky..)
+			if (a3 + 2 < FIX_POINT_ONE)
+			{
+				color_to_fix(r1, g1, b1, dst[i]);
+				r2 = r1 + imulFix(a3, r2 - r1);
+				g2 = g1 + imulFix(a3, g2 - g1);
+				b2 = b1 + imulFix(a3, b2 - b1);
+			}
 
-/*
-			r2 = clampfix_maxcolor ( imulFix_tex1 ( r2, r1 ) );
-			g2 = clampfix_maxcolor ( imulFix_tex1 ( g2, g1 ) );
-			b2 = clampfix_maxcolor ( imulFix_tex1 ( b2, b1 ) );
-*/
+#ifdef IPOL_C1
+			//mix with distance
+			if (aFog < FIX_POINT_ONE)
+			{
+				r2 = fog_color[1] + imulFix(aFog, r2 - fog_color[1]);
+				g2 = fog_color[2] + imulFix(aFog, g2 - fog_color[2]);
+				b2 = fog_color[3] + imulFix(aFog, b2 - fog_color[3]);
+			}
+#endif
+			dst[i] = fix_to_sample(r2, g2, b2);
+
+
 #else
-			r2 = clampfix_maxcolor ( imulFix_tex4 ( r0, r1 ) );
-			g2 = clampfix_maxcolor ( imulFix_tex4 ( g0, g1 ) );
-			b2 = clampfix_maxcolor ( imulFix_tex4 ( b0, b1 ) );
+			r2 = imulFix_tex4 ( r0, r1 );
+			g2 = imulFix_tex4 ( g0, g1 );
+			b2 = imulFix_tex4 ( b0, b1 );
+			dst[i] = fix_to_sample(r2, g2, b2);
 #endif
 
-
-			dst[i] = fix_to_color ( r2, g2, b2 );
-
-#ifdef WRITE_Z
-			z[i] = line.z[0];
-#endif
-#ifdef WRITE_W
-			z[i] = line.w[0];
-#endif
 		}
 
 #ifdef IPOL_Z
@@ -338,6 +375,9 @@ void CTRNormalMap::scanline_bilinear ()
 #endif
 #ifdef IPOL_C0
 		line.c[0][0] += slopeC[0];
+#endif
+#ifdef IPOL_C1
+		line.c[1][0] += slopeC[1];
 #endif
 #ifdef IPOL_T0
 		line.t[0][0] += slopeT[0];
@@ -355,7 +395,7 @@ void CTRNormalMap::scanline_bilinear ()
 
 }
 
-void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c )
+void CTRNormalMap::drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c)
 {
 	// sort on height, y
 	if ( F32_A_GREATER_B ( a->Pos.y , b->Pos.y ) ) swapVertexPointer(&a, &b);
@@ -366,9 +406,9 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 	const f32 ba = b->Pos.y - a->Pos.y;
 	const f32 cb = c->Pos.y - b->Pos.y;
 	// calculate delta y of the edges
-	scan.invDeltaY[0] = core::reciprocal( ca );
-	scan.invDeltaY[1] = core::reciprocal( ba );
-	scan.invDeltaY[2] = core::reciprocal( cb );
+	scan.invDeltaY[0] = reciprocal_zero( ca );
+	scan.invDeltaY[1] = reciprocal_zero( ba );
+	scan.invDeltaY[2] = reciprocal_zero( cb );
 
 	if ( F32_LOWER_EQUAL_0 ( scan.invDeltaY[0] )  )
 		return;
@@ -403,6 +443,11 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 	scan.c[0][0] = a->Color[0];
 #endif
 
+#ifdef IPOL_C1
+	scan.slopeC[1][0] = (c->Color[1] - a->Color[1]) * scan.invDeltaY[0];
+	scan.c[1][0] = a->Color[1];
+#endif
+
 #ifdef IPOL_T0
 	scan.slopeT[0][0] = (c->Tex[0] - a->Tex[0]) * scan.invDeltaY[0];
 	scan.t[0][0] = a->Tex[0];
@@ -433,7 +478,6 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 
 
 	// rasterize upper sub-triangle
-	//if ( (f32) 0.0 != scan.invDeltaY[1]  )
 	if ( F32_GREATER_0 ( scan.invDeltaY[1] )  )
 	{
 		// calculate slopes for top edge
@@ -453,6 +497,11 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 #ifdef IPOL_C0
 		scan.slopeC[0][1] = (b->Color[0] - a->Color[0]) * scan.invDeltaY[1];
 		scan.c[0][1] = a->Color[0];
+#endif
+
+#ifdef IPOL_C1
+		scan.slopeC[1][1] = (b->Color[1] - a->Color[1]) * scan.invDeltaY[1];
+		scan.c[1][1] = a->Color[1];
 #endif
 
 #ifdef IPOL_T0
@@ -476,8 +525,8 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32_fast( a->Pos.y );
-		yEnd = core::ceil32_fast( b->Pos.y ) - 1;
+		yStart = fill_convention_left( a->Pos.y );
+		yEnd = fill_convention_right( b->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - a->Pos.y;
@@ -499,6 +548,11 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 #ifdef IPOL_C0
 		scan.c[0][0] += scan.slopeC[0][0] * subPixel;
 		scan.c[0][1] += scan.slopeC[0][1] * subPixel;
+#endif
+
+#ifdef IPOL_C1
+		scan.c[1][0] += scan.slopeC[1][0] * subPixel;
+		scan.c[1][1] += scan.slopeC[1][1] * subPixel;
 #endif
 
 #ifdef IPOL_T0
@@ -544,6 +598,11 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 			line.c[0][scan.right] = scan.c[0][1];
 #endif
 
+#ifdef IPOL_C1
+			line.c[1][scan.left] = scan.c[1][0];
+			line.c[1][scan.right] = scan.c[1][1];
+#endif
+
 #ifdef IPOL_T0
 			line.t[0][scan.left] = scan.t[0][0];
 			line.t[0][scan.right] = scan.t[0][1];
@@ -565,7 +624,7 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 #endif
 
 			// render a scanline
-			scanline_bilinear ();
+			fragmentShader ();
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];
@@ -583,6 +642,11 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 #ifdef IPOL_C0
 			scan.c[0][0] += scan.slopeC[0][0];
 			scan.c[0][1] += scan.slopeC[0][1];
+#endif
+
+#ifdef IPOL_C1
+			scan.c[1][0] += scan.slopeC[1][0];
+			scan.c[1][1] += scan.slopeC[1][1];
 #endif
 
 #ifdef IPOL_T0
@@ -609,11 +673,9 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 	}
 
 	// rasterize lower sub-triangle
-	//if ( (f32) 0.0 != scan.invDeltaY[2] )
 	if ( F32_GREATER_0 ( scan.invDeltaY[2] )  )
 	{
 		// advance to middle point
-		//if( (f32) 0.0 != scan.invDeltaY[1] )
 		if ( F32_GREATER_0 ( scan.invDeltaY[1] )  )
 		{
 			temp[0] = b->Pos.y - a->Pos.y;	// dy
@@ -628,6 +690,9 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 #ifdef IPOL_C0
 			scan.c[0][0] = a->Color[0] + scan.slopeC[0][0] * temp[0];
 #endif
+#ifdef IPOL_C1
+			scan.c[1][0] = a->Color[1] + scan.slopeC[1][0] * temp[0];
+#endif
 #ifdef IPOL_T0
 			scan.t[0][0] = a->Tex[0] + scan.slopeT[0][0] * temp[0];
 #endif
@@ -638,7 +703,7 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 			scan.t[2][0] = a->Tex[2] + scan.slopeT[2][0] * temp[0];
 #endif
 #ifdef IPOL_L0
-			scan.l[0][0] = a->LightTangent[0] + scan.slopeL[0][0] * temp[0];
+			scan.l[0][0] = sVec3Pack_unpack(a->LightTangent[0]) + scan.slopeL[0][0] * temp[0];
 #endif
 
 		}
@@ -662,6 +727,11 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 		scan.c[0][1] = b->Color[0];
 #endif
 
+#ifdef IPOL_C1
+		scan.slopeC[1][1] = (c->Color[1] - b->Color[1]) * scan.invDeltaY[2];
+		scan.c[1][1] = b->Color[1];
+#endif
+
 #ifdef IPOL_T0
 		scan.slopeT[0][1] = (c->Tex[0] - b->Tex[0]) * scan.invDeltaY[2];
 		scan.t[0][1] = b->Tex[0];
@@ -683,8 +753,8 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32_fast( b->Pos.y );
-		yEnd = core::ceil32_fast( c->Pos.y ) - 1;
+		yStart = fill_convention_left( b->Pos.y );
+		yEnd = fill_convention_right( c->Pos.y );
 
 #ifdef SUBTEXEL
 
@@ -707,6 +777,11 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 #ifdef IPOL_C0
 		scan.c[0][0] += scan.slopeC[0][0] * subPixel;
 		scan.c[0][1] += scan.slopeC[0][1] * subPixel;
+#endif
+
+#ifdef IPOL_C1
+		scan.c[1][0] += scan.slopeC[1][0] * subPixel;
+		scan.c[1][1] += scan.slopeC[1][1] * subPixel;
 #endif
 
 #ifdef IPOL_T0
@@ -752,6 +827,11 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 			line.c[0][scan.right] = scan.c[0][1];
 #endif
 
+#ifdef IPOL_C1
+			line.c[1][scan.left] = scan.c[1][0];
+			line.c[1][scan.right] = scan.c[1][1];
+#endif
+
 #ifdef IPOL_T0
 			line.t[0][scan.left] = scan.t[0][0];
 			line.t[0][scan.right] = scan.t[0][1];
@@ -773,7 +853,7 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 #endif
 
 			// render a scanline
-			scanline_bilinear ();
+			fragmentShader();
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];
@@ -791,6 +871,11 @@ void CTRNormalMap::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4
 #ifdef IPOL_C0
 			scan.c[0][0] += scan.slopeC[0][0];
 			scan.c[0][1] += scan.slopeC[0][1];
+#endif
+
+#ifdef IPOL_C1
+			scan.c[1][0] += scan.slopeC[1][0];
+			scan.c[1][1] += scan.slopeC[1][1];
 #endif
 
 #ifdef IPOL_T0

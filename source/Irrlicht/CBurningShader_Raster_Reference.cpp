@@ -5,7 +5,7 @@
 #include "IrrCompileConfig.h"
 #include "IBurningShader.h"
 
-#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
+#if defined(_IRR_COMPILE_WITH_BURNINGSVIDEO_) && 0
 
 
 namespace irr
@@ -558,7 +558,7 @@ void CBurningShader_Raster_Reference::pShader_EMT_LIGHTMAP_M4 ()
 	getSample_texture ( r1, g1, b1, &IT[1], tofix ( line.t[1][0].x,inversew), tofix ( line.t[1][0].y,inversew) );
 
 
-	pShader.dst[pShader.i] = fix_to_color ( clampfix_maxcolor ( imulFix_tex2 ( r0, r1 ) ),
+	pShader.dst[pShader.i] = fix_to_sample( clampfix_maxcolor ( imulFix_tex2 ( r0, r1 ) ),
 							clampfix_maxcolor ( imulFix_tex2 ( g0, g1 ) ),
 							clampfix_maxcolor ( imulFix_tex2 ( b0, b1 ) )
 						);
@@ -578,7 +578,7 @@ void CBurningShader_Raster_Reference::pShader_1 ()
 	ty0 = tofix ( line.t[0][0].y, inversew );
 
 	getSample_texture ( r0, g0, b0, &IT[0], tx0, ty0 );
-	pShader.dst[pShader.i] = fix_to_color ( r0, g0, b0 );
+	pShader.dst[pShader.i] = fix_to_sample( r0, g0, b0 );
 
 }
 
@@ -690,15 +690,15 @@ REALINLINE void CBurningShader_Raster_Reference::depthWrite ()
 REALINLINE void CBurningShader_Raster_Reference::scanline2()
 {
 	// apply top-left fill-convention, left
-	pShader.xStart = core::ceil32_fast( line.x[0] );
-	pShader.xEnd = core::ceil32_fast( line.x[1] ) - 1;
+	pShader.xStart = fill_convention_left( line.x[0] );
+	pShader.xEnd = fill_convention_right( line.x[1] );
 
 	pShader.dx = pShader.xEnd - pShader.xStart;
 	if ( pShader.dx < 0 )
 		return;
 
 	// slopes
-	const f32 invDeltaX = core::reciprocal ( line.x[1] - line.x[0] );
+	const f32 invDeltaX = reciprocal_zero2( line.x[1] - line.x[0] );
 	const f32 subPixel = ( (f32) pShader.xStart ) - line.x[0];
 
 	// store slopes in endpoint, and correct first pixel
@@ -707,7 +707,7 @@ REALINLINE void CBurningShader_Raster_Reference::scanline2()
 
 	u32 i;
 
-#ifdef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
+#if BURNING_MATERIAL_MAX_COLORS > 0
 	for ( i = 0; i != ShaderParam.ColorUnits; ++i )
 	{
 		line.c[i][1] = (line.c[i][1] - line.c[i][0]) * invDeltaX;
@@ -721,6 +721,7 @@ REALINLINE void CBurningShader_Raster_Reference::scanline2()
 		line.t[i][0] += line.t[i][1] * subPixel;
 	}
 
+	SOFTWARE_DRIVER_2_CLIPCHECK_REF;
 	pShader.dst = (tVideoSample*) ( (u8*) RenderTarget->getData() + ( line.y * RenderTarget->getPitch() ) + ( pShader.xStart << VIDEO_SAMPLE_GRANULARITY ) );
 	pShader.z = (fp24*) ( (u8*) DepthBuffer->lock() + ( line.y * DepthBuffer->getPitch() ) + ( pShader.xStart << VIDEO_SAMPLE_GRANULARITY ) );
 
@@ -734,7 +735,7 @@ REALINLINE void CBurningShader_Raster_Reference::scanline2()
 		// advance next pixel
 		line.w[0] += line.w[1];
 
-#ifdef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
+#if BURNING_MATERIAL_MAX_COLORS > 0
 		for ( i = 0; i != ShaderParam.ColorUnits; ++i )
 		{
 			line.c[i][0] += line.c[i][1];
@@ -755,15 +756,15 @@ REALINLINE void CBurningShader_Raster_Reference::scanline ()
 	u32 i;
 
 	// apply top-left fill-convention, left
-	pShader.xStart = core::ceil32_fast( line.x[0] );
-	pShader.xEnd = core::ceil32_fast( line.x[1] ) - 1;
+	pShader.xStart = fill_convention_left( line.x[0] );
+	pShader.xEnd = fill_convention_right( line.x[1] );
 
 	pShader.dx = pShader.xEnd - pShader.xStart;
 	if ( pShader.dx < 0 )
 		return;
 
 	// slopes
-	const f32 invDeltaX = core::reciprocal ( line.x[1] - line.x[0] );
+	const f32 invDeltaX = reciprocal_zero2( line.x[1] - line.x[0] );
 
 	// search z-buffer for first not occulled pixel
 	pShader.z = (fp24*) ( (u8*) DepthBuffer->lock() + ( line.y * DepthBuffer->getPitch() ) + ( pShader.xStart << VIDEO_SAMPLE_GRANULARITY ) );
@@ -787,6 +788,9 @@ REALINLINE void CBurningShader_Raster_Reference::scanline ()
 			case BD3DCMP_EQUAL:
 				condition = a != pShader.z[pShader.i];
 				break;
+			default:
+				condition = 0;
+				break;
 		}
 		while ( a < pShader.z[pShader.i] )
 		{
@@ -807,7 +811,7 @@ REALINLINE void CBurningShader_Raster_Reference::scanline ()
 
 	a = (f32) pShader.i + subPixel;
 
-#ifdef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
+#if BURNING_MATERIAL_MAX_COLORS > 0
 	for ( i = 0; i != ShaderParam.ColorUnits; ++i )
 	{
 		line.c[i][1] = (line.c[i][1] - line.c[i][0]) * invDeltaX;
@@ -832,7 +836,7 @@ REALINLINE void CBurningShader_Raster_Reference::scanline ()
 
 		line.w[0] += line.w[1];
 
-#ifdef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
+#if BURNING_MATERIAL_MAX_COLORS > 0
 		for ( i = 0; i != ShaderParam.ColorUnits; ++i )
 		{
 			line.c[i][0] += line.c[i][1];
@@ -847,7 +851,7 @@ REALINLINE void CBurningShader_Raster_Reference::scanline ()
 }
 
 
-void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c )
+void CBurningShader_Raster_Reference::drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c)
 {
 	sScanConvertData scan;
 	u32 i;
@@ -859,9 +863,9 @@ void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4
 
 
 	// calculate delta y of the edges
-	scan.invDeltaY[0] = core::reciprocal ( c->Pos.y - a->Pos.y );
-	scan.invDeltaY[1] = core::reciprocal ( b->Pos.y - a->Pos.y );
-	scan.invDeltaY[2] = core::reciprocal ( c->Pos.y - b->Pos.y );
+	scan.invDeltaY[0] = reciprocal_zero2( c->Pos.y - a->Pos.y );
+	scan.invDeltaY[1] = reciprocal_zero2( b->Pos.y - a->Pos.y );
+	scan.invDeltaY[2] = reciprocal_zero2( c->Pos.y - b->Pos.y );
 
 	if ( F32_LOWER_EQUAL_0 ( scan.invDeltaY[0] )  )
 		return;
@@ -885,7 +889,7 @@ void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4
 	scan.slopeW[0] = (c->Pos.w - a->Pos.w) * scan.invDeltaY[0];
 	scan.w[0] = a->Pos.w;
 
-#ifdef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
+#if BURNING_MATERIAL_MAX_COLORS > 0
 	for ( i = 0; i != ShaderParam.ColorUnits; ++i )
 	{
 		scan.c[i][0] = a->Color[i];
@@ -915,7 +919,7 @@ void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4
 		scan.slopeW[1] = (b->Pos.w - a->Pos.w) * scan.invDeltaY[1];
 		scan.w[1] = a->Pos.w;
 
-#ifdef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
+#if BURNING_MATERIAL_MAX_COLORS > 0
 		for ( i = 0; i != ShaderParam.ColorUnits; ++i )
 		{
 			scan.c[i][1] = a->Color[i];
@@ -929,8 +933,8 @@ void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4
 		}
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32_fast( a->Pos.y );
-		yEnd = core::ceil32_fast( b->Pos.y ) - 1;
+		yStart = fill_convention_left( a->Pos.y );
+		yEnd = fill_convention_right( b->Pos.y );
 
 		subPixel = ( (f32) yStart ) - a->Pos.y;
 
@@ -941,12 +945,13 @@ void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4
 		scan.w[0] += scan.slopeW[0] * subPixel;
 		scan.w[1] += scan.slopeW[1] * subPixel;
 
+#if BURNING_MATERIAL_MAX_COLORS > 0
 		for ( i = 0; i != ShaderParam.ColorUnits; ++i )
 		{
 			scan.c[i][0] += scan.slopeC[i][0] * subPixel;
 			scan.c[i][1] += scan.slopeC[i][1] * subPixel;
 		}
-
+#endif
 		for ( i = 0; i != ShaderParam.TextureUnits; ++i )
 		{
 			scan.t[i][0] += scan.slopeT[i][0] * subPixel;
@@ -962,7 +967,7 @@ void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4
 			line.x[scan.right] = scan.x[1];
 			line.w[scan.right] = scan.w[1];
 
-#ifdef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
+#if BURNING_MATERIAL_MAX_COLORS > 0
 			for ( i = 0; i != ShaderParam.ColorUnits; ++i )
 			{
 				line.c[i][scan.left] = scan.c[i][0];
@@ -984,12 +989,13 @@ void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4
 			scan.w[0] += scan.slopeW[0];
 			scan.w[1] += scan.slopeW[1];
 
+#if BURNING_MATERIAL_MAX_COLORS > 0
 			for ( i = 0; i != ShaderParam.ColorUnits; ++i )
 			{
 				scan.c[i][0] += scan.slopeC[i][0];
 				scan.c[i][1] += scan.slopeC[i][1];
 			}
-
+#endif
 			for ( i = 0; i != ShaderParam.TextureUnits; ++i )
 			{
 				scan.t[i][0] += scan.slopeT[i][0];
@@ -1010,7 +1016,7 @@ void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4
 			scan.x[0] = a->Pos.x + scan.slopeX[0] * temp[0];
 			scan.w[0] = a->Pos.w + scan.slopeW[0] * temp[0];
 
-#ifdef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
+#if BURNING_MATERIAL_MAX_COLORS > 0
 			for ( i = 0; i != ShaderParam.ColorUnits; ++i )
 			{
 				scan.c[i][0] = a->Color[i] + scan.slopeC[i][0] * temp[0];
@@ -1029,7 +1035,7 @@ void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4
 		scan.slopeW[1] = (c->Pos.w - b->Pos.w) * scan.invDeltaY[2];
 		scan.w[1] = b->Pos.w;
 
-#ifdef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
+#if BURNING_MATERIAL_MAX_COLORS > 0
 		for ( i = 0; i != ShaderParam.ColorUnits; ++i )
 		{
 			scan.c[i][1] = b->Color[i];
@@ -1043,8 +1049,8 @@ void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4
 		}
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32_fast( b->Pos.y );
-		yEnd = core::ceil32_fast( c->Pos.y ) - 1;
+		yStart = fill_convention_left( b->Pos.y );
+		yEnd = fill_convention_right( c->Pos.y );
 
 
 		subPixel = ( (f32) yStart ) - b->Pos.y;
@@ -1056,12 +1062,13 @@ void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4
 		scan.w[0] += scan.slopeW[0] * subPixel;
 		scan.w[1] += scan.slopeW[1] * subPixel;
 
+#if BURNING_MATERIAL_MAX_COLORS > 0
 		for ( i = 0; i != ShaderParam.ColorUnits; ++i )
 		{
 			scan.c[i][0] += scan.slopeC[i][0] * subPixel;
 			scan.c[i][1] += scan.slopeC[i][1] * subPixel;
 		}
-
+#endif
 		for ( i = 0; i != ShaderParam.TextureUnits; ++i )
 		{
 			scan.t[i][0] += scan.slopeT[i][0] * subPixel;
@@ -1077,7 +1084,7 @@ void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4
 			line.x[scan.right] = scan.x[1];
 			line.w[scan.right] = scan.w[1];
 
-#ifdef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
+#if BURNING_MATERIAL_MAX_COLORS > 0
 			for ( i = 0; i != ShaderParam.ColorUnits; ++i )
 			{
 				line.c[i][scan.left] = scan.c[i][0];
@@ -1099,12 +1106,13 @@ void CBurningShader_Raster_Reference::drawTriangle ( const s4DVertex *a,const s4
 			scan.w[0] += scan.slopeW[0];
 			scan.w[1] += scan.slopeW[1];
 
-			for ( i = 0; i != ShaderParam.TextureUnits; ++i )
+#if BURNING_MATERIAL_MAX_COLORS > 0
+			for ( i = 0; i != ShaderParam.ColorUnits; ++i )
 			{
 				scan.c[i][0] += scan.slopeC[i][0];
 				scan.c[i][1] += scan.slopeC[i][1];
 			}
-
+#endif
 			for ( i = 0; i != ShaderParam.TextureUnits; ++i )
 			{
 				scan.t[i][0] += scan.slopeT[i][0];
