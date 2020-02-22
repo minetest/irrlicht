@@ -213,6 +213,7 @@ int main()
 	terrain->getMeshBufferForLOD(*buffer, 0);
 	video::S3DVertex2TCoords* data = (video::S3DVertex2TCoords*)buffer->getVertexBuffer().getData();
 	// Work on data or get the IndexBuffer with a similar call.
+	(void)data; // disable unused variable warnings
 	buffer->drop(); // When done drop the buffer again.
 
 	/*

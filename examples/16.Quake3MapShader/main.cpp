@@ -359,12 +359,12 @@ int IRRCALLCONV main(int argc, char* argv[])
 		int fps = driver->getFPS();
 		if (1 || lastFPS != fps)
 		{
-			io::IAttributes * const attr = smgr->getParameters();
 			core::stringw str = L"Q3 [";
 			str += driver->getName();
 			str += "] FPS:";
 			str += fps;
 #ifdef _IRR_SCENEMANAGER_DEBUG			
+			io::IAttributes * const attr = smgr->getParameters();
 			str += " Cull:";
 			str += attr->getAttributeAsInt("calls");
 			str += "/";

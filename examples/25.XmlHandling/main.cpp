@@ -346,6 +346,8 @@ public:
 					}
 				}
 				break;
+				default:
+					break;
 			}
 		}
 
