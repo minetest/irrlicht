@@ -36,11 +36,12 @@ public:
 	//! constructor
 	enum eTex2Flags
 	{
-		GEN_MIPMAP	     = 1,
-		IS_RENDERTARGET  = 2,
-		ALLOW_NPOT		= 4,		//allow non power of two
-		IMAGE_IS_LINEAR	 = 8,
-		TEXTURE_IS_LINEAR = 16,
+		GEN_MIPMAP			= 1,		// has mipmaps
+		GEN_MIPMAP_AUTO		= 2,		// automatic mipmap generation
+		IS_RENDERTARGET		= 4,
+		ALLOW_NPOT			= 8,		//allow non power of two
+		IMAGE_IS_LINEAR		= 16,
+		TEXTURE_IS_LINEAR	= 32,
 	};
 	CSoftwareTexture2(IImage* surface, const io::path& name, u32 flags /*eTex2Flags*/, CBurningVideoDriver* driver);
 
@@ -107,6 +108,7 @@ public:
 
 	virtual void regenerateMipMapLevels(void* data = 0, u32 layer = 0) _IRR_OVERRIDE_;
 
+	f32 get_lod_bias() const { return LodBIAS; }
 private:
 	void calcDerivative();
 
@@ -119,6 +121,7 @@ private:
 	CImage* MipMap[SOFTWARE_DRIVER_2_MIPMAPPING_MAX];
 	CSoftwareTexture2_Bound TexBound[SOFTWARE_DRIVER_2_MIPMAPPING_MAX];
 	u32 MipMap0_Area[2];
+	f32 LodBIAS;
 };
 
 /*!

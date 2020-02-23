@@ -2350,13 +2350,14 @@ void CBurningVideoDriver::drawVertexPrimitiveList(const void* vertices, u32 vert
 			// select mipmap
 			for (size_t m = 0; m < VertexCache.vSize[VertexCache.vType].TexSize; ++m)
 			{
+				video::CSoftwareTexture2* tex = MAT_TEXTURE(m);
+
 				//only guessing: take more detail (lower mipmap) in light+bump textures
 				//assume transparent add is ~50% transparent -> more detail
 				f32 lod_bias = Material.org.MaterialType == EMT_TRANSPARENT_ADD_COLOR ? 0.1f : 0.33f;
+				lod_bias *= tex->get_lod_bias();
 				s32 lodFactor = lodFactor_inside(face, m, dc_area, lod_bias);
-				
 
-				video::CSoftwareTexture2* tex = MAT_TEXTURE(m);
 				CurrentShader->setTextureParam(m, tex, lodFactor);
 				//currently shader receives texture coordinate as Pixelcoo of 1 Texture
 				select_polygon_mipmap_inside(face, m, tex->getTexBound());
@@ -3713,16 +3714,17 @@ IImage* CBurningVideoDriver::createScreenShot(video::ECOLOR_FORMAT format, video
 
 ITexture* CBurningVideoDriver::createDeviceDependentTexture(const io::path& name, IImage* image)
 {
-	CSoftwareTexture2* texture = new CSoftwareTexture2(image, name,
-		(getTextureCreationFlag(ETCF_CREATE_MIP_MAPS) ? CSoftwareTexture2::GEN_MIPMAP : 0) |
-		(getTextureCreationFlag(ETCF_ALLOW_NON_POWER_2) ? CSoftwareTexture2::ALLOW_NPOT : 0)
+	u32 flags =
+		  ((TextureCreationFlags & ETCF_CREATE_MIP_MAPS) ? CSoftwareTexture2::GEN_MIPMAP : 0)
+		| ((TextureCreationFlags & ETCF_AUTO_GENERATE_MIP_MAPS) ? CSoftwareTexture2::GEN_MIPMAP_AUTO : 0)
+		| ((TextureCreationFlags & ETCF_ALLOW_NON_POWER_2) ? CSoftwareTexture2::ALLOW_NPOT : 0)
 #if defined(IRRLICHT_sRGB)
-		| (getTextureCreationFlag(ETCF_IMAGE_IS_LINEAR) ? CSoftwareTexture2::IMAGE_IS_LINEAR : 0)
-		| (getTextureCreationFlag(ETCF_TEXTURE_IS_LINEAR) ? CSoftwareTexture2::TEXTURE_IS_LINEAR : 0)
+		| ((TextureCreationFlags & ETCF_IMAGE_IS_LINEAR) ? CSoftwareTexture2::IMAGE_IS_LINEAR : 0)
+		| ((TextureCreationFlags & ETCF_TEXTURE_IS_LINEAR) ? CSoftwareTexture2::TEXTURE_IS_LINEAR : 0)
 #endif
-		,this
-		);
+		;
 
+	CSoftwareTexture2* texture = new CSoftwareTexture2(image, name, flags, this);
 	return texture;
 }
 
