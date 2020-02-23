@@ -1607,10 +1607,10 @@ void CBurningVideoDriver::VertexCache_fill(const u32 sourceIndex, const u32 dest
 			fog_factor = (FogEnd - EyeSpace.vertex.z) * EyeSpace.fog_scale;
 			break;
 		case EFT_FOG_EXP:
-			fog_factor = expf(-FogDensity * EyeSpace.vertex.z);
+			fog_factor = (f32)exp(-FogDensity * EyeSpace.vertex.z);
 			break;
 		case EFT_FOG_EXP2:
-			fog_factor = expf(-FogDensity * FogDensity * EyeSpace.vertex.z * EyeSpace.vertex.z);
+			fog_factor = (f32)exp(-FogDensity * FogDensity * EyeSpace.vertex.z * EyeSpace.vertex.z);
 			break;
 		}
 

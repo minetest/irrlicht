@@ -57,7 +57,7 @@ typedef f32 generate_func(s16 x, s16 y, f32 s);
 f32 eggbox(s16 x, s16 y, f32 s)
 {
 	const f32 r = 4.f*sqrtf((f32)(x*x + y*y))/s;
-	const f32 z = expf(-r * 2) * (cosf(0.2f * x) + cosf(0.2f * y));
+	const f32 z = (f32)exp(-r * 2) * (cosf(0.2f * x) + cosf(0.2f * y));
 	return 0.25f+0.25f*z;
 }
 
