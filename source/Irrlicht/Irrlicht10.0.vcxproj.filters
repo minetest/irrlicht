@@ -1345,6 +1345,27 @@
     <ClInclude Include="..\..\include\IOctreeSceneNode.h">
       <Filter>include\scene</Filter>
     </ClInclude>
+	<ClInclude Include="burning_shader_color_fraq.h">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClInclude>
+    <ClInclude Include="burning_shader_compile_fragment_default.h">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClInclude>
+    <ClInclude Include="burning_shader_compile_fragment_end.h">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClInclude>
+    <ClInclude Include="burning_shader_compile_fragment_start.h">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClInclude>
+    <ClInclude Include="burning_shader_compile_start.h">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClInclude>
+    <ClInclude Include="burning_shader_compile_triangle.h">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClInclude>
+    <ClInclude Include="burning_shader_compile_verify.h">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\changes.txt">
@@ -2281,6 +2302,15 @@
     </ClCompile>
     <ClCompile Include="CWGLManager.cpp">
       <Filter>Irrlicht\video\OpenGL Context</Filter>
+    </ClCompile>
+	<ClCompile Include="burning_shader_color.cpp">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClCompile>
+    <ClCompile Include="CTR_transparent_reflection_2_layer.cpp">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClCompile>
+    <ClCompile Include="CTRGouraudNoZ2.cpp">
+      <Filter>Irrlicht\video\Burning Video</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
