@@ -145,7 +145,7 @@ inline void rotateVec3Vec4(const irr::core::CMatrix4<T>& m, T* burning_restrict 
 	out[3] = 0.f;
 }
 
-//https://github.com/ekmett/approximate/blob/master/cbits/fast.c powf_fast_precise
+//based on https://github.com/ekmett/approximate/blob/master/cbits/fast.c powf_fast_precise
 static inline float powf_limit(const float a, const float b)
 {
 	if (a <= 0.0000001f) return 0.f;
@@ -410,7 +410,6 @@ CBurningVideoDriver::~CBurningVideoDriver()
 	}
 
 	// delete triangle renderers
-
 	for (s32 i=0; i<ETR2_COUNT; ++i)
 	{
 		if (BurningShader[i])
@@ -539,9 +538,6 @@ void CBurningVideoDriver::transform_calc(E_TRANSFORMATION_STATE_BURNING_VIDEO st
 		case ETS_VIEW_PROJECTION:
 			ok = flag[ETS_VIEW] & flag[ETS_PROJECTION] & ETF_VALID;
 			break;
-		//case ETS_VIEW_INVERSE:
-		//	ok = TransformationFlag[ETS_VIEW] & ETF_VALID;
-		//	break;
 		case ETS_MODEL_VIEW:
 			ok = flag[ETS_WORLD] & flag[ETS_VIEW] & ETF_VALID;
 			break;
@@ -573,10 +569,6 @@ void CBurningVideoDriver::transform_calc(E_TRANSFORMATION_STATE_BURNING_VIDEO st
 				matrix[state].setbyproduct_nocheck(matrix[ETS_VIEW_PROJECTION], matrix[ETS_WORLD]);
 			}
 			break;
-
-		//case ETS_VIEW_INVERSE:
-		//	mat44_inverse(matrix[state],matrix[ETS_VIEW]);
-		//	break;
 
 		case ETS_VIEW_PROJECTION:
 			matrix[state].setbyproduct_nocheck (matrix[ETS_PROJECTION], matrix[ETS_VIEW]);
@@ -642,7 +634,6 @@ void CBurningVideoDriver::setTransform(E_TRANSFORMATION_STATE state, const core:
 		case ETS_VIEW:
 			flag[ETS_PROJ_MODEL_VIEW] &= ~ETF_VALID;
 			flag[ETS_VIEW_PROJECTION] &= ~ETF_VALID;
-			//flag[ETS_VIEW_INVERSE] &= ~ETF_VALID;
 			flag[ETS_MODEL_VIEW] &= ~ETF_VALID;
 			flag[ETS_NORMAL] &= ~ETF_VALID;
 			break;
@@ -1120,21 +1111,20 @@ inline void CBurningVideoDriver::ndc_2_dc_and_project (s4DVertexPair* dest,const
 
 	for ( size_t g = 0; g != vIn; g += sizeof_s4DVertexPairRel)
 	{
-		if ( dest[g].flag & VERTEX4D_PROJECTED )
-			continue;
+		//cache doesn't work anymore?
+		//if ( dest[g].flag & VERTEX4D_PROJECTED )
+		//	continue;
+		//dest[g].flag = source[g].flag | VERTEX4D_PROJECTED;
 
-		dest[g].flag = source[g].flag | VERTEX4D_PROJECTED;
-
-		const f32 w = source[g].Pos.w;
-		const f32 iw = reciprocal_zero ( w );
+		const f32 iw = reciprocal_zero (source[g].Pos.w);
 
 		// to device coordinates
-		dest[g].Pos.x = iw * ( source[g].Pos.x * dc[0] + w * dc[1] );
-		dest[g].Pos.y = iw * ( source[g].Pos.y * dc[2] + w * dc[3] );
+		dest[g].Pos.x = iw * source[g].Pos.x * dc[0] + dc[1];
+		dest[g].Pos.y = iw * source[g].Pos.y * dc[2] + dc[3];
 
-		//burning uses direct Z. for OpenGL it should be -Z and texture flip
+		//burning uses direct Z. for OpenGL it should be -Z,[-1;1] and texture flip
 #if !defined(SOFTWARE_DRIVER_2_USE_WBUFFER) || 1
-		dest[g].Pos.z = iw * source[g].Pos.z;
+		dest[g].Pos.z = -iw * source[g].Pos.z * 0.5f + 0.5f;
 #endif
 		dest[g].Pos.w = iw;
 
@@ -1234,6 +1224,7 @@ f32 MipmapLevel(const sVec2& uv, const sVec2& textureSize)
 	attribute need not to follow winding rule from position.
 	Edge-walking problem
 	Texture Wrapping problem
+	Atlas problem
 */
 REALINLINE s32 CBurningVideoDriver::lodFactor_inside(const s4DVertexPair* burning_restrict const face[],
 	const size_t m, f32 dc_area, f32 lod_bias) const
@@ -1731,7 +1722,7 @@ void CBurningVideoDriver::VertexCache_fill(const u32 sourceIndex, const u32 dest
 				Uw  Vw  0  0
 	*/
 
-		const sVec4& u = EyeSpace.cam_dir;
+		const sVec4& u = EyeSpace.cam_dir; // EyeSpace.vertex.normalized
 		const sVec4& n = EyeSpace.normal;
 		sVec4 r;
 
@@ -1741,11 +1732,6 @@ void CBurningVideoDriver::VertexCache_fill(const u32 sourceIndex, const u32 dest
 			// texgen
 			if (flag[ETS_TEXTURE_0+t] & ETF_TEXGEN_CAMERA_SPHERE )
 			{
-				//u.x = EyeSpace.vertex.x;
-				//u.y = EyeSpace.vertex.y;
-				//u.z = EyeSpace.vertex.z;
-				//u.normalize_dir_xyz();
-
 				//reflect(u,N) u - 2.0 * dot(N, u) * N
 				// cam is (0,0,-1), tex flipped
 				f32 dot = -2.f * n.dot_xyz(u);
@@ -1767,11 +1753,6 @@ void CBurningVideoDriver::VertexCache_fill(const u32 sourceIndex, const u32 dest
 			}
 			else if (flag[ETS_TEXTURE_0+t] & ETF_TEXGEN_CAMERA_REFLECTION )
 			{
-				//u.x = EyeSpace.vertex.x;
-				//u.y = EyeSpace.vertex.y;
-				//u.z = EyeSpace.vertex.z;
-				//u.normalize_dir_xyz();
-
 				//reflect(u,N) u - 2.0 * dot(N, u) * N
 				// cam is (0,0,-1), tex flipped
 				f32 dot = -2.f * n.dot_xyz(u);
@@ -1868,7 +1849,6 @@ void CBurningVideoDriver::VertexCache_fill(const u32 sourceIndex, const u32 dest
 		for ( u32 i = 0; i < 2 && i < EyeSpace.Light.size (); ++i )
 		{
 			const SBurningShaderLight &light = EyeSpace.Light[i];
-
 			if ( !light.LightIsOn )
 				continue;
 
@@ -1876,41 +1856,19 @@ void CBurningVideoDriver::VertexCache_fill(const u32 sourceIndex, const u32 dest
 			vp.y = light.pos4.y - EyeSpace.vertex.y;
 			vp.z = light.pos4.z - EyeSpace.vertex.z;
 	
-			//vp.normalize_dir_xyz();
-
+			// lightcolor with standard model
+			// but shader is brighter and using different normalmatrix
 
 			// transform by tangent matrix
-			sVec4 l;
-	#if 0
-			l.x = (vp.x * tangent->Tangent.X + vp.y * tangent->Tangent.Y + vp.z * tangent->Tangent.Z );
-			l.y = (vp.x * tangent->Binormal.X + vp.y * tangent->Binormal.Y + vp.z * tangent->Binormal.Z );
-			l.z = (vp.x * tangent->Normal.X + vp.y * tangent->Normal.Y + vp.z * tangent->Normal.Z );
-	#else
-			l.x = (vp.x * tangent->Tangent.X + vp.y * tangent->Binormal.X + vp.z * tangent->Normal.X );
-			l.y = (vp.x * tangent->Tangent.Y + vp.y * tangent->Binormal.Y + vp.z * tangent->Normal.Y );
-			l.z = (vp.x * tangent->Tangent.Z + vp.y * tangent->Binormal.Z + vp.z * tangent->Normal.Z );
-	#endif
-
-
-	/*
-			f32 scale = 1.f / 128.f;
-			if ( dest->LightTangent[0].y != 0.f )
-				scale /= dest->LightTangent[0].y;
-
-			// emboss, shift coordinates
-			dest->Tex[1].x = dest->Tex[0].x + l.r * scale;
-			dest->Tex[1].y = dest->Tex[0].y + l.g * scale;
-	*/
-			dest->Tex[1].x = dest->Tex[0].x;
-			dest->Tex[1].y = dest->Tex[0].y;
-
-			// scale bias
-			light_accu.x += l.x;
-			light_accu.y += l.y;
-			light_accu.z += l.z;
+			light_accu.x += (vp.x * tangent->Tangent.X + vp.y * tangent->Tangent.Y + vp.z * tangent->Tangent.Z );
+			light_accu.y += (vp.x * tangent->Binormal.X + vp.y * tangent->Binormal.Y + vp.z * tangent->Binormal.Z );
+			light_accu.z += (vp.x * tangent->Normal.X + vp.y * tangent->Normal.Y + vp.z * tangent->Normal.Z );
 		}
-		//normalize [-1,+1] to [0,1]
-		light_accu.normalize_pack_xyz(dest->LightTangent[0],0.5f, 0.5f);
+		//normalize [-1,+1] to [0,1] -> obsolete
+		light_accu.normalize_pack_xyz(dest->LightTangent[0],1.f, 0.f);
+		dest->Tex[1].x = dest->Tex[0].x;
+		dest->Tex[1].y = dest->Tex[0].y;
+
 	}
 	else if (Material.org.Lighting)
 	{
@@ -2483,28 +2441,6 @@ s32 CBurningVideoDriver::addDynamicLight(const SLight& dl)
 	return EyeSpace.Light.size() - 1;
 }
 
-#if 0
-/*!
-	Camera Position in World Space
-*/
-void CBurningVideoDriver::getCameraPosWorldSpace()
-{
-	transform_calc(ETS_VIEW_INVERSE);
-
-	const f32 *M = Transformation[ETS_VIEW_INVERSE].pointer();
-
-	/*	The  viewpoint is at (0., 0., 0.) in eye space.
-		Turning this into a vector [0 0 0 1] and multiply it by
-		the inverse of the view matrix, the resulting vector is the
-		object space location of the camera.
-	*/
-
-	EyeSpace.camworldpos.x = M[12];
-	EyeSpace.camworldpos.y = M[13];
-	EyeSpace.camworldpos.z = M[14];
-	EyeSpace.camworldpos.w = 1.f;
-}
-#endif
 
 //! Turns a dynamic light on or off
 void CBurningVideoDriver::turnLightOn(s32 lightIndex, bool turnOn)
@@ -2761,8 +2697,6 @@ void CBurningVideoDriver::setMaterial(const SMaterial& material)
 }
 
 
-
-
 //! Sets the fog mode.
 void CBurningVideoDriver::setFog(SColor color, E_FOG_TYPE fogType, f32 start,
 	f32 end, f32 density, bool pixelFog, bool rangeFog)
@@ -2806,8 +2740,7 @@ void CBurningVideoDriver::lightVertex_eye(s4DVertex *dest, u32 vertexargb)
 
 	for (i = 0; i < EyeSpace.Light.size(); ++i)
 	{
-		const SBurningShaderLight &light = EyeSpace.Light[i];
-
+		const SBurningShaderLight& light = EyeSpace.Light[i];
 		if (!light.LightIsOn)
 			continue;
 
@@ -2961,6 +2894,7 @@ void CBurningVideoDriver::lightVertex_eye(s4DVertex *dest, u32 vertexargb)
 
 
 	dColor.sat(dest->Color[0], vertexargb);
+
 }
 
 #endif
@@ -3542,8 +3476,6 @@ const core::dimension2d<u32>& CBurningVideoDriver::getCurrentRenderTargetSize() 
 }
 
 
-
-
 //! Draws a 3d line.
 void CBurningVideoDriver::draw3DLine(const core::vector3df& start,
 	const core::vector3df& end, SColor color_start)
@@ -3619,15 +3551,15 @@ void CBurningVideoDriver::draw3DLine(const core::vector3df& start,
 const wchar_t* CBurningVideoDriver::getName() const
 {
 #ifdef BURNINGVIDEO_RENDERER_BEAUTIFUL
-	return L"Burning's Video 0.50 beautiful";
+	return L"Burning's Video 0.51 beautiful";
 #elif defined ( BURNINGVIDEO_RENDERER_ULTRA_FAST )
-	return L"Burning's Video 0.50 ultra fast";
+	return L"Burning's Video 0.51 ultra fast";
 #elif defined ( BURNINGVIDEO_RENDERER_FAST )
-	return L"Burning's Video 0.50 fast";
+	return L"Burning's Video 0.51 fast";
 #elif defined ( BURNINGVIDEO_RENDERER_CE )
-	return L"Burning's Video 0.50 CE";
+	return L"Burning's Video 0.51 CE";
 #else
-	return L"Burning's Video 0.50";
+	return L"Burning's Video 0.51";
 #endif
 }
 

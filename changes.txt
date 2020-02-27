@@ -1,13 +1,17 @@
 --------------------------
 Changes in 1.9 (not yet released)
-- BurningVideo: 0.50
+- BurningVideo: 0.51
   - 10 year anniversary update
   - Lighting model reworked. moved to eyespace like openGL. [Specular Highlights, Fog, Sphere/Reflection Map] 
   - increased internal s4DVertex to support 4 Textures and 4 Colors [switchable]
   - Textures are handled as sRGB during Mipmap Generation. More accurate, less visual disruption
   - 2D is drawn as 3D like hardware drivers. [switchable]. enables viewport scaling, material2D
   - Texture Spatial Resolution Limiting working. [lower memory consumption,SOFTWARE_DRIVER_2_TEXTURE_MAXSIZE]
+  - NormalMap for 1 Light accurate. still all lights are accumulated
   - SuperTuxKart 8.0.1 playable
+  - Known Problems
+    - Depthbuffer range not equal to Hardware Drivers. Problems with Orthographic Stencil Shadows
+	- Triangle MipMap Selection. Wrong for TextureAtlas and Billboards
 - Fix CPLYMeshFileLoader checking for wrong vertex count when switching between 16/32 bit. Thanks @randomMesh for reporting.
 - Fix bug that AnimatedMeshSceneNode ignored ReadOnlyMaterials flag when checking materials for transparent render passes.
 - Unify checks if materials should use transparent render pass with new IVideoDriver::needsTransparentRenderPass function.

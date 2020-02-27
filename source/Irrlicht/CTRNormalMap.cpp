@@ -229,8 +229,11 @@ void CTRNormalMap::fragmentShader()
 
 	f32 inversew = FIX_POINT_F32_MUL;
 
-	tFixPoint tx0, tx1;
-	tFixPoint ty0, ty1;
+	tFixPoint tx0, ty0;
+
+#ifdef IPOL_T1
+	tFixPoint tx1, ty1;
+#endif
 
 	tFixPoint r0, g0, b0;
 	tFixPoint r1, g1, b1;
@@ -296,11 +299,10 @@ void CTRNormalMap::fragmentShader()
 			tx1 = tofix ( line.t[1][0].x,inversew);
 			ty1 = tofix ( line.t[1][0].y,inversew);
 
-
 			// diffuse map
 			getSample_texture ( r0, g0, b0, &IT[0], tx0, ty0 );
 
-			// normal map
+			// normal map ( same texcoord0 but different mipmapping)
 			getSample_texture ( r1, g1, b1, &IT[1], tx1, ty1 );
 
 			r1 = ( r1 - FIX_POINT_HALF_COLOR) >> (COLOR_MAX_LOG2-1);
@@ -313,30 +315,22 @@ void CTRNormalMap::fragmentShader()
 			lz = tofix ( line.l[0][0].z, inversew );
 
 			// DOT 3 Normal Map light in tangent space
-			ndotl = saturateFix ( FIX_POINT_HALF_COLOR +  ((imulFix_simple(r1,lx) + imulFix_simple(g1,ly) + imulFix_simple(b1,lz) ) << (COLOR_MAX_LOG2-1)) );
+			//max(dot(LightVector, Normal), 0.0);
+			ndotl = clampfix_mincolor( (imulFix_simple(r1,lx) + imulFix_simple(g1,ly) + imulFix_simple(b1,lz) )  );
 #endif
 
 #ifdef IPOL_C0
 
-			//getSample_color(a3,r3,g3,b3, line.c[0][0],inversew);
-			//a3 = tofix(line.c[0][0].x, inversew);
+			//LightColor[0]
 			r3 = tofix(line.c[0][0].y, inversew);
 			g3 = tofix(line.c[0][0].z, inversew);
 			b3 = tofix(line.c[0][0].w, inversew);
 
-			// N . L
-			r2 = imulFix ( imulFix_tex1 ( r0, ndotl ), r3 );
-			g2 = imulFix ( imulFix_tex1 ( g0, ndotl ), g3 );
-			b2 = imulFix ( imulFix_tex1 ( b0, ndotl ), b3 );
+			// Lambert * LightColor[0] * Diffuse Texture;
+			r2 = imulFix (imulFix_simple( r3, ndotl ), r0 );
+			g2 = imulFix (imulFix_simple( g3, ndotl ), g0 );
+			b2 = imulFix (imulFix_simple( b3, ndotl ), b0 );
 
-/*
-			// heightmap: (1 - neu ) + alt - 0.5, on_minus_srcalpha + add signed
-			// emboss bump map
-			a4 -= a1;
-			r2 = clampfix_maxcolor ( clampfix_mincolor ( imulFix ( r0 + a4, r3 ) ) );
-			g2 = clampfix_maxcolor ( clampfix_mincolor ( imulFix ( g0 + a4, g3 ) ) );
-			b2 = clampfix_maxcolor ( clampfix_mincolor ( imulFix ( b0 + a4, b3 ) ) );
-*/
 			//vertex alpha blend ( and omit depthwrite ,hacky..)
 			if (a3 + 2 < FIX_POINT_ONE)
 			{

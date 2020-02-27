@@ -70,7 +70,7 @@ bool CMainMenu::run()
 	gui::IGUIListBox* box = guienv->addListBox(core::rect<int>(10,10,220,120), optTab, 1);
 	box->addItem(L"OpenGL 1.5");
 	box->addItem(L"Direct3D 9.0c");
-	box->addItem(L"Burning's Video 0.5");
+	box->addItem(L"Burning's Video 0.51");
 	box->addItem(L"Irrlicht Software Renderer 1.0");
 	switch (driverType )
 	{
