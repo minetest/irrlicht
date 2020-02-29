@@ -22,7 +22,7 @@ void Resample_subSampling(eBlitter op, video::IImage* dst, const core::rect<s32>
 
 //! constructor
 CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name, u32 flags, CBurningVideoDriver* driver)
-	: ITexture(name, ETT_2D),MipMapLOD(0), Flags ( flags ), OriginalFormat(video::ECF_UNKNOWN),Driver(driver)
+	: ITexture(name, ETT_2D),MipMapLOD(0), Flags ( flags ), Driver(driver)
 {
 	#ifdef _DEBUG
 	setDebugName("CSoftwareTexture2");
@@ -44,13 +44,13 @@ CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name, u32 fl
 	if (!image) return;
 
 	OriginalSize = image->getDimension();
-	OriginalFormat = image->getColorFormat();
+	OriginalColorFormat = image->getColorFormat();
 
 #if defined(IRRLICHT_sRGB)
 	if ( Flags & IMAGE_IS_LINEAR ) image->set_sRGB(0);
 #endif
 
-	bool isCompressed = IImage::isCompressedFormat(OriginalFormat);
+	bool isCompressed = IImage::isCompressedFormat(OriginalColorFormat);
 	if (isCompressed)
 	{
 		os::Printer::log("Texture compression not available.", ELL_ERROR);
@@ -81,7 +81,7 @@ CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name, u32 fl
 		core::stringw showName ( name );
 		snprintf_irr ( buf, sizeof(buf), "Burningvideo: Warning Texture %ls reformat %ux%u,%d -> %ux%u,%d",
 						showName.c_str(),
-						OriginalSize.Width, OriginalSize.Height,OriginalFormat,
+						OriginalSize.Width, OriginalSize.Height, OriginalColorFormat,
 						optSize.Width, optSize.Height,BURNINGSHADER_COLOR_FORMAT
 					);
 
@@ -172,7 +172,7 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data, u32 layer)
 		{
 			if (origSize.Width > 1) origSize.Width >>= 1;
 			if (origSize.Height > 1) origSize.Height >>= 1;
-			mip_end += IImage::getDataSizeFromFormat(OriginalFormat, origSize.Width, origSize.Height);
+			mip_end += IImage::getDataSizeFromFormat(OriginalColorFormat, origSize.Width, origSize.Height);
 			i += 1;
 		} while ((origSize.Width != 1 || origSize.Height != 1) && i < SOFTWARE_DRIVER_2_MIPMAPPING_MAX);
 
@@ -192,9 +192,9 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data, u32 layer)
 			if (origSize.Width > 1) origSize.Width >>= 1;
 			if (origSize.Height > 1) origSize.Height >>= 1;
 
-			if (OriginalFormat != BURNINGSHADER_COLOR_FORMAT)
+			if (OriginalColorFormat != BURNINGSHADER_COLOR_FORMAT)
 			{
-				IImage* tmpImage = new CImage(OriginalFormat, origSize, mip_current, true, false);
+				IImage* tmpImage = new CImage(OriginalColorFormat, origSize, mip_current, true, false);
 				MipMap[i] = new CImage(BURNINGSHADER_COLOR_FORMAT, newSize);
 				if (origSize == newSize)
 					tmpImage->copyTo(MipMap[i]);
@@ -214,7 +214,7 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data, u32 layer)
 					tmpImage->drop();
 				}
 			}
-			mip_current += IImage::getDataSizeFromFormat(OriginalFormat, origSize.Width, origSize.Height);
+			mip_current += IImage::getDataSizeFromFormat(OriginalColorFormat, origSize.Width, origSize.Height);
 		}
 	}
 
