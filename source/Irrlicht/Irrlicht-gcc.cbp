@@ -941,6 +941,7 @@
 		<Unit filename="CTRGouraud2.cpp" />
 		<Unit filename="CTRGouraudAlpha2.cpp" />
 		<Unit filename="CTRGouraudAlphaNoZ2.cpp" />
+		<Unit filename="CTRGouraudNoZ2.cpp" />
 		<Unit filename="CTRGouraudWire.cpp" />
 		<Unit filename="CTRNormalMap.cpp" />
 		<Unit filename="CTRStencilShadow.cpp" />
@@ -966,6 +967,7 @@
 		<Unit filename="CTRTextureLightMap2_M4.cpp" />
 		<Unit filename="CTRTextureLightMapGouraud2_M4.cpp" />
 		<Unit filename="CTRTextureWire2.cpp" />
+		<Unit filename="CTR_transparent_reflection_2_layer.cpp" />
 		<Unit filename="CTarReader.cpp" />
 		<Unit filename="CTarReader.h" />
 		<Unit filename="CTerrainSceneNode.cpp" />
@@ -1034,6 +1036,14 @@
 		<Unit filename="aesGladman/sha1.h" />
 		<Unit filename="aesGladman/sha2.cpp" />
 		<Unit filename="aesGladman/sha2.h" />
+		<Unit filename="burning_shader_color.cpp" />
+		<Unit filename="burning_shader_color_fraq.h" />
+		<Unit filename="burning_shader_compile_fragment_default.h" />
+		<Unit filename="burning_shader_compile_fragment_end.h" />
+		<Unit filename="burning_shader_compile_fragment_start.h" />
+		<Unit filename="burning_shader_compile_start.h" />
+		<Unit filename="burning_shader_compile_triangle.h" />
+		<Unit filename="burning_shader_compile_verify.h" />
 		<Unit filename="bzip2/blocksort.c">
 			<Option compilerVar="CC" />
 		</Unit>
