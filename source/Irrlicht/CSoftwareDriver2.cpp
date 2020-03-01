@@ -1592,16 +1592,21 @@ void CBurningVideoDriver::VertexCache_fill(const u32 sourceIndex, const u32 dest
 	{
 		f32 fog_factor = 1.f;
 
+		// GL_FRAGMENT_DEPTH -> abs(EyeSpace.vertex.z)
+		ieee754 fog_frag_coord;
+		fog_frag_coord.f = EyeSpace.vertex.z;
+		fog_frag_coord.fields.sign = 0;
+
 		switch (FogType)
 		{
 		case EFT_FOG_LINEAR:
-			fog_factor = (FogEnd - EyeSpace.vertex.z) * EyeSpace.fog_scale;
+			fog_factor = (FogEnd - fog_frag_coord.f) * EyeSpace.fog_scale;
 			break;
 		case EFT_FOG_EXP:
-			fog_factor = (f32)exp(-FogDensity * EyeSpace.vertex.z);
+			fog_factor = (f32)exp(-FogDensity * fog_frag_coord.f);
 			break;
 		case EFT_FOG_EXP2:
-			fog_factor = (f32)exp(-FogDensity * FogDensity * EyeSpace.vertex.z * EyeSpace.vertex.z);
+			fog_factor = (f32)exp(-FogDensity * FogDensity * fog_frag_coord.f * fog_frag_coord.f);
 			break;
 		}
 
