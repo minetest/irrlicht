@@ -48,7 +48,7 @@ namespace irr
 		u32 srcPixelMul; //pixel byte size
 		u32 dstPixelMul;
 
-		u32 srcPitch;	//scanline byte size
+		int srcPitch;	//scanline byte size. allow negative for mirror
 		u32 dstPitch;
 
 		bool stretch;

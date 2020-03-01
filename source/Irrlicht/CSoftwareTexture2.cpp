@@ -18,11 +18,16 @@ namespace video
 {
 
 //! stretches srcRect src to dstRect dst, applying a sliding window box filter in linear color space (sRGB->linear->sRGB)
-void Resample_subSampling(eBlitter op, video::IImage* dst, const core::rect<s32>* dstRect, const video::IImage* src, const core::rect<s32>* srcRect);
+void Resample_subSampling(eBlitter op, video::IImage* dst, const core::rect<s32>* dstRect, const video::IImage* src, const core::rect<s32>* srcRect, size_t flags);
 
 //! constructor
 CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name, u32 flags, CBurningVideoDriver* driver)
-	: ITexture(name, ETT_2D),MipMapLOD(0), Flags ( flags ), Driver(driver)
+	: ITexture(name
+#if !defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+		, ETT_2D
+#endif
+	)
+	,MipMapLOD(0), Flags(flags), Driver(driver)
 {
 	#ifdef _DEBUG
 	setDebugName("CSoftwareTexture2");
@@ -31,7 +36,6 @@ CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name, u32 fl
 #ifndef SOFTWARE_DRIVER_2_MIPMAPPING
 	Flags &= ~(GEN_MIPMAP| GEN_MIPMAP_AUTO);
 #endif
-
 	//set baseclass properties
 	DriverType = EDT_BURNINGSVIDEO;
 	ColorFormat = BURNINGSHADER_COLOR_FORMAT;
@@ -39,15 +43,25 @@ CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name, u32 fl
 	HasMipMaps = (Flags & GEN_MIPMAP) != 0;
 	MipMap0_Area[0] = 1;
 	MipMap0_Area[1] = 1;
-	LodBIAS = 1.f;
+	LodBIAS = 0.75f;
 	for ( size_t i = 0; i < SOFTWARE_DRIVER_2_MIPMAPPING_MAX; ++i ) MipMap[i] = 0;
 	if (!image) return;
 
 	OriginalSize = image->getDimension();
 	OriginalColorFormat = image->getColorFormat();
 
+
 #if defined(IRRLICHT_sRGB)
 	if ( Flags & IMAGE_IS_LINEAR ) image->set_sRGB(0);
+#else
+	//guessing linear image
+	if (name.find("light") >= 0 ||
+		name.find("bump") >= 0 ||
+		name.find("height") >= 0
+		)
+	{
+		Flags |= TEXTURE_IS_LINEAR | IMAGE_IS_LINEAR;
+	}
 #endif
 
 	bool isCompressed = IImage::isCompressedFormat(OriginalColorFormat);
@@ -93,7 +107,7 @@ CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name, u32 fl
 		if (!isCompressed)
 		{
 			//image->copyToScalingBoxFilter ( MipMap[0],0, false );
-			Resample_subSampling(BLITTER_TEXTURE,MipMap[0],0,image,0);
+			Resample_subSampling(BLITTER_TEXTURE,MipMap[0],0,image,0, Flags);
 		}
 		// if Original Size is used for calculation ( 2D position, font) it will be wrong
 		//OriginalSize = optSize;
@@ -121,7 +135,11 @@ CSoftwareTexture2::~CSoftwareTexture2()
 
 //! Regenerates the mip map levels of the texture. Useful after locking and
 //! modifying the texture
+#if !defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
 void CSoftwareTexture2::regenerateMipMapLevels(void* data, u32 layer)
+#else
+void CSoftwareTexture2::regenerateMipMapLevels(void* data)
+#endif
 {
 	int i;
 
@@ -155,7 +173,7 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data, u32 layer)
 #endif
 			//MipMap[i]->fill ( 0xFFFF4040 );
 			//MipMap[i-1]->copyToScalingBoxFilter( MipMap[i], 0, false );
-			Resample_subSampling(BLITTER_TEXTURE, MipMap[i], 0, MipMap[0], 0);
+			Resample_subSampling(BLITTER_TEXTURE, MipMap[i], 0, MipMap[0], 0, Flags);
 		}
 	}
 	else if (HasMipMaps && data)
@@ -316,6 +334,9 @@ void CSoftwareTexture2::calcDerivative()
 /* Software Render Target 2 */
 
 CSoftwareRenderTarget2::CSoftwareRenderTarget2(CBurningVideoDriver* driver) : Driver(driver)
+#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+, IRenderTarget(0)
+#endif
 {
 	DriverType = EDT_BURNINGSVIDEO;
 
@@ -501,7 +522,7 @@ static inline int clipTest(absrect2 &o, const core::rect<s32>* a, const absrect2
 //! stretches srcRect src to dstRect dst, applying a sliding window box filter in linear color space (sRGB->linear->sRGB)
 // todo: texture jumps (mip selection problem)
 void Resample_subSampling(eBlitter op, video::IImage* dst, const core::rect<s32>* dstRect,
-	const video::IImage* src, const core::rect<s32>* srcRect)
+	const video::IImage* src, const core::rect<s32>* srcRect,size_t flags)
 {
 	const absrect2 dst_clip = { 0,0,(s32)dst->getDimension().Width,(s32)dst->getDimension().Height };
 	absrect2 dc;
@@ -519,8 +540,8 @@ void Resample_subSampling(eBlitter op, video::IImage* dst, const core::rect<s32>
 	const int dst_sRGB = dst->get_sRGB();
 	const int src_sRGB = src->get_sRGB();
 #else
-	const int dst_sRGB = 1;
-	const int src_sRGB = 1;
+	const int dst_sRGB = (flags & CSoftwareTexture2::TEXTURE_IS_LINEAR) ? 0 : 1;
+	const int src_sRGB = (flags & CSoftwareTexture2::IMAGE_IS_LINEAR) ? 0 : 1;
 #endif
 
 

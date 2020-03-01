@@ -1857,12 +1857,17 @@ void CBurningVideoDriver::VertexCache_fill(const u32 sourceIndex, const u32 dest
 			if ( !light.LightIsOn )
 				continue;
 
+			// lightcolor with standard model
+			// but shader is different. treating light and vertex in same space
+#if 1
+			vp.x = light.pos.x - base->Pos.X;
+			vp.y = light.pos.y - base->Pos.Y;
+			vp.z = light.pos.z - base->Pos.Z;
+#else
 			vp.x = light.pos4.x - EyeSpace.vertex.x;
 			vp.y = light.pos4.y - EyeSpace.vertex.y;
 			vp.z = light.pos4.z - EyeSpace.vertex.z;
-	
-			// lightcolor with standard model
-			// but shader is brighter and using different normalmatrix
+#endif
 
 			// transform by tangent matrix
 			light_accu.x += (vp.x * tangent->Tangent.X + vp.y * tangent->Tangent.Y + vp.z * tangent->Tangent.Z );
