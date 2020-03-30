@@ -357,6 +357,7 @@ CSceneManager::CSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs,
 			getProfiler().add(EPID_SM_RENDER_SHADOWS, L"shadows", L"Irrlicht scene");
 			getProfiler().add(EPID_SM_RENDER_TRANSPARENT, L"transp.nodes", L"Irrlicht scene");
 			getProfiler().add(EPID_SM_RENDER_EFFECT, L"effectnodes", L"Irrlicht scene");
+			getProfiler().add(EPID_SM_RENDER_GUI_NODES, L"guinodes", L"Irrlicht scene");
 			getProfiler().add(EPID_SM_REGISTER, L"reg.render.node", L"Irrlicht scene");
 		}
  	)
@@ -1403,6 +1404,13 @@ u32 CSceneManager::registerNodeForRendering(ISceneNode* node, E_SCENE_NODE_RENDE
 		}
 		break;
 
+	case ESNRP_GUI:
+		if (!isCulled(node))
+		{
+			GuiNodeList.push_back(node);
+			taken = 1;
+		}
+
 	case ESNRP_NONE: // ignore this one
 		break;
 	}
@@ -1430,6 +1438,7 @@ void CSceneManager::clearAllRegisteredNodesForRendering()
 	TransparentNodeList.clear();
 	TransparentEffectNodeList.clear();
 	ShadowNodeList.clear();
+	GuiNodeList.clear();
 }
 
 //! This method is called just before the rendering process of the whole scene.
@@ -1710,6 +1719,36 @@ void CSceneManager::drawAll()
 #endif
 		TransparentEffectNodeList.set_used(0);
 	}
+
+	// render custom gui nodes
+	{
+		IRR_PROFILE(CProfileScope psEffect(EPID_SM_RENDER_GUI_NODES);)
+		CurrentRenderPass = ESNRP_GUI;
+		Driver->getOverrideMaterial().Enabled = ((Driver->getOverrideMaterial().EnablePasses & CurrentRenderPass) != 0);
+
+		if (LightManager)
+		{
+			LightManager->OnRenderPassPreRender(CurrentRenderPass);
+
+			for (i=0; i<GuiNodeList.size(); ++i)
+			{
+				ISceneNode* node = GuiNodeList[i];
+				LightManager->OnNodePreRender(node);
+				node->render();
+				LightManager->OnNodePostRender(node);
+			}
+		}
+		else
+		{
+			for (i=0; i<GuiNodeList.size(); ++i)
+				GuiNodeList[i]->render();
+		}
+#ifdef _IRR_SCENEMANAGER_DEBUG
+		Parameters->setAttribute("drawn_gui_nodes", (s32) GuiNodeList.size());
+#endif
+		GuiNodeList.set_used(0);
+	}
+	
 
 	if (LightManager)
 		LightManager->OnPostRender();

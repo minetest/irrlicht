@@ -1,5 +1,6 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- Add another render pass ESNRP_GUI which is drawn last and is p.E. useful for rendering gui nodes in the scenemanager.
 - BurningVideo: 0.51
   - 10 year anniversary update
   - Lighting model reworked. moved to eyespace like openGL. [Specular Highlights, Fog, Sphere/Reflection Map] 
