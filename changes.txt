@@ -1,5 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- Improvements to B3D writer for speed, readability and handling of low framerate animations.
+  Thanks @JLouisB for the patch (For more info, see: http://irrlicht.sourceforge.net/forum/viewtopic.php?f=2&t=50067&start=15)
 - Add another render pass ESNRP_GUI which is drawn last and is p.E. useful for rendering gui nodes in the scenemanager.
 - BurningVideo: 0.51
   - 10 year anniversary update
