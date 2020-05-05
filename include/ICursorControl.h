@@ -104,7 +104,7 @@ namespace gui
 		virtual void setVisible(bool visible) = 0;
 
 		//! Returns if the cursor is currently visible.
-		/** \return True if the cursor is visible, false if not. */
+		/** \return True if the cursor flag is set to visible, false if not. */
 		virtual bool isVisible() const = 0;
 
 		//! Sets the new position of the cursor.
