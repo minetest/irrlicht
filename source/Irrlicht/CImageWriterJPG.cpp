@@ -16,13 +16,8 @@
 #include <stdio.h> // required for jpeglib.h
 extern "C"
 {
-#ifndef _IRR_USE_NON_SYSTEM_JPEG_LIB_
 	#include <jpeglib.h>
 	#include <jerror.h>
-#else
-	#include "jpeglib/jpeglib.h"
-	#include "jpeglib/jerror.h"
-#endif
 }
 
 
