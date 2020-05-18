@@ -261,14 +261,14 @@ Depending on platform you may have to enable _IRR_OGLES1_USE_KHRONOS_API_HEADERS
 //! Define _IRR_COMPILE_WITH_OGLES2_ to compile the Irrlicht engine with OpenGL ES 2.0.
 /** If you do not wish the engine to be compiled with OpenGL ES 2.0, comment this
 define out. */
-#define _IRR_COMPILE_WITH_OGLES2_
+//#define _IRR_COMPILE_WITH_OGLES2_
 #ifdef NO_IRR_COMPILE_WITH_OGLES2_
 #undef _IRR_COMPILE_WITH_OGLES2_
 #endif
 
 //! Define _IRR_COMPILE_WITH_WEBGL1_ to compile Irrlicht engine with a WebGL friendly
 //! subset of the OpenGL ES 2.0 driver.
-#define _IRR_COMPILE_WITH_WEBGL1_
+//#define _IRR_COMPILE_WITH_WEBGL1_
 #ifdef NO_IRR_COMPILE_WITH_WEBGL1_
 #undef _IRR_COMPILE_WITH_WEBGL1_
 #endif
