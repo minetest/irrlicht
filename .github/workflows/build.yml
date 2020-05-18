@@ -1,0 +1,22 @@
+name: build
+
+# build on c/cpp changes or workflow changes
+on:
+  - push
+  - pull_request
+
+jobs:
+  # This is our minor gcc compiler
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install deps
+        run: |
+          sudo apt-get install g++ gcc libxxf86vm-dev libgl1-mesa-dev -qyy
+
+      - name: Build
+        run: |
+          cd source/Irrlicht
+          make sharedlib
+
