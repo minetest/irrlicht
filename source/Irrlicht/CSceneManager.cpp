@@ -408,7 +408,7 @@ IAnimatedMesh* CSceneManager::getMesh(const io::path& filename)
 	if (!msh)
 		os::Printer::log("Could not load mesh, file format seems to be unsupported", filename, ELL_ERROR);
 	else
-		os::Printer::log("Loaded mesh", filename, ELL_INFORMATION);
+		os::Printer::log("Loaded mesh", filename, ELL_DEBUG);
 
 	return msh;
 }
@@ -446,7 +446,7 @@ IAnimatedMesh* CSceneManager::getMesh(io::IReadFile* file)
 	if (!msh)
 		os::Printer::log("Could not load mesh, file format seems to be unsupported", file->getFileName(), ELL_ERROR);
 	else
-		os::Printer::log("Loaded mesh", file->getFileName(), ELL_INFORMATION);
+		os::Printer::log("Loaded mesh", file->getFileName(), ELL_DEBUG);
 
 	return msh;
 }

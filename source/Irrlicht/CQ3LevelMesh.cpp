@@ -217,7 +217,7 @@ void CQ3LevelMesh::loadTextures(tBSPLump* l, io::IReadFile* file)
 		{
 			Textures[i].flags = os::Byteswap::byteswap(Textures[i].flags);
 			Textures[i].contents = os::Byteswap::byteswap(Textures[i].contents);
-			//os::Printer::log("Loaded texture", Textures[i].strName, ELL_INFORMATION);
+			//os::Printer::log("Loaded texture", Textures[i].strName, ELL_DEBUG);
 		}
 	}
 }
