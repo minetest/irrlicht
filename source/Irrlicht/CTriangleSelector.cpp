@@ -127,22 +127,22 @@ static void updateTriangles(u32& triangleCount, core::array<core::triangle3df>& 
 {
 	if ( bufferTransform )
 	{
-		for (u32 index = 0; index < idxCnt; index += 3)
+		for (u32 index = 2; index < idxCnt; index += 3)
 		{
 			core::triangle3df& tri = triangles[triangleCount++];
-			bufferTransform->transformVect( tri.pointA, (*reinterpret_cast<const video::S3DVertex*>(&vertices[indices[index + 0]*vertexPitch])).Pos );
-			bufferTransform->transformVect( tri.pointB, (*reinterpret_cast<const video::S3DVertex*>(&vertices[indices[index + 1]*vertexPitch])).Pos );
-			bufferTransform->transformVect( tri.pointC, (*reinterpret_cast<const video::S3DVertex*>(&vertices[indices[index + 2]*vertexPitch])).Pos );
+			bufferTransform->transformVect( tri.pointA, (*reinterpret_cast<const video::S3DVertex*>(&vertices[indices[index - 2]*vertexPitch])).Pos );
+			bufferTransform->transformVect( tri.pointB, (*reinterpret_cast<const video::S3DVertex*>(&vertices[indices[index - 1]*vertexPitch])).Pos );
+			bufferTransform->transformVect( tri.pointC, (*reinterpret_cast<const video::S3DVertex*>(&vertices[indices[index - 0]*vertexPitch])).Pos );
 		}
 	}
 	else
 	{
-		for (u32 index = 0; index < idxCnt; index += 3)
+		for (u32 index = 2; index < idxCnt; index += 3)
 		{
 			core::triangle3df& tri = triangles[triangleCount++];
-			tri.pointA = (*reinterpret_cast<const video::S3DVertex*>(&vertices[indices[index + 0]*vertexPitch])).Pos;
-			tri.pointB = (*reinterpret_cast<const video::S3DVertex*>(&vertices[indices[index + 1]*vertexPitch])).Pos;
-			tri.pointC = (*reinterpret_cast<const video::S3DVertex*>(&vertices[indices[index + 2]*vertexPitch])).Pos;
+			tri.pointA = (*reinterpret_cast<const video::S3DVertex*>(&vertices[indices[index - 2]*vertexPitch])).Pos;
+			tri.pointB = (*reinterpret_cast<const video::S3DVertex*>(&vertices[indices[index - 1]*vertexPitch])).Pos;
+			tri.pointC = (*reinterpret_cast<const video::S3DVertex*>(&vertices[indices[index - 0]*vertexPitch])).Pos;
 		}
 	}
 }
