@@ -234,7 +234,7 @@ REALINLINE void CTRTextureLightMap2_Add::scanline_bilinear ()
 #else
 
 			getSample_texture ( r0, g0, b0, &IT[0], tofix ( line.t[0][0].x,inversew), tofix ( line.t[0][0].y,inversew) );
-			getSample_texture ( r1, g1, b1, &IT[1], tofix ( line.t[0][1].x,inversew), tofix ( line.t[0][1].y,inversew) );
+			getSample_texture ( r1, g1, b1, &IT[1], tofix ( line.t[1][0].x,inversew), tofix ( line.t[1][0].y,inversew) );
 
 			dst[i] = fix_to_sample( clampfix_maxcolor ( r0 + r1 ),
 									clampfix_maxcolor ( g0 + g1 ),
@@ -641,6 +641,7 @@ namespace video
 //! creates a flat triangle renderer
 IBurningShader* createTriangleRendererTextureLightMap2_Add(CBurningVideoDriver* driver)
 {
+	/* ETR_TEXTURE_GOURAUD_LIGHTMAP_ADD */
 	#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
 	return new CTRTextureLightMap2_Add(driver);
 	#else
