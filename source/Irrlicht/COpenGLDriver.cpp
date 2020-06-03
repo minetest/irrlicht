@@ -4789,9 +4789,9 @@ IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
 #endif // _IRR_COMPILE_WITH_OSX_DEVICE_
 
 // -----------------------------------
-// X11 VERSION
+// WAYLAND/X11 VERSION
 // -----------------------------------
-#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
+#if defined(_IRR_COMPILE_WITH_X11_DEVICE_) || defined (_IRR_COMPILE_WITH_WAYLAND_DEVICE_)
 IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
 		io::IFileSystem* io, CIrrDeviceLinux* device)
 {
