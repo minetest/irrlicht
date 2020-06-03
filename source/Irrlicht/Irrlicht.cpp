@@ -27,7 +27,11 @@ static const char* const copyright = "Irrlicht Engine (c) 2002-2012 Nikolaus Geb
 #endif
 
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
-#include "CIrrDeviceLinux.h"
+#include "CIrrDeviceX11.h"
+#endif
+
+#ifdef _IRR_COMPILE_WITH_WAYLAND_DEVICE_
+#include "CIrrDeviceWayland.h"
 #endif
 
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
@@ -82,9 +86,26 @@ namespace irr
 			dev = new CIrrDeviceWinCE(params);
 #endif
 
+#ifdef _IRR_COMPILE_WITH_WAYLAND_DEVICE_
+		if (params.DeviceType == EIDT_X11 || (!dev && params.DeviceType == EIDT_BEST))
+			dev = new CIrrDeviceWayland(params);
+
+		#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
+		if (!dev->getVideoDriver()) {
+			dev->closeDevice(); // destroy window
+			dev->run(); // consume quit message
+			dev->drop();
+
+			os::Printer::log("Unable to setup wayland backend fallback to X11.", ELL_ERROR);
+			dev = new CIrrDeviceX11(params);
+		}
+
+		#endif
+#else
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 		if (params.DeviceType == EIDT_X11 || (!dev && params.DeviceType == EIDT_BEST))
-			dev = new CIrrDeviceLinux(params);
+			dev = new CIrrDeviceX11(params);
+#endif
 #endif
 
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_

@@ -43,7 +43,6 @@
 
 namespace irr
 {
-
 	class CIrrDeviceLinux : public CIrrDeviceStub, public video::IImagePresenter
 	{
 	public:
@@ -127,261 +126,27 @@ namespace irr
 				return EIDT_X11;
 		}
 
-#ifdef _IRR_COMPILE_WITH_X11_
-		// convert an Irrlicht texture to a X11 cursor
-		Cursor TextureToCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot);
-		Cursor TextureToMonochromeCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot);
-#ifdef _IRR_LINUX_XCURSOR_
-		Cursor TextureToARGBCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot);
-#endif
-#endif
+	protected:
+		#ifdef _IRR_COMPILE_WITH_OPENGL_
+		GLXWindow glxWin;
+		GLXContext Context;
+		#endif
 
+		Display *display;
+
+		void pollJoysticks();
 	private:
-
-		//! create the driver
-		void createDriver();
-
 		bool createWindow();
 
 		void createKeyMap();
-
-		void pollJoysticks();
 
 		void initXAtoms();
 
 		bool switchToFullscreen(bool reset=false);
 
-		//! Implementation of the linux cursor control
-		class CCursorControl : public gui::ICursorControl
-		{
-		public:
-
-			CCursorControl(CIrrDeviceLinux* dev, bool null);
-
-			~CCursorControl();
-
-			//! Changes the visible state of the mouse cursor.
-			virtual void setVisible(bool visible)
-			{
-				if (visible==IsVisible)
-					return;
-				IsVisible = visible;
-#ifdef _IRR_COMPILE_WITH_X11_
-				if (!Null)
-				{
-					if ( !IsVisible )
-						XDefineCursor( Device->display, Device->window, invisCursor );
-					else
-						XUndefineCursor( Device->display, Device->window );
-				}
-#endif
-			}
-
-			//! Returns if the cursor is currently visible.
-			virtual bool isVisible() const
-			{
-				return IsVisible;
-			}
-
-			//! Sets the new position of the cursor.
-			virtual void setPosition(const core::position2d<f32> &pos)
-			{
-				setPosition(pos.X, pos.Y);
-			}
-
-			//! Sets the new position of the cursor.
-			virtual void setPosition(f32 x, f32 y)
-			{
-				setPosition((s32)(x*Device->Width), (s32)(y*Device->Height));
-			}
-
-			//! Sets the new position of the cursor.
-			virtual void setPosition(const core::position2d<s32> &pos)
-			{
-				setPosition(pos.X, pos.Y);
-			}
-
-			//! Sets the new position of the cursor.
-			virtual void setPosition(s32 x, s32 y)
-			{
-#ifdef _IRR_COMPILE_WITH_X11_
-
-				if (!Null)
-				{
-					if (UseReferenceRect)
-					{
-						XWarpPointer(Device->display,
-							None,
-							Device->window, 0, 0,
-							Device->Width,
-							Device->Height,
-							ReferenceRect.UpperLeftCorner.X + x,
-							ReferenceRect.UpperLeftCorner.Y + y);
-
-					}
-					else
-					{
-						XWarpPointer(Device->display,
-							None,
-							Device->window, 0, 0,
-							Device->Width,
-							Device->Height, x, y);
-					}
-					XFlush(Device->display);
-				}
-#endif
-				CursorPos.X = x;
-				CursorPos.Y = y;
-			}
-
-			//! Returns the current position of the mouse cursor.
-			virtual const core::position2d<s32>& getPosition()
-			{
-				updateCursorPos();
-				return CursorPos;
-			}
-
-			//! Returns the current position of the mouse cursor.
-			virtual core::position2d<f32> getRelativePosition()
-			{
-				updateCursorPos();
-
-				if (!UseReferenceRect)
-				{
-					return core::position2d<f32>(CursorPos.X / (f32)Device->Width,
-						CursorPos.Y / (f32)Device->Height);
-				}
-
-				return core::position2d<f32>(CursorPos.X / (f32)ReferenceRect.getWidth(),
-						CursorPos.Y / (f32)ReferenceRect.getHeight());
-			}
-
-			virtual void setReferenceRect(core::rect<s32>* rect=0)
-			{
-				if (rect)
-				{
-					ReferenceRect = *rect;
-					UseReferenceRect = true;
-
-					// prevent division through zero and uneven sizes
-
-					if (!ReferenceRect.getHeight() || ReferenceRect.getHeight()%2)
-						ReferenceRect.LowerRightCorner.Y += 1;
-
-					if (!ReferenceRect.getWidth() || ReferenceRect.getWidth()%2)
-						ReferenceRect.LowerRightCorner.X += 1;
-				}
-				else
-					UseReferenceRect = false;
-			}
-
-			//! Sets the active cursor icon
-			virtual void setActiveIcon(gui::ECURSOR_ICON iconId);
-
-			//! Gets the currently active icon
-			virtual gui::ECURSOR_ICON getActiveIcon() const
-			{
-				return ActiveIcon;
-			}
-
-			//! Add a custom sprite as cursor icon.
-			virtual gui::ECURSOR_ICON addIcon(const gui::SCursorSprite& icon);
-
-			//! replace the given cursor icon.
-			virtual void changeIcon(gui::ECURSOR_ICON iconId, const gui::SCursorSprite& icon);
-
-			//! Return a system-specific size which is supported for cursors. Larger icons will fail, smaller icons might work.
-			virtual core::dimension2di getSupportedIconSize() const;
-
-#ifdef _IRR_COMPILE_WITH_X11_
-			//! Set platform specific behavior flags.
-			virtual void setPlatformBehavior(gui::ECURSOR_PLATFORM_BEHAVIOR behavior) {PlatformBehavior = behavior; }
-
-			//! Return platform specific behavior.
-			virtual gui::ECURSOR_PLATFORM_BEHAVIOR getPlatformBehavior() const { return PlatformBehavior; }
-
-			void update();
-			void clearCursors();
-#endif
-		private:
-
-			void updateCursorPos()
-			{
-#ifdef _IRR_COMPILE_WITH_X11_
-				if (Null)
-					return;
-
-				if ( PlatformBehavior&gui::ECPB_X11_CACHE_UPDATES && !os::Timer::isStopped() )
-				{
-					u32 now = os::Timer::getTime();
-					if (now <= lastQuery)
-						return;
-					lastQuery = now;
-				}
-
-				Window tmp;
-				int itmp1, itmp2;
-				unsigned  int maskreturn;
-				XQueryPointer(Device->display, Device->window,
-					&tmp, &tmp,
-					&itmp1, &itmp2,
-					&CursorPos.X, &CursorPos.Y, &maskreturn);
-
-				if (CursorPos.X < 0)
-					CursorPos.X = 0;
-				if (CursorPos.X > (s32) Device->Width)
-					CursorPos.X = Device->Width;
-				if (CursorPos.Y < 0)
-					CursorPos.Y = 0;
-				if (CursorPos.Y > (s32) Device->Height)
-					CursorPos.Y = Device->Height;
-#endif
-			}
-
-			CIrrDeviceLinux* Device;
-			core::position2d<s32> CursorPos;
-			core::rect<s32> ReferenceRect;
-#ifdef _IRR_COMPILE_WITH_X11_
-			gui::ECURSOR_PLATFORM_BEHAVIOR PlatformBehavior;
-			u32 lastQuery;
-			Cursor invisCursor;
-
-			struct CursorFrameX11
-			{
-				CursorFrameX11() : IconHW(0) {}
-				CursorFrameX11(Cursor icon) : IconHW(icon) {}
-
-				Cursor IconHW;	// hardware cursor
-			};
-
-			struct CursorX11
-			{
-				CursorX11() {}
-				explicit CursorX11(Cursor iconHw, u32 frameTime=0) : FrameTime(frameTime)
-				{
-					Frames.push_back( CursorFrameX11(iconHw) );
-				}
-				core::array<CursorFrameX11> Frames;
-				u32 FrameTime;
-			};
-
-			core::array<CursorX11> Cursors;
-
-			void initCursors();
-#endif
-			bool IsVisible;
-			bool Null;
-			bool UseReferenceRect;
-			gui::ECURSOR_ICON ActiveIcon;
-			u32 ActiveIconStartTime;
-		};
-
-		friend class CCursorControl;
-
 #ifdef _IRR_COMPILE_WITH_X11_
 		friend class COpenGLDriver;
 
-		Display *display;
 		XVisualInfo* visual;
 		int screennr;
 		Window window;
@@ -395,10 +160,6 @@ namespace irr
 		#ifdef _IRR_LINUX_X11_RANDR_
 		SizeID oldRandrMode;
 		Rotation oldRandrRotation;
-		#endif
-		#ifdef _IRR_COMPILE_WITH_OPENGL_
-		GLXWindow glxWin;
-		GLXContext Context;
 		#endif
 #endif
 		u32 Width, Height;

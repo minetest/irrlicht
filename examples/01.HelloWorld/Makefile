@@ -18,7 +18,7 @@ USERCPPFLAGS =
 USERCXXFLAGS = -O3 -ffast-math
 #USERCXXFLAGS = -g -Wall
 # linker flags such as additional libraries and link paths
-USERLDFLAGS =
+USERLDFLAGS = -lz -ljpeg -lpng -lbz2
 
 ####
 #no changes necessary below this line
