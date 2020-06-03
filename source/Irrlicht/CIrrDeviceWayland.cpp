@@ -51,7 +51,7 @@ namespace irr
 {
 	namespace video
 	{
-		IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
+		IVideoDriver* createWaylandOpenGLDriver(const SIrrlichtCreationParameters& params,
 				io::IFileSystem* io, CIrrDeviceLinux* device);
 	}
 
@@ -310,23 +310,23 @@ bool CIrrDeviceWayland::initEGL()
 	EGLint numConfigs;
 	EGLConfig config;
 	EGLint fbAttribs[] =
-   {
-       EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-       EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-       EGL_RED_SIZE,        8,
-       EGL_GREEN_SIZE,      8,
-       EGL_BLUE_SIZE,       8,
-       EGL_NONE
-   };
-   EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
-   EGLDisplay display = eglGetDisplay(mDisplay);
-   if (display == EGL_NO_DISPLAY)
-   {
-      os::Printer::log("Failed to init EGL: no display found.", ELL_ERROR);
-      return false;
-   }
+	{
+		EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+		EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+		EGL_RED_SIZE,        8,
+		EGL_GREEN_SIZE,      8,
+		EGL_BLUE_SIZE,       8,
+		EGL_NONE
+	};
+	EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
+	EGLDisplay display = eglGetDisplay(mDisplay);
+	if (display == EGL_NO_DISPLAY)
+	{
+		os::Printer::log("Failed to init EGL: no display found.", ELL_ERROR);
+		return false;
+	}
 
-   mEGLDisplay = display;
+	mEGLDisplay = display;
 
 	EGLint majorVersion;
 	EGLint minorVersion;
@@ -405,7 +405,7 @@ void CIrrDeviceWayland::createDriver()
 	case video::EDT_OPENGL:
 		#ifdef _IRR_COMPILE_WITH_OPENGL_
 		if (mContext)
-			VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, this);
+			VideoDriver = video::createWaylandOpenGLDriver(CreationParams, FileSystem, this);
 		#else
 		os::Printer::log("No OpenGL support compiled in.", ELL_ERROR);
 		#endif

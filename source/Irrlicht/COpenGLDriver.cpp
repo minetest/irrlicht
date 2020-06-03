@@ -4789,9 +4789,9 @@ IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
 #endif // _IRR_COMPILE_WITH_OSX_DEVICE_
 
 // -----------------------------------
-// WAYLAND/X11 VERSION
+// X11 VERSION
 // -----------------------------------
-#if defined(_IRR_COMPILE_WITH_X11_DEVICE_) || defined (_IRR_COMPILE_WITH_WAYLAND_DEVICE_)
+#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
 		io::IFileSystem* io, CIrrDeviceLinux* device)
 {
@@ -4809,6 +4809,27 @@ IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
 }
 #endif // _IRR_COMPILE_WITH_X11_DEVICE_
 
+//
+// Wayland VERSION
+//
+
+#ifdef _IRR_COMPILE_WITH_WAYLAND_DEVICE_
+IVideoDriver* createWaylandOpenGLDriver(const SIrrlichtCreationParameters& params,
+		io::IFileSystem* io, CIrrDeviceLinux* device)
+{
+#ifdef _IRR_COMPILE_WITH_OPENGL_
+	COpenGLDriver* ogl =  new COpenGLDriver(params, io, device);
+	if (!ogl->initDriver(device))
+	{
+		ogl->drop();
+		ogl = 0;
+	}
+	return ogl;
+#else
+	return 0;
+#endif //  _IRR_COMPILE_WITH_OPENGL_
+}
+#endif // _IRR_COMPILE_WITH_WAYLAND_DEVICE_
 
 // -----------------------------------
 // SDL VERSION
