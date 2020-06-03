@@ -5,9 +5,15 @@
 #ifndef __C_IRR_DEVICE_WAYLAND_H_INCLUDED__
 #define __C_IRR_DEVICE_WAYLAND_H_INCLUDED__
 
-#include "CIrrDeviceLinux.h"
+#include "IrrCompileConfig.h"
 
 #ifdef _IRR_COMPILE_WITH_WAYLAND_DEVICE_
+
+#include <wayland-client.h>
+#include <wayland-egl.h>
+#include <EGL/egl.h>
+#include <EGL/eglplatform.h>
+#include "CIrrDeviceLinux.h"
 
 namespace irr
 {
@@ -90,6 +96,7 @@ namespace irr
 		virtual void createDriver();
 
 		bool createWindow();
+		bool initEGL();
 
 		void createKeyMap();
 
@@ -103,6 +110,26 @@ namespace irr
 		bool UseGLXWindow;
 		bool ExternalWindow;
 		int AutorepeatSupport;
+
+		// Wayland stuff
+		static void waylandRegistry(void *data, struct wl_registry *registry, uint32_t name,
+			const char *interface, uint32_t version);
+		static void waylandRegistryRemove(void *a, struct wl_registry *b, uint32_t c);
+
+		static const wl_registry_listener waylandRegistryListener;
+		static const wl_pointer_listener waylandPointerListener;
+
+		wl_display *mDisplay = nullptr;
+		wl_compositor *mCompositor = nullptr;
+		wl_seat *mSeat = nullptr;
+		wl_shell *mShell = nullptr;
+		wl_shm *mShm = nullptr;
+		wl_pointer *mSeatPointer = nullptr;
+		wl_region *mRegion = nullptr;
+		wl_egl_window *mEGLWindow = nullptr;
+		EGLDisplay mEGLDisplay = nullptr;
+		EGLContext mContext = nullptr;
+		EGLSurface mEGLSurface = nullptr;
 	};
 
 

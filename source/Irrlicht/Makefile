@@ -69,7 +69,7 @@ CXXFLAGS += -pg
 endif
 CFLAGS := -O3 -fexpensive-optimizations -DPNG_THREAD_UNSAFE_OK -DPNG_NO_MMX_CODE -DPNG_NO_MNG_FEATURES
 
-sharedlib sharedlib_osx sharedlib_win32: LDFLAGS += -lz -ljpeg -lpng -lbz2
+sharedlib sharedlib_osx sharedlib_win32: LDFLAGS += -lz -ljpeg -lpng -lbz2 -lwayland-client -lwayland-egl -lEGL
 
 sharedlib sharedlib_osx: CXXFLAGS += -fPIC
 sharedlib sharedlib_osx: CFLAGS += -fPIC

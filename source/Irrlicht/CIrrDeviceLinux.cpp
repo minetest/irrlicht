@@ -65,10 +65,6 @@ CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 	: CIrrDeviceStub(param),
 #ifdef _IRR_COMPILE_WITH_X11_
 	display(0), visual(0), screennr(0), window(0), StdHints(0), SoftwareImage(0),
-#ifdef _IRR_COMPILE_WITH_OPENGL_
-	glxWin(0),
-	Context(0),
-#endif
 #endif
 	Width(param.WindowSize.Width), Height(param.WindowSize.Height),
 	WindowHasFocus(false), WindowMinimized(false),

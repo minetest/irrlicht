@@ -127,12 +127,7 @@ namespace irr
 		}
 
 	protected:
-		#ifdef _IRR_COMPILE_WITH_OPENGL_
-		GLXWindow glxWin;
-		GLXContext Context;
-		#endif
-
-		Display *display;
+	Display *display;
 
 		void pollJoysticks();
 	private:
