@@ -130,6 +130,100 @@ namespace irr
 		EGLDisplay mEGLDisplay = nullptr;
 		EGLContext mContext = nullptr;
 		EGLSurface mEGLSurface = nullptr;
+
+		// Cursor control
+		//! Implementation of the linux cursor control
+		class CCursorControl : public gui::ICursorControl
+		{
+		public:
+
+			CCursorControl(CIrrDeviceWayland* dev, bool null) : Device(dev) {}
+
+			~CCursorControl() {}
+
+			//! Changes the visible state of the mouse cursor.
+			virtual void setVisible(bool visible)
+			{
+				if (visible==IsVisible)
+					return;
+				IsVisible = visible;
+			}
+
+			//! Returns if the cursor is currently visible.
+			virtual bool isVisible() const
+			{
+				return IsVisible;
+			}
+
+			//! Sets the new position of the cursor.
+			virtual void setPosition(const core::position2d<f32> &pos)
+			{
+				setPosition(pos.X, pos.Y);
+			}
+
+			//! Sets the new position of the cursor.
+			virtual void setPosition(f32 x, f32 y)
+			{
+				setPosition((s32)(x*Device->Width), (s32)(y*Device->Height));
+			}
+
+			//! Sets the new position of the cursor.
+			virtual void setPosition(const core::position2d<s32> &pos)
+			{
+				setPosition(pos.X, pos.Y);
+			}
+
+			//! Sets the new position of the cursor.
+			virtual void setPosition(s32 x, s32 y)
+			{
+				CursorPos.X = x;
+				CursorPos.Y = y;
+			}
+
+			//! Returns the current position of the mouse cursor.
+			virtual const core::position2d<s32>& getPosition()
+			{
+				return CursorPos;
+			}
+
+			//! Returns the current position of the mouse cursor.
+			virtual core::position2d<f32> getRelativePosition()
+			{
+				if (!UseReferenceRect)
+				{
+					return core::position2d<f32>(CursorPos.X / (f32)Device->Width,
+						CursorPos.Y / (f32)Device->Height);
+				}
+
+				return core::position2d<f32>(CursorPos.X / (f32)ReferenceRect.getWidth(),
+						CursorPos.Y / (f32)ReferenceRect.getHeight());
+			}
+
+			virtual void setReferenceRect(core::rect<s32>* rect=0)
+			{
+				if (rect)
+				{
+					ReferenceRect = *rect;
+					UseReferenceRect = true;
+
+					// prevent division through zero and uneven sizes
+
+					if (!ReferenceRect.getHeight() || ReferenceRect.getHeight()%2)
+						ReferenceRect.LowerRightCorner.Y += 1;
+
+					if (!ReferenceRect.getWidth() || ReferenceRect.getWidth()%2)
+						ReferenceRect.LowerRightCorner.X += 1;
+				}
+				else
+					UseReferenceRect = false;
+			}
+		private:
+			CIrrDeviceWayland* Device;
+			core::position2d<s32> CursorPos;
+			core::rect<s32> ReferenceRect;
+			bool UseReferenceRect = false;
+			bool IsVisible = true;
+		};
 	};
 
 

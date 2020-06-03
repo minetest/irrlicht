@@ -75,18 +75,18 @@ struct pointer_data {
 };
 
 static void pointer_enter(void *data,
-    struct wl_pointer *wl_pointer,
+    wl_pointer *wl_pointer,
     uint32_t serial, struct wl_surface *surface,
     wl_fixed_t surface_x, wl_fixed_t surface_y)
 {
-    pointer_data *pd = (pointer_data *) wl_pointer_get_user_data(wl_pointer);
-    pd->target_surface = surface;
-    wl_surface_attach(pd->surface,
-        pd->buffer, 0, 0);
-    wl_surface_commit(pd->surface);
-    wl_pointer_set_cursor(wl_pointer, serial,
-        pd->surface, pd->hot_spot_x,
-        pd->hot_spot_y);
+    //pointer_data *pd = (pointer_data *) wl_pointer_get_user_data(wl_pointer);
+    //pd->target_surface = surface;
+    //wl_surface_attach(pd->surface,
+    //    pd->buffer, 0, 0);
+    //wl_surface_commit(pd->surface);
+    //wl_pointer_set_cursor(wl_pointer, serial,
+    //    pd->surface, pd->hot_spot_x,
+    //    pd->hot_spot_y);
 }
 
 static void pointer_leave(void *data,
@@ -153,6 +153,9 @@ CIrrDeviceWayland::CIrrDeviceWayland(const SIrrlichtCreationParameters& param)
 	if (!VideoDriver) {
 		return;
 	}
+
+	// create cursor control
+	CursorControl = new CCursorControl(this, CreationParams.DriverType == video::EDT_NULL);
 
 	createGUIAndScene();
 }
