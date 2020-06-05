@@ -52,7 +52,7 @@ namespace irr
 	namespace video
 	{
 		IVideoDriver* createWaylandOpenGLDriver(const SIrrlichtCreationParameters& params,
-				io::IFileSystem* io, CIrrDeviceLinux* device);
+				io::IFileSystem* io, CIrrDeviceWayland* device);
 	}
 
 } // end namespace irr
@@ -312,12 +312,13 @@ bool CIrrDeviceWayland::initEGL()
 	EGLint fbAttribs[] =
 	{
 		EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-		EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+		EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
 		EGL_RED_SIZE,        8,
 		EGL_GREEN_SIZE,      8,
 		EGL_BLUE_SIZE,       8,
 		EGL_NONE
 	};
+
 	EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
 	EGLDisplay display = eglGetDisplay(mDisplay);
 	if (display == EGL_NO_DISPLAY)
@@ -359,6 +360,11 @@ bool CIrrDeviceWayland::initEGL()
    }
 
    mEGLSurface = surface;
+
+   if (!eglBindAPI(EGL_OPENGL_API)) {
+        os::Printer::log("Failed to init EGL: fail to bind openGL API\n", ELL_ERROR);
+        return -1;
+    }
 
    // Create a GL context
    EGLContext context = eglCreateContext(display, config, EGL_NO_CONTEXT, contextAttribs);

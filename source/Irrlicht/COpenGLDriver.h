@@ -50,7 +50,7 @@ namespace video
 		#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceLinux* device);
 		//! inits the GLX specific parts of the open gl driver
-		bool initDriver(CIrrDeviceLinux* device);
+		virtual bool initDriver(CIrrDeviceLinux* device);
 		bool changeRenderContext(const SExposedVideoData& videoData, CIrrDeviceLinux* device);
 		#endif
 
@@ -410,75 +410,16 @@ namespace video
 		const CGcontext& getCgContext();
 		#endif
 
-	private:
-
-		//! clears the zbuffer and color buffer
-		void clearBuffers(bool backBuffer, bool zBuffer, bool stencilBuffer, SColor color);
-
-		bool updateVertexHardwareBuffer(SHWBufferLink_opengl *HWBuffer);
-		bool updateIndexHardwareBuffer(SHWBufferLink_opengl *HWBuffer);
-
-		void uploadClipPlane(u32 index);
-
+	protected:
 		//! inits the parts of the open gl driver used on all platforms
-		bool genericDriverInit();
-		//! returns a device dependent texture from a software surface (IImage)
-		virtual video::ITexture* createDeviceDependentTexture(IImage* surface, const io::path& name, void* mipmapData);
+		virtual bool genericDriverInit();
 
-		//! creates a transposed matrix in supplied GLfloat array to pass to OpenGL
-		inline void getGLMatrix(GLfloat gl_matrix[16], const core::matrix4& m);
-		inline void getGLTextureMatrix(GLfloat gl_matrix[16], const core::matrix4& m);
-
-		//! Set GL pipeline to desired texture wrap modes of the material
-		void setWrapMode(const SMaterial& material);
-
-		//! get native wrap mode value
-		GLint getTextureWrapMode(const u8 clamp);
-
-		//! sets the needed renderstates
-		void setRenderStates3DMode();
-
-		//! sets the needed renderstates
-		void setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel);
-
-		// returns the current size of the screen or rendertarget
-		virtual const core::dimension2d<u32>& getCurrentRenderTargetSize() const;
-
-		void createMaterialRenderers();
-
-		//! Assign a hardware light to the specified requested light, if any
-		//! free hardware lights exist.
-		//! \param[in] lightIndex: the index of the requesting light
-		void assignHardwareLight(u32 lightIndex);
-
-		//! helper function for render setup.
-		void getColorBuffer(const void* vertices, u32 vertexCount, E_VERTEX_TYPE vType);
-
-		//! helper function doing the actual rendering.
-		void renderArray(const void* indexList, u32 primitiveCount,
-				scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType);
-
-		core::stringw Name;
-		core::matrix4 Matrices[ETS_COUNT];
-		core::array<u8> ColorBuffer;
-
-		//! enumeration for rendering modes such as 2d and 3d for minizing the switching of renderStates.
-		enum E_RENDER_MODE
-		{
-			ERM_NONE = 0,	// no render state has been set yet.
-			ERM_2D,		// 2d drawing rendermode
-			ERM_3D		// 3d rendering mode
-		};
-
-		E_RENDER_MODE CurrentRenderMode;
-		//! bool to make all renderstates reset if set to true.
-		bool ResetRenderStates;
-		bool Transformation3DChanged;
+		SIrrlichtCreationParameters Params;
 		u8 AntiAlias;
 
-		SMaterial Material, LastMaterial;
-		COpenGLTexture* RenderTargetTexture;
-		core::array<video::IRenderTarget> MRTargets;
+		core::stringw Name;
+		core::stringc VendorName;
+
 		class STextureStageCache
 		{
 			const ITexture* CurrentTexture[MATERIAL_MAX_TEXTURES];
@@ -542,7 +483,76 @@ namespace video
 				}
 			}
 		};
+
 		STextureStageCache CurrentTexture;
+
+	private:
+
+		//! clears the zbuffer and color buffer
+		void clearBuffers(bool backBuffer, bool zBuffer, bool stencilBuffer, SColor color);
+
+		bool updateVertexHardwareBuffer(SHWBufferLink_opengl *HWBuffer);
+		bool updateIndexHardwareBuffer(SHWBufferLink_opengl *HWBuffer);
+
+		void uploadClipPlane(u32 index);
+
+
+		//! returns a device dependent texture from a software surface (IImage)
+		virtual video::ITexture* createDeviceDependentTexture(IImage* surface, const io::path& name, void* mipmapData);
+
+		//! creates a transposed matrix in supplied GLfloat array to pass to OpenGL
+		inline void getGLMatrix(GLfloat gl_matrix[16], const core::matrix4& m);
+		inline void getGLTextureMatrix(GLfloat gl_matrix[16], const core::matrix4& m);
+
+		//! Set GL pipeline to desired texture wrap modes of the material
+		void setWrapMode(const SMaterial& material);
+
+		//! get native wrap mode value
+		GLint getTextureWrapMode(const u8 clamp);
+
+		//! sets the needed renderstates
+		void setRenderStates3DMode();
+
+		//! sets the needed renderstates
+		void setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel);
+
+		// returns the current size of the screen or rendertarget
+		virtual const core::dimension2d<u32>& getCurrentRenderTargetSize() const;
+
+		void createMaterialRenderers();
+
+		//! Assign a hardware light to the specified requested light, if any
+		//! free hardware lights exist.
+		//! \param[in] lightIndex: the index of the requesting light
+		void assignHardwareLight(u32 lightIndex);
+
+		//! helper function for render setup.
+		void getColorBuffer(const void* vertices, u32 vertexCount, E_VERTEX_TYPE vType);
+
+		//! helper function doing the actual rendering.
+		void renderArray(const void* indexList, u32 primitiveCount,
+				scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType);
+
+		core::matrix4 Matrices[ETS_COUNT];
+		core::array<u8> ColorBuffer;
+
+		//! enumeration for rendering modes such as 2d and 3d for minizing the switching of renderStates.
+		enum E_RENDER_MODE
+		{
+			ERM_NONE = 0,	// no render state has been set yet.
+			ERM_2D,		// 2d drawing rendermode
+			ERM_3D		// 3d rendering mode
+		};
+
+		E_RENDER_MODE CurrentRenderMode;
+		//! bool to make all renderstates reset if set to true.
+		bool ResetRenderStates;
+		bool Transformation3DChanged;
+
+		SMaterial Material, LastMaterial;
+		COpenGLTexture* RenderTargetTexture;
+		core::array<video::IRenderTarget> MRTargets;
+
 		core::array<ITexture*> DepthTextures;
 		struct SUserClipPlane
 		{
@@ -554,8 +564,6 @@ namespace video
 
 		core::dimension2d<u32> CurrentRendertargetSize;
 
-		core::stringc VendorName;
-
 		core::matrix4 TextureFlipMatrix;
 
 		//! Color buffer format
@@ -563,8 +571,6 @@ namespace video
 
 		//! Render target type for render operations
 		E_RENDER_TARGET CurrentTarget;
-
-		SIrrlichtCreationParameters Params;
 
 		//! All the lights that have been requested; a hardware limited
 		//! number of them will be used at once.

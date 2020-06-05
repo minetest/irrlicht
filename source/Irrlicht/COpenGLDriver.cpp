@@ -3,6 +3,7 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
 #include "COpenGLDriver.h"
+#include "COpenGLWaylandDriver.h"
 // needed here also because of the create methods' parameters
 #include "CNullDriver.h"
 
@@ -4815,10 +4816,10 @@ IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
 
 #ifdef _IRR_COMPILE_WITH_WAYLAND_DEVICE_
 IVideoDriver* createWaylandOpenGLDriver(const SIrrlichtCreationParameters& params,
-		io::IFileSystem* io, CIrrDeviceLinux* device)
+		io::IFileSystem* io, CIrrDeviceWayland* device)
 {
 #ifdef _IRR_COMPILE_WITH_OPENGL_
-	COpenGLDriver* ogl =  new COpenGLDriver(params, io, device);
+	COpenGLWaylandDriver* ogl =  new COpenGLWaylandDriver(params, io, device);
 	if (!ogl->initDriver(device))
 	{
 		ogl->drop();

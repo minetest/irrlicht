@@ -90,6 +90,16 @@ namespace irr
 				return EIDT_X11;
 		}
 
+		EGLContext getCurrentContext() const
+		{
+			return mContext;
+		}
+
+		EGLDisplay getCurrentDisplay() const
+		{
+			return mEGLDisplay;
+		}
+
 	private:
 
 		//! create the driver
