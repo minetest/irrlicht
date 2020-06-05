@@ -79,6 +79,13 @@ struct SExposedVideoData
 			void* X11Context;
 			unsigned long X11Window;
 		} OpenGLLinux;
+
+		struct
+		{
+			void *eglDisplay;
+			void *eglContext;
+			void *eglSurface;
+		} OpenGLWayland;
 	};
 };
 

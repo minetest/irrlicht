@@ -100,6 +100,11 @@ namespace irr
 			return mEGLDisplay;
 		}
 
+		EGLSurface getCurrentSurface() const
+		{
+			return mEGLSurface;
+		}
+
 	private:
 
 		//! create the driver

@@ -51,7 +51,7 @@ namespace video
 		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceLinux* device);
 		//! inits the GLX specific parts of the open gl driver
 		virtual bool initDriver(CIrrDeviceLinux* device);
-		bool changeRenderContext(const SExposedVideoData& videoData, CIrrDeviceLinux* device);
+		virtual bool changeRenderContext(const SExposedVideoData& videoData, CIrrDeviceLinux* device);
 		#endif
 
 		#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
@@ -414,6 +414,10 @@ namespace video
 		//! inits the parts of the open gl driver used on all platforms
 		virtual bool genericDriverInit();
 
+		//! clears the zbuffer and color buffer
+		void clearBuffers(bool backBuffer, bool zBuffer, bool stencilBuffer, SColor color);
+
+
 		SIrrlichtCreationParameters Params;
 		u8 AntiAlias;
 
@@ -485,11 +489,11 @@ namespace video
 		};
 
 		STextureStageCache CurrentTexture;
-
+		E_DEVICE_TYPE DeviceType;
+#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
+		CIrrDeviceLinux *X11Device;
+#endif
 	private:
-
-		//! clears the zbuffer and color buffer
-		void clearBuffers(bool backBuffer, bool zBuffer, bool stencilBuffer, SColor color);
 
 		bool updateVertexHardwareBuffer(SHWBufferLink_opengl *HWBuffer);
 		bool updateIndexHardwareBuffer(SHWBufferLink_opengl *HWBuffer);
@@ -595,7 +599,6 @@ namespace video
 		#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 			GLXDrawable Drawable;
 			Display* X11Display;
-			CIrrDeviceLinux *X11Device;
 		#endif
 		#ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
 			CIrrDeviceMacOSX *OSXDevice;
@@ -606,8 +609,6 @@ namespace video
 		#ifdef _IRR_COMPILE_WITH_CG_
 		CGcontext CgContext;
 		#endif
-
-		E_DEVICE_TYPE DeviceType;
 	};
 
 } // end namespace video

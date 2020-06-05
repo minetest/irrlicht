@@ -27,7 +27,15 @@ namespace video
 		virtual ~COpenGLWaylandDriver() {}
 
 		virtual bool initDriver(CIrrDeviceWayland* device);
+		virtual bool changeRenderContext(const SExposedVideoData& videoData, CIrrDeviceLinux* device);
 
+		//! clears the zbuffer
+		virtual bool beginScene(bool backBuffer=true, bool zBuffer=true,
+				SColor color=SColor(255,0,0,0),
+				const SExposedVideoData& videoData=SExposedVideoData(),
+				core::rect<s32>* sourceRect=0);
+
+		virtual bool endScene();
 	protected:
 		//! inits the parts of the open gl driver used on all platforms
 		virtual bool genericDriverInit();
