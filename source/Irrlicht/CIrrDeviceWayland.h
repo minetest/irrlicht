@@ -13,6 +13,7 @@
 #include <wayland-egl.h>
 #include <EGL/egl.h>
 #include <EGL/eglplatform.h>
+#include <xkbcommon/xkbcommon.h>
 #include "CIrrDeviceLinux.h"
 
 namespace irr
@@ -130,9 +131,32 @@ namespace irr
 		static void waylandRegistry(void *data, struct wl_registry *registry, uint32_t name,
 			const char *interface, uint32_t version);
 		static void waylandRegistryRemove(void *a, struct wl_registry *b, uint32_t c);
+		static void waylandSeatCapabilities(void *data, struct wl_seat *wl_seat, uint32_t capabilities);
+
+		static void wl_keyboard_keymap(void *data, wl_keyboard *wl_keyboard,
+               uint32_t format, int32_t fd, uint32_t size);
+		static void wl_keyboard_enter(void *data, struct wl_keyboard *wl_keyboard,
+               uint32_t serial, struct wl_surface *surface,
+               struct wl_array *keys);
+		static void wl_keyboard_key(void *data, wl_keyboard *wl_keyboard,
+               uint32_t serial, uint32_t time, uint32_t key, uint32_t state);
+		static void wl_keyboard_leave(void *data, wl_keyboard *wl_keyboard,
+               uint32_t serial, wl_surface *surface);
+		static void wl_keyboard_modifiers(void *data, wl_keyboard *wl_keyboard,
+               uint32_t serial, uint32_t mods_depressed, uint32_t mods_latched, uint32_t mods_locked,
+               uint32_t group);
+		static void wl_keyboard_repeat_info(void *data, wl_keyboard *wl_keyboard,
+               int32_t rate, int32_t delay);
 
 		static const wl_registry_listener waylandRegistryListener;
+		static const wl_seat_listener waylandSeatListener;
 		static const wl_pointer_listener waylandPointerListener;
+		static const wl_keyboard_listener waylandKeyboardListener;
+
+
+		xkb_context *mKBContext = nullptr;
+		xkb_state *mKBState = nullptr;
+		xkb_keymap *mKBKeymap = nullptr;
 
 		wl_display *mDisplay = nullptr;
 		wl_compositor *mCompositor = nullptr;
@@ -140,6 +164,8 @@ namespace irr
 		wl_shell *mShell = nullptr;
 		wl_shm *mShm = nullptr;
 		wl_pointer *mSeatPointer = nullptr;
+		wl_keyboard *mSeatKeyboard = nullptr;
+		wl_touch *mSeatTouch = nullptr;
 		wl_region *mRegion = nullptr;
 		wl_egl_window *mEGLWindow = nullptr;
 		EGLDisplay mEGLDisplay = nullptr;

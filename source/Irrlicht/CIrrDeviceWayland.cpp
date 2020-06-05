@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <algorithm>
+ #include <sys/mman.h>
 #include <sys/utsname.h>
 #include <time.h>
 #include "IEventReceiver.h"
@@ -22,10 +23,6 @@
 #include "CColorConverter.h"
 #include "SIrrCreationParameters.h"
 #include "IGUISpriteBank.h"
-
-#ifdef _IRR_LINUX_XCURSOR_
-#include <X11/Xcursor/Xcursor.h>
-#endif
 
 #if defined _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
 #include <fcntl.h>
@@ -114,12 +111,141 @@ static void pointer_axis(void *data,
 
 // END TODO
 
+void CIrrDeviceWayland::waylandSeatCapabilities(void *data, struct wl_seat *wl_seat, uint32_t capabilities)
+{
+       CIrrDeviceWayland *self = (CIrrDeviceWayland *)data;
+
+       bool have_pointer = capabilities & WL_SEAT_CAPABILITY_POINTER;
+
+       if (have_pointer && self->mSeatPointer == NULL) {
+               self->mSeatPointer = wl_seat_get_pointer(self->mSeat);
+			   printf("register pointer listener\n");
+               wl_pointer_add_listener(self->mSeatPointer,
+                               &CIrrDeviceWayland::waylandPointerListener, self);
+       } else if (!have_pointer && self->mSeatPointer != nullptr) {
+               wl_pointer_release(self->mSeatPointer);
+               self->mSeatPointer = nullptr;
+       }
+
+	   bool have_keyboard = capabilities & WL_SEAT_CAPABILITY_KEYBOARD;
+
+	   if (have_keyboard && self->mSeatKeyboard == nullptr) {
+		   printf("register keyboard listener\n");
+			self->mSeatKeyboard = wl_seat_get_keyboard(self->mSeat);
+               wl_keyboard_add_listener(self->mSeatKeyboard,
+                               &CIrrDeviceWayland::waylandKeyboardListener, self);
+       } else if (!have_keyboard && self->mSeatKeyboard != nullptr) {
+               wl_keyboard_release(self->mSeatKeyboard);
+			self->mSeatKeyboard =nullptr;
+       }
+}
+
+static void wl_seat_name(void *data, struct wl_seat *wl_seat, const char *name)
+{
+       fprintf(stderr, "seat name: %s\n", name);
+}
+
+const struct wl_seat_listener CIrrDeviceWayland::waylandSeatListener = {
+    .capabilities = CIrrDeviceWayland::waylandSeatCapabilities,
+	.name = wl_seat_name,
+};
+
 const struct wl_pointer_listener CIrrDeviceWayland::waylandPointerListener = {
     .enter = pointer_enter,
     .leave = pointer_leave,
     .motion = pointer_motion,
     .button = pointer_button,
     .axis = pointer_axis
+};
+
+void CIrrDeviceWayland::wl_keyboard_keymap(void *data, wl_keyboard *wl_keyboard,
+               uint32_t format, int32_t fd, uint32_t size)
+{
+	printf("wl_keyboard_keymap\n");
+       CIrrDeviceWayland *self = (CIrrDeviceWayland *)data;
+       //assert(format == WL_KEYBOARD_KEYMAP_FORMAT_XKB_V1);
+
+       char *map_shm = (char *) mmap(NULL, size, PROT_READ, MAP_SHARED, fd, 0);
+       //assert(map_shm != MAP_FAILED);
+
+       xkb_keymap *xkb_keymap = xkb_keymap_new_from_string(
+                       self->mKBContext, map_shm,
+                       XKB_KEYMAP_FORMAT_TEXT_V1, XKB_KEYMAP_COMPILE_NO_FLAGS);
+       munmap(map_shm, size);
+       close(fd);
+
+       xkb_state *xkb_state = xkb_state_new(xkb_keymap);
+       xkb_keymap_unref(self->mKBKeymap);
+       xkb_state_unref(self->mKBState);
+       self->mKBKeymap = xkb_keymap;
+       self->mKBState = xkb_state;
+}
+
+void CIrrDeviceWayland::wl_keyboard_enter(void *data, wl_keyboard *wl_keyboard,
+               uint32_t serial, struct wl_surface *surface,
+               wl_array *keys)
+{
+       CIrrDeviceWayland *self = (CIrrDeviceWayland *)data;
+       fprintf(stderr, "keyboard enter; keys pressed are:\n");
+	   for (uint32_t *key = (uint32_t *)keys->data;
+	     (const char *) key < ((const char *) keys->data + keys->size);
+	     key++){
+               char buf[128];
+               xkb_keysym_t sym = xkb_state_key_get_one_sym(
+                               self->mKBState, *key + 8);
+               xkb_keysym_get_name(sym, buf, sizeof(buf));
+               fprintf(stderr, "sym: %-12s (%d), ", buf, sym);
+               xkb_state_key_get_utf8(self->mKBState,
+                               *key + 8, buf, sizeof(buf));
+               fprintf(stderr, "utf8: '%s'\n", buf);
+       }
+}
+
+void CIrrDeviceWayland::wl_keyboard_key(void *data, wl_keyboard *wl_keyboard,
+               uint32_t serial, uint32_t time, uint32_t key, uint32_t state)
+{
+       CIrrDeviceWayland *self = (CIrrDeviceWayland *)data;
+       char buf[128];
+       uint32_t keycode = key + 8;
+       xkb_keysym_t sym = xkb_state_key_get_one_sym(
+                       self->mKBState, keycode);
+       xkb_keysym_get_name(sym, buf, sizeof(buf));
+       const char *action =
+               state == WL_KEYBOARD_KEY_STATE_PRESSED ? "press" : "release";
+       fprintf(stderr, "key %s: sym: %-12s (%d), ", action, buf, sym);
+       xkb_state_key_get_utf8(self->mKBState, keycode, buf, sizeof(buf));
+       fprintf(stderr, "utf8: '%s'\n", buf);
+}
+
+void CIrrDeviceWayland::wl_keyboard_leave(void *data, wl_keyboard *wl_keyboard,
+               uint32_t serial, wl_surface *surface)
+{
+       fprintf(stderr, "keyboard leave\n");
+}
+
+void CIrrDeviceWayland::wl_keyboard_modifiers(void *data, wl_keyboard *wl_keyboard,
+               uint32_t serial, uint32_t mods_depressed, uint32_t mods_latched, uint32_t mods_locked,
+               uint32_t group)
+{
+       CIrrDeviceWayland *self = (CIrrDeviceWayland *)data;
+       xkb_state_update_mask(self->mKBState,
+               mods_depressed, mods_latched, mods_locked, 0, 0, group);
+}
+
+void CIrrDeviceWayland::wl_keyboard_repeat_info(void *data, wl_keyboard *wl_keyboard,
+               int32_t rate, int32_t delay)
+{
+       CIrrDeviceWayland *self = (CIrrDeviceWayland *)data;
+	   // TODO ?
+}
+
+const struct wl_keyboard_listener CIrrDeviceWayland::waylandKeyboardListener = {
+    .keymap = CIrrDeviceWayland::wl_keyboard_keymap,
+    .enter = CIrrDeviceWayland::wl_keyboard_enter,
+    .leave = CIrrDeviceWayland::wl_keyboard_leave,
+    .key = CIrrDeviceWayland::wl_keyboard_key,
+    .modifiers = CIrrDeviceWayland::wl_keyboard_modifiers,
+    .repeat_info = CIrrDeviceWayland::wl_keyboard_repeat_info,
 };
 
 
@@ -168,7 +294,6 @@ CIrrDeviceWayland::~CIrrDeviceWayland()
 	{
 		// wayland cleanup
 		eglDestroyContext(mDisplay, mContext);
-		wl_pointer_destroy(mSeatPointer);
 		wl_seat_destroy(mSeat);
 		wl_shell_destroy(mShell);
 		wl_shm_destroy(mShm);
@@ -231,9 +356,8 @@ void CIrrDeviceWayland::waylandRegistry(void *data,
 	{
 		self->mSeat = (wl_seat *)wl_registry_bind(registry, name,
 			&wl_seat_interface, std::min(version, (uint32_t)2));
-		self->mSeatPointer = wl_seat_get_pointer(self->mSeat);
-		wl_pointer_add_listener(self->mSeatPointer, &CIrrDeviceWayland::waylandPointerListener,
-			NULL);
+
+		 wl_seat_add_listener(self->mSeat, &CIrrDeviceWayland::waylandSeatListener, self);
 	}
 	else
 	{
@@ -261,6 +385,8 @@ bool CIrrDeviceWayland::createWindow()
     }
 
     wl_registry *registry = wl_display_get_registry(mDisplay);
+
+	mKBContext = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
     wl_registry_add_listener(registry, &waylandRegistryListener, this);
 	wl_display_dispatch(mDisplay);
     wl_display_roundtrip(mDisplay);
@@ -447,7 +573,13 @@ bool CIrrDeviceWayland::run()
 {
 	os::Timer::tick();
 
-	wl_display_dispatch_pending(mDisplay);
+	if ((CreationParams.DriverType != video::EDT_NULL) && mDisplay)
+	{
+		SEvent irrevent;
+		irrevent.MouseInput.ButtonStates = 0xffffffff;
+
+		wl_display_dispatch_pending(mDisplay);
+	}
 
 	if (!Close)
 		pollJoysticks();
