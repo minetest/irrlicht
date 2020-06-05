@@ -22,17 +22,12 @@ bool COpenGLWaylandDriver::initDriver(CIrrDeviceWayland *device)
 	return true;
 }
 
-bool COpenGLWaylandDriver::genericDriverInit()
-{
-		return COpenGLDriver::genericDriverInit();
-}
-
 bool COpenGLWaylandDriver::changeRenderContext(const SExposedVideoData& videoData, CIrrDeviceLinux* device)
 {
 	if (videoData.OpenGLWayland.eglSurface)
 	{
 		if (videoData.OpenGLWayland.eglDisplay && videoData.OpenGLWayland.eglDisplay) {
-			if (!eglMakeCurrent(ExposedData.OpenGLWayland.eglDisplay, ExposedData.OpenGLWayland.eglSurface, ExposedData.OpenGLWayland.eglSurface, ExposedData.OpenGLWayland.eglContext))
+			if (!eglMakeCurrent(videoData.OpenGLWayland.eglDisplay, videoData.OpenGLWayland.eglSurface, videoData.OpenGLWayland.eglSurface, videoData.OpenGLWayland.eglContext))
 			{
 				os::Printer::log("Render Context switch failed.");
 				return false;
@@ -46,7 +41,7 @@ bool COpenGLWaylandDriver::changeRenderContext(const SExposedVideoData& videoDat
 		else
 		{
 			// in case we only got a window ID, try with the existing values for display and context
-			if (!eglMakeCurrent(ExposedData.OpenGLWayland.eglDisplay, ExposedData.OpenGLWayland.eglSurface, ExposedData.OpenGLWayland.eglSurface, ExposedData.OpenGLWayland.eglContext))
+			if (!eglMakeCurrent(ExposedData.OpenGLWayland.eglDisplay, videoData.OpenGLWayland.eglSurface, videoData.OpenGLWayland.eglSurface, ExposedData.OpenGLWayland.eglContext))
 			{
 				os::Printer::log("Render Context switch failed.");
 				return false;
@@ -54,7 +49,7 @@ bool COpenGLWaylandDriver::changeRenderContext(const SExposedVideoData& videoDat
 			else
 			{
 				mDrawable = videoData.OpenGLWayland.eglSurface;
-				mDisplay = videoData.OpenGLWayland.eglDisplay;
+				mDisplay = ExposedData.OpenGLWayland.eglDisplay;
 			}
 		}
 	}
@@ -68,7 +63,7 @@ bool COpenGLWaylandDriver::changeRenderContext(const SExposedVideoData& videoDat
 		}
 		else
 		{
-			mDrawable = videoData.OpenGLWayland.eglSurface;
+			mDrawable = ExposedData.OpenGLWayland.eglSurface;
 			mDisplay = videoData.OpenGLWayland.eglDisplay;
 		}
 	}
@@ -98,8 +93,6 @@ bool COpenGLWaylandDriver::beginScene(bool backBuffer, bool zBuffer, SColor colo
 bool COpenGLWaylandDriver::endScene()
 {
 	CNullDriver::endScene();
-
-	glFlush();
 
 	if (DeviceType == EIDT_X11)
 	{

@@ -449,10 +449,6 @@ bool CIrrDeviceWayland::run()
 
 	wl_display_dispatch_pending(mDisplay);
 
-	glClearColor(0.5, 0.3, 0.0, 1.0);
-  glClear(GL_COLOR_BUFFER_BIT);
-
-	eglSwapBuffers(mEGLDisplay, mEGLSurface);
 	if (!Close)
 		pollJoysticks();
 

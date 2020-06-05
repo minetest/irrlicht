@@ -36,10 +36,6 @@ namespace video
 				core::rect<s32>* sourceRect=0);
 
 		virtual bool endScene();
-	protected:
-		//! inits the parts of the open gl driver used on all platforms
-		virtual bool genericDriverInit();
-
 	private:
 		//! inits the parts of the open gl driver used on all platforms
 		//virtual bool genericDriverInit();
