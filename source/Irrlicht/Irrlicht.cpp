@@ -87,21 +87,30 @@ namespace irr
 #endif
 
 #ifdef _IRR_COMPILE_WITH_WAYLAND_DEVICE_
-		if (params.DeviceType == EIDT_X11 || (!dev && params.DeviceType == EIDT_BEST)) {
-			dev = new CIrrDeviceWayland(params);
-		}
-
-		#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
-		if (!dev->getVideoDriver()) {
-			dev->closeDevice(); // destroy window
-			dev->run(); // consume quit message
-			dev->drop();
-
-			os::Printer::log("Unable to setup wayland backend fallback to X11.", ELL_ERROR);
+		if (strcmp(getenv("IRRLICHT_FORCE_X11"), "1") == 0)
+		{
 			dev = new CIrrDeviceX11(params);
 		}
+		else
+		{
+			if (params.DeviceType == EIDT_X11 || (!dev && params.DeviceType == EIDT_BEST))
+			{
+				dev = new CIrrDeviceWayland(params);
+			}
 
-		#endif
+			#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
+			if (!dev->getVideoDriver())
+			{
+				dev->closeDevice(); // destroy window
+				dev->run(); // consume quit message
+				dev->drop();
+
+				os::Printer::log("Unable to setup wayland backend fallback to X11.", ELL_ERROR);
+				dev = new CIrrDeviceX11(params);
+			}
+			#endif
+		}
+
 #else
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 		if (params.DeviceType == EIDT_X11 || (!dev && params.DeviceType == EIDT_BEST))
