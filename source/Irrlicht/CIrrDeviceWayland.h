@@ -159,6 +159,16 @@ namespace irr
 		xkb_context *mKBContext = nullptr;
 		xkb_state *mKBState = nullptr;
 		xkb_keymap *mKBKeymap = nullptr;
+		bool mKeyPressed = false; // For key repeat feature, wayland requires client support
+		uint32_t mKeyPressLastTime = 0;
+
+		struct KeyPressEvent
+		{
+			uint32_t serial = 0;
+			uint32_t key = 0;
+		};
+		
+		KeyPressEvent mLastKeyPressEvent;
 		bool mShiftPressed = false;
 		bool mCTRLPressed = false;
 

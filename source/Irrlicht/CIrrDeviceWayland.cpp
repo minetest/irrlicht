@@ -44,6 +44,8 @@
 
 #endif // _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
 
+#define IRR_KEY_PRESS_INTERVAL 5
+
 namespace irr
 {
 	namespace video
@@ -185,20 +187,11 @@ void CIrrDeviceWayland::wl_keyboard_enter(void *data, wl_keyboard *wl_keyboard,
                uint32_t serial, struct wl_surface *surface,
                wl_array *keys)
 {
-       CIrrDeviceWayland *self = (CIrrDeviceWayland *)data;
-       fprintf(stderr, "keyboard enter; keys pressed are:\n");
-	   for (uint32_t *key = (uint32_t *)keys->data;
-	     (const char *) key < ((const char *) keys->data + keys->size);
-	     key++){
-               char buf[128];
-               xkb_keysym_t sym = xkb_state_key_get_one_sym(
-                               self->mKBState, *key + 8);
-               xkb_keysym_get_name(sym, buf, sizeof(buf));
-               fprintf(stderr, "sym: %-12s (%d), ", buf, sym);
-               xkb_state_key_get_utf8(self->mKBState,
-                               *key + 8, buf, sizeof(buf));
-               fprintf(stderr, "utf8: '%s'\n", buf);
-       }
+	CIrrDeviceWayland *self = (CIrrDeviceWayland *)data;
+	for (uint32_t *key = (uint32_t *)keys->data;
+			(const char *) key < ((const char *) keys->data + keys->size); key++){
+		wl_keyboard_key(data, wl_keyboard, serial, 0, *key, WL_KEYBOARD_KEY_STATE_PRESSED);
+	}
 }
 
 void CIrrDeviceWayland::wl_keyboard_key(void *data, wl_keyboard *wl_keyboard,
@@ -228,10 +221,7 @@ void CIrrDeviceWayland::wl_keyboard_key(void *data, wl_keyboard *wl_keyboard,
 			default: break;
 		}
 
-		// Ignore released state
-		if (state == WL_KEYBOARD_KEY_STATE_RELEASED) {
-			return;
-		}
+		self->mKeyPressed = (state == WL_KEYBOARD_KEY_STATE_PRESSED);
 
 		const char *action =
 				state == WL_KEYBOARD_KEY_STATE_PRESSED ? "press" : "release";
@@ -275,6 +265,11 @@ void CIrrDeviceWayland::wl_keyboard_key(void *data, wl_keyboard *wl_keyboard,
 		}
 
 		self->postEventFromUser(irrevent);
+
+		// register key press time & event
+		self->mKeyPressLastTime = os::Timer::getTime();
+		self->mLastKeyPressEvent.key = key;
+		self->mLastKeyPressEvent.serial = serial;
 }
 
 void CIrrDeviceWayland::wl_keyboard_leave(void *data, wl_keyboard *wl_keyboard,
@@ -650,6 +645,13 @@ bool CIrrDeviceWayland::run()
 	if ((CreationParams.DriverType != video::EDT_NULL) && mDisplay)
 	{
 		wl_display_dispatch_pending(mDisplay);
+	}
+
+	// Handle key repeat feature
+	if (mKeyPressed && mKeyPressLastTime + IRR_KEY_PRESS_INTERVAL <= os::Timer::getTime())
+	{
+			CIrrDeviceWayland::wl_keyboard_key(this, mSeatKeyboard, mLastKeyPressEvent.serial,
+				os::Timer::getRealTime(), mLastKeyPressEvent.key, WL_KEYBOARD_KEY_STATE_PRESSED);
 	}
 
 	if (!Close)
