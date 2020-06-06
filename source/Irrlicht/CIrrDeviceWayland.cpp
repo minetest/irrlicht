@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <algorithm>
- #include <sys/mman.h>
+#include <sys/mman.h>
 #include <sys/utsname.h>
 #include <time.h>
 #include "IEventReceiver.h"
@@ -228,6 +228,11 @@ void CIrrDeviceWayland::wl_keyboard_key(void *data, wl_keyboard *wl_keyboard,
 			default: break;
 		}
 
+		// Ignore released state
+		if (state == WL_KEYBOARD_KEY_STATE_RELEASED) {
+			return;
+		}
+
 		const char *action =
 				state == WL_KEYBOARD_KEY_STATE_PRESSED ? "press" : "release";
 		fprintf(stderr, "key %s: sym: %-12s (%d), ", action, buf, mp.XKBKey);
@@ -291,6 +296,7 @@ void CIrrDeviceWayland::wl_keyboard_repeat_info(void *data, wl_keyboard *wl_keyb
                int32_t rate, int32_t delay)
 {
        CIrrDeviceWayland *self = (CIrrDeviceWayland *)data;
+	   fprintf(stderr, "repeat!\n");
 	   // TODO ?
 }
 
@@ -301,6 +307,19 @@ const struct wl_keyboard_listener CIrrDeviceWayland::waylandKeyboardListener = {
     .key = CIrrDeviceWayland::wl_keyboard_key,
     .modifiers = CIrrDeviceWayland::wl_keyboard_modifiers,
     .repeat_info = CIrrDeviceWayland::wl_keyboard_repeat_info,
+};
+
+void CIrrDeviceWayland::xdg_surface_configure(void *data,
+        xdg_surface *xdg_surface, uint32_t serial)
+{
+    CIrrDeviceWayland *self = (CIrrDeviceWayland *)data;
+    xdg_surface_ack_configure(xdg_surface, serial);
+
+    wl_surface_commit(self->mSurface);
+}
+
+const struct xdg_surface_listener CIrrDeviceWayland::xdg_surface_listener = {
+    .configure = xdg_surface_configure,
 };
 
 
@@ -350,7 +369,7 @@ CIrrDeviceWayland::~CIrrDeviceWayland()
 		// wayland cleanup
 		eglDestroyContext(mDisplay, mContext);
 		wl_seat_destroy(mSeat);
-		wl_shell_destroy(mShell);
+		xdg_wm_base_destroy(mXDGWMBase);
 		wl_shm_destroy(mShm);
 		wl_compositor_destroy(mCompositor);
 		wl_display_disconnect(mDisplay);
@@ -402,10 +421,9 @@ void CIrrDeviceWayland::waylandRegistry(void *data,
 		self->mShm = (wl_shm *) wl_registry_bind(registry, name,
 			&wl_shm_interface, std::min(version, (uint32_t)1));
 	}
-	else if (strcmp(interface, wl_shell_interface.name) == 0)
+	else if (strcmp(interface, xdg_wm_base_interface.name) == 0)
 	{
-		self->mShell = (wl_shell *)wl_registry_bind(registry, name,
-			&wl_shell_interface, std::min(version, (uint32_t)1));
+		self->mXDGWMBase = (xdg_wm_base *) wl_registry_bind(registry, name, &xdg_wm_base_interface, 1);
 	}
 	else if (strcmp(interface, wl_seat_interface.name) == 0)
 	{
@@ -454,22 +472,23 @@ bool CIrrDeviceWayland::createWindow()
 		return false;
     }
 
-    wl_shell_surface *shell_surface = wl_shell_get_shell_surface(mShell, surface);
-    if (shell_surface == NULL)
-	{
-		os::Printer::log("Failed to create wayland shell surface", ELL_ERROR);
-		return false;
-    }
+	mSurface = surface;
 
-    wl_shell_surface_set_toplevel(shell_surface);
+	xdg_surface *xdg_surface = xdg_wm_base_get_xdg_surface(mXDGWMBase, mSurface);
+	xdg_surface_add_listener(xdg_surface, &CIrrDeviceWayland::xdg_surface_listener, this);
+
+	xdg_toplevel *xdg_toplevel = xdg_surface_get_toplevel(xdg_surface);
+	xdg_toplevel_set_title(xdg_toplevel, "Irrlicht window");
+
+	wl_surface_commit(mSurface);
 
 	mRegion = wl_compositor_create_region(mCompositor);
 
 	wl_region_add(mRegion, 0, 0, CreationParams.WindowSize.Width, CreationParams.WindowSize.Height);
-	wl_surface_set_opaque_region(surface, mRegion);
+	wl_surface_set_opaque_region(mSurface, mRegion);
 
 	mEGLWindow =
-		wl_egl_window_create(surface, CreationParams.WindowSize.Width, CreationParams.WindowSize.Height);
+		wl_egl_window_create(mSurface, CreationParams.WindowSize.Width, CreationParams.WindowSize.Height);
 
 	if (mEGLWindow == EGL_NO_SURFACE)
 	{

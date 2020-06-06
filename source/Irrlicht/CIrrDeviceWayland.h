@@ -15,6 +15,7 @@
 #include <EGL/eglplatform.h>
 #include <xkbcommon/xkbcommon.h>
 #include "CIrrDeviceLinux.h"
+#include "xdg-shell-client-protocol.h"
 
 namespace irr
 {
@@ -147,11 +148,13 @@ namespace irr
                uint32_t group);
 		static void wl_keyboard_repeat_info(void *data, wl_keyboard *wl_keyboard,
                int32_t rate, int32_t delay);
+		static void xdg_surface_configure(void *data, xdg_surface *xdg_surface, uint32_t serial);
 
 		static const wl_registry_listener waylandRegistryListener;
 		static const wl_seat_listener waylandSeatListener;
 		static const wl_pointer_listener waylandPointerListener;
 		static const wl_keyboard_listener waylandKeyboardListener;
+		static const struct xdg_surface_listener xdg_surface_listener;
 
 		xkb_context *mKBContext = nullptr;
 		xkb_state *mKBState = nullptr;
@@ -161,8 +164,9 @@ namespace irr
 
 		wl_display *mDisplay = nullptr;
 		wl_compositor *mCompositor = nullptr;
+		wl_surface *mSurface = nullptr;
 		wl_seat *mSeat = nullptr;
-		wl_shell *mShell = nullptr;
+		xdg_wm_base *mXDGWMBase = nullptr;
 		wl_shm *mShm = nullptr;
 		wl_pointer *mSeatPointer = nullptr;
 		wl_keyboard *mSeatKeyboard = nullptr;
