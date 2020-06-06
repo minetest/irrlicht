@@ -167,8 +167,8 @@ namespace irr
 			uint32_t serial = 0;
 			uint32_t key = 0;
 		};
-		
-		KeyPressEvent mLastKeyPressEvent;
+
+		SEvent mLastKeyPressEvent;
 		bool mShiftPressed = false;
 		bool mCTRLPressed = false;
 

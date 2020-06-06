@@ -87,7 +87,8 @@ namespace irr
 #endif
 
 #ifdef _IRR_COMPILE_WITH_WAYLAND_DEVICE_
-		if (strcmp(getenv("IRRLICHT_FORCE_X11"), "1") == 0)
+		const char *force_x11 = getenv("IRRLICHT_FORCE_X11");
+		if (force_x11 && strcmp(force_x11, "1") == 0)
 		{
 			dev = new CIrrDeviceX11(params);
 		}

@@ -1035,6 +1035,7 @@ bool CIrrDeviceX11::run()
 						irrevent.KeyInput.Key = (EKEY_CODE)event.xkey.keycode;
 					}
 
+					printf("publish wayland pressed event for %d, down: %s\n", irrevent.KeyInput.Key, irrevent.KeyInput.PressedDown ? "true" : "false");
 					postEventFromUser(irrevent);
 				}
 				break;

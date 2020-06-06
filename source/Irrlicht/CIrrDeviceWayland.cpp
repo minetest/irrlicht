@@ -44,7 +44,7 @@
 
 #endif // _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
 
-#define IRR_KEY_PRESS_INTERVAL 5
+#define IRR_KEY_PRESS_INTERVAL 15
 
 namespace irr
 {
@@ -229,10 +229,13 @@ void CIrrDeviceWayland::wl_keyboard_key(void *data, wl_keyboard *wl_keyboard,
 		xkb_state_key_get_utf8(self->mKBState, keycode, buf, sizeof(buf));
 		fprintf(stderr, "utf8: '%s'\n", buf);
 
+		wchar_t* wc = new wchar_t[strlen(buf) + 1];
+    	mbstowcs (wc, buf, strlen(buf) + 1);
+
 		irrevent.EventType = irr::EET_KEY_INPUT_EVENT;
 		irrevent.KeyInput.PressedDown = (state == WL_KEYBOARD_KEY_STATE_PRESSED);
 
-		irrevent.KeyInput.Char = ((wchar_t*)(buf))[0];
+		irrevent.KeyInput.Char = ((wchar_t*)(wc))[0];
 		irrevent.KeyInput.Control = self->mCTRLPressed;
 		irrevent.KeyInput.Shift = self->mShiftPressed;
 
@@ -266,10 +269,12 @@ void CIrrDeviceWayland::wl_keyboard_key(void *data, wl_keyboard *wl_keyboard,
 
 		self->postEventFromUser(irrevent);
 
+		printf("publish wayland pressed event for %d, down: %s\n", irrevent.KeyInput.Key, irrevent.KeyInput.PressedDown ? "true" : "false");
 		// register key press time & event
 		self->mKeyPressLastTime = os::Timer::getTime();
-		self->mLastKeyPressEvent.key = key;
-		self->mLastKeyPressEvent.serial = serial;
+		self->mLastKeyPressEvent = irrevent;
+
+		xkb_state_update_key(self->mKBState, keycode, state == WL_KEYBOARD_KEY_STATE_PRESSED ? XKB_KEY_DOWN : XKB_KEY_UP);
 }
 
 void CIrrDeviceWayland::wl_keyboard_leave(void *data, wl_keyboard *wl_keyboard,
@@ -648,10 +653,9 @@ bool CIrrDeviceWayland::run()
 	}
 
 	// Handle key repeat feature
-	if (mKeyPressed && mKeyPressLastTime + IRR_KEY_PRESS_INTERVAL <= os::Timer::getTime())
+	if (0 == AutorepeatSupport && mKeyPressed && mKeyPressLastTime + IRR_KEY_PRESS_INTERVAL <= os::Timer::getTime())
 	{
-			CIrrDeviceWayland::wl_keyboard_key(this, mSeatKeyboard, mLastKeyPressEvent.serial,
-				os::Timer::getRealTime(), mLastKeyPressEvent.key, WL_KEYBOARD_KEY_STATE_PRESSED);
+		postEventFromUser(mLastKeyPressEvent);
 	}
 
 	if (!Close)
@@ -930,6 +934,8 @@ void CIrrDeviceWayland::createKeyMap()
 	KeyMap.push_back(SKeyMap(XKB_KEY_udiaeresis, KEY_OEM_1));
 	KeyMap.push_back(SKeyMap(XKB_KEY_Super_L, KEY_LWIN));
 	KeyMap.push_back(SKeyMap(XKB_KEY_Super_R, KEY_RWIN));
+
+	KeyMap.sort();
 }
 
 
