@@ -153,10 +153,11 @@ namespace irr
 		static const wl_pointer_listener waylandPointerListener;
 		static const wl_keyboard_listener waylandKeyboardListener;
 
-
 		xkb_context *mKBContext = nullptr;
 		xkb_state *mKBState = nullptr;
 		xkb_keymap *mKBKeymap = nullptr;
+		bool mShiftPressed = false;
+		bool mCTRLPressed = false;
 
 		wl_display *mDisplay = nullptr;
 		wl_compositor *mCompositor = nullptr;
@@ -265,6 +266,25 @@ namespace irr
 			bool UseReferenceRect = false;
 			bool IsVisible = true;
 		};
+
+		struct SKeyMap
+		{
+			SKeyMap() {}
+			SKeyMap(s32 k, s32 win32)
+				: XKBKey(k), Win32Key(win32)
+			{
+			}
+
+			xkb_keysym_t XKBKey;
+			s32 Win32Key;
+
+			bool operator<(const SKeyMap& o) const
+			{
+				return XKBKey<o.XKBKey;
+			}
+		};
+
+		core::array<SKeyMap> KeyMap;
 	};
 
 

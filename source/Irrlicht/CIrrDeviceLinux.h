@@ -133,8 +133,6 @@ namespace irr
 	private:
 		bool createWindow();
 
-		void createKeyMap();
-
 		void initXAtoms();
 
 		bool switchToFullscreen(bool reset=false);
@@ -165,25 +163,6 @@ namespace irr
 		bool UseGLXWindow;
 		bool ExternalWindow;
 		int AutorepeatSupport;
-
-		struct SKeyMap
-		{
-			SKeyMap() {}
-			SKeyMap(s32 x11, s32 win32)
-				: X11Key(x11), Win32Key(win32)
-			{
-			}
-
-			KeySym X11Key;
-			s32 Win32Key;
-
-			bool operator<(const SKeyMap& o) const
-			{
-				return X11Key<o.X11Key;
-			}
-		};
-
-		core::array<SKeyMap> KeyMap;
 
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
 		struct JoystickInfo
