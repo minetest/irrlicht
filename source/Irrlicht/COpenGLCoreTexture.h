@@ -434,7 +434,9 @@ public:
 		else
 		{
 #ifdef IRR_OPENGL_HAS_glGenerateMipmap
+	#if !defined(IRR_COMPILE_GLES2_COMMON)
 			glEnable(GL_TEXTURE_2D);	// Hack some ATI cards need this glEnable according to https://www.khronos.org/opengl/wiki/Common_Mistakes
+	#endif
 			Driver->irrGlGenerateMipmap(TextureType);
 #endif
 		}
