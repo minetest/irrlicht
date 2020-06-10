@@ -10,6 +10,7 @@
 #include "IWriteFile.h"
 #include "CColorConverter.h"
 #include "irrString.h"
+#include "os.h"
 
 namespace irr
 {
@@ -85,6 +86,7 @@ bool CImageWriterTGA::writeImage(io::IWriteFile *file, IImage *image,u32 param) 
 		imageHeader.ImageDescriptor |= 0;
 		break;
 	default:
+		os::Printer::log("CImageWriterTGA does not support image format", ColorFormatNames[image->getColorFormat()], ELL_WARNING);
 		break;
 	}
 

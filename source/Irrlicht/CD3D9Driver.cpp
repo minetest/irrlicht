@@ -3270,6 +3270,9 @@ ITexture* CD3D9Driver::addRenderTargetTexture(const core::dimension2d<u32>& size
 											  const io::path& name,
 											  const ECOLOR_FORMAT format)
 {
+	if ( IImage::isCompressedFormat(format) )
+		return 0;
+
 	CD3D9Texture* tex = new CD3D9Texture(this, size, name, ETT_2D, format);
 	if (tex)
 	{
@@ -3288,6 +3291,9 @@ ITexture* CD3D9Driver::addRenderTargetTexture(const core::dimension2d<u32>& size
 ITexture* CD3D9Driver::addRenderTargetTextureCubemap(const irr::u32 sideLen,
 	const io::path& name, const ECOLOR_FORMAT format)
 {
+	if ( IImage::isCompressedFormat(format) )
+		return 0;
+
 	CD3D9Texture* tex = new CD3D9Texture(this, core::dimension2d<u32>(sideLen, sideLen), name, ETT_CUBEMAP, format);
 	if (tex)
 	{

@@ -2752,7 +2752,7 @@ void COpenGLDriver::setTextureRenderStates(const SMaterial& material, bool reset
 				statesCache.IsCached = false;
 
 #ifdef GL_VERSION_2_1
-			if (Version >= 210)
+			if (Version >= 201)
 			{
 				if (!statesCache.IsCached || material.TextureLayer[i].LODBias != statesCache.LODBias)
 				{
@@ -3772,6 +3772,9 @@ IVideoDriver* COpenGLDriver::getVideoDriver()
 ITexture* COpenGLDriver::addRenderTargetTexture(const core::dimension2d<u32>& size,
 	const io::path& name, const ECOLOR_FORMAT format)
 {
+	if ( IImage::isCompressedFormat(format) )
+		return 0;
+
 	//disable mip-mapping
 	bool generateMipLevels = getTextureCreationFlag(ETCF_CREATE_MIP_MAPS);
 	setTextureCreationFlag(ETCF_CREATE_MIP_MAPS, false);
@@ -3799,6 +3802,9 @@ ITexture* COpenGLDriver::addRenderTargetTexture(const core::dimension2d<u32>& si
 //! Creates a render target texture for a cubemap
 ITexture* COpenGLDriver::addRenderTargetTextureCubemap(const irr::u32 sideLen, const io::path& name, const ECOLOR_FORMAT format)
 {
+	if ( IImage::isCompressedFormat(format) )
+		return 0;
+
 	//disable mip-mapping
 	bool generateMipLevels = getTextureCreationFlag(ETCF_CREATE_MIP_MAPS);
 	setTextureCreationFlag(ETCF_CREATE_MIP_MAPS, false);
@@ -4231,10 +4237,13 @@ bool COpenGLDriver::getColorFormatParameters(ECOLOR_FORMAT format, GLint& intern
 			pixelType = GL_UNSIGNED_INT_8_8_8_8_REV;
 		break;
 	case ECF_DXT1:
-		supported = true;
-		internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-		pixelFormat = GL_BGRA_EXT;
-		pixelType = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+		if (queryOpenGLFeature(COpenGLExtensionHandler::IRR_EXT_texture_compression_s3tc))
+		{
+			supported = true;
+			internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+			pixelFormat = GL_BGRA_EXT;
+			pixelType = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+		}
 		break;
 	case ECF_DXT2:
 	case ECF_DXT3:

@@ -43,12 +43,6 @@ CImage::CImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size) : IImag
 //! sets a pixel
 void CImage::setPixel(u32 x, u32 y, const SColor &color, bool blend)
 {
-	if (IImage::isCompressedFormat(Format))
-	{
-		os::Printer::log("IImage::setPixel method doesn't work with compressed images.", ELL_WARNING);
-		return;
-	}
-
 	if (x >= Size.Width || y >= Size.Height)
 		return;
 
@@ -79,6 +73,15 @@ void CImage::setPixel(u32 x, u32 y, const SColor &color, bool blend)
 			u32 * dest = (u32*) (Data + ( y * Pitch ) + ( x << 2 ));
 			*dest = blend ? PixelBlend32 ( *dest, color.color ) : color.color;
 		} break;
+
+		IRR_CASE_IIMAGE_COMPRESSED_FORMAT
+			os::Printer::log("IImage::setPixel method doesn't work with compressed images.", ELL_WARNING);
+			return;
+
+		case ECF_UNKNOWN:
+			os::Printer::log("IImage::setPixel unknown format.", ELL_WARNING);
+			return;
+
 		default:
 			break;
 	}
@@ -88,12 +91,6 @@ void CImage::setPixel(u32 x, u32 y, const SColor &color, bool blend)
 //! returns a pixel
 SColor CImage::getPixel(u32 x, u32 y) const
 {
-	if (IImage::isCompressedFormat(Format))
-	{
-		os::Printer::log("IImage::getPixel method doesn't work with compressed images.", ELL_WARNING);
-		return SColor(0);
-	}
-
 	if (x >= Size.Width || y >= Size.Height)
 		return SColor(0);
 
@@ -110,6 +107,15 @@ SColor CImage::getPixel(u32 x, u32 y) const
 			u8* p = Data+(y*3)*Size.Width + (x*3);
 			return SColor(255,p[0],p[1],p[2]);
 		}
+
+	IRR_CASE_IIMAGE_COMPRESSED_FORMAT
+		os::Printer::log("IImage::getPixel method doesn't work with compressed images.", ELL_WARNING);
+		break;
+
+	case ECF_UNKNOWN:
+		os::Printer::log("IImage::getPixel unknown format.", ELL_WARNING);
+		break;
+
 	default:
 		break;
 	}
@@ -127,7 +133,7 @@ void CImage::copyTo(IImage* target, const core::position2d<s32>& pos)
 		return;
 	}
 
-	if ( !Blit(BLITTER_TEXTURE, target, 0, &pos, this, 0, 0) 
+	if ( !Blit(BLITTER_TEXTURE, target, 0, &pos, this, 0, 0)
 		&& target && pos.X == 0 && pos.Y == 0 &&
 		CColorConverter::canConvertFormat(Format, target->getColorFormat()) )
 	{
