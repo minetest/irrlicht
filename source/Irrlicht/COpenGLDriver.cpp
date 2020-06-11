@@ -3667,19 +3667,15 @@ s32 COpenGLDriver::getPixelShaderConstantID(const c8* name)
 //! Sets a vertex shader constant.
 void COpenGLDriver::setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
 {
-#ifdef GL_ARB_vertex_program
 	for (s32 i=0; i<constantAmount; ++i)
 		extGlProgramLocalParameter4fv(GL_VERTEX_PROGRAM_ARB, startRegister+i, &data[i*4]);
-#endif
 }
 
 //! Sets a pixel shader constant.
 void COpenGLDriver::setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
 {
-#ifdef GL_ARB_fragment_program
 	for (s32 i=0; i<constantAmount; ++i)
 		extGlProgramLocalParameter4fv(GL_FRAGMENT_PROGRAM_ARB, startRegister+i, &data[i*4]);
-#endif
 }
 
 //! Sets a constant for the vertex shader based on an index.
@@ -3695,6 +3691,12 @@ bool COpenGLDriver::setVertexShaderConstant(s32 index, const s32* ints, int coun
 	return setPixelShaderConstant(index, ints, count);
 }
 
+//! Uint interface for the above.
+bool COpenGLDriver::setVertexShaderConstant(s32 index, const u32* ints, int count)
+{
+	return setPixelShaderConstant(index, ints, count);
+}
+
 //! Sets a constant for the pixel shader based on an index.
 bool COpenGLDriver::setPixelShaderConstant(s32 index, const f32* floats, int count)
 {
@@ -3704,6 +3706,12 @@ bool COpenGLDriver::setPixelShaderConstant(s32 index, const f32* floats, int cou
 
 //! Int interface for the above.
 bool COpenGLDriver::setPixelShaderConstant(s32 index, const s32* ints, int count)
+{
+	os::Printer::log("Error: Please call services->setPixelShaderConstant(), not VideoDriver->setPixelShaderConstant().");
+	return false;
+}
+
+bool COpenGLDriver::setPixelShaderConstant(s32 index, const u32* ints, int count)
 {
 	os::Printer::log("Error: Please call services->setPixelShaderConstant(), not VideoDriver->setPixelShaderConstant().");
 	return false;

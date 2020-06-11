@@ -20,7 +20,7 @@
 
 namespace irr
 {
-namespace video  
+namespace video
 {
 
 class COGLES2Driver;
@@ -30,8 +30,8 @@ class COGLES2MaterialRenderer : public IMaterialRenderer, public IMaterialRender
 public:
 
 	COGLES2MaterialRenderer(
-		COGLES2Driver* driver, 
-		s32& outMaterialTypeNr, 
+		COGLES2Driver* driver,
+		s32& outMaterialTypeNr,
 		const c8* vertexShaderProgram = 0,
 		const c8* pixelShaderProgram = 0,
 		IShaderConstantSetCallBack* callback = 0,
@@ -53,18 +53,20 @@ public:
 
 	virtual s32 getRenderCapability() const;
 
-	virtual void setBasicRenderStates(const SMaterial& material, const SMaterial& lastMaterial, bool resetAllRenderstates);
-	
-	virtual s32 getVertexShaderConstantID(const c8* name);
-	virtual s32 getPixelShaderConstantID(const c8* name);
-	virtual void setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount=1);
-	virtual void setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount=1);
-	virtual bool setVertexShaderConstant(s32 index, const f32* floats, int count);
-	virtual bool setVertexShaderConstant(s32 index, const s32* ints, int count);
-	virtual bool setPixelShaderConstant(s32 index, const f32* floats, int count);
-	virtual bool setPixelShaderConstant(s32 index, const s32* ints, int count);
+	virtual void setBasicRenderStates(const SMaterial& material, const SMaterial& lastMaterial, bool resetAllRenderstates) _IRR_OVERRIDE_;
 
-	virtual IVideoDriver* getVideoDriver();
+	virtual s32 getVertexShaderConstantID(const c8* name) _IRR_OVERRIDE_;
+	virtual s32 getPixelShaderConstantID(const c8* name) _IRR_OVERRIDE_;
+	virtual void setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount=1) _IRR_OVERRIDE_;
+	virtual void setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount=1) _IRR_OVERRIDE_;
+	virtual bool setVertexShaderConstant(s32 index, const f32* floats, int count) _IRR_OVERRIDE_;
+	virtual bool setVertexShaderConstant(s32 index, const s32* ints, int count) _IRR_OVERRIDE_;
+	virtual bool setVertexShaderConstant(s32 index, const u32* ints, int count) _IRR_OVERRIDE_;
+	virtual bool setPixelShaderConstant(s32 index, const f32* floats, int count) _IRR_OVERRIDE_;
+	virtual bool setPixelShaderConstant(s32 index, const s32* ints, int count) _IRR_OVERRIDE_;
+	virtual bool setPixelShaderConstant(s32 index, const u32* ints, int count) _IRR_OVERRIDE_;
+
+	virtual IVideoDriver* getVideoDriver() _IRR_OVERRIDE_;
 
 protected:
 
@@ -77,7 +79,7 @@ protected:
 
 	bool createShader(GLenum shaderType, const char* shader);
 	bool linkProgram();
-	
+
 	COGLES2Driver* Driver;
 	IShaderConstantSetCallBack* CallBack;
 

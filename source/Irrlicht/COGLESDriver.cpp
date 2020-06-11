@@ -2602,6 +2602,11 @@ bool COGLES1Driver::setVertexShaderConstant(s32 index, const s32* ints, int coun
 	return setPixelShaderConstant(index, ints, count);
 }
 
+bool COGLES1Driver::setVertexShaderConstant(s32 index, const u32* ints, int count)
+{
+	return setPixelShaderConstant(index, ints, count);
+}
+
 //! Sets a constant for the pixel shader based on an index.
 bool COGLES1Driver::setPixelShaderConstant(s32 index, const f32* floats, int count)
 {
@@ -2611,6 +2616,12 @@ bool COGLES1Driver::setPixelShaderConstant(s32 index, const f32* floats, int cou
 
 //! Int interface for the above.
 bool COGLES1Driver::setPixelShaderConstant(s32 index, const s32* ints, int count)
+{
+	os::Printer::log("Error: Please use IMaterialRendererServices from IShaderConstantSetCallBack::OnSetConstants not VideoDriver->setPixelShaderConstant().");
+	return false;
+}
+
+bool COGLES1Driver::setPixelShaderConstant(s32 index, const u32* ints, int count)
 {
 	os::Printer::log("Error: Please use IMaterialRendererServices from IShaderConstantSetCallBack::OnSetConstants not VideoDriver->setPixelShaderConstant().");
 	return false;

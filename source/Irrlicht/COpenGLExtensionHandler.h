@@ -1127,6 +1127,10 @@ class COpenGLExtensionHandler
 	void extGlUniform2iv(GLint loc, GLsizei count, const GLint *v);
 	void extGlUniform3iv(GLint loc, GLsizei count, const GLint *v);
 	void extGlUniform4iv(GLint loc, GLsizei count, const GLint *v);
+	void extGlUniform1uiv(GLint loc, GLsizei count, const GLuint *v);
+	void extGlUniform2uiv(GLint loc, GLsizei count, const GLuint *v);
+	void extGlUniform3uiv(GLint loc, GLsizei count, const GLuint *v);
+	void extGlUniform4uiv(GLint loc, GLsizei count, const GLuint *v);
 	void extGlUniformMatrix2fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v);
 	void extGlUniformMatrix2x3fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v);
 	void extGlUniformMatrix2x4fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v);
@@ -1199,6 +1203,9 @@ class COpenGLExtensionHandler
 	void extGlGetTextureImage(GLuint texture, GLenum target, GLint level, GLenum format, GLenum type, GLsizei bufSize, void* pixels);
     void extGlNamedFramebufferTexture(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level);
     void extGlTextureParameteri(GLuint texture, GLenum pname, GLint param);
+	void extGlTextureParameterf(GLuint texture,	GLenum pname, GLfloat param);
+	void extGlTextureParameteriv(GLuint texture, GLenum pname, const GLint* params);
+	void extGlTextureParameterfv(GLuint texture, GLenum pname, const GLfloat* params);
     void extGlCreateTextures(GLenum target, GLsizei n, GLuint* textures);
     void extGlCreateFramebuffers(GLsizei n, GLuint* framebuffers);
     void extGlBindTextures(GLuint first, GLsizei count, const GLuint *textures, const GLenum* targets);
@@ -1262,6 +1269,10 @@ class COpenGLExtensionHandler
 		PFNGLUNIFORM2IVARBPROC pGlUniform2ivARB;
 		PFNGLUNIFORM3IVARBPROC pGlUniform3ivARB;
 		PFNGLUNIFORM4IVARBPROC pGlUniform4ivARB;
+		PFNGLUNIFORM1UIVPROC pGlUniform1uiv;
+		PFNGLUNIFORM2UIVPROC pGlUniform2uiv;
+		PFNGLUNIFORM3UIVPROC pGlUniform3uiv;
+		PFNGLUNIFORM4UIVPROC pGlUniform4uiv;
 		PFNGLUNIFORMMATRIX2FVARBPROC pGlUniformMatrix2fvARB;
 		PFNGLUNIFORMMATRIX2X3FVPROC pGlUniformMatrix2x3fv;
 		PFNGLUNIFORMMATRIX2X4FVPROC pGlUniformMatrix2x4fv;
@@ -1365,6 +1376,10 @@ class COpenGLExtensionHandler
 		PFNGLGETTEXTUREIMAGEPROC pGlGetTextureImage;
         PFNGLNAMEDFRAMEBUFFERTEXTUREPROC pGlNamedFramebufferTexture;
         PFNGLTEXTUREPARAMETERIPROC pGlTextureParameteri;
+		PFNGLTEXTUREPARAMETERFPROC pGlTextureParameterf;
+		PFNGLTEXTUREPARAMETERIVPROC pGlTextureParameteriv;
+		PFNGLTEXTUREPARAMETERFVPROC pGlTextureParameterfv;
+
         PFNGLCREATETEXTURESPROC pGlCreateTextures;
         PFNGLCREATEFRAMEBUFFERSPROC pGlCreateFramebuffers;
         PFNGLBINDTEXTURESPROC pGlBindTextures;
@@ -1892,6 +1907,46 @@ inline void COpenGLExtensionHandler::extGlUniform4fv(GLint loc, GLsizei count, c
 	glUniform4fvARB(loc, count, v);
 #else
 	os::Printer::log("glUniform4fv not supported", ELL_ERROR);
+#endif
+}
+
+inline void COpenGLExtensionHandler::extGlUniform1uiv(GLint loc, GLsizei count, const GLuint *v)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlUniform1uiv)
+		pGlUniform1uiv(loc, count, v);
+#else
+	glUniform1uiv(loc, count, v);
+#endif
+}
+
+inline void COpenGLExtensionHandler::extGlUniform2uiv(GLint loc, GLsizei count, const GLuint *v)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlUniform2uiv)
+		pGlUniform2uiv(loc, count, v);
+#else
+	glUniform2uiv(loc, count, v);
+#endif
+}
+
+inline void COpenGLExtensionHandler::extGlUniform3uiv(GLint loc, GLsizei count, const GLuint *v)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlUniform3uiv)
+		pGlUniform3uiv(loc, count, v);
+#else
+	glUniform3uiv(loc, count, v);
+#endif
+}
+
+inline void COpenGLExtensionHandler::extGlUniform4uiv(GLint loc, GLsizei count, const GLuint *v)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlUniform4uiv)
+		pGlUniform4uiv(loc, count, v);
+#else
+	glUniform4uiv(loc, count, v);
 #endif
 }
 
@@ -3038,8 +3093,30 @@ inline void COpenGLExtensionHandler::extGlTextureParameteri(GLuint texture, GLen
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlTextureParameteri)
         pGlTextureParameteri(texture, pname, param);
-#else
-	// TODO
+#endif//_IRR_OPENGL_USE_EXTPOINTER_
+}
+
+inline void COpenGLExtensionHandler::extGlTextureParameterf(GLuint texture, GLenum pname, GLfloat param)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlTextureParameterf)
+		pGlTextureParameterf(texture, pname, param);
+#endif//_IRR_OPENGL_USE_EXTPOINTER_
+}
+
+inline void COpenGLExtensionHandler::extGlTextureParameteriv(GLuint texture, GLenum pname, const GLint* params)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlTextureParameteriv)
+		pGlTextureParameteriv(texture, pname, params);
+#endif//_IRR_OPENGL_USE_EXTPOINTER_
+}
+
+inline void COpenGLExtensionHandler::extGlTextureParameterfv(GLuint texture, GLenum pname, const GLfloat* params)
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlTextureParameterfv)
+		pGlTextureParameterfv(texture, pname, params);
 #endif//_IRR_OPENGL_USE_EXTPOINTER_
 }
 

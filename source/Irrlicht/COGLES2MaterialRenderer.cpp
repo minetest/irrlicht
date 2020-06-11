@@ -384,6 +384,11 @@ bool COGLES2MaterialRenderer::setVertexShaderConstant(s32 index, const s32* ints
 	return setPixelShaderConstant(index, ints, count);
 }
 
+bool COGLES2MaterialRenderer::setVertexShaderConstant(s32 index, const u32* ints, int count)
+{
+	return setPixelShaderConstant(index, ints, count);
+}
+
 bool COGLES2MaterialRenderer::setPixelShaderConstant(s32 index, const f32* floats, int count)
 {
 	if(index < 0 || UniformInfo[index].location < 0)
@@ -469,6 +474,12 @@ bool COGLES2MaterialRenderer::setPixelShaderConstant(s32 index, const s32* ints,
 	}
 
 	return status;
+}
+
+bool COGLES2MaterialRenderer::setPixelShaderConstant(s32 index, const u32* ints, int count)
+{
+	os::Printer::log("Unsigned int support needs at least GLES 3.0", ELL_WARNING);
+	return false;
 }
 
 IVideoDriver* COGLES2MaterialRenderer::getVideoDriver()

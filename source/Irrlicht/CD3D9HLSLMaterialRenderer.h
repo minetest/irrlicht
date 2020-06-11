@@ -56,6 +56,9 @@ public:
 	//! Int interface for the above.
 	virtual bool setVariable(bool vertexShader, s32 index, const s32* ints, int count);
 
+	//! Uint interface for the above.
+	virtual bool setVariable(bool vertexShader, s32 index, const u32* ints, int count);
+
 	bool OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype) _IRR_OVERRIDE_;
 
 protected:

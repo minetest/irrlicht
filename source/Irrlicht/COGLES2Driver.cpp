@@ -2299,14 +2299,21 @@ COGLES2Driver::~COGLES2Driver()
 	//! Sets a constant for the vertex shader based on an index.
 	bool COGLES2Driver::setVertexShaderConstant(s32 index, const f32* floats, int count)
 	{
-		//pass this along, as in GLSL the same routine is used for both vertex and fragment shaders
-		return setPixelShaderConstant(index, floats, count);
+		os::Printer::log("Error: Please call services->setVertexShaderConstant(), not VideoDriver->setVertexShaderConstant().");
+		return false;
 	}
 
 	//! Int interface for the above.
 	bool COGLES2Driver::setVertexShaderConstant(s32 index, const s32* ints, int count)
 	{
-		return setPixelShaderConstant(index, ints, count);
+		os::Printer::log("Error: Please call services->setVertexShaderConstant(), not VideoDriver->setVertexShaderConstant().");
+		return false;
+	}
+
+	bool COGLES2Driver::setVertexShaderConstant(s32 index, const u32* ints, int count)
+	{
+		os::Printer::log("Error: Please call services->setVertexShaderConstant(), not VideoDriver->setVertexShaderConstant().");
+		return false;
 	}
 
 	//! Sets a constant for the pixel shader based on an index.
@@ -2323,6 +2330,11 @@ COGLES2Driver::~COGLES2Driver()
 		return false;
 	}
 
+	bool COGLES2Driver::setPixelShaderConstant(s32 index, const u32* ints, int count)
+	{
+		os::Printer::log("Error: Please call services->setPixelShaderConstant(), not VideoDriver->setPixelShaderConstant().");
+		return false;
+	}
 
 	//! Adds a new material renderer to the VideoDriver, using pixel and/or
 	//! vertex shaders to render geometry.

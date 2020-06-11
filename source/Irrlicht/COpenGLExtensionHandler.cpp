@@ -44,6 +44,7 @@ COpenGLExtensionHandler::COpenGLExtensionHandler() :
 	pGlGetUniformLocationARB(0), pGlGetUniformLocation(0),
 	pGlUniform1fvARB(0), pGlUniform2fvARB(0), pGlUniform3fvARB(0), pGlUniform4fvARB(0),
 	pGlUniform1ivARB(0), pGlUniform2ivARB(0), pGlUniform3ivARB(0), pGlUniform4ivARB(0),
+	pGlUniform1uiv(0), pGlUniform2uiv(0), pGlUniform3uiv(0), pGlUniform4uiv(0),
 	pGlUniformMatrix2fvARB(0), pGlUniformMatrix2x3fv(0), pGlUniformMatrix2x4fv(0),
 	pGlUniformMatrix3x2fv(0), pGlUniformMatrix3fvARB(0), pGlUniformMatrix3x4fv(0),
 	pGlUniformMatrix4x2fv(0), pGlUniformMatrix4x3fv(0), pGlUniformMatrix4fvARB(0),
@@ -87,7 +88,8 @@ COpenGLExtensionHandler::COpenGLExtensionHandler() :
 	pGlBlendEquationIndexedAMD(0), pGlBlendEquationiARB(0), pGlBlendEquationSeparateIndexedAMD(0), pGlBlendEquationSeparateiARB(0),
 	// DSA
     pGlTextureStorage2D(0), pGlTextureStorage3D(0), pGlTextureSubImage2D(0), pGlGetTextureImage(0), pGlNamedFramebufferTexture(0),
-    pGlTextureParameteri(0), pGlCreateTextures(0), pGlCreateFramebuffers(0), pGlBindTextures(0), pGlGenerateTextureMipmap(0),
+    pGlTextureParameteri(0), pGlTextureParameterf(0), pGlTextureParameteriv(0), pGlTextureParameterfv(0),
+	pGlCreateTextures(0), pGlCreateFramebuffers(0), pGlBindTextures(0), pGlGenerateTextureMipmap(0),
     // DSA with EXT or functions to simulate it
 	pGlTextureStorage2DEXT(0), pGlTexStorage2D(0), pGlTextureStorage3DEXT(0), pGlTexStorage3D(0), pGlTextureSubImage2DEXT(0), pGlGetTextureImageEXT(0),
 	pGlNamedFramebufferTextureEXT(0), pGlFramebufferTexture(0), pGlGenerateTextureMipmapEXT(0)
@@ -466,6 +468,10 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 	pGlUniform2ivARB = (PFNGLUNIFORM2IVARBPROC) IRR_OGL_LOAD_EXTENSION("glUniform2ivARB");
 	pGlUniform3ivARB = (PFNGLUNIFORM3IVARBPROC) IRR_OGL_LOAD_EXTENSION("glUniform3ivARB");
 	pGlUniform4ivARB = (PFNGLUNIFORM4IVARBPROC) IRR_OGL_LOAD_EXTENSION("glUniform4ivARB");
+	pGlUniform1uiv = (PFNGLUNIFORM1UIVPROC) IRR_OGL_LOAD_EXTENSION("glUniform1uiv");
+	pGlUniform2uiv = (PFNGLUNIFORM2UIVPROC) IRR_OGL_LOAD_EXTENSION("glUniform2uiv");
+	pGlUniform3uiv = (PFNGLUNIFORM3UIVPROC) IRR_OGL_LOAD_EXTENSION("glUniform3uiv");
+	pGlUniform4uiv = (PFNGLUNIFORM4UIVPROC) IRR_OGL_LOAD_EXTENSION("glUniform4uiv");
 	pGlUniformMatrix2fvARB = (PFNGLUNIFORMMATRIX2FVARBPROC) IRR_OGL_LOAD_EXTENSION("glUniformMatrix2fvARB");
 	pGlUniformMatrix2x3fv = (PFNGLUNIFORMMATRIX2X3FVPROC) IRR_OGL_LOAD_EXTENSION("glUniformMatrix2x3fv");
 	pGlUniformMatrix2x4fv = (PFNGLUNIFORMMATRIX2X4FVPROC)IRR_OGL_LOAD_EXTENSION("glUniformMatrix2x4fv");
@@ -581,6 +587,10 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 	pGlGetTextureImage = (PFNGLGETTEXTUREIMAGEPROC)IRR_OGL_LOAD_EXTENSION("glGetTextureImage");
     pGlNamedFramebufferTexture = (PFNGLNAMEDFRAMEBUFFERTEXTUREPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferTexture");
     pGlTextureParameteri = (PFNGLTEXTUREPARAMETERIPROC) IRR_OGL_LOAD_EXTENSION("glTextureParameteri");
+	pGlTextureParameterf = (PFNGLTEXTUREPARAMETERFPROC)IRR_OGL_LOAD_EXTENSION("glTextureParameterf");
+	pGlTextureParameteriv = (PFNGLTEXTUREPARAMETERIVPROC)IRR_OGL_LOAD_EXTENSION("glTextureParameteriv");
+	pGlTextureParameterfv = (PFNGLTEXTUREPARAMETERFVPROC)IRR_OGL_LOAD_EXTENSION("glTextureParameterfv");
+
     pGlCreateTextures = (PFNGLCREATETEXTURESPROC) IRR_OGL_LOAD_EXTENSION("glCreateTextures");
     pGlCreateFramebuffers = (PFNGLCREATEFRAMEBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glCreateFramebuffers");
     pGlBindTextures = (PFNGLBINDTEXTURESPROC) IRR_OGL_LOAD_EXTENSION("glBindTextures");
