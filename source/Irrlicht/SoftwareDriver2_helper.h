@@ -495,10 +495,12 @@ inline tFixPoint s32_to_fixPoint (const s32 x)
 	return x << FIX_POINT_PRE;
 }
 
+#if 0
 inline tFixPointu u32_to_fixPoint (const u32 x)
 {
 	return x << FIX_POINT_PRE;
 }
+#endif
 
 inline u32 fixPointu_to_u32 (const tFixPointu x)
 {
@@ -641,13 +643,13 @@ REALINLINE tFixPoint saturateFix ( const tFixPoint a)
 }
 
 
+#if 0
 // rount fixpoint to int
 inline s32 roundFix ( const tFixPoint x )
 {
 	return (s32)(( x + FIX_POINT_ZERO_DOT_FIVE ) >> FIX_POINT_PRE);
 }
-
-
+#endif
 
 // x in [0;1[
 #if 0

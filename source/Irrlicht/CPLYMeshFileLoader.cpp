@@ -572,7 +572,7 @@ c8* CPLYMeshFileLoader::getNextLine()
 	StartPointer = LineEndPointer + 1;
 
 	// crlf split across buffer move
-	if (*StartPointer == '\n')
+	if (StartPointer<EndPointer && *StartPointer == '\n')
 	{
 		*StartPointer = '\0';
 		++StartPointer;
@@ -583,7 +583,7 @@ c8* CPLYMeshFileLoader::getNextLine()
 	while (pos < EndPointer && *pos && *pos != '\r' && *pos != '\n')
 		++pos;
 
-	if ( pos < EndPointer && ( *(pos+1) == '\r' || *(pos+1) == '\n') )
+	if ( (pos+1) < EndPointer && ( *(pos+1) == '\r' || *(pos+1) == '\n') )
 	{
 		*pos = '\0';
 		++pos;

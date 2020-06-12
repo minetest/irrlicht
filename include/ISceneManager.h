@@ -52,7 +52,9 @@ namespace scene
 {
 	//! Enumeration for render passes.
 	/** A parameter passed to the registerNodeForRendering() method of the ISceneManager,
-	specifying when the node wants to be drawn in relation to the other nodes. */
+	specifying when the node wants to be drawn in relation to the other nodes.
+	Note: Despite the numbering this is not used as bit-field.
+	*/
 	enum E_SCENE_NODE_RENDER_PASS
 	{
 		//! No pass currently active
@@ -92,7 +94,11 @@ namespace scene
 		ESNRP_TRANSPARENT_EFFECT =32,
 
 		//! Drawn after the solid nodes, before the transparent nodes, the time for drawing shadow volumes
-		ESNRP_SHADOW =64
+		ESNRP_SHADOW =64,
+
+		//! Drawn after transparent effect nodes. For custom gui's. Unsorted (in order nodes registered themselves). 
+		ESNRP_GUI = 128
+
 	};
 
 	class IAnimatedMesh;
@@ -1122,6 +1128,8 @@ namespace scene
 		\param pass: Specifies when the node wants to be drawn in relation to the other nodes.
 		For example, if the node is a shadow, it usually wants to be drawn after all other nodes
 		and will use ESNRP_SHADOW for this. See scene::E_SCENE_NODE_RENDER_PASS for details.
+		Note: This is _not_ a bitfield. If you want to register a note for several render passes, then 
+		call this function once for each pass.
 		\return scene will be rendered ( passed culling ) */
 		virtual u32 registerNodeForRendering(ISceneNode* node,
 			E_SCENE_NODE_RENDER_PASS pass = ESNRP_AUTOMATIC) = 0;

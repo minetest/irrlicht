@@ -50,20 +50,19 @@ bool CB3DMeshWriter::writeMesh(io::IWriteFile* file, IMesh* const mesh, s32 flag
     return false;
 #endif
 
-    Size = 0;
     file->write("BB3D", 4);
-    file->write(&Size, sizeof(u32)); // Updated later once known.
+    file->write("size", 4); // BB3D chunk size, updated later
 
-    int version = 1;
-    write(file, &version, sizeof(int));
+    const u32 version = 1;
+    file->write(&version, 4);
 
     //
 
-    const u32 numBeshBuffers = mesh->getMeshBufferCount();
+    const u32 numMeshBuffers = mesh->getMeshBufferCount();
     array<SB3dTexture> texs;
     map<ITexture *, u32> tex2id;	// TODO: texture pointer as key not sufficient as same texture can have several id's
     u32 texsizes = 0;
-    for (u32 i = 0; i < numBeshBuffers; i++)
+    for (u32 i = 0; i < numMeshBuffers; i++)
 	{
         const IMeshBuffer * const mb = mesh->getMeshBuffer(i);
         const SMaterial &mat = mb->getMaterial();
@@ -93,192 +92,122 @@ bool CB3DMeshWriter::writeMesh(io::IWriteFile* file, IMesh* const mesh, s32 flag
         }
     }
 
-    write(file, "TEXS", 4);
-    write(file, &texsizes, 4);
+    file->write("TEXS", 4);
+    file->write(&texsizes, 4);
 
     u32 numTexture = texs.size();
     for (u32 i = 0; i < numTexture; i++)
 	{
-        write(file, texs[i].TextureName.c_str(), texs[i].TextureName.size() + 1);
-        write(file, &texs[i].Flags, 7*4);
+        file->write(texs[i].TextureName.c_str(), texs[i].TextureName.size() + 1);
+        file->write(&texs[i].Flags, 7*4);
     }
 
     //
 
-    const u32 brushsize = (7 * 4 + 1) * numBeshBuffers + numBeshBuffers * 4 * MATERIAL_MAX_TEXTURES + 4;
-    write(file, "BRUS", 4);
-    write(file, &brushsize, 4);
-    u32 brushcheck = Size;
-    const u32 usedtex = MATERIAL_MAX_TEXTURES;
-    write(file, &usedtex, 4);
+    file->write("BRUS", 4);
+    const u32 brushSizeAdress = file->getPos();
+    file->write(&brushSizeAdress, 4); // BRUSH chunk size, updated later
 
-    for (u32 i = 0; i < numBeshBuffers; i++)
+    const u32 usedtex = MATERIAL_MAX_TEXTURES;
+    file->write(&usedtex, 4);
+
+    for (u32 i = 0; i < numMeshBuffers; i++)
 	{
         const IMeshBuffer * const mb = mesh->getMeshBuffer(i);
         const SMaterial &mat = mb->getMaterial();
 
-        write(file, "", 1);
+        file->write("", 1);
 
         float f = 1;
-        write(file, &f, 4);
-        write(file, &f, 4);
-        write(file, &f, 4);
-        write(file, &f, 4);
+        file->write(&f, 4);
+        file->write(&f, 4);
+        file->write(&f, 4);
+        file->write(&f, 4);
 
         f = 0;
-        write(file, &f, 4);
+        file->write(&f, 4);
 
         u32 tmp = 1;
-        write(file, &tmp, 4);
+        file->write(&tmp, 4);
         tmp = 0;
-        write(file, &tmp, 4);
+        file->write(&tmp, 4);
 
         for (u32 j = 0; j < MATERIAL_MAX_TEXTURES; j++)
 		{
+		    s32 id = -1;
             if (mat.getTexture(j))
 			{
-                const u32 id = tex2id[mat.getTexture(j)];
-                write(file, &id, 4);
+                id = tex2id[mat.getTexture(j)];
             }
-			else
-			{
-                const int id = -1;
-                write(file, &id, 4);
-            }
+            file->write(&id, 4);
         }
     }
+    writeSizeFrom(file, brushSizeAdress+4, brushSizeAdress); // BRUSH chunk size
 
-    // Check brushsize
-    brushcheck = Size - brushcheck;
-    if (brushcheck != brushsize)
-	{
-        printf("Failed in brush size calculation, size %u advanced %u\n",
-            brushsize, brushcheck);
-	}
-
-    write(file, "NODE", 4);
-
-    // Calculate node size
-    u32 nodesize = 41 + 8 + 4 + 8;
-    u32 bonesSize = 0;
-
-    if(ISkinnedMesh *skinnedMesh = getSkinned(mesh))
-    {
-        if (!skinnedMesh->isStatic())
-        {
-            bonesSize += 20;
-        }
-
-        const core::array<ISkinnedMesh::SJoint*> rootJoints = getRootJoints(skinnedMesh);
-        for (u32 i = 0; i < rootJoints.size(); i++)
-        {
-            bonesSize += getJointChunkSize(skinnedMesh, rootJoints[i]);
-        }
-        nodesize += bonesSize;
-
-        // -------------------
-
-    }
-
-    // VERT data
-    nodesize += 12;
-
-    const u32 texcoords = getUVlayerCount(mesh);
-    for (u32 i = 0; i < numBeshBuffers; i++)
-    {
-        nodesize += 8 + 4;
-        const IMeshBuffer * const mb = mesh->getMeshBuffer(i);
-
-        nodesize += mb->getVertexCount() * 10 * 4;
-
-        nodesize += mb->getVertexCount() * texcoords * 2 * 4;
-        nodesize += mb->getIndexCount() * 4;
-    }
-    write(file, &nodesize, 4);
-    u32 nodecheck = Size;
+    file->write("NODE", 4);
+    u32 nodeSizeAdress = file->getPos();
+    file->write(&nodeSizeAdress, 4); // NODE chunk size, updated later
 
     // Node
-    write(file, "", 1);
-    float f = 0;
-    write(file, &f, 4);
-    write(file, &f, 4);
-    write(file, &f, 4);
+    file->write("", 1);
 
-    f = 1;
-    write(file, &f, 4);
-    write(file, &f, 4);
-    write(file, &f, 4);
+    // position
+    writeVector3(file, core::vector3df(0.f, 0.f, 0.f));
 
-    write(file, &f, 4);
-    f = 0;
-    write(file, &f, 4);
-    write(file, &f, 4);
-    write(file, &f, 4);
+    // scale
+    writeVector3(file, core::vector3df(1.f, 1.f, 1.f));
+
+    // rotation
+    writeQuaternion(file, core::quaternion(0.f, 0.f, 0.f, 1.f));
 
     // Mesh
-    write(file, "MESH", 4);
-    const u32 meshsize = nodesize - 41 - 8 - bonesSize;
-    write(file, &meshsize, 4);
+    file->write("MESH", 4);
+    const u32 meshSizeAdress = file->getPos();
+    file->write(&meshSizeAdress, 4); // MESH chunk size, updated later
+
 	s32 brushID = -1;
-    write(file, &brushID, 4);
+    file->write(&brushID, 4);
 
 
 
     // Verts
-    write(file, "VRTS", 4);
-    u32 vertsize = 12;
+    file->write("VRTS", 4);
+    const u32 verticesSizeAdress = file->getPos();
+    file->write(&verticesSizeAdress, 4);
 
-    for (u32 i = 0; i < numBeshBuffers; i++)
-    {
-        const IMeshBuffer * const mb = mesh->getMeshBuffer(i);
+    u32 flagsB3D = 3; // 1=normal values present, 2=rgba values present
+    file->write(&flagsB3D, 4);
 
-        vertsize += mb->getVertexCount() * 10 * 4 +
-                    mb->getVertexCount() * texcoords * 2 * 4;
-    }
-    write(file, &vertsize, 4);
-    u32 vertcheck = Size;
-
-    int flagsB3D = 3;
-    write(file, &flagsB3D, 4);
-
-    write(file, &texcoords, 4);
+    const u32 texcoordsCount = getUVlayerCount(mesh);
+    file->write(&texcoordsCount, 4);
     flagsB3D = 2;
-    write(file, &flagsB3D, 4);
+    file->write(&flagsB3D, 4);
 
-    for (u32 i = 0; i < numBeshBuffers; i++)
+    for (u32 i = 0; i < numMeshBuffers; i++)
     {
         const IMeshBuffer * const mb = mesh->getMeshBuffer(i);
-        irr::u32 numVertices = mb->getVertexCount();
+        const u32 numVertices = mb->getVertexCount();
         for (u32 j = 0; j < numVertices; j++)
 		{
             const vector3df &pos = mb->getPosition(j);
-            write(file, &pos.X, 4);
-            write(file, &pos.Y, 4);
-            write(file, &pos.Z, 4);
+            writeVector3(file, pos);
 
             const vector3df &n = mb->getNormal(j);
-            write(file, &n.X, 4);
-            write(file, &n.Y, 4);
-            write(file, &n.Z, 4);
+            writeVector3(file, n);
 
-            const u32 zero = 0;
             switch (mb->getVertexType())
 			{
                 case EVT_STANDARD:
                 {
                     S3DVertex *v = (S3DVertex *) mb->getVertices();
                     const SColorf col(v[j].Color);
-                    write(file, &col.r, 4);
-                    write(file, &col.g, 4);
-                    write(file, &col.b, 4);
-                    write(file, &col.a, 4);
+                    writeColor(file, col);
 
-                    write(file, &v[j].TCoords.X, 4);
-                    write(file, &v[j].TCoords.Y, 4);
-                    if (texcoords == 2)
+                    const core::vector2df uv1 = v[j].TCoords;
+                    writeVector2(file, uv1);
+                    if (texcoordsCount == 2)
                     {
-                        write(file, &zero, 4);
-                        write(file, &zero, 4);
+                        writeVector2(file, core::vector2df(0.f, 0.f));
                     }
                 }
                 break;
@@ -286,101 +215,93 @@ bool CB3DMeshWriter::writeMesh(io::IWriteFile* file, IMesh* const mesh, s32 flag
                 {
                     S3DVertex2TCoords *v = (S3DVertex2TCoords *) mb->getVertices();
                     const SColorf col(v[j].Color);
-                    write(file, &col.r, 4);
-                    write(file, &col.g, 4);
-                    write(file, &col.b, 4);
-                    write(file, &col.a, 4);
+                    writeColor(file, col);
 
-                    write(file, &v[j].TCoords.X, 4);
-                    write(file, &v[j].TCoords.Y, 4);
-                    write(file, &v[j].TCoords2.X, 4);
-                    write(file, &v[j].TCoords2.Y, 4);
+                    const core::vector2df uv1 = v[j].TCoords;
+                    writeVector2(file, uv1);
+                    const core::vector2df uv2 = v[j].TCoords;
+                    writeVector2(file, uv2);
                 }
                 break;
                 case EVT_TANGENTS:
                 {
                     S3DVertexTangents *v = (S3DVertexTangents *) mb->getVertices();
                     const SColorf col(v[j].Color);
-                    write(file, &col.r, 4);
-                    write(file, &col.g, 4);
-                    write(file, &col.b, 4);
-                    write(file, &col.a, 4);
+                    writeColor(file, col);
 
-                    write(file, &v[j].TCoords.X, 4);
-                    write(file, &v[j].TCoords.Y, 4);
-                    if (texcoords == 2)
+                    const core::vector2df uv1 = v[j].TCoords;
+                    writeVector2(file, uv1);
+                    if (texcoordsCount == 2)
                     {
-                        write(file, &zero, 4);
-                        write(file, &zero, 4);
+                        writeVector2(file, core::vector2df(0.f, 0.f));
                     }
                 }
                 break;
             }
         }
     }
-    // Check vertsize
-    vertcheck = Size - vertcheck;
-    if (vertcheck != vertsize)
-	{
-        printf("Failed in vertex size calculation, size %u advanced %u\n",
-            vertsize, vertcheck);
-	}
+    writeSizeFrom(file, verticesSizeAdress+4, verticesSizeAdress); // VERT chunk size
+
 
     u32 currentMeshBufferIndex = 0;
     // Tris
-    for (u32 i = 0; i < numBeshBuffers; i++)
+    for (u32 i = 0; i < numMeshBuffers; i++)
     {
         const IMeshBuffer * const mb = mesh->getMeshBuffer(i);
-        write(file, "TRIS", 4);
-        const u32 trisize = 4 + mb->getIndexCount() * 4;
-        write(file, &trisize, 4);
+        file->write("TRIS", 4);
+        const u32 trisSizeAdress = file->getPos();
+        file->write(&trisSizeAdress, 4); // TRIS chunk size, updated later
 
-        u32 tricheck = Size;
-
-        write(file, &i, 4);
+        file->write(&i, 4);
 
         u32 numIndices = mb->getIndexCount();
         const u16 * const idx = (u16 *) mb->getIndices();
         for (u32 j = 0; j < numIndices; j += 3)
 		{
             u32 tmp = idx[j] + currentMeshBufferIndex;
-            write(file, &tmp, sizeof(u32));
+            file->write(&tmp, sizeof(u32));
 
             tmp = idx[j + 1] + currentMeshBufferIndex;
-            write(file, &tmp, sizeof(u32));
+            file->write(&tmp, sizeof(u32));
 
             tmp = idx[j + 2] + currentMeshBufferIndex;
-            write(file, &tmp, sizeof(u32));
+            file->write(&tmp, sizeof(u32));
         }
-
-        // Check that tris calculation was ok
-        tricheck = Size - tricheck;
-        if (tricheck != trisize)
-		{
-            printf("Failed in tris size calculation, size %u advanced %u\n",
-                trisize, tricheck);
-		}
+        writeSizeFrom(file, trisSizeAdress+4, trisSizeAdress);  // TRIS chunk size
 
         currentMeshBufferIndex += mb->getVertexCount();
     }
+    writeSizeFrom(file, meshSizeAdress+4, meshSizeAdress); // MESH chunk size
+
 
     if(ISkinnedMesh *skinnedMesh = getSkinned(mesh))
     {
         // Write animation data
+        f32 animationSpeedMultiplier = 1.f;
         if (!skinnedMesh->isStatic())
         {
-            write(file, "ANIM", 4);
+            file->write("ANIM", 4);
 
             const u32 animsize = 12;
-            write(file, &animsize, 4);
+            file->write(&animsize, 4);
 
             const u32 flags = 0;
-            const u32 frames = skinnedMesh->getFrameCount();
-            const f32 fps = skinnedMesh->getAnimationSpeed();
+            f32 fps = skinnedMesh->getAnimationSpeed();
 
-            write(file, &flags, 4);
-            write(file, &frames, 4);
-            write(file, &fps, 4);
+            /* B3D file format use integer as keyframe, so there is some potential issues if the model use float as keyframe (Irrlicht use float) with a low animation FPS value
+            So we define a minimum animation FPS value to multiply the frame and FPS value if the FPS of the animation is too low to store the keyframe with integers */
+            const int minimumAnimationFPS = 60;
+
+            if (fps < minimumAnimationFPS)
+            {
+                animationSpeedMultiplier = minimumAnimationFPS / fps;
+                fps = minimumAnimationFPS;
+            }
+            const u32 frames = static_cast<u32>(skinnedMesh->getFrameCount() * animationSpeedMultiplier);
+
+            file->write(&flags, 4);
+            file->write(&frames, 4);
+            file->write(&fps, 4);
         }
 
         // Write joints
@@ -388,67 +309,49 @@ bool CB3DMeshWriter::writeMesh(io::IWriteFile* file, IMesh* const mesh, s32 flag
 
         for (u32 i = 0; i < rootJoints.size(); i++)
         {
-            writeJointChunk(file, skinnedMesh, rootJoints[i]);
+            writeJointChunk(file, skinnedMesh, rootJoints[i], animationSpeedMultiplier);
         }
     }
 
-    // Check that node calculation was ok
-    nodecheck = Size - nodecheck;
-    if (nodecheck != nodesize)
-	{
-        printf("Failed in node size calculation, size %u advanced %u\n",
-            nodesize, nodecheck);
-	}
-    file->seek(4);
-    file->write(&Size, 4);
+    writeSizeFrom(file, nodeSizeAdress+4, nodeSizeAdress); // Node chunk size
+	writeSizeFrom(file, 8, 4); // BB3D chunk size
 
     return true;
 }
 
 
 
-void CB3DMeshWriter::writeJointChunk(io::IWriteFile* file, ISkinnedMesh* mesh , ISkinnedMesh::SJoint* joint)
+void CB3DMeshWriter::writeJointChunk(io::IWriteFile* file, ISkinnedMesh* mesh, ISkinnedMesh::SJoint* joint, f32 animationSpeedMultiplier)
 {
     // Node
-    write(file, "NODE", 4);
-
-    // Calculate node size
-    u32 nodesize = getJointChunkSize(mesh, joint);
-    nodesize -= 8; // The declaration + size of THIS chunk shouldn't be added to the size
-
-    write(file, &nodesize, 4);
+    file->write("NODE", 4);
+    const u32 nodeSizeAdress = file->getPos();
+    file->write(&nodeSizeAdress, 4);
 
 
     core::stringc name = joint->Name;
-    write(file, name.c_str(), name.size());
-    write(file, "", 1);
+    file->write(name.c_str(), name.size());
+    file->write("", 1);
 
-    core::vector3df pos = joint->Animatedposition;
     // Position
-    write(file, &pos.X, 4);
-    write(file, &pos.Y, 4);
-    write(file, &pos.Z, 4);
+    const core::vector3df pos = joint->Animatedposition;
+    writeVector3(file, pos);
 
     // Scale
     core::vector3df scale = joint->Animatedscale;
     if (scale == core::vector3df(0, 0, 0))
         scale = core::vector3df(1, 1, 1);
 
-    write(file, &scale.X, 4);
-    write(file, &scale.Y, 4);
-    write(file, &scale.Z, 4);
+    writeVector3(file, scale);
 
     // Rotation
-    core::quaternion quat = joint->Animatedrotation;
-    write(file, &quat.W, 4);
-    write(file, &quat.X, 4);
-    write(file, &quat.Y, 4);
-    write(file, &quat.Z, 4);
+    const core::quaternion quat = joint->Animatedrotation;
+    writeQuaternion(file, quat);
 
     // Bone
-    write(file, "BONE", 4);
+    file->write("BONE", 4);
     u32 bonesize = 8 * joint->Weights.size();
-    write(file, &bonesize, 4);
+    file->write(&bonesize, 4);
 
     // Skinning ------------------
     for (u32 i = 0; i < joint->Weights.size(); i++)
@@ -463,85 +366,83 @@ void CB3DMeshWriter::writeJointChunk(io::IWriteFile* file, ISkinnedMesh* mesh , 
             b3dVertexID += mesh->getMeshBuffer(j)->getVertexCount();
         }
 
-        write(file, &b3dVertexID, 4);
-        write(file, &weight, 4);
+        file->write(&b3dVertexID, 4);
+        file->write(&weight, 4);
     }
     // ---------------------------
 
+    f32 floatBuffer[5];
     // Animation keys
     if (joint->PositionKeys.size())
     {
-        write(file, "KEYS", 4);
+        file->write("KEYS", 4);
         u32 keysSize = 4 * joint->PositionKeys.size() * 4; // X, Y and Z pos + frame
         keysSize += 4;  // Flag to define the type of the key
-        write(file, &keysSize, 4);
+        file->write(&keysSize, 4);
 
         u32 flag = 1; // 1 = flag for position keys
-        write(file, &flag, 4);
+        file->write(&flag, 4);
 
         for (u32 i = 0; i < joint->PositionKeys.size(); i++)
         {
-            const s32 frame = static_cast<s32>(joint->PositionKeys[i].frame);
+            const s32 frame = static_cast<s32>(joint->PositionKeys[i].frame * animationSpeedMultiplier);
+            file->write(&frame, 4);
+
             const core::vector3df pos = joint->PositionKeys[i].position;
-
-            write (file, &frame, 4);
-
-            write (file, &pos.X, 4);
-            write (file, &pos.Y, 4);
-            write (file, &pos.Z, 4);
-
+            pos.getAs3Values(floatBuffer);
+            file->write(floatBuffer, 12);
         }
     }
     if (joint->RotationKeys.size())
     {
-        write(file, "KEYS", 4);
+        file->write("KEYS", 4);
         u32 keysSize = 4 * joint->RotationKeys.size() * 5; // W, X, Y and Z rot + frame
         keysSize += 4; // Flag
-        write(file, &keysSize, 4);
+        file->write(&keysSize, 4);
 
         u32 flag = 4;
-        write(file, &flag, 4);
+        file->write(&flag, 4);
 
         for (u32 i = 0; i < joint->RotationKeys.size(); i++)
         {
-            const s32 frame = static_cast<s32>(joint->RotationKeys[i].frame);
+            const s32 frame = static_cast<s32>(joint->RotationKeys[i].frame * animationSpeedMultiplier);
             const core::quaternion rot = joint->RotationKeys[i].rotation;
 
-            write (file, &frame, 4);
-
-            write (file, &rot.W, 4);
-            write (file, &rot.X, 4);
-            write (file, &rot.Y, 4);
-            write (file, &rot.Z, 4);
+            memcpy(floatBuffer, &frame, 4);
+            floatBuffer[1] = rot.W;
+            floatBuffer[2] = rot.X;
+            floatBuffer[3] = rot.Y;
+            floatBuffer[4] = rot.Z;
+            file->write(floatBuffer, 20);
         }
     }
     if (joint->ScaleKeys.size())
     {
-        write(file, "KEYS", 4);
+        file->write("KEYS", 4);
         u32 keysSize = 4 * joint->ScaleKeys.size() * 4; // X, Y and Z scale + frame
         keysSize += 4; // Flag
-        write(file, &keysSize, 4);
+        file->write(&keysSize, 4);
 
         u32 flag = 2;
-        write(file, &flag, 4);
+        file->write(&flag, 4);
 
         for (u32 i = 0; i < joint->ScaleKeys.size(); i++)
         {
-            const s32 frame = static_cast<s32>(joint->ScaleKeys[i].frame);
+            const s32 frame = static_cast<s32>(joint->ScaleKeys[i].frame * animationSpeedMultiplier);
+            file->write(&frame, 4);
+
             const core::vector3df scale = joint->ScaleKeys[i].scale;
-
-            write (file, &frame, 4);
-
-            write (file, &scale.X, 4);
-            write (file, &scale.Y, 4);
-            write (file, &scale.Z, 4);
+            scale.getAs3Values(floatBuffer);
+            file->write(floatBuffer, 12);
         }
     }
 
     for (u32 i = 0; i < joint->Children.size(); i++)
     {
-        writeJointChunk(file, mesh, joint->Children[i]);
+        writeJointChunk(file, mesh, joint->Children[i], animationSpeedMultiplier);
     }
+
+    writeSizeFrom(file, nodeSizeAdress+4, nodeSizeAdress); // NODE chunk size
 }
 
 
@@ -552,47 +453,6 @@ ISkinnedMesh* CB3DMeshWriter::getSkinned (IMesh *mesh)
 		return static_cast<ISkinnedMesh*>(mesh);
     }
     return 0;
-}
-
-u32 CB3DMeshWriter::getJointChunkSize(const ISkinnedMesh* mesh, ISkinnedMesh::SJoint* joint)
-{
-    u32 chunkSize = 8 + 40; // Chunk declaration + chunk data
-    chunkSize += joint->Name.size() + 1; // the NULL character at the end of the string
-
-    u32 boneSize = joint->Weights.size() * 8; // vertex_id + weight = 8 bits per weight block
-    boneSize += 8; // declaration + size of he BONE chunk
-
-    u32 keysSize = 0;
-    if (joint->PositionKeys.size() != 0)
-    {
-        keysSize += 8; // KEYS + chunk size
-        keysSize += 4; // flags
-
-        keysSize += (joint->PositionKeys.size() * 16);
-    }
-    if (joint->RotationKeys.size() != 0)
-    {
-        keysSize += 8; // KEYS + chunk size
-        keysSize += 4; // flags
-
-        keysSize += (joint->RotationKeys.size() * 20);
-    }
-    if (joint->ScaleKeys.size() != 0)
-    {
-        keysSize += 8; // KEYS + chunk size
-        keysSize += 4; // flags
-
-        keysSize += (joint->ScaleKeys.size() * 16);
-    }
-
-    chunkSize += boneSize;
-    chunkSize += keysSize;
-
-    for (u32 i = 0; i < joint->Children.size(); ++i)
-    {
-        chunkSize += (getJointChunkSize(mesh, joint->Children[i]));
-    }
-    return chunkSize;
 }
 
 core::array<ISkinnedMesh::SJoint*> CB3DMeshWriter::getRootJoints(const ISkinnedMesh* mesh)
@@ -635,10 +495,39 @@ u32 CB3DMeshWriter::getUVlayerCount(IMesh* mesh)
     return 1;
 }
 
-void CB3DMeshWriter::write(io::IWriteFile* file, const void *ptr, const u32 bytes)
+void CB3DMeshWriter::writeVector2(io::IWriteFile* file, const core::vector2df& vec2)
 {
-	file->write(ptr, bytes);
-	Size += bytes;
+    f32 buffer[2] = {vec2.X, vec2.Y};
+    file->write(buffer, 8);
+}
+
+void CB3DMeshWriter::writeVector3(io::IWriteFile* file, const core::vector3df& vec3)
+{
+    f32 buffer[3];
+    vec3.getAs3Values(buffer);
+    file->write(buffer, 12);
+}
+
+void CB3DMeshWriter::writeQuaternion(io::IWriteFile* file, const core::quaternion& quat)
+{
+    f32 buffer[4] = {quat.W, quat.X, quat.Y, quat.Z};
+    file->write(buffer, 16);
+}
+
+void CB3DMeshWriter::writeColor(io::IWriteFile* file, const video::SColorf& color)
+{
+    f32 buffer[4] = {color.r, color.g, color.b, color.a};
+    file->write(buffer, 16);
+}
+
+// Write the size from a given position to current position at a specific position in the file
+void CB3DMeshWriter::writeSizeFrom(io::IWriteFile* file, const u32 from, const u32 adressToWrite)
+{
+    const long back = file->getPos();
+    file->seek(adressToWrite);
+    const u32 sizeToWrite = back - from;
+    file->write(&sizeToWrite, 4);
+    file->seek(back);
 }
 
 } // end namespace

@@ -34,7 +34,7 @@ private:
 
 
 //! constructor
-burning_shader_class::burning_shader_color(CBurningVideoDriver* driver)
+burning_shader_class::burning_shader_class(CBurningVideoDriver* driver)
 	: IBurningShader(driver)
 {
 #ifdef _DEBUG

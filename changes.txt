@@ -9,6 +9,15 @@ Changes in ogl-es (not yet released - will be merged with trunk at some point)
 
 --------------------------
 Changes in 1.9 (not yet released)
+- Fix potential reading/writing 1 byte behind it's own buffer in PLY loader.
+  Thanks @wolfgang for report and patch (http://irrlicht.sourceforge.net/forum/viewtopic.php?f=7&t=52627&p=305573#p305573)
+- ICursorControl::isVisible is now always returning the flag set in setVisible. 
+  This changes the behaviour on Win32 somewhat when Windows returned a CURSOR_SUPPRESSED state (touch-screen input).
+  Previously we set IsVisible it to false when CURSOR_SUPPRESSED was set.
+  Also we handle the CURSOR_SUPPRESSED state slightly different now and still try to hide cursors once when requested.
+- Improvements to B3D writer for speed, readability and handling of low framerate animations.
+  Thanks @JLouisB for the patch (For more info, see: http://irrlicht.sourceforge.net/forum/viewtopic.php?f=2&t=50067&start=15)
+- Add another render pass ESNRP_GUI which is drawn last and is p.E. useful for rendering gui nodes in the scenemanager.
 - BurningVideo: 0.51
   - 10 year anniversary update
   - Lighting model reworked. moved to eyespace like openGL. [Specular Highlights, Fog, Sphere/Reflection Map] 
