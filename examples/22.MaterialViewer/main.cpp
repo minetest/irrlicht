@@ -429,7 +429,7 @@ void CMaterialControl::init(scene::IMeshSceneNode* node, IrrlichtDevice * device
 
 	Driver = device->getVideoDriver ();
 	gui::IGUIEnvironment* guiEnv = device->getGUIEnvironment();
-	scene::ISceneManager* smgr = device->getSceneManager();
+	//scene::ISceneManager* smgr = device->getSceneManager();
 	const video::SMaterial & material = node->getMaterial(0);
 
 	s32 top = pos.Y;

@@ -27,9 +27,9 @@ CMainMenu::CMainMenu()
 
 bool CMainMenu::run()
 {
-	video::E_DRIVER_TYPE driverType = EDT_OPENGL;
+	video::E_DRIVER_TYPE driverType = video::EDT_OPENGL;
 	if (!IrrlichtDevice::isDriverSupported(video::EDT_OPENGL))
-		driverType = video::video::EDT_BURNINGSVIDEO;
+		driverType = video::EDT_BURNINGSVIDEO;
 
 	MenuDevice = createDevice(driverType,
 		core::dimension2d<u32>(512, 384), 16, false, false, false, this);
@@ -195,6 +195,7 @@ bool CMainMenu::run()
 				{
 					bill->setMaterialFlag(video::EMF_LIGHTING, false);
 					bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
+					bill->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
 					bill->setMaterialTexture(0, driver->getTexture(mediaPath + "particlered.bmp"));
 				}
 				// add fly circle animator to the light
@@ -213,6 +214,7 @@ bool CMainMenu::run()
 				{
 					bill->setMaterialFlag(video::EMF_LIGHTING, false);
 					bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
+					bill->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
 					bill->setMaterialTexture(0, driver->getTexture(mediaPath + "portal1.bmp"));
 				}
 				// add fly circle animator to the light
@@ -275,7 +277,7 @@ bool CMainMenu::run()
 		{
 			if (!selected)
 			{
-				outDriver=video::E_DRIVER_TYPE(i);
+				driverType=video::E_DRIVER_TYPE(i);
 				break;
 			}
 			--selected;

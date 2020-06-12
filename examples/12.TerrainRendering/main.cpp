@@ -120,7 +120,7 @@ int main()
 	const io::path mediaPath = getExampleMediaPath();
 
 	// add irrlicht logo
-	env->addImage(driver->getTexture(mediaPath + "irrlichtlogo2.png"),
+	env->addImage(driver->getTexture(mediaPath + "irrlichtlogo3.png"),
 		core::position2d<s32>(10,10));
 
 	//set other font
@@ -213,6 +213,7 @@ int main()
 	terrain->getMeshBufferForLOD(*buffer, 0);
 	video::S3DVertex2TCoords* data = (video::S3DVertex2TCoords*)buffer->getVertexBuffer().getData();
 	// Work on data or get the IndexBuffer with a similar call.
+	(void)data; // disable unused variable warnings
 	buffer->drop(); // When done drop the buffer again.
 
 	/*

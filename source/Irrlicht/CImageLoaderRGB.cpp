@@ -555,7 +555,7 @@ void CImageLoaderRGB::readRGBrow(u8 *buf, int y, int z, io::IReadFile* file, rgb
 		// limit the count value to the remaining row size
 		if (oPtr + count*rgb.Header.BPC > buf + rgb.Header.Xsize * rgb.Header.BPC)
 		{
-			count = ( (buf + rgb.Header.Xsize * rgb.Header.BPC) - oPtr ) / rgb.Header.BPC;
+			count = (s32)( (buf + rgb.Header.Xsize * rgb.Header.BPC) - oPtr ) / rgb.Header.BPC;
 		}
 
 		if (count<=0)

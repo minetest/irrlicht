@@ -92,7 +92,9 @@ private:
 	{
 		SMyMaterialEntry ()
 		: Texture1FileName("null"), Texture2FileName("null"),
-		Texture1(0), Texture2(0), MaterialType(video::EMT_SOLID) {}
+		Texture1(0), Texture2(0), MaterialType(video::EMT_SOLID) {
+			Header.Name[0] = 0;
+		}
 
 		SMyMaterialHeader Header;
 		core::stringc Texture1FileName;

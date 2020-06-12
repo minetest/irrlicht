@@ -266,7 +266,7 @@ int main()
 	/*
 	And at last, we create a nice Irrlicht Engine logo in the top left corner.
 	*/
-	env->addImage(driver->getTexture(mediaPath + "irrlichtlogo2.png"),
+	env->addImage(driver->getTexture(mediaPath + "irrlichtlogo3.png"),
 			position2d<int>(10,10));
 
 

@@ -46,7 +46,7 @@
 	#undef SUBTEXEL
 #endif
 
-#ifndef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
+#if BURNING_MATERIAL_MAX_COLORS < 1
 	#undef IPOL_C0
 #endif
 
@@ -84,13 +84,11 @@ public:
 	CTRTextureGouraudAdd2(CBurningVideoDriver* driver);
 
 	//! draws an indexed triangle list
-	virtual void drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c ) _IRR_OVERRIDE_;
+	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) _IRR_OVERRIDE_;
 
 
 private:
 	void scanline_bilinear ();
-	sScanLineData line;
-
 };
 
 //! constructor
@@ -137,8 +135,8 @@ void CTRTextureGouraudAdd2::scanline_bilinear ()
 #endif
 
 	// apply top-left fill-convention, left
-	xStart = core::ceil32_fast( line.x[0] );
-	xEnd = core::ceil32_fast( line.x[1] ) - 1;
+	xStart = fill_convention_left( line.x[0] );
+	xEnd = fill_convention_right( line.x[1] );
 
 	dx = xEnd - xStart;
 
@@ -146,7 +144,7 @@ void CTRTextureGouraudAdd2::scanline_bilinear ()
 		return;
 
 	// slopes
-	const f32 invDeltaX = core::reciprocal_approxim ( line.x[1] - line.x[0] );
+	const f32 invDeltaX = reciprocal_zero2( line.x[1] - line.x[0] );
 
 #ifdef IPOL_Z
 	slopeZ = (line.z[1] - line.z[0]) * invDeltaX;
@@ -183,6 +181,7 @@ void CTRTextureGouraudAdd2::scanline_bilinear ()
 #endif
 #endif
 
+	SOFTWARE_DRIVER_2_CLIPCHECK;
 	dst = (tVideoSample*)RenderTarget->getData() + ( line.y * RenderTarget->getDimension().Width ) + xStart;
 
 #ifdef USE_ZBUFFER
@@ -193,9 +192,8 @@ void CTRTextureGouraudAdd2::scanline_bilinear ()
 	f32 inversew = FIX_POINT_F32_MUL;
 
 
-#ifdef BURNINGVIDEO_RENDERER_FAST
+#if defined(BURNINGVIDEO_RENDERER_FAST) && COLOR_MAX==0xff
 	u32 dIndex = ( line.y & 3 ) << 2;
-
 #else
 	tFixPoint tx0;
 	tFixPoint ty0;
@@ -216,32 +214,28 @@ void CTRTextureGouraudAdd2::scanline_bilinear ()
 
 		{
 
+#ifdef INVERSE_W
+			inversew = fix_inverse32(line.w[0]);
+#endif
 
-#ifdef BURNINGVIDEO_RENDERER_FAST
+#if defined(BURNINGVIDEO_RENDERER_FAST) && COLOR_MAX==0xff
 
 		const tFixPointu d = dithermask [ dIndex | ( i ) & 3 ];
 
-
-#ifdef INVERSE_W
-			inversew = fix_inverse32 ( line.w[0] );
-#endif
-			dst[i] = PixelAdd32 (
-						dst[i],
-					getTexel_plain ( &IT[0],	d + tofix ( line.t[0][0].x,inversew),
-												d + tofix ( line.t[0][0].y,inversew) )
-												  );
+		dst[i] = PixelAdd32 (
+					dst[i],
+				getTexel_plain ( &IT[0],	d + tofix ( line.t[0][0].x,inversew),
+											d + tofix ( line.t[0][0].y,inversew) )
+												);
 #else
 
-#ifdef INVERSE_W
-			inversew = fix_inverse32 ( line.w[0] );
-#endif
 			tx0 = tofix ( line.t[0][0].x,inversew);
 			ty0 = tofix ( line.t[0][0].y,inversew);
 			getSample_texture ( r0, g0, b0, &IT[0], tx0,ty0 );
 
 			color_to_fix ( r1, g1, b1, dst[i] );
 
-			dst[i] = fix_to_color ( clampfix_maxcolor ( r1 + r0 ),
+			dst[i] = fix_to_sample( clampfix_maxcolor ( r1 + r0 ),
 									clampfix_maxcolor ( g1 + g0 ),
 									clampfix_maxcolor ( b1 + b0 )
 								);
@@ -275,10 +269,8 @@ void CTRTextureGouraudAdd2::scanline_bilinear ()
 
 }
 
-void CTRTextureGouraudAdd2::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c )
+void CTRTextureGouraudAdd2::drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c)
 {
-	sScanConvertData scan;
-
 	// sort on height, y
 	if ( F32_A_GREATER_B ( a->Pos.y , b->Pos.y ) ) swapVertexPointer(&a, &b);
 	if ( F32_A_GREATER_B ( b->Pos.y , c->Pos.y ) ) swapVertexPointer(&b, &c);
@@ -288,9 +280,9 @@ void CTRTextureGouraudAdd2::drawTriangle ( const s4DVertex *a,const s4DVertex *b
 	const f32 ba = b->Pos.y - a->Pos.y;
 	const f32 cb = c->Pos.y - b->Pos.y;
 	// calculate delta y of the edges
-	scan.invDeltaY[0] = core::reciprocal( ca );
-	scan.invDeltaY[1] = core::reciprocal( ba );
-	scan.invDeltaY[2] = core::reciprocal( cb );
+	scan.invDeltaY[0] = reciprocal_zero( ca );
+	scan.invDeltaY[1] = reciprocal_zero( ba );
+	scan.invDeltaY[2] = reciprocal_zero( cb );
 
 	// find if the major edge is left or right aligned
 	f32 temp[4];
@@ -373,8 +365,8 @@ void CTRTextureGouraudAdd2::drawTriangle ( const s4DVertex *a,const s4DVertex *b
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32_fast( a->Pos.y );
-		yEnd = core::ceil32_fast( b->Pos.y ) - 1;
+		yStart = fill_convention_left( a->Pos.y );
+		yEnd = fill_convention_right( b->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - a->Pos.y;
@@ -532,8 +524,8 @@ void CTRTextureGouraudAdd2::drawTriangle ( const s4DVertex *a,const s4DVertex *b
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32_fast( b->Pos.y );
-		yEnd = core::ceil32_fast( c->Pos.y ) - 1;
+		yStart = fill_convention_left( b->Pos.y );
+		yEnd = fill_convention_right( c->Pos.y );
 
 #ifdef SUBTEXEL
 
@@ -651,6 +643,8 @@ namespace video
 //! creates a flat triangle renderer
 IBurningShader* createTRTextureGouraudAdd2(CBurningVideoDriver* driver)
 {
+	//ETR_TEXTURE_GOURAUD_ADD
+
 	#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
 	return new CTRTextureGouraudAdd2(driver);
 	#else

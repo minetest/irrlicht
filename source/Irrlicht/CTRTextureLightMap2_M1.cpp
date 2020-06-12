@@ -46,7 +46,7 @@
 	#undef SUBTEXEL
 #endif
 
-#ifndef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
+#if BURNING_MATERIAL_MAX_COLORS < 1
 	#undef IPOL_C0
 #endif
 
@@ -82,13 +82,11 @@ public:
 	CTRTextureLightMap2_M1(CBurningVideoDriver* driver);
 
 	//! draws an indexed triangle list
-	virtual void drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c ) _IRR_OVERRIDE_;
+	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) _IRR_OVERRIDE_;
 
 
 private:
 	void scanline_bilinear2 ();
-
-	sScanLineData line;
 
 };
 
@@ -115,15 +113,15 @@ REALINLINE void CTRTextureLightMap2_M1::scanline_bilinear2 ()
 
 
 	// apply top-left fill-convention, left
-	xStart = core::ceil32_fast( line.x[0] );
-	xEnd = core::ceil32_fast( line.x[1] ) - 1;
+	xStart = fill_convention_left( line.x[0] );
+	xEnd = fill_convention_right( line.x[1] );
 
 	dx = xEnd - xStart;
 	if ( dx < 0 )
 		return;
 
 	// slopes
-	const f32 invDeltaX = core::reciprocal_approxim ( line.x[1] - line.x[0] );
+	const f32 invDeltaX = reciprocal_zero2( line.x[1] - line.x[0] );
 
 	// search z-buffer for first not occulled pixel
 	z = (fp24*) DepthBuffer->lock() + ( line.y * RenderTarget->getDimension().Width ) + xStart;
@@ -170,6 +168,7 @@ REALINLINE void CTRTextureLightMap2_M1::scanline_bilinear2 ()
 	line.z[0] = a;
 	line.z[1] = b;
 #endif
+	SOFTWARE_DRIVER_2_CLIPCHECK;
 	dst = (tVideoSample*)RenderTarget->getData() + ( line.y * RenderTarget->getDimension().Width ) + xStart;
 
 	a = (f32) i + subPixel;
@@ -226,7 +225,7 @@ REALINLINE void CTRTextureLightMap2_M1::scanline_bilinear2 ()
 
 #endif
 
-			dst[i] = fix_to_color ( imulFix_tex1 ( r0, r1 ),
+			dst[i] = fix_to_sample( imulFix_tex1 ( r0, r1 ),
 									imulFix_tex1 ( g0, g1 ),
 									imulFix_tex1 ( b0, b1 )
 								);
@@ -244,9 +243,8 @@ REALINLINE void CTRTextureLightMap2_M1::scanline_bilinear2 ()
 }
 
 
-void CTRTextureLightMap2_M1::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c )
+void CTRTextureLightMap2_M1::drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c)
 {
-	sScanConvertData scan;
 
 	// sort on height, y
 	if ( F32_A_GREATER_B ( a->Pos.y , b->Pos.y ) ) swapVertexPointer(&a, &b);
@@ -257,9 +255,9 @@ void CTRTextureLightMap2_M1::drawTriangle ( const s4DVertex *a,const s4DVertex *
 	const f32 ba = b->Pos.y - a->Pos.y;
 	const f32 cb = c->Pos.y - b->Pos.y;
 	// calculate delta y of the edges
-	scan.invDeltaY[0] = core::reciprocal( ca );
-	scan.invDeltaY[1] = core::reciprocal( ba );
-	scan.invDeltaY[2] = core::reciprocal( cb );
+	scan.invDeltaY[0] = reciprocal_zero( ca );
+	scan.invDeltaY[1] = reciprocal_zero( ba );
+	scan.invDeltaY[2] = reciprocal_zero( cb );
 
 	if ( F32_LOWER_EQUAL_0 ( scan.invDeltaY[0] )  )
 		return;
@@ -345,8 +343,8 @@ void CTRTextureLightMap2_M1::drawTriangle ( const s4DVertex *a,const s4DVertex *
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32_fast( a->Pos.y );
-		yEnd = core::ceil32_fast( b->Pos.y ) - 1;
+		yStart = fill_convention_left( a->Pos.y );
+		yEnd = fill_convention_right( b->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - a->Pos.y;
@@ -505,8 +503,8 @@ void CTRTextureLightMap2_M1::drawTriangle ( const s4DVertex *a,const s4DVertex *
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = core::ceil32_fast( b->Pos.y );
-		yEnd = core::ceil32_fast( c->Pos.y ) - 1;
+		yStart = fill_convention_left( b->Pos.y );
+		yEnd = fill_convention_right( c->Pos.y );
 
 #ifdef SUBTEXEL
 
@@ -626,6 +624,7 @@ namespace video
 //! creates a flat triangle renderer
 IBurningShader* createTriangleRendererTextureLightMap2_M1(CBurningVideoDriver* driver)
 {
+	//ETR_TEXTURE_GOURAUD_LIGHTMAP_M1
 	#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
 	return new CTRTextureLightMap2_M1(driver);
 	#else

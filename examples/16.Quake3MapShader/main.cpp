@@ -318,7 +318,7 @@ int IRRCALLCONV main(int argc, char* argv[])
 	device->getCursorControl()->setVisible(false);
 
 	// load the engine logo
-	gui->addImage(driver->getTexture("irrlichtlogo2.png"),
+	gui->addImage(driver->getTexture("irrlichtlogo3.png"),
 			core::position2d<s32>(10, 10));
 
 	// show the driver logo
@@ -334,6 +334,8 @@ int IRRCALLCONV main(int argc, char* argv[])
 			break;
 		case video::EDT_DIRECT3D9:
 			gui->addImage(driver->getTexture("directxlogo.png"), pos);
+			break;
+		default:
 			break;
 	}
 
@@ -355,14 +357,14 @@ int IRRCALLCONV main(int argc, char* argv[])
 		driver->endScene();
 
 		int fps = driver->getFPS();
-		//if (lastFPS != fps)
+		if (1 || lastFPS != fps)
 		{
-			io::IAttributes * const attr = smgr->getParameters();
 			core::stringw str = L"Q3 [";
 			str += driver->getName();
 			str += "] FPS:";
 			str += fps;
 #ifdef _IRR_SCENEMANAGER_DEBUG			
+			io::IAttributes * const attr = smgr->getParameters();
 			str += " Cull:";
 			str += attr->getAttributeAsInt("calls");
 			str += "/";

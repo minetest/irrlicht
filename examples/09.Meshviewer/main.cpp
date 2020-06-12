@@ -978,7 +978,7 @@ int main(int argc, char* argv[])
 
 	// load the irrlicht engine logo
 	IGUIImage *img =
-		env->addImage(driver->getTexture("irrlichtlogo2.png"),
+		env->addImage(driver->getTexture("irrlichtlogo3.png"),
 			core::position2d<s32>(10, driver->getScreenSize().Height - 128));
 
 	// lock the logo's edges to the bottom left corner of the screen

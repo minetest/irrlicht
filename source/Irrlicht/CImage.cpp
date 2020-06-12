@@ -7,6 +7,7 @@
 #include "CColorConverter.h"
 #include "CBlit.h"
 #include "os.h"
+#include "SoftwareDriver2_helper.h"
 
 namespace irr
 {
@@ -25,7 +26,7 @@ CImage::CImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size, void* d
 	{
 		const u32 dataSize = getDataSizeFromFormat(Format, Size.Width, Size.Height);
 
-		Data = new u8[dataSize];
+		Data = new u8[align_next(dataSize,16)];
 		memcpy(Data, data, dataSize);
 		DeleteMemory = true;
 	}
@@ -35,7 +36,7 @@ CImage::CImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size, void* d
 //! Constructor of empty image
 CImage::CImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size) : IImage(format, size, true)
 {
-	Data = new u8[getDataSizeFromFormat(Format, Size.Width, Size.Height)];
+	Data = new u8[align_next(getDataSizeFromFormat(Format, Size.Width, Size.Height),16)];
 	DeleteMemory = true;
 }
 
@@ -133,9 +134,9 @@ void CImage::copyTo(IImage* target, const core::position2d<s32>& pos)
 		return;
 	}
 
-	if ( !Blit(BLITTER_TEXTURE, target, 0, &pos, this, 0, 0)
+	if (!Blit(BLITTER_TEXTURE, target, 0, &pos, this, 0, 0)
 		&& target && pos.X == 0 && pos.Y == 0 &&
-		CColorConverter::canConvertFormat(Format, target->getColorFormat()) )
+		CColorConverter::canConvertFormat(Format, target->getColorFormat()))
 	{
 		// No fast blitting, but copyToScaling uses other color conversions and might work
 		irr::core::dimension2du dim(target->getDimension());
@@ -166,16 +167,9 @@ void CImage::copyToWithAlpha(IImage* target, const core::position2d<s32>& pos, c
 		return;
 	}
 
-	if ( combineAlpha )
-	{
-		Blit(BLITTER_TEXTURE_COMBINE_ALPHA, target, clipRect, &pos, this, &sourceRect, color.color);
-	}
-	else
-	{
-		// color blend only necessary on not full spectrum aka. color.color != 0xFFFFFFFF
-		Blit(color.color == 0xFFFFFFFF ? BLITTER_TEXTURE_ALPHA_BLEND: BLITTER_TEXTURE_ALPHA_COLOR_BLEND,
-				target, clipRect, &pos, this, &sourceRect, color.color);
-	}
+	eBlitter op = combineAlpha ? BLITTER_TEXTURE_COMBINE_ALPHA :
+		color.color == 0xFFFFFFFF ? BLITTER_TEXTURE_ALPHA_BLEND : BLITTER_TEXTURE_ALPHA_COLOR_BLEND;
+	Blit(op,target, clipRect, &pos, this, &sourceRect, color.color);
 }
 
 
@@ -384,6 +378,7 @@ inline SColor CImage::getPixelBox( s32 x, s32 y, s32 fx, s32 fy, s32 bias ) cons
 	c.set( a, r, g, b );
 	return c;
 }
+
 
 
 } // end namespace video
