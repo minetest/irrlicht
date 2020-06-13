@@ -24,7 +24,7 @@ namespace irr
 {
 namespace video
 {
-    
+
 struct SEAGLManagerDataStorage
 {
     SEAGLManagerDataStorage() : Layer(0), Context(0)
@@ -40,7 +40,7 @@ CEAGLManager::CEAGLManager() : IContextManager(), Configured(false), DataStorage
 #ifdef _DEBUG
 	setDebugName("CEAGLManager");
 #endif
-	
+
 	DataStorage = new SEAGLManagerDataStorage();
 }
 
@@ -49,7 +49,7 @@ CEAGLManager::~CEAGLManager()
     destroyContext();
     destroySurface();
     terminate();
-	
+
 	delete static_cast<SEAGLManagerDataStorage*>(DataStorage);
 }
 
@@ -62,7 +62,7 @@ bool CEAGLManager::initialize(const SIrrlichtCreationParameters& params, const S
 
 	Params = params;
 	Data = data;
-	
+
 	UIView* view = (__bridge UIView*)data.OpenGLiOS.View;
 
 	if (view == nil || ![[view layer] isKindOfClass:[CAEAGLLayer class]])
@@ -70,7 +70,7 @@ bool CEAGLManager::initialize(const SIrrlichtCreationParameters& params, const S
 		os::Printer::log("Could not get EAGL display.");
 		return false;
 	}
-	
+
 	dataStorage->Layer = (CAEAGLLayer*)[view layer];
 
     return true;
@@ -79,11 +79,11 @@ bool CEAGLManager::initialize(const SIrrlichtCreationParameters& params, const S
 void CEAGLManager::terminate()
 {
 	SEAGLManagerDataStorage* dataStorage = static_cast<SEAGLManagerDataStorage*>(DataStorage);
-	
+
 	[EAGLContext setCurrentContext:0];
-	
+
 	destroySurface();
-	
+
     if (dataStorage->Layer != nil)
         dataStorage->Layer = 0;
 }
@@ -92,13 +92,13 @@ bool CEAGLManager::generateSurface()
 {
 	SEAGLManagerDataStorage* dataStorage = static_cast<SEAGLManagerDataStorage*>(DataStorage);
 	CAEAGLLayer* layer = dataStorage->Layer;
-	
+
     if (layer == nil)
         return false;
-	
+
 	if (Configured)
 		return true;
-	
+
 	NSDictionary* attribs = [NSDictionary dictionaryWithObjectsAndKeys:
 		[NSNumber numberWithBool:NO],
 		kEAGLDrawablePropertyRetainedBacking,
@@ -108,7 +108,7 @@ bool CEAGLManager::generateSurface()
 
 	[layer setOpaque:(Params.WithAlphaChannel) ? YES : NO];
 	[layer setDrawableProperties:attribs];
-	
+
 	Configured = true;
 
     return true;
@@ -118,13 +118,13 @@ void CEAGLManager::destroySurface()
 {
 	SEAGLManagerDataStorage* dataStorage = static_cast<SEAGLManagerDataStorage*>(DataStorage);
 	CAEAGLLayer* layer = dataStorage->Layer;
-	
+
 	if (layer == nil)
 		return;
-	
+
 	[layer setOpaque:NO];
 	[layer setDrawableProperties:nil];
-	
+
 	Configured = false;
 }
 
@@ -156,7 +156,7 @@ bool CEAGLManager::generateContext()
 		os::Printer::log("Could not create EAGL context.", ELL_ERROR);
 		return false;
 	}
-	
+
 	Data.OpenGLiOS.Context = (__bridge void*)dataStorage->Context;
 
 	os::Printer::log("EAGL context created with OpenGLESVersion: ", core::stringc(static_cast<int>(OpenGLESVersion)), ELL_DEBUG);
@@ -167,7 +167,7 @@ bool CEAGLManager::generateContext()
 void CEAGLManager::destroyContext()
 {
 	SEAGLManagerDataStorage* dataStorage = static_cast<SEAGLManagerDataStorage*>(DataStorage);
-	
+
 	[dataStorage->Context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:nil];
 
 	if (FrameBuffer.BufferID != 0)
@@ -175,13 +175,13 @@ void CEAGLManager::destroyContext()
 		glDeleteFramebuffersOES(1, &FrameBuffer.BufferID);
 		FrameBuffer.BufferID = 0;
 	}
-	
+
 	if (FrameBuffer.ColorBuffer != 0)
 	{
 		glDeleteRenderbuffersOES(1, &FrameBuffer.ColorBuffer);
 		FrameBuffer.ColorBuffer = 0;
 	}
-	
+
 	if (FrameBuffer.DepthBuffer != 0)
 	{
 		glDeleteRenderbuffersOES(1, &FrameBuffer.DepthBuffer);
@@ -189,25 +189,25 @@ void CEAGLManager::destroyContext()
 	}
 
 	[EAGLContext setCurrentContext:0];
-	
+
     if (dataStorage->Context != nil)
         dataStorage->Context = 0;
-	
+
 	Data.OpenGLiOS.Context = 0;
 }
 
-bool CEAGLManager::activateContext(const SExposedVideoData& videoData)
+bool CEAGLManager::activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero)
 {
 	SEAGLManagerDataStorage* dataStorage = static_cast<SEAGLManagerDataStorage*>(DataStorage);
 	EAGLContext* context = dataStorage->Context;
-	
+
 	bool status = false;
-	
+
 	if (context != nil)
 	{
 		status = ([EAGLContext currentContext] == context || [EAGLContext setCurrentContext:context]);
 	}
-	
+
 	if (status)
 	{
 		if (FrameBuffer.ColorBuffer == 0)
@@ -216,7 +216,7 @@ bool CEAGLManager::activateContext(const SExposedVideoData& videoData)
 			glBindRenderbufferOES(GL_RENDERBUFFER_OES, FrameBuffer.ColorBuffer);
 			[context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:dataStorage->Layer];
 		}
-		
+
 		if (FrameBuffer.DepthBuffer == 0)
 		{
 			GLenum depth = (Params.ZBufferBits >= 24) ? GL_DEPTH_COMPONENT24_OES : GL_DEPTH_COMPONENT16_OES;
@@ -225,7 +225,7 @@ bool CEAGLManager::activateContext(const SExposedVideoData& videoData)
 			glBindRenderbufferOES(GL_RENDERBUFFER_OES, FrameBuffer.DepthBuffer);
 			glRenderbufferStorageOES(GL_RENDERBUFFER_OES, depth, Params.WindowSize.Width, Params.WindowSize.Height);
 		}
-		
+
 		if (FrameBuffer.BufferID == 0)
 		{
 			glGenFramebuffersOES(1, &FrameBuffer.BufferID);
@@ -233,7 +233,7 @@ bool CEAGLManager::activateContext(const SExposedVideoData& videoData)
 			glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, FrameBuffer.ColorBuffer);
 			glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, FrameBuffer.DepthBuffer);
 		}
-		
+
 		glBindFramebufferOES(GL_FRAMEBUFFER_OES, FrameBuffer.BufferID);
 	}
 	else
@@ -253,17 +253,17 @@ bool CEAGLManager::swapBuffers()
 {
 	SEAGLManagerDataStorage* dataStorage = static_cast<SEAGLManagerDataStorage*>(DataStorage);
 	EAGLContext* context = dataStorage->Context;
-	
+
 	bool status = false;
-	
+
 	if (context != nil && context == [EAGLContext currentContext])
 	{
 		glBindRenderbufferOES(GL_RENDERBUFFER_OES, FrameBuffer.ColorBuffer);
 		[context presentRenderbuffer:GL_RENDERBUFFER_OES];
-		
+
 		status = true;
 	}
-	
+
     return status;
 }
 

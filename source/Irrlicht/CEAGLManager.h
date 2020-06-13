@@ -54,7 +54,7 @@ namespace video
 
 		const SExposedVideoData& getContext() const;
 
-		bool activateContext(const SExposedVideoData& videoData);
+		bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero);
 
 		// Swap buffers.
 		bool swapBuffers();
@@ -62,22 +62,22 @@ namespace video
 	private:
 		SIrrlichtCreationParameters Params;
 		SExposedVideoData Data;
-		
+
 		bool Configured;
-        
+
         void* DataStorage;
-		
+
 		struct SFrameBuffer
 		{
 			SFrameBuffer() : BufferID(0), ColorBuffer(0), DepthBuffer(0)
 			{
 			}
-			
+
 			u32 BufferID;
 			u32 ColorBuffer;
 			u32 DepthBuffer;
 		};
-		
+
 		SFrameBuffer FrameBuffer;
 	};
 }
