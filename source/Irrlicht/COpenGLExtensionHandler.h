@@ -1210,7 +1210,7 @@ class COpenGLExtensionHandler
     void extGlCreateFramebuffers(GLsizei n, GLuint* framebuffers);
     void extGlBindTextures(GLuint first, GLsizei count, const GLuint *textures, const GLenum* targets);
     void extGlGenerateTextureMipmap(GLuint texture, GLenum target);
-    
+
 
 	// generic vsync setting method for several extensions
 	void extGlSwapInterval(int interval);
@@ -2868,7 +2868,7 @@ inline void COpenGLExtensionHandler::extGlTextureSubImage2D(GLuint texture, GLen
         if (pGlTextureSubImage2D)
             pGlTextureSubImage2D(texture, level, xoffset, yoffset,width, height,format, type, pixels);
 #else
-        glTextureSubImage2D(texture, level, xoffset, yoffset,width, height,format, type, pixels));
+        glTextureSubImage2D(texture, level, xoffset, yoffset,width, height,format, type, pixels);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
     else if (FeatureAvailable[IRR_EXT_direct_state_access])
@@ -2877,7 +2877,7 @@ inline void COpenGLExtensionHandler::extGlTextureSubImage2D(GLuint texture, GLen
         if (pGlTextureSubImage2DEXT)
             pGlTextureSubImage2DEXT(texture, target, level, xoffset, yoffset,width, height,format, type, pixels);
 #else
-        glTextureSubImage2DEXT(texture, target, level, xoffset, yoffset,width, height,format, type, pixels));
+        glTextureSubImage2DEXT(texture, target, level, xoffset, yoffset,width, height,format, type, pixels);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
     else
