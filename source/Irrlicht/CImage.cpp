@@ -216,13 +216,21 @@ void CImage::copyToScaling(void* target, u32 width, u32 height, ECOLOR_FORMAT fo
 		}
 	}
 
-	const f32 sourceXStep = (f32)Size.Width / (f32)width;
-	const f32 sourceYStep = (f32)Size.Height / (f32)height;
+	// NOTE: Scaling is coded to keep the border pixels intact.
+	// Alternatively we could for example work with first pixel being taken at half step-size.
+	// Then we have one more step here and it would be:
+	//     sourceXStep = (f32)(Size.Width-1) / (f32)(width);
+	//     And sx would start at 0.5f + sourceXStep / 2.f;
+	//     Similar for y.
+	// As scaling is done without any antialiasing it doesn't matter too much which outermost pixels we use and keeping
+	// border pixels intact is probably mostly better (with AA the other solution would be more correct).
+	const f32 sourceXStep = width > 1 ? (f32)(Size.Width-1) / (f32)(width-1) : 0.f;
+	const f32 sourceYStep = height > 1 ? (f32)(Size.Height-1) / (f32)(height-1) : 0.f;
 	s32 yval=0, syval=0;
-	f32 sy = 0.5f;	// nearest pixel (used in float-int conversion below)
+	f32 sy = 0.5f;	// for rounding to nearest pixel
 	for (u32 y=0; y<height; ++y)
 	{
-		f32 sx = 0.5f;	// nearest pixel (used in float-int conversion below)
+		f32 sx = 0.5f;	// for rounding to nearest pixel
 		for (u32 x=0; x<width; ++x)
 		{
 			CColorConverter::convert_viaFormat(Data+ syval + ((s32)sx)*BytesPerPixel, Format, 1, ((u8*)target)+ yval + (x*bpp), format);
