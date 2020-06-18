@@ -52,7 +52,7 @@ namespace video
 		const SExposedVideoData& getContext() const;
 
 		//! Change render context, disable old and activate new defined by videoData
-		bool activateContext(const SExposedVideoData& videoData);
+		bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero) _IRR_OVERRIDE_;
 
         // Swap buffers.
         bool swapBuffers();
@@ -61,7 +61,7 @@ namespace video
         SIrrlichtCreationParameters Params;
 		SExposedVideoData PrimaryContext;
         SExposedVideoData CurrentContext;
-        
+
         NSOpenGLPixelFormat* PixelFormat;
 	};
 }

@@ -51,12 +51,12 @@ bool CNSOGLManager::generateSurface()
             NSOpenGLPFANoRecovery,
             NSOpenGLPFAAccelerated,
             NSOpenGLPFADoubleBuffer,
-            NSOpenGLPFADepthSize, depthSize,
+            NSOpenGLPFADepthSize, static_cast<NSOpenGLPixelFormatAttribute>(depthSize),
             NSOpenGLPFAColorSize, Params.Bits,
-            NSOpenGLPFAAlphaSize, alphaSize,
+            NSOpenGLPFAAlphaSize, static_cast<NSOpenGLPixelFormatAttribute>(alphaSize),
             NSOpenGLPFASampleBuffers, 1,
             NSOpenGLPFASamples, Params.AntiAlias,
-            NSOpenGLPFAStencilSize, Params.Stencilbuffer ? 1 : 0,
+            NSOpenGLPFAStencilSize, static_cast<NSOpenGLPixelFormatAttribute>(Params.Stencilbuffer ? 1 : 0),
             //NSOpenGLPFAFullScreen,
             0
         };
@@ -188,8 +188,9 @@ const SExposedVideoData& CNSOGLManager::getContext() const
 	return CurrentContext;
 }
 
-bool CNSOGLManager::activateContext(const SExposedVideoData& videoData)
+bool CNSOGLManager::activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero)
 {
+	//TODO: handle restorePrimaryOnZero
     if (videoData.OpenGLOSX.Context)
     {
         if ((NSOpenGLContext*)videoData.OpenGLOSX.Context != [NSOpenGLContext currentContext])

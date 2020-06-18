@@ -1222,7 +1222,7 @@ void CIrrDeviceMacOSX::storeMouseLocation()
 		x = (int)point.x;
 		y = (int)point.y;
 
-		const core::position2di& curr = ((CCursorControl *)CursorControl)->getPosition();
+		const core::position2di& curr = ((CCursorControl *)CursorControl)->getPosition(true);
 		if (curr.X != x || curr.Y != y)
 		{
 			// In fullscreen mode, events are not sent regularly so rely on polling
@@ -1262,7 +1262,7 @@ void CIrrDeviceMacOSX::setMouseLocation(int x,int y)
 	c.y = p.y;
 
 #ifdef __MAC_10_6
-    CGEventRef ev = CGEventCreateMouseEvent(0, kCGEventMouseMoved, c, 0);
+    CGEventRef ev = CGEventCreateMouseEvent(NULL, kCGEventMouseMoved, c, static_cast<CGMouseButton>(kCGEventMouseMoved));
     CGEventPost(kCGHIDEventTap, ev);
     CFRelease(ev);
 #else
