@@ -2867,7 +2867,7 @@ inline void COpenGLExtensionHandler::extGlTextureSubImage2D(GLuint texture, GLen
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlTextureSubImage2D)
             pGlTextureSubImage2D(texture, level, xoffset, yoffset,width, height,format, type, pixels);
-#else
+#elif defined(GL_VERSION_4_5)
         glTextureSubImage2D(texture, level, xoffset, yoffset,width, height,format, type, pixels);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
@@ -2921,7 +2921,7 @@ inline void COpenGLExtensionHandler::extGlTextureStorage2D(GLuint texture, GLenu
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlTextureStorage2D)
             pGlTextureStorage2D(texture,levels,internalformat,width,height);
-#else
+#elif defined(GL_VERSION_4_5)
         glTextureStorage2D(texture,levels,internalformat,width,height);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
@@ -2934,10 +2934,11 @@ inline void COpenGLExtensionHandler::extGlTextureStorage2D(GLuint texture, GLenu
         glTextureStorage2DEXT(texture,target,levels,internalformat,width,height);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
-#ifdef _IRR_OPENGL_USE_EXTPOINTER_
-    else if (pGlTexStorage2D)
-#else
+
+#if defined(GL_VERSION_4_2) || defined(_IRR_OPENGL_USE_EXTPOINTER_)
     else
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+    if (pGlTexStorage2D)
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     {
         GLint bound;
@@ -2966,6 +2967,7 @@ inline void COpenGLExtensionHandler::extGlTextureStorage2D(GLuint texture, GLenu
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
         glBindTexture(target, bound);
     }
+#endif // GL_VERSION_4_2 || _IRR_OPENGL_USE_EXTPOINTER_
 }
 
 inline void COpenGLExtensionHandler::extGlTextureStorage3D(GLuint texture, GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth)
@@ -2975,7 +2977,7 @@ inline void COpenGLExtensionHandler::extGlTextureStorage3D(GLuint texture, GLenu
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlTextureStorage3D)
             pGlTextureStorage3D(texture,levels,internalformat,width,height,depth);
-#else
+#elif defined(GL_VERSION_4_5)
         glTextureStorage3D(texture,levels,internalformat,width,height,depth);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
@@ -2988,11 +2990,11 @@ inline void COpenGLExtensionHandler::extGlTextureStorage3D(GLuint texture, GLenu
         glTextureStorage3DEXT(texture,target,levels,internalformat,width,height,depth);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
-#ifdef _IRR_OPENGL_USE_EXTPOINTER_
-    else if (pGlTexStorage3D)
-#else
+#if defined(GL_VERSION_4_2) || defined(_IRR_OPENGL_USE_EXTPOINTER_)
     else
-#endif // _IRR_OPENGL_USE_EXTPOINTER_
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+    if (pGlTexStorage3D)
+#endif // _IRR_OPENGL_USE_EX TPOINTER_
     {
         GLint bound;
         switch (target)
@@ -3017,6 +3019,7 @@ inline void COpenGLExtensionHandler::extGlTextureStorage3D(GLuint texture, GLenu
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
         glBindTexture(target, bound);
     }
+#endif // GL_VERSION_4_2 || _IRR_OPENGL_USE_EXTPOINTER_
 }
 
 inline void COpenGLExtensionHandler::extGlGetTextureImage(GLuint texture, GLenum target, GLint level, GLenum format, GLenum type, GLsizei bufSize, void* pixels)
@@ -3064,6 +3067,7 @@ inline void COpenGLExtensionHandler::extGlGetTextureImage(GLuint texture, GLenum
 
 inline void COpenGLExtensionHandler::extGlNamedFramebufferTexture(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level)
 {
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (!needsDSAFramebufferHack)
     {
         if (Version>=405 || FeatureAvailable[IRR_ARB_direct_state_access])
@@ -3086,6 +3090,7 @@ inline void COpenGLExtensionHandler::extGlNamedFramebufferTexture(GLuint framebu
     pGlFramebufferTexture(GL_FRAMEBUFFER,attachment,texture,level);
     if (bound!=framebuffer)
         pGlBindFramebuffer(GL_FRAMEBUFFER,bound);
+#endif
 }
 
 inline void COpenGLExtensionHandler::extGlTextureParameteri(GLuint texture, GLenum pname, GLint param)
@@ -3129,7 +3134,7 @@ inline void COpenGLExtensionHandler::extGlCreateTextures(GLenum target, GLsizei 
             pGlCreateTextures(target,n,textures);
         else if (textures)
             memset(textures,0,n*sizeof(GLuint));
-#else
+#elif defined(GL_VERSION_4_5)
         glCreateTextures(target,n,textures);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
@@ -3141,6 +3146,7 @@ inline void COpenGLExtensionHandler::extGlCreateTextures(GLenum target, GLsizei 
 
 inline void COpenGLExtensionHandler::extGlCreateFramebuffers(GLsizei n, GLuint* framebuffers)
 {
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (!needsDSAFramebufferHack)
     {
         if (Version>=405)
@@ -3151,6 +3157,7 @@ inline void COpenGLExtensionHandler::extGlCreateFramebuffers(GLsizei n, GLuint* 
     }
 
     pGlGenFramebuffers(n, framebuffers);
+#endif
 }
 
 inline void COpenGLExtensionHandler::extGlBindTextures(GLuint first, GLsizei count, const GLuint *textures, const GLenum* targets)
@@ -3165,7 +3172,7 @@ inline void COpenGLExtensionHandler::extGlBindTextures(GLuint first, GLsizei cou
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlBindTextures)
             pGlBindTextures(first,count,textures);
-#else
+#elif defined(GL_VERSION_4_4)
         glBindTextures(first,count,textures);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
@@ -3201,7 +3208,7 @@ inline void COpenGLExtensionHandler::extGlGenerateTextureMipmap(GLuint texture, 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlGenerateTextureMipmap)
             pGlGenerateTextureMipmap(texture);
-#else
+#elif defined(GL_VERSION_4_5)
         glGenerateTextureMipmap(texture);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
