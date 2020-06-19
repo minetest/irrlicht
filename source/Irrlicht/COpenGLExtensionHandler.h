@@ -1915,7 +1915,7 @@ inline void COpenGLExtensionHandler::extGlUniform1uiv(GLint loc, GLsizei count, 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
 	if (pGlUniform1uiv)
 		pGlUniform1uiv(loc, count, v);
-#else
+#elif defined(GL_VERSION_3_0)
 	glUniform1uiv(loc, count, v);
 #endif
 }
@@ -1925,7 +1925,7 @@ inline void COpenGLExtensionHandler::extGlUniform2uiv(GLint loc, GLsizei count, 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
 	if (pGlUniform2uiv)
 		pGlUniform2uiv(loc, count, v);
-#else
+#elif defined(GL_VERSION_3_0)
 	glUniform2uiv(loc, count, v);
 #endif
 }
@@ -1935,7 +1935,7 @@ inline void COpenGLExtensionHandler::extGlUniform3uiv(GLint loc, GLsizei count, 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
 	if (pGlUniform3uiv)
 		pGlUniform3uiv(loc, count, v);
-#else
+#elif defined(GL_VERSION_3_0)
 	glUniform3uiv(loc, count, v);
 #endif
 }
@@ -1945,7 +1945,7 @@ inline void COpenGLExtensionHandler::extGlUniform4uiv(GLint loc, GLsizei count, 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
 	if (pGlUniform4uiv)
 		pGlUniform4uiv(loc, count, v);
-#else
+#elif defined(GL_VERSION_3_0)
 	glUniform4uiv(loc, count, v);
 #endif
 }
