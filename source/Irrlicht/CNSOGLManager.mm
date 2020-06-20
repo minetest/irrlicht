@@ -188,8 +188,9 @@ const SExposedVideoData& CNSOGLManager::getContext() const
 	return CurrentContext;
 }
 
-bool CNSOGLManager::activateContext(const SExposedVideoData& videoData)
+bool CNSOGLManager::activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero)
 {
+	//TODO: handle restorePrimaryOnZero
     if (videoData.OpenGLOSX.Context)
     {
         if ((NSOpenGLContext*)videoData.OpenGLOSX.Context != [NSOpenGLContext currentContext])

@@ -1915,7 +1915,7 @@ inline void COpenGLExtensionHandler::extGlUniform1uiv(GLint loc, GLsizei count, 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
 	if (pGlUniform1uiv)
 		pGlUniform1uiv(loc, count, v);
-#else
+#elif defined(GL_VERSION_3_0)
 	glUniform1uiv(loc, count, v);
 #endif
 }
@@ -1925,7 +1925,7 @@ inline void COpenGLExtensionHandler::extGlUniform2uiv(GLint loc, GLsizei count, 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
 	if (pGlUniform2uiv)
 		pGlUniform2uiv(loc, count, v);
-#else
+#elif defined(GL_VERSION_3_0)
 	glUniform2uiv(loc, count, v);
 #endif
 }
@@ -1935,7 +1935,7 @@ inline void COpenGLExtensionHandler::extGlUniform3uiv(GLint loc, GLsizei count, 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
 	if (pGlUniform3uiv)
 		pGlUniform3uiv(loc, count, v);
-#else
+#elif defined(GL_VERSION_3_0)
 	glUniform3uiv(loc, count, v);
 #endif
 }
@@ -1945,7 +1945,7 @@ inline void COpenGLExtensionHandler::extGlUniform4uiv(GLint loc, GLsizei count, 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
 	if (pGlUniform4uiv)
 		pGlUniform4uiv(loc, count, v);
-#else
+#elif defined(GL_VERSION_3_0)
 	glUniform4uiv(loc, count, v);
 #endif
 }
@@ -2867,7 +2867,7 @@ inline void COpenGLExtensionHandler::extGlTextureSubImage2D(GLuint texture, GLen
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlTextureSubImage2D)
             pGlTextureSubImage2D(texture, level, xoffset, yoffset,width, height,format, type, pixels);
-#else
+#elif defined(GL_VERSION_4_5)
         glTextureSubImage2D(texture, level, xoffset, yoffset,width, height,format, type, pixels);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
@@ -2876,7 +2876,7 @@ inline void COpenGLExtensionHandler::extGlTextureSubImage2D(GLuint texture, GLen
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlTextureSubImage2DEXT)
             pGlTextureSubImage2DEXT(texture, target, level, xoffset, yoffset,width, height,format, type, pixels);
-#else
+#elif defined(GL_EXT_direct_state_access)
         glTextureSubImage2DEXT(texture, target, level, xoffset, yoffset,width, height,format, type, pixels);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
@@ -2885,15 +2885,23 @@ inline void COpenGLExtensionHandler::extGlTextureSubImage2D(GLuint texture, GLen
         GLint bound;
         switch (target)
         {
+#ifdef GL_VERSION_3_0
             case GL_TEXTURE_1D_ARRAY:
                 glGetIntegerv(GL_TEXTURE_BINDING_1D_ARRAY, &bound);
                 break;
+#elif GL_EXT_texture_array
+			case GL_TEXTURE_1D_ARRAY_EXT:
+                glGetIntegerv(GL_TEXTURE_BINDING_1D_ARRAY_EXT, &bound);
+                break;
+#endif
             case GL_TEXTURE_2D:
                 glGetIntegerv(GL_TEXTURE_BINDING_2D, &bound);
                 break;
+#ifdef GL_VERSION_3_2
             case GL_TEXTURE_2D_MULTISAMPLE:
                 glGetIntegerv(GL_TEXTURE_BINDING_2D_MULTISAMPLE, &bound);
                 break;
+#endif
             case GL_TEXTURE_CUBE_MAP_NEGATIVE_X:
             case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:
             case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
@@ -2921,7 +2929,7 @@ inline void COpenGLExtensionHandler::extGlTextureStorage2D(GLuint texture, GLenu
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlTextureStorage2D)
             pGlTextureStorage2D(texture,levels,internalformat,width,height);
-#else
+#elif defined(GL_VERSION_4_5)
         glTextureStorage2D(texture,levels,internalformat,width,height);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
@@ -2930,22 +2938,29 @@ inline void COpenGLExtensionHandler::extGlTextureStorage2D(GLuint texture, GLenu
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlTextureStorage2DEXT)
             pGlTextureStorage2DEXT(texture,target,levels,internalformat,width,height);
-#else
+#elif defined(GL_EXT_direct_state_access)
         glTextureStorage2DEXT(texture,target,levels,internalformat,width,height);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
-#ifdef _IRR_OPENGL_USE_EXTPOINTER_
-    else if (pGlTexStorage2D)
-#else
+
+#if defined(GL_VERSION_4_2) || defined(_IRR_OPENGL_USE_EXTPOINTER_)
     else
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+    if (pGlTexStorage2D)
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     {
         GLint bound;
         switch (target)
         {
+#ifdef GL_VERSION_3_0
             case GL_TEXTURE_1D_ARRAY:
                 glGetIntegerv(GL_TEXTURE_BINDING_1D_ARRAY, &bound);
                 break;
+#elif GL_EXT_texture_array
+			case GL_TEXTURE_1D_ARRAY_EXT:
+                glGetIntegerv(GL_TEXTURE_BINDING_1D_ARRAY_EXT, &bound);
+                break;
+#endif
             case GL_TEXTURE_2D:
                 glGetIntegerv(GL_TEXTURE_BINDING_2D, &bound);
                 break;
@@ -2966,6 +2981,7 @@ inline void COpenGLExtensionHandler::extGlTextureStorage2D(GLuint texture, GLenu
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
         glBindTexture(target, bound);
     }
+#endif // GL_VERSION_4_2 || _IRR_OPENGL_USE_EXTPOINTER_
 }
 
 inline void COpenGLExtensionHandler::extGlTextureStorage3D(GLuint texture, GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth)
@@ -2975,7 +2991,7 @@ inline void COpenGLExtensionHandler::extGlTextureStorage3D(GLuint texture, GLenu
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlTextureStorage3D)
             pGlTextureStorage3D(texture,levels,internalformat,width,height,depth);
-#else
+#elif defined(GL_VERSION_4_5)
         glTextureStorage3D(texture,levels,internalformat,width,height,depth);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
@@ -2984,28 +3000,40 @@ inline void COpenGLExtensionHandler::extGlTextureStorage3D(GLuint texture, GLenu
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlTextureStorage3DEXT)
             pGlTextureStorage3DEXT(texture,target,levels,internalformat,width,height,depth);
-#else
+#elif defined(GL_EXT_direct_state_access)
         glTextureStorage3DEXT(texture,target,levels,internalformat,width,height,depth);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
-#ifdef _IRR_OPENGL_USE_EXTPOINTER_
-    else if (pGlTexStorage3D)
-#else
+#if defined(GL_VERSION_4_2) || defined(_IRR_OPENGL_USE_EXTPOINTER_)
     else
-#endif // _IRR_OPENGL_USE_EXTPOINTER_
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+    if (pGlTexStorage3D)
+#endif // _IRR_OPENGL_USE_EX TPOINTER_
     {
         GLint bound;
         switch (target)
         {
+#ifdef GL_VERSION_3_0
             case GL_TEXTURE_2D_ARRAY:
                 glGetIntegerv(GL_TEXTURE_BINDING_2D_ARRAY, &bound);
                 break;
+#elif GL_EXT_texture_array
+			case GL_TEXTURE_2D_ARRAY_EXT:
+                glGetIntegerv(GL_TEXTURE_BINDING_2D_ARRAY_EXT, &bound);
+                break;
+#endif
             case GL_TEXTURE_3D:
                 glGetIntegerv(GL_TEXTURE_BINDING_3D, &bound);
                 break;
+#ifdef GL_VERSION_4_0
             case GL_TEXTURE_CUBE_MAP_ARRAY:
                 glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP_ARRAY, &bound);
                 break;
+#elif defined(GL_ARB_texture_cube_map_array)
+			case GL_TEXTURE_CUBE_MAP_ARRAY_ARB:
+				glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP_ARRAY_ARB, &bound);
+				break;
+#endif
             default:
                 return;
         }
@@ -3017,6 +3045,7 @@ inline void COpenGLExtensionHandler::extGlTextureStorage3D(GLuint texture, GLenu
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
         glBindTexture(target, bound);
     }
+#endif // GL_VERSION_4_2 || _IRR_OPENGL_USE_EXTPOINTER_
 }
 
 inline void COpenGLExtensionHandler::extGlGetTextureImage(GLuint texture, GLenum target, GLint level, GLenum format, GLenum type, GLsizei bufSize, void* pixels)
@@ -3026,7 +3055,7 @@ inline void COpenGLExtensionHandler::extGlGetTextureImage(GLuint texture, GLenum
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
 		if (pGlGetTextureImage)
 			pGlGetTextureImage(texture,level,format,type,bufSize,pixels);
-#else
+#elif defined(GL_VERSION_4_5)
 		glGetTextureImage(texture,level,format,type,bufSize,pixels);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
 	}
@@ -3035,7 +3064,7 @@ inline void COpenGLExtensionHandler::extGlGetTextureImage(GLuint texture, GLenum
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
 		if (pGlGetTextureImageEXT)
 			pGlGetTextureImageEXT(texture,target,level,format,type,pixels);
-#else
+#elif defined(GL_EXT_direct_state_access)
 		glGetTextureImageEXT(texture,target,level,format,type,pixels);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
 	}
@@ -3044,15 +3073,27 @@ inline void COpenGLExtensionHandler::extGlGetTextureImage(GLuint texture, GLenum
 		GLint bound;
 		switch (target)
 		{
+#ifdef GL_VERSION_3_0
 			case GL_TEXTURE_2D_ARRAY:
 				glGetIntegerv(GL_TEXTURE_BINDING_2D_ARRAY, &bound);
 				break;
+#elif GL_EXT_texture_array
+			case GL_TEXTURE_2D_ARRAY_EXT:
+                glGetIntegerv(GL_TEXTURE_BINDING_2D_ARRAY_EXT, &bound);
+                break;
+#endif
 			case GL_TEXTURE_3D:
 				glGetIntegerv(GL_TEXTURE_BINDING_3D, &bound);
 				break;
+#ifdef GL_VERSION_4_0
 			case GL_TEXTURE_CUBE_MAP_ARRAY:
 				glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP_ARRAY, &bound);
 				break;
+#elif defined(GL_ARB_texture_cube_map_array)
+			case GL_TEXTURE_CUBE_MAP_ARRAY_ARB:
+				glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP_ARRAY_ARB, &bound);
+				break;
+#endif
 			default:
 				return;
 		}
@@ -3064,6 +3105,7 @@ inline void COpenGLExtensionHandler::extGlGetTextureImage(GLuint texture, GLenum
 
 inline void COpenGLExtensionHandler::extGlNamedFramebufferTexture(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level)
 {
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (!needsDSAFramebufferHack)
     {
         if (Version>=405 || FeatureAvailable[IRR_ARB_direct_state_access])
@@ -3086,6 +3128,7 @@ inline void COpenGLExtensionHandler::extGlNamedFramebufferTexture(GLuint framebu
     pGlFramebufferTexture(GL_FRAMEBUFFER,attachment,texture,level);
     if (bound!=framebuffer)
         pGlBindFramebuffer(GL_FRAMEBUFFER,bound);
+#endif
 }
 
 inline void COpenGLExtensionHandler::extGlTextureParameteri(GLuint texture, GLenum pname, GLint param)
@@ -3129,7 +3172,7 @@ inline void COpenGLExtensionHandler::extGlCreateTextures(GLenum target, GLsizei 
             pGlCreateTextures(target,n,textures);
         else if (textures)
             memset(textures,0,n*sizeof(GLuint));
-#else
+#elif defined(GL_VERSION_4_5)
         glCreateTextures(target,n,textures);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
@@ -3141,6 +3184,7 @@ inline void COpenGLExtensionHandler::extGlCreateTextures(GLenum target, GLsizei 
 
 inline void COpenGLExtensionHandler::extGlCreateFramebuffers(GLsizei n, GLuint* framebuffers)
 {
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (!needsDSAFramebufferHack)
     {
         if (Version>=405)
@@ -3151,21 +3195,49 @@ inline void COpenGLExtensionHandler::extGlCreateFramebuffers(GLsizei n, GLuint* 
     }
 
     pGlGenFramebuffers(n, framebuffers);
+#endif
 }
 
 inline void COpenGLExtensionHandler::extGlBindTextures(GLuint first, GLsizei count, const GLuint *textures, const GLenum* targets)
 {
-    const GLenum supportedTargets[] = { GL_TEXTURE_1D,GL_TEXTURE_2D, // GL 1.x
-                                        GL_TEXTURE_3D,GL_TEXTURE_RECTANGLE,GL_TEXTURE_CUBE_MAP, // GL 2.x
-                                        GL_TEXTURE_1D_ARRAY,GL_TEXTURE_2D_ARRAY,GL_TEXTURE_BUFFER, // GL 3.x
-                                        GL_TEXTURE_CUBE_MAP_ARRAY,GL_TEXTURE_2D_MULTISAMPLE,GL_TEXTURE_2D_MULTISAMPLE_ARRAY}; // GL 4.x
+    const GLenum supportedTargets[] = { GL_TEXTURE_1D, GL_TEXTURE_2D // GL 1.x
+                                        ,GL_TEXTURE_3D	// GL 2.x
+#ifdef GL_VERSION_3_1
+                                        ,GL_TEXTURE_RECTANGLE
+#elif defined(GL_ARB_texture_rectangle)
+										,GL_TEXTURE_RECTANGLE_ARB
+#elif defined(GL_NV_texture_rectangle)
+										,GL_TEXTURE_RECTANGLE_NV
+#endif
+                                        ,GL_TEXTURE_CUBE_MAP
+#ifdef GL_VERSION_3_0
+                                        ,GL_TEXTURE_1D_ARRAY,GL_TEXTURE_2D_ARRAY // GL 3.x
+#elif GL_EXT_texture_array
+										,GL_TEXTURE_1D_ARRAY_EXT,GL_TEXTURE_2D_ARRAY_EXT
+#endif
+#ifdef GL_VERSION_3_1
+										,GL_TEXTURE_BUFFER
+#elif defined(GL_ARB_texture_buffer_object)
+										,GL_TEXTURE_BUFFER_ARB
+#elif defined(GL_EXT_texture_buffer_object)
+										,GL_TEXTURE_BUFFER_EXT
+#endif
+#ifdef GL_VERSION_4_0
+                                        ,GL_TEXTURE_CUBE_MAP_ARRAY	// GL 4.x
+#elif defined(GL_ARB_texture_cube_map_array)
+										,GL_TEXTURE_CUBE_MAP_ARRAY_ARB
+#endif
+#ifdef GL_VERSION_3_2
+                                        ,GL_TEXTURE_2D_MULTISAMPLE,GL_TEXTURE_2D_MULTISAMPLE_ARRAY
+#endif
+	};
 
     if (Version>=404||FeatureAvailable[IRR_ARB_multi_bind])
     {
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlBindTextures)
             pGlBindTextures(first,count,textures);
-#else
+#elif defined(GL_VERSION_4_4)
         glBindTextures(first,count,textures);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
@@ -3201,7 +3273,7 @@ inline void COpenGLExtensionHandler::extGlGenerateTextureMipmap(GLuint texture, 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlGenerateTextureMipmap)
             pGlGenerateTextureMipmap(texture);
-#else
+#elif defined(GL_VERSION_4_5)
         glGenerateTextureMipmap(texture);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
@@ -3210,7 +3282,7 @@ inline void COpenGLExtensionHandler::extGlGenerateTextureMipmap(GLuint texture, 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlGenerateTextureMipmapEXT)
             pGlGenerateTextureMipmapEXT(texture,target);
-#else
+#elif defined(GL_EXT_direct_state_access)
         glGenerateTextureMipmapEXT(texture,target);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
     }
@@ -3226,33 +3298,63 @@ inline void COpenGLExtensionHandler::extGlGenerateTextureMipmap(GLuint texture, 
             case GL_TEXTURE_1D:
                 glGetIntegerv(GL_TEXTURE_BINDING_1D, &bound);
                 break;
+#ifdef GL_VERSION_3_0
             case GL_TEXTURE_1D_ARRAY:
                 glGetIntegerv(GL_TEXTURE_BINDING_1D_ARRAY, &bound);
                 break;
+#elif GL_EXT_texture_array
+			case GL_TEXTURE_1D_ARRAY_EXT:
+                glGetIntegerv(GL_TEXTURE_BINDING_1D_ARRAY_EXT, &bound);
+                break;
+#endif
             case GL_TEXTURE_2D:
                 glGetIntegerv(GL_TEXTURE_BINDING_2D, &bound);
                 break;
+#ifdef GL_VERSION_3_0
             case GL_TEXTURE_2D_ARRAY:
                 glGetIntegerv(GL_TEXTURE_BINDING_2D_ARRAY, &bound);
                 break;
+#elif GL_EXT_texture_array
+			case GL_TEXTURE_2D_ARRAY_EXT:
+                glGetIntegerv(GL_TEXTURE_BINDING_2D_ARRAY_EXT, &bound);
+                break;
+#endif
+#ifdef GL_VERSION_3_2
             case GL_TEXTURE_2D_MULTISAMPLE:
                 glGetIntegerv(GL_TEXTURE_BINDING_2D_MULTISAMPLE, &bound);
                 break;
             case GL_TEXTURE_2D_MULTISAMPLE_ARRAY:
                 glGetIntegerv(GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY, &bound);
                 break;
+#endif
             case GL_TEXTURE_3D:
                 glGetIntegerv(GL_TEXTURE_BINDING_3D, &bound);
                 break;
+#ifdef GL_VERSION_3_1
             case GL_TEXTURE_BUFFER:
                 glGetIntegerv(GL_TEXTURE_BINDING_BUFFER, &bound);
                 break;
+#elif defined(GL_ARB_texture_buffer_object)
+			case GL_TEXTURE_BUFFER_ARB:
+				glGetIntegerv(GL_TEXTURE_BINDING_BUFFER_ARB, &bound);
+				break;
+#elif defined(GL_EXT_texture_buffer_object)
+			case GL_TEXTURE_BUFFER_EXT:
+				glGetIntegerv(GL_TEXTURE_BINDING_BUFFER_EXT, &bound);
+				break;
+#endif
             case GL_TEXTURE_CUBE_MAP:
                 glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP, &bound);
                 break;
+#ifdef GL_VERSION_4_0
             case GL_TEXTURE_CUBE_MAP_ARRAY:
                 glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP_ARRAY, &bound);
                 break;
+#elif defined(GL_ARB_texture_cube_map_array)
+			case GL_TEXTURE_CUBE_MAP_ARRAY_ARB:
+				glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP_ARRAY_ARB, &bound);
+				break;
+#endif
             case GL_TEXTURE_RECTANGLE:
                 glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &bound);
                 break;

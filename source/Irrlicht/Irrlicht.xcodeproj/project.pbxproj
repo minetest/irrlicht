@@ -613,6 +613,8 @@
 		5E79089B1C10FEF900DFE7FE /* CB3DMeshWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E7908981C10FE4A00DFE7FE /* CB3DMeshWriter.cpp */; };
 		5E8570BC1B7F9AC400B267D2 /* CIrrDeviceConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E8570BA1B7F9AC400B267D2 /* CIrrDeviceConsole.cpp */; };
 		5E9573D71C18E9E600C27989 /* CEAGLManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5E9573D61C18E9E600C27989 /* CEAGLManager.mm */; };
+		8493BC02249DEBB30092813E /* IOctreeSceneNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 8493BC01249DEBB20092813E /* IOctreeSceneNode.h */; };
+		8493BC04249DED3F0092813E /* IMemoryReadFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 8493BC03249DED3F0092813E /* IMemoryReadFile.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1366,6 +1368,8 @@
 		5E9573D31C18E9B300C27989 /* CEAGLManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CEAGLManager.h; sourceTree = "<group>"; };
 		5E9573D61C18E9E600C27989 /* CEAGLManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CEAGLManager.mm; sourceTree = "<group>"; };
 		5EC24F5E1B8B861200DCA615 /* exampleHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = exampleHelper.h; path = ../../include/exampleHelper.h; sourceTree = "<group>"; };
+		8493BC01249DEBB20092813E /* IOctreeSceneNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOctreeSceneNode.h; path = ../../include/IOctreeSceneNode.h; sourceTree = "<group>"; };
+		8493BC03249DED3F0092813E /* IMemoryReadFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMemoryReadFile.h; path = ../../include/IMemoryReadFile.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1508,6 +1512,7 @@
 				5E34C7401B7F4AFC00F212E8 /* IMeshTextureLoader.h */,
 				5E34C7411B7F4AFC00F212E8 /* IMeshWriter.h */,
 				5E34C7421B7F4AFC00F212E8 /* IMetaTriangleSelector.h */,
+				8493BC01249DEBB20092813E /* IOctreeSceneNode.h */,
 				5E34C7441B7F4AFC00F212E8 /* IParticleAffector.h */,
 				5E34C7451B7F4AFC00F212E8 /* IParticleAnimatedMeshSceneNodeEmitter.h */,
 				5E34C7461B7F4AFC00F212E8 /* IParticleAttractionAffector.h */,
@@ -1565,6 +1570,7 @@
 				5E34C7101B7F4AFC00F212E8 /* IFileArchive.h */,
 				5E34C7111B7F4AFC00F212E8 /* IFileList.h */,
 				5E34C7121B7F4AFC00F212E8 /* IFileSystem.h */,
+				8493BC03249DED3F0092813E /* IMemoryReadFile.h */,
 				5E34C7551B7F4AFC00F212E8 /* IReadFile.h */,
 				5E34C7631B7F4AFC00F212E8 /* irrXML.h */,
 				5E34C77B1B7F4AFC00F212E8 /* IWriteFile.h */,
@@ -2445,6 +2451,11 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5E8570BD1B7F9AC400B267D2 /* CIrrDeviceConsole.h in Headers */,
+				5E7908961C10EEC000DFE7FE /* COpenGLCommon.h in Headers */,
+				8493BC04249DED3F0092813E /* IMemoryReadFile.h in Headers */,
+				5E7908951C10EEC000DFE7FE /* COpenGLCacheHandler.h in Headers */,
+				8493BC02249DEBB30092813E /* IOctreeSceneNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

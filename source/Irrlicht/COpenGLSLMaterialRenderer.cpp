@@ -736,6 +736,7 @@ bool COpenGLSLMaterialRenderer::setPixelShaderConstant(s32 index, const u32* int
 		case GL_UNSIGNED_INT:
 			Driver->extGlUniform1uiv(UniformInfo[index].location, count, reinterpret_cast<const GLuint*>(ints));
 			break;
+#if defined(GL_VERSION_3_0)
 		case GL_UNSIGNED_INT_VEC2:
 			Driver->extGlUniform2uiv(UniformInfo[index].location, count/2, reinterpret_cast<const GLuint*>(ints));
 			break;
@@ -745,6 +746,7 @@ bool COpenGLSLMaterialRenderer::setPixelShaderConstant(s32 index, const u32* int
 		case GL_UNSIGNED_INT_VEC4:
 			Driver->extGlUniform4uiv(UniformInfo[index].location, count/4, reinterpret_cast<const GLuint*>(ints));
 			break;
+#endif
 		default:
 			status = false;
 			break;

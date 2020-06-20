@@ -1224,7 +1224,7 @@ void CIrrDeviceMacOSX::storeMouseLocation()
 		x = (int)point.x;
 		y = (int)point.y;
 
-		const core::position2di& curr = ((CCursorControl *)CursorControl)->getPosition();
+		const core::position2di& curr = ((CCursorControl *)CursorControl)->getPosition(true);
 		if (curr.X != x || curr.Y != y)
 		{
 			// In fullscreen mode, events are not sent regularly so rely on polling
