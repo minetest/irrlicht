@@ -85,7 +85,7 @@ CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name, u32 fl
 		MipMap[0] = new CImage(BURNINGSHADER_COLOR_FORMAT, image->getDimension());
 #if defined(IRRLICHT_sRGB)
 		MipMap[0]->set_sRGB( (Flags & TEXTURE_IS_LINEAR ) ? 0 : image->get_sRGB()  );
-#endif		
+#endif
 		if (!isCompressed)
 			image->copyTo(MipMap[0]);
 	}
@@ -241,14 +241,14 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data)
 	for (i=1; i < 0 && i < SOFTWARE_DRIVER_2_MIPMAPPING_MAX; ++i)
 	{
 /*
-		static u32 color[] = { 
+		static u32 color[] = {
 			0x30bf7f00,0x3040bf00,0x30bf00bf,0x3000bf00,
 			0x300080bf,0x30bf4000,0x300040bf,0x307f00bf,
 			0x30bf0000,0x3000bfbf,0x304000bf,0x307fbf00,
 			0x8000bf7f,0x80bf0040,0x80bfbf00,0x800000bf
 		};
 */
-		static u32 color[] = { 
+		static u32 color[] = {
 			0xFFFFFFFF,0xFFFF0000,0xFF00FF00,0xFF0000FF,
 			0xFFFFFF00,0xFF00FFFF,0xFFFF00FF,0xFF0000FF,
 			0xFF0000FF,0xFF0000FF,0xFF0000FF,0xFF0000FF,
@@ -473,9 +473,9 @@ u32 linear_to_srgb_8bit(const float v)
 {
 	ieee754 c;
 	c.f = v;
-	const register size_t x = c.u;
+	const size_t x = c.u;
 	const u32 *table = (u32*)srgb_8bit_to_linear_float;
-	register u32 y = 0;
+	u32 y = 0;
 	y += table[y + 128] <= x ? 128 : 0;
 	y += table[y + 64] <= x ? 64 : 0;
 	y += table[y + 32] <= x ? 32 : 0;

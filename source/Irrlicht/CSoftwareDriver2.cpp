@@ -470,7 +470,7 @@ bool CBurningVideoDriver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
 	case EVDF_RENDER_TO_TARGET:
 	case EVDF_MULTITEXTURE:
 	case EVDF_HARDWARE_TL:
-	case EVDF_TEXTURE_NSQUARE: 
+	case EVDF_TEXTURE_NSQUARE:
 	case EVDF_TEXTURE_MATRIX:
 		on = 1;
 		break;
@@ -894,7 +894,7 @@ const sVec4 CBurningVideoDriver::NDCPlane[6+2] =
 
 REALINLINE size_t CBurningVideoDriver::clipToFrustumTest ( const s4DVertex* v  ) const
 {
-	register size_t flag;
+	size_t flag;
 	f32 test[8];
 	const f32 w = - v->Pos.w;
 
@@ -908,7 +908,7 @@ REALINLINE size_t CBurningVideoDriver::clipToFrustumTest ( const s4DVertex* v  )
 	test[3] = -v->Pos.x + w;
 	test[4] =  v->Pos.y + w;
 	test[5] = -v->Pos.y + w;
-	
+
 	const u32* a = F32_AS_U32_POINTER(test);
 	flag =  (a[0]             ) >> 31;
 	flag |= (a[1] & 0x80000000) >> 30;
@@ -948,7 +948,7 @@ REALINLINE size_t clipToFrustumTest ( const s4DVertex* v  )
 
 	flag |=  v->Pos.x <= v->Pos.w ? VERTEX4D_CLIP_LEFT	: 0;
 	flag |= -v->Pos.x <= v->Pos.w ? VERTEX4D_CLIP_RIGHT	: 0;
-	
+
 	flag |=  v->Pos.y <= v->Pos.w ? VERTEX4D_CLIP_BOTTOM	: 0;
 	flag |= -v->Pos.y <= v->Pos.w ? VERTEX4D_CLIP_TOP	: 0;
 
@@ -1093,7 +1093,7 @@ size_t CBurningVideoDriver::clipToFrustum(const size_t vIn /*, const size_t clip
 /*!
  Part I:
 	apply Clip Scale matrix
-	From Normalized Device Coordiante ( NDC ) Space to Device Coordinate ( DC ) Space 
+	From Normalized Device Coordiante ( NDC ) Space to Device Coordinate ( DC ) Space
 
  Part II:
 	Project homogeneous vector
@@ -1272,7 +1272,7 @@ REALINLINE s32 CBurningVideoDriver::lodFactor_inside(const s4DVertexPair* burnin
 		ieee754 v[2];
 		v[0].f = t[0] * t[2];
 		v[1].f = t[1] * t[3];
-		
+
 		//signedArea.f = t[4] > t[5] ? t[4] : t[5];
 		signedArea.u = v[0].fields.frac > v[1].fields.frac ? v[0].u : v[1].u;
 		if (signedArea.fields.exp == 0)
@@ -1454,7 +1454,7 @@ void CBurningVideoDriver::VertexCache_map_source_format()
 
 	Clipper.resize(VERTEXCACHE_ELEMENT * 2);
 	Clipper_temp.resize(VERTEXCACHE_ELEMENT * 2);
-	
+
 	TransformationStack = 0;
 	memset(TransformationFlag, 0, sizeof(TransformationFlag));
 	memset(Transformation_ETS_CLIPSCALE, 0, sizeof(Transformation_ETS_CLIPSCALE));
@@ -2238,8 +2238,8 @@ void CBurningVideoDriver::drawVertexPrimitiveList(const void* vertices, u32 vert
 		//collect pointer to face vertices
 		VertexCache_get(face);
 
-		register size_t clipMask_i;
-		register size_t clipMask_o;
+		size_t clipMask_i;
+		size_t clipMask_o;
 
 		clipMask_i = face[0]->flag;
 		clipMask_o = face[0]->flag;
@@ -2506,7 +2506,7 @@ void CBurningVideoDriver::setMaterial(const SMaterial& material)
 	//Material.Fallback_MaterialType = material.MaterialType;
 
 //-----------------
-	
+
 	//Material.org = material;
 	Material.CullFlag = CULL_INVISIBLE | (in.BackfaceCulling ? CULL_BACK : 0) | (in.FrontfaceCulling ? CULL_FRONT : 0);
 
@@ -2536,7 +2536,7 @@ void CBurningVideoDriver::setMaterial(const SMaterial& material)
 #endif
 
 	//--------------- setCurrentShader
-	
+
 	ITexture* texture0 = in.getTexture(0);
 	ITexture* texture1 = in.getTexture(1);
 	//ITexture* texture2 = in.getTexture(2);
@@ -3179,7 +3179,7 @@ void CBurningVideoDriver::setRenderStates2DMode(const video::SColor& color, vide
 	{
 		CurrentShader->setPrimitiveColor(color.color);
 	}
-	
+
 }
 
 void CBurningVideoDriver::setRenderStates3DMode()
@@ -3363,7 +3363,7 @@ void CBurningVideoDriver::draw2DImage(const video::ITexture* texture, const core
 		quad_triangle_indexList, 2,
 		EVT_STANDARD, scene::EPT_TRIANGLES, EIT_16BIT);
 
-	
+
 	if (clipRect)
 		EyeSpace.TL_Flag &= ~TL_SCISSOR;
 
@@ -3491,7 +3491,7 @@ void CBurningVideoDriver::draw3DLine(const core::vector3df& start,
 	const core::vector3df& end, SColor color_start)
 {
 	SColor color_end = color_start;
-	
+
 	VertexCache.primitiveHasVertex = 2;
 	VertexCache.vType = E4VT_LINE;
 
@@ -3875,7 +3875,7 @@ void CBurningVideoDriver::setBasicRenderStates(const SMaterial& material,
 	const SMaterial& lastMaterial,
 	bool resetAllRenderstates)
 {
-	
+
 }
 
 //! Return an index constant for the vertex shader based on a name.

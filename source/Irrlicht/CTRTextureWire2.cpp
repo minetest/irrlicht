@@ -158,7 +158,7 @@ void CTRTextureWire2::renderLine ( const s4DVertex *a,const s4DVertex *b, int re
 	if ( dy > dx )
 	{
 		//swap
-		register s32 t;
+		s32 t;
 		t = dx;dx=dy;dy=t;
 		t = xInc0;xInc0=yInc0;yInc0=t;
 #ifdef USE_ZBUFFER
