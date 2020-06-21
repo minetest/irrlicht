@@ -2910,9 +2910,15 @@ inline void COpenGLExtensionHandler::extGlTextureSubImage2D(GLuint texture, GLen
             case GL_TEXTURE_CUBE_MAP_POSITIVE_Z:
                 glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP, &bound);
                 break;
+#ifdef GL_VERSION_3_1
             case GL_TEXTURE_RECTANGLE:
                 glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &bound);
                 break;
+#elif defined(GL_ARB_texture_rectangle)
+			case GL_TEXTURE_RECTANGLE_ARB:
+				glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE_ARB, &bound);
+                break;
+#endif
             default:
                 return;
         }
@@ -2967,9 +2973,15 @@ inline void COpenGLExtensionHandler::extGlTextureStorage2D(GLuint texture, GLenu
             case GL_TEXTURE_CUBE_MAP:
                 glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP, &bound);
                 break;
+#ifdef GL_VERSION_3_1
             case GL_TEXTURE_RECTANGLE:
                 glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &bound);
                 break;
+#elif defined(GL_ARB_texture_rectangle)
+			case GL_TEXTURE_RECTANGLE_ARB:
+				glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE_ARB, &bound);
+                break;
+#endif
             default:
                 return;
         }
@@ -3206,8 +3218,6 @@ inline void COpenGLExtensionHandler::extGlBindTextures(GLuint first, GLsizei cou
                                         ,GL_TEXTURE_RECTANGLE
 #elif defined(GL_ARB_texture_rectangle)
 										,GL_TEXTURE_RECTANGLE_ARB
-#elif defined(GL_NV_texture_rectangle)
-										,GL_TEXTURE_RECTANGLE_NV
 #endif
                                         ,GL_TEXTURE_CUBE_MAP
 #ifdef GL_VERSION_3_0
@@ -3355,9 +3365,15 @@ inline void COpenGLExtensionHandler::extGlGenerateTextureMipmap(GLuint texture, 
 				glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP_ARRAY_ARB, &bound);
 				break;
 #endif
+#ifdef GL_VERSION_3_1
             case GL_TEXTURE_RECTANGLE:
                 glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &bound);
                 break;
+#elif defined(GL_ARB_texture_rectangle)
+			case GL_TEXTURE_RECTANGLE_ARB:
+				glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE_ARB, &bound);
+                break;
+#endif
             default:
                 os::Printer::log("DevSH would like to ask you what are you doing!!??\n",ELL_ERROR);
                 return;
