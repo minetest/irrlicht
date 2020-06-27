@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -2103,7 +2103,7 @@
 		5E34C6D91B7F4A0C00F212E8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 1150;
 				TargetAttributes = {
 					5E34C9F21B7F6E3400F212E8 = {
 						CreatedOnToolsVersion = 6.1;
@@ -2111,10 +2111,11 @@
 				};
 			};
 			buildConfigurationList = 5E34C6DC1B7F4A0C00F212E8 /* Build configuration list for PBXProject "Irrlicht" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 5E34C6D81B7F4A0C00F212E8;
@@ -2439,6 +2440,8 @@
 		5E34C6DD1B7F4A0C00F212E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				DEPLOYMENT_LOCATION = YES;
 				ENABLE_TESTABILITY = YES;
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "DEBUG=1";
@@ -2450,6 +2453,8 @@
 		5E34C6DE1B7F4A0C00F212E8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				DEPLOYMENT_LOCATION = YES;
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "NDEBUG=1";
 				INSTALL_PATH = /;
@@ -2461,6 +2466,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -2496,6 +2502,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
