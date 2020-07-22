@@ -368,14 +368,15 @@ bool CPLYMeshFileLoader::readFace(const SPLYElement &Element, scene::CDynamicMes
 
 	for (u32 i=0; i < Element.Properties.size(); ++i)
 	{
-		if ( (Element.Properties[i].Name == "vertex_indices" ||
-			Element.Properties[i].Name == "vertex_index") && Element.Properties[i].Type == EPLYPT_LIST)
+		const SPLYProperty& property = Element.Properties[i];
+		if ( (property.Name == "vertex_indices" || property.Name == "vertex_index")
+			&& property.Type == EPLYPT_LIST)
 		{
 			// get count
-			s32 count = getInt(Element.Properties[i].Data.List.CountType);
-			u32 a = getInt(Element.Properties[i].Data.List.ItemType),
-				b = getInt(Element.Properties[i].Data.List.ItemType),
-				c = getInt(Element.Properties[i].Data.List.ItemType);
+			s32 count = getInt(property.Data.List.CountType);
+			u32 a = getInt(property.Data.List.ItemType),
+				b = getInt(property.Data.List.ItemType),
+				c = getInt(property.Data.List.ItemType);
 			s32 j = 3;
 
 			mb->getIndexBuffer().push_back(a);
@@ -385,19 +386,19 @@ bool CPLYMeshFileLoader::readFace(const SPLYElement &Element, scene::CDynamicMes
 			for (; j < count; ++j)
 			{
 				b = c;
-				c = getInt(Element.Properties[i].Data.List.ItemType);
+				c = getInt(property.Data.List.ItemType);
 				mb->getIndexBuffer().push_back(a);
 				mb->getIndexBuffer().push_back(c);
 				mb->getIndexBuffer().push_back(b);
 			}
 		}
-		else if (Element.Properties[i].Name == "intensity")
+		else if (property.Name == "intensity")
 		{
 			// todo: face intensity
-			skipProperty(Element.Properties[i]);
+			skipProperty(property);
 		}
 		else
-			skipProperty(Element.Properties[i]);
+			skipProperty(property);
 	}
 	return true;
 }

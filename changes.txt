@@ -1,6 +1,6 @@
 --------------------------
 Changes in 1.9 (not yet released)
-- ply meshloader now also supports textures with names texture_u/texture_v. 
+- ply meshloader now also supports textures with uv-labels named texture_u/texture_v. 
   Thx @acy for bugreport and test-model (http://irrlicht.sourceforge.net/forum/viewtopic.php?f=4&t=52646)
 - Fix potential reading/writing 1 byte behind it's own buffer in PLY loader.
   Thanks @wolfgang for report and patch (http://irrlicht.sourceforge.net/forum/viewtopic.php?f=7&t=52627&p=305573#p305573)
