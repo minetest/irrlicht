@@ -302,49 +302,51 @@ bool CPLYMeshFileLoader::readVertex(const SPLYElement &Element, scene::CDynamicM
 	for (u32 i=0; i < Element.Properties.size(); ++i)
 	{
 		E_PLY_PROPERTY_TYPE t = Element.Properties[i].Type;
+		const core::stringc& name = Element.Properties[i].Name;
 
-		if (Element.Properties[i].Name == "x")
+		if (name == "x")
 			vert.Pos.X = getFloat(t);
-		else if (Element.Properties[i].Name == "y")
+		else if (name == "y")
 			vert.Pos.Z = getFloat(t);
-		else if (Element.Properties[i].Name == "z")
+		else if (name == "z")
 			vert.Pos.Y = getFloat(t);
-		else if (Element.Properties[i].Name == "nx")
+		else if (name == "nx")
 		{
 			vert.Normal.X = getFloat(t);
 			result=true;
 		}
-		else if (Element.Properties[i].Name == "ny")
+		else if (name == "ny")
 		{
 			vert.Normal.Z = getFloat(t);
 			result=true;
 		}
-		else if (Element.Properties[i].Name == "nz")
+		else if (name == "nz")
 		{
 			vert.Normal.Y = getFloat(t);
 			result=true;
 		}
-		 // there isn't a single convention for the UV, some software like Blender or Assimp uses "st" instead of "uv"
-		else if (Element.Properties[i].Name == "u" || Element.Properties[i].Name == "s")
+		 // There isn't a single convention for the UV, some software like Blender or Assimp uses "st" instead of "uv"
+		 // Not sure which tool creates texture_u/texture_v, but those exist as well.
+		else if (name == "u" || name == "s" || name == "texture_u")
 			vert.TCoords.X = getFloat(t);
-		else if (Element.Properties[i].Name == "v" || Element.Properties[i].Name == "t")
+		else if (name == "v" || name == "t" || name == "texture_v")
 			vert.TCoords.Y = getFloat(t);
-		else if (Element.Properties[i].Name == "red")
+		else if (name == "red")
 		{
 			u32 value = Element.Properties[i].isFloat() ? (u32)(getFloat(t)*255.0f) : getInt(t);
 			vert.Color.setRed(value);
 		}
-		else if (Element.Properties[i].Name == "green")
+		else if (name == "green")
 		{
 			u32 value = Element.Properties[i].isFloat() ? (u32)(getFloat(t)*255.0f) : getInt(t);
 			vert.Color.setGreen(value);
 		}
-		else if (Element.Properties[i].Name == "blue")
+		else if (name == "blue")
 		{
 			u32 value = Element.Properties[i].isFloat() ? (u32)(getFloat(t)*255.0f) : getInt(t);
 			vert.Color.setBlue(value);
 		}
-		else if (Element.Properties[i].Name == "alpha")
+		else if (name == "alpha")
 		{
 			u32 value = Element.Properties[i].isFloat() ? (u32)(getFloat(t)*255.0f) : getInt(t);
 			vert.Color.setAlpha(value);
