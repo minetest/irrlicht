@@ -424,12 +424,13 @@ void CDemo::loadSceneData()
 			model1->setPosition(core::vector3df(100,40,-80));
 			model1->setScale(core::vector3df(2,2,2));
 			model1->setMD2Animation(scene::EMAT_STAND);
-			model1->setMaterialFlag(video::EMF_LIGHTING, false);
+			model1->setMaterialFlag(video::EMF_LIGHTING, true);
+			model1->getMaterial(0).Shininess = 40.f;
 			model1->setMaterialFlag(video::EMF_NORMALIZE_NORMALS, true);
 			model1->setMaterialType(video::EMT_SPHERE_MAP);
 			model1->setAutomaticCulling(scene::EAC_OFF); // avoid shadows not updating
 			scene::IShadowVolumeSceneNode * shadVol = model1->addShadowVolumeSceneNode();
-			shadVol->setOptimization(scene::ESV_NONE);	// Sydney has broken shadows otherwise
+			if(shadVol) shadVol->setOptimization(scene::ESV_NONE);	// Sydney has broken shadows otherwise
 		}
 
 		model2 = sm->addAnimatedMeshSceneNode(mesh);
@@ -443,7 +444,7 @@ void CDemo::loadSceneData()
 			model2->setMaterialFlag(video::EMF_NORMALIZE_NORMALS, true);
 			model2->setAutomaticCulling(scene::EAC_OFF); // avoid shadows not updating
 			scene::IShadowVolumeSceneNode * shadVol = model2->addShadowVolumeSceneNode();
-			shadVol->setOptimization(scene::ESV_NONE);	// Sydney has broken shadows otherwise
+			if (shadVol) shadVol->setOptimization(scene::ESV_NONE);	// Sydney has broken shadows otherwise
 		}
 	}
 
