@@ -85,8 +85,8 @@ namespace gui
 		//! Sets text justification mode
 		/** \param horizontal: EGUIA_UPPERLEFT for left justified (default),
 		EGUIA_LOWEERRIGHT for right justified, or EGUIA_CENTER for centered text.
-		\param vertical: EGUIA_UPPERLEFT to align with top edge,
-		EGUIA_LOWEERRIGHT for bottom edge, or EGUIA_CENTER for centered text (default). */
+		\param vertical: EGUIA_UPPERLEFT to align with top edge (default),
+		EGUIA_LOWEERRIGHT for bottom edge, or EGUIA_CENTER for centered text. */
 		virtual void setTextAlignment(EGUI_ALIGNMENT horizontal, EGUI_ALIGNMENT vertical) = 0;
 
 		//! Enables or disables word wrap for using the static text as multiline text control.

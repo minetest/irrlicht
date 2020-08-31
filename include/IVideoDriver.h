@@ -382,7 +382,9 @@ namespace video
 		\param format The color format of the render target. Floating point formats are supported.
 		\return Pointer to the created texture or 0 if the texture
 		could not be created. This pointer should not be dropped. See
-		IReferenceCounted::drop() for more information. */
+		IReferenceCounted::drop() for more information.
+		You may want to remove it from driver texture cache with removeTexture if you no longer need it.
+		*/
 		virtual ITexture* addRenderTargetTexture(const core::dimension2d<u32>& size,
 				const io::path& name = "rt", const ECOLOR_FORMAT format = ECF_UNKNOWN) =0;
 
@@ -1476,7 +1478,7 @@ namespace video
 		other flags can be changed, though some might have to effect
 		in most cases.
 		Please note that you have to enable/disable this effect with
-		enableInitMaterial2D(). This effect is costly, as it increases
+		enableMaterial2D(). This effect is costly, as it increases
 		the number of state changes considerably. Always reset the
 		values when done.
 		\return Material reference which should be altered to reflect
