@@ -243,7 +243,7 @@ namespace core
 
 	//! returns if a equals b, taking possible rounding errors into account
 	template <class T>
-	inline bool equals(const T a, const T b, const T tolerance = roundingError<T>()) 
+	inline bool equals(const T a, const T b, const T tolerance = roundingError<T>())
 	{
 		return (a + tolerance >= b) && (a - tolerance <= b);
 	}
@@ -633,7 +633,7 @@ namespace core
 		return rec;
 */
 /*
-		register u32 x = 0x7F000000 - IR ( p );
+		u32 x = 0x7F000000 - IR ( p );
 		const f32 r = FR ( x );
 		return r * (2.0f - p * r);
 */

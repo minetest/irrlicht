@@ -894,7 +894,7 @@ const sVec4 CBurningVideoDriver::NDCPlane[6+2] =
 
 REALINLINE size_t CBurningVideoDriver::clipToFrustumTest ( const s4DVertex* v  ) const
 {
-	register size_t flag;
+	size_t flag;
 	f32 test[8];
 	const f32 w = - v->Pos.w;
 
@@ -2238,8 +2238,8 @@ void CBurningVideoDriver::drawVertexPrimitiveList(const void* vertices, u32 vert
 		//collect pointer to face vertices
 		VertexCache_get(face);
 
-		register size_t clipMask_i;
-		register size_t clipMask_o;
+		size_t clipMask_i;
+		size_t clipMask_o;
 
 		clipMask_i = face[0]->flag;
 		clipMask_o = face[0]->flag;

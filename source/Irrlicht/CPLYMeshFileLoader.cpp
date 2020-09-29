@@ -302,49 +302,51 @@ bool CPLYMeshFileLoader::readVertex(const SPLYElement &Element, scene::CDynamicM
 	for (u32 i=0; i < Element.Properties.size(); ++i)
 	{
 		E_PLY_PROPERTY_TYPE t = Element.Properties[i].Type;
+		const core::stringc& name = Element.Properties[i].Name;
 
-		if (Element.Properties[i].Name == "x")
+		if (name == "x")
 			vert.Pos.X = getFloat(t);
-		else if (Element.Properties[i].Name == "y")
+		else if (name == "y")
 			vert.Pos.Z = getFloat(t);
-		else if (Element.Properties[i].Name == "z")
+		else if (name == "z")
 			vert.Pos.Y = getFloat(t);
-		else if (Element.Properties[i].Name == "nx")
+		else if (name == "nx")
 		{
 			vert.Normal.X = getFloat(t);
 			result=true;
 		}
-		else if (Element.Properties[i].Name == "ny")
+		else if (name == "ny")
 		{
 			vert.Normal.Z = getFloat(t);
 			result=true;
 		}
-		else if (Element.Properties[i].Name == "nz")
+		else if (name == "nz")
 		{
 			vert.Normal.Y = getFloat(t);
 			result=true;
 		}
-		 // there isn't a single convention for the UV, some software like Blender or Assimp uses "st" instead of "uv"
-		else if (Element.Properties[i].Name == "u" || Element.Properties[i].Name == "s")
+		 // There isn't a single convention for the UV, some software like Blender or Assimp uses "st" instead of "uv"
+		 // Not sure which tool creates texture_u/texture_v, but those exist as well.
+		else if (name == "u" || name == "s" || name == "texture_u")
 			vert.TCoords.X = getFloat(t);
-		else if (Element.Properties[i].Name == "v" || Element.Properties[i].Name == "t")
+		else if (name == "v" || name == "t" || name == "texture_v")
 			vert.TCoords.Y = getFloat(t);
-		else if (Element.Properties[i].Name == "red")
+		else if (name == "red")
 		{
 			u32 value = Element.Properties[i].isFloat() ? (u32)(getFloat(t)*255.0f) : getInt(t);
 			vert.Color.setRed(value);
 		}
-		else if (Element.Properties[i].Name == "green")
+		else if (name == "green")
 		{
 			u32 value = Element.Properties[i].isFloat() ? (u32)(getFloat(t)*255.0f) : getInt(t);
 			vert.Color.setGreen(value);
 		}
-		else if (Element.Properties[i].Name == "blue")
+		else if (name == "blue")
 		{
 			u32 value = Element.Properties[i].isFloat() ? (u32)(getFloat(t)*255.0f) : getInt(t);
 			vert.Color.setBlue(value);
 		}
-		else if (Element.Properties[i].Name == "alpha")
+		else if (name == "alpha")
 		{
 			u32 value = Element.Properties[i].isFloat() ? (u32)(getFloat(t)*255.0f) : getInt(t);
 			vert.Color.setAlpha(value);
@@ -366,14 +368,15 @@ bool CPLYMeshFileLoader::readFace(const SPLYElement &Element, scene::CDynamicMes
 
 	for (u32 i=0; i < Element.Properties.size(); ++i)
 	{
-		if ( (Element.Properties[i].Name == "vertex_indices" ||
-			Element.Properties[i].Name == "vertex_index") && Element.Properties[i].Type == EPLYPT_LIST)
+		const SPLYProperty& property = Element.Properties[i];
+		if ( (property.Name == "vertex_indices" || property.Name == "vertex_index")
+			&& property.Type == EPLYPT_LIST)
 		{
 			// get count
-			s32 count = getInt(Element.Properties[i].Data.List.CountType);
-			u32 a = getInt(Element.Properties[i].Data.List.ItemType),
-				b = getInt(Element.Properties[i].Data.List.ItemType),
-				c = getInt(Element.Properties[i].Data.List.ItemType);
+			s32 count = getInt(property.Data.List.CountType);
+			u32 a = getInt(property.Data.List.ItemType),
+				b = getInt(property.Data.List.ItemType),
+				c = getInt(property.Data.List.ItemType);
 			s32 j = 3;
 
 			mb->getIndexBuffer().push_back(a);
@@ -383,19 +386,19 @@ bool CPLYMeshFileLoader::readFace(const SPLYElement &Element, scene::CDynamicMes
 			for (; j < count; ++j)
 			{
 				b = c;
-				c = getInt(Element.Properties[i].Data.List.ItemType);
+				c = getInt(property.Data.List.ItemType);
 				mb->getIndexBuffer().push_back(a);
 				mb->getIndexBuffer().push_back(c);
 				mb->getIndexBuffer().push_back(b);
 			}
 		}
-		else if (Element.Properties[i].Name == "intensity")
+		else if (property.Name == "intensity")
 		{
 			// todo: face intensity
-			skipProperty(Element.Properties[i]);
+			skipProperty(property);
 		}
 		else
-			skipProperty(Element.Properties[i]);
+			skipProperty(property);
 	}
 	return true;
 }

@@ -878,7 +878,7 @@ static void executeBlit_TextureBlendColor_16_to_16( const SBlitJob * job )
 		f18 src_x = f18_zero;
 		for (u32 dx = 0; dx < job->width; ++dx, src_x += wscale)
 		{
-			register u16 c0 = src[f18_floor(src_x)];
+			u16 c0 = src[f18_floor(src_x)];
 			if (0 == (c0 & 0x8000))
 				continue;
 

@@ -862,10 +862,16 @@ void CIrrDeviceMacOSX::createDriver()
                     os::Printer::log("Could not create OpenGL driver.", ELL_ERROR);
                 }
                 
-                if (Window)
-                    [(NSOpenGLContext*)ContextManager->getContext().OpenGLOSX.Context setView:[Window contentView]];
-                else
-                    [(NSOpenGLContext*)ContextManager->getContext().OpenGLOSX.Context setView:(NSView*)CreationParams.WindowId];
+				if (Window) 
+				{
+					[[Window contentView] setWantsBestResolutionOpenGLSurface:NO];
+					[(NSOpenGLContext*)ContextManager->getContext().OpenGLOSX.Context setView:[Window contentView]];
+				}
+				else 
+				{
+					[(NSView*)CreationParams.WindowId setWantsBestResolutionOpenGLSurface:NO];
+					[(NSOpenGLContext*)ContextManager->getContext().OpenGLOSX.Context setView:(NSView*)CreationParams.WindowId];
+				}
 
 #ifndef __MAC_10_6
                 CGLContextObj CGLContext = (CGLContextObj)[(NSOpenGLContext*)ContextManager->getContext().OpenGLOSX.Context CGLContextObj];
