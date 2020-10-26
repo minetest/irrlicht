@@ -114,6 +114,7 @@ namespace scene
 		void allKeysUp();
 
 		gui::ICursorControl *CursorControl;
+		bool GrabMouse;
 
 		f32 MaxVerticalAngle;
 		bool NoVerticalMovement;
@@ -129,6 +130,7 @@ namespace scene
 
 		core::array<SKeyMap> KeyMap;
 		core::position2d<f32> CenterCursor, CursorPos;
+		bool HadMouseEvent;
 
 		bool CursorKeys[EKA_COUNT];
 
