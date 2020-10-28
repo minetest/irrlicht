@@ -310,6 +310,17 @@
 		5E8570BD1B7F9AC400B267D2 /* CIrrDeviceConsole.h in Headers */ = {isa = PBXBuildFile; fileRef = 5E8570BB1B7F9AC400B267D2 /* CIrrDeviceConsole.h */; };
 		8493BC02249DEBB30092813E /* IOctreeSceneNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 8493BC01249DEBB20092813E /* IOctreeSceneNode.h */; };
 		8493BC04249DED3F0092813E /* IMemoryReadFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 8493BC03249DED3F0092813E /* IMemoryReadFile.h */; };
+		84A219A5249F823900E189FC /* SOverrideMaterial.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A219A4249F823800E189FC /* SOverrideMaterial.h */; };
+		84A219AE249F82DD00E189FC /* burning_shader_compile_verify.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A219A6249F82DC00E189FC /* burning_shader_compile_verify.h */; };
+		84A219AF249F82DD00E189FC /* burning_shader_compile_triangle.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A219A7249F82DC00E189FC /* burning_shader_compile_triangle.h */; };
+		84A219B0249F82DD00E189FC /* burning_shader_compile_fragment_start.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A219A8249F82DC00E189FC /* burning_shader_compile_fragment_start.h */; };
+		84A219B1249F82DD00E189FC /* burning_shader_color_fraq.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A219A9249F82DC00E189FC /* burning_shader_color_fraq.h */; };
+		84A219B2249F82DD00E189FC /* burning_shader_compile_start.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A219AA249F82DC00E189FC /* burning_shader_compile_start.h */; };
+		84A219B4249F82DD00E189FC /* burning_shader_compile_fragment_default.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A219AC249F82DC00E189FC /* burning_shader_compile_fragment_default.h */; };
+		84A219B5249F82DD00E189FC /* burning_shader_compile_fragment_end.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A219AD249F82DD00E189FC /* burning_shader_compile_fragment_end.h */; };
+		84A219B7249F82E800E189FC /* burning_shader_color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A219B6249F82E800E189FC /* burning_shader_color.cpp */; };
+		84A219B9249F834000E189FC /* CTRGouraudNoZ2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A219B8249F834000E189FC /* CTRGouraudNoZ2.cpp */; };
+		84A219BB249F835B00E189FC /* CTR_transparent_reflection_2_layer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A219BA249F835B00E189FC /* CTR_transparent_reflection_2_layer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1038,6 +1049,17 @@
 		5EC24F5E1B8B861200DCA615 /* exampleHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = exampleHelper.h; path = ../../include/exampleHelper.h; sourceTree = "<group>"; };
 		8493BC01249DEBB20092813E /* IOctreeSceneNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOctreeSceneNode.h; path = ../../include/IOctreeSceneNode.h; sourceTree = "<group>"; };
 		8493BC03249DED3F0092813E /* IMemoryReadFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMemoryReadFile.h; path = ../../include/IMemoryReadFile.h; sourceTree = "<group>"; };
+		84A219A4249F823800E189FC /* SOverrideMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SOverrideMaterial.h; path = ../../include/SOverrideMaterial.h; sourceTree = "<group>"; };
+		84A219A6249F82DC00E189FC /* burning_shader_compile_verify.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = burning_shader_compile_verify.h; sourceTree = "<group>"; };
+		84A219A7249F82DC00E189FC /* burning_shader_compile_triangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = burning_shader_compile_triangle.h; sourceTree = "<group>"; };
+		84A219A8249F82DC00E189FC /* burning_shader_compile_fragment_start.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = burning_shader_compile_fragment_start.h; sourceTree = "<group>"; };
+		84A219A9249F82DC00E189FC /* burning_shader_color_fraq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = burning_shader_color_fraq.h; sourceTree = "<group>"; };
+		84A219AA249F82DC00E189FC /* burning_shader_compile_start.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = burning_shader_compile_start.h; sourceTree = "<group>"; };
+		84A219AC249F82DC00E189FC /* burning_shader_compile_fragment_default.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = burning_shader_compile_fragment_default.h; sourceTree = "<group>"; };
+		84A219AD249F82DD00E189FC /* burning_shader_compile_fragment_end.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = burning_shader_compile_fragment_end.h; sourceTree = "<group>"; };
+		84A219B6249F82E800E189FC /* burning_shader_color.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = burning_shader_color.cpp; sourceTree = "<group>"; };
+		84A219B8249F834000E189FC /* CTRGouraudNoZ2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CTRGouraudNoZ2.cpp; sourceTree = "<group>"; };
+		84A219BA249F835B00E189FC /* CTR_transparent_reflection_2_layer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CTR_transparent_reflection_2_layer.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1213,6 +1235,7 @@
 				5E34C7931B7F4AFC00F212E8 /* SMeshBuffer.h */,
 				5E34C7941B7F4AFC00F212E8 /* SMeshBufferLightMap.h */,
 				5E34C7951B7F4AFC00F212E8 /* SMeshBufferTangents.h */,
+				84A219A4249F823800E189FC /* SOverrideMaterial.h */,				
 				5E34C7961B7F4AFC00F212E8 /* SParticle.h */,
 				5E34C7971B7F4AFC00F212E8 /* SSharedMeshBuffer.h */,
 				5E34C7981B7F4AFC00F212E8 /* SSkinMeshBuffer.h */,
@@ -1245,6 +1268,13 @@
 		5E34C7A21B7F4C1900F212E8 /* video */ = {
 			isa = PBXGroup;
 			children = (
+				84A219A9249F82DC00E189FC /* burning_shader_color_fraq.h */,
+				84A219AC249F82DC00E189FC /* burning_shader_compile_fragment_default.h */,
+				84A219AD249F82DD00E189FC /* burning_shader_compile_fragment_end.h */,
+				84A219A8249F82DC00E189FC /* burning_shader_compile_fragment_start.h */,
+				84A219AA249F82DC00E189FC /* burning_shader_compile_start.h */,
+				84A219A7249F82DC00E189FC /* burning_shader_compile_triangle.h */,
+				84A219A6249F82DC00E189FC /* burning_shader_compile_verify.h */,
 				5E34C6EE1B7F4AFB00F212E8 /* EDriverFeatures.h */,
 				5E34C6EF1B7F4AFB00F212E8 /* EDriverTypes.h */,
 				5E34C6F41B7F4AFB00F212E8 /* EMaterialFlags.h */,
@@ -1878,6 +1908,7 @@
 		5E34C95A1B7F692C00F212E8 /* Burning Video */ = {
 			isa = PBXGroup;
 			children = (
+				84A219B6249F82E800E189FC /* burning_shader_color.cpp */,
 				5E34C9601B7F6A7600F212E8 /* CBurningShader_Raster_Reference.cpp */,
 				5E34C9611B7F6A7600F212E8 /* CDepthBuffer.cpp */,
 				5E34C9621B7F6A7600F212E8 /* CDepthBuffer.h */,
@@ -1889,6 +1920,7 @@
 				5E34C9681B7F6A7600F212E8 /* CTRGouraud2.cpp */,
 				5E34C9691B7F6A7600F212E8 /* CTRGouraudAlpha2.cpp */,
 				5E34C96A1B7F6A7600F212E8 /* CTRGouraudAlphaNoZ2.cpp */,
+				84A219B8249F834000E189FC /* CTRGouraudNoZ2.cpp */,
 				5E34C96B1B7F6A7600F212E8 /* CTRNormalMap.cpp */,
 				5E34C96C1B7F6A7600F212E8 /* CTRStencilShadow.cpp */,
 				5E34C96D1B7F6A7600F212E8 /* CTRTextureBlend.cpp */,
@@ -1906,6 +1938,7 @@
 				5E34C9791B7F6A7600F212E8 /* CTRTextureLightMap2_M4.cpp */,
 				5E34C97A1B7F6A7600F212E8 /* CTRTextureLightMapGouraud2_M4.cpp */,
 				5E34C97B1B7F6A7600F212E8 /* CTRTextureWire2.cpp */,
+				84A219BA249F835B00E189FC /* CTR_transparent_reflection_2_layer.cpp */,
 				5E34C97C1B7F6A7600F212E8 /* IBurningShader.cpp */,
 				5E34C97D1B7F6A7600F212E8 /* IBurningShader.h */,
 				5E34C97E1B7F6A7600F212E8 /* IDepthBuffer.h */,
@@ -2071,7 +2104,15 @@
 			files = (
 				5E8570BD1B7F9AC400B267D2 /* CIrrDeviceConsole.h in Headers */,
 				5E7908961C10EEC000DFE7FE /* COpenGLCommon.h in Headers */,
+				84A219B2249F82DD00E189FC /* burning_shader_compile_start.h in Headers */,
 				8493BC04249DED3F0092813E /* IMemoryReadFile.h in Headers */,
+				84A219B1249F82DD00E189FC /* burning_shader_color_fraq.h in Headers */,
+				84A219B4249F82DD00E189FC /* burning_shader_compile_fragment_default.h in Headers */,
+				84A219B5249F82DD00E189FC /* burning_shader_compile_fragment_end.h in Headers */,
+				84A219A5249F823900E189FC /* SOverrideMaterial.h in Headers */,
+				84A219AE249F82DD00E189FC /* burning_shader_compile_verify.h in Headers */,
+				84A219AF249F82DD00E189FC /* burning_shader_compile_triangle.h in Headers */,
+				84A219B0249F82DD00E189FC /* burning_shader_compile_fragment_start.h in Headers */,
 				5E7908951C10EEC000DFE7FE /* COpenGLCacheHandler.h in Headers */,
 				8493BC02249DEBB30092813E /* IOctreeSceneNode.h in Headers */,
 			);
@@ -2103,6 +2144,7 @@
 		5E34C6D91B7F4A0C00F212E8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1150;
 				TargetAttributes = {
 					5E34C9F21B7F6E3400F212E8 = {
@@ -2179,6 +2221,7 @@
 				5E34CA511B7F6EBF00F212E8 /* CZipReader.cpp in Sources */,
 				5E34CA541B7F6EBF00F212E8 /* irrXML.cpp in Sources */,
 				5E34CA581B7F6EBF00F212E8 /* CIrrDeviceOSX.mm in Sources */,
+				84A219B7249F82E800E189FC /* burning_shader_color.cpp in Sources */,
 				5E34CA591B7F6EBF00F212E8 /* CIrrDeviceStub.cpp in Sources */,
 				5E34CA5C1B7F6EBF00F212E8 /* aescrypt.cpp in Sources */,
 				5E34CA5D1B7F6EBF00F212E8 /* aeskey.cpp in Sources */,
@@ -2303,6 +2346,7 @@
 				5E34CB121B7F6EC200F212E8 /* CIrrMeshFileLoader.cpp in Sources */,
 				5E34CB141B7F6EC200F212E8 /* CLMTSMeshFileLoader.cpp in Sources */,
 				5E34CB161B7F6EC200F212E8 /* CLWOMeshFileLoader.cpp in Sources */,
+				84A219BB249F835B00E189FC /* CTR_transparent_reflection_2_layer.cpp in Sources */,
 				5E34CB181B7F6EC200F212E8 /* CMD2MeshFileLoader.cpp in Sources */,
 				5E34CB1A1B7F6EC200F212E8 /* CMD3MeshFileLoader.cpp in Sources */,
 				5E34CB1C1B7F6EC200F212E8 /* CMeshTextureLoader.cpp in Sources */,
@@ -2388,6 +2432,7 @@
 				5E34CBAA1B7F6EC500F212E8 /* CTRTextureWire2.cpp in Sources */,
 				5E34CBAB1B7F6EC500F212E8 /* IBurningShader.cpp in Sources */,
 				5E34CBB11B7F6EC500F212E8 /* CImageLoaderBMP.cpp in Sources */,
+				84A219B9249F834000E189FC /* CTRGouraudNoZ2.cpp in Sources */,
 				5E34CBB31B7F6EC500F212E8 /* CImageLoaderDDS.cpp in Sources */,
 				5E34CBB51B7F6EC600F212E8 /* CImageLoaderJPG.cpp in Sources */,
 				5E34CBB71B7F6EC600F212E8 /* CImageLoaderPCX.cpp in Sources */,
@@ -2446,7 +2491,12 @@
 				ENABLE_TESTABILITY = YES;
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "DEBUG=1";
 				INSTALL_PATH = /;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-U__STRICT_ANSI__",
+				);
 			};
 			name = Debug;
 		};
@@ -2458,6 +2508,11 @@
 				DEPLOYMENT_LOCATION = YES;
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "NDEBUG=1";
 				INSTALL_PATH = /;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-U__STRICT_ANSI__",
+				);
 			};
 			name = Release;
 		};
@@ -2465,7 +2520,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -2501,7 +2555,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -2513,7 +2566,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DSTROOT = "$(SRCROOT)/../../lib/OSX";
 				ENABLE_NS_ASSERTIONS = NO;
