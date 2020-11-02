@@ -374,7 +374,7 @@ CBurningVideoDriver::CBurningVideoDriver(const irr::SIrrlichtCreationParameters&
 	addMaterialRenderer ( tmr ); // EMT_TRANSPARENT_ALPHA_CHANNEL,
 	addMaterialRenderer ( tmr ); // EMT_TRANSPARENT_ALPHA_CHANNEL_REF,
 	addMaterialRenderer ( tmr ); // EMT_TRANSPARENT_VERTEX_ALPHA,
-	addMaterialRenderer ( smr ); // EMT_TRANSPARENT_REFLECTION_2_LAYER,
+	addMaterialRenderer ( tmr ); // EMT_TRANSPARENT_REFLECTION_2_LAYER,
 	addMaterialRenderer ( smr ); // EMT_NORMAL_MAP_SOLID,
 	addMaterialRenderer ( tmr ); // EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR,
 	addMaterialRenderer ( tmr ); // EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA,
