@@ -2477,8 +2477,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5E8570BD1B7F9AC400B267D2 /* CIrrDeviceConsole.h in Headers */,
-				5E7908961C10EEC000DFE7FE /* COpenGLCommon.h in Headers */,
 				84A219B2249F82DD00E189FC /* burning_shader_compile_start.h in Headers */,
 				8493BC04249DED3F0092813E /* IMemoryReadFile.h in Headers */,
 				84A219B1249F82DD00E189FC /* burning_shader_color_fraq.h in Headers */,
@@ -2488,7 +2486,6 @@
 				84A219AE249F82DD00E189FC /* burning_shader_compile_verify.h in Headers */,
 				84A219AF249F82DD00E189FC /* burning_shader_compile_triangle.h in Headers */,
 				84A219B0249F82DD00E189FC /* burning_shader_compile_fragment_start.h in Headers */,
-				5E7908951C10EEC000DFE7FE /* COpenGLCacheHandler.h in Headers */,
 				8493BC02249DEBB30092813E /* IOctreeSceneNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2999,6 +2996,7 @@
 				5E57332B1C18E212003F664E /* pngtrans.c in Sources */,
 				5E57332C1C18E212003F664E /* pngwio.c in Sources */,
 				5E57332D1C18E212003F664E /* pngwrite.c in Sources */,
+				84F5B6D3254E096300500B45 /* burning_shader_color.cpp in Sources */,
 				5E57332E1C18E212003F664E /* pngwtran.c in Sources */,
 				5E57332F1C18E212003F664E /* pngwutil.c in Sources */,
 				5E5733301C18E212003F664E /* LzmaDec.c in Sources */,
@@ -3062,6 +3060,7 @@
 				5E57336A1C18E212003F664E /* CSTLMeshFileLoader.cpp in Sources */,
 				5E57336B1C18E212003F664E /* CXMeshFileLoader.cpp in Sources */,
 				5E57336C1C18E212003F664E /* CParticleAnimatedMeshSceneNodeEmitter.cpp in Sources */,
+				84F5B6D6254E096A00500B45 /* CTRGouraudNoZ2.cpp in Sources */,
 				5E57336D1C18E212003F664E /* CParticleAttractionAffector.cpp in Sources */,
 				5E57336E1C18E212003F664E /* CParticleBoxEmitter.cpp in Sources */,
 				5E57336F1C18E212003F664E /* CParticleCylinderEmitter.cpp in Sources */,
@@ -3171,6 +3170,7 @@
 				5E5733D11C18E212003F664E /* CTRFlatWire.cpp in Sources */,
 				5E5733D21C18E212003F664E /* CTRGouraud.cpp in Sources */,
 				5E5733D31C18E212003F664E /* CTRGouraudWire.cpp in Sources */,
+				84F5B6D0254E08FF00500B45 /* CTR_transparent_reflection_2_layer.cpp in Sources */,
 				5E5733D41C18E212003F664E /* CTRTextureFlat.cpp in Sources */,
 				5E5733D51C18E212003F664E /* CTRTextureFlatWire.cpp in Sources */,
 				5E5733D61C18E212003F664E /* CTRTextureGouraud.cpp in Sources */,
@@ -3307,6 +3307,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DSTROOT = "$(SRCROOT)/../../lib/OSX";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -3327,7 +3328,7 @@
 		5E5733E31C18E212003F664E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;f
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
