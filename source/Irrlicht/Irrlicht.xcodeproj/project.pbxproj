@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -1567,7 +1567,7 @@
 				5E34C7931B7F4AFC00F212E8 /* SMeshBuffer.h */,
 				5E34C7941B7F4AFC00F212E8 /* SMeshBufferLightMap.h */,
 				5E34C7951B7F4AFC00F212E8 /* SMeshBufferTangents.h */,
-				84A219A4249F823800E189FC /* SOverrideMaterial.h */,				
+				84A219A4249F823800E189FC /* SOverrideMaterial.h */,
 				5E34C7961B7F4AFC00F212E8 /* SParticle.h */,
 				5E34C7971B7F4AFC00F212E8 /* SSharedMeshBuffer.h */,
 				5E34C7981B7F4AFC00F212E8 /* SSkinMeshBuffer.h */,
@@ -2996,7 +2996,6 @@
 				5E57332B1C18E212003F664E /* pngtrans.c in Sources */,
 				5E57332C1C18E212003F664E /* pngwio.c in Sources */,
 				5E57332D1C18E212003F664E /* pngwrite.c in Sources */,
-				84F5B6D3254E096300500B45 /* burning_shader_color.cpp in Sources */,
 				5E57332E1C18E212003F664E /* pngwtran.c in Sources */,
 				5E57332F1C18E212003F664E /* pngwutil.c in Sources */,
 				5E5733301C18E212003F664E /* LzmaDec.c in Sources */,
@@ -3060,7 +3059,6 @@
 				5E57336A1C18E212003F664E /* CSTLMeshFileLoader.cpp in Sources */,
 				5E57336B1C18E212003F664E /* CXMeshFileLoader.cpp in Sources */,
 				5E57336C1C18E212003F664E /* CParticleAnimatedMeshSceneNodeEmitter.cpp in Sources */,
-				84F5B6D6254E096A00500B45 /* CTRGouraudNoZ2.cpp in Sources */,
 				5E57336D1C18E212003F664E /* CParticleAttractionAffector.cpp in Sources */,
 				5E57336E1C18E212003F664E /* CParticleBoxEmitter.cpp in Sources */,
 				5E57336F1C18E212003F664E /* CParticleCylinderEmitter.cpp in Sources */,
@@ -3170,7 +3168,6 @@
 				5E5733D11C18E212003F664E /* CTRFlatWire.cpp in Sources */,
 				5E5733D21C18E212003F664E /* CTRGouraud.cpp in Sources */,
 				5E5733D31C18E212003F664E /* CTRGouraudWire.cpp in Sources */,
-				84F5B6D0254E08FF00500B45 /* CTR_transparent_reflection_2_layer.cpp in Sources */,
 				5E5733D41C18E212003F664E /* CTRTextureFlat.cpp in Sources */,
 				5E5733D51C18E212003F664E /* CTRTextureFlatWire.cpp in Sources */,
 				5E5733D61C18E212003F664E /* CTRTextureGouraud.cpp in Sources */,
