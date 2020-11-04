@@ -89,11 +89,9 @@ bool CSceneNodeAnimatorCameraFPS::OnEvent(const SEvent& evt)
 			}
 		}
 		break;
-	case EET_MOUSE_INPUT_EVENT:
-		HadMouseEvent = true;
-		return true;
 
 	case EET_MOUSE_INPUT_EVENT:
+		HadMouseEvent = true;
 		if ( evt.MouseInput.Event == EMIE_MOUSE_ENTER_CANVAS && CursorControl)
 		{
 			CursorControl->setPosition(0.5f, 0.5f);
