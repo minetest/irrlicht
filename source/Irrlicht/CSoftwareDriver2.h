@@ -361,7 +361,7 @@ namespace video
 			ETF_TEXGEN_MASK = ETF_TEXGEN_CAMERA_SPHERE | ETF_TEXGEN_CAMERA_REFLECTION | ETF_TEXGEN_WRAP
 		};
 		size_t TransformationStack; // 0 .. 3D , 1 .. 2D
-		core::matrix4 Transformation[2][ETS_COUNT_BURNING];
+		core::matrix4 ALIGN(16) Transformation[2][ETS_COUNT_BURNING];
 		size_t TransformationFlag[2][ETS_COUNT_BURNING]; // E_TRANSFORMATION_FLAG
 		
 

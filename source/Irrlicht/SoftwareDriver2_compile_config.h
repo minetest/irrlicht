@@ -306,4 +306,13 @@ namespace irr {
 //! Size of a static C-style array.
 #define array_size(_arr)  ((sizeof(_arr)/sizeof(*_arr)))
 
+//! Compiler Align
+#if defined(_MSC_VER)
+#define ALIGN(x) __declspec(align(x))
+#elif defined(__GNUC__)
+#define ALIGN(x) __attribute__ ((aligned(x)))
+#else
+#define ALIGN(x)
+#endif
+
 #endif // __S_VIDEO_2_SOFTWARE_COMPILE_CONFIG_H_INCLUDED__

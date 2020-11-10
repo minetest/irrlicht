@@ -376,8 +376,7 @@ namespace video
 		tFixPoint AlphaRef;
 		int RenderPass_ShaderIsTransparent;
 
-		u8 _unused_pack[4];
-		sScanConvertData scan;
+		sScanConvertData ALIGN(16) scan;
 		sScanLineData line;
 		tVideoSample PrimitiveColor; //used if no color interpolation is defined
 
