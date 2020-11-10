@@ -182,7 +182,7 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data, u32 layer)
 void CSoftwareTexture2::regenerateMipMapLevels(void* data)
 #endif
 {
-	int i;
+	size_t i;
 
 	// release
 	for (i = 1; i < array_size(MipMap); ++i)
@@ -314,7 +314,7 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data)
 		i = 0;
 		while (name[i])
 		{
-			if (name[i] == '/' || name[i] == '\\') filename = i + 1;
+			if (name[i] == '/' || name[i] == '\\') filename = (s32)i + 1;
 			//if (name[i] == '.') ext = i;
 			i += 1;
 		}
@@ -322,7 +322,7 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data)
 		{
 			if (MipMap[i])
 			{
-				snprintf_irr(buf, sizeof(buf), "mip/%s_%02d.png", name + filename, i);
+				snprintf_irr(buf, sizeof(buf), "mip/%s_%02d.png", name + filename, (s32)i);
 				Driver->writeImageToFile(MipMap[i], buf);
 			}
 		}
