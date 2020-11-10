@@ -350,7 +350,7 @@ void CSoftwareTexture2::calcDerivative()
 	}
 
 	//preCalc mipmap texel center boundaries
-	for (s32 i = 0; i < array_size(MipMap); ++i)
+	for (size_t i = 0; i < array_size(MipMap); ++i)
 	{
 		CSoftwareTexture2_Bound& b = TexBound[i];
 		if (MipMap[i])
