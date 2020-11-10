@@ -40,7 +40,7 @@ void burning_shader_class::burning_shader_fragment()
 		return;
 
 	// slopes
-	const f32 invDeltaX = reciprocal_zero2(line.x[1] - line.x[0]);
+	const f32 invDeltaX = fill_step_x(line.x[1] - line.x[0]);
 
 #ifdef IPOL_Z
 	slopeZ = (line.z[1] - line.z[0]) * invDeltaX;
@@ -96,9 +96,9 @@ void burning_shader_class::burning_shader_fragment()
 	tFixPoint r1, g1, b1;
 #endif
 
-	for (s32 i = 0; i <= dx; ++i)
+	for (s32 i = 0; i <= dx; i+= SOFTWARE_DRIVER_2_STEP_X)
 	{
-		if ((0 == EdgeTestPass) & i) break;
+		if ((0 == EdgeTestPass) & (i > line.x_edgetest)) break;
 
 #ifdef CMP_Z
 		if (line.z[0] < z[i])

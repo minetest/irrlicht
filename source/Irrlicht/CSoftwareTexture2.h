@@ -8,7 +8,11 @@
 #include "SoftwareDriver2_compile_config.h"
 
 #include "ITexture.h"
+#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+#include "IVideoDriver.h"
+#else
 #include "IRenderTarget.h"
+#endif
 #include "CImage.h"
 
 namespace irr
@@ -51,14 +55,18 @@ public:
 	u32 getMipmapLevel(s32 newLevel) const
 	{
 		if ( newLevel < 0 ) newLevel = 0;
-		else if ( newLevel >= SOFTWARE_DRIVER_2_MIPMAPPING_MAX ) newLevel = SOFTWARE_DRIVER_2_MIPMAPPING_MAX - 1;
+		else if ( newLevel >= array_size(MipMap)) newLevel = array_size(MipMap) - 1;
 
 		while ( newLevel > 0 && MipMap[newLevel] == 0 ) newLevel -= 1;
 		return newLevel;
 	}
 
 	//! lock function
+#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+	virtual void* lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel)
+#else
 	virtual void* lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel, u32 layer, E_TEXTURE_LOCK_FLAGS lockFlags = ETLF_FLIP_Y_UP_RTT) _IRR_OVERRIDE_
+#endif
 	{
 		if (Flags & GEN_MIPMAP)
 		{
@@ -75,18 +83,20 @@ public:
 	virtual void unlock() _IRR_OVERRIDE_
 	{
 	}
-
+/*
 	//! compare the area drawn with the area of the texture
 	f32 getLODFactor( const f32 texArea ) const
 	{
 		return MipMap0_Area[0]* MipMap0_Area[1] * 0.5f * texArea;
 		//return MipMap[0]->getImageDataSizeInPixels () * texArea;
 	}
+*/
 
 	const u32* getMipMap0_Area() const
 	{
 		return MipMap0_Area;
 	}
+	f32 get_lod_bias() const { return LodBIAS; }
 
 	//! returns unoptimized surface (misleading name. burning can scale down originalimage)
 	virtual CImage* getImage() const
@@ -106,9 +116,33 @@ public:
 		return TexBound[MipMapLOD];
 	}
 
+#if !defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
 	virtual void regenerateMipMapLevels(void* data = 0, u32 layer = 0) _IRR_OVERRIDE_;
+#else
+	virtual void regenerateMipMapLevels(void* data = 0);
+#endif
 
-	f32 get_lod_bias() const { return LodBIAS; }
+
+#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+	const core::dimension2d<u32>& getOriginalSize() const { return OriginalSize; };
+	const core::dimension2d<u32>& getSize() const { return Size; };
+	E_DRIVER_TYPE getDriverType() const { return DriverType; };
+	ECOLOR_FORMAT getColorFormat() const { return ColorFormat; };
+	ECOLOR_FORMAT getOriginalColorFormat() const { return OriginalColorFormat; };
+	u32 getPitch() const { return Pitch; };
+	bool hasMipMaps() const { return HasMipMaps; }
+	bool isRenderTarget() const { return IsRenderTarget; }
+
+	core::dimension2d<u32> OriginalSize;
+	core::dimension2d<u32> Size;
+	E_DRIVER_TYPE DriverType;
+	ECOLOR_FORMAT OriginalColorFormat;
+	ECOLOR_FORMAT ColorFormat;
+	u32 Pitch;
+	bool HasMipMaps;
+	bool IsRenderTarget;
+#endif
+
 private:
 	void calcDerivative();
 
@@ -120,7 +154,7 @@ private:
 	CImage* MipMap[SOFTWARE_DRIVER_2_MIPMAPPING_MAX];
 	CSoftwareTexture2_Bound TexBound[SOFTWARE_DRIVER_2_MIPMAPPING_MAX];
 	u32 MipMap0_Area[2];
-	f32 LodBIAS;
+	f32 LodBIAS;	// Tweak mipmap selection
 };
 
 /*!
@@ -134,7 +168,10 @@ public:
 
 	virtual void setTexture(const core::array<ITexture*>& texture, ITexture* depthStencil, const core::array<E_CUBE_SURFACE>& cubeSurfaces) _IRR_OVERRIDE_;
 
-	ITexture* getTexture() const;
+#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+	E_DRIVER_TYPE DriverType;
+	core::array<ITexture*> Texture;
+#endif
 
 protected:
 	CBurningVideoDriver* Driver;

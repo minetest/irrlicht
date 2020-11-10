@@ -13,15 +13,16 @@ Changes in 1.9 (not yet released)
 - Improvements to B3D writer for speed, readability and handling of low framerate animations.
   Thanks @JLouisB for the patch (For more info, see: http://irrlicht.sourceforge.net/forum/viewtopic.php?f=2&t=50067&start=15)
 - Add another render pass ESNRP_GUI which is drawn last and is p.E. useful for rendering gui nodes in the scenemanager.
-- BurningVideo: 0.51
+- BurningVideo: 0.52
   - 10 year anniversary update
   - Lighting model reworked. moved to eyespace like openGL. [Specular Highlights, Fog, Sphere/Reflection Map] 
   - increased internal s4DVertex to support 4 Textures and 4 Colors [switchable]
   - Textures are handled as sRGB during Mipmap Generation. More accurate, less visual disruption
-  - 2D is drawn as 3D like hardware drivers. [switchable]. enables viewport scaling, material2D
+  - 2D is drawn as 3D like hardware drivers. [switchable]. enables viewport scaling, material2D, scissor
   - Texture Spatial Resolution Limiting working. [lower memory consumption,SOFTWARE_DRIVER_2_TEXTURE_MAXSIZE]
   - NormalMap for 1 Light accurate. still all lights are accumulated
   - SuperTuxKart 8.0.1 playable
+  - Internal Backbuffer Scaling and Interlacing
   - Known Problems
     - Depthbuffer range not equal to Hardware Drivers. Problems with Orthographic Stencil Shadows
 	- Triangle MipMap Selection. Wrong for TextureAtlas and Billboards

@@ -50,6 +50,18 @@ namespace video
 		virtual bool beginScene(u16 clearFlag, SColor clearColor, f32 clearDepth, u8 clearStencil,
 			const SExposedVideoData& videoData, core::rect<s32>* sourceRect) _IRR_OVERRIDE_;
 
+#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+		virtual bool beginScene(bool backBuffer, bool zBuffer, SColor color,
+			const SExposedVideoData& videoData, core::rect<s32>* sourceRect)
+		{
+			u16 flag = 0;
+			if (backBuffer)	flag |= ECBF_COLOR;
+			if (zBuffer) flag |= ECBF_DEPTH;
+			return beginScene(flag, color, 1.f, 0, videoData, sourceRect);
+		}
+		virtual bool setRenderTarget(video::ITexture* texture, bool clearBackBuffer, bool clearZBuffer, SColor color);
+#endif
+
 		virtual bool endScene() _IRR_OVERRIDE_;
 
 		//! Only used by the internal engine. Used to notify the driver that
@@ -152,7 +164,12 @@ namespace video
 
 		//! Creates a render target texture.
 		virtual ITexture* addRenderTargetTexture(const core::dimension2d<u32>& size,
-			const io::path& name, const ECOLOR_FORMAT format = ECF_UNKNOWN) _IRR_OVERRIDE_;
+			const io::path& name, const ECOLOR_FORMAT format = ECF_UNKNOWN
+#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+			, const bool useStencil = false
+#endif
+		) _IRR_OVERRIDE_;
+
 
 		virtual void clearBuffers(u16 flag, SColor color, f32 depth, u8 stencil) _IRR_OVERRIDE_;
 
@@ -190,8 +207,10 @@ namespace video
 		//! Check if the driver supports creating textures with the given color format
 		virtual bool queryTextureFormat(ECOLOR_FORMAT format) const _IRR_OVERRIDE_;
 
+#if !defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
 		//! Used by some SceneNodes to check if a material should be rendered in the transparent render pass
 		virtual bool needsTransparentRenderPass(const irr::video::SMaterial& material) const _IRR_OVERRIDE_;
+#endif
 
 		IDepthBuffer * getDepthBuffer () { return DepthBuffer; }
 		IStencilBuffer * getStencilBuffer () { return StencilBuffer; }
@@ -252,6 +271,33 @@ namespace video
 		
 		virtual void setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount) _IRR_OVERRIDE_;
 
+#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+		virtual bool setVertexShaderConstant(const c8* name, const f32* floats, int count)
+		{
+			return setVertexShaderConstant(getVertexShaderConstantID(name), floats, count);
+		}
+		virtual bool setVertexShaderConstant(const c8* name, const bool* bools, int count)
+		{
+			return setVertexShaderConstant(getVertexShaderConstantID(name), (const s32*)bools, count);
+		}
+		virtual bool setVertexShaderConstant(const c8* name, const s32* ints, int count)
+		{
+			return setVertexShaderConstant(getVertexShaderConstantID(name), ints, count);
+		}
+
+		virtual bool setPixelShaderConstant(const c8* name, const f32* floats, int count)
+		{
+			return setPixelShaderConstant(getPixelShaderConstantID(name), floats, count);
+		}
+		virtual bool setPixelShaderConstant(const c8* name, const bool* bools, int count)
+		{
+			return setPixelShaderConstant(getPixelShaderConstantID(name), (const s32*)bools, count);
+		}
+		virtual bool setPixelShaderConstant(const c8* name, const s32* ints, int count)
+		{
+			return setPixelShaderConstant(getPixelShaderConstantID(name), ints, count);
+		}
+#endif
 		//! Get pointer to the IVideoDriver interface
 		/** \return Pointer to the IVideoDriver interface */
 		virtual IVideoDriver* getVideoDriver() _IRR_OVERRIDE_;
@@ -261,7 +307,7 @@ namespace video
 		void saveBuffer();
 
 		//! sets a render target
-		void setRenderTargetImage(video::CImage* image);
+		void setRenderTargetImage2(video::IImage* color, video::IImage* depth=0, video::IImage* stencil=0);
 
 		//! sets the current Texture
 		//bool setTexture(u32 stage, video::ITexture* texture);
@@ -278,6 +324,7 @@ namespace video
 		video::ITexture* RenderTargetTexture;
 		video::IImage* RenderTargetSurface;
 		core::dimension2d<u32> RenderTargetSize;
+		sVec4 RatioRenderTargetScreen; // Smaller Render Target
 
 		IBurningShader* CurrentShader;
 		IBurningShader* BurningShader[ETR2_COUNT];
@@ -302,6 +349,8 @@ namespace video
 			ETS_COUNT_BURNING = 16
 		};
 
+		// align manually to 16 byte start address
+		//u8 _pack_0[8];
 		enum E_TRANSFORMATION_FLAG
 		{
 			ETF_VALID = 1,
@@ -311,12 +360,12 @@ namespace video
 			ETF_TEXGEN_WRAP = 16,
 			ETF_TEXGEN_MASK = ETF_TEXGEN_CAMERA_SPHERE | ETF_TEXGEN_CAMERA_REFLECTION | ETF_TEXGEN_WRAP
 		};
+		size_t TransformationStack; // 0 .. 3D , 1 .. 2D
 		core::matrix4 Transformation[2][ETS_COUNT_BURNING];
 		size_t TransformationFlag[2][ETS_COUNT_BURNING]; // E_TRANSFORMATION_FLAG
+		
 
-		size_t TransformationStack; // 0 .. 3D , 1 .. 2D
-
-		void setRenderStates2DMode(const video::SColor& color,video::ITexture* texture,bool useAlphaChannelOfTexture);
+		void setRenderStates2DMode(const video::SColor& color,const video::ITexture* texture,bool useAlphaChannelOfTexture);
 		void setRenderStates3DMode();
 
 		//ETS_CLIPSCALE, // moved outside to stay at 16 matrices
@@ -366,7 +415,7 @@ namespace video
 
 		//const is misleading. **v is const that true, but not *v..
 		f32 screenarea_inside (const s4DVertexPair* burning_restrict const face[] ) const;
-		s32 lodFactor_inside ( const s4DVertexPair* burning_restrict const face[], const size_t tex, f32 dc_area, f32 lod_bias ) const;
+		s32 lodFactor_inside ( const s4DVertexPair* burning_restrict const face[], const size_t tex, const f32 dc_area, const f32 lod_bias ) const;
 		void select_polygon_mipmap_inside ( s4DVertex* burning_restrict face[], const size_t tex, const CSoftwareTexture2_Bound& b ) const;
 
 		void getCameraPosWorldSpace();
@@ -377,6 +426,20 @@ namespace video
 
 		//! Built-in 2D quad for 2D rendering.
 		S3DVertex Quad2DVertices[4];
+		interlaced_control Interlaced;
+
+#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+		core::array<IRenderTarget*> RenderTargets;
+
+		inline bool getWriteZBuffer(const SMaterial& material) const
+		{
+			return material.ZWriteEnable && (AllowZWriteOnTransparent || !material.isTransparent());
+		}
+		virtual video::ITexture* createDeviceDependentTexture(IImage* surface, const io::path& name, void* mipmapData = 0)
+		{
+			return createDeviceDependentTexture(name, surface);
+		}
+#endif
 
 	};
 

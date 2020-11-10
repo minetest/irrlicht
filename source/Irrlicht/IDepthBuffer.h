@@ -21,7 +21,7 @@ namespace video
 		virtual ~IDepthBuffer() {};
 
 		//! clears the zbuffer
-		virtual void clear(f32 value) = 0;
+		virtual void clear(f32 value, const interlaced_control interlaced) = 0;
 
 		//! sets the new size of the zbuffer
 		virtual void setSize(const core::dimension2d<u32>& size) = 0;
@@ -52,7 +52,7 @@ namespace video
 		virtual ~IStencilBuffer() {};
 
 		//! clears the stencil buffer
-		virtual void clear(u8 value) = 0;
+		virtual void clear(u32 value, const interlaced_control interlaced) = 0;
 
 		//! sets the new size of the zbuffer
 		virtual void setSize(const core::dimension2d<u32>& size) = 0;

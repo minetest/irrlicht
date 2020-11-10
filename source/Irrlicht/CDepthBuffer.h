@@ -23,7 +23,7 @@ namespace video
 		virtual ~CDepthBuffer();
 
 		//! clears the zbuffer
-		virtual void clear(f32 value=1.f) _IRR_OVERRIDE_;
+		virtual void clear(f32 value, const interlaced_control interlaced) _IRR_OVERRIDE_;
 
 		//! sets the new size of the zbuffer
 		virtual void setSize(const core::dimension2d<u32>& size) _IRR_OVERRIDE_;
@@ -45,7 +45,6 @@ namespace video
 
 		u8* Buffer;
 		core::dimension2d<u32> Size;
-		u32 TotalSize;
 		u32 Pitch;
 	};
 
@@ -61,7 +60,7 @@ namespace video
 		virtual ~CStencilBuffer();
 
 		//! clears the zbuffer
-		virtual void clear(u8 value=0) _IRR_OVERRIDE_;
+		virtual void clear(u32 value, const interlaced_control interlaced) _IRR_OVERRIDE_;
 
 		//! sets the new size of the zbuffer
 		virtual void setSize(const core::dimension2d<u32>& size) _IRR_OVERRIDE_;
@@ -82,7 +81,6 @@ namespace video
 	private:
 		u8* Buffer;
 		core::dimension2d<u32> Size;
-		u32 TotalSize;
 		u32 Pitch;
 		u32 Bit;
 	};

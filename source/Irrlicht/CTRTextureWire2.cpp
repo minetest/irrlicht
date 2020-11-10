@@ -91,7 +91,7 @@ public:
 	virtual bool canPointCloud() _IRR_OVERRIDE_  { return true; }
 
 protected:
-	virtual void scanline_bilinear ();
+	virtual void fragmentShader();
 
 	void renderAlphaLine ( const s4DVertex *a,const s4DVertex *b ) const;
 	void renderLine ( const s4DVertex *a,const s4DVertex *b, int renderZero = 0 ) const;
@@ -114,7 +114,7 @@ CTRTextureWire2::CTRTextureWire2(CBurningVideoDriver* driver)
 */
 void CTRTextureWire2::renderLine ( const s4DVertex *a,const s4DVertex *b, int renderZero) const
 {
-	int pitch0 = RenderTarget->getDimension().Width << VIDEO_SAMPLE_GRANULARITY;
+	int pitch0 = RenderTarget->getDimension().Width << SOFTWARE_DRIVER_2_RENDERTARGET_GRANULARITY;
 #ifdef USE_ZBUFFER
 	int pitch1 = RenderTarget->getDimension().Width << 2;
 #endif
@@ -138,7 +138,7 @@ void CTRTextureWire2::renderLine ( const s4DVertex *a,const s4DVertex *b, int re
 	fp24 *z;
 #endif
 
-	int xInc0 = 1 << VIDEO_SAMPLE_GRANULARITY;
+	int xInc0 = 1 << SOFTWARE_DRIVER_2_RENDERTARGET_GRANULARITY;
 	int yInc0 = pitch0;
 
 #ifdef USE_ZBUFFER
@@ -148,7 +148,7 @@ void CTRTextureWire2::renderLine ( const s4DVertex *a,const s4DVertex *b, int re
 
 	if ( dx < 0 )
 	{
-		xInc0 = - ( 1 << VIDEO_SAMPLE_GRANULARITY);
+		xInc0 = - ( 1 << SOFTWARE_DRIVER_2_RENDERTARGET_GRANULARITY);
 #ifdef USE_ZBUFFER
 		xInc1 = -4;
 #endif
@@ -173,7 +173,7 @@ void CTRTextureWire2::renderLine ( const s4DVertex *a,const s4DVertex *b, int re
 	}
 
 	SOFTWARE_DRIVER_2_CLIPCHECK_WIRE;
-	dst = (tVideoSample*) ( (u8*) RenderTarget->getData() + ( aposy * pitch0 ) + (aposx* (1<< VIDEO_SAMPLE_GRANULARITY) ) );
+	dst = (tVideoSample*) ( (u8*) RenderTarget->getData() + ( aposy * pitch0 ) + (aposx* (1<< SOFTWARE_DRIVER_2_RENDERTARGET_GRANULARITY) ) );
 #ifdef USE_ZBUFFER
 	z = (fp24*) ( (u8*) (fp24*) DepthBuffer->lock() + ( aposy * pitch1 ) + (aposx << 2 ) );
 #endif
@@ -182,7 +182,7 @@ void CTRTextureWire2::renderLine ( const s4DVertex *a,const s4DVertex *b, int re
 	m = dy << 1;
 
 	// slopes
-	const f32 invDeltaX = reciprocal_zero2( (f32)dx );
+	const f32 invDeltaX = fill_step_x( (f32)dx );
 
 #ifdef IPOL_Z
 	f32 slopeZ = (b->Pos.z - a->Pos.z) * invDeltaX;
@@ -283,7 +283,7 @@ void CTRTextureWire2::renderLine ( const s4DVertex *a,const s4DVertex *b, int re
 
 }
 
-void CTRTextureWire2::scanline_bilinear()
+void CTRTextureWire2::fragmentShader()
 {
 }
 

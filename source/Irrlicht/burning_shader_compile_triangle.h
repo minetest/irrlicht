@@ -139,8 +139,10 @@ void burning_shader_class::drawTriangle(const s4DVertex* burning_restrict a, con
 
 #endif
 
+		line.x_edgetest = fill_convention_edge(scan.slopeX[scan.left]);
+
 		// rasterize the edge scanlines
-		for (line.y = yStart; line.y <= yEnd; ++line.y)
+		for (line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
 		{
 			line.x[scan.left] = scan.x[0];
 			line.x[scan.right] = scan.x[1];
@@ -171,6 +173,7 @@ void burning_shader_class::drawTriangle(const s4DVertex* burning_restrict a, con
 #endif
 
 			// render a scanline
+			interlace_scanline
 			(this->*fragmentShader) ();
 			if (EdgeTestPass & edge_test_first_line) break;
 
@@ -265,7 +268,6 @@ void burning_shader_class::drawTriangle(const s4DVertex* burning_restrict a, con
 		yEnd = fill_convention_right(c->Pos.y);
 
 #ifdef SUBTEXEL
-
 		subPixel = ((f32)yStart) - b->Pos.y;
 
 		// correct to pixel center
@@ -299,8 +301,10 @@ void burning_shader_class::drawTriangle(const s4DVertex* burning_restrict a, con
 
 #endif
 
+		line.x_edgetest = fill_convention_edge(scan.slopeX[scan.left]);
+
 		// rasterize the edge scanlines
-		for (line.y = yStart; line.y <= yEnd; ++line.y)
+		for (line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
 		{
 			line.x[scan.left] = scan.x[0];
 			line.x[scan.right] = scan.x[1];
@@ -331,6 +335,7 @@ void burning_shader_class::drawTriangle(const s4DVertex* burning_restrict a, con
 #endif
 
 			// render a scanline
+			interlace_scanline
 			(this->*fragmentShader) ();
 			if (EdgeTestPass & edge_test_first_line) break;
 

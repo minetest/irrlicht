@@ -48,7 +48,7 @@ bool flyCircleAnimator(void)
 	{
 		smgr->drawAll();
 		driver->endScene();
-		result = takeScreenshotAndCompareAgainstReference(driver, "-flyCircleAnimator.png", 100);
+		result = takeScreenshotAndCompareAgainstReference(driver, "-flyCircleAnimator.png");
 	}
 
 	device->closeDevice();
