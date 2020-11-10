@@ -55,7 +55,7 @@ public:
 	u32 getMipmapLevel(s32 newLevel) const
 	{
 		if ( newLevel < 0 ) newLevel = 0;
-		else if ( newLevel >= array_size(MipMap)) newLevel = array_size(MipMap) - 1;
+		else if ( newLevel >= (s32)array_size(MipMap)) newLevel = array_size(MipMap) - 1;
 
 		while ( newLevel > 0 && MipMap[newLevel] == 0 ) newLevel -= 1;
 		return newLevel;

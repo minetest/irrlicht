@@ -238,8 +238,10 @@ void get_scale(scale_setup& s, const irr::SIrrlichtCreationParameters& params)
 void fpu_exception(int on)
 {
 	return;
+#if defined(_WIN32)
 	_clearfp();
 	_controlfp(on ? _EM_INEXACT : -1, _MCW_EM);
+#endif
 }
 
 namespace irr
@@ -2259,6 +2261,8 @@ void CBurningVideoDriver::drawVertexPrimitiveList(const void* vertices, u32 vert
 					case EMT_TRANSPARENT_ADD_COLOR:
 					case EMT_TRANSPARENT_ALPHA_CHANNEL:
 						lod_bias *= 0.5f;
+						break;
+					default:
 						break;
 				}
 				lod_bias *= tex->get_lod_bias();

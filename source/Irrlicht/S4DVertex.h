@@ -536,7 +536,7 @@ typedef s4DVertex s4DVertexPair;
 struct SAligned4DVertex
 {
 	SAligned4DVertex()
-		:data(0),mem(0), ElementSize(0)	{}
+		:data(0),ElementSize(0),mem(0)	{}
 
 	virtual ~SAligned4DVertex ()
 	{
