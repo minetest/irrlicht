@@ -264,9 +264,7 @@ IGUITreeViewNode* CGUITreeViewNode::getNextSibling() const
 IGUITreeViewNode* CGUITreeViewNode::getNextVisible() const
 {
 	IGUITreeViewNode*	next = 0;
-	IGUITreeViewNode*	node = 0;
-
-	node = const_cast<CGUITreeViewNode*>( this );
+	const IGUITreeViewNode*	node = this;
 
 	if( node->getExpanded() && node->hasChildren() )
 	{
