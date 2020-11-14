@@ -26,23 +26,23 @@ namespace scene
 
 		//! Get the material of this meshbuffer
 		/** \return Material of this buffer. */
-		virtual video::SMaterial& getMaterial() =0;
+		virtual video::SMaterial& getMaterial() _IRR_OVERRIDE_ =0;
 
 		//! Get the material of this meshbuffer
 		/** \return Material of this buffer. */
-		virtual const video::SMaterial& getMaterial() const =0;
+		virtual const video::SMaterial& getMaterial() const _IRR_OVERRIDE_ =0;
 
 		//! Get the axis aligned bounding box of this meshbuffer.
 		/** \return Axis aligned bounding box of this buffer. */
-		virtual const core::aabbox3df& getBoundingBox() const =0;
+		virtual const core::aabbox3df& getBoundingBox() const _IRR_OVERRIDE_ =0;
 
 		//! Set axis aligned bounding box
 		/** \param box User defined axis aligned bounding box to use
 		for this buffer. */
-		virtual void setBoundingBox(const core::aabbox3df& box) =0;
+		virtual void setBoundingBox(const core::aabbox3df& box) _IRR_OVERRIDE_ =0;
 
 		//! Recalculates the bounding box. Should be called if the mesh changed.
-		virtual void recalculateBoundingBox() =0;
+		virtual void recalculateBoundingBox() _IRR_OVERRIDE_ =0;
 
 		//! Append the vertices and indices to the current buffer
 		/** Only works for compatible vertex types.
