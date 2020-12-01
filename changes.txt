@@ -1,5 +1,6 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- IGUIEnvironment::drawAll has now a parameter to allow disabling automatic resize to screensize. Makes it easier to use partial screens with full alignment support.
 - No longer try to set WM_QUIT when using an external Window on Win32. 
   Thx @Marko Mahnic for the patch (https://sourceforge.net/p/irrlicht/bugs/449)
 - ply meshloader now also supports textures with uv-labels named texture_u/texture_v. 

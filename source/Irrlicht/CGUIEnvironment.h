@@ -31,7 +31,7 @@ public:
 	virtual ~CGUIEnvironment();
 
 	//! draws all gui elements
-	virtual void drawAll() _IRR_OVERRIDE_;
+	virtual void drawAll(bool useScreenSize) _IRR_OVERRIDE_;
 
 	//! returns the current video driver
 	virtual video::IVideoDriver* getVideoDriver() const _IRR_OVERRIDE_;

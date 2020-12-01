@@ -74,7 +74,9 @@ class IGUIEnvironment : public virtual IReferenceCounted
 public:
 
 	//! Draws all gui elements by traversing the GUI environment starting at the root node.
-	virtual void drawAll() = 0;
+	/** \param  When true ensure the GuiEnvironment (aka the RootGUIElement) has the same size as the current driver screensize. 
+	            Can be set to false to control that size yourself, p.E when not the full size should be used for UI. */
+	virtual void drawAll(bool useScreenSize=true) = 0;
 
 	//! Sets the focus to an element.
 	/** Causes a EGET_ELEMENT_FOCUS_LOST event followed by a

@@ -191,19 +191,18 @@ void CGUIEnvironment::loadBuiltInFont()
 
 
 //! draws all gui elements
-void CGUIEnvironment::drawAll()
+void CGUIEnvironment::drawAll(bool useScreenSize)
 {
-	if (Driver)
+	if (useScreenSize && Driver)
 	{
 		core::dimension2d<s32> dim(Driver->getScreenSize());
 		if (AbsoluteRect.LowerRightCorner.X != dim.Width ||
-			AbsoluteRect.LowerRightCorner.Y != dim.Height)
+			AbsoluteRect.UpperLeftCorner.X != 0 ||
+			AbsoluteRect.LowerRightCorner.Y != dim.Height ||
+			AbsoluteRect.UpperLeftCorner.Y != 0
+			)
 		{
-			// resize gui environment
-			DesiredRect.LowerRightCorner = dim;
-			AbsoluteClippingRect = DesiredRect;
-			AbsoluteRect = DesiredRect;
-			updateAbsolutePosition();
+			setRelativePosition(core::recti(0,0,dim.Width, dim.Height));
 		}
 	}
 
