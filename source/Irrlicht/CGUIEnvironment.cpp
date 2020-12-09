@@ -101,6 +101,8 @@ CGUIEnvironment::CGUIEnvironment(io::IFileSystem* fs, video::IVideoDriver* drive
 //! destructor
 CGUIEnvironment::~CGUIEnvironment()
 {
+	clearDeletionQueue();
+
 	if ( HoveredNoSubelement && HoveredNoSubelement != this )
 	{
 		HoveredNoSubelement->drop();
@@ -212,6 +214,8 @@ void CGUIEnvironment::drawAll(bool useScreenSize)
 
 	draw();
 	OnPostRender ( os::Timer::getTime () );
+
+	clearDeletionQueue();
 }
 
 
@@ -470,6 +474,28 @@ void CGUIEnvironment::OnPostRender( u32 time )
 	IGUIElement::OnPostRender ( time );
 }
 
+void CGUIEnvironment::addToDeletionQueue(IGUIElement* element)
+{
+	if (!element)
+		return;
+
+	element->grab();
+	DeletionQueue.push_back(element);
+}
+
+void CGUIEnvironment::clearDeletionQueue()
+{
+	if (DeletionQueue.empty())
+		return;
+
+	for (u32 i=0; i<DeletionQueue.size(); ++i)
+	{
+		DeletionQueue[i]->remove();
+		DeletionQueue[i]->drop();
+	}
+
+	DeletionQueue.clear();
+}
 
 //
 void CGUIEnvironment::updateHoveredElement(core::position2d<s32> mousePos)
