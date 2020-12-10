@@ -50,6 +50,9 @@ namespace gui
 		//! Gets the override color
 		virtual video::SColor getOverrideColor(void) const  _IRR_OVERRIDE_;
 
+		//! Gets the currently used text color
+		virtual video::SColor getActiveColor() const _IRR_OVERRIDE_;
+
 		//! Sets if the button text should use the override color or the color in the gui skin.
 		virtual void enableOverrideColor(bool enable)  _IRR_OVERRIDE_;
 

@@ -51,6 +51,10 @@ namespace gui
 		/** \return: The override color */
 		virtual video::SColor getOverrideColor(void) const = 0;
 
+		//! Gets the currently used text color
+		/** Either a skin-color for the current state or the override color */
+		virtual video::SColor getActiveColor() const = 0;
+
 		//! Sets if the static text should use the override color or the color in the gui skin.
 		/** \param enable: If set to true, the override color, which can be set
 		with IGUIStaticText::setOverrideColor is used, otherwise the

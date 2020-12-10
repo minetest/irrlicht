@@ -1,5 +1,6 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- Add getActiveColor functions to IGUIStaticText and IGUIButton (get currently used color).
 - Add IGUIEnvironment::addToDeletionQueue to allow save removal of gui elements while iterating over them (like the same named function in ISceneManager).
 - IGUIEnvironment::drawAll has now a parameter to allow disabling automatic resize to screensize. Makes it easier to use partial screens with full alignment support.
 - No longer try to set WM_QUIT when using an external Window on Win32. 
