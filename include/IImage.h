@@ -29,6 +29,9 @@ public:
 	//! constructor
 	IImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size, bool deleteMemory) :
 		Format(format), Size(size), Data(0), MipMapsData(0), BytesPerPixel(0), Pitch(0), DeleteMemory(deleteMemory), DeleteMipMapsMemory(false)
+#if defined(IRRLICHT_sRGB)
+		,Format_sRGB(1)
+#endif
 	{
 		BytesPerPixel = getBitsPerPixelFromFormat(Format) / 8;
 		Pitch = BytesPerPixel * Size.Width;
@@ -49,6 +52,18 @@ public:
 	{
 		return Format;
 	}
+
+#if defined(IRRLICHT_sRGB)
+	//! Texture is linear/sRGB (should be part of ColorFormat: default yes)
+	int get_sRGB() const
+	{
+		return Format_sRGB;
+	}
+	void set_sRGB(int val)
+	{
+		Format_sRGB = val;
+	}
+#endif
 
 	//! Returns width and height of image data.
 	const core::dimension2d<u32>& getDimension() const
@@ -534,6 +549,22 @@ public:
 		return false;
 	}
 
+#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+	static bool isRenderTargetOnlyFormat(const ECOLOR_FORMAT format)
+	{
+		switch (format)
+		{
+		case ECF_A1R5G5B5:
+		case ECF_R5G6B5:
+		case ECF_R8G8B8:
+		case ECF_A8R8G8B8:
+			return false;
+		default:
+			return true;
+		}
+	}
+#endif
+
 protected:
 	ECOLOR_FORMAT Format;
 	core::dimension2d<u32> Size;
@@ -548,7 +579,11 @@ protected:
 	bool DeleteMipMapsMemory;
 
 	core::irrAllocator<u8> Allocator;
+#if defined(IRRLICHT_sRGB)
+	int Format_sRGB;
+#endif
 };
+
 
 } // end namespace video
 } // end namespace irr

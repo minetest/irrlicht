@@ -89,11 +89,16 @@ public:
 
 	//! draws an indexed triangle list
 	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) _IRR_OVERRIDE_;
-
+	virtual void OnSetMaterial(const SBurningShaderMaterial& material) _IRR_OVERRIDE_;
 
 private:
-	void scanline_bilinear ();
 
+	// fragment shader
+	typedef void (CTRTextureGouraudNoZ2::* tFragmentShader) ();
+	void fragment_bilinear();
+	void fragment_no_filter();
+
+	tFragmentShader fragmentShader;
 };
 
 //! constructor
@@ -103,13 +108,32 @@ CTRTextureGouraudNoZ2::CTRTextureGouraudNoZ2(CBurningVideoDriver* driver)
 	#ifdef _DEBUG
 	setDebugName("CTRTextureGouraudNoZ2");
 	#endif
+
+	fragmentShader = &CTRTextureGouraudNoZ2::fragment_bilinear;
 }
-
-
 
 /*!
 */
-void CTRTextureGouraudNoZ2::scanline_bilinear ( )
+void CTRTextureGouraudNoZ2::OnSetMaterial(const SBurningShaderMaterial& material)
+{
+
+	if (material.org.TextureLayer[0].BilinearFilter ||
+		material.org.TextureLayer[0].TrilinearFilter ||
+		material.org.TextureLayer[0].AnisotropicFilter
+		)
+	{
+		fragmentShader = &CTRTextureGouraudNoZ2::fragment_bilinear;
+	}
+	else
+	{
+		fragmentShader = &CTRTextureGouraudNoZ2::fragment_no_filter;
+	}
+
+}
+
+/*!
+*/
+void CTRTextureGouraudNoZ2::fragment_bilinear()
 {
 	tVideoSample *dst;
 
@@ -149,7 +173,7 @@ void CTRTextureGouraudNoZ2::scanline_bilinear ( )
 		return;
 
 	// slopes
-	const f32 invDeltaX = reciprocal_zero2( line.x[1] - line.x[0] );
+	const f32 invDeltaX = fill_step_x( line.x[1] - line.x[0] );
 
 #ifdef IPOL_Z
 	slopeZ = (line.z[1] - line.z[0]) * invDeltaX;
@@ -168,7 +192,7 @@ void CTRTextureGouraudNoZ2::scanline_bilinear ( )
 #endif
 
 #ifdef SUBTEXEL
-	subPixel = ( (f32) xStart ) - line.x[0];
+	subPixel = ((f32) xStart) - line.x[0];
 #ifdef IPOL_Z
 	line.z[0] += slopeZ * subPixel;
 #endif
@@ -200,7 +224,7 @@ void CTRTextureGouraudNoZ2::scanline_bilinear ( )
 	tFixPoint ty0;
 	tFixPoint r0, g0, b0;
 
-	for ( s32 i = 0; i <= dx; ++i )
+	for ( s32 i = 0; i <= dx; i += SOFTWARE_DRIVER_2_STEP_X)
 	{
 #ifdef CMP_Z
 		if ( line.z[0] < z[i] )
@@ -208,7 +232,7 @@ void CTRTextureGouraudNoZ2::scanline_bilinear ( )
 #ifdef CMP_W
 		if ( line.w[0] >= z[i] )
 #endif
-
+		scissor_test_x
 		{
 #ifdef INVERSE_W
 			inversew = fix_inverse32 ( line.w[0] );
@@ -248,6 +272,146 @@ void CTRTextureGouraudNoZ2::scanline_bilinear ( )
 
 }
 
+/*!
+*/
+void CTRTextureGouraudNoZ2::fragment_no_filter()
+{
+	tVideoSample* dst;
+
+#ifdef USE_ZBUFFER
+	fp24* z;
+#endif
+
+	s32 xStart;
+	s32 xEnd;
+	s32 dx;
+
+
+#ifdef SUBTEXEL
+	f32 subPixel;
+#endif
+
+#ifdef IPOL_Z
+	f32 slopeZ;
+#endif
+#ifdef IPOL_W
+	fp24 slopeW;
+#endif
+#ifdef IPOL_C0
+	sVec4 slopeC;
+#endif
+#ifdef IPOL_T0
+	sVec2 slopeT[BURNING_MATERIAL_MAX_TEXTURES];
+#endif
+
+	// apply top-left fill-convention, left
+	xStart = fill_convention_left(line.x[0]);
+	xEnd = fill_convention_right(line.x[1]);
+
+	dx = xEnd - xStart;
+	if (dx < 0)
+		return;
+
+	// slopes
+	const f32 invDeltaX = fill_step_x(line.x[1] - line.x[0]);
+
+#ifdef IPOL_Z
+	slopeZ = (line.z[1] - line.z[0]) * invDeltaX;
+#endif
+#ifdef IPOL_W
+	slopeW = (line.w[1] - line.w[0]) * invDeltaX;
+#endif
+#ifdef IPOL_C0
+	slopeC = (line.c[1] - line.c[0]) * invDeltaX;
+#endif
+#ifdef IPOL_T0
+	slopeT[0] = (line.t[0][1] - line.t[0][0]) * invDeltaX;
+#endif
+#ifdef IPOL_T1
+	slopeT[1] = (line.t[1][1] - line.t[1][0]) * invDeltaX;
+#endif
+
+#ifdef SUBTEXEL
+	subPixel = ((f32)xStart) - line.x[0];
+#ifdef IPOL_Z
+	line.z[0] += slopeZ * subPixel;
+#endif
+#ifdef IPOL_W
+	line.w[0] += slopeW * subPixel;
+#endif
+#ifdef IPOL_C0
+	line.c[0] += slopeC * subPixel;
+#endif
+#ifdef IPOL_T0
+	line.t[0][0] += slopeT[0] * subPixel;
+#endif
+#ifdef IPOL_T1
+	line.t[1][0] += slopeT[1] * subPixel;
+#endif
+#endif
+
+	SOFTWARE_DRIVER_2_CLIPCHECK;
+	dst = (tVideoSample*)RenderTarget->getData() + (line.y * RenderTarget->getDimension().Width) + xStart;
+
+#ifdef USE_ZBUFFER
+	z = (fp24*)DepthBuffer->lock() + (line.y * RenderTarget->getDimension().Width) + xStart;
+#endif
+
+
+	f32 inversew = FIX_POINT_F32_MUL;
+
+	tFixPoint tx0;
+	tFixPoint ty0;
+	//tFixPoint r0, g0, b0;
+
+	for (s32 i = 0; i <= dx; i += SOFTWARE_DRIVER_2_STEP_X)
+	{
+#ifdef CMP_Z
+		if (line.z[0] < z[i])
+#endif
+#ifdef CMP_W
+			if (line.w[0] >= z[i])
+#endif
+			//scissor_test_x
+			{
+	#ifdef INVERSE_W
+				inversew = fix_inverse32(line.w[0]);
+	#endif
+				tx0 = tofix(line.t[0][0].x,inversew);
+				ty0 = tofix(line.t[0][0].y,inversew);
+				//skybox
+				dst[i] = getTexel_plain(&IT[0], tx0, ty0);
+
+				//getSample_texture ( r0, g0, b0, IT+0, tx0, ty0 );
+				//dst[i] = fix_to_sample( r0, g0, b0 );
+
+	#ifdef WRITE_Z
+				z[i] = line.z[0];
+	#endif
+	#ifdef WRITE_W
+				z[i] = line.w[0];
+	#endif
+			}
+
+#ifdef IPOL_Z
+		line.z[0] += slopeZ;
+#endif
+#ifdef IPOL_W
+		line.w[0] += slopeW;
+#endif
+#ifdef IPOL_C0
+		line.c[0] += slopeC;
+#endif
+#ifdef IPOL_T0
+		line.t[0][0] += slopeT[0];
+#endif
+#ifdef IPOL_T1
+		line.t[1][0] += slopeT[1];
+#endif
+	}
+
+}
+
 void CTRTextureGouraudNoZ2::drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c)
 {
 	// sort on height, y
@@ -258,10 +422,11 @@ void CTRTextureGouraudNoZ2::drawTriangle(const s4DVertex* burning_restrict a, co
 	const f32 ca = c->Pos.y - a->Pos.y;
 	const f32 ba = b->Pos.y - a->Pos.y;
 	const f32 cb = c->Pos.y - b->Pos.y;
+
 	// calculate delta y of the edges
-	scan.invDeltaY[0] = reciprocal_zero( ca );
-	scan.invDeltaY[1] = reciprocal_zero( ba );
-	scan.invDeltaY[2] = reciprocal_zero( cb );
+	scan.invDeltaY[0] = fill_step_y( ca );
+	scan.invDeltaY[1] = fill_step_y( ba );
+	scan.invDeltaY[2] = fill_step_y( cb );
 
 	if ( F32_LOWER_EQUAL_0 ( scan.invDeltaY[0] ) )
 		return;
@@ -315,7 +480,7 @@ void CTRTextureGouraudNoZ2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 	// rasterize upper sub-triangle
-	if ( (f32) 0.0 != scan.invDeltaY[1]  )
+	if (F32_GREATER_0(scan.invDeltaY[1])  )
 	{
 		// calculate slopes for top edge
 		scan.slopeX[1] = (b->Pos.x - a->Pos.x) * scan.invDeltaY[1];
@@ -385,7 +550,7 @@ void CTRTextureGouraudNoZ2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 		// rasterize the edge scanlines
-		for( line.y = yStart; line.y <= yEnd; ++line.y)
+		for( line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
 		{
 			line.x[scan.left] = scan.x[0];
 			line.x[scan.right] = scan.x[1];
@@ -415,8 +580,11 @@ void CTRTextureGouraudNoZ2::drawTriangle(const s4DVertex* burning_restrict a, co
 			line.t[1][scan.right] = scan.t[1][1];
 #endif
 
+
 			// render a scanline
-			scanline_bilinear ( );
+			interlace_scanline
+			scissor_test_y
+			(this->*fragmentShader) ();
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];
@@ -450,10 +618,10 @@ void CTRTextureGouraudNoZ2::drawTriangle(const s4DVertex* burning_restrict a, co
 	}
 
 	// rasterize lower sub-triangle
-	if ( (f32) 0.0 != scan.invDeltaY[2] )
+	if (F32_GREATER_0(scan.invDeltaY[2]) )
 	{
 		// advance to middle point
-		if( (f32) 0.0 != scan.invDeltaY[1] )
+		if(F32_GREATER_0(scan.invDeltaY[1]) )
 		{
 			temp[0] = b->Pos.y - a->Pos.y;	// dy
 
@@ -545,7 +713,7 @@ void CTRTextureGouraudNoZ2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 		// rasterize the edge scanlines
-		for( line.y = yStart; line.y <= yEnd; ++line.y)
+		for( line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
 		{
 			line.x[scan.left] = scan.x[0];
 			line.x[scan.right] = scan.x[1];
@@ -576,7 +744,9 @@ void CTRTextureGouraudNoZ2::drawTriangle(const s4DVertex* burning_restrict a, co
 #endif
 
 			// render a scanline
-			scanline_bilinear ();
+			interlace_scanline
+			scissor_test_y
+			(this->*fragmentShader) ();
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];

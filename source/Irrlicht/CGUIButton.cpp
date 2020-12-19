@@ -327,7 +327,7 @@ void CGUIButton::draw()
 
 		if (font)
 			font->draw(Text.c_str(), rect,
-				OverrideColorEnabled ? OverrideColor : skin->getColor(isEnabled() ? EGDC_BUTTON_TEXT : EGDC_GRAY_TEXT),
+				getActiveColor(),
 				true, true, &AbsoluteClippingRect);
 	}
 
@@ -463,6 +463,16 @@ void CGUIButton::setOverrideColor(video::SColor color)
 
 video::SColor CGUIButton::getOverrideColor() const
 {
+	return OverrideColor;
+}
+
+irr::video::SColor CGUIButton::getActiveColor() const
+{
+	if ( OverrideColorEnabled )
+		return OverrideColor;
+	IGUISkin* skin = Environment->getSkin();
+	if (skin)
+		return OverrideColorEnabled ? OverrideColor : skin->getColor(isEnabled() ? EGDC_BUTTON_TEXT : EGDC_GRAY_TEXT);
 	return OverrideColor;
 }
 

@@ -215,7 +215,6 @@ namespace video
 
 	};
 
-
 	class CBurningVideoDriver;
 	class IBurningShader : public IMaterialRenderer, public IMaterialRendererServices
 	{
@@ -247,7 +246,7 @@ namespace video
 		virtual ~IBurningShader();
 
 		//! sets a render target
-		virtual void setRenderTarget(video::IImage* surface, const core::rect<s32>& viewPort);
+		virtual void setRenderTarget(video::IImage* surface, const core::rect<s32>& viewPort, const interlaced_control interlaced);
 
 		//! sets the Texture
 		virtual void setTextureParam( const size_t stage, video::CSoftwareTexture2* texture, s32 lodFactor);
@@ -299,14 +298,38 @@ namespace video
 		virtual bool setPixelShaderConstant(s32 index, const u32* ints, int count)  _IRR_OVERRIDE_;
 		virtual IVideoDriver* getVideoDriver() _IRR_OVERRIDE_;
 
+#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+		virtual bool setVertexShaderConstant(const c8* name, const f32* floats, int count)
+		{
+			return setVertexShaderConstant(getVertexShaderConstantID(name), floats, count);
+		}
+		virtual bool setVertexShaderConstant(const c8* name, const bool* bools, int count)
+		{
+			return setVertexShaderConstant(getVertexShaderConstantID(name), (const s32*)bools, count);
+		}
+		virtual bool setVertexShaderConstant(const c8* name, const s32* ints, int count)
+		{
+			return setVertexShaderConstant(getVertexShaderConstantID(name), ints, count);
+		}
+
+		virtual bool setPixelShaderConstant(const c8* name, const f32* floats, int count)
+		{
+			return setPixelShaderConstant(getPixelShaderConstantID(name), floats, count);
+		}
+		virtual bool setPixelShaderConstant(const c8* name, const bool* bools, int count)
+		{
+			return setPixelShaderConstant(getPixelShaderConstantID(name), (const s32*)bools, count);
+		}
+		virtual bool setPixelShaderConstant(const c8* name, const s32* ints, int count)
+		{
+			return setPixelShaderConstant(getPixelShaderConstantID(name), ints, count);
+		}
+#endif
+
 		//used if no color interpolation is defined
 		void setPrimitiveColor(const video::SColor& color)
 		{
-			#if BURNINGSHADER_COLOR_FORMAT == ECF_A8R8G8B8
-				PrimitiveColor = color.color;
-			#else
-				PrimitiveColor = color.toA1R5G5B5();
-			#endif
+			PrimitiveColor = color_to_sample(color);
 		}
 		void setTLFlag(size_t in /*eTransformLightFlags*/)
 		{
@@ -314,11 +337,7 @@ namespace video
 		}
 		void setFog(SColor color_fog)
 		{
-#if BURNINGSHADER_COLOR_FORMAT == ECF_A8R8G8B8
-			fog_color_sample = color_fog.color;
-#else
-			fog_color_sample = color_fog.toA1R5G5B5();
-#endif
+			fog_color_sample = color_to_sample(color_fog);
 			color_to_fix(fog_color, fog_color_sample);
 		}
 		void setScissor(const AbsRectangle& scissor)
@@ -349,14 +368,15 @@ namespace video
 		static const tFixPointu dithermask[ 4 * 4];
 
 		//draw degenerate triangle as line (left edge) drawTriangle -> holes,drawLine dda/bresenham
-		int EdgeTestPass; //edge_test_flag
-		int EdgeTestPass_stack;
+		size_t EdgeTestPass; //edge_test_flag
+		size_t EdgeTestPass_stack;
+		interlaced_control Interlaced; // passed from driver
 
 		eBurningStencilOp stencilOp[4];
 		tFixPoint AlphaRef;
 		int RenderPass_ShaderIsTransparent;
 
-		sScanConvertData scan;
+		sScanConvertData ALIGN(16) scan;
 		sScanLineData line;
 		tVideoSample PrimitiveColor; //used if no color interpolation is defined
 
@@ -365,6 +385,17 @@ namespace video
 		tVideoSample fog_color_sample;
 
 		AbsRectangle Scissor;
+
+		inline tVideoSample color_to_sample(const video::SColor& color) const
+		{
+			//RenderTarget->getColorFormat()
+#if SOFTWARE_DRIVER_2_RENDERTARGET_COLOR_FORMAT == ECF_A8R8G8B8
+			return color.color;
+#else
+			return color.toA1R5G5B5();
+#endif
+		}
+
 	};
 
 

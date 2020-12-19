@@ -31,7 +31,7 @@ public:
 	virtual ~CGUIEnvironment();
 
 	//! draws all gui elements
-	virtual void drawAll() _IRR_OVERRIDE_;
+	virtual void drawAll(bool useScreenSize) _IRR_OVERRIDE_;
 
 	//! returns the current video driver
 	virtual video::IVideoDriver* getVideoDriver() const _IRR_OVERRIDE_;
@@ -269,7 +269,13 @@ public:
 	//! Get the way the gui does handle focus changes
 	virtual u32 getFocusBehavior() const _IRR_OVERRIDE_;
 
+	//! Adds a IGUIElement to deletion queue.
+	virtual void addToDeletionQueue(IGUIElement* element) _IRR_OVERRIDE_;
+
 private:
+
+	//! clears the deletion queue
+	void clearDeletionQueue();
 
 	void updateHoveredElement(core::position2d<s32> mousePos);
 
@@ -322,6 +328,8 @@ private:
 	IEventReceiver* UserReceiver;
 	IOSOperator* Operator;
 	u32 FocusFlags;
+	core::array<IGUIElement*> DeletionQueue;
+
 	static const io::path DefaultFontName;
 };
 

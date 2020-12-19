@@ -40,7 +40,7 @@ CDepthBuffer::~CDepthBuffer()
 
 
 //! clears the zbuffer
-void CDepthBuffer::clear(f32 value)
+void CDepthBuffer::clear(f32 value, interlaced_control interlaced)
 {
 	ieee754 zMaxValue;
 
@@ -50,7 +50,7 @@ void CDepthBuffer::clear(f32 value)
 	zMaxValue.f = value;
 #endif
 
-	memset32 ( Buffer, zMaxValue.u, TotalSize );
+	memset32_interlaced(Buffer, zMaxValue.u, Pitch, Size.Height, interlaced);
 }
 
 
@@ -66,9 +66,10 @@ void CDepthBuffer::setSize(const core::dimension2d<u32>& size)
 	delete [] Buffer;
 
 	Pitch = size.Width * sizeof ( fp24 );
-	TotalSize = Pitch * size.Height;
+	size_t TotalSize = Pitch * size.Height;
 	Buffer = new u8[align_next(TotalSize,16)];
-	clear ();
+
+	clear( 1.f, interlace_disabled());
 }
 
 
@@ -107,7 +108,7 @@ CStencilBuffer::~CStencilBuffer()
 
 
 //! clears the buffer
-void CStencilBuffer::clear(u8 value)
+void CStencilBuffer::clear(u32 value, const interlaced_control interlaced)
 {
 	u32 set = value;
 	if (Bit == 8)
@@ -115,7 +116,7 @@ void CStencilBuffer::clear(u8 value)
 		set |= set << 8;
 		set |= set << 16;
 	}
-	memset32 ( Buffer, set, TotalSize );
+	memset32_interlaced ( Buffer, set, Pitch,Size.Height,interlaced );
 }
 
 
@@ -131,9 +132,10 @@ void CStencilBuffer::setSize(const core::dimension2d<u32>& size)
 	delete [] Buffer;
 
 	Pitch = size.Width * sizeof (tStencilSample);
-	TotalSize = Pitch * size.Height;
+	size_t TotalSize = Pitch * size.Height;
 	Buffer = new u8[align_next(TotalSize,16)];
-	clear ();
+
+	clear(0, interlace_disabled());
 }
 
 

@@ -288,7 +288,7 @@ namespace video
 		virtual void addExternalImageWriter(IImageWriter* writer) _IRR_OVERRIDE_;
 
 		//! Draws a shadow volume into the stencil buffer. To draw a stencil shadow, do
-		//! this: Frist, draw all geometry. Then use this method, to draw the shadow
+		//! this: First, draw all geometry. Then use this method, to draw the shadow
 		//! volume. Then, use IVideoDriver::drawStencilShadow() to visualize the shadow.
 		virtual void drawStencilShadowVolume(const core::array<core::vector3df>& triangles,
 			bool zfail=true, u32 debugDataVisible=0) _IRR_OVERRIDE_;

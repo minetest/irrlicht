@@ -72,24 +72,14 @@ bool CMainMenu::run()
 	// add list box
 
 	gui::IGUIListBox* box = guienv->addListBox(core::rect<int>(10,10,220,120), optTab, 1);
-
-	const wchar_t* const names[] =
-		{L"Software Renderer", L"Burning's Video",
-		L"Direct3D 8", L"Direct3D 9", L"OpenGL 1.x-4.x",
-		L"OpenGL-ES 1.x", L"OpenGL-ES 2.x"};
 	for (u32 i=1; i<video::EDT_COUNT; ++i)
 	{
 		if (IrrlichtDevice::isDriverSupported(video::E_DRIVER_TYPE(i)))
-			box->addItem(names[i-1]);
-	}
-
-	switch (driverType )
-	{
-		case video::EDT_OPENGL:        selected = 0; break;
-		case video::EDT_DIRECT3D9:     selected = 1; break;
-		case video::EDT_BURNINGSVIDEO: selected = 2; break;
-		case video::EDT_SOFTWARE:      selected = 3; break;
-		default: break;
+		{
+			box->addItem(core::stringw(video::DRIVER_TYPE_NAMES[i]).c_str());
+			if ( driverType == video::E_DRIVER_TYPE(i) )
+				selected = box->getItemCount()-1;
+		}
 	}
 	box->setSelected(selected);
 

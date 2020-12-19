@@ -164,7 +164,7 @@ void CTRNormalMap::fragmentShader()
 		return;
 
 	// slopes
-	const f32 invDeltaX = reciprocal_zero2( line.x[1] - line.x[0] );
+	const f32 invDeltaX = fill_step_x( line.x[1] - line.x[0] );
 
 #ifdef IPOL_Z
 	slopeZ = (line.z[1] - line.z[0]) * invDeltaX;
@@ -254,7 +254,7 @@ void CTRNormalMap::fragmentShader()
 #endif
 
 
-	for ( s32 i = 0; i <= dx; i++ )
+	for ( s32 i = 0; i <= dx; i += SOFTWARE_DRIVER_2_STEP_X)
 	{
 #ifdef CMP_Z
 		if ( line.z[0] < z[i] )
@@ -400,9 +400,9 @@ void CTRNormalMap::drawTriangle(const s4DVertex* burning_restrict a, const s4DVe
 	const f32 ba = b->Pos.y - a->Pos.y;
 	const f32 cb = c->Pos.y - b->Pos.y;
 	// calculate delta y of the edges
-	scan.invDeltaY[0] = reciprocal_zero( ca );
-	scan.invDeltaY[1] = reciprocal_zero( ba );
-	scan.invDeltaY[2] = reciprocal_zero( cb );
+	scan.invDeltaY[0] = fill_step_y( ca );
+	scan.invDeltaY[1] = fill_step_y( ba );
+	scan.invDeltaY[2] = fill_step_y( cb );
 
 	if ( F32_LOWER_EQUAL_0 ( scan.invDeltaY[0] )  )
 		return;
@@ -572,7 +572,7 @@ void CTRNormalMap::drawTriangle(const s4DVertex* burning_restrict a, const s4DVe
 #endif
 
 		// rasterize the edge scanlines
-		for( line.y = yStart; line.y <= yEnd; ++line.y)
+		for( line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
 		{
 			line.x[scan.left] = scan.x[0];
 			line.x[scan.right] = scan.x[1];
@@ -618,7 +618,7 @@ void CTRNormalMap::drawTriangle(const s4DVertex* burning_restrict a, const s4DVe
 #endif
 
 			// render a scanline
-			fragmentShader ();
+			interlace_scanline fragmentShader ();
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];
@@ -751,7 +751,6 @@ void CTRNormalMap::drawTriangle(const s4DVertex* burning_restrict a, const s4DVe
 		yEnd = fill_convention_right( c->Pos.y );
 
 #ifdef SUBTEXEL
-
 		subPixel = ( (f32) yStart ) - b->Pos.y;
 
 		// correct to pixel center
@@ -801,7 +800,7 @@ void CTRNormalMap::drawTriangle(const s4DVertex* burning_restrict a, const s4DVe
 #endif
 
 		// rasterize the edge scanlines
-		for( line.y = yStart; line.y <= yEnd; ++line.y)
+		for( line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
 		{
 			line.x[scan.left] = scan.x[0];
 			line.x[scan.right] = scan.x[1];
@@ -847,7 +846,7 @@ void CTRNormalMap::drawTriangle(const s4DVertex* burning_restrict a, const s4DVe
 #endif
 
 			// render a scanline
-			fragmentShader();
+			interlace_scanline fragmentShader();
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];

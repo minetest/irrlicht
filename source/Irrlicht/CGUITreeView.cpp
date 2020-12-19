@@ -264,9 +264,7 @@ IGUITreeViewNode* CGUITreeViewNode::getNextSibling() const
 IGUITreeViewNode* CGUITreeViewNode::getNextVisible() const
 {
 	IGUITreeViewNode*	next = 0;
-	IGUITreeViewNode*	node = 0;
-
-	node = const_cast<CGUITreeViewNode*>( this );
+	const IGUITreeViewNode*	node = this;
 
 	if( node->getExpanded() && node->hasChildren() )
 	{
@@ -756,10 +754,7 @@ bool CGUITreeView::OnEvent( const SEvent &event )
 void CGUITreeView::mouseAction( s32 xpos, s32 ypos, bool onlyHover /*= false*/ )
 {
 	IGUITreeViewNode*		oldSelected = Selected;
-	IGUITreeViewNode*		hitNode = 0;
 	s32						selIdx=-1;
-	s32						n;
-	IGUITreeViewNode*		node;
 	SEvent					event;
 
 	event.EventType			= EET_GUI_EVENT;
@@ -776,9 +771,9 @@ void CGUITreeView::mouseAction( s32 xpos, s32 ypos, bool onlyHover /*= false*/ )
 		selIdx = ( ( ypos - 1 ) + scrollBarVPos ) / ItemHeight;
 	}
 
-	hitNode = 0;
-	node = Root->getFirstChild();
-	n = 0;
+	IGUITreeViewNode* hitNode = 0;
+	IGUITreeViewNode* node = Root->getFirstChild();
+	s32	n = 0;
 	while( node )
 	{
 		if( selIdx == n )
@@ -1026,7 +1021,7 @@ void CGUITreeView::draw()
 						iconWidth += ImageList->getImageSize().Width + 3;
 						textRect.UpperLeftCorner.X += ImageList->getImageSize().Width + 3;
 					}
-					else if( ( IconFont && reinterpret_cast<CGUITreeViewNode*>( node )->Icon.size() )
+					else if( ( IconFont && static_cast<CGUITreeViewNode*>( node )->Icon.size() )
 						&& ( ( ImageLeftOfIcon && n == 1 )
 						|| ( !ImageLeftOfIcon && n == 0 ) ) )
 					{

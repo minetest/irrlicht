@@ -203,17 +203,15 @@ void CGUIFont::setMaxHeight()
 		return;
 
 	MaxHeight = 0;
-	s32 t;
 
 	core::array< core::rect<s32> >& p = SpriteBank->getPositions();
 
 	for (u32 i=0; i<p.size(); ++i)
 	{
-		t = p[i].getHeight();
+		const s32 t = p[i].getHeight();
 		if (t>MaxHeight)
 			MaxHeight = t;
 	}
-
 }
 
 void CGUIFont::pushTextureCreationFlags(bool(&flags)[3])

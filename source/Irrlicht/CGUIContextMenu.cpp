@@ -136,10 +136,10 @@ void CGUIContextMenu::setSubMenu(u32 index, CGUIContextMenu* menu)
 		Items[index].SubMenu->drop();
 
 	Items[index].SubMenu = menu;
-	menu->setVisible(false);
 
-	if (Items[index].SubMenu)
+	if (menu)
 	{
+		menu->setVisible(false);
 		menu->AllowFocus = false;
 		if ( Environment->getFocus() == menu )
 		{

@@ -74,7 +74,9 @@ class IGUIEnvironment : public virtual IReferenceCounted
 public:
 
 	//! Draws all gui elements by traversing the GUI environment starting at the root node.
-	virtual void drawAll() = 0;
+	/** \param  When true ensure the GuiEnvironment (aka the RootGUIElement) has the same size as the current driver screensize. 
+	            Can be set to false to control that size yourself, p.E when not the full size should be used for UI. */
+	virtual void drawAll(bool useScreenSize=true) = 0;
 
 	//! Sets the focus to an element.
 	/** Causes a EGET_ELEMENT_FOCUS_LOST event followed by a
@@ -621,10 +623,10 @@ public:
 	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)=0;
 
 	//! writes an element
-	virtual void writeGUIElement(io::IXMLWriter* writer, IGUIElement* node) =0;
+	virtual void writeGUIElement(io::IXMLWriter* writer, IGUIElement* element) =0;
 
 	//! reads an element
-	virtual void readGUIElement(io::IXMLReader* reader, IGUIElement* node) =0;
+	virtual void readGUIElement(io::IXMLReader* reader, IGUIElement* element) =0;
 
 	//! Find the next element which would be selected when pressing the tab-key
 	/** If you set the focus for the result you can manually force focus-changes like they
@@ -644,6 +646,17 @@ public:
 	//! Get the way the gui does handle focus changes
 	/** \returns A bitmask which is a combination of ::EFOCUS_FLAG flags.*/
 	virtual u32 getFocusBehavior() const = 0;
+
+	//! Adds a IGUIElement to deletion queue.
+	/** Queued elements will be removed at the end of each drawAll call.
+	Or latest in the destructor of the GUIEnvironment.
+	This can be used to allow an element removing itself safely in a function 
+	iterating over gui elements, like an overloaded	IGUIElement::draw or 
+	IGUIElement::OnPostRender function.
+	Note that in general just calling IGUIElement::remove() is enough. 
+	Unless you create your own GUI elements removing themselves you won't need it.
+	\param element: Element to remove */
+	virtual void addToDeletionQueue(IGUIElement* element) = 0;
 };
 
 

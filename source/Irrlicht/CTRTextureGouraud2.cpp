@@ -167,7 +167,7 @@ void CTRTextureGouraud2::fragmentShader ()
 		return;
 
 	// slopes
-	const f32 invDeltaX = reciprocal_zero2( line.x[1] - line.x[0] );
+	const f32 invDeltaX = fill_step_x( line.x[1] - line.x[0] );
 
 #ifdef IPOL_Z
 	slopeZ = (line.z[1] - line.z[0]) * invDeltaX;
@@ -254,10 +254,10 @@ void CTRTextureGouraud2::fragmentShader ()
 	u32 dIndex = ( line.y & 3 ) << 2;
 #endif
 
-	for ( s32 i = 0; i <= dx; ++i )
+	for ( s32 i = 0; i <= dx; i += SOFTWARE_DRIVER_2_STEP_X)
 	{
 		//if test active only first pixel
-		if ( (0 == EdgeTestPass) & i ) break;
+		if ((0 == EdgeTestPass) & (i > line.x_edgetest)) break;
 
 #ifdef CMP_Z
 		if ( line.z[0] < z[i] )
@@ -382,9 +382,9 @@ void CTRTextureGouraud2::drawTriangle(const s4DVertex* burning_restrict a, const
 	const f32 ba = b->Pos.y - a->Pos.y;
 	const f32 cb = c->Pos.y - b->Pos.y;
 	// calculate delta y of the edges
-	scan.invDeltaY[0] = reciprocal_zero( ca );
-	scan.invDeltaY[1] = reciprocal_zero( ba );
-	scan.invDeltaY[2] = reciprocal_zero( cb );
+	scan.invDeltaY[0] = fill_step_y( ca );
+	scan.invDeltaY[1] = fill_step_y( ba );
+	scan.invDeltaY[2] = fill_step_y( cb );
 
 	if ( F32_LOWER_EQUAL_0 ( scan.invDeltaY[0] ) )
 		return;
@@ -551,9 +551,10 @@ void CTRTextureGouraud2::drawTriangle(const s4DVertex* burning_restrict a, const
 #endif
 
 #endif
+		line.x_edgetest = fill_convention_edge(scan.slopeX[scan.left]);
 
 		// rasterize the edge scanlines
-		for( line.y = yStart; line.y <= yEnd; ++line.y)
+		for( line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
 		{
 			line.x[scan.left] = scan.x[0];
 			line.x[scan.right] = scan.x[1];
@@ -599,7 +600,7 @@ void CTRTextureGouraud2::drawTriangle(const s4DVertex* burning_restrict a, const
 #endif
 
 			// render a scanline
-			fragmentShader ();
+			interlace_scanline fragmentShader ();
 			if ( EdgeTestPass & edge_test_first_line ) break;
 
 
@@ -734,7 +735,6 @@ void CTRTextureGouraud2::drawTriangle(const s4DVertex* burning_restrict a, const
 		yEnd = fill_convention_right( c->Pos.y );
 
 #ifdef SUBTEXEL
-
 		subPixel = ( (f32) yStart ) - b->Pos.y;
 
 		// correct to pixel center
@@ -761,7 +761,7 @@ void CTRTextureGouraud2::drawTriangle(const s4DVertex* burning_restrict a, const
 		scan.c[1][1] += scan.slopeC[1][1] * subPixel;
 #endif
 
-#ifdef IPOL_C1
+#ifdef IPOL_C2
 		scan.c[2][0] += scan.slopeC[2][0] * subPixel;
 		scan.c[2][1] += scan.slopeC[2][1] * subPixel;
 #endif
@@ -782,9 +782,10 @@ void CTRTextureGouraud2::drawTriangle(const s4DVertex* burning_restrict a, const
 #endif
 
 #endif
+		line.x_edgetest = fill_convention_edge(scan.slopeX[scan.left]);
 
 		// rasterize the edge scanlines
-		for( line.y = yStart; line.y <= yEnd; ++line.y)
+		for( line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
 		{
 			line.x[scan.left] = scan.x[0];
 			line.x[scan.right] = scan.x[1];
@@ -830,7 +831,7 @@ void CTRTextureGouraud2::drawTriangle(const s4DVertex* burning_restrict a, const
 #endif
 
 			// render a scanline
-			fragmentShader ();
+			interlace_scanline fragmentShader ();
 			if ( EdgeTestPass & edge_test_first_line ) break;
 
 

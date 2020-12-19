@@ -99,8 +99,8 @@ void CGUIStaticText::draw()
 						font->getDimension(Text.c_str()).Width;
 				}
 
-				font->draw(Text.c_str(), frameRect,
-					OverrideColorEnabled ? OverrideColor : skin->getColor(isEnabled() ? EGDC_BUTTON_TEXT : EGDC_GRAY_TEXT),
+				font->draw(Text.c_str(), frameRect, 
+					getActiveColor(),
 					HAlign == EGUIA_CENTER, VAlign == EGUIA_CENTER, (RestrainTextInside ? &AbsoluteClippingRect : NULL));
 			}
 			else
@@ -129,7 +129,7 @@ void CGUIStaticText::draw()
 					}
 
 					font->draw(BrokenText[i].c_str(), r,
-						OverrideColorEnabled ? OverrideColor : skin->getColor(isEnabled() ? EGDC_BUTTON_TEXT : EGDC_GRAY_TEXT),
+						getActiveColor(),
 						HAlign == EGUIA_CENTER, false, (RestrainTextInside ? &AbsoluteClippingRect : NULL));
 
 					r.LowerRightCorner.Y += height;
@@ -253,6 +253,16 @@ video::SColor CGUIStaticText::getOverrideColor() const
 	return OverrideColor;
 }
 
+
+irr::video::SColor CGUIStaticText::getActiveColor() const
+{
+	if ( OverrideColorEnabled )
+		return OverrideColor;
+	IGUISkin* skin = Environment->getSkin();
+	if (skin)
+		return OverrideColorEnabled ? OverrideColor : skin->getColor(isEnabled() ? EGDC_BUTTON_TEXT : EGDC_GRAY_TEXT);
+	return OverrideColor;
+}
 
 //! Sets if the static text should use the override color or the
 //! color in the gui skin.

@@ -79,6 +79,13 @@ struct sVec2
 
 #include "irrpack.h"
 
+//! sVec2Pack is Irrlicht S3DVertex,S3DVertex2TCoords,S3DVertexTangents Texutre Coordinates.
+// Start address is not 4 byte aligned
+struct sVec2Pack
+{
+	f32 x, y;
+};
+
 //! sVec3Pack used in BurningShader, packed direction
 struct sVec3Pack
 {
@@ -529,7 +536,7 @@ typedef s4DVertex s4DVertexPair;
 struct SAligned4DVertex
 {
 	SAligned4DVertex()
-		:data(0),mem(0), ElementSize(0)	{}
+		:data(0),ElementSize(0),mem(0)	{}
 
 	virtual ~SAligned4DVertex ()
 	{
@@ -553,8 +560,11 @@ struct SAligned4DVertex
 	}
 
 	s4DVertex* data;	//align to 16 byte
-	u8* mem;
 	size_t ElementSize;
+
+private:
+
+	u8* mem;
 };
 
 //#define memcpy_s4DVertexPair(dst,src) memcpy(dst,src,sizeof_s4DVertex * 2)
@@ -732,7 +742,7 @@ struct sScanConvertData
 {
 	u32 left;			// major edge left/right
 	u32 right;			// !left
-	u32 _unused_pack[2];
+	u8 _unused_pack[8];
 
 	f32 invDeltaY[4];	// inverse edge delta for screen space sorted triangle 
 
@@ -767,7 +777,7 @@ struct sScanConvertData
 struct sScanLineData
 {
 	s32 y;				// y position of scanline
-	u32 _unused_pack[1];
+	u8 _unused_pack[4];
 	f32 x[2];			// x start, x end of scanline
 
 #if defined ( SOFTWARE_DRIVER_2_USE_WBUFFER ) || defined ( SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT )
@@ -776,7 +786,8 @@ struct sScanLineData
 	f32 z[2];			// z start, z end of scanline
 #endif
 
-	u32 _unused_pack_1[2];
+	s32 x_edgetest;		// slope x
+	u8 _unused_pack_1[4];
 
 #if BURNING_MATERIAL_MAX_COLORS > 0
 	sVec4 c[BURNING_MATERIAL_MAX_COLORS][2];			// color start, color end of scanline

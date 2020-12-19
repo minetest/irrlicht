@@ -20,6 +20,30 @@ namespace video
 //! stretches srcRect src to dstRect dst, applying a sliding window box filter in linear color space (sRGB->linear->sRGB)
 void Resample_subSampling(eBlitter op, video::IImage* dst, const core::rect<s32>* dstRect, const video::IImage* src, const core::rect<s32>* srcRect, size_t flags);
 
+//nearest pow of 2 ( 257 will be 256 not 512 )
+static inline core::dimension2d<u32> getOptimalSize(const core::dimension2d<u32>& original, const u32 allowNonPowerOfTwo, const u32 maxSize)
+{
+	u32 w, h;
+	if (allowNonPowerOfTwo)
+	{
+		w = original.Width;
+		h = original.Height;
+	}
+	else
+	{
+		w = 1;
+		while (w * 2 < original.Width) w *= 2;
+		if (w * 2 - original.Width < original.Width - w) w *= 2;
+
+		h = 1;
+		while (h * 2 < original.Height) h *= 2;
+		if (h * 2 - original.Height < original.Height - h) h *= 2;
+	}
+	if (maxSize && w > maxSize) w = maxSize;
+	if (maxSize && h > maxSize) h = maxSize;
+	return core::dimension2d<u32>(w, h);
+}
+
 //! constructor
 CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name, u32 flags, CBurningVideoDriver* driver)
 	: ITexture(name
@@ -27,24 +51,24 @@ CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name, u32 fl
 		, ETT_2D
 #endif
 	)
-	,MipMapLOD(0), Flags(flags), Driver(driver)
+	, MipMapLOD(0), Flags(flags), Driver(driver)
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("CSoftwareTexture2");
-	#endif
+#endif
 
-#ifndef SOFTWARE_DRIVER_2_MIPMAPPING
-	Flags &= ~(GEN_MIPMAP| GEN_MIPMAP_AUTO);
+#if SOFTWARE_DRIVER_2_MIPMAPPING_MAX <= 1
+	Flags &= ~(GEN_MIPMAP | GEN_MIPMAP_AUTO);
 #endif
 	//set baseclass properties
 	DriverType = EDT_BURNINGSVIDEO;
-	ColorFormat = BURNINGSHADER_COLOR_FORMAT;
+	ColorFormat = (Flags & IS_RENDERTARGET) ? SOFTWARE_DRIVER_2_RENDERTARGET_COLOR_FORMAT : SOFTWARE_DRIVER_2_TEXTURE_COLOR_FORMAT;
 	IsRenderTarget = (Flags & IS_RENDERTARGET) != 0;
 	HasMipMaps = (Flags & GEN_MIPMAP) != 0;
 	MipMap0_Area[0] = 1;
 	MipMap0_Area[1] = 1;
-	LodBIAS = 0.75f;
-	for ( size_t i = 0; i < SOFTWARE_DRIVER_2_MIPMAPPING_MAX; ++i ) MipMap[i] = 0;
+	LodBIAS = 1.f;
+	for (size_t i = 0; i < array_size(MipMap); ++i) MipMap[i] = 0;
 	if (!image) return;
 
 	OriginalSize = image->getDimension();
@@ -52,7 +76,7 @@ CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name, u32 fl
 
 
 #if defined(IRRLICHT_sRGB)
-	if ( Flags & IMAGE_IS_LINEAR ) image->set_sRGB(0);
+	if (Flags & IMAGE_IS_LINEAR) image->set_sRGB(0);
 #else
 	//guessing linear image
 	if (name.find("light") >= 0 ||
@@ -72,46 +96,64 @@ CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name, u32 fl
 
 	//visual studio code warning
 	u32 maxTexSize = SOFTWARE_DRIVER_2_TEXTURE_MAXSIZE;
-	core::dimension2d<u32> optSize(	OriginalSize.getOptimalSize(
+
+#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+	if (IsRenderTarget && name.find("RaceGUI::markers") >= 0)
+	{
+		maxTexSize = 0;
+	}
+#endif
+	/*
+		core::dimension2d<u32> optSize(OriginalSize.getOptimalSize(
 			(Flags & ALLOW_NPOT) ? 0 : 1, // requirePowerOfTwo
 			false, // requireSquare
-			(Flags & ALLOW_NPOT) ? 1 : maxTexSize == 0, // larger
+			(Flags & ALLOW_NPOT) ? 1 : maxTexSize == SOFTWARE_DRIVER_2_TEXTURE_MAXSIZE, // larger
 			(Flags & ALLOW_NPOT) ? 0 : maxTexSize // maxValue
 		)
-	);
-
+		);
+	*/
+	core::dimension2d<u32> optSize(getOptimalSize(OriginalSize, Flags & ALLOW_NPOT, maxTexSize));
 	if (OriginalSize == optSize)
 	{
-		MipMap[0] = new CImage(BURNINGSHADER_COLOR_FORMAT, image->getDimension());
+		MipMap[0] = new CImage(ColorFormat, image->getDimension());
 #if defined(IRRLICHT_sRGB)
-		MipMap[0]->set_sRGB( (Flags & TEXTURE_IS_LINEAR ) ? 0 : image->get_sRGB()  );
+		MipMap[0]->set_sRGB((Flags & TEXTURE_IS_LINEAR) ? 0 : image->get_sRGB());
 #endif
-		if (!isCompressed)
+		if (!isCompressed && image->getData())
 			image->copyTo(MipMap[0]);
 	}
 	else
 	{
-		char buf[256];
-		core::stringw showName ( name );
-		snprintf_irr ( buf, sizeof(buf), "Burningvideo: Warning Texture %ls reformat %ux%u,%d -> %ux%u,%d",
-						showName.c_str(),
-						OriginalSize.Width, OriginalSize.Height, OriginalColorFormat,
-						optSize.Width, optSize.Height,BURNINGSHADER_COLOR_FORMAT
-					);
-
-		os::Printer::log ( buf, ELL_WARNING );
-		MipMap[0] = new CImage(BURNINGSHADER_COLOR_FORMAT, optSize);
+		MipMap[0] = new CImage(ColorFormat, optSize);
 #if defined(IRRLICHT_sRGB)
-		MipMap[0]->set_sRGB( (Flags & TEXTURE_IS_LINEAR ) ? 0 : image->get_sRGB()  );
+		MipMap[0]->set_sRGB((Flags & TEXTURE_IS_LINEAR) ? 0 : image->get_sRGB());
 #endif
 		if (!isCompressed)
 		{
 			//image->copyToScalingBoxFilter ( MipMap[0],0, false );
-			Resample_subSampling(BLITTER_TEXTURE,MipMap[0],0,image,0, Flags);
+			Resample_subSampling(BLITTER_TEXTURE, MipMap[0], 0, image, 0, Flags);
 		}
 		// if Original Size is used for calculation ( 2D position, font) it will be wrong
 		//OriginalSize = optSize;
 	}
+
+	// Show Information about resizing
+	if (OriginalSize != optSize ||
+		(	OriginalColorFormat != ColorFormat &&
+			!((OriginalColorFormat == ECF_R8G8B8 || OriginalColorFormat == ECF_A1R5G5B5) && ColorFormat == ECF_A8R8G8B8)
+		)
+	)
+	{
+		char buf[256];
+		core::stringw showName(name);
+		snprintf_irr(buf, sizeof(buf), "Burningvideo: Texture '%ls' reformat %ux%u,%s -> %ux%u,%s",
+			showName.c_str(),
+			OriginalSize.Width, OriginalSize.Height, ColorFormatNames[OriginalColorFormat],
+			optSize.Width, optSize.Height, ColorFormatNames[ColorFormat]
+		);
+		os::Printer::log(buf, ELL_DEBUG);
+	}
+
 
 	//select highest mipmap 0
 	regenerateMipMapLevels(image->getMipMapsData());
@@ -121,16 +163,15 @@ CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name, u32 fl
 //! destructor
 CSoftwareTexture2::~CSoftwareTexture2()
 {
-	for ( size_t i = 0; i < SOFTWARE_DRIVER_2_MIPMAPPING_MAX; ++i )
+	for (size_t i = 0; i < array_size(MipMap); ++i)
 	{
-		if ( MipMap[i] )
+		if (MipMap[i])
 		{
 			MipMap[i]->drop();
 			MipMap[i] = 0;
 		}
 	}
 }
-
 
 
 //! Regenerates the mip map levels of the texture. Useful after locking and
@@ -141,12 +182,12 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data, u32 layer)
 void CSoftwareTexture2::regenerateMipMapLevels(void* data)
 #endif
 {
-	int i;
+	size_t i;
 
 	// release
-	for ( i = 1; i < SOFTWARE_DRIVER_2_MIPMAPPING_MAX; ++i )
+	for (i = 1; i < array_size(MipMap); ++i)
 	{
-		if ( MipMap[i] )
+		if (MipMap[i])
 		{
 			MipMap[i]->drop();
 			MipMap[i] = 0;
@@ -155,10 +196,10 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data)
 
 	core::dimension2d<u32> newSize;
 
-	if (HasMipMaps && ( (Flags & GEN_MIPMAP_AUTO) || 0 == data ) )
+	if (HasMipMaps && ((Flags & GEN_MIPMAP_AUTO) || 0 == data))
 	{
 		//need memory also if autogen mipmap disabled
-		for (i = 1; i < SOFTWARE_DRIVER_2_MIPMAPPING_MAX; ++i)
+		for (i = 1; i < array_size(MipMap); ++i)
 		{
 			const core::dimension2du& upperDim = MipMap[i - 1]->getDimension();
 			//isotropic
@@ -167,7 +208,7 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data)
 			if (upperDim == newSize)
 				break;
 
-			MipMap[i] = new CImage(BURNINGSHADER_COLOR_FORMAT, newSize);
+			MipMap[i] = new CImage(ColorFormat, newSize);
 #if defined(IRRLICHT_sRGB)
 			MipMap[i]->set_sRGB(MipMap[i - 1]->get_sRGB());
 #endif
@@ -192,13 +233,13 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data)
 			if (origSize.Height > 1) origSize.Height >>= 1;
 			mip_end += IImage::getDataSizeFromFormat(OriginalColorFormat, origSize.Width, origSize.Height);
 			i += 1;
-		} while ((origSize.Width != 1 || origSize.Height != 1) && i < SOFTWARE_DRIVER_2_MIPMAPPING_MAX);
+		} while ((origSize.Width != 1 || origSize.Height != 1) && i < array_size(MipMap));
 
 		//TODO: this is not true
-		LodBIAS = i*0.75f;
+		LodBIAS = i * 2.f;
 
 		origSize = OriginalSize;
-		for (i = 1; i < SOFTWARE_DRIVER_2_MIPMAPPING_MAX && mip_current < mip_end; ++i)
+		for (i = 1; i < array_size(MipMap) && mip_current < mip_end; ++i)
 		{
 			const core::dimension2du& upperDim = MipMap[i - 1]->getDimension();
 			//isotropic
@@ -210,10 +251,10 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data)
 			if (origSize.Width > 1) origSize.Width >>= 1;
 			if (origSize.Height > 1) origSize.Height >>= 1;
 
-			if (OriginalColorFormat != BURNINGSHADER_COLOR_FORMAT)
+			if (OriginalColorFormat != ColorFormat)
 			{
 				IImage* tmpImage = new CImage(OriginalColorFormat, origSize, mip_current, true, false);
-				MipMap[i] = new CImage(BURNINGSHADER_COLOR_FORMAT, newSize);
+				MipMap[i] = new CImage(ColorFormat, newSize);
 				if (origSize == newSize)
 					tmpImage->copyTo(MipMap[i]);
 				else
@@ -223,11 +264,11 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data)
 			else
 			{
 				if (origSize == newSize)
-					MipMap[i] = new CImage(BURNINGSHADER_COLOR_FORMAT, newSize, mip_current, false);
+					MipMap[i] = new CImage(ColorFormat, newSize, mip_current, false);
 				else
 				{
-					MipMap[i] = new CImage(BURNINGSHADER_COLOR_FORMAT, newSize);
-					IImage* tmpImage = new CImage(BURNINGSHADER_COLOR_FORMAT, origSize, mip_current, true, false);
+					MipMap[i] = new CImage(ColorFormat, newSize);
+					IImage* tmpImage = new CImage(ColorFormat, origSize, mip_current, true, false);
 					tmpImage->copyToScalingBoxFilter(MipMap[i]);
 					tmpImage->drop();
 				}
@@ -238,33 +279,33 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data)
 
 
 	//visualize mipmap
-	for (i=1; i < 0 && i < SOFTWARE_DRIVER_2_MIPMAPPING_MAX; ++i)
+	for (i = 1; i < 0 && i < array_size(MipMap); ++i)
 	{
-/*
 		static u32 color[] = {
-			0x30bf7f00,0x3040bf00,0x30bf00bf,0x3000bf00,
-			0x300080bf,0x30bf4000,0x300040bf,0x307f00bf,
-			0x30bf0000,0x3000bfbf,0x304000bf,0x307fbf00,
-			0x8000bf7f,0x80bf0040,0x80bfbf00,0x800000bf
-		};
-*/
-		static u32 color[] = {
-			0xFFFFFFFF,0xFFFF0000,0xFF00FF00,0xFF0000FF,
-			0xFFFFFF00,0xFF00FFFF,0xFFFF00FF,0xFF0000FF,
-			0xFF0000FF,0xFF0000FF,0xFF0000FF,0xFF0000FF,
-			0xFF0000FF,0xFF0000FF,0xFF0000FF,0xFFFF00FF
+			0xFFFF0000,
+			0xFFFF0000,0xFF00FF00,0xFF0000FF,
+			0xFFFFFF00,0xFF00FFFF,0xFFFF00FF,
+			0xFFff6600,0xFF00ff66,0xFF6600FF,
+			0xFF66ff00,0xFF0066ff,0xFFff0066,
+			0xFF33ff00,0xFF0033ff,0xFF3300ff,
+			0xFF0000FF,0xFF0000FF,0xFF0000FF
 		};
 
-		if ( MipMap[i] )
+		if (MipMap[i])
 		{
-			core::rect<s32> p (core::position2di(0,0),MipMap[i]->getDimension());
+			int border = 0;
+			const core::dimension2du& d = MipMap[i]->getDimension();
+			core::rect<s32> p(0, 0, d.Width, d.Height);
 			SColor c((color[i & 15] & 0x00FFFFFF) | 0xFF000000);
-			Blit(BLITTER_TEXTURE_ALPHA_COLOR_BLEND, MipMap[i], 0, 0, MipMap[i], &p, c.color);
+
+			core::rect<s32> dclip(border, border, d.Width - border, d.Height - border);
+			
+			Blit(BLITTER_TEXTURE_ALPHA_COLOR_BLEND, MipMap[i], &dclip, 0, MipMap[i], &p, c.color);
 		}
 	}
 
 	//save mipmap chain
-	if ( 0 )
+	if (0)
 	{
 		char buf[256];
 		const char* name = getName().getPath().c_str();
@@ -273,15 +314,15 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data)
 		i = 0;
 		while (name[i])
 		{
-			if (name[i] == '/' || name[i] == '\\') filename = i + 1;
+			if (name[i] == '/' || name[i] == '\\') filename = (s32)i + 1;
 			//if (name[i] == '.') ext = i;
 			i += 1;
 		}
-		for (i = 0; i < SOFTWARE_DRIVER_2_MIPMAPPING_MAX; ++i)
+		for (i = 0; i < array_size(MipMap); ++i)
 		{
 			if (MipMap[i])
 			{
-				snprintf_irr(buf, sizeof(buf),"mip/%s_%02d.png", name + filename,i);
+				snprintf_irr(buf, sizeof(buf), "mip/%s_%02d.png", name + filename, (s32)i);
 				Driver->writeImageToFile(MipMap[i], buf);
 			}
 		}
@@ -300,12 +341,16 @@ void CSoftwareTexture2::calcDerivative()
 		MipMap0_Area[0] = dim.Width;
 		MipMap0_Area[1] = dim.Height; // screensize of a triangle
 
+		//TA: try to mimic openGL mipmap. ( don't do this!)
+		//if (MipMap0_Area[0] < 32) MipMap0_Area[0] = 32;
+		//if (MipMap0_Area[1] < 32) MipMap0_Area[1] = 32;
+
 		Size = dim; // MipMap[MipMapLOD]->getDimension();
 		Pitch = MipMap[MipMapLOD]->getPitch();
 	}
 
 	//preCalc mipmap texel center boundaries
-	for ( s32 i = 0; i < SOFTWARE_DRIVER_2_MIPMAPPING_MAX; ++i )
+	for (size_t i = 0; i < array_size(MipMap); ++i)
 	{
 		CSoftwareTexture2_Bound& b = TexBound[i];
 		if (MipMap[i])
@@ -335,7 +380,7 @@ void CSoftwareTexture2::calcDerivative()
 
 CSoftwareRenderTarget2::CSoftwareRenderTarget2(CBurningVideoDriver* driver) : Driver(driver)
 #if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
-, IRenderTarget(0)
+	, IRenderTarget(0)
 #endif
 {
 	DriverType = EDT_BURNINGSVIDEO;
@@ -377,12 +422,6 @@ void CSoftwareRenderTarget2::setTexture(const core::array<ITexture*>& texture, I
 			Texture[0] = 0;
 	}
 }
-
-ITexture* CSoftwareRenderTarget2::getTexture() const
-{
-	return Texture[0];
-}
-
 
 
 static const float srgb_8bit_to_linear_float[1 << 8] = {
@@ -474,7 +513,7 @@ u32 linear_to_srgb_8bit(const float v)
 	ieee754 c;
 	c.f = v;
 	const size_t x = c.u;
-	const u32 *table = (u32*)srgb_8bit_to_linear_float;
+	const u32* table = (u32*)srgb_8bit_to_linear_float;
 	u32 y = 0;
 	y += table[y + 128] <= x ? 128 : 0;
 	y += table[y + 64] <= x ? 64 : 0;
@@ -497,7 +536,7 @@ struct absrect2
 	s32 y1;
 };
 
-static inline int clipTest(absrect2 &o, const core::rect<s32>* a, const absrect2& b)
+static inline int clipTest(absrect2& o, const core::rect<s32>* a, const absrect2& b)
 {
 	if (a == 0)
 	{
@@ -522,19 +561,19 @@ static inline int clipTest(absrect2 &o, const core::rect<s32>* a, const absrect2
 //! stretches srcRect src to dstRect dst, applying a sliding window box filter in linear color space (sRGB->linear->sRGB)
 // todo: texture jumps (mip selection problem)
 void Resample_subSampling(eBlitter op, video::IImage* dst, const core::rect<s32>* dstRect,
-	const video::IImage* src, const core::rect<s32>* srcRect,size_t flags)
+	const video::IImage* src, const core::rect<s32>* srcRect, size_t flags)
 {
+	u8* dstData = (u8*)dst->getData();
 	const absrect2 dst_clip = { 0,0,(s32)dst->getDimension().Width,(s32)dst->getDimension().Height };
 	absrect2 dc;
-	if (clipTest(dc, dstRect, dst_clip)) return;
+	if (clipTest(dc, dstRect, dst_clip) || !dstData) return;
 	const video::ECOLOR_FORMAT dstFormat = dst->getColorFormat();
-	u8* dstData = (u8*)dst->getData();
 
+	const u8* srcData = (u8*)src->getData();
 	const absrect2 src_clip = { 0,0,(s32)src->getDimension().Width,(s32)src->getDimension().Height };
 	absrect2 sc;
-	if (clipTest(sc, srcRect, src_clip)) return;
+	if (clipTest(sc, srcRect, src_clip) || !srcData) return;
 	const video::ECOLOR_FORMAT srcFormat = src->getColorFormat();
-	const u8* srcData = (u8*)src->getData();
 
 #if defined(IRRLICHT_sRGB)
 	const int dst_sRGB = dst->get_sRGB();
@@ -560,14 +599,14 @@ void Resample_subSampling(eBlitter op, video::IImage* dst, const core::rect<s32>
 	for (int dy = dc.y0; dy < dc.y1; ++dy)
 	{
 		f[1] = f[3];
-		f[3] = sc.y0 + (dy + 1 - dc.y0)*scale[1];
+		f[3] = sc.y0 + (dy + 1 - dc.y0) * scale[1];
 		if (f[3] >= sc.y1) f[3] = sc.y1 - 0.001f; //todo:1.f/dim should be enough
 
 		f[2] = (float)sc.x0;
 		for (int dx = dc.x0; dx < dc.x1; ++dx)
 		{
 			f[0] = f[2];
-			f[2] = sc.x0 + (dx + 1 - dc.x0)*scale[0];
+			f[2] = sc.x0 + (dx + 1 - dc.x0) * scale[0];
 			if (f[2] >= sc.x1) f[2] = sc.x1 - 0.001f;
 
 			//accumulate linear color
@@ -599,12 +638,12 @@ void Resample_subSampling(eBlitter op, video::IImage* dst, const core::rect<s32>
 
 					switch (srcFormat)
 					{
-					case video::ECF_A1R5G5B5: sbgra = video::A1R5G5B5toA8R8G8B8(*(u16*)(srcData + (fy*src_clip.x1) * 2 + (fx * 2))); break;
-					case video::ECF_R5G6B5: sbgra = video::R5G6B5toA8R8G8B8(*(u16*)(srcData + (fy*src_clip.x1) * 2 + (fx * 2))); break;
-					case video::ECF_A8R8G8B8: sbgra = *(u32*)(srcData + (fy*src_clip.x1) * 4 + (fx * 4)); break;
+					case video::ECF_A1R5G5B5: sbgra = video::A1R5G5B5toA8R8G8B8(*(u16*)(srcData + (fy * src_clip.x1) * 2 + (fx * 2))); break;
+					case video::ECF_R5G6B5: sbgra = video::R5G6B5toA8R8G8B8(*(u16*)(srcData + (fy * src_clip.x1) * 2 + (fx * 2))); break;
+					case video::ECF_A8R8G8B8: sbgra = *(u32*)(srcData + (fy * src_clip.x1) * 4 + (fx * 4)); break;
 					case video::ECF_R8G8B8:
 					{
-						const u8* p = srcData + (fy*src_clip.x1) * 3 + (fx * 3);
+						const u8* p = srcData + (fy * src_clip.x1) * 3 + (fx * 3);
 						sbgra = 0xFF000000 | p[0] << 16 | p[1] << 8 | p[2];
 					} break;
 					default: break;
@@ -650,16 +689,16 @@ void Resample_subSampling(eBlitter op, video::IImage* dst, const core::rect<s32>
 			}
 			switch (dstFormat)
 			{
-			case video::ECF_A8R8G8B8: *(u32*)(dstData + (dy*dst_clip.x1) * 4 + (dx * 4)) = sbgra; break;
+			case video::ECF_A8R8G8B8: *(u32*)(dstData + (dy * dst_clip.x1) * 4 + (dx * 4)) = sbgra; break;
 			case video::ECF_R8G8B8:
 			{
-				u8* p = dstData + (dy*dst_clip.x1) * 3 + (dx * 3);
+				u8* p = dstData + (dy * dst_clip.x1) * 3 + (dx * 3);
 				p[2] = (sbgra) & 0xFF;
 				p[1] = (sbgra >> 8) & 0xFF;
 				p[0] = (sbgra >> 16) & 0xFF;
 			} break;
-			case video::ECF_A1R5G5B5: *(u16*)(dstData + (dy*dst_clip.x1) * 2 + (dx * 2)) = video::A8R8G8B8toA1R5G5B5(sbgra); break;
-			case video::ECF_R5G6B5:   *(u16*)(dstData + (dy*dst_clip.x1) * 2 + (dx * 2)) = video::A8R8G8B8toR5G6B5(sbgra); break;
+			case video::ECF_A1R5G5B5: *(u16*)(dstData + (dy * dst_clip.x1) * 2 + (dx * 2)) = video::A8R8G8B8toA1R5G5B5(sbgra); break;
+			case video::ECF_R5G6B5:   *(u16*)(dstData + (dy * dst_clip.x1) * 2 + (dx * 2)) = video::A8R8G8B8toR5G6B5(sbgra); break;
 			default:
 				break;
 			}

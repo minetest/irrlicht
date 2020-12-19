@@ -12,29 +12,37 @@
 
 namespace irr
 {
-
-
 namespace video
 {
 
-	const tFixPointu IBurningShader::dithermask[] =
-	{
-		0x00,0x80,0x20,0xa0,
-		0xc0,0x40,0xe0,0x60,
-		0x30,0xb0,0x10,0x90,
-		0xf0,0x70,0xd0,0x50
-	};
+const tFixPointu IBurningShader::dithermask[] =
+{
+	0x00,0x80,0x20,0xa0,
+	0xc0,0x40,0xe0,0x60,
+	0x30,0xb0,0x10,0x90,
+	0xf0,0x70,0xd0,0x50
+};
 
 void IBurningShader::constructor_IBurningShader(CBurningVideoDriver* driver)
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("IBurningShader");
-	#endif
+#endif
+
+	if (((unsigned long long)&scan & 15) || ((unsigned long long)&line & 15))
+	{
+		os::Printer::log("BurningVideo Shader not 16 byte aligned", ELL_ERROR);
+		_IRR_DEBUG_BREAK_IF(1);
+	}
+
+	Interlaced.enable = 0;
+	Interlaced.bypass = 1;
+	Interlaced.nr = 0;
 
 	EdgeTestPass = edge_test_pass;
 	EdgeTestPass_stack = edge_test_pass;
 
-	for ( u32 i = 0; i < BURNING_MATERIAL_MAX_TEXTURES; ++i )
+	for (u32 i = 0; i < BURNING_MATERIAL_MAX_TEXTURES; ++i)
 	{
 		IT[i].Texture = 0;
 	}
@@ -44,12 +52,12 @@ void IBurningShader::constructor_IBurningShader(CBurningVideoDriver* driver)
 
 	RenderTarget = 0;
 	ColorMask = COLOR_BRIGHT_WHITE;
-	DepthBuffer = (CDepthBuffer*) driver->getDepthBuffer ();
-	if ( DepthBuffer )
+	DepthBuffer = (CDepthBuffer*)driver->getDepthBuffer();
+	if (DepthBuffer)
 		DepthBuffer->grab();
 
-	Stencil = (CStencilBuffer*) driver->getStencilBuffer ();
-	if ( Stencil )
+	Stencil = (CStencilBuffer*)driver->getStencilBuffer();
+	if (Stencil)
 		Stencil->grab();
 
 	stencilOp[0] = StencilOp_KEEP;
@@ -76,7 +84,7 @@ IBurningShader::IBurningShader(
 	const c8* pixelShaderProgram,
 	const c8* pixelShaderEntryPointName,
 	E_PIXEL_SHADER_TYPE psCompileTarget,
-	const c8* geometryShaderProgram ,
+	const c8* geometryShaderProgram,
 	const c8* geometryShaderEntryPointName,
 	E_GEOMETRY_SHADER_TYPE gsCompileTarget,
 	scene::E_PRIMITIVE_TYPE inType,
@@ -109,9 +117,9 @@ IBurningShader::~IBurningShader()
 	if (Stencil)
 		Stencil->drop();
 
-	for ( u32 i = 0; i != BURNING_MATERIAL_MAX_TEXTURES; ++i )
+	for (u32 i = 0; i != BURNING_MATERIAL_MAX_TEXTURES; ++i)
 	{
-		if ( IT[i].Texture )
+		if (IT[i].Texture)
 			IT[i].Texture->drop();
 	}
 
@@ -121,12 +129,14 @@ IBurningShader::~IBurningShader()
 }
 
 //! sets a render target
-void IBurningShader::setRenderTarget(video::IImage* surface, const core::rect<s32>& viewPort)
+void IBurningShader::setRenderTarget(video::IImage* surface, const core::rect<s32>& viewPort, const interlaced_control interlaced)
 {
+	Interlaced = interlaced;
+
 	if (RenderTarget)
 		RenderTarget->drop();
 
-	RenderTarget = (video::CImage* ) surface;
+	RenderTarget = (video::CImage*) surface;
 
 	if (RenderTarget)
 	{
@@ -138,16 +148,16 @@ void IBurningShader::setRenderTarget(video::IImage* surface, const core::rect<s3
 
 
 //! sets the Texture
-void IBurningShader::setTextureParam( const size_t stage, video::CSoftwareTexture2* texture, s32 lodFactor)
+void IBurningShader::setTextureParam(const size_t stage, video::CSoftwareTexture2* texture, s32 lodFactor)
 {
-	sInternalTexture *it = &IT[stage];
+	sInternalTexture* it = &IT[stage];
 
-	if ( it->Texture)
+	if (it->Texture)
 		it->Texture->drop();
 
 	it->Texture = texture;
 
-	if ( it->Texture)
+	if (it->Texture)
 	{
 		it->Texture->grab();
 
@@ -156,48 +166,52 @@ void IBurningShader::setTextureParam( const size_t stage, video::CSoftwareTextur
 
 		//only mipmap chain (means positive lodFactor)
 		u32 existing_level = it->Texture->getMipmapLevel(lodFactor);
-		it->data = (tVideoSample*) it->Texture->lock(ETLM_READ_ONLY, existing_level, 0);
+#if !defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+		it->data = (tVideoSample*)it->Texture->lock(ETLM_READ_ONLY, existing_level, 0);
+#else
+		it->data = (tVideoSample*)it->Texture->lock(ETLM_READ_ONLY, existing_level);
+#endif
 
 		// prepare for optimal fixpoint
-		it->pitchlog2 = s32_log2_s32 ( it->Texture->getPitch() );
+		it->pitchlog2 = s32_log2_s32(it->Texture->getPitch());
 
-		const core::dimension2d<u32> &dim = it->Texture->getSize();
-		it->textureXMask = s32_to_fixPoint ( dim.Width - 1 ) & FIX_POINT_UNSIGNED_MASK;
-		it->textureYMask = s32_to_fixPoint ( dim.Height - 1 ) & FIX_POINT_UNSIGNED_MASK;
+		const core::dimension2d<u32>& dim = it->Texture->getSize();
+		it->textureXMask = s32_to_fixPoint(dim.Width - 1) & FIX_POINT_UNSIGNED_MASK;
+		it->textureYMask = s32_to_fixPoint(dim.Height - 1) & FIX_POINT_UNSIGNED_MASK;
 	}
 }
 
 //emulate a line with degenerate triangle and special shader mode (not perfect...)
-void IBurningShader::drawLine ( const s4DVertex *a,const s4DVertex *b)
+void IBurningShader::drawLine(const s4DVertex* a, const s4DVertex* b)
 {
 	sVec2 d;
 	d.x = b->Pos.x - a->Pos.x;	d.x *= d.x;
 	d.y = b->Pos.y - a->Pos.y;	d.y *= d.y;
 	//if ( d.x * d.y < 0.001f ) return;
 
-	if ( a->Pos.x > b->Pos.x ) swapVertexPointer(&a, &b);
+	if (a->Pos.x > b->Pos.x) swapVertexPointer(&a, &b);
 
 	s4DVertex c = *a;
 
-	const f32 w = (f32)RenderTarget->getDimension().Width-1;
-	const f32 h = (f32)RenderTarget->getDimension().Height-1;
+	const f32 w = (f32)RenderTarget->getDimension().Width - 1;
+	const f32 h = (f32)RenderTarget->getDimension().Height - 1;
 
-	if ( d.x < 2.f ) { c.Pos.x = b->Pos.x + 1.f + d.y; if ( c.Pos.x > w ) c.Pos.x = w; }
+	if (d.x < 2.f) { c.Pos.x = b->Pos.x + 1.f + d.y; if (c.Pos.x > w) c.Pos.x = w; }
 	else c.Pos.x = b->Pos.x;
-	if ( d.y < 2.f ) { c.Pos.y = b->Pos.y + 1.f; if ( c.Pos.y > h ) c.Pos.y = h; EdgeTestPass |= edge_test_first_line; }
+	if (d.y < 2.f) { c.Pos.y = b->Pos.y + 1.f; if (c.Pos.y > h) c.Pos.y = h; EdgeTestPass |= edge_test_first_line; }
 
-	drawTriangle ( a,b,&c );
+	drawTriangle(a, b, &c);
 	EdgeTestPass &= ~edge_test_first_line;
 
 }
 
-void IBurningShader::drawPoint(const s4DVertex *a)
+void IBurningShader::drawPoint(const s4DVertex* a)
 {
 }
 
-void IBurningShader::drawWireFrameTriangle ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c )
+void IBurningShader::drawWireFrameTriangle(const s4DVertex* a, const s4DVertex* b, const s4DVertex* c)
 {
-	if ( EdgeTestPass & edge_test_pass ) drawTriangle(a, b, c);
+	if (EdgeTestPass & edge_test_pass) drawTriangle(a, b, c);
 	else if (EdgeTestPass & edge_test_point)
 	{
 		drawPoint(a);
@@ -256,7 +270,7 @@ void IBurningShader::setBasicRenderStates(const SMaterial& material, const SMate
 	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 }
 
-s32 IBurningShader::getShaderConstantID(EBurningUniformFlags flags,const c8* name)
+s32 IBurningShader::getShaderConstantID(EBurningUniformFlags flags, const c8* name)
 {
 	if (!name || !name[0])
 		return -1;
@@ -285,7 +299,7 @@ const char* tiny_itoa(s32 value, int base)
 
 	b[p] = '\0';
 	do {
-		b[--p] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"[value%base];
+		b[--p] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"[value % base];
 		value /= base;
 	} while (value && p > 0);
 
@@ -302,7 +316,7 @@ bool IBurningShader::setShaderConstantID(EBurningUniformFlags flags, s32 index, 
 	BurningUniform add;
 	while ((u32)index >= UniformInfo.size())
 	{
-		tiny_strcpy(add.name, tiny_itoa(UniformInfo.size(),10));
+		tiny_strcpy(add.name, tiny_itoa(UniformInfo.size(), 10));
 		add.type = flags;
 		UniformInfo.push_back(add);
 	}
@@ -340,7 +354,7 @@ void IBurningShader::setVertexShaderConstant(const f32* data, s32 startRegister,
 	c8 name[BL_ACTIVE_UNIFORM_MAX_LENGTH];
 	tiny_strcpy(name, tiny_itoa(startRegister, 10));
 
-	setShaderConstantID(BL_VERTEX_FLOAT, getShaderConstantID(BL_VERTEX_PROGRAM,name), data, constantAmount);
+	setShaderConstantID(BL_VERTEX_FLOAT, getShaderConstantID(BL_VERTEX_PROGRAM, name), data, constantAmount);
 }
 
 void IBurningShader::setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)

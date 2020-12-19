@@ -1,48 +1,47 @@
-Libpng 1.6.23 - June 9, 2016
+libpng 1.6.37 - April 14, 2019
+==============================
 
-This is a public release of libpng, intended for use in production codes.
+This is a public release of libpng, intended for use in production code.
 
-Files available for download:
 
-Source files with LF line endings (for Unix/Linux) and with a
-"configure" script
+Files available for download
+----------------------------
 
-   libpng-1.6.23.tar.xz (LZMA-compressed, recommended)
-   libpng-1.6.23.tar.gz
+Source files with LF line endings (for Unix/Linux):
 
-Source files with CRLF line endings (for Windows), without the
-"configure" script
+ * libpng-1.6.37.tar.xz (LZMA-compressed, recommended)
+ * libpng-1.6.37.tar.gz
 
-   lpng1623.7z  (LZMA-compressed, recommended)
-   lpng1623.zip
+Source files with CRLF line endings (for Windows):
+
+ * lp1637.7z (LZMA-compressed, recommended)
+ * lp1637.zip
 
 Other information:
 
-   libpng-1.6.23-README.txt
-   libpng-1.6.23-LICENSE.txt
-   libpng-1.6.23-*.asc (armored detached GPG signatures)
+ * README.md
+ * LICENSE.md
+ * AUTHORS.md
+ * TRADEMARK.md
 
-Changes since the last public release (1.6.22):
 
-  Stop a potential memory leak in png_set_tRNS() (Bug report by Ted Ying).
-  Fixed the progressive reader to handle empty first IDAT chunk properly
-    (patch by Timothy Nikkel).  This bug was introduced in libpng-1.6.0 and
-    only affected the libpng16 branch.
-  Added tests in pngvalid.c to check zero-length IDAT chunks in various
-    positions.  Fixed the sequential reader to handle these more robustly
-    (John Bowler).
-  Corrected progressive read input buffer in pngvalid.c. The previous version
-    the code invariably passed just one byte at a time to libpng.  The intent
-    was to pass a random number of bytes in the range 0..511.
-  Moved sse2 prototype from pngpriv.h to contrib/intel/intel_sse.patch.
-  Added missing ")" in pngerror.c (Matt Sarrett).
-  Fixed undefined behavior in png_push_save_buffer(). Do not call
-    memcpy() with a null source, even if count is zero (Leon Scroggins III).
-  Fixed bad link to RFC2083 in png.5 (Nikola Forro).
+Changes since the previous public release (version 1.6.36)
+----------------------------------------------------------
 
-(subscription required; visit
+ * Fixed a use-after-free vulnerability (CVE-2019-7317) in png_image_free.
+ * Fixed a memory leak in the ARM NEON implementation of png_do_expand_palette.
+ * Fixed a memory leak in pngtest.c.
+ * Fixed two vulnerabilities (CVE-2018-14048, CVE-2018-14550) in
+   contrib/pngminus; refactor.
+ * Changed the license of contrib/pngminus to MIT; refresh makefile and docs.
+   (Contributed by Willem van Schaik)
+ * Fixed a typo in the libpng license v2.
+   (Contributed by Miguel Ojeda)
+ * Added makefiles for AddressSanitizer-enabled builds.
+ * Cleaned up various makefiles.
+
+
+Send comments/corrections/commendations to png-mng-implement at lists.sf.net.
+Subscription is required; visit
 https://lists.sourceforge.net/lists/listinfo/png-mng-implement
-to subscribe)
-or to glennrp at users.sourceforge.net
-
-Glenn R-P
+to subscribe.

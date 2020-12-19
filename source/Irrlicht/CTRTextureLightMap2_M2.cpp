@@ -121,7 +121,7 @@ REALINLINE void CTRTextureLightMap2_M2::scanline_bilinear2 ()
 		return;
 
 	// slopes
-	const f32 invDeltaX = reciprocal_zero2( line.x[1] - line.x[0] );
+	const f32 invDeltaX = fill_step_x( line.x[1] - line.x[0] );
 
 	// search z-buffer for first not occulled pixel
 	z = (fp24*) DepthBuffer->lock() + ( line.y * RenderTarget->getDimension().Width ) + xStart;
@@ -254,9 +254,9 @@ void CTRTextureLightMap2_M2::drawTriangle(const s4DVertex* burning_restrict a, c
 	const f32 ba = b->Pos.y - a->Pos.y;
 	const f32 cb = c->Pos.y - b->Pos.y;
 	// calculate delta y of the edges
-	scan.invDeltaY[0] = reciprocal_zero( ca );
-	scan.invDeltaY[1] = reciprocal_zero( ba );
-	scan.invDeltaY[2] = reciprocal_zero( cb );
+	scan.invDeltaY[0] = fill_step_y( ca );
+	scan.invDeltaY[1] = fill_step_y( ba );
+	scan.invDeltaY[2] = fill_step_y( cb );
 
 	if ( F32_LOWER_EQUAL_0 ( scan.invDeltaY[0] )  )
 		return;
@@ -380,7 +380,7 @@ void CTRTextureLightMap2_M2::drawTriangle(const s4DVertex* burning_restrict a, c
 #endif
 
 		// rasterize the edge scanlines
-		for( line.y = yStart; line.y <= yEnd; ++line.y)
+		for( line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
 		{
 			line.x[scan.left] = scan.x[0];
 			line.x[scan.right] = scan.x[1];
@@ -411,7 +411,7 @@ void CTRTextureLightMap2_M2::drawTriangle(const s4DVertex* burning_restrict a, c
 #endif
 
 			// render a scanline
-			scanline_bilinear2 ();
+			interlace_scanline scanline_bilinear2 ();
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];
@@ -541,7 +541,7 @@ void CTRTextureLightMap2_M2::drawTriangle(const s4DVertex* burning_restrict a, c
 #endif
 
 		// rasterize the edge scanlines
-		for( line.y = yStart; line.y <= yEnd; ++line.y)
+		for( line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
 		{
 			line.x[scan.left] = scan.x[0];
 			line.x[scan.right] = scan.x[1];
@@ -572,7 +572,7 @@ void CTRTextureLightMap2_M2::drawTriangle(const s4DVertex* burning_restrict a, c
 #endif
 
 			// render a scanline
-			scanline_bilinear2 ();
+			interlace_scanline scanline_bilinear2 ();
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];
