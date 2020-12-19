@@ -304,6 +304,7 @@ Changes in 1.9 (not yet released)
 
 --------------------------
 Changes in 1.8.5
+ - Update libpng to 1.6.37 (from 1.6.23)
  - Fix CIrrDeviceSDL::getVideoModeList which didn't return video modes before. Thx @kas1e for report and patch.
  - CIrrDeviceMacOSX now sets the SEvent.MouseInput Shift and Control values on mouse events like the other devices. Thanks @ Zero King  for patch (#321)
  - isWindowFocused in IrrDeviceSDL device now returns the input focus like the other devices. Before it was returning a mouse-over-window state.
