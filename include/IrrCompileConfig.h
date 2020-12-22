@@ -227,20 +227,22 @@ define out. */
 	#endif
 #endif
 
-
-// Debian 10 removed support for GLES1 in mesa.
-// Can't tell about other Linux platforms or a way to test if it's still available,
-// so removing OGLES1 support on Linux now to allow compiling to work by default.
-#if defined(_IRR_LINUX_PLATFORM_) && !defined(_IRR_ANDROID_PLATFORM_)
-#define NO_IRR_COMPILE_WITH_OGLES1_
-#endif
-
 //! Define _IRR_COMPILE_WITH_OGLES1_ to compile the Irrlicht engine with OpenGL ES 1.1.
 /** If you do not wish the engine to be compiled with OpenGL ES 1.1, comment this
-define out. */
+define out.
+Currently only enabled on Android by default.
+Depending on platform you may have to enable _IRR_OGLES1_USE_KHRONOS_API_HEADERS_ as well when using it.
+*/
+#if defined(_IRR_ANDROID_PLATFORM_)
 #define _IRR_COMPILE_WITH_OGLES1_
+#endif
 #ifdef NO_IRR_COMPILE_WITH_OGLES1_
 #undef _IRR_COMPILE_WITH_OGLES1_
+#endif
+
+#ifdef _IRR_COMPILE_WITH_OGLES1_
+//! Define _IRR_OGLES1_USE_KHRONOS_API_HEADERS_ to use the OpenGL ES headers from the Debian Khronos-api package
+//#define _IRR_OGLES1_USE_KHRONOS_API_HEADERS_
 #endif
 
 //! Define required options for OpenGL ES 1.1 drivers.
