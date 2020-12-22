@@ -81,7 +81,7 @@ endif
 ifdef PROFILE
 CXXFLAGS += -pg
 endif
-CFLAGS := -O3 -fexpensive-optimizations -DPNG_THREAD_UNSAFE_OK -DPNG_NO_MMX_CODE -DPNG_NO_MNG_FEATURES
+CFLAGS := -O3 -fexpensive-optimizations -DPNG_THREAD_UNSAFE_OK -DPNG_NO_MMX_CODE -DPNG_NO_MNG_FEATURES -DPNG_ARM_NEON_OPT=0
 
 sharedlib sharedlib_osx: CXXFLAGS += -fPIC
 sharedlib sharedlib_osx: CFLAGS += -fPIC
