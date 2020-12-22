@@ -89,13 +89,12 @@ namespace
 	Atom X_ATOM_NETWM_MAXIMIZE_VERT;
 	Atom X_ATOM_NETWM_MAXIMIZE_HORZ;
 	Atom X_ATOM_NETWM_STATE;
+
+	Atom X_ATOM_WM_DELETE_WINDOW;
 };
 
 namespace irr
 {
-
-const char wmDeleteWindow[] = "WM_DELETE_WINDOW";
-
 //! constructor
 CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 	: CIrrDeviceStub(param),
@@ -489,9 +488,8 @@ bool CIrrDeviceLinux::createWindow()
 
 		XMapRaised(XDisplay, XWindow);
 		CreationParams.WindowId = (void*)XWindow;
-		Atom wmDelete;
-		wmDelete = XInternAtom(XDisplay, wmDeleteWindow, True);
-		XSetWMProtocols(XDisplay, XWindow, &wmDelete, 1);
+		X_ATOM_WM_DELETE_WINDOW = XInternAtom(XDisplay, "WM_DELETE_WINDOW", True);
+		XSetWMProtocols(XDisplay, XWindow, &X_ATOM_WM_DELETE_WINDOW, 1);
 		if (CreationParams.Fullscreen)
 		{
 			XSetInputFocus(XDisplay, XWindow, RevertToParent, CurrentTime);
@@ -1046,8 +1044,7 @@ bool CIrrDeviceLinux::run()
 
 			case ClientMessage:
 				{
-					char *atom = XGetAtomName(XDisplay, event.xclient.message_type);
-					if (*atom == *wmDeleteWindow)
+					if (static_cast<Atom>(event.xclient.data.l[0]) == X_ATOM_WM_DELETE_WINDOW && X_ATOM_WM_DELETE_WINDOW != None)
 					{
 						os::Printer::log("Quit message received.", ELL_INFORMATION);
 						Close = true;
@@ -1060,7 +1057,6 @@ bool CIrrDeviceLinux::run()
 						irrevent.UserEvent.UserData2 = static_cast<size_t>(event.xclient.data.l[1]);
 						postEventFromUser(irrevent);
 					}
-					XFree(atom);
 				}
 				break;
 
