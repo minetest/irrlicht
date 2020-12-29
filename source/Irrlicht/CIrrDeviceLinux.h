@@ -155,6 +155,8 @@ namespace irr
 
 		void initXAtoms();
 
+		void initXInput2();
+
 		bool switchToFullscreen(bool reset=false);
 
 #ifdef _IRR_COMPILE_WITH_X11_

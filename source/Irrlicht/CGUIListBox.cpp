@@ -441,6 +441,7 @@ bool CGUIListBox::OnEvent(const SEvent& event)
 				}
 			}
 			break;
+		case EET_TOUCH_INPUT_EVENT:
 		case EET_LOG_TEXT_EVENT:
 		case EET_USER_EVENT:
 		case EET_JOYSTICK_INPUT_EVENT:
