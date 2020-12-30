@@ -1074,16 +1074,15 @@ bool CIrrDeviceLinux::run()
 					{
 						XIDeviceEvent *de = (XIDeviceEvent *) cookie->data;
 
-						SEvent ret_event;
-						ret_event.EventType = EET_TOUCH_INPUT_EVENT;
+						irrevent.EventType = EET_TOUCH_INPUT_EVENT;
 
-						ret_event.TouchInput.Event = cookie->evtype == XI_TouchUpdate ? ETIE_MOVED : (cookie->evtype == XI_TouchBegin ? ETIE_PRESSED_DOWN : ETIE_LEFT_UP);
+						irrevent.TouchInput.Event = cookie->evtype == XI_TouchUpdate ? ETIE_MOVED : (cookie->evtype == XI_TouchBegin ? ETIE_PRESSED_DOWN : ETIE_LEFT_UP);
 
-						ret_event.TouchInput.ID = de->detail;
-						ret_event.TouchInput.X = de->event_x;
-						ret_event.TouchInput.Y = de->event_y;
+						irrevent.TouchInput.ID = de->detail;
+						irrevent.TouchInput.X = de->event_x;
+						irrevent.TouchInput.Y = de->event_y;
 
-						postEventFromUser(ret_event);
+						postEventFromUser(irrevent);
 					}
 				}
 				break;
