@@ -353,22 +353,6 @@ struct SEvent
 
 	};
 
-    //! Any kind of touch event.
-	struct STouchInput
-	{
-        // Touch ID.
-        size_t ID;
-
-        // X position of simple touch.
-		s32 X;
-
-        // Y position of simple touch.
-		s32 Y;
-
-		//! Type of touch event.
-		ETOUCH_INPUT_EVENT Event;
-	};
-
 	//! Any kind of mouse event.
 	struct SMouseInput
 	{
