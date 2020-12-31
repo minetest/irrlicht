@@ -15,6 +15,8 @@
 #include "ICursorControl.h"
 #include "os.h"
 
+#include <SDL2/SDL.h>
+
 #ifdef _IRR_COMPILE_WITH_X11_
 
 #ifdef _IRR_COMPILE_WITH_OPENGL_
@@ -129,8 +131,8 @@ namespace irr
 
 #ifdef _IRR_COMPILE_WITH_X11_
 		// convert an Irrlicht texture to a X11 cursor
-		Cursor TextureToCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot);
-		Cursor TextureToMonochromeCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot);
+		SDL_Cursor *TextureToCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot);
+		SDL_Cursor *TextureToMonochromeCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot);
 #ifdef _IRR_LINUX_XCURSOR_
 		Cursor TextureToARGBCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot);
 #endif
@@ -146,8 +148,6 @@ namespace irr
 		void createKeyMap();
 
 		void pollJoysticks();
-
-		void initXAtoms();
 
 		bool switchToFullscreen(bool reset=false);
 
@@ -170,9 +170,9 @@ namespace irr
 				if (!Null)
 				{
 					if ( !IsVisible )
-						XDefineCursor( Device->display, Device->window, invisCursor );
+						SDL_ShowCursor(1);
 					else
-						XUndefineCursor( Device->display, Device->window );
+						SDL_ShowCursor(0);
 				}
 #endif
 			}
@@ -210,24 +210,14 @@ namespace irr
 				{
 					if (UseReferenceRect)
 					{
-						XWarpPointer(Device->display,
-							None,
-							Device->window, 0, 0,
-							Device->Width,
-							Device->Height,
-							ReferenceRect.UpperLeftCorner.X + x,
+						SDL_WarpMouseGlobal(ReferenceRect.UpperLeftCorner.X + x,
 							ReferenceRect.UpperLeftCorner.Y + y);
-
 					}
 					else
 					{
-						XWarpPointer(Device->display,
-							None,
-							Device->window, 0, 0,
-							Device->Width,
-							Device->Height, x, y);
+						SDL_WarpMouseInWindow(Device->window, x, y);
+
 					}
-					XFlush(Device->display);
 				}
 #endif
 				CursorPos.X = x;
@@ -319,13 +309,7 @@ namespace irr
 					lastQuery = now;
 				}
 
-				Window tmp;
-				int itmp1, itmp2;
-				unsigned  int maskreturn;
-				XQueryPointer(Device->display, Device->window,
-					&tmp, &tmp,
-					&itmp1, &itmp2,
-					&CursorPos.X, &CursorPos.Y, &maskreturn);
+				SDL_GetMouseState(&CursorPos.X, &CursorPos.Y);
 
 				if (CursorPos.X < 0)
 					CursorPos.X = 0;
@@ -349,15 +333,15 @@ namespace irr
 			struct CursorFrameX11
 			{
 				CursorFrameX11() : IconHW(0) {}
-				CursorFrameX11(Cursor icon) : IconHW(icon) {}
+				CursorFrameX11(SDL_Cursor *icon) : IconHW(icon) {}
 
-				Cursor IconHW;	// hardware cursor
+				SDL_Cursor *IconHW;	// hardware cursor
 			};
 
 			struct CursorX11
 			{
 				CursorX11() {}
-				explicit CursorX11(Cursor iconHw, u32 frameTime=0) : FrameTime(frameTime)
+				explicit CursorX11(SDL_Cursor *iconHw, u32 frameTime=0) : FrameTime(frameTime)
 				{
 					Frames.push_back( CursorFrameX11(iconHw) );
 				}
@@ -381,25 +365,9 @@ namespace irr
 #ifdef _IRR_COMPILE_WITH_X11_
 		friend class COpenGLDriver;
 
-		Display *display;
-		XVisualInfo* visual;
-		int screennr;
-		Window window;
-		XSetWindowAttributes attributes;
-		XSizeHints* StdHints;
-		XImage* SoftwareImage;
 		mutable core::stringc Clipboard;
-		#ifdef _IRR_LINUX_X11_VIDMODE_
-		XF86VidModeModeInfo oldVideoMode;
-		#endif
-		#ifdef _IRR_LINUX_X11_RANDR_
-		SizeID oldRandrMode;
-		Rotation oldRandrRotation;
-		#endif
-		#ifdef _IRR_COMPILE_WITH_OPENGL_
-		GLXWindow glxWin;
-		GLXContext Context;
-		#endif
+		SDL_Window *window;
+		SDL_GLContext Context;
 #endif
 		u32 Width, Height;
 		bool WindowHasFocus;

@@ -58,7 +58,7 @@ LINKOBJ = $(IRRMESHOBJ) $(IRROBJ) $(IRRPARTICLEOBJ) $(IRRANIMOBJ) \
 #Compiler flags
 CXXINCS = -I../../include
 CPPFLAGS += $(CXXINCS) -DIRRLICHT_EXPORTS=1
-CXXFLAGS += -Wall -pipe -fno-exceptions -fno-rtti -fstrict-aliasing
+CXXFLAGS += -Wall -pipe -fno-exceptions -fno-rtti -fstrict-aliasing -fPIC
 ifndef NDEBUG
 CXXFLAGS += -g -D_DEBUG
 else
