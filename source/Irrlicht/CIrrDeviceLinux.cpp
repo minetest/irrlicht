@@ -157,6 +157,7 @@ CIrrDeviceLinux::~CIrrDeviceLinux()
 		if (!SDL_GL_MakeCurrent(window, Context)) {
 			os::Printer::log("Could not release GL context.", ELL_WARNING);
 		}
+
 		SDL_GL_DeleteContext(Context);
 	}
 	#endif // #ifdef _IRR_COMPILE_WITH_OPENGL_
@@ -246,25 +247,14 @@ bool CIrrDeviceLinux::createWindow()
 		SDL_WINDOWPOS_UNDEFINED,
 		CreationParams.WindowSize.Width,
 		CreationParams.WindowSize.Height,
-#ifdef _IRR_COMPILE_WITH_OPENGL_
-		windowFlags & SDL_WINDOW_OPENGL
-#else
-		windowFlags
-#endif
+		windowFlags | SDL_WINDOW_OPENGL
 	);
 
 	// create color map
 	WindowMinimized=false;
-	// Currently broken in X, see Bug ID 2795321
-	// XkbSetDetectableAutoRepeat(display, True, &AutorepeatSupport);
 
-#ifdef _IRR_COMPILE_WITH_OPENGL_
+	SDL_GL_LoadLibrary(NULL);
 	Context = SDL_GL_CreateContext(window);
-	if (!SDL_GL_MakeCurrent(window, Context)) {
-		os::Printer::log("Could not make context current.", ELL_WARNING);
-		SDL_GL_DeleteContext(Context);
-	}
-#endif // _IRR_COMPILE_WITH_OPENGL_
 
 	unsigned int bits;
 
@@ -288,12 +278,8 @@ void CIrrDeviceLinux::createDriver()
 #ifdef _IRR_COMPILE_WITH_X11_
 
 	case video::EDT_OPENGL:
-		#ifdef _IRR_COMPILE_WITH_OPENGL_
 		if (Context)
 			VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, this);
-		#else
-		os::Printer::log("No OpenGL support compiled in.", ELL_ERROR);
-		#endif
 		break;
 
 	case video::EDT_DIRECT3D8:
