@@ -226,8 +226,6 @@ void IrrPrintXGrabError(int grabResult, const c8 * grabCommand )
 
 bool CIrrDeviceSDL2::createWindow()
 {
-#ifdef _IRR_COMPILE_WITH_X11_
-
 	switchToFullscreen();
 
 	Uint32 windowFlags = 0;
@@ -250,16 +248,33 @@ bool CIrrDeviceSDL2::createWindow()
 	SDL_GL_LoadLibrary(NULL);
 	Context = SDL_GL_CreateContext(window);
 
-	unsigned int bits;
-
-	CreationParams.Bits = bits;
-	CreationParams.WindowSize.Width = Width;
-	CreationParams.WindowSize.Height = Height;
-
-	// create an XImage for the software renderer
-	//(thx to Nadav for some clues on how to do that!)
-
-#endif // #ifdef _IRR_COMPILE_WITH_X11_
+	if (CreationParams.DriverType == video::EDT_OPENGL)
+	{
+		if (CreationParams.Bits==16)
+		{
+			SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 4 );
+			SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 4 );
+			SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 4 );
+			SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, CreationParams.WithAlphaChannel?1:0 );
+		}
+		else
+		{
+			SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
+			SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
+			SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
+			SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, CreationParams.WithAlphaChannel?8:0 );
+		}
+		SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, CreationParams.ZBufferBits);
+		if (CreationParams.Doublebuffer)
+			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+		if (CreationParams.Stereobuffer)
+			SDL_GL_SetAttribute( SDL_GL_STEREO, 1 );
+		if (CreationParams.AntiAlias>1)
+		{
+			SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 );
+			SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, CreationParams.AntiAlias );
+		}
+	}
 	return true;
 }
 
@@ -269,17 +284,25 @@ void CIrrDeviceSDL2::createDriver()
 {
 	switch(CreationParams.DriverType)
 	{
-#ifdef _IRR_COMPILE_WITH_X11_
-
-	case video::EDT_OPENGL:
-		if (Context)
-			VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, this);
-		break;
-
-	case video::EDT_DIRECT3D8:
 	case video::EDT_DIRECT3D9:
-		os::Printer::log("This driver is not available in Linux. Try OpenGL or Software renderer.",
-			ELL_ERROR);
+		#ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
+
+		VideoDriver = video::createDirectX9Driver(CreationParams, FileSystem, HWnd);
+		if (!VideoDriver)
+		{
+			os::Printer::log("Could not create DIRECT3D9 Driver.", ELL_ERROR);
+		}
+		#else
+		os::Printer::log("DIRECT3D9 Driver was not compiled into this dll. Try another one.", ELL_ERROR);
+		#endif // _IRR_COMPILE_WITH_DIRECT3D_9_
+
+		break;
+	case video::EDT_OPENGL:
+		#ifdef _IRR_COMPILE_WITH_OPENGL_
+		VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, this);
+		#else
+		os::Printer::log("No OpenGL support compiled in.", ELL_ERROR);
+		#endif
 		break;
 
 	case video::EDT_NULL:
@@ -289,14 +312,6 @@ void CIrrDeviceSDL2::createDriver()
 	default:
 		os::Printer::log("Unable to create video driver of unknown type.", ELL_ERROR);
 		break;
-#else
-	case video::EDT_NULL:
-		VideoDriver = video::createNullDriver(FileSystem, CreationParams.WindowSize);
-		break;
-	default:
-		os::Printer::log("No X11 support compiled in. Only Null driver available.", ELL_ERROR);
-		break;
-#endif
 	}
 }
 
@@ -306,17 +321,12 @@ bool CIrrDeviceSDL2::run()
 {
 	os::Timer::tick();
 
-#ifdef _IRR_COMPILE_WITH_X11_
+	SEvent irrevent;
+	SDL_Event SDL_event;
 
-	if ( CursorControl )
-		static_cast<CCursorControl*>(CursorControl)->update();
-
-	if ((CreationParams.DriverType != video::EDT_NULL))
+	while (!Close && SDL_PollEvent( &SDL_event ))
 	{
-		SEvent irrevent;
-		irrevent.MouseInput.ButtonStates = 0xffffffff;
-		while (/*XPending(display) > 0 &&*/ !Close)
-		{
+		// TODO: this part is to rewrite inspired by irrlicht SDL1 mapping
 #if 0
 			XEvent event;
 			XNextEvent(display, &event);
@@ -595,9 +605,7 @@ bool CIrrDeviceSDL2::run()
 				break;
 			} // end switch
 #endif
-		} // end while
-	}
-#endif //_IRR_COMPILE_WITH_X11_
+	} // end while
 
 	if (!Close)
 		pollJoysticks();
