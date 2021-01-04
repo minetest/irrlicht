@@ -362,16 +362,19 @@ namespace irr
 
 		friend class CCursorControl;
 
-#ifdef _IRR_COMPILE_WITH_X11_
 		friend class COpenGLDriver;
 
 		mutable core::stringc Clipboard;
 		SDL_Window *window;
 		SDL_GLContext Context;
-#endif
+		
 		u32 Width, Height;
 		bool WindowHasFocus;
 		bool WindowMinimized;
+
+#if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
+		core::array<SDL_Joystick*> Joysticks;
+#endif
 
 		s32 MouseX, MouseY;
 		u32 MouseButtonStates;

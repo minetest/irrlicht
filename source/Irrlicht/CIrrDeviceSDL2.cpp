@@ -1136,86 +1136,44 @@ void CIrrDeviceSDL2::createKeyMap()
 
 bool CIrrDeviceSDL2::activateJoysticks(core::array<SJoystickInfo> & joystickInfo)
 {
-#if defined (_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
-
+#if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
 	joystickInfo.clear();
 
-	u32 joystick;
-	for (joystick = 0; joystick < 32; ++joystick)
+	// we can name up to 256 different joysticks
+	const int numJoysticks = core::min_(SDL_NumJoysticks(), 256);
+	Joysticks.reallocate(numJoysticks);
+	joystickInfo.reallocate(numJoysticks);
+
+	int joystick = 0;
+	for (; joystick<numJoysticks; ++joystick)
 	{
-		// The joystick device could be here...
-		core::stringc devName = "/dev/js";
-		devName += joystick;
+		Joysticks.push_back(SDL_JoystickOpen(joystick));
+		SJoystickInfo info;
 
-		SJoystickInfo returnInfo;
-		JoystickInfo info;
+		info.Joystick = joystick;
+		info.Axes = SDL_JoystickNumAxes(Joysticks[joystick]);
+		info.Buttons = SDL_JoystickNumButtons(Joysticks[joystick]);
+		info.Name = SDL_JoystickName(Joysticks[joystick]);
+		info.PovHat = (SDL_JoystickNumHats(Joysticks[joystick]) > 0)
+						? SJoystickInfo::POV_HAT_PRESENT : SJoystickInfo::POV_HAT_ABSENT;
 
-		info.fd = open(devName.c_str(), O_RDONLY);
-		if (-1 == info.fd)
-		{
-			// ...but Ubuntu and possibly other distros
-			// create the devices in /dev/input
-			devName = "/dev/input/js";
-			devName += joystick;
-			info.fd = open(devName.c_str(), O_RDONLY);
-			if (-1 == info.fd)
-			{
-				// and BSD here
-				devName = "/dev/joy";
-				devName += joystick;
-				info.fd = open(devName.c_str(), O_RDONLY);
-			}
-		}
-
-		if (-1 == info.fd)
-			continue;
-
-#ifdef __FreeBSD__
-		info.axes=2;
-		info.buttons=2;
-#else
-		ioctl( info.fd, JSIOCGAXES, &(info.axes) );
-		ioctl( info.fd, JSIOCGBUTTONS, &(info.buttons) );
-		fcntl( info.fd, F_SETFL, O_NONBLOCK );
-#endif
-
-		(void)memset(&info.persistentData, 0, sizeof(info.persistentData));
-		info.persistentData.EventType = irr::EET_JOYSTICK_INPUT_EVENT;
-		info.persistentData.JoystickEvent.Joystick = ActiveJoysticks.size();
-
-		// There's no obvious way to determine which (if any) axes represent a POV
-		// hat, so we'll just set it to "not used" and forget about it.
-		info.persistentData.JoystickEvent.POV = 65535;
-
-		ActiveJoysticks.push_back(info);
-
-		returnInfo.Joystick = joystick;
-		returnInfo.PovHat = SJoystickInfo::POV_HAT_UNKNOWN;
-		returnInfo.Axes = info.axes;
-		returnInfo.Buttons = info.buttons;
-
-#ifndef __FreeBSD__
-		char name[80];
-		ioctl( info.fd, JSIOCGNAME(80), name);
-		returnInfo.Name = name;
-#endif
-
-		joystickInfo.push_back(returnInfo);
+		joystickInfo.push_back(info);
 	}
 
-	for (joystick = 0; joystick < joystickInfo.size(); ++joystick)
+	for(joystick = 0; joystick < (int)joystickInfo.size(); ++joystick)
 	{
 		char logString[256];
-		(void)sprintf(logString, "Found joystick %u, %u axes, %u buttons '%s'",
-			joystick, joystickInfo[joystick].Axes,
-			joystickInfo[joystick].Buttons, joystickInfo[joystick].Name.c_str());
+		(void)sprintf(logString, "Found joystick %d, %d axes, %d buttons '%s'",
+		joystick, joystickInfo[joystick].Axes,
+		joystickInfo[joystick].Buttons, joystickInfo[joystick].Name.c_str());
 		os::Printer::log(logString, ELL_INFORMATION);
 	}
 
 	return true;
-#else
-	return false;
+
 #endif // _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
+
+	return false;
 }
 
 
