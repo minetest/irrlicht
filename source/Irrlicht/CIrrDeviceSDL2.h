@@ -372,26 +372,24 @@ namespace irr
 		u32 Width, Height;
 		bool WindowHasFocus;
 		bool WindowMinimized;
-		bool UseXVidMode;
-		bool UseXRandR;
-		bool UseGLXWindow;
-		bool ExternalWindow;
-		int AutorepeatSupport;
+
+		s32 MouseX, MouseY;
+		u32 MouseButtonStates;
 
 		struct SKeyMap
 		{
 			SKeyMap() {}
 			SKeyMap(s32 x11, s32 win32)
-				: X11Key(x11), Win32Key(win32)
+				: SDLKey(x11), Win32Key(win32)
 			{
 			}
 
-			KeySym X11Key;
+			s32 SDLKey;
 			s32 Win32Key;
 
 			bool operator<(const SKeyMap& o) const
 			{
-				return X11Key<o.X11Key;
+				return SDLKey<o.SDLKey;
 			}
 		};
 
