@@ -150,7 +150,7 @@ namespace irr
 
 		//! Sets the caption of the window.
 		/** \param text: New text of the window caption. */
-		virtual void setWindowCaption(const setWindowCaption* text) = 0;
+		virtual void setWindowCaption(const wchar_t* text) = 0;
 
 		//! Returns if the window is active.
 		/** If the window is inactive,
