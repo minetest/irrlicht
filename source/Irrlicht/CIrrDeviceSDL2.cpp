@@ -148,10 +148,6 @@ CIrrDeviceSDL2::~CIrrDeviceSDL2()
 	#ifdef _IRR_COMPILE_WITH_OPENGL_
 	if (Context)
 	{
-		if (!SDL_GL_MakeCurrent(window, Context)) {
-			os::Printer::log("Could not release GL context.", ELL_WARNING);
-		}
-
 		SDL_GL_DeleteContext(Context);
 	}
 	#endif // #ifdef _IRR_COMPILE_WITH_OPENGL_
@@ -326,6 +322,19 @@ bool CIrrDeviceSDL2::run()
 
 	while (!Close && SDL_PollEvent( &SDL_event ))
 	{
+		switch ( SDL_event.type )
+		{
+			case SDL_QUIT:
+				Close = true;
+				break;
+
+			case SDL_USEREVENT:
+				irrevent.EventType = irr::EET_USER_EVENT;
+				irrevent.UserEvent.UserData1 = *(reinterpret_cast<s32*>(&SDL_event.user.data1));
+				irrevent.UserEvent.UserData2 = *(reinterpret_cast<s32*>(&SDL_event.user.data2));
+				postEventFromUser(irrevent);
+				break;
+		}
 		// TODO: this part is to rewrite inspired by irrlicht SDL1 mapping
 #if 0
 			XEvent event;
