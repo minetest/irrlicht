@@ -236,7 +236,7 @@ bool CIrrDeviceSDL2::createWindow()
 	}
 
 	window = SDL_CreateWindow(
-    "SDL2Test",
+    "Irrlicht (title not set)",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
 		CreationParams.WindowSize.Width,
@@ -640,7 +640,8 @@ void CIrrDeviceSDL2::setWindowCaption(const wchar_t* text)
 	if (CreationParams.DriverType == video::EDT_NULL)
 		return;
 
-	SDL_SetWindowTitle(window, (const char *)text);
+	core::stringc textc = text;
+	SDL_SetWindowTitle(window, textc.c_str());
 #endif
 }
 
