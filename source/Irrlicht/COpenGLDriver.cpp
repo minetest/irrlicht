@@ -500,7 +500,7 @@ COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params,
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 //! Linux constructor and init code
 COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params,
-		io::IFileSystem* io, CIrrDeviceLinux* device)
+		io::IFileSystem* io, CIrrDeviceSDL2* device)
 : CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
 	CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
 	Transformation3DChanged(true), AntiAlias(params.AntiAlias),
@@ -518,7 +518,7 @@ COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params,
 }
 
 
-bool COpenGLDriver::changeRenderContext(const SExposedVideoData& videoData, CIrrDeviceLinux* device)
+bool COpenGLDriver::changeRenderContext(const SExposedVideoData& videoData, CIrrDeviceSDL2* device)
 {
 	if (videoData.OpenGLLinux.X11Window)
 	{
@@ -569,7 +569,7 @@ bool COpenGLDriver::changeRenderContext(const SExposedVideoData& videoData, CIrr
 
 
 //! inits the open gl driver
-bool COpenGLDriver::initDriver(CIrrDeviceLinux* device)
+bool COpenGLDriver::initDriver(CIrrDeviceSDL2* device)
 {
 	ExposedData.OpenGLLinux.X11Context = glXGetCurrentContext();
 	ExposedData.OpenGLLinux.X11Display = glXGetCurrentDisplay();
@@ -4793,7 +4793,7 @@ IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
 // -----------------------------------
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
-		io::IFileSystem* io, CIrrDeviceLinux* device)
+		io::IFileSystem* io, CIrrDeviceSDL2* device)
 {
 #ifdef _IRR_COMPILE_WITH_OPENGL_
 	COpenGLDriver* ogl =  new COpenGLDriver(params, io, device);

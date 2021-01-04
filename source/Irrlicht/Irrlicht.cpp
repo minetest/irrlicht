@@ -27,7 +27,7 @@ static const char* const copyright = "Irrlicht Engine (c) 2002-2012 Nikolaus Geb
 #endif
 
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
-#include "CIrrDeviceLinux.h"
+#include "CIrrDeviceSDL2.h"
 #endif
 
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
@@ -64,7 +64,7 @@ namespace irr
 
 	extern "C" IRRLICHT_API IrrlichtDevice* IRRCALLCONV createDeviceEx(const SIrrlichtCreationParameters& params)
 	{
-		return new CIrrDeviceLinux(params);
+		return new CIrrDeviceSDL2(params);
 	}
 
 namespace core

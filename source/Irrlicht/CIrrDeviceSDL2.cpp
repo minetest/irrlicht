@@ -2,7 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#include "CIrrDeviceLinux.h"
+#include "CIrrDeviceSDL2.h"
 
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 
@@ -21,12 +21,6 @@
 #include "CColorConverter.h"
 #include "SIrrCreationParameters.h"
 #include "IGUISpriteBank.h"
-#include <X11/XKBlib.h>
-#include <X11/Xatom.h>
-
-#ifdef _IRR_LINUX_XCURSOR_
-#include <X11/Xcursor/Xcursor.h>
-#endif
 
 #if defined _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
 #include <fcntl.h>
@@ -53,7 +47,7 @@ namespace irr
 	namespace video
 	{
 		IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
-				io::IFileSystem* io, CIrrDeviceLinux* device);
+				io::IFileSystem* io, CIrrDeviceSDL2* device);
 	}
 } // end namespace irr
 
@@ -63,7 +57,7 @@ namespace irr
 const char* wmDeleteWindow = "WM_DELETE_WINDOW";
 
 //! constructor
-CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
+CIrrDeviceSDL2::CIrrDeviceSDL2(const SIrrlichtCreationParameters& param)
 	: CIrrDeviceStub(param),
 #ifdef _IRR_COMPILE_WITH_X11_
 #ifdef _IRR_COMPILE_WITH_OPENGL_
@@ -77,7 +71,7 @@ CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 	ExternalWindow(false), AutorepeatSupport(0)
 {
 	#ifdef _DEBUG
-	setDebugName("CIrrDeviceLinux");
+	setDebugName("CIrrDeviceSDL2");
 	#endif
 
 	// print version, distribution etc.
@@ -124,7 +118,7 @@ CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 
 
 //! destructor
-CIrrDeviceLinux::~CIrrDeviceLinux()
+CIrrDeviceSDL2::~CIrrDeviceSDL2()
 {
 #ifdef _IRR_COMPILE_WITH_X11_
 	// Disable cursor (it is drop'ed in stub)
@@ -183,7 +177,7 @@ CIrrDeviceLinux::~CIrrDeviceLinux()
 #endif
 }
 
-bool CIrrDeviceLinux::switchToFullscreen(bool reset)
+bool CIrrDeviceSDL2::switchToFullscreen(bool reset)
 {
 	if (!CreationParams.Fullscreen)
 		return true;
@@ -230,7 +224,7 @@ void IrrPrintXGrabError(int grabResult, const c8 * grabCommand )
 #endif
 
 
-bool CIrrDeviceLinux::createWindow()
+bool CIrrDeviceSDL2::createWindow()
 {
 #ifdef _IRR_COMPILE_WITH_X11_
 
@@ -271,7 +265,7 @@ bool CIrrDeviceLinux::createWindow()
 
 
 //! create the driver
-void CIrrDeviceLinux::createDriver()
+void CIrrDeviceSDL2::createDriver()
 {
 	switch(CreationParams.DriverType)
 	{
@@ -308,7 +302,7 @@ void CIrrDeviceLinux::createDriver()
 
 
 //! runs the device. Returns false if device wants to be deleted
-bool CIrrDeviceLinux::run()
+bool CIrrDeviceSDL2::run()
 {
 	os::Timer::tick();
 
@@ -613,7 +607,7 @@ bool CIrrDeviceLinux::run()
 
 
 //! Pause the current process for the minimum time allowed only to allow other processes to execute
-void CIrrDeviceLinux::yield()
+void CIrrDeviceSDL2::yield()
 {
 	struct timespec ts = {0,1};
 	nanosleep(&ts, NULL);
@@ -621,7 +615,7 @@ void CIrrDeviceLinux::yield()
 
 
 //! Pause execution and let other processes to run for a specified amount of time.
-void CIrrDeviceLinux::sleep(u32 timeMs, bool pauseTimer=false)
+void CIrrDeviceSDL2::sleep(u32 timeMs, bool pauseTimer=false)
 {
 	const bool wasStopped = Timer ? Timer->isStopped() : true;
 
@@ -640,7 +634,7 @@ void CIrrDeviceLinux::sleep(u32 timeMs, bool pauseTimer=false)
 
 
 //! sets the caption of the window
-void CIrrDeviceLinux::setWindowCaption(const wchar_t* text)
+void CIrrDeviceSDL2::setWindowCaption(const wchar_t* text)
 {
 #ifdef _IRR_COMPILE_WITH_X11_
 	if (CreationParams.DriverType == video::EDT_NULL)
@@ -652,49 +646,49 @@ void CIrrDeviceLinux::setWindowCaption(const wchar_t* text)
 
 
 //! presents a surface in the client area
-bool CIrrDeviceLinux::present(video::IImage* image, void* windowId, core::rect<s32>* srcRect)
+bool CIrrDeviceSDL2::present(video::IImage* image, void* windowId, core::rect<s32>* srcRect)
 {
 	return true;
 }
 
 
 //! notifies the device that it should close itself
-void CIrrDeviceLinux::closeDevice()
+void CIrrDeviceSDL2::closeDevice()
 {
 	Close = true;
 }
 
 
 //! returns if window is active. if not, nothing need to be drawn
-bool CIrrDeviceLinux::isWindowActive() const
+bool CIrrDeviceSDL2::isWindowActive() const
 {
 	return (WindowHasFocus && !WindowMinimized);
 }
 
 
 //! returns if window has focus.
-bool CIrrDeviceLinux::isWindowFocused() const
+bool CIrrDeviceSDL2::isWindowFocused() const
 {
 	return WindowHasFocus;
 }
 
 
 //! returns if window is minimized.
-bool CIrrDeviceLinux::isWindowMinimized() const
+bool CIrrDeviceSDL2::isWindowMinimized() const
 {
 	return WindowMinimized;
 }
 
 
 //! returns color format of the window.
-video::ECOLOR_FORMAT CIrrDeviceLinux::getColorFormat() const
+video::ECOLOR_FORMAT CIrrDeviceSDL2::getColorFormat() const
 {
 		return video::ECF_R5G6B5;
 }
 
 
 //! Sets if the window should be resizable in windowed mode.
-void CIrrDeviceLinux::setResizable(bool resize)
+void CIrrDeviceSDL2::setResizable(bool resize)
 {
 #ifdef _IRR_COMPILE_WITH_X11_
 	if (CreationParams.DriverType == video::EDT_NULL || CreationParams.Fullscreen )
@@ -706,7 +700,7 @@ void CIrrDeviceLinux::setResizable(bool resize)
 
 
 //! Return pointer to a list with all video modes supported by the gfx adapter.
-video::IVideoModeList* CIrrDeviceLinux::getVideoModeList()
+video::IVideoModeList* CIrrDeviceSDL2::getVideoModeList()
 {
 	s32 displayModeCount = SDL_GetNumDisplayModes(0);
 	for (s32 i = 0; i < displayModeCount; i++) {
@@ -727,7 +721,7 @@ video::IVideoModeList* CIrrDeviceLinux::getVideoModeList()
 
 
 //! Minimize window
-void CIrrDeviceLinux::minimizeWindow()
+void CIrrDeviceSDL2::minimizeWindow()
 {
 #ifdef _IRR_COMPILE_WITH_X11_
 	SDL_MinimizeWindow(window);
@@ -736,7 +730,7 @@ void CIrrDeviceLinux::minimizeWindow()
 
 
 //! Maximize window
-void CIrrDeviceLinux::maximizeWindow()
+void CIrrDeviceSDL2::maximizeWindow()
 {
 #ifdef _IRR_COMPILE_WITH_X11_
 	SDL_MaximizeWindow(window);
@@ -745,7 +739,7 @@ void CIrrDeviceLinux::maximizeWindow()
 
 
 //! Restore original window size
-void CIrrDeviceLinux::restoreWindow()
+void CIrrDeviceSDL2::restoreWindow()
 {
 #ifdef _IRR_COMPILE_WITH_X11_
 	SDL_RestoreWindow(window);
@@ -753,7 +747,7 @@ void CIrrDeviceLinux::restoreWindow()
 }
 
 
-void CIrrDeviceLinux::createKeyMap()
+void CIrrDeviceSDL2::createKeyMap()
 {
 	// I don't know if this is the best method  to create
 	// the lookuptable, but I'll leave it like that until
@@ -954,7 +948,7 @@ void CIrrDeviceLinux::createKeyMap()
 #endif
 }
 
-bool CIrrDeviceLinux::activateJoysticks(core::array<SJoystickInfo> & joystickInfo)
+bool CIrrDeviceSDL2::activateJoysticks(core::array<SJoystickInfo> & joystickInfo)
 {
 #if defined (_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
 
@@ -1039,7 +1033,7 @@ bool CIrrDeviceLinux::activateJoysticks(core::array<SJoystickInfo> & joystickInf
 }
 
 
-void CIrrDeviceLinux::pollJoysticks()
+void CIrrDeviceSDL2::pollJoysticks()
 {
 #if defined (_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
 	if (0 == ActiveJoysticks.size())
@@ -1089,7 +1083,7 @@ void CIrrDeviceLinux::pollJoysticks()
 
 
 //! Set the current Gamma Value for the Display
-bool CIrrDeviceLinux::setGammaRamp( f32 red, f32 green, f32 blue, f32 brightness, f32 contrast )
+bool CIrrDeviceSDL2::setGammaRamp( f32 red, f32 green, f32 blue, f32 brightness, f32 contrast )
 {
 	// TODO
 	//SDL_SetWindowGammaRamp(window, red, green, blue);
@@ -1098,7 +1092,7 @@ bool CIrrDeviceLinux::setGammaRamp( f32 red, f32 green, f32 blue, f32 brightness
 
 
 //! Get the current Gamma Value for the Display
-bool CIrrDeviceLinux::getGammaRamp( f32 &red, f32 &green, f32 &blue, f32 &brightness, f32 &contrast )
+bool CIrrDeviceSDL2::getGammaRamp( f32 &red, f32 &green, f32 &blue, f32 &brightness, f32 &contrast )
 {
 	brightness = 0.f;
 	contrast = 0.f;
@@ -1111,7 +1105,7 @@ bool CIrrDeviceLinux::getGammaRamp( f32 &red, f32 &green, f32 &blue, f32 &bright
 
 //! gets text from the clipboard
 //! \return Returns 0 if no string is in there.
-const c8* CIrrDeviceLinux::getTextFromClipboard() const
+const c8* CIrrDeviceSDL2::getTextFromClipboard() const
 {
 #if defined(_IRR_COMPILE_WITH_X11_)
 	char *clipboardText = SDL_GetClipboardText();
@@ -1128,7 +1122,7 @@ const c8* CIrrDeviceLinux::getTextFromClipboard() const
 }
 
 //! copies text to the clipboard
-void CIrrDeviceLinux::copyToClipboard(const c8* text) const
+void CIrrDeviceSDL2::copyToClipboard(const c8* text) const
 {
 #if defined(_IRR_COMPILE_WITH_X11_)
 	// Actually there is no clipboard on X but applications just say they own the clipboard and return text when asked.
@@ -1152,14 +1146,14 @@ Bool PredicateIsEventType(Display *display, XEvent *event, XPointer arg)
 #endif //_IRR_COMPILE_WITH_X11_
 
 //! Remove all messages pending in the system message loop
-void CIrrDeviceLinux::clearSystemMessages()
+void CIrrDeviceSDL2::clearSystemMessages()
 {
 }
 
 
 #ifdef _IRR_COMPILE_WITH_X11_
 
-SDL_Cursor *CIrrDeviceLinux::TextureToMonochromeCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot)
+SDL_Cursor *CIrrDeviceSDL2::TextureToMonochromeCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot)
 {
 	// write texture into XImage
 	video::ECOLOR_FORMAT format = tex->getColorFormat();
@@ -1185,7 +1179,7 @@ SDL_Cursor *CIrrDeviceLinux::TextureToMonochromeCursor(irr::video::ITexture * te
 }
 
 #ifdef _IRR_LINUX_XCURSOR_
-Cursor CIrrDeviceLinux::TextureToARGBCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot)
+Cursor CIrrDeviceSDL2::TextureToARGBCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot)
 {
 	XcursorImage * image = XcursorImageCreate (sourceRect.getWidth(), sourceRect.getHeight());
 	image->xhot = hotspot.X;
@@ -1224,7 +1218,7 @@ Cursor CIrrDeviceLinux::TextureToARGBCursor(irr::video::ITexture * tex, const co
 }
 #endif // #ifdef _IRR_LINUX_XCURSOR_
 
-SDL_Cursor *CIrrDeviceLinux::TextureToCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot)
+SDL_Cursor *CIrrDeviceSDL2::TextureToCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot)
 {
 #ifdef _IRR_LINUX_XCURSOR_
 	return TextureToARGBCursor( tex, sourceRect, hotspot );
@@ -1235,7 +1229,7 @@ SDL_Cursor *CIrrDeviceLinux::TextureToCursor(irr::video::ITexture * tex, const c
 #endif	// _IRR_COMPILE_WITH_X11_
 
 
-CIrrDeviceLinux::CCursorControl::CCursorControl(CIrrDeviceLinux* dev, bool null)
+CIrrDeviceSDL2::CCursorControl::CCursorControl(CIrrDeviceSDL2* dev, bool null)
 	: Device(dev)
 #ifdef _IRR_COMPILE_WITH_X11_
 	, PlatformBehavior(gui::ECPB_NONE), lastQuery(0)
@@ -1252,14 +1246,14 @@ CIrrDeviceLinux::CCursorControl::CCursorControl(CIrrDeviceLinux* dev, bool null)
 #endif
 }
 
-CIrrDeviceLinux::CCursorControl::~CCursorControl()
+CIrrDeviceSDL2::CCursorControl::~CCursorControl()
 {
 	// Do not clearCursors here as the display is already closed
 	// TODO (cutealien): droping cursorcontrol earlier might work, not sure about reason why that's done in stub currently.
 }
 
 #ifdef _IRR_COMPILE_WITH_X11_
-void CIrrDeviceLinux::CCursorControl::clearCursors()
+void CIrrDeviceSDL2::CCursorControl::clearCursors()
 {
 	if (!Null)
 	for ( u32 i=0; i < Cursors.size(); ++i )
@@ -1271,7 +1265,7 @@ void CIrrDeviceLinux::CCursorControl::clearCursors()
 	}
 }
 
-void CIrrDeviceLinux::CCursorControl::initCursors()
+void CIrrDeviceSDL2::CCursorControl::initCursors()
 {
 	/*Cursors.push_back( CursorX11(XCreateFontCursor(Device->display, XC_top_left_arrow)) ); //  (or XC_arrow?)
 	Cursors.push_back( CursorX11(XCreateFontCursor(Device->display, XC_crosshair)) );
@@ -1289,7 +1283,7 @@ void CIrrDeviceLinux::CCursorControl::initCursors()
 	*/
 }
 
-void CIrrDeviceLinux::CCursorControl::update()
+void CIrrDeviceSDL2::CCursorControl::update()
 {
 	if ( (u32)ActiveIcon < Cursors.size() && !Cursors[ActiveIcon].Frames.empty() && Cursors[ActiveIcon].FrameTime )
 	{
@@ -1302,7 +1296,7 @@ void CIrrDeviceLinux::CCursorControl::update()
 #endif
 
 //! Sets the active cursor icon
-void CIrrDeviceLinux::CCursorControl::setActiveIcon(gui::ECURSOR_ICON iconId)
+void CIrrDeviceSDL2::CCursorControl::setActiveIcon(gui::ECURSOR_ICON iconId)
 {
 #ifdef _IRR_COMPILE_WITH_X11_
 	if ( iconId >= (s32)Cursors.size() )
@@ -1318,7 +1312,7 @@ void CIrrDeviceLinux::CCursorControl::setActiveIcon(gui::ECURSOR_ICON iconId)
 
 
 //! Add a custom sprite as cursor icon.
-gui::ECURSOR_ICON CIrrDeviceLinux::CCursorControl::addIcon(const gui::SCursorSprite& icon)
+gui::ECURSOR_ICON CIrrDeviceSDL2::CCursorControl::addIcon(const gui::SCursorSprite& icon)
 {
 #ifdef _IRR_COMPILE_WITH_X11_
 	if ( icon.SpriteId >= 0 )
@@ -1343,7 +1337,7 @@ gui::ECURSOR_ICON CIrrDeviceLinux::CCursorControl::addIcon(const gui::SCursorSpr
 }
 
 //! replace the given cursor icon.
-void CIrrDeviceLinux::CCursorControl::changeIcon(gui::ECURSOR_ICON iconId, const gui::SCursorSprite& icon)
+void CIrrDeviceSDL2::CCursorControl::changeIcon(gui::ECURSOR_ICON iconId, const gui::SCursorSprite& icon)
 {
 #ifdef _IRR_COMPILE_WITH_X11_
 	if ( iconId >= (s32)Cursors.size() )
@@ -1370,7 +1364,7 @@ void CIrrDeviceLinux::CCursorControl::changeIcon(gui::ECURSOR_ICON iconId, const
 #endif
 }
 
-irr::core::dimension2di CIrrDeviceLinux::CCursorControl::getSupportedIconSize() const
+irr::core::dimension2di CIrrDeviceSDL2::CCursorControl::getSupportedIconSize() const
 {
 	// this returns the closest match that is smaller or same size, so we just pass a value which should be large enough for cursors
 	unsigned int width=0, height=0;

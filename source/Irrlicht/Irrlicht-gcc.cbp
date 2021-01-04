@@ -793,8 +793,8 @@
 		<Unit filename="CImageWriterTGA.h" />
 		<Unit filename="CIrrDeviceConsole.cpp" />
 		<Unit filename="CIrrDeviceConsole.h" />
-		<Unit filename="CIrrDeviceLinux.cpp" />
-		<Unit filename="CIrrDeviceLinux.h" />
+		<Unit filename="CIrrDeviceSDL2.cpp" />
+		<Unit filename="CIrrDeviceSDL2.h" />
 		<Unit filename="CIrrDeviceSDL.cpp" />
 		<Unit filename="CIrrDeviceSDL.h" />
 		<Unit filename="CIrrDeviceStub.cpp" />

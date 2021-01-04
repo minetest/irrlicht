@@ -4060,7 +4060,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit404]
-FileName=CIrrDeviceLinux.cpp
+FileName=CIrrDeviceSDL2.cpp
 Folder=Irrlicht/irr/IrrlichtDevice
 Compile=1
 CompileCpp=1
@@ -4070,7 +4070,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit405]
-FileName=CIrrDeviceLinux.h
+FileName=CIrrDeviceSDL2.h
 Folder=Irrlicht/irr/IrrlichtDevice
 Compile=1
 CompileCpp=1

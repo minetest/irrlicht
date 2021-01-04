@@ -18,7 +18,7 @@
 #endif
 
 #if defined(_IRR_COMPILE_WITH_X11_DEVICE_)
-#include "CIrrDeviceLinux.h"
+#include "CIrrDeviceSDL2.h"
 #endif
 #ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
 #include "MacOSX/OSXClipboard.h"
@@ -29,7 +29,7 @@ namespace irr
 
 #if defined(_IRR_COMPILE_WITH_X11_DEVICE_)
 // constructor  linux
-	COSOperator::COSOperator(const core::stringc& osVersion, CIrrDeviceLinux* device)
+	COSOperator::COSOperator(const core::stringc& osVersion, CIrrDeviceSDL2* device)
 : OperatingSystem(osVersion), IrrDeviceLinux(device)
 {
 }

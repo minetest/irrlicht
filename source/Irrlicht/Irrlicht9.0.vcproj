@@ -3236,11 +3236,11 @@
 						>
 					</File>
 					<File
-						RelativePath="CIrrDeviceLinux.cpp"
+						RelativePath="CIrrDeviceSDL2.cpp"
 						>
 					</File>
 					<File
-						RelativePath="CIrrDeviceLinux.h"
+						RelativePath="CIrrDeviceSDL2.h"
 						>
 					</File>
 					<File

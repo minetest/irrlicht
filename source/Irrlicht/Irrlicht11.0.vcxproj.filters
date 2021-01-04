@@ -1119,7 +1119,7 @@
     <ClInclude Include="CIrrDeviceFB.h">
       <Filter>Irrlicht\irr\device</Filter>
     </ClInclude>
-    <ClInclude Include="CIrrDeviceLinux.h">
+    <ClInclude Include="CIrrDeviceSDL2.h">
       <Filter>Irrlicht\irr\device</Filter>
     </ClInclude>
     <ClInclude Include="CIrrDeviceSDL.h">
@@ -2078,7 +2078,7 @@
     <ClCompile Include="CIrrDeviceFB.cpp">
       <Filter>Irrlicht\irr\device</Filter>
     </ClCompile>
-    <ClCompile Include="CIrrDeviceLinux.cpp">
+    <ClCompile Include="CIrrDeviceSDL2.cpp">
       <Filter>Irrlicht\irr\device</Filter>
     </ClCompile>
     <ClCompile Include="CIrrDeviceSDL.cpp">

@@ -392,7 +392,7 @@
 		4C53E4730A4856B30014E966 /* CImageLoaderPSD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DF620A484C230014E966 /* CImageLoaderPSD.cpp */; };
 		4C53E4740A4856B30014E966 /* CWaterSurfaceSceneNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DFF00A484C250014E966 /* CWaterSurfaceSceneNode.cpp */; };
 		4C53E4750A4856B30014E966 /* CXMeshFileLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DFF80A484C250014E966 /* CXMeshFileLoader.cpp */; };
-		4C53E4760A4856B30014E966 /* CIrrDeviceLinux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DF660A484C230014E966 /* CIrrDeviceLinux.cpp */; };
+		4C53E4760A4856B30014E966 /* CIrrDeviceSDL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DF660A484C230014E966 /* CIrrDeviceSDL2.cpp */; };
 		4C53E4770A4856B30014E966 /* CLightSceneNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DF6C0A484C230014E966 /* CLightSceneNode.cpp */; };
 		4C53E4780A4856B30014E966 /* CTRTextureGouraudAdd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DFE20A484C250014E966 /* CTRTextureGouraudAdd.cpp */; };
 		4C53E4790A4856B30014E966 /* CTRTextureGouraud2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DFE10A484C250014E966 /* CTRTextureGouraud2.cpp */; };
@@ -861,7 +861,7 @@
 		95972A7012C192DA00BF73D3 /* CImageLoaderPSD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DF620A484C230014E966 /* CImageLoaderPSD.cpp */; };
 		95972A7112C192DA00BF73D3 /* CWaterSurfaceSceneNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DFF00A484C250014E966 /* CWaterSurfaceSceneNode.cpp */; };
 		95972A7212C192DA00BF73D3 /* CXMeshFileLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DFF80A484C250014E966 /* CXMeshFileLoader.cpp */; };
-		95972A7312C192DA00BF73D3 /* CIrrDeviceLinux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DF660A484C230014E966 /* CIrrDeviceLinux.cpp */; };
+		95972A7312C192DA00BF73D3 /* CIrrDeviceSDL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DF660A484C230014E966 /* CIrrDeviceSDL2.cpp */; };
 		95972A7412C192DA00BF73D3 /* CLightSceneNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DF6C0A484C230014E966 /* CLightSceneNode.cpp */; };
 		95972A7512C192DA00BF73D3 /* CTRTextureGouraudAdd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DFE20A484C250014E966 /* CTRTextureGouraudAdd.cpp */; };
 		95972A7612C192DA00BF73D3 /* CTRTextureGouraud2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C53DFE10A484C250014E966 /* CTRTextureGouraud2.cpp */; };
@@ -1681,8 +1681,8 @@
 		4C53DF630A484C230014E966 /* CImageLoaderPSD.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CImageLoaderPSD.h; sourceTree = "<group>"; };
 		4C53DF640A484C230014E966 /* CImageLoaderTGA.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 2; path = CImageLoaderTGA.cpp; sourceTree = "<group>"; };
 		4C53DF650A484C230014E966 /* CImageLoaderTGA.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CImageLoaderTGA.h; sourceTree = "<group>"; };
-		4C53DF660A484C230014E966 /* CIrrDeviceLinux.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CIrrDeviceLinux.cpp; sourceTree = "<group>"; };
-		4C53DF670A484C230014E966 /* CIrrDeviceLinux.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CIrrDeviceLinux.h; sourceTree = "<group>"; };
+		4C53DF660A484C230014E966 /* CIrrDeviceSDL2.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CIrrDeviceSDL2.cpp; sourceTree = "<group>"; };
+		4C53DF670A484C230014E966 /* CIrrDeviceSDL2.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CIrrDeviceSDL2.h; sourceTree = "<group>"; };
 		4C53DF680A484C230014E966 /* CIrrDeviceStub.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CIrrDeviceStub.cpp; sourceTree = "<group>"; };
 		4C53DF690A484C230014E966 /* CIrrDeviceStub.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CIrrDeviceStub.h; sourceTree = "<group>"; };
 		4C53DF6A0A484C230014E966 /* CIrrDeviceWin32.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CIrrDeviceWin32.cpp; sourceTree = "<group>"; };
@@ -3233,8 +3233,8 @@
 				0E2E3C5A1103B2AE002DE8D7 /* CIrrDeviceWinCE.h */,
 				34EC243A0F59272E0037BC3A /* CIrrDeviceConsole.h */,
 				34EC243B0F59272E0037BC3A /* CIrrDeviceConsole.cpp */,
-				4C53DF660A484C230014E966 /* CIrrDeviceLinux.cpp */,
-				4C53DF670A484C230014E966 /* CIrrDeviceLinux.h */,
+				4C53DF660A484C230014E966 /* CIrrDeviceSDL2.cpp */,
+				4C53DF670A484C230014E966 /* CIrrDeviceSDL2.h */,
 				5DD480C40C7DA66800728AA9 /* CIrrDeviceSDL.cpp */,
 				5DD480C30C7DA66800728AA9 /* CIrrDeviceSDL.h */,
 				4C53DF680A484C230014E966 /* CIrrDeviceStub.cpp */,
@@ -4785,7 +4785,7 @@
 				95972A7012C192DA00BF73D3 /* CImageLoaderPSD.cpp in Sources */,
 				95972A7112C192DA00BF73D3 /* CWaterSurfaceSceneNode.cpp in Sources */,
 				95972A7212C192DA00BF73D3 /* CXMeshFileLoader.cpp in Sources */,
-				95972A7312C192DA00BF73D3 /* CIrrDeviceLinux.cpp in Sources */,
+				95972A7312C192DA00BF73D3 /* CIrrDeviceSDL2.cpp in Sources */,
 				95972A7412C192DA00BF73D3 /* CLightSceneNode.cpp in Sources */,
 				95972A7512C192DA00BF73D3 /* CTRTextureGouraudAdd.cpp in Sources */,
 				95972A7612C192DA00BF73D3 /* CTRTextureGouraud2.cpp in Sources */,
@@ -5205,7 +5205,7 @@
 				4C53E4730A4856B30014E966 /* CImageLoaderPSD.cpp in Sources */,
 				4C53E4740A4856B30014E966 /* CWaterSurfaceSceneNode.cpp in Sources */,
 				4C53E4750A4856B30014E966 /* CXMeshFileLoader.cpp in Sources */,
-				4C53E4760A4856B30014E966 /* CIrrDeviceLinux.cpp in Sources */,
+				4C53E4760A4856B30014E966 /* CIrrDeviceSDL2.cpp in Sources */,
 				4C53E4770A4856B30014E966 /* CLightSceneNode.cpp in Sources */,
 				4C53E4780A4856B30014E966 /* CTRTextureGouraudAdd.cpp in Sources */,
 				4C53E4790A4856B30014E966 /* CTRTextureGouraud2.cpp in Sources */,

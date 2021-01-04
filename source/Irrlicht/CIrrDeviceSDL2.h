@@ -46,15 +46,15 @@
 namespace irr
 {
 
-	class CIrrDeviceLinux : public CIrrDeviceStub, public video::IImagePresenter
+	class CIrrDeviceSDL2 : public CIrrDeviceStub, public video::IImagePresenter
 	{
 	public:
 
 		//! constructor
-		CIrrDeviceLinux(const SIrrlichtCreationParameters& param);
+		CIrrDeviceSDL2(const SIrrlichtCreationParameters& param);
 
 		//! destructor
-		virtual ~CIrrDeviceLinux();
+		virtual ~CIrrDeviceSDL2();
 
 		//! runs the device. Returns false if device wants to be deleted
 		virtual bool run();
@@ -156,7 +156,7 @@ namespace irr
 		{
 		public:
 
-			CCursorControl(CIrrDeviceLinux* dev, bool null);
+			CCursorControl(CIrrDeviceSDL2* dev, bool null);
 
 			~CCursorControl();
 
@@ -322,7 +322,7 @@ namespace irr
 #endif
 			}
 
-			CIrrDeviceLinux* Device;
+			CIrrDeviceSDL2* Device;
 			core::position2d<s32> CursorPos;
 			core::rect<s32> ReferenceRect;
 #ifdef _IRR_COMPILE_WITH_X11_
