@@ -87,8 +87,8 @@ bool CEGLManager::initialize(const SIrrlichtCreationParameters& params, const SE
 
 void CEGLManager::terminate()
 {
-    if (EglWindow == 0 && EglDisplay == EGL_NO_DISPLAY)
-        return;
+	if (EglWindow == 0 && EglDisplay == EGL_NO_DISPLAY)
+		return;
 
 	if (EglDisplay != EGL_NO_DISPLAY)
 	{
@@ -507,8 +507,8 @@ irr::s32 CEGLManager::rateConfig(EGLConfig config, EGLint eglOpenGLBIT, bool log
 
 void CEGLManager::destroySurface()
 {
-    if (EglSurface == EGL_NO_SURFACE)
-        return;
+	if (EglSurface == EGL_NO_SURFACE)
+		return;
 
 	// We should unbind current EGL context before destroy EGL surface.
 	eglMakeCurrent(EglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
@@ -519,11 +519,11 @@ void CEGLManager::destroySurface()
 
 bool CEGLManager::generateContext()
 {
-    if (EglDisplay == EGL_NO_DISPLAY || EglSurface == EGL_NO_SURFACE)
-        return false;
+	if (EglDisplay == EGL_NO_DISPLAY || EglSurface == EGL_NO_SURFACE)
+		return false;
 
-    if (EglContext != EGL_NO_CONTEXT)
-        return true;
+	if (EglContext != EGL_NO_CONTEXT)
+		return true;
 
 	EGLint OpenGLESVersion = 0;
 
@@ -563,8 +563,8 @@ bool CEGLManager::generateContext()
 
 void CEGLManager::destroyContext()
 {
-    if (EglContext == EGL_NO_CONTEXT)
-        return;
+	if (EglContext == EGL_NO_CONTEXT)
+		return;
 
 	// We must unbind current EGL context before destroy it.
 	eglMakeCurrent(EglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
