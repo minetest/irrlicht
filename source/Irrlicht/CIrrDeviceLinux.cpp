@@ -2040,39 +2040,19 @@ void CIrrDeviceLinux::initXInput2()
 		return;
 	}
 
-	int cnt = 0;
-	XIDeviceInfo *di = XIQueryDevice(XDisplay, XIAllDevices, &cnt);
-	if ( di )
-	{
-		for (int i = 0; i < cnt; ++i)
-		{
-			bool hasTouchClass = false;
-			XIDeviceInfo *dev = &di[i];
-			for (int j = 0; j < dev->num_classes; ++j)
-			{
-				if (dev->classes[j]->type == XITouchClass)
-				{
-					hasTouchClass = true;
-					break;
-				}
-			}
-			if ( hasTouchClass )
-			{
-				XIEventMask eventMask;
-				unsigned char mask[XIMaskLen(XI_TouchEnd)];
-				memset(mask, 0, sizeof(mask));
-				eventMask.deviceid = dev->deviceid;
-				eventMask.mask_len = sizeof(mask);
-				eventMask.mask = mask;
-				XISetMask(eventMask.mask, XI_TouchBegin);
-				XISetMask(eventMask.mask, XI_TouchUpdate);
-				XISetMask(eventMask.mask, XI_TouchEnd);
+	// So far we only use XInput2 for touch events.
+	// So we enable those and disable all other events for now.
+	XIEventMask eventMask;
+	unsigned char mask[XIMaskLen(XI_TouchEnd)];
+	memset(mask, 0, sizeof(mask));
+	eventMask.deviceid = XIAllMasterDevices;
+	eventMask.mask_len = sizeof(mask);
+	eventMask.mask = mask;
+	XISetMask(eventMask.mask, XI_TouchBegin);
+	XISetMask(eventMask.mask, XI_TouchUpdate);
+	XISetMask(eventMask.mask, XI_TouchEnd);
 
-				XISelectEvents(XDisplay, XWindow, &eventMask, 1);
-			}
-		}
-		XIFreeDeviceInfo(di);
-	}
+	XISelectEvents(XDisplay, XWindow, &eventMask, 1);
 #endif
 }
 
