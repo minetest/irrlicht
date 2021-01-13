@@ -294,7 +294,7 @@ bool CGLXManager::generateSurface()
 			return false;
 		}
 
-		CurrentContext.OpenGLLinux.X11Window=GlxWin;
+		CurrentContext.OpenGLLinux.GLXWindow=GlxWin;
 	}
 	return true;
 }

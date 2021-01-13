@@ -61,6 +61,7 @@ struct SExposedVideoData
 		void* X11Display;
 		void* X11Context;
 		unsigned long X11Window;
+		unsigned long GLXWindow;
 	};
 
     struct SOpenGLOSX
