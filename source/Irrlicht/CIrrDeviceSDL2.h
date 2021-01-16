@@ -45,6 +45,10 @@
 
 namespace irr
 {
+	namespace video
+	{
+		class COpenGLDriver;
+	}
 
 	class CIrrDeviceSDL2 : public CIrrDeviceStub, public video::IImagePresenter
 	{
@@ -362,7 +366,7 @@ namespace irr
 
 		friend class CCursorControl;
 
-		friend class COpenGLDriver;
+		friend class video::COpenGLDriver;
 
 		mutable core::stringc Clipboard;
 		SDL_Window *window;

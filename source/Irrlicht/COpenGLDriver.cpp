@@ -21,6 +21,11 @@
 #include "MacOSX/CIrrDeviceMacOSX.h"
 #endif
 
+#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
+#include "CIrrDeviceSDL2.h"
+#include <SDL2/SDL_video.h>
+#endif
+
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
 #include <SDL/SDL.h>
 #endif
@@ -839,7 +844,7 @@ bool COpenGLDriver::endScene()
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 	if (DeviceType == EIDT_X11)
 	{
-		glXSwapBuffers(X11Display, Drawable);
+		SDL_GL_SwapWindow(X11Device->window);
 		return true;
 	}
 #endif
