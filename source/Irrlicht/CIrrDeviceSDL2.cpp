@@ -276,6 +276,20 @@ void CIrrDeviceSDL2::createDriver()
 	}
 }
 
+static E_MOUSE_BUTTON_STATE_MASK mouse_buttons_sdl_to_irr(u32 buttons) {
+	u32 result = 0;
+	if (buttons & SDL_BUTTON_LMASK)
+		result |= EMBSM_LEFT;
+	if (buttons & SDL_BUTTON_RMASK)
+		result |= irr::EMBSM_RIGHT;
+	if (buttons & SDL_BUTTON_MMASK)
+		result |= irr::EMBSM_MIDDLE;
+	if (buttons & SDL_BUTTON_X1MASK)
+		result |= irr::EMBSM_EXTRA1;
+	if (buttons & SDL_BUTTON_X2MASK)
+		result |= irr::EMBSM_EXTRA2;
+	return E_MOUSE_BUTTON_STATE_MASK(buttons);
+}
 
 //! runs the device. Returns false if device wants to be deleted
 bool CIrrDeviceSDL2::run()
@@ -305,7 +319,7 @@ bool CIrrDeviceSDL2::run()
 				irrevent.MouseInput.Event = irr::EMIE_MOUSE_MOVED;
 				MouseX = irrevent.MouseInput.X = SDL_event.motion.x;
 				MouseY = irrevent.MouseInput.Y = SDL_event.motion.y;
-				irrevent.MouseInput.ButtonStates = MouseButtonStates;
+				MouseButtonStates = irrevent.MouseInput.ButtonStates = mouse_buttons_sdl_to_irr(SDL_event.motion.state);
 
 				postEventFromUser(irrevent);
 				break;
@@ -330,7 +344,7 @@ bool CIrrDeviceSDL2::run()
 					else
 					{
 						irrevent.MouseInput.Event = irr::EMIE_LMOUSE_LEFT_UP;
-						MouseButtonStates &= !irr::EMBSM_LEFT;
+						MouseButtonStates &= ~irr::EMBSM_LEFT;
 					}
 					break;
 
@@ -343,7 +357,7 @@ bool CIrrDeviceSDL2::run()
 					else
 					{
 						irrevent.MouseInput.Event = irr::EMIE_RMOUSE_LEFT_UP;
-						MouseButtonStates &= !irr::EMBSM_RIGHT;
+						MouseButtonStates &= ~irr::EMBSM_RIGHT;
 					}
 					break;
 
@@ -356,7 +370,7 @@ bool CIrrDeviceSDL2::run()
 					else
 					{
 						irrevent.MouseInput.Event = irr::EMIE_MMOUSE_LEFT_UP;
-						MouseButtonStates &= !irr::EMBSM_MIDDLE;
+						MouseButtonStates &= ~irr::EMBSM_MIDDLE;
 					}
 					break;
 
@@ -1316,8 +1330,6 @@ void CIrrDeviceSDL2::clearSystemMessages()
 }
 
 
-#ifdef _IRR_COMPILE_WITH_X11_
-
 SDL_Cursor *CIrrDeviceSDL2::TextureToMonochromeCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot)
 {
 	// write texture into XImage
@@ -1391,7 +1403,6 @@ SDL_Cursor *CIrrDeviceSDL2::TextureToCursor(irr::video::ITexture * tex, const co
 	return TextureToMonochromeCursor( tex, sourceRect, hotspot );
 #endif
 }
-#endif	// _IRR_COMPILE_WITH_X11_
 
 
 CIrrDeviceSDL2::CCursorControl::CCursorControl(CIrrDeviceSDL2* dev, bool null)
@@ -1399,16 +1410,11 @@ CIrrDeviceSDL2::CCursorControl::CCursorControl(CIrrDeviceSDL2* dev, bool null)
 #ifdef _IRR_COMPILE_WITH_X11_
 	, PlatformBehavior(gui::ECPB_NONE), lastQuery(0)
 #endif
-	, IsVisible(true), Null(null), UseReferenceRect(false)
+	, UseReferenceRect(false)
 	, ActiveIcon(gui::ECI_NORMAL), ActiveIconStartTime(0)
 {
-#ifdef _IRR_COMPILE_WITH_X11_
-	if (!Null)
-	{
-		SDL_ShowCursor(0);
-		initCursors();
-	}
-#endif
+	SDL_ShowCursor(SDL_ENABLE);
+	initCursors();
 }
 
 CIrrDeviceSDL2::CCursorControl::~CCursorControl()
@@ -1417,10 +1423,8 @@ CIrrDeviceSDL2::CCursorControl::~CCursorControl()
 	// TODO (cutealien): droping cursorcontrol earlier might work, not sure about reason why that's done in stub currently.
 }
 
-#ifdef _IRR_COMPILE_WITH_X11_
 void CIrrDeviceSDL2::CCursorControl::clearCursors()
 {
-	if (!Null)
 	for ( u32 i=0; i < Cursors.size(); ++i )
 	{
 		for ( u32 f=0; f < Cursors[i].Frames.size(); ++f )
@@ -1458,12 +1462,10 @@ void CIrrDeviceSDL2::CCursorControl::update()
 		SDL_SetCursor(Cursors[ActiveIcon].Frames[frame].IconHW);
 	}
 }
-#endif
 
 //! Sets the active cursor icon
 void CIrrDeviceSDL2::CCursorControl::setActiveIcon(gui::ECURSOR_ICON iconId)
 {
-#ifdef _IRR_COMPILE_WITH_X11_
 	if ( iconId >= (s32)Cursors.size() )
 		return;
 
@@ -1472,14 +1474,12 @@ void CIrrDeviceSDL2::CCursorControl::setActiveIcon(gui::ECURSOR_ICON iconId)
 
 	ActiveIconStartTime = Device->getTimer()->getRealTime();
 	ActiveIcon = iconId;
-#endif
 }
 
 
 //! Add a custom sprite as cursor icon.
 gui::ECURSOR_ICON CIrrDeviceSDL2::CCursorControl::addIcon(const gui::SCursorSprite& icon)
 {
-#ifdef _IRR_COMPILE_WITH_X11_
 	if ( icon.SpriteId >= 0 )
 	{
 		CursorX11 cX11;
@@ -1497,14 +1497,12 @@ gui::ECURSOR_ICON CIrrDeviceSDL2::CCursorControl::addIcon(const gui::SCursorSpri
 
 		return (gui::ECURSOR_ICON)(Cursors.size() - 1);
 	}
-#endif
 	return gui::ECI_NORMAL;
 }
 
 //! replace the given cursor icon.
 void CIrrDeviceSDL2::CCursorControl::changeIcon(gui::ECURSOR_ICON iconId, const gui::SCursorSprite& icon)
 {
-#ifdef _IRR_COMPILE_WITH_X11_
 	if ( iconId >= (s32)Cursors.size() )
 		return;
 
@@ -1526,7 +1524,6 @@ void CIrrDeviceSDL2::CCursorControl::changeIcon(gui::ECURSOR_ICON iconId, const 
 
 		Cursors[iconId] = cX11;
 	}
-#endif
 }
 
 irr::core::dimension2di CIrrDeviceSDL2::CCursorControl::getSupportedIconSize() const

@@ -132,13 +132,11 @@ namespace irr
 				return EIDT_X11;
 		}
 
-#ifdef _IRR_COMPILE_WITH_X11_
 		// convert an Irrlicht texture to a X11 cursor
 		SDL_Cursor *TextureToCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot);
 		SDL_Cursor *TextureToMonochromeCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot);
 #ifdef _IRR_LINUX_XCURSOR_
 		Cursor TextureToARGBCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot);
-#endif
 #endif
 
 	private:
@@ -166,24 +164,16 @@ namespace irr
 			//! Changes the visible state of the mouse cursor.
 			virtual void setVisible(bool visible)
 			{
-				if (visible==IsVisible)
-					return;
-				IsVisible = visible;
-#ifdef _IRR_COMPILE_WITH_X11_
-				if (!Null)
-				{
-					if ( !IsVisible )
-						SDL_ShowCursor(1);
-					else
-						SDL_ShowCursor(0);
-				}
-#endif
+				if (visible)
+					SDL_ShowCursor(SDL_ENABLE);
+				else
+					SDL_ShowCursor(SDL_DISABLE);
 			}
 
 			//! Returns if the cursor is currently visible.
 			virtual bool isVisible() const
 			{
-				return IsVisible;
+				return SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE;
 			}
 
 			//! Sets the new position of the cursor.
@@ -207,22 +197,10 @@ namespace irr
 			//! Sets the new position of the cursor.
 			virtual void setPosition(s32 x, s32 y)
 			{
-#ifdef _IRR_COMPILE_WITH_X11_
-
-				if (!Null)
-				{
-					if (UseReferenceRect)
-					{
-						SDL_WarpMouseGlobal(ReferenceRect.UpperLeftCorner.X + x,
-							ReferenceRect.UpperLeftCorner.Y + y);
-					}
-					else
-					{
-						SDL_WarpMouseInWindow(Device->window, x, y);
-
-					}
-				}
-#endif
+				if (UseReferenceRect)
+					SDL_WarpMouseGlobal(ReferenceRect.UpperLeftCorner.X + x, ReferenceRect.UpperLeftCorner.Y + y);
+				else
+					SDL_WarpMouseInWindow(Device->window, x, y);
 				CursorPos.X = x;
 				CursorPos.Y = y;
 			}
@@ -287,31 +265,28 @@ namespace irr
 			virtual core::dimension2di getSupportedIconSize() const;
 
 #ifdef _IRR_COMPILE_WITH_X11_
-			//! Set platform specific behavior flags.
-			virtual void setPlatformBehavior(gui::ECURSOR_PLATFORM_BEHAVIOR behavior) {PlatformBehavior = behavior; }
-
-			//! Return platform specific behavior.
-			virtual gui::ECURSOR_PLATFORM_BEHAVIOR getPlatformBehavior() const { return PlatformBehavior; }
+			void setPlatformBehavior(gui::ECURSOR_PLATFORM_BEHAVIOR behavior) override {PlatformBehavior = behavior; }
+			gui::ECURSOR_PLATFORM_BEHAVIOR getPlatformBehavior() const override { return PlatformBehavior; }
+#else
+			void setPlatformBehavior(gui::ECURSOR_PLATFORM_BEHAVIOR behavior) override {}
+			gui::ECURSOR_PLATFORM_BEHAVIOR getPlatformBehavior() const override { return gui::ECPB_NONE; }
+#endif
 
 			void update();
 			void clearCursors();
-#endif
 		private:
 
 			void updateCursorPos()
 			{
 #ifdef _IRR_COMPILE_WITH_X11_
-				if (Null)
-					return;
-
-				if ( PlatformBehavior&gui::ECPB_X11_CACHE_UPDATES && !os::Timer::isStopped() )
+				if (PlatformBehavior & gui::ECPB_X11_CACHE_UPDATES && !os::Timer::isStopped() )
 				{
 					u32 now = os::Timer::getTime();
 					if (now <= lastQuery)
 						return;
 					lastQuery = now;
 				}
-
+#endif
 				SDL_GetMouseState(&CursorPos.X, &CursorPos.Y);
 
 				if (CursorPos.X < 0)
@@ -322,13 +297,12 @@ namespace irr
 					CursorPos.Y = 0;
 				if (CursorPos.Y > (s32) Device->Height)
 					CursorPos.Y = Device->Height;
-#endif
 			}
 
 			CIrrDeviceSDL2* Device;
 			core::position2d<s32> CursorPos;
 			core::rect<s32> ReferenceRect;
-#ifdef _IRR_COMPILE_WITH_X11_
+
 			gui::ECURSOR_PLATFORM_BEHAVIOR PlatformBehavior;
 			u32 lastQuery;
 			Cursor invisCursor;
@@ -355,9 +329,6 @@ namespace irr
 			core::array<CursorX11> Cursors;
 
 			void initCursors();
-#endif
-			bool IsVisible;
-			bool Null;
 			bool UseReferenceRect;
 			gui::ECURSOR_ICON ActiveIcon;
 			u32 ActiveIconStartTime;
@@ -380,7 +351,7 @@ namespace irr
 #endif
 
 		s32 MouseX, MouseY;
-		u32 MouseButtonStates;
+		u32 MouseButtonStates = 0;
 
 		struct SKeyMap
 		{
