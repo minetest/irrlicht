@@ -14,33 +14,7 @@ static const char* const copyright = "Irrlicht Engine (c) 2002-2012 Nikolaus Geb
 #endif
 
 #include "irrlicht.h"
-#ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
-#include "CIrrDeviceWin32.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
-#include "MacOSX/CIrrDeviceMacOSX.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_WINDOWS_CE_DEVICE_
-#include "CIrrDeviceWinCE.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 #include "CIrrDeviceSDL2.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-#include "CIrrDeviceSDL.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_FB_DEVICE_
-#include "CIrrDeviceFB.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_CONSOLE_DEVICE_
-#include "CIrrDeviceConsole.h"
-#endif
 
 namespace irr
 {

@@ -4,6 +4,7 @@
 
 #ifndef __S_EXPOSED_VIDEO_DATA_H_INCLUDED__
 #define __S_EXPOSED_VIDEO_DATA_H_INCLUDED__
+#include <SDL2/SDL_video.h>
 
 // forward declarations for internal pointers
 struct IDirect3D9;
@@ -79,6 +80,11 @@ struct SExposedVideoData
 			void* X11Context;
 			unsigned long X11Window;
 		} OpenGLLinux;
+
+		struct {
+			SDL_Window *window;
+			SDL_GLContext context;
+		};
 	};
 };
 

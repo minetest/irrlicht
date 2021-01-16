@@ -12,59 +12,15 @@
 #include "irrTypes.h"
 #include "os.h"
 
-#if defined(_IRR_WINDOWS_API_)
-	// include windows headers for HWND
-	#define WIN32_LEAN_AND_MEAN
-	#include <windows.h>
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		#define GL_GLEXT_LEGACY 1
-	#endif
-	#include <GL/gl.h>
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		#include "glext.h"
-	#endif
-	#include "wglext.h"
-
-	#ifdef _MSC_VER
-		#pragma comment(lib, "OpenGL32.lib")
-	#endif
-
-#elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		#define GL_GLEXT_LEGACY 1
-	#endif
-	#include <OpenGL/gl.h>
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		#include "glext.h"
-	#endif
-#elif defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && !defined(_IRR_COMPILE_WITH_X11_DEVICE_)
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		#define GL_GLEXT_LEGACY 1
-		#define GLX_GLXEXT_LEGACY 1
-	#else
-		#define GL_GLEXT_PROTOTYPES 1
-		#define GLX_GLXEXT_PROTOTYPES 1
-	#endif
-	#define NO_SDL_GLEXT
-	#include <SDL/SDL_video.h>
-	#include <SDL/SDL_opengl.h>
-	#include "glext.h"
+#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
+	#define GL_GLEXT_LEGACY 1
 #else
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		#define GL_GLEXT_LEGACY 1
-		#define GLX_GLXEXT_LEGACY 1
-	#else
-		#define GL_GLEXT_PROTOTYPES 1
-		#define GLX_GLXEXT_PROTOTYPES 1
-	#endif
-	#include <GL/gl.h>
-	#include <GL/glx.h>
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-	#include "glext.h"
-	#undef GLX_ARB_get_proc_address // avoid problems with local glxext.h
-	#include "glxext.h"
-	#endif
+	#define GL_GLEXT_PROTOTYPES 1
 #endif
+#define NO_SDL_GLEXT
+#include <SDL2/SDL_video.h>
+#include <SDL2/SDL_opengl.h>
+#include "glext.h"
 
 #ifndef GL_ARB_shader_objects
 /* GL types for program/shader text and shader object handles */
@@ -1234,18 +1190,6 @@ class COpenGLExtensionHandler
 		PFNGLGETOCCLUSIONQUERYUIVNVPROC pGlGetOcclusionQueryuivNV;
 		PFNGLBLENDEQUATIONEXTPROC pGlBlendEquationEXT;
 		PFNGLBLENDEQUATIONPROC pGlBlendEquation;
-		#if defined(WGL_EXT_swap_control)
-		PFNWGLSWAPINTERVALEXTPROC pWglSwapIntervalEXT;
-		#endif
-		#if defined(GLX_SGI_swap_control)
-		PFNGLXSWAPINTERVALSGIPROC pGlxSwapIntervalSGI;
-		#endif
-		#if defined(GLX_EXT_swap_control)
-		PFNGLXSWAPINTERVALEXTPROC pGlxSwapIntervalEXT;
-		#endif
-		#if defined(GLX_MESA_swap_control)
-		PFNGLXSWAPINTERVALMESAPROC pGlxSwapIntervalMESA;
-		#endif
 	#endif
 };
 
@@ -2521,43 +2465,7 @@ inline void COpenGLExtensionHandler::extGlGetQueryObjectuiv(GLuint id, GLenum pn
 
 inline void COpenGLExtensionHandler::extGlSwapInterval(int interval)
 {
-	// we have wglext, so try to use that
-#if defined(_IRR_WINDOWS_API_) && defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
-#ifdef WGL_EXT_swap_control
-	if (pWglSwapIntervalEXT)
-		pWglSwapIntervalEXT(interval);
-#endif
-#endif
-#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
-	//TODO: Check GLX_EXT_swap_control and GLX_MESA_swap_control
-#ifdef GLX_SGI_swap_control
-	// does not work with interval==0
-#ifdef _IRR_OPENGL_USE_EXTPOINTER_
-	if (interval && pGlxSwapIntervalSGI)
-		pGlxSwapIntervalSGI(interval);
-#else
-	if (interval)
-		glXSwapIntervalSGI(interval);
-#endif
-#elif defined(GLX_EXT_swap_control)
-#ifdef _IRR_OPENGL_USE_EXTPOINTER_
-	Display *dpy = glXGetCurrentDisplay();
-	GLXDrawable drawable = glXGetCurrentDrawable();
-
-	if (pGlxSwapIntervalEXT)
-		pGlxSwapIntervalEXT(dpy, drawable, interval);
-#else
-	pGlXSwapIntervalEXT(dpy, drawable, interval);
-#endif
-#elif defined(GLX_MESA_swap_control)
-#ifdef _IRR_OPENGL_USE_EXTPOINTER_
-	if (pGlxSwapIntervalMESA)
-		pGlxSwapIntervalMESA(interval);
-#else
-	pGlXSwapIntervalMESA(interval);
-#endif
-#endif
-#endif
+	SDL_GL_SetSwapInterval(interval);
 }
 
 inline void COpenGLExtensionHandler::extGlBlendEquation(GLenum mode)

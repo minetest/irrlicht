@@ -17,23 +17,16 @@
 #endif
 #endif
 
-#if defined(_IRR_COMPILE_WITH_X11_DEVICE_)
 #include "CIrrDeviceSDL2.h"
-#endif
-#ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
-#include "MacOSX/OSXClipboard.h"
-#endif
 
 namespace irr
 {
 
-#if defined(_IRR_COMPILE_WITH_X11_DEVICE_)
 // constructor  linux
 	COSOperator::COSOperator(const core::stringc& osVersion, CIrrDeviceSDL2* device)
 : OperatingSystem(osVersion), IrrDeviceLinux(device)
 {
 }
-#endif
 
 // constructor
 COSOperator::COSOperator(const core::stringc& osVersion) : OperatingSystem(osVersion)
@@ -57,70 +50,17 @@ void COSOperator::copyToClipboard(const c8* text) const
 	if (strlen(text)==0)
 		return;
 
-// Windows version
-#if defined(_IRR_XBOX_PLATFORM_)
-#elif defined(_IRR_WINDOWS_API_)
-	if (!OpenClipboard(NULL) || text == 0)
-		return;
-
-	EmptyClipboard();
-
-	HGLOBAL clipbuffer;
-	char * buffer;
-
-	clipbuffer = GlobalAlloc(GMEM_DDESHARE, strlen(text)+1);
-	buffer = (char*)GlobalLock(clipbuffer);
-
-	strcpy(buffer, text);
-
-	GlobalUnlock(clipbuffer);
-	SetClipboardData(CF_TEXT, clipbuffer);
-	CloseClipboard();
-
-// MacOSX version
-#elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
-
-	OSXCopyToClipboard(text);
-
-#elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
     if ( IrrDeviceLinux )
         IrrDeviceLinux->copyToClipboard(text);
-#else
-
-#endif
 }
-
 
 //! gets text from the clipboard
 //! \return Returns 0 if no string is in there.
 const c8* COSOperator::getTextFromClipboard() const
 {
-#if defined(_IRR_XBOX_PLATFORM_)
-		return 0;
-#elif defined(_IRR_WINDOWS_API_)
-	if (!OpenClipboard(NULL))
-		return 0;
-
-	char * buffer = 0;
-
-	HANDLE hData = GetClipboardData( CF_TEXT );
-	buffer = (char*)GlobalLock( hData );
-	GlobalUnlock( hData );
-	CloseClipboard();
-	return buffer;
-
-#elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
-	return (OSXCopyFromClipboard());
-
-#elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
     if ( IrrDeviceLinux )
         return IrrDeviceLinux->getTextFromClipboard();
     return 0;
-
-#else
-
-	return 0;
-#endif
 }
 
 

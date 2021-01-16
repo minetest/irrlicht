@@ -11,10 +11,7 @@
 
 namespace irr
 {
-	class CIrrDeviceWin32;
 	class CIrrDeviceSDL2;
-	class CIrrDeviceSDL;
-	class CIrrDeviceMacOSX;
 }
 
 #ifdef _IRR_COMPILE_WITH_OPENGL_
@@ -23,10 +20,6 @@ namespace irr
 #include "IMaterialRendererServices.h"
 // also includes the OpenGL stuff
 #include "COpenGLExtensionHandler.h"
-
-#ifdef _IRR_COMPILE_WITH_CG_
-#include "Cg/cg.h"
-#endif
 
 namespace irr
 {
@@ -39,31 +32,9 @@ namespace video
 	{
 		friend class COpenGLTexture;
 	public:
-
-		#ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
-		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceWin32* device);
-		//! inits the windows specific parts of the open gl driver
-		bool initDriver(CIrrDeviceWin32* device);
-		bool changeRenderContext(const SExposedVideoData& videoData, CIrrDeviceWin32* device);
-		#endif
-
-		#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceSDL2* device);
 		//! inits the GLX specific parts of the open gl driver
 		bool initDriver(CIrrDeviceSDL2* device);
-		bool changeRenderContext(const SExposedVideoData& videoData, CIrrDeviceSDL2* device);
-		#endif
-
-		#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceSDL* device);
-		#endif
-
-		#ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
-		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceMacOSX *device);
-		#endif
-
-		//! generic version which overloads the unimplemented versions
-		bool changeRenderContext(const SExposedVideoData& videoData, void* device) {return false;}
 
 		//! destructor
 		virtual ~COpenGLDriver();
@@ -579,28 +550,7 @@ namespace video
 		};
 		core::array<RequestedLight> RequestedLights;
 
-		#ifdef _IRR_WINDOWS_API_
-			HDC HDc; // Private GDI Device Context
-			HWND Window;
-		#ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
-			CIrrDeviceWin32 *Win32Device;
-		#endif
-		#endif
-		#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
-			GLXDrawable Drawable;
-			Display* X11Display;
-			CIrrDeviceSDL2 *X11Device;
-		#endif
-		#ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
-			CIrrDeviceMacOSX *OSXDevice;
-		#endif
-		#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-			CIrrDeviceSDL *SDLDevice;
-		#endif
-		#ifdef _IRR_COMPILE_WITH_CG_
-		CGcontext CgContext;
-		#endif
-
+		CIrrDeviceSDL2 *X11Device;
 		E_DEVICE_TYPE DeviceType;
 	};
 

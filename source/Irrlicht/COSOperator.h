@@ -18,9 +18,7 @@ class COSOperator : public IOSOperator
 public:
 
 	// constructor
-#if defined(_IRR_COMPILE_WITH_X11_DEVICE_)
 	COSOperator(const core::stringc& osversion, CIrrDeviceSDL2* device);
-#endif
  	COSOperator(const core::stringc& osversion);
 
 	//! returns the current operation system version as string.
@@ -47,11 +45,7 @@ public:
 private:
 
 	core::stringc OperatingSystem;
-
-#if defined(_IRR_COMPILE_WITH_X11_DEVICE_)
-    CIrrDeviceSDL2 * IrrDeviceLinux;
-#endif
-
+	CIrrDeviceSDL2 * IrrDeviceLinux;
 };
 
 } // end namespace
