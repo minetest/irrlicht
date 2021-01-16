@@ -409,14 +409,6 @@ bool CIrrDeviceSDL2::run()
 					else
 						key = (EKEY_CODE)KeyMap[idx].Win32Key;
 
-	#ifdef _IRR_WINDOWS_API_
-					// handle alt+f4 in Windows, because SDL seems not to
-					if ( (SDL_event.key.keysym.mod & KMOD_LALT) && key == KEY_F4)
-					{
-						Close = true;
-						break;
-					}
-	#endif
 					irrevent.EventType = irr::EET_KEY_INPUT_EVENT;
 					irrevent.KeyInput.Char = SDL_event.key.keysym.sym;
 					irrevent.KeyInput.Key = key;
@@ -431,8 +423,48 @@ bool CIrrDeviceSDL2::run()
 			case SDL_LOCALECHANGED:
 
 			case SDL_DISPLAYEVENT:
+				break;
+
 			case SDL_WINDOWEVENT:
+				{
+					switch (SDL_event.window.event) {
+						case SDL_WINDOWEVENT_SIZE_CHANGED:
+							Width = SDL_event.window.data1;
+							Height = SDL_event.window.data2;
+							if (VideoDriver)
+								VideoDriver->OnResize(core::dimension2d<u32>(Width, Height));
+							break;
+
+						case SDL_WINDOWEVENT_HIDDEN:
+						case SDL_WINDOWEVENT_MINIMIZED:
+							WindowMinimized = true;
+							break;
+
+						case SDL_WINDOWEVENT_SHOWN:
+						case SDL_WINDOWEVENT_MAXIMIZED:
+						case SDL_WINDOWEVENT_RESTORED:
+							WindowMinimized = false;
+							break;
+
+						case SDL_WINDOWEVENT_ENTER:
+						case SDL_WINDOWEVENT_FOCUS_GAINED:
+							WindowHasFocus = true;
+							break;
+
+						case SDL_WINDOWEVENT_LEAVE:
+						case SDL_WINDOWEVENT_FOCUS_LOST:
+							WindowHasFocus = false;
+							break;
+
+						case SDL_WINDOWEVENT_CLOSE: // handles alt+f4 etc.
+							Close = true;
+							break;
+					}
+				}
+				break;
+
 			case SDL_SYSWMEVENT:
+				break;
 
 			case SDL_TEXTEDITING:
 			case SDL_TEXTINPUT:
@@ -1247,7 +1279,6 @@ bool CIrrDeviceSDL2::getGammaRamp( f32 &red, f32 &green, f32 &blue, f32 &brightn
 //! \return Returns 0 if no string is in there.
 const c8* CIrrDeviceSDL2::getTextFromClipboard() const
 {
-#if defined(_IRR_COMPILE_WITH_X11_)
 	char *clipboardText = SDL_GetClipboardText();
 
 	Clipboard = clipboardText;
@@ -1255,21 +1286,15 @@ const c8* CIrrDeviceSDL2::getTextFromClipboard() const
 	SDL_free(clipboardText);
 
 	return Clipboard.c_str();
-
-#else
-	return 0;
-#endif
 }
 
 //! copies text to the clipboard
 void CIrrDeviceSDL2::copyToClipboard(const c8* text) const
 {
-#if defined(_IRR_COMPILE_WITH_X11_)
 	// Actually there is no clipboard on X but applications just say they own the clipboard and return text when asked.
 	// Which btw. also means that on X you lose clipboard content when closing applications.
 	Clipboard = text;
 	SDL_SetClipboardText(text);
-#endif
 }
 
 #ifdef _IRR_COMPILE_WITH_X11_

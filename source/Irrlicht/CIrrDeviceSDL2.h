@@ -17,8 +17,6 @@
 
 #include <SDL2/SDL.h>
 
-#ifdef _IRR_COMPILE_WITH_X11_
-
 #ifdef _IRR_COMPILE_WITH_OPENGL_
 #include <GL/gl.h>
 #define GLX_GLXEXT_LEGACY 1
@@ -28,6 +26,7 @@
 #endif
 #endif
 
+#ifdef _IRR_COMPILE_WITH_X11_
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
