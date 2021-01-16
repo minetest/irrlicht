@@ -186,35 +186,12 @@ bool CIrrDeviceSDL2::switchToFullscreen(bool reset)
 
 bool CIrrDeviceSDL2::createWindow()
 {
-	switchToFullscreen();
+	Uint32 windowFlags = SDL_WINDOW_RESIZABLE;
+	if (CreationParams.Fullscreen)
+		windowFlags |= SDL_WINDOW_FULLSCREEN;
 
-	Uint32 windowFlags = 0;
-	if (CreationParams.Fullscreen) {
-		windowFlags = SDL_WINDOW_FULLSCREEN;
-	}
-
-	if (CreationParams.DriverType == video::EDT_OPENGL)
+	if (CreationParams.DriverType == video::EDT_OPENGL) {
 		windowFlags |= SDL_WINDOW_OPENGL;
-	else if (CreationParams.Doublebuffer)
-		windowFlags |= SDL_GL_DOUBLEBUFFER;
-
-	window = SDL_CreateWindow(
-    "Irrlicht (title not set)",
-		SDL_WINDOWPOS_UNDEFINED,
-		SDL_WINDOWPOS_UNDEFINED,
-		CreationParams.WindowSize.Width,
-		CreationParams.WindowSize.Height,
-		windowFlags
-	);
-
-	// create color map
-	WindowMinimized=false;
-
-	SDL_GL_LoadLibrary(NULL);
-	Context = SDL_GL_CreateContext(window);
-
-	if (CreationParams.DriverType == video::EDT_OPENGL)
-	{
 		if (CreationParams.Bits==16)
 		{
 			SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 4 );
@@ -240,6 +217,25 @@ bool CIrrDeviceSDL2::createWindow()
 			SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, CreationParams.AntiAlias );
 		}
 	}
+
+	window = SDL_CreateWindow(
+		"Irrlicht (title not set)",
+		SDL_WINDOWPOS_UNDEFINED,
+		SDL_WINDOWPOS_UNDEFINED,
+		CreationParams.WindowSize.Width,
+		CreationParams.WindowSize.Height,
+		windowFlags
+	);
+	if (!window)
+	{
+		os::Printer::log("Could not create window", SDL_GetError(), ELL_ERROR);
+		exit(-1);
+		return false;
+	}
+	WindowMinimized = false;
+	WindowHasFocus = true;
+	if (CreationParams.DriverType == video::EDT_OPENGL)
+		Context = SDL_GL_CreateContext(window);
 	return true;
 }
 
