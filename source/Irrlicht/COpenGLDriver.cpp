@@ -177,10 +177,6 @@ bool COpenGLDriver::genericDriverInit()
 	// This fixes problems with intermediate changes to the material during texture load.
 	ResetRenderStates = true;
 
-	#ifdef _IRR_COMPILE_WITH_CG_
-	CgContext = cgCreateContext();
-	#endif
-
 	return true;
 }
 

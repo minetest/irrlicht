@@ -28,12 +28,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
-#ifdef _IRR_LINUX_X11_VIDMODE_
-#include <X11/extensions/xf86vmode.h>
-#endif
-#ifdef _IRR_LINUX_X11_RANDR_
-#include <X11/extensions/Xrandr.h>
-#endif
 #include <X11/keysym.h>
 
 #else
