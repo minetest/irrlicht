@@ -376,18 +376,6 @@ bool CIrrDeviceSDL2::run()
 						MouseButtonStates &= ~irr::EMBSM_MIDDLE;
 					}
 					break;
-
-				/* TODO: bind this SDL1 code with the right SDL2 event
-				case SDL_BUTTON_WHEELUP:
-					irrevent.MouseInput.Event = irr::EMIE_MOUSE_WHEEL;
-					irrevent.MouseInput.Wheel = 1.0f;
-					break;
-
-				case SDL_BUTTON_WHEELDOWN:
-					irrevent.MouseInput.Event = irr::EMIE_MOUSE_WHEEL;
-					irrevent.MouseInput.Wheel = -1.0f;
-					break;
-				*/
 				}
 
 				irrevent.MouseInput.ButtonStates = MouseButtonStates;
@@ -510,6 +498,18 @@ bool CIrrDeviceSDL2::run()
 				break;
 
 			case SDL_MOUSEWHEEL:
+				{
+					irrevent.EventType = irr::EET_MOUSE_INPUT_EVENT;
+					irrevent.MouseInput.X = MouseX;
+					irrevent.MouseInput.Y = MouseY;
+					irrevent.MouseInput.Wheel = SDL_event.wheel.y;
+					irrevent.MouseInput.Shift = (KeyMode & KMOD_SHIFT) != 0;
+					irrevent.MouseInput.Control = (KeyMode & KMOD_CTRL) != 0;
+					irrevent.MouseInput.ButtonStates = MouseButtonStates;
+					irrevent.MouseInput.Event = irr::EMIE_MOUSE_WHEEL;
+					postEventFromUser(irrevent);
+				}
+				break;
 
 			case SDL_JOYAXISMOTION:
 			case SDL_JOYBALLMOTION:
