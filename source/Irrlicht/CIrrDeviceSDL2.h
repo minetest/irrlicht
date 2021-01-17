@@ -363,6 +363,7 @@ namespace irr
 		};
 
 		core::array<SKeyMap> KeyMap;
+		u16 KeyMode = 0;
 
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
 		struct JoystickInfo

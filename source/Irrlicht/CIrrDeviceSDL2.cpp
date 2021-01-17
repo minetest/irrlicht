@@ -35,6 +35,7 @@
 #define _INPUT_H
 #include <sys/ioctl.h> // Would normally be included in linux/input.h
 #include <linux/joystick.h>
+#include <utf8.h>
 #undef _INPUT_H
 #endif
 
@@ -420,9 +421,10 @@ bool CIrrDeviceSDL2::run()
 						key = (EKEY_CODE)0;
 					else
 						key = (EKEY_CODE)KeyMap[idx].Win32Key;
+					KeyMode = SDL_event.key.keysym.mod;
 
 					irrevent.EventType = irr::EET_KEY_INPUT_EVENT;
-					irrevent.KeyInput.Char = SDL_event.key.keysym.sym;
+					irrevent.KeyInput.Char = L'\0';
 					irrevent.KeyInput.Key = key;
 					irrevent.KeyInput.PressedDown = (SDL_event.type == SDL_KEYDOWN);
 					irrevent.KeyInput.Shift = (SDL_event.key.keysym.mod & KMOD_SHIFT) != 0;
@@ -479,8 +481,29 @@ bool CIrrDeviceSDL2::run()
 				break;
 
 			case SDL_TEXTEDITING:
+				break;
+
 			case SDL_TEXTINPUT:
+				{
+					irrevent.EventType = irr::EET_KEY_INPUT_EVENT;
+					irrevent.KeyInput.Key = (EKEY_CODE)0;
+					irrevent.KeyInput.Shift = (KeyMode & KMOD_SHIFT) != 0;
+					irrevent.KeyInput.Control = (KeyMode & KMOD_CTRL ) != 0;
+					char* str = SDL_event.text.text;
+					char* end = str + strnlen(str, sizeof(SDL_event.text.text));
+					uint32_t cp = 0;
+					for (char* str_i = str; utf8::internal::validate_next(str_i, end, cp) == utf8::internal::UTF8_OK; ) {
+						irrevent.KeyInput.Char = cp;
+						irrevent.KeyInput.PressedDown = true;
+						postEventFromUser(irrevent);
+						irrevent.KeyInput.PressedDown = false;
+						postEventFromUser(irrevent);
+					}
+				}
+				break;
+
 			case SDL_KEYMAPCHANGED:
+				break;
 
 			case SDL_MOUSEWHEEL:
 
