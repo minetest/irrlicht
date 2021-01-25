@@ -209,6 +209,29 @@ public:
 		}
 	}
 
+	//! How left element border is aligned when parent is resized
+	EGUI_ALIGNMENT getAlignLeft() const 
+	{
+		return AlignLeft;
+	}
+
+	//! How right element border is aligned when parent is resized
+	EGUI_ALIGNMENT getAlignRight() const 
+	{
+		return AlignRight;
+	}
+
+	//! How top element border is aligned when parent is resized
+	EGUI_ALIGNMENT getAlignTop() const 
+	{
+		return AlignTop;
+	}
+
+	//! How bottom element border is aligned when parent is resized
+	EGUI_ALIGNMENT getAlignBottom() const 
+	{
+		return AlignBottom;
+	}
 
 	//! Updates the absolute position.
 	virtual void updateAbsolutePosition()
