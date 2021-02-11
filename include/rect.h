@@ -135,16 +135,20 @@ namespace core
 			if (other.LowerRightCorner.Y < LowerRightCorner.Y)
 				LowerRightCorner.Y = other.LowerRightCorner.Y;
 
+			if (other.UpperLeftCorner.X > LowerRightCorner.X)
+				LowerRightCorner.X = other.UpperLeftCorner.X;
+			if (other.UpperLeftCorner.Y > LowerRightCorner.Y)
+				LowerRightCorner.Y = other.UpperLeftCorner.Y;
+
+			if (other.LowerRightCorner.X < UpperLeftCorner.X)
+				UpperLeftCorner.X = other.LowerRightCorner.X;
+			if (other.LowerRightCorner.Y < UpperLeftCorner.Y)
+				UpperLeftCorner.Y = other.LowerRightCorner.Y;
+
 			if (other.UpperLeftCorner.X > UpperLeftCorner.X)
 				UpperLeftCorner.X = other.UpperLeftCorner.X;
 			if (other.UpperLeftCorner.Y > UpperLeftCorner.Y)
 				UpperLeftCorner.Y = other.UpperLeftCorner.Y;
-
-			// correct possible invalid rect resulting from clipping
-			if (UpperLeftCorner.Y > LowerRightCorner.Y)
-				UpperLeftCorner.Y = LowerRightCorner.Y;
-			if (UpperLeftCorner.X > LowerRightCorner.X)
-				UpperLeftCorner.X = LowerRightCorner.X;
 		}
 
 		//! Moves this rectangle to fit inside another one.
