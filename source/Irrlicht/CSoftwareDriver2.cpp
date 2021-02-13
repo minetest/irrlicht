@@ -466,18 +466,18 @@ bool CBurningVideoDriver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
 		on = 1;
 		break;
 
-	case EVDF_TEXTURE_NPOT: // for 2D
-		on = 0;
-		break;
-
 	case EVDF_ARB_FRAGMENT_PROGRAM_1:
 	case EVDF_ARB_VERTEX_PROGRAM_1:
 		on = 1;
 		break;
-#if defined(PATCH_SUPERTUX_8_0_1)
+#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
 	case EVDF_TEXTURE_NPOT:
 	case EVDF_ARB_GLSL:
 		on = 1;
+		break;
+#else
+	case EVDF_TEXTURE_NPOT: // for 2D
+		on = 0;
 		break;
 #endif
 
@@ -1310,16 +1310,6 @@ REALINLINE s32 CBurningVideoDriver::lodFactor_inside(const s4DVertexPair* burnin
 inline void CBurningVideoDriver::select_polygon_mipmap_inside(s4DVertex* burning_restrict face[], const size_t tex, const CSoftwareTexture2_Bound& b) const
 {
 #ifdef SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
-#if defined(Tweak_Burning)
-	(face[0] + 1)->Tex[tex].x = face[0]->Tex[tex].x * (face[0] + 1)->Pos.w * (b.w + Tweak.tex_w_add) + (b.cx + Tweak.tex_cx_add);
-	(face[0] + 1)->Tex[tex].y = face[0]->Tex[tex].y * (face[0] + 1)->Pos.w * (b.h + Tweak.tex_h_add) + (b.cy + Tweak.tex_cy_add);
-
-	(face[1] + 1)->Tex[tex].x = face[1]->Tex[tex].x * (face[1] + 1)->Pos.w * (b.w + Tweak.tex_w_add) + (b.cx + Tweak.tex_cx_add);
-	(face[1] + 1)->Tex[tex].y = face[1]->Tex[tex].y * (face[1] + 1)->Pos.w * (b.h + Tweak.tex_h_add) + (b.cy + Tweak.tex_cy_add);
-
-	(face[2] + 1)->Tex[tex].x = face[2]->Tex[tex].x * (face[2] + 1)->Pos.w * (b.w + Tweak.tex_w_add) + (b.cx + Tweak.tex_cx_add);
-	(face[2] + 1)->Tex[tex].y = face[2]->Tex[tex].y * (face[2] + 1)->Pos.w * (b.h + Tweak.tex_h_add) + (b.cy + Tweak.tex_cy_add);
-#else
 	(face[0] + 1)->Tex[tex].x = face[0]->Tex[tex].x * (face[0] + 1)->Pos.w * b.w + b.cx;
 	(face[0] + 1)->Tex[tex].y = face[0]->Tex[tex].y * (face[0] + 1)->Pos.w * b.h + b.cy;
 
@@ -1328,7 +1318,6 @@ inline void CBurningVideoDriver::select_polygon_mipmap_inside(s4DVertex* burning
 
 	(face[2] + 1)->Tex[tex].x = face[2]->Tex[tex].x * (face[2] + 1)->Pos.w * b.w + b.cx;
 	(face[2] + 1)->Tex[tex].y = face[2]->Tex[tex].y * (face[2] + 1)->Pos.w * b.h + b.cy;
-#endif
 #else
 	(face[0] + 1)->Tex[tex].x = face[0]->Tex[tex].x * b.w;
 	(face[0] + 1)->Tex[tex].y = face[0]->Tex[tex].y * b.h;
@@ -1369,13 +1358,13 @@ void CBurningVideoDriver::VertexCache_map_source_format()
 		os::Printer::log("BurningVideo pointer should be 8 bytes", ELL_ERROR);
 		_IRR_DEBUG_BREAK_IF(1);
 	}
-#endif
 
 	if (((unsigned long long)Transformation&15) || ((unsigned long long)TransformationFlag & 15))
 	{
 		os::Printer::log("BurningVideo Matrix Stack not 16 byte aligned", ELL_ERROR);
 		_IRR_DEBUG_BREAK_IF(1);
 	}
+#endif
 
 
 	SVSize* vSize = VertexCache.vSize;
@@ -3464,7 +3453,7 @@ ITexture* CBurningVideoDriver::addRenderTargetTexture(const core::dimension2d<u3
 	//empty proxy image
 	IImage* img = createImageFromData(format, size, 0, true, false);
 	ITexture* tex = new CSoftwareTexture2(img, name, CSoftwareTexture2::IS_RENDERTARGET /*| CSoftwareTexture2::GEN_MIPMAP */, this);
-	img->drop();
+	if ( img ) img->drop();
 	addTexture(tex);
 	tex->drop();
 	return tex;
@@ -3713,6 +3702,9 @@ s32 CBurningVideoDriver::addHighLevelShaderMaterial(
 	IShaderConstantSetCallBack* callback,
 	E_MATERIAL_TYPE baseMaterial,
 	s32 userData
+#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+	, E_GPU_SHADING_LANGUAGE shadingLang
+#endif
 )
 {
 	s32 materialID = -1;

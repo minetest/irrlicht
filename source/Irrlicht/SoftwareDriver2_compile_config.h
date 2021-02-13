@@ -308,7 +308,12 @@ namespace irr {
 
 //! Compiler Align
 #if defined(_MSC_VER)
+#if defined(ENV64BIT)
 #define ALIGN(x) __declspec(align(x))
+#else
+// ALIGN(16) not working
+#define ALIGN(x) __declspec(align(8))
+#endif
 #elif defined(__GNUC__)
 #define ALIGN(x) __attribute__ ((aligned(x)))
 #else

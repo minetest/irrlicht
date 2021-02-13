@@ -29,11 +29,13 @@ void IBurningShader::constructor_IBurningShader(CBurningVideoDriver* driver)
 	setDebugName("IBurningShader");
 #endif
 
+#if defined(ENV64BIT)
 	if (((unsigned long long)&scan & 15) || ((unsigned long long)&line & 15))
 	{
 		os::Printer::log("BurningVideo Shader not 16 byte aligned", ELL_ERROR);
 		_IRR_DEBUG_BREAK_IF(1);
 	}
+#endif
 
 	Interlaced.enable = 0;
 	Interlaced.bypass = 1;
@@ -96,6 +98,7 @@ IBurningShader::IBurningShader(
 {
 	constructor_IBurningShader(driver);
 	BaseMaterial = baseMaterial;
+	UserData = userData;
 	CallBack = callback;
 	if (CallBack)
 		CallBack->grab();
