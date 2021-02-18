@@ -582,26 +582,6 @@ ones. */
 #ifdef NO_IRR_COMPILE_WITH_ZLIB_
 #undef _IRR_COMPILE_WITH_ZLIB_
 #endif
-//! Define _IRR_COMPILE_WITH_ZIP_ENCRYPTION_ if you want to read AES-encrypted ZIP archives
-#define _IRR_COMPILE_WITH_ZIP_ENCRYPTION_
-#ifdef NO_IRR_COMPILE_WITH_ZIP_ENCRYPTION_
-#undef _IRR_COMPILE_WITH_ZIP_ENCRYPTION_
-#endif
-//! Define _IRR_COMPILE_WITH_BZIP2_ if you want to support bzip2 compressed zip archives
-/** bzip2 is superior to the original zip file compression modes, but requires
-a certain amount of memory for decompression and adds several files to the
-library. */
-#define _IRR_COMPILE_WITH_BZIP2_
-#ifdef NO_IRR_COMPILE_WITH_BZIP2_
-#undef _IRR_COMPILE_WITH_BZIP2_
-#endif
-//! Define _IRR_COMPILE_WITH_LZMA_ if you want to use LZMA compressed zip files.
-/** LZMA is a very efficient compression code, known from 7zip. Irrlicht
-currently only supports zip archives, though. */
-#define _IRR_COMPILE_WITH_LZMA_
-#ifdef NO_IRR_COMPILE_WITH_LZMA_
-#undef _IRR_COMPILE_WITH_LZMA_
-#endif
 #endif
 
 //! Define __IRR_COMPILE_WITH_MOUNT_ARCHIVE_LOADER_ if you want to mount folders as archives
