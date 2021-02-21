@@ -215,11 +215,6 @@ namespace video
 		IDepthBuffer * getDepthBuffer () { return DepthBuffer; }
 		IStencilBuffer * getStencilBuffer () { return StencilBuffer; }
 
-		//#define Tweak_Burning
-#if defined(Tweak_Burning)
-		virtual void postEventFromUser(const void* sevent)  _IRR_OVERRIDE_;
-#endif
-
 		//! Adds a new material renderer to the VideoDriver, using pixel and/or
 		//! vertex shaders to render geometry.
 		virtual s32 addShaderMaterial(const c8* vertexShaderProgram,
@@ -245,7 +240,11 @@ namespace video
 			u32 verticesOut = 0,
 			IShaderConstantSetCallBack* callback = 0,
 			E_MATERIAL_TYPE baseMaterial = video::EMT_SOLID,
-			s32 userData = 0) _IRR_OVERRIDE_;
+			s32 userData = 0
+#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+			, E_GPU_SHADING_LANGUAGE shadingLang = EGSL_DEFAULT
+#endif
+		) _IRR_OVERRIDE_;
 
 		//IMaterialRendererService
 

@@ -9,6 +9,9 @@ Changes in ogl-es (not yet released - will be merged with trunk at some point)
 
 --------------------------
 Changes in 1.9 (not yet released)
+- Fix bug in rect::clipAgainst that had caused rects completely outside to the left-top of the rect to be clipped against ending up with both corners outside.
+  It still worked for UI in most cases as the resulting rectangle still had an area of 0.
+- Add getAlign functions to IGUIElement
 - Add optional multitouch support to X11 (but disabled in IrrCompileConfig by default). Thanks @TheBrokenRail for a patch proposal based on example code from esjeon (patch #322).
 - Slightly changed close window handling on X11 (optimized and avoids problems on some shells). Thanks @TheBrokenRail for a patch (was part of patch #322).
 - Add getActiveColor functions to IGUIStaticText and IGUIButton (get currently used color).
