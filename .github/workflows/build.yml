@@ -6,8 +6,8 @@ on:
   - pull_request
 
 jobs:
-  # This is our minor gcc compiler
-  build:
+
+  linux-gl:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -20,3 +20,18 @@ jobs:
           cd source/Irrlicht
           make sharedlib
 
+  linux-gles:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install deps
+        run: |
+          sudo apt-get install g++ gcc libxxf86vm-dev libgles2-mesa-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
+
+      - name: Build
+        run: |
+          sed '/#define _IRR_COMPILE_WITH_OGLES2_/ s|^//||g' -i include/IrrCompileConfig.h
+          sed '/#define _IRR_COMPILE_WITH_OPENGL_/ s|^|//|g' -i include/IrrCompileConfig.h
+          cd source/Irrlicht
+          sed '/^sharedlib: LDFLAGS/ s|-lGL\b|-lGLESv2|' -i Makefile
+          make sharedlib
