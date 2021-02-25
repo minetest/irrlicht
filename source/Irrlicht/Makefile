@@ -93,7 +93,7 @@ else
   CFLAGS := -O3
 endif
 
-sharedlib sharedlib_osx sharedlib_win32: LDFLAGS += -lz -ljpeg -lpng -lbz2
+sharedlib sharedlib_osx sharedlib_win32: LDFLAGS += -lz -ljpeg -lpng
 
 sharedlib sharedlib_osx: CXXFLAGS += -fPIC
 sharedlib sharedlib_osx: CFLAGS += -fPIC

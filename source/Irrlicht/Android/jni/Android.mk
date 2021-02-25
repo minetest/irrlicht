@@ -22,15 +22,6 @@ LOCAL_SRC_FILES := \
 					Android/CAndroidAssetReader.cpp \
 					Android/CAndroidAssetFileArchive.cpp \
 					Android/CKeyEventWrapper.cpp \
-					aesGladman/aescrypt.cpp \
-					aesGladman/aeskey.cpp \
-					aesGladman/aestab.cpp \
-					aesGladman/fileenc.cpp \
-					aesGladman/hmac.cpp \
-					aesGladman/prng.cpp \
-					aesGladman/pwd2key.cpp \
-					aesGladman/sha1.cpp \
-					aesGladman/sha2.cpp \
 					burning_shader_color.cpp \
 					C3DSMeshFileLoader.cpp \
 					CAnimatedMeshHalfLife.cpp \
@@ -260,78 +251,7 @@ LOCAL_SRC_FILES := \
 					IBurningShader.cpp \
 					Irrlicht.cpp \
 					irrXML.cpp \
-					os.cpp	 \
-					bzip2/blocksort.c \
-					bzip2/bzcompress.c \
-					bzip2/bzlib.c \
-					bzip2/crctable.c \
-					bzip2/decompress.c \
-					bzip2/huffman.c \
-					bzip2/randtable.c \
-					jpeglib/jaricom.c \
-					jpeglib/jcapimin.c \
-					jpeglib/jcapistd.c \
-					jpeglib/jcarith.c \
-					jpeglib/jccoefct.c \
-					jpeglib/jccolor.c \
-					jpeglib/jcdctmgr.c \
-					jpeglib/jchuff.c \
-					jpeglib/jcinit.c \
-					jpeglib/jcmainct.c \
-					jpeglib/jcmarker.c \
-					jpeglib/jcmaster.c \
-					jpeglib/jcomapi.c \
-					jpeglib/jcparam.c \
-					jpeglib/jcprepct.c \
-					jpeglib/jcsample.c \
-					jpeglib/jctrans.c \
-					jpeglib/jdapimin.c \
-					jpeglib/jdapistd.c \
-					jpeglib/jdarith.c \
-					jpeglib/jdatadst.c \
-					jpeglib/jdatasrc.c \
-					jpeglib/jdcoefct.c \
-					jpeglib/jdcolor.c \
-					jpeglib/jddctmgr.c \
-					jpeglib/jdhuff.c \
-					jpeglib/jdinput.c \
-					jpeglib/jdmainct.c \
-					jpeglib/jdmarker.c \
-					jpeglib/jdmaster.c \
-					jpeglib/jdmerge.c \
-					jpeglib/jdpostct.c \
-					jpeglib/jdsample.c \
-					jpeglib/jdtrans.c \
-					jpeglib/jerror.c \
-					jpeglib/jfdctflt.c \
-					jpeglib/jfdctfst.c \
-					jpeglib/jfdctint.c \
-					jpeglib/jidctflt.c \
-					jpeglib/jidctfst.c \
-					jpeglib/jidctint.c \
-					jpeglib/jmemmgr.c \
-					jpeglib/jmemnobs.c \
-					jpeglib/jquant1.c \
-					jpeglib/jquant2.c \
-					jpeglib/jutils.c \
-					libpng/png.c \
-					libpng/pngerror.c \
-					libpng/pngget.c \
-					libpng/pngmem.c \
-					libpng/pngpread.c \
-					libpng/pngread.c \
-					libpng/pngrio.c \
-					libpng/pngrtran.c \
-					libpng/pngrutil.c \
-					libpng/pngset.c \
-					libpng/pngtrans.c \
-					libpng/pngwio.c \
-					libpng/pngwrite.c \
-					libpng/pngwtran.c \
-					libpng/pngwutil.c \
-					lzma/LzmaDec.c \
-zlib/adler32.c   zlib/crc32.c    zlib/gzclose.c  zlib/gzread.c   zlib/infback.c  zlib/inflate.c   zlib/trees.c    zlib/zutil.c\
-zlib/compress.c  zlib/deflate.c  zlib/gzlib.c    zlib/gzwrite.c  zlib/inffast.c  zlib/inftrees.c  zlib/uncompr.c
+					os.cpp
 
 LOCAL_STATIC_LIBRARIES := android_native_app_glue
 
