@@ -5,6 +5,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 
+# Compiler flags
+
 if(CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
 	set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 	set(CMAKE_C_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
@@ -23,6 +25,8 @@ elseif(MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS "/nologo")
 	set(CMAKE_EXE_LINKER_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS /OPT:REF /LTCG")
 endif()
+
+# Required libs
 
 find_package(ZLIB REQUIRED)
 find_package(JPEG REQUIRED)
@@ -57,11 +61,11 @@ endif()
 if(ANDROID)
 	# TODO
 elseif(APPLE)
-	# TODO probably these:
-	#find_library(COCOA_LIB Cocoa REQUIRED)
-	#find_library(IOKIT_LIB IOKit REQUIRED)
+	find_library(COCOA_LIB Cocoa REQUIRED)
+	find_library(IOKIT_LIB IOKit REQUIRED)
+	link_libraries(${COCOA_LIB} ${IOKIT_LIB})
 elseif(WIN32)
-	# -lgdi32 -lwinmm?
+	link_libraries(gdi32 winmm)
 else()
 	# Unix probably
 	find_package(X11 REQUIRED)
@@ -316,6 +320,15 @@ add_library(IRROTHEROBJ OBJECT
 	utf8.cpp
 )
 
+if(APPLE)
+	# Build all IRROTHEROBJ sources as objc++, including the .cpp's
+	set_target_properties(IRROTHEROBJ PROPERTIES COMPILE_OPTIONS "-xobjective-c++")
+	target_sources(IRROTHEROBJ PRIVATE
+		CIrrDeviceOSX.mm
+		CNSOGLManager.mm
+	)
+endif()
+
 add_library(IRRGUIOBJ OBJECT
 	CGUIButton.cpp
 	CGUICheckBox.cpp
@@ -368,3 +381,8 @@ set_target_properties(Irrlicht PROPERTIES
 	VERSION ${VERSION}
 	SOVERSION ${IRRLICHT_VERSION_MAJOR}.${IRRLICHT_VERSION_MINOR}
 )
+
+
+include(GNUInstallDirs)
+install(TARGETS Irrlicht DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/irrlicht")
