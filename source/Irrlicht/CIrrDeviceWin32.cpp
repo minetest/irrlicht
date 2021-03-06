@@ -1037,7 +1037,7 @@ CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params)
 		clientSize.right = CreationParams.WindowSize.Width;
 		clientSize.bottom = CreationParams.WindowSize.Height;
 
-		DWORD style = getWindowStyle(CreationParams.Fullscreen, CreationParams.WindowResizable);
+		DWORD style = getWindowStyle(CreationParams.Fullscreen, CreationParams.WindowResizable > 0 ? true : false);
 		AdjustWindowRect(&clientSize, style, FALSE);
 
 		const s32 realWidth = clientSize.right - clientSize.left;
@@ -1285,7 +1285,7 @@ DWORD CIrrDeviceWin32::getWindowStyle(bool fullscreen, bool resizable) const
 		return WS_THICKFRAME | WS_SYSMENU | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 
 	return WS_BORDER | WS_SYSMENU | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
-}	
+}
 
 //! sets the caption of the window
 void CIrrDeviceWin32::setWindowCaption(const wchar_t* text)
@@ -1658,7 +1658,7 @@ void CIrrDeviceWin32::getWindowsVersion(core::stringc& out)
 					(LPBYTE) szProductType, &dwBufLen);
 			RegCloseKey( hKey );
 
-			
+
 			if (irr::core::stringc("WINNT").equals_ignore_case(szProductType))
 				out.append("Professional ");
 			if (irr::core::stringc("LANMANNT").equals_ignore_case(szProductType))
