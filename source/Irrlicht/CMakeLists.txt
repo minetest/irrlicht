@@ -1,4 +1,7 @@
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(
+	${CMAKE_SOURCE_DIR}/include
+	${CMAKE_CURRENT_SOURCE_DIR}
+)
 add_definitions(-DIRRLICHT_EXPORTS=1)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_definitions(-D_DEBUG)
@@ -39,9 +42,15 @@ link_libraries(${ZLIB_LIBRARY} ${JPEG_LIBRARY} ${PNG_LIBRARY})
 include(CheckSymbolExists)
 set(CMAKE_REQUIRED_INCLUDES ${CMAKE_SOURCE_DIR}/include)
 
-#check_symbol_exists(_IRR_COMPILE_WITH_OGLES1_ "IrrCompileConfig.h" OGLES1_ENABLED)
-#if(OGLES1_ENABLED)
-#endif()
+check_symbol_exists(_IRR_COMPILE_WITH_OGLES1_ "IrrCompileConfig.h" OGLES1_ENABLED)
+if(OGLES1_ENABLED)
+	# only tested on Android, probably works on Linux (is this needed anywhere else?)
+	find_library(OPENGLES_LIBRARY NAMES GLESv1_CM REQUIRED)
+	find_library(EGL_LIBRARY NAMES EGL REQUIRED)
+
+	message(STATUS "Found OpenGLES: ${OPENGLES_LIBRARY}")
+	link_libraries(${OPENGLES_LIBRARY} ${EGL_LIBRARY})
+endif()
 check_symbol_exists(_IRR_COMPILE_WITH_OGLES2_ "IrrCompileConfig.h" OGLES2_ENABLED)
 if(OGLES2_ENABLED)
 	find_package(OpenGLES2 REQUIRED)
@@ -59,7 +68,9 @@ endif()
 # Platform-specific libs
 
 if(ANDROID)
-	# TODO
+	add_library(native_app_glue STATIC ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
+	include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
+	link_libraries(native_app_glue -landroid -llog)
 elseif(APPLE)
 	find_library(COCOA_LIB Cocoa REQUIRED)
 	find_library(IOKIT_LIB IOKit REQUIRED)
@@ -320,7 +331,14 @@ add_library(IRROTHEROBJ OBJECT
 	utf8.cpp
 )
 
-if(APPLE)
+if(ANDROID)
+	target_sources(IRROTHEROBJ PRIVATE
+		Android/CIrrDeviceAndroid.cpp
+		Android/CAndroidAssetReader.cpp
+		Android/CAndroidAssetFileArchive.cpp
+		Android/CKeyEventWrapper.cpp
+	)
+elseif(APPLE)
 	# Build all IRROTHEROBJ sources as objc++, including the .cpp's
 	set_target_properties(IRROTHEROBJ PROPERTIES COMPILE_OPTIONS "-xobjective-c++")
 	target_sources(IRROTHEROBJ PRIVATE
