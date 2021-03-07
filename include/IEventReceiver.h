@@ -425,6 +425,9 @@ struct SEvent
 		// Y position of simple touch.
 		s32 Y;
 
+		// number of current touches
+		s32 touchedCount;
+
 		//! Type of touch event.
 		ETOUCH_INPUT_EVENT Event;
 	};
