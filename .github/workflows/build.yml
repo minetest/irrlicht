@@ -34,3 +34,33 @@ jobs:
           sed '/#define _IRR_COMPILE_WITH_OPENGL_/ s|^|//|g' -i include/IrrCompileConfig.h
           cmake .
           make
+
+  win32:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install deps
+        run: |
+          sudo apt-get install cmake g++-mingw-w64-i686 -qyy
+
+      - name: Build
+        run: |
+          ./scripts/ci-build-mingw.sh
+        env:
+          CC: i686-w64-mingw32-gcc
+          CXX: i686-w64-mingw32-g++
+
+  win64:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install deps
+        run: |
+          sudo apt-get install cmake g++-mingw-w64-x86-64 -qyy
+
+      - name: Build
+        run: |
+          ./scripts/ci-build-mingw.sh --64
+        env:
+          CC: x86_64-w64-mingw32-gcc
+          CXX: x86_64-w64-mingw32-g++
