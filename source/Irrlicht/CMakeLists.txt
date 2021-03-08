@@ -75,6 +75,8 @@ elseif(APPLE)
 	find_library(COCOA_LIB Cocoa REQUIRED)
 	find_library(IOKIT_LIB IOKit REQUIRED)
 	link_libraries(${COCOA_LIB} ${IOKIT_LIB})
+
+	add_definitions(-DGL_SILENCE_DEPRECATION)
 elseif(WIN32)
 	link_libraries(gdi32 winmm)
 else()
