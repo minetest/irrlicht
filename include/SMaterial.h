@@ -328,53 +328,6 @@ namespace video
 			*this = other;
 		}
 
-		//! Assignment operator
-		/** \param other Material to copy from. */
-		SMaterial& operator=(const SMaterial& other)
-		{
-			// Check for self-assignment!
-			if (this == &other)
-				return *this;
-
-			MaterialType = other.MaterialType;
-
-			AmbientColor = other.AmbientColor;
-			DiffuseColor = other.DiffuseColor;
-			EmissiveColor = other.EmissiveColor;
-			SpecularColor = other.SpecularColor;
-			Shininess = other.Shininess;
-			MaterialTypeParam = other.MaterialTypeParam;
-			MaterialTypeParam2 = other.MaterialTypeParam2;
-			Thickness = other.Thickness;
-			for (u32 i=0; i<MATERIAL_MAX_TEXTURES_USED; ++i)
-			{
-				TextureLayer[i] = other.TextureLayer[i];
-			}
-
-			Wireframe = other.Wireframe;
-			PointCloud = other.PointCloud;
-			GouraudShading = other.GouraudShading;
-			Lighting = other.Lighting;
-			ZWriteEnable = other.ZWriteEnable;
-			BackfaceCulling = other.BackfaceCulling;
-			FrontfaceCulling = other.FrontfaceCulling;
-			FogEnable = other.FogEnable;
-			NormalizeNormals = other.NormalizeNormals;
-			ZBuffer = other.ZBuffer;
-			AntiAliasing = other.AntiAliasing;
-			ColorMask = other.ColorMask;
-			ColorMaterial = other.ColorMaterial;
-			BlendOperation = other.BlendOperation;
-			BlendFactor = other.BlendFactor;
-			PolygonOffsetFactor = other.PolygonOffsetFactor;
-			PolygonOffsetDirection = other.PolygonOffsetDirection;
-			PolygonOffsetDepthBias = other.PolygonOffsetDepthBias;
-			PolygonOffsetSlopeScale = other.PolygonOffsetSlopeScale;
-			UseMipMaps = other.UseMipMaps;
-
-			return *this;
-		}
-
 		//! Texture layer array.
 		SMaterialLayer TextureLayer[MATERIAL_MAX_TEXTURES];
 
