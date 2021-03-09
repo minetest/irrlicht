@@ -27,16 +27,12 @@ public:
 	vector2d(T nx, T ny) : X(nx), Y(ny) {}
 	//! Constructor with the same value for both members
 	explicit vector2d(T n) : X(n), Y(n) {}
-	//! Copy constructor
-	vector2d(const vector2d<T>& other) : X(other.X), Y(other.Y) {}
 
 	vector2d(const dimension2d<T>& other) : X(other.Width), Y(other.Height) {}
 
 	// operators
 
 	vector2d<T> operator-() const { return vector2d<T>(-X, -Y); }
-
-	vector2d<T>& operator=(const vector2d<T>& other) { X = other.X; Y = other.Y; return *this; }
 
 	vector2d<T>& operator=(const dimension2d<T>& other) { X = other.Width; Y = other.Height; return *this; }
 

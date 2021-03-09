@@ -24,8 +24,6 @@ class line2d
 		line2d(T xa, T ya, T xb, T yb) : start(xa, ya), end(xb, yb) {}
 		//! Constructor for line between the two points given as vectors.
 		line2d(const vector2d<T>& start, const vector2d<T>& end) : start(start), end(end) {}
-		//! Copy constructor.
-		line2d(const line2d<T>& other) : start(other.start), end(other.end) {}
 
 		// operators
 

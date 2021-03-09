@@ -102,9 +102,6 @@ namespace core
 			//! Simple operator for linearly accessing every element of the matrix.
 			const T& operator[](u32 index) const { return M[index]; }
 
-			//! Sets this matrix equal to the other matrix.
-			inline CMatrix4<T>& operator=(const CMatrix4<T> &other);
-
 			//! Sets all elements of this matrix to the value.
 			inline CMatrix4<T>& operator=(const T& scalar);
 
@@ -1501,19 +1498,6 @@ namespace core
 		}
 
 		return false;
-	}
-
-
-	template <class T>
-	inline CMatrix4<T>& CMatrix4<T>::operator=(const CMatrix4<T> &other)
-	{
-		if (this==&other)
-			return *this;
-		memcpy(M, other.M, 16*sizeof(T));
-#if defined ( USE_MATRIX_TEST )
-		definitelyIdentityMatrix=other.definitelyIdentityMatrix;
-#endif
-		return *this;
 	}
 
 
