@@ -923,8 +923,8 @@ namespace video
 
 		//! Draws a 2d line.
 		/** In theory both start and end will be included in coloring.
-		BUG: Currently hardware drivers (d3d/opengl) ignore the last pixel
-		(they use the so called "diamond exit rule" for drawing lines).
+		BUG: Currently d3d ignores the last pixel
+		(it uses the so called "diamond exit rule" for drawing lines).
 		\param start Screen coordinates of the start of the line
 		in pixels.
 		\param end Screen coordinates of the start of the line in
