@@ -52,14 +52,14 @@ bool CMemoryReadFile::seek(long finalPos, bool relativeMovement)
 {
 	if (relativeMovement)
 	{
-		if (Pos + finalPos > Len)
+		if (Pos + finalPos < 0 || Pos + finalPos > Len)
 			return false;
 
 		Pos += finalPos;
 	}
 	else
 	{
-		if (finalPos > Len)
+		if (finalPos < 0 || finalPos > Len)
 			return false;
 
 		Pos = finalPos;
@@ -133,14 +133,14 @@ bool CMemoryWriteFile::seek(long finalPos, bool relativeMovement)
 {
 	if (relativeMovement)
 	{
-		if (Pos + finalPos > Len)
+		if (Pos + finalPos < 0 || Pos + finalPos > Len)
 			return false;
 
 		Pos += finalPos;
 	}
 	else
 	{
-		if (finalPos > Len)
+		if (finalPos < 0 || finalPos > Len)
 			return false;
 
 		Pos = finalPos;
