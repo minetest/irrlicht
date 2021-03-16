@@ -821,6 +821,8 @@ void CIrrDeviceMacOSX::setResize(int width, int height)
 	{
 		NSRect driverFrame = [Window contentRectForFrameRect:[Window frame]];
 		getVideoDriver()->OnResize(core::dimension2d<u32>( (s32)driverFrame.size.width, (s32)driverFrame.size.height));
+		DeviceWidth = (s32)driverFrame.size.width;
+		DeviceHeight = (s32)driverFrame.size.height;
 	}
 	else
 		getVideoDriver()->OnResize(core::dimension2d<u32>( (s32)width, (s32)height));
