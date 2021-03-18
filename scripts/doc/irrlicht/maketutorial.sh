@@ -18,7 +18,6 @@ for i in ../../../examples/[012]*; do
   
   #move to example folder 
   mv tutorial.html $i/tutorial.html
-  rm $i/tutorial_test.html
 #  echo copied
   
   #cleanup
