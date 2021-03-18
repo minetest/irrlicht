@@ -1,12 +1,12 @@
-Checklist for Irrlicht developers for doing releases.
+Checklist for Irrlicht developers doing releases.
+
+Note: Generally the more platforms, compilers, settings you can test the better. Ask for help for platforms which you don't own.
 
 - PRE-BUILD TESTS:
 - - Run tests in the tests folder
-- - Compile and run all examples for testing (preferably on all platforms, 
-compilers, settings ... until you are certain enough stuff works sufficiently). 
-Ask for help for platforms which you don't own.
-- - Compile the tools on all platforms you have. Note that some tools are in the buildall-examples VS project files on Windows, but on Linux 
-command line you have to compile them individually.
+- - Compile and run examples.
+- - Compile and run the tools. Note that some tools are in the buildall-examples VS project files on Windows, 
+    but on Linux command line you have to compile them individually.
 
 - VERSION UPDATES:
 - - check IRRLICHT_SDK_VERSION (in IrrCompileConfig.h)
@@ -15,13 +15,16 @@ command line you have to compile them individually.
 - - Add new release information (date+version-number) in changes.txt
 - - go through folders if other .txt files still make sense (things change and updating those files tends to be forgotten)
 
+- DOCUMENTATION UPDATES:
+- - run makedocumentation.sh in scripts\doc\irrlicht
+- - run maketutorial.sh in scripts\doc\irrlicht (commit changed tutorial.html's)
+
 - BUILDING THE RELEASE
+  (TBD - should we still release dll's? Newer and older VS builds are no longer compatible anyway)
 - - run a clean build for buildAllExamples in the examples folder with the 
-target compiler for 32-bit and for release (preferably oldest supported VS 
-compiler, otherwise oldest you have still installed)
+    target compiler for 32-bit and for release (old VS compiler - so far VS2010)
 - - when possible compile the dll for MinGW on Windows (in release and with -s for smaller size)
 - - when possible compile the dll for 64 bit (again with Visual Studio and release)
-- - run makedocumentation in scripts\doc\irrlicht
 - - create a target directory, like irrlicht-1.8.1 for example
 - - svn export to the target directory
 - - copy the subfolders of doctemp into the doc folder of the target directory
