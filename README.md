@@ -20,6 +20,7 @@ Aside from standard search options (`ZLIB_INCLUDE_DIR`, `ZLIB_LIBRARY`, ...) the
 e.g. on a Linux system you might want to build for local use like this:
 
 	git clone https://github.com/minetest/irrlicht
+	cd irrlicht
 	cmake . -DBUILD_SHARED_LIBS=OFF
 	make -j$(nproc)
 
