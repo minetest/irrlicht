@@ -1,8 +1,13 @@
 # Create the tutorial.html files in each example folder
 
 # for every folder below examples
-for i in ../../../examples/[012]*; do
+for i in ../../../examples/[0123]*; do
+#for i in ../../../examples/01.*; do	# if you want to run/update a single example use this loop
   echo NOW doing $i
+  
+  if ! [ -f "$i/main.cpp" ]; then 
+    continue
+  fi
   
   # uses the main.cpp files to create some file to use as doxygen input
   sed -f tutorials.sed $i/main.cpp >single_tut.txt
