@@ -70,7 +70,7 @@ jobs:
 
       - name: Build
         run: |
-          ./scripts/ci-build-mingw.sh --64
+          ./scripts/ci-build-mingw.sh
         env:
           CC: x86_64-w64-mingw32-gcc
           CXX: x86_64-w64-mingw32-g++

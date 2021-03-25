@@ -14,7 +14,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
 	set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 	set(CMAKE_C_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 	set(CMAKE_CXX_FLAGS_DEBUG "-g")
-	set(CMAKE_C_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
+	set(CMAKE_C_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
 
 	add_compile_options(-Wall -pipe -fno-exceptions -fno-rtti)
 elseif(MSVC)
@@ -22,7 +22,7 @@ elseif(MSVC)
 	set(CMAKE_CXX_FLAGS_RELEASE "/GL /MT /Ox")
 	set(CMAKE_C_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 	set(CMAKE_CXX_FLAGS_DEBUG "/MTd /RTC1 /Zi")
-	set(CMAKE_C_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
+	set(CMAKE_C_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
 
 	set(CMAKE_CXX_FLAGS "/Gd /GF /GR- /GS /Gy /Zl")
 	set(CMAKE_EXE_LINKER_FLAGS "/nologo")
@@ -41,6 +41,9 @@ link_libraries(${ZLIB_LIBRARY} ${JPEG_LIBRARY} ${PNG_LIBRARY})
 # include/IrrCompileConfig.h and re-run CMake from a clean state
 include(CheckSymbolExists)
 set(CMAKE_REQUIRED_INCLUDES ${CMAKE_SOURCE_DIR}/include)
+unset(OGLES1_ENABLED CACHE)
+unset(OGLES2_ENABLED CACHE)
+unset(OGL_ENABLED CACHE)
 
 check_symbol_exists(_IRR_COMPILE_WITH_OGLES1_ "IrrCompileConfig.h" OGLES1_ENABLED)
 if(OGLES1_ENABLED)
@@ -385,7 +388,7 @@ add_library(IRRGUIOBJ OBJECT
 
 option(BUILD_SHARED_LIBS "Build shared library" TRUE)
 
-add_library(Irrlicht
+add_library(IrrlichtMt
 	$<TARGET_OBJECTS:IRRMESHOBJ>
 	$<TARGET_OBJECTS:IRROBJ>
 	$<TARGET_OBJECTS:IRRPARTICLEOBJ>
@@ -397,12 +400,17 @@ add_library(Irrlicht
 	$<TARGET_OBJECTS:IRRGUIOBJ>
 )
 
-set_target_properties(Irrlicht PROPERTIES
+set_target_properties(IrrlichtMt PROPERTIES
 	VERSION ${VERSION}
 	SOVERSION ${IRRLICHT_VERSION_MAJOR}.${IRRLICHT_VERSION_MINOR}
 )
 
+if(WIN32)
+	set_target_properties(IrrlichtMt PROPERTIES PREFIX "") # for DLL name
+endif()
+
+# Installation
 
 include(GNUInstallDirs)
-install(TARGETS Irrlicht DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/irrlicht")
+install(TARGETS IrrlichtMt DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt")
