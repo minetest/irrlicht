@@ -20,6 +20,16 @@ jobs:
           cmake .
           make
 
+      - name: Package
+        run: |
+          make DESTDIR=$PWD/_install install
+          tar -c -I "gzip -9" -f irrlicht-linux.tar.gz -C ./_install/usr/local .
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: irrlicht-linux
+          path: ./irrlicht-linux.tar.gz
+
   linux-gles:
     runs-on: ubuntu-18.04
     steps:
