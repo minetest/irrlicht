@@ -12,9 +12,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
 	set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-	set(CMAKE_C_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 	set(CMAKE_CXX_FLAGS_DEBUG "-g")
-	set(CMAKE_C_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
 
 	add_compile_options(-Wall -pipe -fno-exceptions -fno-rtti)
 elseif(MSVC)

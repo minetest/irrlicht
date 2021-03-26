@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Irrlicht)
+project(Irrlicht CXX)
 
 set(IRRLICHT_VERSION_MAJOR 1)
 set(IRRLICHT_VERSION_MINOR 9)
