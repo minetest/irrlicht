@@ -18,15 +18,9 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
 
 	add_compile_options(-Wall -pipe -fno-exceptions -fno-rtti)
 elseif(MSVC)
-	# entirely untested
-	set(CMAKE_CXX_FLAGS_RELEASE "/GL /MT /Ox")
-	set(CMAKE_C_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
-	set(CMAKE_CXX_FLAGS_DEBUG "/MTd /RTC1 /Zi")
-	set(CMAKE_C_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
+	string(APPEND CMAKE_CXX_STANDARD_LIBRARIES " msvcrt.lib") # ???? fuck off
 
-	set(CMAKE_CXX_FLAGS "/Gd /GF /GR- /GS /Gy /Zl")
-	set(CMAKE_EXE_LINKER_FLAGS "/nologo")
-	set(CMAKE_EXE_LINKER_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS /OPT:REF /LTCG")
+	add_compile_options(/GR- /Zl)
 endif()
 
 # Required libs
