@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Irrlicht CXX)
+project(Irrlicht
+	VERSION 1.9.0
+	LANGUAGES CXX
+)
 
 set(IRRLICHT_VERSION_MAJOR 1)
 set(IRRLICHT_VERSION_MINOR 9)
@@ -29,6 +32,7 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 add_subdirectory(source/Irrlicht)
 
+# Installation of library and headers.
 include(GNUInstallDirs)
 install(TARGETS IrrlichtMt
 	EXPORT IrrlichtMt-export
@@ -36,15 +40,30 @@ install(TARGETS IrrlichtMt
 )
 
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/"
-	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt"
+	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/IrrlichtMt"
 )
 
+# Installation of CMake target and configuration files.
 install(EXPORT IrrlichtMt-export
-	FILE irrlichtmtTargets.cmake
-	NAMESPACE irrlichtmt::
-	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/irrlichtmt"
+	FILE IrrlichtMtTargets.cmake
+	NAMESPACE IrrlichtMt::
+	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/IrrlichtMt"
 )
 
-install(FILES "${CMAKE_SOURCE_DIR}/cmake/irrlichtmtConfig.cmake"
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/irrlichtmt"
+include(CMakePackageConfigHelpers)
+configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/IrrlichtMtConfig.cmake"
+	INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/IrrlichtMt"
+	NO_SET_AND_CHECK_MACRO
+	NO_CHECK_REQUIRED_COMPONENTS_MACRO
+)
+write_basic_package_version_file(
+	"${CMAKE_CURRENT_BINARY_DIR}/IrrlichtMtConfigVersion.cmake"
+	COMPATIBILITY AnyNewerVersion
+)
+
+install(FILES
+	"${CMAKE_CURRENT_BINARY_DIR}/IrrlichtMtConfig.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/IrrlichtMtConfigVersion.cmake"
+	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/IrrlichtMt"
 )
