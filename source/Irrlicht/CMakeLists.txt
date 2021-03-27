@@ -400,9 +400,3 @@ set_target_properties(IrrlichtMt PROPERTIES
 if(WIN32)
 	set_target_properties(IrrlichtMt PROPERTIES PREFIX "") # for DLL name
 endif()
-
-# Installation
-
-include(GNUInstallDirs)
-install(TARGETS IrrlichtMt DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt")
