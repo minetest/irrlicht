@@ -28,3 +28,19 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 add_subdirectory(source/Irrlicht)
+
+include(GNUInstallDirs)
+install(TARGETS IrrlichtMt
+	EXPORT IrrlichtMt-export
+	DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+)
+
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/"
+	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt"
+)
+
+install(EXPORT IrrlichtMt-export
+	FILE IrrlichtMtTargets.cmake
+	NAMESPACE irr::
+	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/cdrom"
+)
