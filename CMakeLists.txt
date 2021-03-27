@@ -40,7 +40,11 @@ install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/"
 )
 
 install(EXPORT IrrlichtMt-export
-	FILE IrrlichtMtTargets.cmake
-	NAMESPACE irr::
-	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/cdrom"
+	FILE irrlichtmtTargets.cmake
+	NAMESPACE irrlichtmt::
+	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/irrlichtmt"
+)
+
+install(FILES "${CMAKE_SOURCE_DIR}/cmake/irrlichtmtConfig.cmake"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/irrlichtmt"
 )
