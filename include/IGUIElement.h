@@ -789,6 +789,13 @@ public:
 	}
 
 
+	//! Returns whether the element takes input from the IME
+	virtual bool acceptsIME()
+	{
+		return false;
+	}
+
+
 	//! Writes attributes of the scene node.
 	/** Implement this to expose the attributes of your scene node for
 	scripting languages, editors, debuggers or xml serialization purposes. */

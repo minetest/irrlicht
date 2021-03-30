@@ -34,7 +34,11 @@ namespace irr
 		IrrlichtDevice::postEventFromUser. They take the same path as mouse events. */
 		EET_KEY_INPUT_EVENT,
 
-        //! A touch input event.
+		//! A string input event.
+		/** This event is created when multiple characters are sent at a time (e.g. using an IME). */
+		EET_STRING_INPUT_EVENT,
+
+		//! A touch input event.
 		EET_TOUCH_INPUT_EVENT,
 
 		//! A accelerometer event.
@@ -413,7 +417,14 @@ struct SEvent
 		bool Control:1;
 	};
 
-    //! Any kind of touch event.
+	//! String input event.
+	struct SStringInput
+	{
+		//! The string that is entered
+		core::stringw *Str;
+	};
+
+	//! Any kind of touch event.
 	struct STouchInput
 	{
 		// Touch ID.
@@ -581,6 +592,7 @@ struct SEvent
 		struct SGUIEvent GUIEvent;
 		struct SMouseInput MouseInput;
 		struct SKeyInput KeyInput;
+		struct SStringInput StringInput;
 		struct STouchInput TouchInput;
 		struct SAccelerometerEvent AccelerometerEvent;
 		struct SGyroscopeEvent GyroscopeEvent;

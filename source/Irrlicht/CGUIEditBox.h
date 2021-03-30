@@ -139,6 +139,10 @@ namespace gui
 		//! Updates the absolute position, splits text if required
 		virtual void updateAbsolutePosition() _IRR_OVERRIDE_;
 
+		//! Returns whether the element takes input from the IME
+		virtual bool acceptsIME() _IRR_OVERRIDE_;
+
+
 		//! Writes attributes of the element.
 		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
 
@@ -154,6 +158,8 @@ namespace gui
 		s32 getLineFromPos(s32 pos);
 		//! adds a letter to the edit box
 		void inputChar(wchar_t c);
+		//! adds a string to the edit box
+		void inputString(const core::stringw &str);
 		//! calculates the current scroll position
 		void calculateScrollPos();
 		//! calculated the FrameRect

@@ -6,6 +6,7 @@
 #include "ISceneManager.h"
 #include "IEventReceiver.h"
 #include "IFileSystem.h"
+#include "IGUIElement.h"
 #include "IGUIEnvironment.h"
 #include "os.h"
 #include "IrrCompileConfig.h"
@@ -503,6 +504,14 @@ void CIrrDeviceStub::clearSystemMessages()
 {
 }
 
+//! Checks whether the input device should take input from the IME
+bool CIrrDeviceStub::acceptsIME()
+{
+	if (!GUIEnvironment)
+		return false;
+	gui::IGUIElement *elem = GUIEnvironment->getFocus();
+	return elem && elem->acceptsIME();
+}
 
 
 } // end namespace irr
