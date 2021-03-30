@@ -194,6 +194,9 @@ namespace irr
 		void calculateGammaRamp ( u16 *ramp, f32 gamma, f32 relativebrightness, f32 relativecontrast );
 		void calculateGammaFromRamp ( f32 &gamma, const u16 *ramp );
 
+		//! Checks whether the input device should take input from the IME
+		bool acceptsIME();
+
 		video::IVideoDriver* VideoDriver;
 		gui::IGUIEnvironment* GUIEnvironment;
 		scene::ISceneManager* SceneManager;

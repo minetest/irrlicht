@@ -252,6 +252,10 @@ bool CGUIEditBox::OnEvent(const SEvent& event)
 			if (processMouse(event))
 				return true;
 			break;
+		case EET_STRING_INPUT_EVENT:
+			inputString(*event.StringInput.Str);
+			return true;
+			break;
 		default:
 			break;
 		}
@@ -1392,75 +1396,90 @@ s32 CGUIEditBox::getLineFromPos(s32 pos)
 
 void CGUIEditBox::inputChar(wchar_t c)
 {
+	if (c == 0)
+		return;
+	core::stringw s(&c, 1);
+	inputString(s);
+}
+
+void CGUIEditBox::inputString(const core::stringw &str)
+{
 	if (!isEnabled())
 		return;
 
-	if (c != 0)
+	core::stringw s;
+	u32 len = str.size();
+
+	if (MarkBegin != MarkEnd)
 	{
+		// replace marked text
+		const s32 realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
+		const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
+
+		s = Text.subString(0, realmbgn);
+		s.append(str);
+		s.append( Text.subString(realmend, Text.size()-realmend) );
+		Text = s;
+		CursorPos = realmbgn+len;
+	}
+	else if ( OverwriteMode )
+	{
+		//check to see if we are at the end of the text
+		if ( (u32)CursorPos+len < Text.size())
 		{
-			core::stringw s;
-
-			if (MarkBegin != MarkEnd)
+			bool isEOL = false;
+			s32 EOLPos;
+			for (u32 i = CursorPos; i < CursorPos+len && i < Max; i++)
 			{
-				// replace marked text
-				const s32 realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
-				const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
-
-				s = Text.subString(0, realmbgn);
-				s.append(c);
-				s.append( Text.subString(realmend, Text.size()-realmend) );
-				Text = s;
-				CursorPos = realmbgn+1;
-			}
-			else if ( OverwriteMode )
-			{
-				//check to see if we are at the end of the text
-				if ( (u32)CursorPos != Text.size())
+				if (Text[i] == L'\n' || Text[i] == L'\r')
 				{
-					bool isEOL = (Text[CursorPos] == L'\n' ||Text[CursorPos] == L'\r' );
-					if (!isEOL || Text.size() < Max || Max == 0)
-					{
-						s = Text.subString(0, CursorPos);
-						s.append(c);
-						if ( isEOL )
-						{
-							//just keep appending to the current line
-							//This follows the behavior of other gui libraries behaviors
-							s.append( Text.subString(CursorPos, Text.size()-CursorPos) );
-						}
-						else
-						{
-							//replace the next character
-							s.append( Text.subString(CursorPos + 1,Text.size() - CursorPos + 1));
-						}
-						Text = s;
-						++CursorPos;
-					}
-				}
-				else if (Text.size() < Max || Max == 0)
-				{
-					// add new character because we are at the end of the string
-					s = Text.subString(0, CursorPos);
-					s.append(c);
-					s.append( Text.subString(CursorPos, Text.size()-CursorPos) );
-					Text = s;
-					++CursorPos;
+					isEOL = true;
+					EOLPos = i;
+					break;
 				}
 			}
-			else if (Text.size() < Max || Max == 0)
+			if (!isEOL || Text.size()+len <= Max || Max == 0)
 			{
-				// add new character
 				s = Text.subString(0, CursorPos);
-				s.append(c);
-				s.append( Text.subString(CursorPos, Text.size()-CursorPos) );
+				s.append(str);
+				if ( isEOL )
+				{
+					//just keep appending to the current line
+					//This follows the behavior of other gui libraries behaviors
+					s.append( Text.subString(EOLPos, Text.size()-EOLPos) );
+				}
+				else
+				{
+					//replace the next character
+					s.append( Text.subString(CursorPos + len,Text.size() - CursorPos - len));
+				}
 				Text = s;
-				++CursorPos;
+				CursorPos+=len;
 			}
-
-			BlinkStartTime = os::Timer::getTime();
-			setTextMarkers(0, 0);
+		}
+		else if (Text.size()+len <= Max || Max == 0)
+		{
+			// add new character because we are at the end of the string
+			s = Text.subString(0, CursorPos);
+			s.append(str);
+			s.append( Text.subString(CursorPos+len, Text.size()-CursorPos-len) );
+			Text = s;
+			CursorPos+=len;
 		}
 	}
+	else if (Text.size()+len <= Max || Max == 0)
+	{
+		// add new character
+		s = Text.subString(0, CursorPos);
+		s.append(str);
+		s.append( Text.subString(CursorPos, Text.size()-CursorPos) );
+		Text = s;
+		CursorPos+=len;
+	}
+
+	BlinkStartTime = os::Timer::getTime();
+	setTextMarkers(0, 0);
+
 	breakText();
 	calculateScrollPos();
 	sendGuiEvent(EGET_EDITBOX_CHANGED);
@@ -1623,6 +1642,12 @@ void CGUIEditBox::sendGuiEvent(EGUI_EVENT_TYPE type)
 
 		Parent->OnEvent(e);
 	}
+}
+
+//! Returns whether the element takes input from the IME
+bool CGUIEditBox::acceptsIME()
+{
+	return isEnabled();
 }
 
 //! Writes attributes of the element.
