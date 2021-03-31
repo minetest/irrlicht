@@ -224,13 +224,29 @@ void CImage::copyToScaling(void* target, u32 width, u32 height, ECOLOR_FORMAT fo
 	//     Similar for y.
 	// As scaling is done without any antialiasing it doesn't matter too much which outermost pixels we use and keeping
 	// border pixels intact is probably mostly better (with AA the other solution would be more correct).
-	const f32 sourceXStep = width > 1 ? (f32)(Size.Width-1) / (f32)(width-1) : 0.f;
-	const f32 sourceYStep = height > 1 ? (f32)(Size.Height-1) / (f32)(height-1) : 0.f;
+	// This is however unnecessary (and unexpected) for scaling to integer multiples, so don't do it there.
+	f32 sourceXStep, sourceYStep;
+	f32 sourceXStart = 0.f, sourceYStart = 0.f;
+	if (width % Size.Width == 0)
+		sourceXStep = (f32)(Size.Width) / (f32)(width);
+	else
+	{
+		sourceXStep = width > 1 ? (f32)(Size.Width-1) / (f32)(width-1) : 0.f;
+		sourceXStart = 0.5f;	// for rounding to nearest pixel
+	}
+	if (height % Size.Height == 0)
+		sourceYStep = (f32)(Size.Height) / (f32)(height);
+	else
+	{
+		sourceYStep = height > 1 ? (f32)(Size.Height-1) / (f32)(height-1) : 0.f;
+		sourceYStart = 0.5f;	// for rounding to nearest pixel
+	}
+
 	s32 yval=0, syval=0;
-	f32 sy = 0.5f;	// for rounding to nearest pixel
+	f32 sy = sourceYStart;
 	for (u32 y=0; y<height; ++y)
 	{
-		f32 sx = 0.5f;	// for rounding to nearest pixel
+		f32 sx = sourceXStart;
 		for (u32 x=0; x<width; ++x)
 		{
 			CColorConverter::convert_viaFormat(Data+ syval + ((s32)sx)*BytesPerPixel, Format, 1, ((u8*)target)+ yval + (x*bpp), format);
