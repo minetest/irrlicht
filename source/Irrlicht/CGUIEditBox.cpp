@@ -956,7 +956,16 @@ void CGUIEditBox::draw()
 
 				if ( OverwriteMode )
 				{
-					core::stringw character = Text.subString(CursorPos,1);
+					core::stringw character;
+					if (!PasswordBox)
+					{
+						character = Text.subString(CursorPos,1);
+					}
+					else
+					{
+						wchar_t _[2] = {PasswordChar, 0};
+						character = core::stringw(_);
+					}
 					s32 mend = font->getDimension(character.c_str()).Width;
 					//Make sure the cursor box has at least some width to it
 					if ( mend <= 0 )
