@@ -30,14 +30,14 @@ namespace gui
 //! constructor
 CGUIEditBox::CGUIEditBox(const wchar_t* text, bool border,
 		IGUIEnvironment* environment, IGUIElement* parent, s32 id,
-		const core::rect<s32>& rectangle)
+		const core::rect<s32>& rectangle, bool writable)
 	: IGUIEditBox(environment, parent, id, rectangle), OverwriteMode(false), MouseMarking(false),
 	Border(border), Background(true), OverrideColorEnabled(false), MarkBegin(0), MarkEnd(0),
 	OverrideColor(video::SColor(101,255,255,255)), OverrideFont(0), LastBreakFont(0),
 	Operator(0), BlinkStartTime(0), CursorBlinkTime(350), CursorChar(L"_"), CursorPos(0), HScrollPos(0), VScrollPos(0), Max(0),
 	WordWrap(false), MultiLine(false), AutoScroll(true), PasswordBox(false),
 	PasswordChar(L'*'), HAlign(EGUIA_UPPERLEFT), VAlign(EGUIA_CENTER),
-	CurrentTextRect(0,0,1,1), FrameRect(rectangle)
+	CurrentTextRect(0,0,1,1), FrameRect(rectangle), Writable(writable)
 {
 	#ifdef _DEBUG
 	setDebugName("CGUIEditBox");
@@ -312,7 +312,7 @@ bool CGUIEditBox::processKey(const SEvent& event)
 				sc = Text.subString(realmbgn, realmend - realmbgn).c_str();
 				Operator->copyToClipboard(sc.c_str());
 
-				if (isEnabled())
+				if (isWritable())
 				{
 					// delete
 					core::stringw s;
@@ -328,7 +328,7 @@ bool CGUIEditBox::processKey(const SEvent& event)
 			}
 			break;
 		case KEY_KEY_V:
-			if ( !isEnabled() )
+			if ( !isWritable() )
 				break;
 
 			// paste from the clipboard
@@ -576,13 +576,13 @@ bool CGUIEditBox::processKey(const SEvent& event)
 			}
 			break;
 		case KEY_INSERT:
-			if ( !isEnabled() )
+			if ( !isWritable() )
 				break;
 
 			OverwriteMode = !OverwriteMode;
 			break;
 		case KEY_DELETE:
-			if ( !isEnabled() )
+			if ( !isWritable() )
 				break;
 
 			if (keyDelete())
@@ -615,7 +615,7 @@ bool CGUIEditBox::processKey(const SEvent& event)
 			return true;
 
 		case KEY_BACK:
-			if ( !isEnabled() )
+			if ( !isWritable() )
 				break;
 
 			if (Text.size())
@@ -662,7 +662,7 @@ bool CGUIEditBox::processKey(const SEvent& event)
 			// We get a keykode != 127 when delete key on numlock is pressed with numlock on.
 			if (event.KeyInput.Char == 127)
 			{
-				if ( !isEnabled() )
+				if ( !isWritable() )
 					break;
 
 				if (keyDelete())
@@ -937,7 +937,7 @@ void CGUIEditBox::draw()
 		}
 
 		// draw cursor
-		if ( isEnabled() )
+		if ( isWritable() )
 		{
 			if (WordWrap || MultiLine)
 			{
@@ -1392,7 +1392,7 @@ s32 CGUIEditBox::getLineFromPos(s32 pos)
 
 void CGUIEditBox::inputChar(wchar_t c)
 {
-	if (!isEnabled())
+	if (!isWritable())
 		return;
 
 	if (c != 0)

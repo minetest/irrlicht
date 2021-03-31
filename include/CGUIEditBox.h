@@ -22,7 +22,7 @@ namespace gui
 
 		//! constructor
 		CGUIEditBox(const wchar_t* text, bool border, IGUIEnvironment* environment,
-			IGUIElement* parent, s32 id, const core::rect<s32>& rectangle);
+			IGUIElement* parent, s32 id, const core::rect<s32>& rectangle, bool writable = true);
 
 		//! destructor
 		virtual ~CGUIEditBox();
@@ -136,6 +136,12 @@ namespace gui
 		//! Returns true if the edit box is currently a password box.
 		virtual bool isPasswordBox() const _IRR_OVERRIDE_;
 
+		//! Sets whether the edit box is writable. Note that "true" does not automatically enable the edit box.
+		virtual void setWritable(bool writable) { Writable = writable; };
+
+		//! Returns true if the edit box is enabled and writable
+		virtual bool isWritable() { return IsEnabled and Writable; };
+
 		//! Updates the absolute position, splits text if required
 		virtual void updateAbsolutePosition() _IRR_OVERRIDE_;
 
@@ -196,6 +202,8 @@ namespace gui
 		core::array< s32 > BrokenTextPositions;
 
 		core::rect<s32> CurrentTextRect, FrameRect; // temporary values
+		
+		bool Writable; // Put here to surpress "FrameRect will be initialized after ..." warning
 	};
 
 
