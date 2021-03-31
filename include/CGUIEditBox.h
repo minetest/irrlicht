@@ -147,27 +147,27 @@ namespace gui
 
 	protected:
 		//! Breaks the single text line.
-		void breakText();
+		virtual void breakText();
 		//! sets the area of the given line
-		void setTextRect(s32 line);
+		virtual void setTextRect(s32 line);
 		//! returns the line number that the cursor is on
-		s32 getLineFromPos(s32 pos);
+		virtual s32 getLineFromPos(s32 pos);
 		//! adds a letter to the edit box
-		void inputChar(wchar_t c);
+		virtual void inputChar(wchar_t c);
 		//! calculates the current scroll position
-		void calculateScrollPos();
+		virtual void calculateScrollPos();
 		//! calculated the FrameRect
-		void calculateFrameRect();
+		virtual void calculateFrameRect();
 		//! send some gui event to parent
-		void sendGuiEvent(EGUI_EVENT_TYPE type);
+		virtual void sendGuiEvent(EGUI_EVENT_TYPE type);
 		//! set text markers
-		void setTextMarkers(s32 begin, s32 end);
+		virtual void setTextMarkers(s32 begin, s32 end);
 		//! delete current selection or next char
-		bool keyDelete();
+		virtual bool keyDelete();
 
-		bool processKey(const SEvent& event);
-		bool processMouse(const SEvent& event);
-		s32 getCursorPos(s32 x, s32 y);
+		virtual bool processKey(const SEvent& event);
+		virtual bool processMouse(const SEvent& event);
+		virtual s32 getCursorPos(s32 x, s32 y);
 
 		bool OverwriteMode;
 		bool MouseMarking;
