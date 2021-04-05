@@ -1159,7 +1159,7 @@ bool CIrrDeviceLinux::run()
 		} // end while
 
 		// Update IME information
-		if (GUIEnvironment)
+		if (XInputContext && GUIEnvironment)
 		{
 			gui::IGUIElement *elem = GUIEnvironment->getFocus();
 			if (elem && elem->acceptsIME())
