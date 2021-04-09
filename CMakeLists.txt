@@ -5,10 +5,6 @@ project(Irrlicht
 	LANGUAGES CXX
 )
 
-set(IRRLICHT_VERSION_MAJOR 1)
-set(IRRLICHT_VERSION_MINOR 9)
-set(IRRLICHT_VERSION_RELEASE 0)
-
 message(STATUS "*** Building IrrlichtMt ${PROJECT_VERSION} ***")
 
 if(ANDROID)
