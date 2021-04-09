@@ -88,7 +88,6 @@ jobs:
         env:
           CC: x86_64-w64-mingw32-gcc
           CXX: x86_64-w64-mingw32-g++
-
   macos:
     runs-on: macos-10.15
     steps:
@@ -102,3 +101,64 @@ jobs:
         run: |
           cmake . -DCMAKE_FIND_FRAMEWORK=LAST
           make -j3
+  msvc:
+    name: VS 2019 ${{ matrix.config.arch }}
+    runs-on: windows-2019
+    env:
+      VCPKG_VERSION: 0bf3923f9fab4001c00f0f429682a0853b5749e0
+#                    2020.11
+      vcpkg_packages: zlib libpng libjpeg-turbo
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {
+              arch: x86,
+              generator: "-G'Visual Studio 16 2019' -A Win32",
+              vcpkg_triplet: x86-windows
+            }
+          - {
+              arch: x64,
+              generator: "-G'Visual Studio 16 2019' -A x64",
+              vcpkg_triplet: x64-windows
+            }
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Restore from cache and run vcpkg
+        uses: lukka/run-vcpkg@v5
+        with:
+          vcpkgArguments: ${{env.vcpkg_packages}}
+          vcpkgDirectory: '${{ github.workspace }}\vcpkg'
+          appendedCacheKey: ${{ matrix.config.vcpkg_triplet }}
+          vcpkgGitCommitId: ${{ env.VCPKG_VERSION }}
+          vcpkgTriplet: ${{ matrix.config.vcpkg_triplet }}
+
+      - name: CMake
+        run: |
+            cmake ${{matrix.config.generator}}  `
+            -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake"  `
+            -DCMAKE_BUILD_TYPE=Release .
+
+      - name: Build
+        run: cmake --build . --config Release
+
+      - name: test
+        run: dir D:\a\irrlicht\irrlicht\lib\Win32-gcc\Release\
+
+      - name: Create artifact folder
+        run: |
+          mkdir artifact/
+          mkdir artifact/lib/
+
+      - name: Move dlls into artifact folder
+        run: move lib\Win32-gcc\Release\* artifact\lib\
+
+      - name: Move includes into artifact folder
+        run: move include artifact/
+
+      - uses: actions/upload-artifact@v1
+        with:
+          name: msvc-${{ matrix.config.arch }}
+          path: artifact/
