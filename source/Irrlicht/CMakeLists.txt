@@ -63,6 +63,7 @@ endif()
 # Platform-specific libs
 
 if(ANDROID)
+	enable_language(C)
 	add_library(native_app_glue STATIC ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 	include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
 	link_libraries(native_app_glue -landroid -llog)
