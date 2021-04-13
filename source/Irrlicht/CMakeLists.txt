@@ -394,16 +394,10 @@ add_library(IrrlichtMt
 )
 
 set_target_properties(IrrlichtMt PROPERTIES
-	VERSION ${VERSION}
-	SOVERSION ${IRRLICHT_VERSION_MAJOR}.${IRRLICHT_VERSION_MINOR}
+	VERSION ${PROJECT_VERSION}
+	SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
 
 if(WIN32)
 	set_target_properties(IrrlichtMt PROPERTIES PREFIX "") # for DLL name
 endif()
-
-# Installation
-
-include(GNUInstallDirs)
-install(TARGETS IrrlichtMt DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt")
