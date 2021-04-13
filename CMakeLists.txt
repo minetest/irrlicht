@@ -35,7 +35,7 @@ install(TARGETS IrrlichtMt
 )
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/"
-	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/IrrlichtMt"
+	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt"
 )
 
 # Installation of CMake target and configuration files.
