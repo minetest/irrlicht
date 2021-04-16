@@ -17,9 +17,9 @@
 	#endif
 	#include <GL/gl.h>
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		#include "glext.h"
+		#include <GL/glext.h>
 	#endif
-	#include "wglext.h"
+	#include <GL/wglext.h>
 
 	#ifdef _MSC_VER
 		#pragma comment(lib, "OpenGL32.lib")
@@ -31,7 +31,7 @@
 	#endif
 	#include <OpenGL/gl.h>
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		#include "glext.h"
+		#include <GL/glext.h>
 	#endif
 #elif defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && !defined(_IRR_COMPILE_WITH_X11_DEVICE_)
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
@@ -41,10 +41,8 @@
 		#define GL_GLEXT_PROTOTYPES 1
 		#define GLX_GLXEXT_PROTOTYPES 1
 	#endif
-	#define NO_SDL_GLEXT
 	#include <SDL/SDL_video.h>
 	#include <SDL/SDL_opengl.h>
-	#include "glext.h"
 #else
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		#define GL_GLEXT_LEGACY 1
@@ -56,9 +54,8 @@
 	#include <GL/gl.h>
 	#include <GL/glx.h>
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-	#include "glext.h"
-	#undef GLX_ARB_get_proc_address
-	#include "glxext.h"
+	#include <GL/glext.h>
+	#include <GL/glxext.h>
 	#endif
 #endif
 
