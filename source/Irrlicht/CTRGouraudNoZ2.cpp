@@ -84,7 +84,7 @@ public:
 
 	//! draws an indexed triangle list
 	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) _IRR_OVERRIDE_;
-	virtual bool canWireFrame () { return true; }
+	virtual bool canWireFrame () _IRR_OVERRIDE_ { return true; }
 
 protected:
 	virtual void fragmentShader();

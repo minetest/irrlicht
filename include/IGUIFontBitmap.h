@@ -36,7 +36,7 @@ public:
 	kerning value. For example, EGFT_BITMAP will add the right kerning value of previousLetter to the
 	left side kerning value of thisLetter, then add the global value.
 	*/
-	virtual s32 getKerningWidth(const wchar_t* thisLetter=0, const wchar_t* previousLetter=0) const = 0;
+	virtual s32 getKerningWidth(const wchar_t* thisLetter=0, const wchar_t* previousLetter=0) const _IRR_OVERRIDE_ = 0;
 };
 
 } // end namespace gui

@@ -277,7 +277,7 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data)
 		}
 	}
 
-
+#if 0
 	//visualize mipmap
 	for (i = 1; i < 0 && i < array_size(MipMap); ++i)
 	{
@@ -327,7 +327,7 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data)
 			}
 		}
 	}
-
+#endif
 	calcDerivative();
 }
 

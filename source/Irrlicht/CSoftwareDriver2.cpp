@@ -748,9 +748,11 @@ bool CBurningVideoDriver::setRenderTargetEx(IRenderTarget* target, u16 clearFlag
 	return true;
 }
 
+/*
 static inline f32 map_value(f32 x, f32 in_min, f32 in_max, f32 out_min, f32 out_max) {
 	return (x - in_min) * (out_max - out_min) / (f32)(in_max - in_min) + out_min;
 }
+*/
 
 //! sets a render target
 void CBurningVideoDriver::setRenderTargetImage2(video::IImage* color, video::IImage* depth, video::IImage* stencil)
@@ -2166,8 +2168,8 @@ void CBurningVideoDriver::drawVertexPrimitiveList(const void* vertices, u32 vert
 		{
 			// if primitive fully outside or outside on same side
 			continue;
-			vOut = 0;
-			vertex_from_clipper = 0;
+			//vOut = 0;
+			//vertex_from_clipper = 0;
 		}
 		else if (clipMask_o == VERTEX4D_INSIDE)
 		{
