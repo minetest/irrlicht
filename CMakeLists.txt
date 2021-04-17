@@ -7,6 +7,9 @@ project(Irrlicht
 
 message(STATUS "*** Building IrrlichtMt ${PROJECT_VERSION} ***")
 
+# Will also be used in subdirectories.
+include(GNUInstallDirs)
+
 if(ANDROID)
 	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/Android)
 elseif(APPLE)
@@ -28,14 +31,13 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 add_subdirectory(source/Irrlicht)
 
 # Installation of library and headers.
-include(GNUInstallDirs)
 install(TARGETS IrrlichtMt
 	EXPORT IrrlichtMt-export
 	DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 )
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/"
-	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/IrrlichtMt"
+	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt"
 )
 
 # Installation of CMake target and configuration files.

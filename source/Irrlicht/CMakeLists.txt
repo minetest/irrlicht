@@ -1,7 +1,3 @@
-include_directories(
-	${CMAKE_SOURCE_DIR}/include
-	${CMAKE_CURRENT_SOURCE_DIR}
-)
 add_definitions(-DIRRLICHT_EXPORTS=1)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_definitions(-D_DEBUG)
@@ -26,8 +22,6 @@ endif()
 find_package(ZLIB REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(PNG REQUIRED)
-include_directories(${ZLIB_INCLUDE_DIR} ${JPEG_INCLUDE_DIR} ${PNG_INCLUDE_DIR})
-link_libraries(${ZLIB_LIBRARY} ${JPEG_LIBRARY} ${PNG_LIBRARY})
 
 # To configure the features available in this Irrlicht build please edit
 # include/IrrCompileConfig.h and re-run CMake from a clean state
@@ -44,42 +38,37 @@ if(OGLES1_ENABLED)
 	find_library(EGL_LIBRARY NAMES EGL REQUIRED)
 
 	message(STATUS "Found OpenGLES: ${OPENGLES_LIBRARY}")
-	link_libraries(${OPENGLES_LIBRARY} ${EGL_LIBRARY})
 endif()
 check_symbol_exists(_IRR_COMPILE_WITH_OGLES2_ "IrrCompileConfig.h" OGLES2_ENABLED)
 if(OGLES2_ENABLED)
 	find_package(OpenGLES2 REQUIRED)
-	include_directories(${OPENGLES2_INCLUDE_DIR} ${EGL_INCLUDE_DIR})
-	link_libraries(${OPENGLES2_LIBRARIES})
 endif()
 check_symbol_exists(_IRR_COMPILE_WITH_OPENGL_ "IrrCompileConfig.h" OGL_ENABLED)
 if(OGL_ENABLED)
 	set(OpenGL_GL_PREFERENCE "LEGACY")
 	find_package(OpenGL REQUIRED)
-	include_directories(${OPENGL_INCLUDE_DIR})
-	link_libraries(${OPENGL_LIBRARIES})
 endif()
 
 # Platform-specific libs
 
 if(ANDROID)
 	add_library(native_app_glue STATIC ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
-	include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
-	link_libraries(native_app_glue -landroid -llog)
 elseif(APPLE)
 	find_library(COCOA_LIB Cocoa REQUIRED)
 	find_library(IOKIT_LIB IOKit REQUIRED)
-	link_libraries(${COCOA_LIB} ${IOKIT_LIB})
 
 	add_definitions(-DGL_SILENCE_DEPRECATION)
-elseif(WIN32)
-	link_libraries(gdi32 winmm)
 else()
 	# Unix probably
 	find_package(X11 REQUIRED)
-	include_directories(${X11_INCLUDE_DIR})
-	link_libraries(${X11_X11_LIB} ${X11_Xxf86vm_LIB})
 endif()
+
+# Includes for object libraries
+
+include_directories(
+	"${PROJECT_SOURCE_DIR}/include"
+	"${CMAKE_CURRENT_SOURCE_DIR}"
+)
 
 # Source files
 
@@ -380,6 +369,7 @@ add_library(IRRGUIOBJ OBJECT
 
 option(BUILD_SHARED_LIBS "Build shared library" TRUE)
 
+# IrrlichtMt target
 add_library(IrrlichtMt
 	$<TARGET_OBJECTS:IRRMESHOBJ>
 	$<TARGET_OBJECTS:IRROBJ>
@@ -390,6 +380,41 @@ add_library(IrrlichtMt
 	$<TARGET_OBJECTS:IRRIOOBJ>
 	$<TARGET_OBJECTS:IRROTHEROBJ>
 	$<TARGET_OBJECTS:IRRGUIOBJ>
+)
+
+# Alias target provides add_submodule compatibility
+add_library(IrrlichtMt::IrrlichtMt ALIAS IrrlichtMt)
+
+target_include_directories(IrrlichtMt
+	PUBLIC
+		"$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/>"
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt>"
+	PRIVATE
+		"$<$<BOOL:OGLES2_ENABLED>:${OPENGLES2_INCLUDE_DIR}>"
+
+		"$<$<BOOL:ANDROID>:${ANDROID_NDK}/sources/android/native_app_glue}>"
+		"$<$<BOOL:REQUIRE_X11>:${X11_INCLUDE_DIR}>"
+)
+
+target_link_libraries(IrrlichtMt
+	PRIVATE
+		ZLIB::ZLIB
+		JPEG::JPEG
+		PNG::PNG
+
+		"$<$<BOOL:OGL_ENABLED>:OpenGL::GL>"
+		"$<$<BOOL:OGLES1_ENABLED>:${OPENGLES_LIBRARY}>"
+		"$<$<BOOL:OGLES1_ENABLED>:OpenGL::EGL>"
+		"$<$<BOOL:OGLES2_ENABLED>:${OPENGLES2_LIBRARIES}>"
+
+		"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
+		"$<$<PLATFORM_ID:Darwin>:${COCOA_LIB}>"
+		"$<$<PLATFORM_ID:DARWIN>:${IOKIT_LIB}>"
+		"$<$<PLATFORM_ID:Windows>:gdi32>"
+		"$<$<PLATFORM_ID:WINDOWS>:winmm>"
+		"$<$<BOOL:REQUIRE_X11>:${X11_X11_LIB}>"
+		"$<$<BOOL:REQUIRE_X11>:${X11_Xxf86vm_LIB}>"
 )
 
 set_target_properties(IrrlichtMt PROPERTIES
