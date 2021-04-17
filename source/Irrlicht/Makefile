@@ -11,6 +11,10 @@ VERSION_RELEASE = 0
 # This will compile Irrlicht, create a static lib (libIrrlicht.a), and copy it
 # into the subdirectory lib/Linux. That's all.
 #
+# If you switch any settings (like debug/release/static/shared) then first run:
+#
+# make clean
+#
 # If you want Irrlicht to be compiled as shared lib (libIrrlicht.so.versionnumber), then run:
 #
 # make sharedlib
@@ -74,17 +78,18 @@ CPPFLAGS += $(CXXINCS) -DIRRLICHT_EXPORTS=1
 CXXFLAGS += -Wall -pipe -fno-exceptions -fno-rtti
 #CXXFLAGS += -std=gnu++11 -U__STRICT_ANSI__
 ifndef NDEBUG
-CXXFLAGS += -g -D_DEBUG
+CPPFLAGS += -g -D_DEBUG
 else
-CXXFLAGS += -O3
+CPPFLAGS += -O3
 endif
 ifdef PROFILE
-CXXFLAGS += -pg
+CPPFLAGS += -pg
 endif
-CFLAGS := -O3 -DPNG_THREAD_UNSAFE_OK -DPNG_NO_MMX_CODE -DPNG_NO_MNG_FEATURES -DPNG_ARM_NEON_OPT=0
+CFLAGS := -DPNG_THREAD_UNSAFE_OK -DPNG_NO_MMX_CODE -DPNG_NO_MNG_FEATURES -DPNG_ARM_NEON_OPT=0
 
-sharedlib sharedlib_osx: CXXFLAGS += -fPIC
-sharedlib sharedlib_osx: CFLAGS += -fPIC
+sharedlib sharedlib_osx: CPPFLAGS += -fPIC
+# TODO: also necessary on sharedlib_osx?
+sharedlib: LDFLAGS += -fPIC
 
 #multilib handling
 ifeq ($(HOSTTYPE), x86_64)
@@ -173,11 +178,11 @@ TAGS:
 
 # Create dependency files for automatic recompilation
 %.d:%.cpp
-	$(CXX) $(CPPFLAGS) -MM -MF $@ $<
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MM -MF $@ $<
 
 # Create dependency files for automatic recompilation
 %.d:%.c
-	$(CC) $(CPPFLAGS) -MM -MF $@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) -MM -MF $@ $<
 
 # Create object files from objective-c code
 %.o:%.mm
