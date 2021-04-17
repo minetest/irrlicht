@@ -65,6 +65,7 @@ namespace video
 		s32 PixelFormat;
 		PIXELFORMATDESCRIPTOR pfd;
 		ECOLOR_FORMAT ColorFormat;
+        void* FunctionPointers[1];
 	};
 }
 }

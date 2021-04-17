@@ -26,6 +26,7 @@ CWGLManager::CWGLManager()
 	#ifdef _DEBUG
 	setDebugName("CWGLManager");
 	#endif
+	memset(FunctionPointers, 0, sizeof(FunctionPointers));
 }
 
 CWGLManager::~CWGLManager()
@@ -205,6 +206,9 @@ bool CWGLManager::initialize(const SIrrlichtCreationParameters& params, const SE
 #ifdef _DEBUG
 	os::Printer::log("WGL_extensions", wglExtensions);
 #endif
+
+	// Without a GL context we can't call wglGetProcAddress so store this for later
+	FunctionPointers[0] = (void*)wglGetProcAddress("wglCreateContextAttribsARB");
 
 #ifdef WGL_ARB_pixel_format
 	PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormat_ARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
@@ -400,7 +404,7 @@ bool CWGLManager::generateContext()
 	HGLRC hrc;
 	// create rendering context
 #ifdef WGL_ARB_create_context
-	PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribs_ARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+	PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribs_ARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)FunctionPointers[0];
 	if (wglCreateContextAttribs_ARB)
 	{
 		// with 3.0 all available profiles should be usable, higher versions impose restrictions
