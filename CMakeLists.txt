@@ -29,7 +29,7 @@ add_subdirectory(source/Irrlicht)
 
 # Installation of library and headers.
 include(GNUInstallDirs)
-install(TARGETS IrrlichtMt
+install(TARGETS ${INSTALL_TARGETS}
 	EXPORT IrrlichtMt-export
 	DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 )

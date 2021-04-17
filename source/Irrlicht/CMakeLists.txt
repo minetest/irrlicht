@@ -401,3 +401,9 @@ set_target_properties(IrrlichtMt PROPERTIES
 if(WIN32)
 	set_target_properties(IrrlichtMt PROPERTIES PREFIX "") # for DLL name
 endif()
+
+if(ANDROID)
+	set(INSTALL_TARGETS IrrlichtMt native_app_glue PARENT_SCOPE)
+else()
+	set(INSTALL_TARGETS IrrlichtMt PARENT_SCOPE)
+endif()
