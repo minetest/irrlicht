@@ -144,9 +144,6 @@ jobs:
       - name: Build
         run: cmake --build . --config Release
 
-      - name: test
-        run: dir D:\a\irrlicht\irrlicht\lib\Win32-gcc\Release\
-
       - name: Create artifact folder
         run: |
           mkdir artifact/
@@ -158,7 +155,8 @@ jobs:
       - name: Move includes into artifact folder
         run: move include artifact/
 
-      - uses: actions/upload-artifact@v1
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
         with:
           name: msvc-${{ matrix.config.arch }}
           path: artifact/
