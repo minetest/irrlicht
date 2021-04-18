@@ -829,7 +829,7 @@ bool CIrrDeviceLinux::run()
 		{
 			XEvent event;
 			XNextEvent(XDisplay, &event);
-			if (acceptsIME() && XFilterEvent(&event, None))
+			if (XFilterEvent(&event, None))
 				continue;
 
 			switch (event.type)
@@ -1156,23 +1156,27 @@ bool CIrrDeviceLinux::run()
 				break;
 			} // end switch
 
+			// Update IME information
+			if (XInputContext && GUIEnvironment)
+			{
+				gui::IGUIElement *elem = GUIEnvironment->getFocus();
+				if (elem && elem->acceptsIME())
+				{
+					core::rect<s32> r = elem->getAbsolutePosition();
+					XPoint p;
+					p.x = (short)r.UpperLeftCorner.X;
+					p.y = (short)r.LowerRightCorner.Y;
+					XSetICFocus(XInputContext);
+					XVaNestedList l = XVaCreateNestedList(0, XNSpotLocation, &p, NULL);
+					XSetICValues(XInputContext, XNPreeditAttributes, l, NULL);
+					XFree(l);
+				} else {
+					XUnsetICFocus(XInputContext);
+				}
+			}
+
 		} // end while
 
-		// Update IME information
-		if (XInputContext && GUIEnvironment)
-		{
-			gui::IGUIElement *elem = GUIEnvironment->getFocus();
-			if (elem && elem->acceptsIME())
-			{
-				core::rect<s32> r = elem->getAbsolutePosition();
-				XPoint p;
-				p.x = (short)r.UpperLeftCorner.X;
-				p.y = (short)r.LowerRightCorner.Y;
-				XVaNestedList l = XVaCreateNestedList(0, XNSpotLocation, &p, NULL);
-				XSetICValues(XInputContext, XNPreeditAttributes, l, NULL);
-				XFree(l);
-			}
-		}
 	}
 #endif //_IRR_COMPILE_WITH_X11_
 
