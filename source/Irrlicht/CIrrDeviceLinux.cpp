@@ -148,6 +148,9 @@ CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 		if (!createWindow())
 			return;
 		setResizable(param.WindowResizable);
+#ifdef _IRR_COMPILE_WITH_X11_
+		createInputContext();
+#endif
 	}
 
 	// create cursor control
@@ -158,10 +161,6 @@ CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 
 	if (!VideoDriver)
 		return;
-
-#ifdef _IRR_COMPILE_WITH_X11_
-	createInputContext();
-#endif
 
 	createGUIAndScene();
 }
