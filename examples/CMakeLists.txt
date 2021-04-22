@@ -32,6 +32,9 @@ set(IRREXAMPLES
 if(WIN32)
 	list(APPEND IRREXAMPLES 14.Win32Window)
 endif()
+if(UNIX)
+	list(APPEND IRREXAMPLES AutomatedTest)
+endif()
 
 foreach(exname IN ITEMS ${IRREXAMPLES})
 	file(GLOB sources "${CMAKE_CURRENT_SOURCE_DIR}/${exname}/*.cpp")
