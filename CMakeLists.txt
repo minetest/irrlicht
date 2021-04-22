@@ -8,17 +8,19 @@ project(Irrlicht
 message(STATUS "*** Building IrrlichtMt ${PROJECT_VERSION} ***")
 
 if(ANDROID)
-	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/Android)
+	set(sysname Android)
 elseif(APPLE)
-	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/OSX)
+	set(sysname OSX)
+elseif(MSVC)
+	set(sysname Win32-VisualStudio)
 elseif(WIN32)
-	# good enough
-	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/Win32-gcc)
+	set(sysname Win32-gcc)
 else()
-	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/Linux)
+	set(sysname Linux)
 endif()
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/${sysname})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${sysname})
 
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type: Debug or Release" FORCE)
@@ -26,6 +28,11 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 add_subdirectory(source/Irrlicht)
+
+option(BUILD_EXAMPLES "Build example applications" FALSE)
+if(BUILD_EXAMPLES)
+	add_subdirectory(examples)
+endif()
 
 # Installation of library and headers.
 include(GNUInstallDirs)

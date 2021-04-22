@@ -18,6 +18,7 @@ The following libraries are required to be installed:
 
 Aside from standard search options (`ZLIB_INCLUDE_DIR`, `ZLIB_LIBRARY`, ...) the following options are available:
 * `BUILD_SHARED_LIBS` (default: `ON`) - Build IrrlichtMt as a shared library
+* `BUILD_EXAMPLES` (default: `OFF`) - Build example applications
 
 e.g. on a Linux system you might want to build for local use like this:
 
