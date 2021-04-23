@@ -62,6 +62,7 @@ elseif(APPLE)
 else()
 	# Unix probably
 	find_package(X11 REQUIRED)
+	set(REQUIRE_X11 TRUE)
 endif()
 
 # Includes for object libraries
@@ -432,4 +433,3 @@ if(ANDROID)
 else()
 	set(INSTALL_TARGETS IrrlichtMt PARENT_SCOPE)
 endif()
->>>>>>> 2461e899ba9046d406248216d92f5ac11a02e6d2
