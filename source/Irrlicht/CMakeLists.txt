@@ -392,8 +392,8 @@ target_include_directories(IrrlichtMt
 		"$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/>"
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
 		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt>"
-		${PNG_INCLUDE_DIR}
 	PRIVATE
+		${PNG_INCLUDE_DIR}
 		"$<$<BOOL:OGL_ENABLED>:${OPENGL_INCLUDE_DIR}>"
 		"$<$<BOOL:OGLES2_ENABLED>:${OPENGLES2_INCLUDE_DIR}>"
 
@@ -402,11 +402,10 @@ target_include_directories(IrrlichtMt
 )
 
 target_link_libraries(IrrlichtMt
-	PUBLIC
-		JPEG::JPEG
-		${PNG_LIBRARY}
 	PRIVATE
 		ZLIB::ZLIB
+		JPEG::JPEG
+		${PNG_LIBRARY}
 
 		"$<$<BOOL:OGL_ENABLED>:${OPENGL_LIBRARIES}>"
 		"$<$<BOOL:OGLES1_ENABLED>:${OPENGLES_LIBRARY}>"
