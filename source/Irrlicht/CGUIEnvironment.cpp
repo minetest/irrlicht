@@ -656,6 +656,10 @@ bool CGUIEnvironment::postEventFromUser(const SEvent& event)
 			}
 		}
 		break;
+	case EET_STRING_INPUT_EVENT:
+		if (Focus && Focus->OnEvent(event))
+			return true;
+		break;
 	default:
 		break;
 	} // end switch

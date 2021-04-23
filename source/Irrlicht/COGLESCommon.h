@@ -20,9 +20,6 @@ typedef char GLchar;
 #include <GLES/gl.h>
 #include <GLES/glext.h>
 #include <EGL/eglplatform.h>
-#if defined(_IRR_OGLES1_USE_EXTPOINTER_)
-#include "gles-ext.h"
-#endif
 #endif
 
 #ifndef GL_BGRA

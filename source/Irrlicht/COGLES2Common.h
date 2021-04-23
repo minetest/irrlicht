@@ -29,7 +29,7 @@
 #include <EGL/eglplatform.h>
 typedef char GLchar;
 #if defined(_IRR_OGLES2_USE_EXTPOINTER_)
-#include "gles2-ext.h"
+#include <GLES2/gl2ext.h>
 #endif
 #endif
 

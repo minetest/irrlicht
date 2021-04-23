@@ -52,6 +52,7 @@ endif()
 # Platform-specific libs
 
 if(ANDROID)
+	enable_language(C)
 	add_library(native_app_glue STATIC ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 elseif(APPLE)
 	find_library(COCOA_LIB Cocoa REQUIRED)
@@ -425,3 +426,10 @@ set_target_properties(IrrlichtMt PROPERTIES
 if(WIN32)
 	set_target_properties(IrrlichtMt PROPERTIES PREFIX "") # for DLL name
 endif()
+
+if(ANDROID)
+	set(INSTALL_TARGETS IrrlichtMt native_app_glue PARENT_SCOPE)
+else()
+	set(INSTALL_TARGETS IrrlichtMt PARENT_SCOPE)
+endif()
+>>>>>>> 2461e899ba9046d406248216d92f5ac11a02e6d2

@@ -13,6 +13,7 @@
 #include <locale.h>
 #include "IEventReceiver.h"
 #include "ISceneManager.h"
+#include "IGUIElement.h"
 #include "IGUIEnvironment.h"
 #include "os.h"
 #include "CTimer.h"
@@ -147,6 +148,9 @@ CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 		if (!createWindow())
 			return;
 		setResizable(param.WindowResizable);
+#ifdef _IRR_COMPILE_WITH_X11_
+		createInputContext();
+#endif
 	}
 
 	// create cursor control
@@ -157,10 +161,6 @@ CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 
 	if (!VideoDriver)
 		return;
-
-#ifdef _IRR_COMPILE_WITH_X11_
-	createInputContext();
-#endif
 
 	createGUIAndScene();
 }
@@ -705,6 +705,14 @@ bool CIrrDeviceLinux::createInputContext()
 		return false;
 	}
 
+	// Load XMODIFIERS (e.g. for IMEs)
+	if (!XSetLocaleModifiers(""))
+	{
+		setlocale(LC_CTYPE, oldLocale.c_str());
+		os::Printer::log("XSetLocaleModifiers failed. Falling back to non-i18n input.", ELL_WARNING);
+		return false;
+	}
+
 	XInputMethod = XOpenIM(XDisplay, NULL, NULL, NULL);
 	if ( !XInputMethod )
 	{
@@ -820,7 +828,7 @@ bool CIrrDeviceLinux::run()
 		{
 			XEvent event;
 			XNextEvent(XDisplay, &event);
-			if (XFilterEvent(&event, XWindow))
+			if (XFilterEvent(&event, None))
 				continue;
 
 			switch (event.type)
@@ -998,18 +1006,29 @@ bool CIrrDeviceLinux::run()
 					SKeyMap mp;
 					if ( XInputContext )
 					{
-						wchar_t buf[8]={0};
+						wchar_t buf[64]={0};
 						Status status;
-						int strLen = XwcLookupString(XInputContext, &event.xkey, buf, sizeof(buf), &mp.X11Key, &status);
+						int strLen = XwcLookupString(XInputContext, &event.xkey, buf, sizeof(buf)/sizeof(wchar_t)-1, &mp.X11Key, &status);
 						if ( status == XBufferOverflow )
 						{
 							os::Printer::log("XwcLookupString needs a larger buffer", ELL_INFORMATION);
 						}
 						if ( strLen > 0 && (status == XLookupChars || status == XLookupBoth) )
 						{
-							if ( strLen > 1 )
-								os::Printer::log("Additional returned characters dropped", ELL_INFORMATION);
-							irrevent.KeyInput.Char = buf[0];
+							if (strLen > 1)
+							{
+								// Multiple characters: send string event
+								irrevent.EventType = irr::EET_STRING_INPUT_EVENT;
+								irrevent.StringInput.Str = new core::stringw(buf);
+								postEventFromUser(irrevent);
+								delete irrevent.StringInput.Str;
+								irrevent.StringInput.Str = NULL;
+								break;
+							}
+							else
+							{
+								irrevent.KeyInput.Char = buf[0];
+							}
 						}
 						else
 						{
@@ -1044,7 +1063,6 @@ bool CIrrDeviceLinux::run()
 					irrevent.KeyInput.Control = (event.xkey.state & ControlMask) != 0;
 					irrevent.KeyInput.Shift = (event.xkey.state & ShiftMask) != 0;
 					irrevent.KeyInput.Key = getKeyCode(event);
-
 					postEventFromUser(irrevent);
 				}
 				break;
@@ -1137,7 +1155,27 @@ bool CIrrDeviceLinux::run()
 				break;
 			} // end switch
 
+			// Update IME information
+			if (XInputContext && GUIEnvironment)
+			{
+				gui::IGUIElement *elem = GUIEnvironment->getFocus();
+				if (elem && elem->acceptsIME())
+				{
+					core::rect<s32> r = elem->getAbsolutePosition();
+					XPoint p;
+					p.x = (short)r.UpperLeftCorner.X;
+					p.y = (short)r.LowerRightCorner.Y;
+					XSetICFocus(XInputContext);
+					XVaNestedList l = XVaCreateNestedList(0, XNSpotLocation, &p, NULL);
+					XSetICValues(XInputContext, XNPreeditAttributes, l, NULL);
+					XFree(l);
+				} else {
+					XUnsetICFocus(XInputContext);
+				}
+			}
+
 		} // end while
+
 	}
 #endif //_IRR_COMPILE_WITH_X11_
 

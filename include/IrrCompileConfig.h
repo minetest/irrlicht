@@ -6,8 +6,8 @@
 #define __IRR_COMPILE_CONFIG_H_INCLUDED__
 
 //! Identifies Irrlicht fork customized for the Minetest engine
-#define IRRLICHT_VERSION_MT_REVISION 1
-#define IRRLICHT_VERSION_MT "mt1"
+#define IRRLICHT_VERSION_MT_REVISION 2
+#define IRRLICHT_VERSION_MT "mt2"
 
 //! Irrlicht SDK Version
 #define IRRLICHT_VERSION_MAJOR 1
@@ -91,6 +91,8 @@
 #define _IRR_IOS_PLATFORM_
 #define _IRR_COMPILE_WITH_IOS_DEVICE_
 #define NO_IRR_COMPILE_WITH_OPENGL_
+#define NO_IRR_COMPILE_WITH_SOFTWARE_
+#define NO_IRR_COMPILE_WITH_BURNINGSVIDEO_
 // The application state events and following methods: IrrlichtDevice::isWindowActive, IrrlichtDevice::isWindowFocused,
 // IrrlichtDevice::isWindowMinimized works out of box only if you'll use built-in CIrrDelegateiOS,
 // so _IRR_COMPILE_WITH_IOS_BUILTIN_MAIN_ must be enabled in this case. If you need a custom UIApplicationDelegate
@@ -125,6 +127,8 @@
 #define _IRR_COMPILE_WITH_ANDROID_DEVICE_
 #define _IRR_COMPILE_ANDROID_ASSET_READER_
 #define NO_IRR_COMPILE_WITH_OPENGL_
+#define NO_IRR_COMPILE_WITH_SOFTWARE_
+#define NO_IRR_COMPILE_WITH_BURNINGSVIDEO_
 #endif
 
 #if defined(__SVR4) && defined(__sun)

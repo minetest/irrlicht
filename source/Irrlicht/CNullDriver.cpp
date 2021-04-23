@@ -725,7 +725,9 @@ video::ITexture* CNullDriver::findTexture(const io::path& filename)
 
 ITexture* CNullDriver::createDeviceDependentTexture(const io::path& name, IImage* image)
 {
-	return new SDummyTexture(name, ETT_2D);
+	SDummyTexture* dummy = new SDummyTexture(name, ETT_2D);
+	dummy->setSize(image->getDimension());
+	return dummy;
 }
 
 ITexture* CNullDriver::createDeviceDependentTextureCubemap(const io::path& name, const core::array<IImage*>& image)
