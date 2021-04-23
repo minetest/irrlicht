@@ -407,7 +407,7 @@ target_link_libraries(IrrlichtMt
 
 		"$<$<BOOL:OGL_ENABLED>:OpenGL::GL>"
 		"$<$<BOOL:OGLES1_ENABLED>:${OPENGLES_LIBRARY}>"
-		"$<$<BOOL:OGLES1_ENABLED>:OpenGL::EGL>"
+		"$<$<BOOL:OGLES1_ENABLED>:${EGL_LIBRARY}>"
 		"$<$<BOOL:OGLES2_ENABLED>:${OPENGLES2_LIBRARIES}>"
 
 		"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
