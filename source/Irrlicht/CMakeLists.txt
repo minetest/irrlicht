@@ -401,10 +401,11 @@ target_include_directories(IrrlichtMt
 )
 
 target_link_libraries(IrrlichtMt
-	PRIVATE
-		ZLIB::ZLIB
+	PUBLIC
 		JPEG::JPEG
 		PNG::PNG
+	PRIVATE
+		ZLIB::ZLIB
 
 		"$<$<BOOL:OGL_ENABLED>:${OPENGL_LIBRARIES}>"
 		"$<$<BOOL:OGLES1_ENABLED>:${OPENGLES_LIBRARY}>"
