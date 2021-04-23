@@ -408,8 +408,6 @@ else()
 	set(INSTALL_TARGETS IrrlichtMt)
 endif()
 
-# Installation of library and headers.
-include(GNUInstallDirs)
 install(TARGETS ${INSTALL_TARGETS}
 	EXPORT IrrlichtMt-export
 	DESTINATION "${CMAKE_INSTALL_LIBDIR}"
