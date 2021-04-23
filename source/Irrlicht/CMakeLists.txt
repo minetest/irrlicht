@@ -403,7 +403,14 @@ if(WIN32)
 endif()
 
 if(ANDROID)
-	set(INSTALL_TARGETS IrrlichtMt native_app_glue PARENT_SCOPE)
+	set(INSTALL_TARGETS IrrlichtMt native_app_glue)
 else()
-	set(INSTALL_TARGETS IrrlichtMt PARENT_SCOPE)
+	set(INSTALL_TARGETS IrrlichtMt)
 endif()
+
+# Installation of library and headers.
+include(GNUInstallDirs)
+install(TARGETS ${INSTALL_TARGETS}
+	EXPORT IrrlichtMt-export
+	DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+)
