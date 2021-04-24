@@ -7,6 +7,8 @@ project(Irrlicht
 
 message(STATUS "*** Building IrrlichtMt ${PROJECT_VERSION} ***")
 
+include(GNUInstallDirs)
+
 if(ANDROID)
 	set(sysname Android)
 elseif(APPLE)
@@ -34,13 +36,7 @@ if(BUILD_EXAMPLES)
 	add_subdirectory(examples)
 endif()
 
-# Installation of library and headers.
-include(GNUInstallDirs)
-install(TARGETS ${INSTALL_TARGETS}
-	EXPORT IrrlichtMt-export
-	DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-)
-
+# Installation of headers.
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/"
 	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt"
 )
@@ -53,7 +49,7 @@ install(EXPORT IrrlichtMt-export
 )
 
 include(CMakePackageConfigHelpers)
-configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in"
+configure_package_config_file("${PROJECT_SOURCE_DIR}/Config.cmake.in"
 	"${CMAKE_CURRENT_BINARY_DIR}/IrrlichtMtConfig.cmake"
 	INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/IrrlichtMt"
 	NO_SET_AND_CHECK_MACRO

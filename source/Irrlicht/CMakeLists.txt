@@ -402,8 +402,14 @@ if(WIN32)
 	set_target_properties(IrrlichtMt PROPERTIES PREFIX "") # for DLL name
 endif()
 
+# Installation of library
 if(ANDROID)
-	set(INSTALL_TARGETS IrrlichtMt native_app_glue PARENT_SCOPE)
+	set(INSTALL_TARGETS IrrlichtMt native_app_glue)
 else()
-	set(INSTALL_TARGETS IrrlichtMt PARENT_SCOPE)
+	set(INSTALL_TARGETS IrrlichtMt)
 endif()
+
+install(TARGETS ${INSTALL_TARGETS}
+	EXPORT IrrlichtMt-export
+	DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+)
