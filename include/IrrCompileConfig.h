@@ -269,7 +269,11 @@ Depending on platform you may have to enable _IRR_OGLES1_USE_KHRONOS_API_HEADERS
 //! Define _IRR_COMPILE_WITH_OGLES2_ to compile the Irrlicht engine with OpenGL ES 2.0.
 /** If you do not wish the engine to be compiled with OpenGL ES 2.0, comment this
 define out. */
+#if defined(_IRR_ANDROID_PLATFORM_) || defined(_IRR_IOS_PLATFORM_)
+#define _IRR_COMPILE_WITH_OGLES2_
+#else
 //#define _IRR_COMPILE_WITH_OGLES2_
+#endif
 #ifdef NO_IRR_COMPILE_WITH_OGLES2_
 #undef _IRR_COMPILE_WITH_OGLES2_
 #endif
