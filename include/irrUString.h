@@ -72,10 +72,9 @@ static const irr::u16 UTF16_LO_SURROGATE = 0xDC00;
 
 namespace irr
 {
-	// Define our character types.
-	typedef u32 uchar32_t;
-	typedef u16 uchar16_t;
-	typedef u8 uchar8_t;
+	typedef char32_t uchar32_t;
+	typedef char16_t uchar16_t;
+	typedef char uchar8_t;
 
 namespace core
 {
@@ -883,19 +882,6 @@ public:
 		loadDataStream(c, length);
 	}
 
-	//! Constructor for copying a UTF-8 string from a pointer.
-	ustring16(const uchar8_t* const c)
-	: array(0), allocated(0), used(0)
-	{
-#if __BYTE_ORDER == __BIG_ENDIAN
-		encoding = unicode::EUTFE_UTF16_BE;
-#else
-		encoding = unicode::EUTFE_UTF16_LE;
-#endif
-
-		append(c);
-	}
-
 
 	//! Constructor for copying a UTF-8 string from a single char.
 	ustring16(const char c)
@@ -908,20 +894,6 @@ public:
 #endif
 
 		append((uchar32_t)c);
-	}
-
-
-	//! Constructor for copying a UTF-8 string from a pointer with a given length.
-	ustring16(const uchar8_t* const c, u32 length)
-	: array(0), allocated(0), used(0)
-	{
-#if __BYTE_ORDER == __BIG_ENDIAN
-		encoding = unicode::EUTFE_UTF16_BE;
-#else
-		encoding = unicode::EUTFE_UTF16_LE;
-#endif
-
-		append(c, length);
 	}
 
 
