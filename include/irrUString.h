@@ -2826,45 +2826,6 @@ public:
 	}
 
 
-	//! Converts the string to a UTF-16 encoded string.
-	//! \param endian The desired endianness of the string.
-	//! \param addBOM If true, the proper unicode byte-order mark will be prefixed to the string.
-	//! \return A string containing the UTF-16 encoded string.
-	core::string<char16_t> toUTF16_s(const unicode::EUTF_ENDIAN endian = unicode::EUTFEE_NATIVE, const bool addBOM = false) const
-	{
-		core::string<char16_t> ret;
-		ret.reserve(used + (addBOM ? unicode::BOM_UTF16_LEN : 0) + 1);
-
-		// Add the BOM if specified.
-		if (addBOM)
-		{
-			if (endian == unicode::EUTFEE_NATIVE)
-				ret[0] = unicode::BOM;
-			else if (endian == unicode::EUTFEE_LITTLE)
-			{
-				uchar8_t* ptr8 = reinterpret_cast<uchar8_t*>(&ret[0]);
-				*ptr8++ = unicode::BOM_ENCODE_UTF16_LE[0];
-				*ptr8 = unicode::BOM_ENCODE_UTF16_LE[1];
-			}
-			else
-			{
-				uchar8_t* ptr8 = reinterpret_cast<uchar8_t*>(&ret[0]);
-				*ptr8++ = unicode::BOM_ENCODE_UTF16_BE[0];
-				*ptr8 = unicode::BOM_ENCODE_UTF16_BE[1];
-			}
-		}
-
-		ret.append(array);
-		if (endian != unicode::EUTFEE_NATIVE && getEndianness() != endian)
-		{
-			char16_t* ptr = ret.c_str();
-			for (u32 i = 0; i < ret.size(); ++i)
-				*ptr++ = unicode::swapEndian16(*ptr);
-		}
-		return ret;
-	}
-
-
 	//! Converts the string to a UTF-16 encoded string array.
 	//! Unfortunately, no toUTF16_s() version exists due to limitations with Irrlicht's string class.
 	//! \param endian The desired endianness of the string.
@@ -2903,59 +2864,6 @@ public:
 		}
 		ret.set_used(used + (addBOM ? unicode::BOM_UTF16_LEN : 0));
 		ret.push_back(0);
-		return ret;
-	}
-
-
-	//! Converts the string to a UTF-32 encoded string.
-	//! \param endian The desired endianness of the string.
-	//! \param addBOM If true, the proper unicode byte-order mark will be prefixed to the string.
-	//! \return A string containing the UTF-32 encoded string.
-	core::string<char32_t> toUTF32_s(const unicode::EUTF_ENDIAN endian = unicode::EUTFEE_NATIVE, const bool addBOM = false) const
-	{
-		core::string<char32_t> ret;
-		ret.reserve(size() + 1 + (addBOM ? unicode::BOM_UTF32_LEN : 0));
-		const_iterator iter(*this, 0);
-
-		// Add the BOM if specified.
-		if (addBOM)
-		{
-			if (endian == unicode::EUTFEE_NATIVE)
-				ret.append(unicode::BOM);
-			else
-			{
-				union
-				{
-					uchar32_t full;
-					u8 chunk[4];
-				} t;
-
-				if (endian == unicode::EUTFEE_LITTLE)
-				{
-					t.chunk[0] = unicode::BOM_ENCODE_UTF32_LE[0];
-					t.chunk[1] = unicode::BOM_ENCODE_UTF32_LE[1];
-					t.chunk[2] = unicode::BOM_ENCODE_UTF32_LE[2];
-					t.chunk[3] = unicode::BOM_ENCODE_UTF32_LE[3];
-				}
-				else
-				{
-					t.chunk[0] = unicode::BOM_ENCODE_UTF32_BE[0];
-					t.chunk[1] = unicode::BOM_ENCODE_UTF32_BE[1];
-					t.chunk[2] = unicode::BOM_ENCODE_UTF32_BE[2];
-					t.chunk[3] = unicode::BOM_ENCODE_UTF32_BE[3];
-				}
-				ret.append(t.full);
-			}
-		}
-
-		while (!iter.atEnd())
-		{
-			uchar32_t c = *iter;
-			if (endian != unicode::EUTFEE_NATIVE && getEndianness() != endian)
-				c = unicode::swapEndian32(c);
-			ret.append(c);
-			++iter;
-		}
 		return ret;
 	}
 
