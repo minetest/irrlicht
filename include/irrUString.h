@@ -3273,6 +3273,26 @@ inline ustring16<TAlloc> operator+(const char left, const ustring16<TAlloc>& rig
 }
 
 
+//! Appends a ustring16 and a uchar32_t.
+template <typename TAlloc>
+inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const uchar32_t right)
+{
+	ustring16<TAlloc> ret(left);
+	ret += right;
+	return ret;
+}
+
+
+//! Appends a ustring16 and a uchar32_t.
+template <typename TAlloc>
+inline ustring16<TAlloc> operator+(const uchar32_t left, const ustring16<TAlloc>& right)
+{
+	ustring16<TAlloc> ret(left);
+	ret += right;
+	return ret;
+}
+
+
 //! Appends a ustring16 and a short.
 template <typename TAlloc>
 inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const short right)
@@ -3546,6 +3566,24 @@ template <typename TAlloc>
 inline ustring16<TAlloc> operator+(const char left, ustring16<TAlloc>&& right)
 {
 	right.insert((uchar32_t)left, 0);
+	return std::move(right);
+}
+
+
+//! Appends a ustring16 and a uchar32_t.
+template <typename TAlloc>
+inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const uchar32_t right)
+{
+	left.append(right);
+	return std::move(left);
+}
+
+
+//! Appends a ustring16 and a uchar32_t.
+template <typename TAlloc>
+inline ustring16<TAlloc> operator+(const uchar32_t left, ustring16<TAlloc>&& right)
+{
+	right.insert(left, 0);
 	return std::move(right);
 }
 
