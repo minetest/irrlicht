@@ -72,6 +72,8 @@ static const irr::u16 UTF16_LO_SURROGATE = 0xDC00;
 
 namespace irr
 {
+
+	// Define our character types.
 	typedef char32_t uchar32_t;
 	typedef char16_t uchar16_t;
 	typedef char uchar8_t;
@@ -854,8 +856,8 @@ public:
 			append((uchar32_t)*first);
 	}
 
-	//! Constructor for copying a character string from a pointer.
-	ustring16(const char* const c)
+	//! Constructor for copying a UTF-8 string from a pointer.
+	ustring16(const uchar8_t* const c)
 	: array(0), allocated(0), used(0)
 	{
 #if __BYTE_ORDER == __BIG_ENDIAN
@@ -864,22 +866,7 @@ public:
 		encoding = unicode::EUTFE_UTF16_LE;
 #endif
 
-		loadDataStream(c, strlen(c));
-		//append((uchar8_t*)c);
-	}
-
-
-	//! Constructor for copying a character string from a pointer with a given length.
-	ustring16(const char* const c, u32 length)
-	: array(0), allocated(0), used(0)
-	{
-#if __BYTE_ORDER == __BIG_ENDIAN
-		encoding = unicode::EUTFE_UTF16_BE;
-#else
-		encoding = unicode::EUTFE_UTF16_LE;
-#endif
-
-		loadDataStream(c, length);
+		append(c);
 	}
 
 
@@ -894,6 +881,20 @@ public:
 #endif
 
 		append((uchar32_t)c);
+	}
+
+
+	//! Constructor for copying a UTF-8 string from a pointer with a given length.
+	ustring16(const uchar8_t* const c, u32 length)
+	: array(0), allocated(0), used(0)
+	{
+#if __BYTE_ORDER == __BIG_ENDIAN
+		encoding = unicode::EUTFE_UTF16_BE;
+#else
+		encoding = unicode::EUTFE_UTF16_LE;
+#endif
+
+		append(c, length);
 	}
 
 
@@ -1034,7 +1035,7 @@ public:
 		return *this;
 	}
 
-
+	//! Move assignment operator
 	ustring16& operator=(ustring16<TAlloc>&& other)
 	{
 		if (this != &other)
@@ -2002,26 +2003,6 @@ public:
 	//! Appends a number to this ustring16.
 	//! \param c Number to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& operator += (int c)
-	{
-		append(core::stringc(c));
-		return *this;
-	}
-
-
-	//! Appends a number to this ustring16.
-	//! \param c Number to append.
-	//! \return A reference to our current string.
-	ustring16<TAlloc>& operator += (unsigned int c)
-	{
-		append(core::stringc(c));
-		return *this;
-	}
-
-
-	//! Appends a number to this ustring16.
-	//! \param c Number to append.
-	//! \return A reference to our current string.
 	ustring16<TAlloc>& operator += (short c)
 	{
 		append(core::stringc(c));
@@ -2033,6 +2014,26 @@ public:
 	//! \param c Number to append.
 	//! \return A reference to our current string.
 	ustring16<TAlloc>& operator += (unsigned short c)
+	{
+		append(core::stringc(c));
+		return *this;
+	}
+
+
+	//! Appends a number to this ustring16.
+	//! \param c Number to append.
+	//! \return A reference to our current string.
+	ustring16<TAlloc>& operator += (int c)
+	{
+		append(core::stringc(c));
+		return *this;
+	}
+
+
+	//! Appends a number to this ustring16.
+	//! \param c Number to append.
+	//! \return A reference to our current string.
+	ustring16<TAlloc>& operator += (unsigned int c)
 	{
 		append(core::stringc(c));
 		return *this;
@@ -2825,7 +2826,7 @@ public:
 	}
 
 
-		//! Converts the string to a UTF-16 encoded string.
+	//! Converts the string to a UTF-16 encoded string.
 	//! \param endian The desired endianness of the string.
 	//! \param addBOM If true, the proper unicode byte-order mark will be prefixed to the string.
 	//! \return A string containing the UTF-16 encoded string.
