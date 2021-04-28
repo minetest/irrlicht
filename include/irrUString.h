@@ -2002,6 +2002,26 @@ public:
 	//! Appends a number to this ustring16.
 	//! \param c Number to append.
 	//! \return A reference to our current string.
+	ustring16<TAlloc>& operator += (int c)
+	{
+		append(core::stringc(c));
+		return *this;
+	}
+
+
+	//! Appends a number to this ustring16.
+	//! \param c Number to append.
+	//! \return A reference to our current string.
+	ustring16<TAlloc>& operator += (unsigned int c)
+	{
+		append(core::stringc(c));
+		return *this;
+	}
+
+
+	//! Appends a number to this ustring16.
+	//! \param c Number to append.
+	//! \return A reference to our current string.
 	ustring16<TAlloc>& operator += (short c)
 	{
 		append(core::stringc(c));
