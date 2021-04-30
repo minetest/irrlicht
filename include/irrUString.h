@@ -30,13 +30,6 @@
 
 #pragma once
 
-#if (__cplusplus > 199711L) || (_MSC_VER >= 1600) || defined(__GXX_EXPERIMENTAL_CXX0X__)
-#	define USTRING_CPP0X
-#	if defined(__GXX_EXPERIMENTAL_CXX0X__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 5)))
-#		define USTRING_CPP0X_NEWLITERALS
-#	endif
-#endif
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -54,15 +47,11 @@
 #include <endian.h>
 #endif
 
-#ifdef USTRING_CPP0X
-#	include <utility>
-#endif
+#include <utility>
 
-#ifndef USTRING_NO_STL
-#	include <string>
-#	include <iterator>
-#	include <ostream>
-#endif
+#include <string>
+#include <iterator>
+#include <ostream>
 
 #include "irrTypes.h"
 #include "irrAllocator.h"
@@ -85,15 +74,9 @@ namespace irr
 {
 
 	// Define our character types.
-#ifdef USTRING_CPP0X_NEWLITERALS	// C++0x
 	typedef char32_t uchar32_t;
 	typedef char16_t uchar16_t;
 	typedef char uchar8_t;
-#else
-	typedef u32 uchar32_t;
-	typedef u16 uchar16_t;
-	typedef u8 uchar8_t;
-#endif
 
 namespace core
 {
@@ -448,7 +431,6 @@ public:
 
 
 	//! Iterator to iterate through a UTF-16 string.
-#ifndef USTRING_NO_STL
 	class _ustring16_const_iterator : public std::iterator<
 		std::bidirectional_iterator_tag,	// iterator_category
 		access,								// value_type
@@ -456,9 +438,6 @@ public:
 		const access,						// pointer
 		const access						// reference
 	>
-#else
-	class _ustring16_const_iterator
-#endif
 	{
 		public:
 			typedef _ustring16_const_iterator _Iter;
@@ -466,19 +445,11 @@ public:
 			typedef const access const_pointer;
 			typedef const access const_reference;
 
-#ifndef USTRING_NO_STL
 			typedef typename _Base::value_type value_type;
 			typedef typename _Base::difference_type difference_type;
 			typedef typename _Base::difference_type distance_type;
 			typedef typename _Base::pointer pointer;
 			typedef const_reference reference;
-#else
-			typedef access value_type;
-			typedef u32 difference_type;
-			typedef u32 distance_type;
-			typedef const_pointer pointer;
-			typedef const_reference reference;
-#endif
 
 			//! Constructors.
 			_ustring16_const_iterator(const _Iter& i) : ref(i.ref), pos(i.pos) {}
@@ -854,8 +825,6 @@ public:
 		*this = other;
 	}
 
-
-#ifndef USTRING_NO_STL
 	//! Constructor from std::string
 	template <class B, class A, typename Alloc>
 	ustring16(const std::basic_string<B, A, Alloc>& other)
@@ -886,39 +855,6 @@ public:
 		for (; first != last; ++first)
 			append((uchar32_t)*first);
 	}
-#endif
-
-
-#ifndef USTRING_CPP0X_NEWLITERALS
-	//! Constructor for copying a character string from a pointer.
-	ustring16(const char* const c)
-	: array(0), allocated(0), used(0)
-	{
-#if __BYTE_ORDER == __BIG_ENDIAN
-		encoding = unicode::EUTFE_UTF16_BE;
-#else
-		encoding = unicode::EUTFE_UTF16_LE;
-#endif
-
-		loadDataStream(c, strlen(c));
-		//append((uchar8_t*)c);
-	}
-
-
-	//! Constructor for copying a character string from a pointer with a given length.
-	ustring16(const char* const c, u32 length)
-	: array(0), allocated(0), used(0)
-	{
-#if __BYTE_ORDER == __BIG_ENDIAN
-		encoding = unicode::EUTFE_UTF16_BE;
-#else
-		encoding = unicode::EUTFE_UTF16_LE;
-#endif
-
-		loadDataStream(c, length);
-	}
-#endif
-
 
 	//! Constructor for copying a UTF-8 string from a pointer.
 	ustring16(const uchar8_t* const c)
@@ -1056,7 +992,6 @@ public:
 	}
 
 
-#ifdef USTRING_CPP0X
 	//! Constructor for moving a ustring16
 	ustring16(ustring16<TAlloc>&& other)
 	: array(other.array), encoding(other.encoding), allocated(other.allocated), used(other.used)
@@ -1066,8 +1001,6 @@ public:
 		other.allocated = 0;
 		other.used = 0;
 	}
-#endif
-
 
 	//! Destructor
 	~ustring16()
@@ -1102,8 +1035,6 @@ public:
 		return *this;
 	}
 
-
-#ifdef USTRING_CPP0X
 	//! Move assignment operator
 	ustring16& operator=(ustring16<TAlloc>&& other)
 	{
@@ -1121,8 +1052,6 @@ public:
 		}
 		return *this;
 	}
-#endif
-
 
 	//! Assignment operator for other string types
 	template <class B, class A>
@@ -2091,7 +2020,6 @@ public:
 	}
 
 
-#ifdef USTRING_CPP0X_NEWLITERALS
 	//! Appends a number to this ustring16.
 	//! \param c Number to append.
 	//! \return A reference to our current string.
@@ -2110,7 +2038,6 @@ public:
 		append(core::stringc(c));
 		return *this;
 	}
-#endif
 
 
 	//! Appends a number to this ustring16.
@@ -2899,47 +2826,6 @@ public:
 	}
 
 
-#ifdef USTRING_CPP0X_NEWLITERALS	// C++0x
-	//! Converts the string to a UTF-16 encoded string.
-	//! \param endian The desired endianness of the string.
-	//! \param addBOM If true, the proper unicode byte-order mark will be prefixed to the string.
-	//! \return A string containing the UTF-16 encoded string.
-	core::string<char16_t> toUTF16_s(const unicode::EUTF_ENDIAN endian = unicode::EUTFEE_NATIVE, const bool addBOM = false) const
-	{
-		core::string<char16_t> ret;
-		ret.reserve(used + (addBOM ? unicode::BOM_UTF16_LEN : 0) + 1);
-
-		// Add the BOM if specified.
-		if (addBOM)
-		{
-			if (endian == unicode::EUTFEE_NATIVE)
-				ret[0] = unicode::BOM;
-			else if (endian == unicode::EUTFEE_LITTLE)
-			{
-				uchar8_t* ptr8 = reinterpret_cast<uchar8_t*>(&ret[0]);
-				*ptr8++ = unicode::BOM_ENCODE_UTF16_LE[0];
-				*ptr8 = unicode::BOM_ENCODE_UTF16_LE[1];
-			}
-			else
-			{
-				uchar8_t* ptr8 = reinterpret_cast<uchar8_t*>(&ret[0]);
-				*ptr8++ = unicode::BOM_ENCODE_UTF16_BE[0];
-				*ptr8 = unicode::BOM_ENCODE_UTF16_BE[1];
-			}
-		}
-
-		ret.append(array);
-		if (endian != unicode::EUTFEE_NATIVE && getEndianness() != endian)
-		{
-			char16_t* ptr = ret.c_str();
-			for (u32 i = 0; i < ret.size(); ++i)
-				*ptr++ = unicode::swapEndian16(*ptr);
-		}
-		return ret;
-	}
-#endif
-
-
 	//! Converts the string to a UTF-16 encoded string array.
 	//! Unfortunately, no toUTF16_s() version exists due to limitations with Irrlicht's string class.
 	//! \param endian The desired endianness of the string.
@@ -2980,61 +2866,6 @@ public:
 		ret.push_back(0);
 		return ret;
 	}
-
-
-#ifdef USTRING_CPP0X_NEWLITERALS	// C++0x
-	//! Converts the string to a UTF-32 encoded string.
-	//! \param endian The desired endianness of the string.
-	//! \param addBOM If true, the proper unicode byte-order mark will be prefixed to the string.
-	//! \return A string containing the UTF-32 encoded string.
-	core::string<char32_t> toUTF32_s(const unicode::EUTF_ENDIAN endian = unicode::EUTFEE_NATIVE, const bool addBOM = false) const
-	{
-		core::string<char32_t> ret;
-		ret.reserve(size() + 1 + (addBOM ? unicode::BOM_UTF32_LEN : 0));
-		const_iterator iter(*this, 0);
-
-		// Add the BOM if specified.
-		if (addBOM)
-		{
-			if (endian == unicode::EUTFEE_NATIVE)
-				ret.append(unicode::BOM);
-			else
-			{
-				union
-				{
-					uchar32_t full;
-					u8 chunk[4];
-				} t;
-
-				if (endian == unicode::EUTFEE_LITTLE)
-				{
-					t.chunk[0] = unicode::BOM_ENCODE_UTF32_LE[0];
-					t.chunk[1] = unicode::BOM_ENCODE_UTF32_LE[1];
-					t.chunk[2] = unicode::BOM_ENCODE_UTF32_LE[2];
-					t.chunk[3] = unicode::BOM_ENCODE_UTF32_LE[3];
-				}
-				else
-				{
-					t.chunk[0] = unicode::BOM_ENCODE_UTF32_BE[0];
-					t.chunk[1] = unicode::BOM_ENCODE_UTF32_BE[1];
-					t.chunk[2] = unicode::BOM_ENCODE_UTF32_BE[2];
-					t.chunk[3] = unicode::BOM_ENCODE_UTF32_BE[3];
-				}
-				ret.append(t.full);
-			}
-		}
-
-		while (!iter.atEnd())
-		{
-			uchar32_t c = *iter;
-			if (endian != unicode::EUTFEE_NATIVE && getEndianness() != endian)
-				c = unicode::swapEndian32(c);
-			ret.append(c);
-			++iter;
-		}
-		return ret;
-	}
-#endif
 
 
 	//! Converts the string to a UTF-32 encoded string array.
@@ -3371,7 +3202,6 @@ inline ustring16<TAlloc> operator+(const char left, const ustring16<TAlloc>& rig
 }
 
 
-#ifdef USTRING_CPP0X_NEWLITERALS
 //! Appends a ustring16 and a uchar32_t.
 template <typename TAlloc>
 inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const uchar32_t right)
@@ -3390,7 +3220,6 @@ inline ustring16<TAlloc> operator+(const uchar32_t left, const ustring16<TAlloc>
 	ret += right;
 	return ret;
 }
-#endif
 
 
 //! Appends a ustring16 and a short.
@@ -3553,7 +3382,6 @@ inline ustring16<TAlloc> operator+(const double left, const ustring16<TAlloc>& r
 }
 
 
-#ifdef USTRING_CPP0X
 //! Appends two ustring16s.
 template <typename TAlloc>
 inline ustring16<TAlloc>&& operator+(const ustring16<TAlloc>& left, ustring16<TAlloc>&& right)
@@ -3671,7 +3499,6 @@ inline ustring16<TAlloc> operator+(const char left, ustring16<TAlloc>&& right)
 }
 
 
-#ifdef USTRING_CPP0X_NEWLITERALS
 //! Appends a ustring16 and a uchar32_t.
 template <typename TAlloc>
 inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const uchar32_t right)
@@ -3688,7 +3515,6 @@ inline ustring16<TAlloc> operator+(const uchar32_t left, ustring16<TAlloc>&& rig
 	right.insert(left, 0);
 	return std::move(right);
 }
-#endif
 
 
 //! Appends a ustring16 and a short.
@@ -3833,10 +3659,8 @@ inline ustring16<TAlloc> operator+(const double left, ustring16<TAlloc>&& right)
 	right.insert(core::stringc(left), 0);
 	return std::move(right);
 }
-#endif
 
 
-#ifndef USTRING_NO_STL
 //! Writes a ustring16 to an ostream.
 template <typename TAlloc>
 inline std::ostream& operator<<(std::ostream& out, const ustring16<TAlloc>& in)
@@ -3852,10 +3676,6 @@ inline std::wostream& operator<<(std::wostream& out, const ustring16<TAlloc>& in
 	out << in.toWCHAR_s().c_str();
 	return out;
 }
-#endif
-
-
-#ifndef USTRING_NO_STL
 
 namespace unicode
 {
@@ -3884,8 +3704,6 @@ class hash : public std::unary_function<core::ustring, size_t>
 };
 
 } // end namespace unicode
-
-#endif
 
 } // end namespace core
 } // end namespace irr
