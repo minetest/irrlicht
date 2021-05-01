@@ -32,5 +32,5 @@ cmake . \
 	-DZLIB_LIBRARY=$libs/zlib/lib/libz.dll.a \
 	-DZLIB_INCLUDE_DIR=$libs/zlib/include
 
-make -j$(nproc)
+make VERBOSE=1 -j$(nproc)
 exit 0
