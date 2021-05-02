@@ -854,7 +854,6 @@ void CGUIEditWorkspace::clearParentElements()
 	if ( el->isMyChild(Environment->getFocus()) )
 		Environment->setFocus(0);
 
-	// remove all children except first one (EditorWindow)
 	while (!el->getChildren().empty())
 	{
 		el->removeChild(*(el->getChildren().begin()));
