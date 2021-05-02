@@ -14,7 +14,6 @@
 #include "IGUIFont.h"
 #include "IGUIStaticText.h"
 #include "IAttributes.h"
-#include "CGUIEditWorkspace.h"
 
 namespace irr
 {
