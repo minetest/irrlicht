@@ -1073,11 +1073,12 @@ IGUIWindow* CGUIEnvironment::addWindow(const core::rect<s32>& rectangle, bool mo
 
 
 //! adds a modal screen. The returned pointer must not be dropped.
-IGUIElement* CGUIEnvironment::addModalScreen(IGUIElement* parent)
+IGUIElement* CGUIEnvironment::addModalScreen(IGUIElement* parent, int blinkMode)
 {
 	parent = parent ? parent : this;
 
-	IGUIElement *win = new CGUIModalScreen(this, parent, -1);
+	CGUIModalScreen *win = new CGUIModalScreen(this, parent, -1);
+	win->setBlinkMode(blinkMode);
 	win->drop();
 
 	return win;

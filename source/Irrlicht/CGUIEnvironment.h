@@ -97,7 +97,7 @@ public:
 		const wchar_t* text=0, IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
 
 	//! adds a modal screen. The returned pointer must not be dropped.
-	virtual IGUIElement* addModalScreen(IGUIElement* parent) _IRR_OVERRIDE_;
+	virtual IGUIElement* addModalScreen(IGUIElement* parent, int blinkMode) _IRR_OVERRIDE_;
 
 	//! Adds a message box.
 	virtual IGUIWindow* addMessageBox(const wchar_t* caption, const wchar_t* text=0,

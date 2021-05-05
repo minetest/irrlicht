@@ -260,10 +260,14 @@ public:
 	Note that it usually works badly to pass the modal screen already as parent when creating
 	a new element. It's better to add that new element later to the modal screen with addChild.
 	\param parent Parent gui element of the modal.
+	\param blinkMode Bitset of when to blink (can be combined)
+		0 = never
+		1 = focus changes
+		2 = Left mouse button pressed down
 	\return Pointer to the created modal. Returns 0 if an error occurred.
 	This pointer should not be dropped. See IReferenceCounted::drop() for
 	more information. */
-	virtual IGUIElement* addModalScreen(IGUIElement* parent) = 0;
+	virtual IGUIElement* addModalScreen(IGUIElement* parent, int blinkMode = 3) = 0;
 
 	//! Adds a message box.
 	/** \param caption Text to be displayed the title of the message box.
