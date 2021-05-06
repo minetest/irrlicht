@@ -1,5 +1,6 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- Speedup for COBJMeshWriter
 - Add blinkMode parameter to IGUIEnvironment::addModalScreen, so blinking can be suppressed
 - Speedup: Avoid string copy in CXMLReaderImpl::getAttributeByName
 - Fix bug in rect::clipAgainst that had caused rects completely outside to the left-top of the rect to be clipped against ending up with both corners outside.
