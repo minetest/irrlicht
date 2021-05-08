@@ -65,7 +65,7 @@ else()
 	set(REQUIRE_X11 TRUE)
 endif()
 
-# Includes for object libraries
+# Includes for object libraries.
 
 include_directories(
 	"${PROJECT_SOURCE_DIR}/include"
@@ -79,6 +79,26 @@ include_directories(
 	"$<$<BOOL:OGLES1_ENABLED>:${EGL_LIBRARY}>"
 	"$<$<BOOL:ANDROID>:${ANDROID_NDK}/sources/android/native_app_glue}>"
 	"$<$<BOOL:REQUIRE_X11>:${X11_INCLUDE_DIR}>"
+)
+
+# Libraries for object libraries.
+link_libraries(
+	"${ZLIB_LIBRARY}"
+	"${JPEG_LIBRARY}"
+	"${PNG_LIBRARY}"
+
+	"$<$<BOOL:OGL_ENABLED>:${OPENGL_LIBRARIES}>"
+	"$<$<BOOL:OGLES1_ENABLED>:${OPENGLES_LIBRARY}>"
+	"$<$<BOOL:OGLES1_ENABLED>:${EGL_LIBRARY}>"
+	"$<$<BOOL:OGLES2_ENABLED>:${OPENGLES2_LIBRARIES}>"
+
+	"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
+	"$<$<PLATFORM_ID:Darwin>:${COCOA_LIB}>"
+	"$<$<PLATFORM_ID:DARWIN>:${IOKIT_LIB}>"
+	"$<$<PLATFORM_ID:Windows>:gdi32>"
+	"$<$<PLATFORM_ID:WINDOWS>:winmm>"
+	"$<$<BOOL:REQUIRE_X11>:${X11_X11_LIB}>"
+	"$<$<BOOL:REQUIRE_X11>:${X11_Xxf86vm_LIB}>"
 )
 
 # Source files
@@ -415,7 +435,7 @@ target_link_libraries(IrrlichtMt
 	PRIVATE
 		ZLIB::ZLIB
 		JPEG::JPEG
-		${PNG_LIBRARY}
+		"${PNG_LIBRARY}"
 
 		"$<$<BOOL:OGL_ENABLED>:${OPENGL_LIBRARIES}>"
 		"$<$<BOOL:OGLES1_ENABLED>:${OPENGLES_LIBRARY}>"
