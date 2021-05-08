@@ -18,7 +18,7 @@ jobs:
       - name: Build
         run: |
           cmake .
-          make -j2
+          make VERBOSE=1 -j2
 
       - name: Package
         run: |
