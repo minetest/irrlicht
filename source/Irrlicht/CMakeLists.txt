@@ -38,15 +38,22 @@ if(OGLES1_ENABLED)
 	find_library(EGL_LIBRARY NAMES EGL REQUIRED)
 
 	message(STATUS "Found OpenGLES: ${OPENGLES_LIBRARY}")
+	link_libraries("${OPENGLES_LIBRARY}" "${EGL_LIBRARY}")
 endif()
 check_symbol_exists(_IRR_COMPILE_WITH_OGLES2_ "IrrCompileConfig.h" OGLES2_ENABLED)
 if(OGLES2_ENABLED)
 	find_package(OpenGLES2 REQUIRED)
+
+	include_directories("${OPENGLES2_INCLUDE_DIR}", "${EGL_INCLUDE_DIR}")
+	link_libraries(${OPENGLES2_LIBRARIES})
 endif()
 check_symbol_exists(_IRR_COMPILE_WITH_OPENGL_ "IrrCompileConfig.h" OGL_ENABLED)
 if(OGL_ENABLED)
 	set(OpenGL_GL_PREFERENCE "LEGACY")
 	find_package(OpenGL REQUIRED)
+
+	include_directories("${OPENGL_INCLUDE_DIR}")
+	link_libraries(${OPENGL_LIBRARIES})
 endif()
 
 # Platform-specific libs
@@ -73,9 +80,6 @@ include_directories(
 	"${ZLIB_INCLUDE_DIR}"
 	"${JPEG_INCLUDE_DIR}"
 	"${PNG_INCLUDE_DIR}"
-	"$<$<BOOL:OGL_ENABLED>:${OPENGL_INCLUDE_DIR}>"
-	"$<$<BOOL:OGLES2_ENABLED>:${OPENGLES2_INCLUDE_DIR}>"
-	"$<$<BOOL:OGLES2_ENABLED>:${EGL_INCLUDE_DIR}>"
 	"$<$<BOOL:ANDROID>:${ANDROID_NDK}/sources/android/native_app_glue}>"
 	"$<$<BOOL:REQUIRE_X11>:${X11_INCLUDE_DIR}>"
 )
@@ -85,11 +89,6 @@ link_libraries(
 	"${ZLIB_LIBRARY}"
 	"${JPEG_LIBRARY}"
 	"${PNG_LIBRARY}"
-
-	"$<$<BOOL:OGL_ENABLED>:${OPENGL_LIBRARIES}>"
-	"$<$<BOOL:OGLES1_ENABLED>:${OPENGLES_LIBRARY}>"
-	"$<$<BOOL:OGLES1_ENABLED>:${EGL_LIBRARY}>"
-	"$<$<BOOL:OGLES2_ENABLED>:${OPENGLES2_LIBRARIES}>"
 
 	"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
 	"$<$<PLATFORM_ID:Darwin>:${COCOA_LIB}>"
@@ -424,8 +423,7 @@ target_include_directories(IrrlichtMt
 		${PNG_INCLUDE_DIR}
 		"$<$<BOOL:OGL_ENABLED>:${OPENGL_INCLUDE_DIR}>"
 		"$<$<BOOL:OGLES2_ENABLED>:${OPENGLES2_INCLUDE_DIR}>"
-		"$<$<BOOL:OGLES1_ENABLED>:${OPENGLES_INCLUDE_DIR}>"
-		"$<$<BOOL:OGLES1_ENABLED>:${EGL_INCLUDE_DIR}>"
+		"$<$<BOOL:OGLES2_ENABLED>:${EGL_INCLUDE_DIR}>"
 		"$<$<BOOL:ANDROID>:${ANDROID_NDK}/sources/android/native_app_glue}>"
 		"$<$<BOOL:REQUIRE_X11>:${X11_INCLUDE_DIR}>"
 )
