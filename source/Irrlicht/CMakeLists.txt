@@ -70,6 +70,15 @@ endif()
 include_directories(
 	"${PROJECT_SOURCE_DIR}/include"
 	"${CMAKE_CURRENT_SOURCE_DIR}"
+	"${ZLIB_INCLUDE_DIR}"
+	"${JPEG_INCLUDE_DIR}"
+	"${PNG_INCLUDE_DIR}"
+	"$<$<BOOL:OGL_ENABLED>:${OPENGL_INCLUDE_DIR}>"
+	"$<$<BOOL:OGLES2_ENABLED>:${OPENGLES2_INCLUDE_DIR}>"
+	"$<$<BOOL:OGLES1_ENABLED>:${OPENGLES_LIBRARY}>"
+	"$<$<BOOL:OGLES1_ENABLED>:${EGL_LIBRARY}>"
+	"$<$<BOOL:ANDROID>:${ANDROID_NDK}/sources/android/native_app_glue}>"
+	"$<$<BOOL:REQUIRE_X11>:${X11_INCLUDE_DIR}>"
 )
 
 # Source files
@@ -396,7 +405,8 @@ target_include_directories(IrrlichtMt
 		${PNG_INCLUDE_DIR}
 		"$<$<BOOL:OGL_ENABLED>:${OPENGL_INCLUDE_DIR}>"
 		"$<$<BOOL:OGLES2_ENABLED>:${OPENGLES2_INCLUDE_DIR}>"
-
+		"$<$<BOOL:OGLES1_ENABLED>:${OPENGLES_INCLUDE_DIR}>"
+		"$<$<BOOL:OGLES1_ENABLED>:${EGL_INCLUDE_DIR}>"
 		"$<$<BOOL:ANDROID>:${ANDROID_NDK}/sources/android/native_app_glue}>"
 		"$<$<BOOL:REQUIRE_X11>:${X11_INCLUDE_DIR}>"
 )
