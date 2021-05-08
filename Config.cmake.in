@@ -1,11 +1,5 @@
 @PACKAGE_INIT@
 
-# The exported target depends on targets from these dependencies,
-# so we need to find them first.
-include(CMakeFindDependencyMacro)
-find_dependency(ZLIB)
-find_dependency(JPEG)
-
 if(NOT TARGET IrrlichtMt::IrrlichtMt)
 	include("${CMAKE_CURRENT_LIST_DIR}/IrrlichtMtTargets.cmake")
 endif()
