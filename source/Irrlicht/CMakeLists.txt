@@ -1,5 +1,5 @@
 include_directories(
-	${CMAKE_SOURCE_DIR}/include
+	${CMAKE_CURRENT_SOURCE_DIR}/../../include
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 add_definitions(-DIRRLICHT_EXPORTS=1)
