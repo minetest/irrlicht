@@ -59,6 +59,7 @@ endif()
 # Platform-specific libs
 
 if(ANDROID)
+	message(STATUS "Android!")
 	enable_language(C)
 	add_library(native_app_glue STATIC ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 elseif(APPLE)
@@ -79,7 +80,7 @@ include_directories(
 	"${ZLIB_INCLUDE_DIR}"
 	"${JPEG_INCLUDE_DIR}"
 	"${PNG_INCLUDE_DIR}"
-	"$<$<BOOL:ANDROID>:${ANDROID_NDK}/sources/android/native_app_glue}>"
+	"$<$<BOOL:ANDROID>:${ANDROID_NDK}/sources/android/native_app_glue>"
 	"${X11_INCLUDE_DIR}"
 )
 
@@ -89,7 +90,7 @@ link_libraries(
 	"${JPEG_LIBRARY}"
 	"${PNG_LIBRARY}"
 
-	"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
+	"$<$<BOOL:ANDROID>:native_app_glue -landroid -llog>"
 	"${COCOA_LIB}"
 	"${IOKIT_LIB}"
 	"$<$<PLATFORM_ID:Windows>:gdi32>"
@@ -424,7 +425,7 @@ target_include_directories(IrrlichtMt
 		"${OPENGLES_INCLUDE_DIR}"
 		"${EGL_INCLUDE_DIR}"
 		"${OPENGLES2_INCLUDE_DIR}"
-		"${ANDROID_NDK}/sources/android/native_app_glue}"
+		"$<$<BOOL:ANDROID>:${ANDROID_NDK}/sources/android/native_app_glue>"
 		"${X11_INCLUDE_DIR}"
 )
 
@@ -440,7 +441,7 @@ target_link_libraries(IrrlichtMt
 		${OPENGLES2_LIBRARIES}
 		"${EGL_LIBRARY}"
 
-		"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
+		"$<$<BOOL:ANDROID>:native_app_glue -landroid -llog>"
 		"${COCOA_LIB}"
 		"${IOKIT_LIB}"
 		"$<$<PLATFORM_ID:Windows>:gdi32>"
