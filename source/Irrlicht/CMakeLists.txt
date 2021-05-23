@@ -44,7 +44,7 @@ check_symbol_exists(_IRR_COMPILE_WITH_OGLES2_ "IrrCompileConfig.h" OGLES2_ENABLE
 if(OGLES2_ENABLED)
 	find_package(OpenGLES2 REQUIRED)
 
-	include_directories("${OPENGLES2_INCLUDE_DIR}", "${EGL_INCLUDE_DIR}")
+	include_directories("${OPENGLES2_INCLUDE_DIR}" "${EGL_INCLUDE_DIR}")
 	link_libraries(${OPENGLES2_LIBRARIES})
 endif()
 check_symbol_exists(_IRR_COMPILE_WITH_OPENGL_ "IrrCompileConfig.h" OGL_ENABLED)
@@ -69,7 +69,6 @@ elseif(APPLE)
 else()
 	# Unix probably
 	find_package(X11 REQUIRED)
-	set(REQUIRE_X11 TRUE)
 endif()
 
 # Includes for object libraries.
@@ -81,7 +80,7 @@ include_directories(
 	"${JPEG_INCLUDE_DIR}"
 	"${PNG_INCLUDE_DIR}"
 	"$<$<BOOL:ANDROID>:${ANDROID_NDK}/sources/android/native_app_glue}>"
-	"$<$<BOOL:REQUIRE_X11>:${X11_INCLUDE_DIR}>"
+	"${X11_INCLUDE_DIR}"
 )
 
 # Libraries for object libraries.
@@ -91,12 +90,12 @@ link_libraries(
 	"${PNG_LIBRARY}"
 
 	"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
-	"$<$<PLATFORM_ID:Darwin>:${COCOA_LIB}>"
-	"$<$<PLATFORM_ID:DARWIN>:${IOKIT_LIB}>"
+	"${COCOA_LIB}"
+	"${IOKIT_LIB}"
 	"$<$<PLATFORM_ID:Windows>:gdi32>"
 	"$<$<PLATFORM_ID:WINDOWS>:winmm>"
-	"$<$<BOOL:REQUIRE_X11>:${X11_X11_LIB}>"
-	"$<$<BOOL:REQUIRE_X11>:${X11_Xxf86vm_LIB}>"
+	"${X11_X11_LIB}"
+	"${X11_Xxf86vm_LIB}"
 )
 
 # Source files
@@ -420,12 +419,13 @@ target_include_directories(IrrlichtMt
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
 		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt>"
 	PRIVATE
-		${PNG_INCLUDE_DIR}
-		"$<$<BOOL:OGL_ENABLED>:${OPENGL_INCLUDE_DIR}>"
-		"$<$<BOOL:OGLES2_ENABLED>:${OPENGLES2_INCLUDE_DIR}>"
-		"$<$<BOOL:OGLES2_ENABLED>:${EGL_INCLUDE_DIR}>"
-		"$<$<BOOL:ANDROID>:${ANDROID_NDK}/sources/android/native_app_glue}>"
-		"$<$<BOOL:REQUIRE_X11>:${X11_INCLUDE_DIR}>"
+		"${PNG_INCLUDE_DIR}"
+		"${OPENGL_INCLUDE_DIR}"
+		"${OPENGLES_INCLUDE_DIR}"
+		"${EGL_INCLUDE_DIR}"
+		"${OPENGLES2_INCLUDE_DIR}"
+		"${ANDROID_NDK}/sources/android/native_app_glue}"
+		"${X11_INCLUDE_DIR}"
 )
 
 target_link_libraries(IrrlichtMt
@@ -434,18 +434,19 @@ target_link_libraries(IrrlichtMt
 		JPEG::JPEG
 		"${PNG_LIBRARY}"
 
-		"$<$<BOOL:OGL_ENABLED>:${OPENGL_LIBRARIES}>"
-		"$<$<BOOL:OGLES1_ENABLED>:${OPENGLES_LIBRARY}>"
-		"$<$<BOOL:OGLES1_ENABLED>:${EGL_LIBRARY}>"
-		"$<$<BOOL:OGLES2_ENABLED>:${OPENGLES2_LIBRARIES}>"
+		"${OPENGL_LIBRARIES}"
+		"${OPENGLES_LIBRARY}"
+		"${EGL_LIBRARY}"
+		"${OPENGLES2_LIBRARIES}"
+		"${EGL_LIBRARY}"
 
 		"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
-		"$<$<PLATFORM_ID:Darwin>:${COCOA_LIB}>"
-		"$<$<PLATFORM_ID:DARWIN>:${IOKIT_LIB}>"
+		"${COCOA_LIB}"
+		"${IOKIT_LIB}"
 		"$<$<PLATFORM_ID:Windows>:gdi32>"
 		"$<$<PLATFORM_ID:WINDOWS>:winmm>"
-		"$<$<BOOL:REQUIRE_X11>:${X11_X11_LIB}>"
-		"$<$<BOOL:REQUIRE_X11>:${X11_Xxf86vm_LIB}>"
+		"${X11_X11_LIB}"
+		"${X11_Xxf86vm_LIB}"
 )
 
 set_target_properties(IrrlichtMt PROPERTIES
