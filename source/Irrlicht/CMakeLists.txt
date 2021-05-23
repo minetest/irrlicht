@@ -434,10 +434,10 @@ target_link_libraries(IrrlichtMt
 		JPEG::JPEG
 		"${PNG_LIBRARY}"
 
-		"${OPENGL_LIBRARIES}"
+		${OPENGL_LIBRARIES}
 		"${OPENGLES_LIBRARY}"
 		"${EGL_LIBRARY}"
-		"${OPENGLES2_LIBRARIES}"
+		${OPENGLES2_LIBRARIES}
 		"${EGL_LIBRARY}"
 
 		"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
