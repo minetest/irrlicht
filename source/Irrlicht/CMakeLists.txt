@@ -52,7 +52,10 @@ if(OGL_ENABLED)
 	set(OpenGL_GL_PREFERENCE "LEGACY")
 	find_package(OpenGL REQUIRED)
 
-	include_directories("${OPENGL_INCLUDE_DIR}")
+	# Windows does not set an OPENGL_INCLUDE_DIR variable.
+	if(OPENGL_INCLUDE_DIR)
+		include_directories("${OPENGL_INCLUDE_DIR}")
+	endif()
 	link_libraries(${OPENGL_LIBRARIES})
 endif()
 
