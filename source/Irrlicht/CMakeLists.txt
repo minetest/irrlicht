@@ -38,31 +38,20 @@ if(OGLES1_ENABLED)
 	find_library(EGL_LIBRARY NAMES EGL REQUIRED)
 
 	message(STATUS "Found OpenGLES: ${OPENGLES_LIBRARY}")
-	link_libraries("${OPENGLES_LIBRARY}" "${EGL_LIBRARY}")
 endif()
 check_symbol_exists(_IRR_COMPILE_WITH_OGLES2_ "IrrCompileConfig.h" OGLES2_ENABLED)
 if(OGLES2_ENABLED)
 	find_package(OpenGLES2 REQUIRED)
-
-	include_directories("${OPENGLES2_INCLUDE_DIR}" "${EGL_INCLUDE_DIR}")
-	link_libraries(${OPENGLES2_LIBRARIES})
 endif()
 check_symbol_exists(_IRR_COMPILE_WITH_OPENGL_ "IrrCompileConfig.h" OGL_ENABLED)
 if(OGL_ENABLED)
 	set(OpenGL_GL_PREFERENCE "LEGACY")
 	find_package(OpenGL REQUIRED)
-
-	# Windows does not set an OPENGL_INCLUDE_DIR variable.
-	if(OPENGL_INCLUDE_DIR)
-		include_directories("${OPENGL_INCLUDE_DIR}")
-	endif()
-	link_libraries(${OPENGL_LIBRARIES})
 endif()
 
 # Platform-specific libs
 
 if(ANDROID)
-	message(STATUS "Android!")
 	enable_language(C)
 	add_library(native_app_glue STATIC ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 elseif(APPLE)
@@ -79,28 +68,38 @@ endif()
 include_directories(
 	"${PROJECT_SOURCE_DIR}/include"
 	"${CMAKE_CURRENT_SOURCE_DIR}"
+
 	"${ZLIB_INCLUDE_DIR}"
 	"${JPEG_INCLUDE_DIR}"
 	"${PNG_INCLUDE_DIR}"
+
+	${OPENGL_INCLUDE_DIR}
+	${OPENGLES2_INCLUDE_DIR}
+	${EGL_INCLUDE_DIR}
+
 	"$<$<PLATFORM_ID:Android>:${ANDROID_NDK}/sources/android/native_app_glue>"
 	${X11_INCLUDE_DIR}
 )
 
 # Libraries for object libraries.
-link_libraries(
+set(link_libs
 	"${ZLIB_LIBRARY}"
 	"${JPEG_LIBRARY}"
 	"${PNG_LIBRARY}"
 
+	${OPENGL_LIBRARIES}
+	${OPENGLES_LIBRARY}
+	${OPENGLES2_LIBRARIES}
+	${EGL_LIBRARY}
+
 	"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
 	${COCOA_LIB}
 	${IOKIT_LIB}
-	"$<$<PLATFORM_ID:Windows>:gdi32>"
-	"$<$<PLATFORM_ID:Windows>:winmm>"
+	"$<$<PLATFORM_ID:Windows>:gdi32 winmm>"
 	${X11_X11_LIB}
 	${X11_Xxf86vm_LIB}
 )
-
+link_libraries(${link_libs})
 
 # Source files
 
@@ -423,35 +422,19 @@ target_include_directories(IrrlichtMt
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
 		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt>"
 	PRIVATE
+		"${ZLIB_INCLUDE_DIR}"
+		"${JPEG_INCLUDE_DIR}"
 		"${PNG_INCLUDE_DIR}"
+
 		${OPENGL_INCLUDE_DIR}
-		${OPENGLES_INCLUDE_DIR}
-		${EGL_INCLUDE_DIR}
 		${OPENGLES2_INCLUDE_DIR}
+		${EGL_INCLUDE_DIR}
+
 		"$<$<PLATFORM_ID:Android>:${ANDROID_NDK}/sources/android/native_app_glue>"
 		${X11_INCLUDE_DIR}
 )
 
-target_link_libraries(IrrlichtMt
-	PRIVATE
-		ZLIB::ZLIB
-		JPEG::JPEG
-		"${PNG_LIBRARY}"
-
-		${OPENGL_LIBRARIES}
-		${OPENGLES_LIBRARY}
-		${EGL_LIBRARY}
-		${OPENGLES2_LIBRARIES}
-		${EGL_LIBRARY}
-
-		"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
-		${COCOA_LIB}
-		${IOKIT_LIB}
-		"$<$<PLATFORM_ID:Windows>:gdi32>"
-		"$<$<PLATFORM_ID:Windows>:winmm>"
-		${X11_X11_LIB}
-		${X11_Xxf86vm_LIB}
-)
+target_link_libraries(IrrlichtMt PRIVATE ${link_libs})
 
 set_target_properties(IrrlichtMt PROPERTIES
 	VERSION ${PROJECT_VERSION}
