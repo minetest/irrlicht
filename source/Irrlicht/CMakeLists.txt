@@ -95,7 +95,8 @@ set(link_libs
 	"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
 	${COCOA_LIB}
 	${IOKIT_LIB}
-	"$<$<PLATFORM_ID:Windows>:gdi32 winmm>"
+	"$<$<PLATFORM_ID:Windows>:gdi32>"
+	"$<$<PLATFORM_ID:Windows>:winmm>"
 	${X11_X11_LIB}
 	${X11_Xxf86vm_LIB}
 )
