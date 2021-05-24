@@ -76,7 +76,6 @@ else()
 endif()
 
 # Includes for object libraries.
-
 include_directories(
 	"${PROJECT_SOURCE_DIR}/include"
 	"${CMAKE_CURRENT_SOURCE_DIR}"
@@ -84,7 +83,7 @@ include_directories(
 	"${JPEG_INCLUDE_DIR}"
 	"${PNG_INCLUDE_DIR}"
 	"$<$<PLATFORM_ID:Android>:${ANDROID_NDK}/sources/android/native_app_glue>"
-	"${X11_INCLUDE_DIR}"
+	${X11_INCLUDE_DIR}
 )
 
 # Libraries for object libraries.
@@ -94,13 +93,14 @@ link_libraries(
 	"${PNG_LIBRARY}"
 
 	"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
-	"${COCOA_LIB}"
-	"${IOKIT_LIB}"
+	${COCOA_LIB}
+	${IOKIT_LIB}
 	"$<$<PLATFORM_ID:Windows>:gdi32>"
 	"$<$<PLATFORM_ID:WINDOWS>:winmm>"
-	"${X11_X11_LIB}"
-	"${X11_Xxf86vm_LIB}"
+	${X11_X11_LIB}
+	${X11_Xxf86vm_LIB}
 )
+
 
 # Source files
 
@@ -424,12 +424,12 @@ target_include_directories(IrrlichtMt
 		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt>"
 	PRIVATE
 		"${PNG_INCLUDE_DIR}"
-		"${OPENGL_INCLUDE_DIR}"
-		"${OPENGLES_INCLUDE_DIR}"
-		"${EGL_INCLUDE_DIR}"
-		"${OPENGLES2_INCLUDE_DIR}"
+		${OPENGL_INCLUDE_DIR}
+		${OPENGLES_INCLUDE_DIR}
+		${EGL_INCLUDE_DIR}
+		${OPENGLES2_INCLUDE_DIR}
 		"$<$<PLATFORM_ID:Android>:${ANDROID_NDK}/sources/android/native_app_glue>"
-		"${X11_INCLUDE_DIR}"
+		${X11_INCLUDE_DIR}
 )
 
 target_link_libraries(IrrlichtMt
@@ -439,18 +439,18 @@ target_link_libraries(IrrlichtMt
 		"${PNG_LIBRARY}"
 
 		${OPENGL_LIBRARIES}
-		"${OPENGLES_LIBRARY}"
-		"${EGL_LIBRARY}"
+		${OPENGLES_LIBRARY}
+		${EGL_LIBRARY}
 		${OPENGLES2_LIBRARIES}
-		"${EGL_LIBRARY}"
+		${EGL_LIBRARY}
 
 		"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
-		"${COCOA_LIB}"
-		"${IOKIT_LIB}"
+		${COCOA_LIB}
+		${IOKIT_LIB}
 		"$<$<PLATFORM_ID:Windows>:gdi32>"
 		"$<$<PLATFORM_ID:WINDOWS>:winmm>"
-		"${X11_X11_LIB}"
-		"${X11_Xxf86vm_LIB}"
+		${X11_X11_LIB}
+		${X11_Xxf86vm_LIB}
 )
 
 set_target_properties(IrrlichtMt PROPERTIES
