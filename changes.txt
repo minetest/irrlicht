@@ -1,5 +1,6 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- Bugfix: Changing focus with tab-keys now also work when elements are inside a modal screen.
 - COBJMeshFileLoader using a bit more exact color conversion for 0-1 to 0-255 range (same now as SColorf::toSColor uses).
 - Speedup for COBJMeshWriter
 - Add blinkMode parameter to IGUIEnvironment::addModalScreen, so blinking can be suppressed

@@ -136,6 +136,19 @@ bool CGUIModalScreen::OnEvent(const SEvent& event)
 		{
 			MouseDownTime = os::Timer::getTime();
         }
+	case EET_KEY_INPUT_EVENT:
+		// CAREFUL when changing - there's an identical check in CGUIEnvironment::postEventFromUser
+		if (Environment->getFocusBehavior() & EFF_SET_ON_TAB &&
+			event.KeyInput.PressedDown &&
+			event.KeyInput.Key == KEY_TAB)
+		{
+			IGUIElement* next = Environment->getNextElement(event.KeyInput.Shift, event.KeyInput.Control);
+			if ( next && isMyChild(next) )
+			{
+				// Pass on the TAB-key, otherwise focus-tabbing inside modal screens breaks
+				return false;
+			}
+		}
 	default:
 		break;
 	}

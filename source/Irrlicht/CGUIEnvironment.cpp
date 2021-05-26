@@ -642,8 +642,8 @@ bool CGUIEnvironment::postEventFromUser(const SEvent& event)
 
 			// For keys we handle the event before changing focus to give elements the chance for catching the TAB
 			// Send focus changing event
+			// CAREFUL when changing - there's an identical check in CGUIModalScreen::OnEvent
 			if (FocusFlags & EFF_SET_ON_TAB &&
-				event.EventType == EET_KEY_INPUT_EVENT &&
 				event.KeyInput.PressedDown &&
 				event.KeyInput.Key == KEY_TAB)
 			{
