@@ -170,6 +170,9 @@ Sounds a little complicated, but you'll see it isn't:
 
 	while(device->run())
 	{
+		// Don't reset mouse cursor when window is not active
+		camera[3]->setInputReceiverEnabled(device->isWindowActive());
+
 		//Set the viewpoint to the whole screen and begin scene
 		driver->setViewPort(rect<s32>(0,0,ResX,ResY));
 		driver->beginScene(video::ECBF_COLOR | video::ECBF_DEPTH, SColor(255,100,100,100));
