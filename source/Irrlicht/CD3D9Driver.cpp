@@ -909,13 +909,6 @@ void CD3D9Driver::setViewPort(const core::rect<s32>& area)
 }
 
 
-//! gets the area of the current viewport
-const core::rect<s32>& CD3D9Driver::getViewPort() const
-{
-	return ViewPort;
-}
-
-
 bool CD3D9Driver::updateVertexHardwareBuffer(SHWBufferLink_d3d9 *hwBuffer)
 {
 	if (!hwBuffer)
