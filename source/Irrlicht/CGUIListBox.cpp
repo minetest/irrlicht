@@ -724,6 +724,7 @@ void CGUIListBox::serializeAttributes(io::IAttributes* out, io::SAttributeReadWr
 			}
 		}
 	}
+	out->addInt("Selected", Selected);
 }
 
 
@@ -763,6 +764,8 @@ void CGUIListBox::deserializeAttributes(io::IAttributes* in, io::SAttributeReadW
 			}
 		}
 	}
+	Selected = in->getAttributeAsInt("Selected", Selected);
+	recalculateScrollPos();
 }
 
 
