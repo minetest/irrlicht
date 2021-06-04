@@ -1,5 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- Add ETCF_SUPPORT_VERTEXT_TEXTURE flag which can be used to enable vertex texture sampling support in Direct3D 9.
+  Note that this was enabled for a long time in 1.9 svn, but is now disabled by default.
 - CGUIListBox now serializes the state of "Selected". Feature wish by chronologicaldot (http://irrlicht.sourceforge.net/forum/viewtopic.php?f=2&t=52719)
 - Bugfix: Changing focus with tab-keys now also work when elements are inside a modal screen.
 - COBJMeshFileLoader using a bit more exact color conversion for 0-1 to 0-255 range (same now as SColorf::toSColor uses).

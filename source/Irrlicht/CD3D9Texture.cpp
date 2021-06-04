@@ -38,17 +38,19 @@ CD3D9Texture::CD3D9Texture(const io::path& name, const core::array<IImage*>& ima
 
 	DWORD flags = 0;
 
+	LPDIRECT3D9 intf = Driver->getExposedVideoData().D3D9.D3D9;
+	D3DDISPLAYMODE d3ddm;
+	intf->GetAdapterDisplayMode(Driver->Params.DisplayAdapter, &d3ddm);
 	if (HasMipMaps && HardwareMipMaps)
 	{
-		LPDIRECT3D9 intf = Driver->getExposedVideoData().D3D9.D3D9;
-		D3DDISPLAYMODE d3ddm;
-		intf->GetAdapterDisplayMode(Driver->Params.DisplayAdapter, &d3ddm);
-
 		if (D3D_OK == intf->CheckDeviceFormat(Driver->Params.DisplayAdapter, D3DDEVTYPE_HAL, d3ddm.Format, D3DUSAGE_AUTOGENMIPMAP, D3DRTYPE_TEXTURE, InternalFormat))
 			flags = D3DUSAGE_AUTOGENMIPMAP;
 		else
 			HardwareMipMaps = false;
 	}
+	
+	VertexTextureSupport = Driver->getTextureCreationFlag(ETCF_SUPPORT_VERTEXT_TEXTURE) 
+	                       && (D3D_OK == intf->CheckDeviceFormat(Driver->Params.DisplayAdapter, D3DDEVTYPE_HAL, d3ddm.Format, D3DUSAGE_QUERY_VERTEXTEXTURE, D3DRTYPE_TEXTURE, InternalFormat));
 
 	HRESULT hr = 0;
 	

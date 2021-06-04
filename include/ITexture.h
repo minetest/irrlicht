@@ -97,6 +97,14 @@ enum E_TEXTURE_CREATION_FLAG
 	  */
 	ETCF_AUTO_GENERATE_MIP_MAPS = 0x00000100,
 
+	//! Enable support for vertex shader texture sampling on some drivers
+	/** Default is false.
+	This adds a small costs to all texture switches.
+	Currently only affects D3D9. 
+	On OpenGL vertex shaders use the same texture unit as pixel shaders, so support there only depends on GL version and not on this flag
+	*/
+	ETCF_SUPPORT_VERTEXT_TEXTURE = 0x00000200,
+
 	/** This flag is never used, it only forces the compiler to compile
 	these enumeration values to 32 bit. */
 	ETCF_FORCE_32_BIT_DO_NOT_USE = 0x7fffffff
