@@ -1599,7 +1599,9 @@ core::array<IImage*> CNullDriver::createImagesFromFile(io::IReadFile* file, E_TE
 		{
 			// dito
 			file->seek(0);
-			if (SurfaceLoader[i]->isALoadableFileFormat(file))
+			if (SurfaceLoader[i]->isALoadableFileFormat(file)
+				&& !SurfaceLoader[i]->isALoadableFileExtension(file->getFileName())	// extension was tried above already
+				)
 			{
 				file->seek(0);
 				imageArray = SurfaceLoader[i]->loadImages(file, type);
