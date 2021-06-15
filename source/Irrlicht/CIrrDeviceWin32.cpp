@@ -1416,8 +1416,24 @@ bool CIrrDeviceWin32::switchToFullScreen()
 	if (!CreationParams.Fullscreen)
 		return true;
 
-	// To be filled...
-	return true;
+	// No border, title bar, etc. is already set up through getWindowStyle()
+	// We only set the window size to match the monitor.
+
+	MONITORINFO mi;
+	mi.cbSize = sizeof(mi);
+	if (GetMonitorInfo(MonitorFromWindow(HWnd,MONITOR_DEFAULTTOPRIMARY),&mi))
+	{
+		UINT flags = SWP_NOCOPYBITS|SWP_NOOWNERZORDER|SWP_FRAMECHANGED;
+		SetWindowPos(HWnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
+			mi.rcMonitor.right - mi.rcMonitor.left,
+			mi.rcMonitor.bottom - mi.rcMonitor.top, flags);
+	}
+	else
+	{
+		CreationParams.Fullscreen = false;
+	}
+
+	return CreationParams.Fullscreen;
 }
 
 
