@@ -76,10 +76,6 @@ namespace irr
 		//! notifies the device that it should close itself
 		virtual void closeDevice() _IRR_OVERRIDE_;
 
-		//! \return Returns a pointer to a list with all video modes
-		//! supported by the gfx adapter.
-		virtual video::IVideoModeList* getVideoModeList() _IRR_OVERRIDE_;
-
 		//! Sets if the window should be resizable in windowed mode.
 		virtual void setResizable(bool resize=false) _IRR_OVERRIDE_;
 
@@ -148,7 +144,7 @@ namespace irr
 
 		void initXInput2();
 
-		bool switchToFullscreen(bool reset=false);
+		bool switchToFullscreen();
 
 #ifdef _IRR_COMPILE_WITH_X11_
 		bool createInputContext();
@@ -390,19 +386,10 @@ namespace irr
 		XIC XInputContext;
 		bool HasNetWM;
 		mutable core::stringc Clipboard;
-		#ifdef _IRR_LINUX_X11_VIDMODE_
-		XF86VidModeModeInfo OldVideoMode;
-		#endif
-		#ifdef _IRR_LINUX_X11_RANDR_
-		SizeID OldRandrMode;
-		Rotation OldRandrRotation;
-		#endif
 #endif
 		u32 Width, Height;
 		bool WindowHasFocus;
 		bool WindowMinimized;
-		bool UseXVidMode;
-		bool UseXRandR;
 		bool ExternalWindow;
 		int AutorepeatSupport;
 
