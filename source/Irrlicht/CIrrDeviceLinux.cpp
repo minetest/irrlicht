@@ -94,6 +94,7 @@ namespace
 	Atom X_ATOM_NETWM_MAXIMIZE_VERT;
 	Atom X_ATOM_NETWM_MAXIMIZE_HORZ;
 	Atom X_ATOM_NETWM_STATE;
+	Atom X_ATOM_NETWM_STATE_FULLSCREEN;
 
 	Atom X_ATOM_WM_DELETE_WINDOW;
 
@@ -252,7 +253,26 @@ bool CIrrDeviceLinux::switchToFullscreen()
 	if (!CreationParams.Fullscreen)
 		return true;
 
-	// To be filled...
+	if (!HasNetWM)
+	{
+		os::Printer::log("NetWM support is required to allow Irrlicht to switch "
+		"to fullscreen mode. Running in windowed mode instead.", ELL_WARNING);
+		CreationParams.Fullscreen = false;
+		return false;
+	}
+
+	XEvent ev = {0};
+
+	ev.type = ClientMessage;
+	ev.xclient.window = XWindow;
+	ev.xclient.message_type = X_ATOM_NETWM_STATE;
+	ev.xclient.format = 32;
+	ev.xclient.data.l[0] = 1; // _NET_WM_STATE_ADD
+	ev.xclient.data.l[1] = X_ATOM_NETWM_STATE_FULLSCREEN;
+
+	XSendEvent(XDisplay, DefaultRootWindow(XDisplay), false,
+			SubstructureNotifyMask | SubstructureRedirectMask, &ev);
+
 	return true;
 }
 
@@ -309,7 +329,12 @@ bool CIrrDeviceLinux::createWindow()
 
 	Screennr = DefaultScreen(XDisplay);
 
-	switchToFullscreen();
+	initXAtoms();
+
+	// check netwm support
+	Atom WMCheck = XInternAtom(XDisplay, "_NET_SUPPORTING_WM_CHECK", True);
+	if (WMCheck != None)
+		HasNetWM = true;
 
 #if defined(_IRR_COMPILE_WITH_OPENGL_)
 	// don't use the XVisual with OpenGL, because it ignores all requested
@@ -425,6 +450,8 @@ bool CIrrDeviceLinux::createWindow()
 		ExternalWindow = true;
 	}
 
+	switchToFullscreen();
+
 	WindowMinimized=false;
 	// Currently broken in X, see Bug ID 2795321
 	// XkbSetDetectableAutoRepeat(XDisplay, True, &AutorepeatSupport);
@@ -457,13 +484,6 @@ bool CIrrDeviceLinux::createWindow()
 		if (SoftwareImage)
 			SoftwareImage->data = (char*) malloc(SoftwareImage->bytes_per_line * SoftwareImage->height * sizeof(char));
 	}
-
-	initXAtoms();
-
-	// check netwm support
-	Atom WMCheck = XInternAtom(XDisplay, "_NET_SUPPORTING_WM_CHECK", true);
-	if (WMCheck != None)
-		HasNetWM = true;
 
 	initXInput2();
 
@@ -1863,6 +1883,7 @@ void CIrrDeviceLinux::initXAtoms()
 	X_ATOM_NETWM_MAXIMIZE_VERT = XInternAtom(XDisplay, "_NET_WM_STATE_MAXIMIZED_VERT", true);
 	X_ATOM_NETWM_MAXIMIZE_HORZ = XInternAtom(XDisplay, "_NET_WM_STATE_MAXIMIZED_HORZ", true);
 	X_ATOM_NETWM_STATE = XInternAtom(XDisplay, "_NET_WM_STATE", true);
+	X_ATOM_NETWM_STATE_FULLSCREEN = XInternAtom(XDisplay, "_NET_WM_STATE_FULLSCREEN", True);
 #endif
 }
 
