@@ -935,29 +935,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		break;
 
-	case WM_ACTIVATE:
-		// we need to take care for screen changes, e.g. Alt-Tab
-		dev = getDeviceFromHWnd(hWnd);
-		if (dev && dev->isFullscreen())
-		{
-			if ((wParam&0xFF)==WA_INACTIVE)
-			{
-				// If losing focus we minimize the app to show other one
-				ShowWindow(hWnd,SW_MINIMIZE);
-				// and switch back to default resolution
-				dev->switchToFullScreen(true);
-			}
-			else
-			{
-				// Otherwise we retore the fullscreen Irrlicht app
-				SetForegroundWindow(hWnd);
-				ShowWindow(hWnd, SW_RESTORE);
-				// and set the fullscreen resolution again
-				dev->switchToFullScreen();
-			}
-		}
-		break;
-
 	case WM_USER:
 		event.EventType = irr::EET_USER_EVENT;
 		event.UserEvent.UserData1 = static_cast<size_t>(wParam);
@@ -994,7 +971,7 @@ namespace irr
 
 //! constructor
 CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params)
-: CIrrDeviceStub(params), HWnd(0), ChangedToFullScreen(false), Resized(false),
+: CIrrDeviceStub(params), HWnd(0), Resized(false),
 	ExternalWindow(false), Win32CursorControl(0), JoyControl(0)
 {
 	#ifdef _DEBUG
@@ -1009,13 +986,6 @@ CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params)
 
 	// get handle to exe file
 	HINSTANCE hInstance = GetModuleHandle(0);
-
-	// Store original desktop mode.
-
-	memset(&DesktopMode, 0, sizeof(DesktopMode));
-	DesktopMode.dmSize = sizeof(DesktopMode);
-
-	EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &DesktopMode);
 
 	// create the window if we need to and we do not use the null device
 	if (!CreationParams.WindowId && CreationParams.DriverType != video::EDT_NULL)
@@ -1160,8 +1130,6 @@ CIrrDeviceWin32::~CIrrDeviceWin32()
 			break;
 		}
 	}
-
-	switchToFullScreen(true);
 }
 
 
@@ -1443,67 +1411,13 @@ bool CIrrDeviceWin32::isWindowMinimized() const
 
 
 //! switches to fullscreen
-bool CIrrDeviceWin32::switchToFullScreen(bool reset)
+bool CIrrDeviceWin32::switchToFullScreen()
 {
 	if (!CreationParams.Fullscreen)
 		return true;
 
-	if (reset)
-	{
-		if (ChangedToFullScreen)
-		{
-			return (ChangeDisplaySettings(&DesktopMode,0)==DISP_CHANGE_SUCCESSFUL);
-		}
-		else
-			return true;
-	}
-
-	// use default values from current setting
-
-	DEVMODE dm;
-	memset(&dm, 0, sizeof(dm));
-	dm.dmSize = sizeof(dm);
-
-	EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &dm);
-	dm.dmPelsWidth = CreationParams.WindowSize.Width;
-	dm.dmPelsHeight = CreationParams.WindowSize.Height;
-	dm.dmBitsPerPel = CreationParams.Bits;
-	dm.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY;
-
-	LONG res = ChangeDisplaySettings(&dm, CDS_FULLSCREEN);
-	if (res != DISP_CHANGE_SUCCESSFUL)
-	{ // try again without forcing display frequency
-		dm.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
-		res = ChangeDisplaySettings(&dm, CDS_FULLSCREEN);
-	}
-
-	bool ret = false;
-	switch(res)
-	{
-	case DISP_CHANGE_SUCCESSFUL:
-		ChangedToFullScreen = true;
-		ret = true;
-		break;
-	case DISP_CHANGE_RESTART:
-		os::Printer::log("Switch to fullscreen: The computer must be restarted in order for the graphics mode to work.", ELL_ERROR);
-		break;
-	case DISP_CHANGE_BADFLAGS:
-		os::Printer::log("Switch to fullscreen: An invalid set of flags was passed in.", ELL_ERROR);
-		break;
-	case DISP_CHANGE_BADPARAM:
-		os::Printer::log("Switch to fullscreen: An invalid parameter was passed in. This can include an invalid flag or combination of flags.", ELL_ERROR);
-		break;
-	case DISP_CHANGE_FAILED:
-		os::Printer::log("Switch to fullscreen: The display driver failed the specified graphics mode.", ELL_ERROR);
-		break;
-	case DISP_CHANGE_BADMODE:
-		os::Printer::log("Switch to fullscreen: The graphics mode is not supported.", ELL_ERROR);
-		break;
-	default:
-		os::Printer::log("An unknown error occurred while changing to fullscreen.", ELL_ERROR);
-		break;
-	}
-	return ret;
+	// To be filled...
+	return true;
 }
 
 
@@ -1513,33 +1427,6 @@ CIrrDeviceWin32::CCursorControl* CIrrDeviceWin32::getWin32CursorControl()
 	return Win32CursorControl;
 }
 
-
-//! \return Returns a pointer to a list with all video modes supported
-//! by the gfx adapter.
-video::IVideoModeList* CIrrDeviceWin32::getVideoModeList()
-{
-	if (!VideoModeList->getVideoModeCount())
-	{
-		// enumerate video modes.
-		DWORD i=0;
-		DEVMODE mode;
-		memset(&mode, 0, sizeof(mode));
-		mode.dmSize = sizeof(mode);
-
-		while (EnumDisplaySettings(NULL, i, &mode))
-		{
-			VideoModeList->addMode(core::dimension2d<u32>(mode.dmPelsWidth, mode.dmPelsHeight),
-				mode.dmBitsPerPel);
-
-			++i;
-		}
-
-		if (EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &mode))
-			VideoModeList->setDesktop(mode.dmBitsPerPel, core::dimension2d<u32>(mode.dmPelsWidth, mode.dmPelsHeight));
-	}
-
-	return VideoModeList;
-}
 
 typedef BOOL (WINAPI *PGPI)(DWORD, DWORD, DWORD, DWORD, PDWORD);
 // Needed for old windows apis

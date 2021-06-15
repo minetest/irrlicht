@@ -66,10 +66,6 @@ namespace irr
 		//! notifies the device that it should close itself
 		virtual void closeDevice() _IRR_OVERRIDE_;
 
-		//! \return Returns a pointer to a list with all video modes
-		//! supported by the gfx adapter.
-		virtual video::IVideoModeList* getVideoModeList() _IRR_OVERRIDE_;
-
 		//! Notifies the device, that it has been resized
 		/** Must be publis as it is called from free function (event handler) */
 		void OnResized();
@@ -119,7 +115,7 @@ namespace irr
 		}
 
 		//! Switch to fullscreen
-		bool switchToFullScreen(bool reset=false);
+		bool switchToFullScreen();
 
 		//! Check for and show last Windows API error to help internal debugging.
 		//! Does call GetLastError and on errors formats the error text and displays it in a messagebox.
@@ -432,11 +428,9 @@ namespace irr
 
 		HWND HWnd;
 
-		bool ChangedToFullScreen;
 		bool Resized;
 		bool ExternalWindow;
 		CCursorControl* Win32CursorControl;
-		DEVMODE DesktopMode;
 
 		SJoystickWin32Control* JoyControl;
 	};
