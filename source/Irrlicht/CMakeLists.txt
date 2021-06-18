@@ -65,7 +65,7 @@ else()
 endif()
 
 # Includes for object libraries.
-include_directories(
+set(link_includes
 	"${PROJECT_SOURCE_DIR}/include"
 	"${CMAKE_CURRENT_SOURCE_DIR}"
 
@@ -100,7 +100,6 @@ set(link_libs
 	${X11_X11_LIB}
 	${X11_Xxf86vm_LIB}
 )
-link_libraries(${link_libs})
 
 # Source files
 
@@ -401,18 +400,22 @@ add_library(IRRGUIOBJ OBJECT
 
 option(BUILD_SHARED_LIBS "Build shared library" TRUE)
 
-# IrrlichtMt target
-add_library(IrrlichtMt
-	$<TARGET_OBJECTS:IRRMESHOBJ>
-	$<TARGET_OBJECTS:IRROBJ>
-	$<TARGET_OBJECTS:IRRPARTICLEOBJ>
-	$<TARGET_OBJECTS:IRRANIMOBJ>
-	$<TARGET_OBJECTS:IRRVIDEOOBJ>
-	$<TARGET_OBJECTS:IRRSWRENDEROBJ>
-	$<TARGET_OBJECTS:IRRIOOBJ>
-	$<TARGET_OBJECTS:IRROTHEROBJ>
-	$<TARGET_OBJECTS:IRRGUIOBJ>
-)
+add_library(IrrlichtMt)
+foreach(object_lib
+	IRRMESHOBJ
+	IRROBJ
+	IRRPARTICLEOBJ
+	IRRANIMOBJ
+	IRRVIDEOOBJ
+	IRRSWRENDEROBJ
+	IRRIOOBJ
+	IRROTHEROBJ
+	IRRGUIOBJ)
+	# Set include directories for object library compilation
+	target_include_directories(${object_lib}     PRIVATE ${link_includes})
+	# Add objects from  object library to main library
+	target_sources(IrrlichtMt PRIVATE $<TARGET_OBJECTS:${object_lib}>)
+endforeach()
 
 # Alias target provides add_submodule compatibility
 add_library(IrrlichtMt::IrrlichtMt ALIAS IrrlichtMt)
@@ -423,18 +426,10 @@ target_include_directories(IrrlichtMt
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
 		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt>"
 	PRIVATE
-		"${ZLIB_INCLUDE_DIR}"
-		"${JPEG_INCLUDE_DIR}"
-		"${PNG_INCLUDE_DIR}"
-
-		${OPENGL_INCLUDE_DIR}
-		${OPENGLES2_INCLUDE_DIR}
-		${EGL_INCLUDE_DIR}
-
-		"$<$<PLATFORM_ID:Android>:${ANDROID_NDK}/sources/android/native_app_glue>"
-		${X11_INCLUDE_DIR}
+		${link_includes}
 )
 
+#target_include_directories(IrrlichtMt PRIVATE ${link_includes})
 target_link_libraries(IrrlichtMt PRIVATE ${link_libs})
 
 set_target_properties(IrrlichtMt PROPERTIES
