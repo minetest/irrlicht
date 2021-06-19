@@ -764,6 +764,7 @@ bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 	{
 		readVector3(mesh.Vertices[n].Pos);
 		mesh.Vertices[n].Color=0xFFFFFFFF;
+		mesh.Vertices[n].Normal=core::vector3df(0.0f);
 	}
 
 	if (!checkForTwoFollowingSemicolons())
