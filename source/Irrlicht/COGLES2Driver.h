@@ -379,6 +379,9 @@ namespace video
 
 		bool setMaterialTexture(irr::u32 layerIdx, const irr::video::ITexture* texture);
 
+		//! Same as `CacheHandler->setViewport`, but also sets `ViewPort`
+		virtual void setViewPortRaw(const core::rect<s32>& vp);
+
 		COGLES2CacheHandler* CacheHandler;
 		core::stringw Name;
 		core::stringc VendorName;

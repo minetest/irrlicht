@@ -2330,6 +2330,15 @@ void COGLES1Driver::setViewPort(const core::rect<s32>& area)
 }
 
 
+void COGLES1Driver::setViewPortRaw(const core::rect<s32>& vp)
+{
+	if (vp.getHeight() > 0 && vp.getWidth() > 0)
+		CacheHandler->setViewport(vp.UpperLeftCorner.X, vp.UpperLeftCorner.Y, vp.LowerRightCorner.X, vp.LowerRightCorner.Y);
+
+	ViewPort = vp;
+}
+
+
 //! Draws a shadow volume into the stencil buffer.
 void COGLES1Driver::drawStencilShadowVolume(const core::array<core::vector3df>& triangles, bool zfail, u32 debugDataVisible)
 {
@@ -2557,7 +2566,7 @@ void COGLES1Driver::draw3DLine(const core::vector3df& start,
 void COGLES1Driver::OnResize(const core::dimension2d<u32>& size)
 {
 	CNullDriver::OnResize(size);
-	CacheHandler->setViewport(0, 0, size.Width, size.Height);
+	setViewPort(core::recti(0, 0, size.Width, size.Height));
 	Transformation3DChanged = true;
 }
 
@@ -2779,7 +2788,7 @@ bool COGLES1Driver::setRenderTargetEx(IRenderTarget* target, u16 clearFlag, SCol
 
 		destRenderTargetSize = renderTarget->getSize();
 
-		CacheHandler->setViewport(0, 0, destRenderTargetSize.Width, destRenderTargetSize.Height);
+		setViewPortRaw(core::recti(0, 0, destRenderTargetSize.Width, destRenderTargetSize.Height));
 	}
 	else
 	{
@@ -2805,7 +2814,7 @@ bool COGLES1Driver::setRenderTargetEx(IRenderTarget* target, u16 clearFlag, SCol
 
 		destRenderTargetSize = core::dimension2d<u32>(0, 0);
 
-		CacheHandler->setViewport(0, 0, ScreenSize.Width, ScreenSize.Height);
+		setViewPortRaw(core::recti(0, 0, ScreenSize.Width, ScreenSize.Height));
 	}
 
 	if (CurrentRenderTargetSize != destRenderTargetSize)

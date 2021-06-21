@@ -3240,6 +3240,15 @@ void COpenGLDriver::setViewPort(const core::rect<s32>& area)
 }
 
 
+void COpenGLDriver::setViewPortRaw(const core::rect<s32>& vp)
+{
+	if (vp.getHeight() > 0 && vp.getWidth() > 0)
+		CacheHandler->setViewport(vp.UpperLeftCorner.X, vp.UpperLeftCorner.Y, vp.LowerRightCorner.X, vp.LowerRightCorner.Y);
+
+	ViewPort = vp;
+}
+
+
 //! Draws a shadow volume into the stencil buffer. To draw a stencil shadow, do
 //! this: First, draw all geometry. Then use this method, to draw the shadow
 //! volume. Next use IVideoDriver::drawStencilShadow() to visualize the shadow.
@@ -3633,7 +3642,7 @@ bool COpenGLDriver::needsTransparentRenderPass(const irr::video::SMaterial& mate
 void COpenGLDriver::OnResize(const core::dimension2d<u32>& size)
 {
 	CNullDriver::OnResize(size);
-	CacheHandler->setViewport(0, 0, size.Width, size.Height);
+	setViewPort(core::recti(0, 0, size.Width, size.Height));
 	Transformation3DChanged = true;
 }
 
@@ -3872,7 +3881,7 @@ bool COpenGLDriver::setRenderTargetEx(IRenderTarget* target, u16 clearFlag, SCol
 
 		destRenderTargetSize = renderTarget->getSize();
 
-		CacheHandler->setViewport(0, 0, destRenderTargetSize.Width, destRenderTargetSize.Height);
+		setViewPortRaw(core::recti(0, 0, destRenderTargetSize.Width, destRenderTargetSize.Height));
 	}
 	else
 	{
@@ -3898,7 +3907,7 @@ bool COpenGLDriver::setRenderTargetEx(IRenderTarget* target, u16 clearFlag, SCol
 
 		destRenderTargetSize = core::dimension2d<u32>(0, 0);
 
-		CacheHandler->setViewport(0, 0, ScreenSize.Width, ScreenSize.Height);
+		setViewPortRaw(core::recti(0, 0, ScreenSize.Width, ScreenSize.Height));
 	}
 
 	if (CurrentRenderTargetSize != destRenderTargetSize)
@@ -3972,7 +3981,7 @@ IImage* COpenGLDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RE
 	if (format==video::ECF_UNKNOWN)
 		format=getColorFormat();
 
-	// TODO: Maybe we could support more formats (floating point and some of those beyond ECF_R8), didn't really try yet 
+	// TODO: Maybe we could support more formats (floating point and some of those beyond ECF_R8), didn't really try yet
 	if (IImage::isCompressedFormat(format) || IImage::isDepthFormat(format) || IImage::isFloatingPointFormat(format) || format >= ECF_R8)
 		return 0;
 
