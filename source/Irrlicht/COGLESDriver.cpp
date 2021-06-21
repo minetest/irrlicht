@@ -2330,12 +2330,12 @@ void COGLES1Driver::setViewPort(const core::rect<s32>& area)
 }
 
 
-void COGLES1Driver::setViewPortRaw(const core::rect<s32>& vp)
+void COGLES1Driver::setViewPortRaw(u32 width, u32 height)
 {
-	if (vp.getHeight() > 0 && vp.getWidth() > 0)
-		CacheHandler->setViewport(vp.UpperLeftCorner.X, vp.UpperLeftCorner.Y, vp.LowerRightCorner.X, vp.LowerRightCorner.Y);
+	if (width > 0 && height > 0)
+		CacheHandler->setViewport(0, 0, width, height);
 
-	ViewPort = vp;
+	ViewPort = core::recti(0, 0, width, height);
 }
 
 
@@ -2788,7 +2788,7 @@ bool COGLES1Driver::setRenderTargetEx(IRenderTarget* target, u16 clearFlag, SCol
 
 		destRenderTargetSize = renderTarget->getSize();
 
-		setViewPortRaw(core::recti(0, 0, destRenderTargetSize.Width, destRenderTargetSize.Height));
+		setViewPortRaw(destRenderTargetSize.Width, destRenderTargetSize.Height);
 	}
 	else
 	{
@@ -2814,7 +2814,7 @@ bool COGLES1Driver::setRenderTargetEx(IRenderTarget* target, u16 clearFlag, SCol
 
 		destRenderTargetSize = core::dimension2d<u32>(0, 0);
 
-		setViewPortRaw(core::recti(0, 0, ScreenSize.Width, ScreenSize.Height));
+		setViewPortRaw(ScreenSize.Width, ScreenSize.Height);
 	}
 
 	if (CurrentRenderTargetSize != destRenderTargetSize)

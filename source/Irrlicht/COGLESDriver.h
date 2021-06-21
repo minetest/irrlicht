@@ -343,7 +343,7 @@ namespace video
 		void assignHardwareLight(u32 lightIndex);
 
 		//! Same as `CacheHandler->setViewport`, but also sets `ViewPort`
-		virtual void setViewPortRaw(const core::rect<s32>& vp);
+		virtual void setViewPortRaw(u32 width, u32 height);
 
 		COGLES1CacheHandler* CacheHandler;
 

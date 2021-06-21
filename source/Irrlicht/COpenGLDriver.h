@@ -457,7 +457,7 @@ namespace video
 				scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType);
 
 		//! Same as `CacheHandler->setViewport`, but also sets `ViewPort`
-		virtual void setViewPortRaw(const core::rect<s32>& vp);
+		virtual void setViewPortRaw(u32 width, u32 height);
 
 		COpenGLCacheHandler* CacheHandler;
 
