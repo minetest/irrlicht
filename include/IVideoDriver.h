@@ -514,8 +514,8 @@ namespace video
 		- For a 32-bit texture only the red channel is regarded
 		- For a 16-bit texture the rgb-values are averaged.
 		Output channels red/green for X/Y and blue for up (Z).
-		For a 32-bit texture we store additionally the height value in the 
-		alpha channel. This value is used by the video::EMT_PARALLAX_MAP_SOLID 
+		For a 32-bit texture we store additionally the height value in the
+		alpha channel. This value is used by the video::EMT_PARALLAX_MAP_SOLID
 		material and similar materials.
 		On the borders the texture is considered to repeat.
 		\param texture Height map texture which is converted to a normal map.
@@ -532,7 +532,8 @@ namespace video
 		possible to render into a texture between the
 		IVideoDriver::beginScene() and endScene() method calls. If you need the
 		best performance use this method instead of setRenderTarget.
-		\param target Render target object.
+		\param target Render target object. If set to nullptr, it makes the
+		window the current render target.
 		\param clearFlag A combination of the E_CLEAR_BUFFER_FLAG bit-flags.
 		\param clearColor The clear color for the color buffer.
 		\param clearDepth The clear value for the depth buffer.
@@ -562,9 +563,8 @@ namespace video
 		possible to render into a texture between the
 		IVideoDriver::beginScene() and endScene() method calls.
 		\param texture New render target. Must be a texture created with
-		IVideoDriver::addRenderTargetTexture(). If set to 0, it sets
-		the previous render target which was set before the last
-		setRenderTarget() call.
+		IVideoDriver::addRenderTargetTexture(). If set to nullptr, it makes
+		the window the current render target.
 		\param clearFlag A combination of the E_CLEAR_BUFFER_FLAG bit-flags.
 		\param clearColor The clear color for the color buffer.
 		\param clearDepth The clear value for the depth buffer.
@@ -789,7 +789,7 @@ namespace video
 		//! Draws a 2d image without any special effects
 		/** \param texture Pointer to texture to use.
 		\param destPos Upper left 2d destination position where the
-		image will be drawn. 
+		image will be drawn.
 		\param useAlphaChannelOfTexture: If true, the alpha channel of
 		the texture is used to draw the image.*/
 		virtual void draw2DImage(const video::ITexture* texture,
@@ -1231,7 +1231,7 @@ namespace video
 		\param data A byte array with pixel color information
 		\param ownForeignMemory If true, the image will use the data
 		pointer directly and own it afterward. If false, the memory
-		will by copied internally. 
+		will by copied internally.
 		WARNING: Setting this to 'true' will not work across dll boundaries.
 		So unless you link Irrlicht statically you should keep this to 'false'.
 		The parameter is mainly for internal usage.
