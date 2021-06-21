@@ -3242,9 +3242,7 @@ void COpenGLDriver::setViewPort(const core::rect<s32>& area)
 
 void COpenGLDriver::setViewPortRaw(u32 width, u32 height)
 {
-	if (width > 0 && height > 0)
-		CacheHandler->setViewport(0, 0, width, height);
-
+	CacheHandler->setViewport(0, 0, width, height);
 	ViewPort = core::recti(0, 0, width, height);
 }
 
@@ -3642,7 +3640,7 @@ bool COpenGLDriver::needsTransparentRenderPass(const irr::video::SMaterial& mate
 void COpenGLDriver::OnResize(const core::dimension2d<u32>& size)
 {
 	CNullDriver::OnResize(size);
-	setViewPort(core::recti(0, 0, size.Width, size.Height));
+	CacheHandler->setViewport(0, 0, size.Width, size.Height);
 	Transformation3DChanged = true;
 }
 

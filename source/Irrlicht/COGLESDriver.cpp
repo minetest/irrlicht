@@ -2332,9 +2332,7 @@ void COGLES1Driver::setViewPort(const core::rect<s32>& area)
 
 void COGLES1Driver::setViewPortRaw(u32 width, u32 height)
 {
-	if (width > 0 && height > 0)
-		CacheHandler->setViewport(0, 0, width, height);
-
+	CacheHandler->setViewport(0, 0, width, height);
 	ViewPort = core::recti(0, 0, width, height);
 }
 
@@ -2566,7 +2564,7 @@ void COGLES1Driver::draw3DLine(const core::vector3df& start,
 void COGLES1Driver::OnResize(const core::dimension2d<u32>& size)
 {
 	CNullDriver::OnResize(size);
-	setViewPort(core::recti(0, 0, size.Width, size.Height));
+	CacheHandler->setViewport(0, 0, size.Width, size.Height);
 	Transformation3DChanged = true;
 }
 

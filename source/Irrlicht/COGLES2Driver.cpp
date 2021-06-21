@@ -2101,9 +2101,7 @@ COGLES2Driver::~COGLES2Driver()
 
 	void COGLES2Driver::setViewPortRaw(u32 width, u32 height)
 	{
-		if (width > 0 && height > 0)
-			CacheHandler->setViewport(0, 0, width, height);
-
+		CacheHandler->setViewport(0, 0, width, height);
 		ViewPort = core::recti(0, 0, width, height);
 	}
 
@@ -2261,7 +2259,7 @@ COGLES2Driver::~COGLES2Driver()
 	void COGLES2Driver::OnResize(const core::dimension2d<u32>& size)
 	{
 		CNullDriver::OnResize(size);
-		setViewPort(core::recti(0, 0, size.Width, size.Height));
+		CacheHandler->setViewport(0, 0, size.Width, size.Height);
 		Transformation3DChanged = true;
 	}
 
