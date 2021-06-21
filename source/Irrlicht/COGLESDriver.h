@@ -342,6 +342,9 @@ namespace video
 		//! \param[in] lightIndex: the index of the requesting light
 		void assignHardwareLight(u32 lightIndex);
 
+		//! Same as `CacheHandler->setViewport`, but also sets `ViewPort`
+		virtual void setViewPortRaw(u32 width, u32 height);
+
 		COGLES1CacheHandler* CacheHandler;
 
 		core::stringw Name;

@@ -3240,6 +3240,13 @@ void COpenGLDriver::setViewPort(const core::rect<s32>& area)
 }
 
 
+void COpenGLDriver::setViewPortRaw(u32 width, u32 height)
+{
+	CacheHandler->setViewport(0, 0, width, height);
+	ViewPort = core::recti(0, 0, width, height);
+}
+
+
 //! Draws a shadow volume into the stencil buffer. To draw a stencil shadow, do
 //! this: First, draw all geometry. Then use this method, to draw the shadow
 //! volume. Next use IVideoDriver::drawStencilShadow() to visualize the shadow.
@@ -3872,7 +3879,7 @@ bool COpenGLDriver::setRenderTargetEx(IRenderTarget* target, u16 clearFlag, SCol
 
 		destRenderTargetSize = renderTarget->getSize();
 
-		CacheHandler->setViewport(0, 0, destRenderTargetSize.Width, destRenderTargetSize.Height);
+		setViewPortRaw(destRenderTargetSize.Width, destRenderTargetSize.Height);
 	}
 	else
 	{
@@ -3898,7 +3905,7 @@ bool COpenGLDriver::setRenderTargetEx(IRenderTarget* target, u16 clearFlag, SCol
 
 		destRenderTargetSize = core::dimension2d<u32>(0, 0);
 
-		CacheHandler->setViewport(0, 0, ScreenSize.Width, ScreenSize.Height);
+		setViewPortRaw(ScreenSize.Width, ScreenSize.Height);
 	}
 
 	if (CurrentRenderTargetSize != destRenderTargetSize)
@@ -3972,7 +3979,7 @@ IImage* COpenGLDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RE
 	if (format==video::ECF_UNKNOWN)
 		format=getColorFormat();
 
-	// TODO: Maybe we could support more formats (floating point and some of those beyond ECF_R8), didn't really try yet 
+	// TODO: Maybe we could support more formats (floating point and some of those beyond ECF_R8), didn't really try yet
 	if (IImage::isCompressedFormat(format) || IImage::isDepthFormat(format) || IImage::isFloatingPointFormat(format) || format >= ECF_R8)
 		return 0;
 

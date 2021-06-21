@@ -2099,6 +2099,13 @@ COGLES2Driver::~COGLES2Driver()
 	}
 
 
+	void COGLES2Driver::setViewPortRaw(u32 width, u32 height)
+	{
+		CacheHandler->setViewport(0, 0, width, height);
+		ViewPort = core::recti(0, 0, width, height);
+	}
+
+
 	//! Draws a shadow volume into the stencil buffer.
 	void COGLES2Driver::drawStencilShadowVolume(const core::array<core::vector3df>& triangles, bool zfail, u32 debugDataVisible)
 	{
@@ -2460,7 +2467,7 @@ COGLES2Driver::~COGLES2Driver()
 
 			destRenderTargetSize = renderTarget->getSize();
 
-			CacheHandler->setViewport(0, 0, destRenderTargetSize.Width, destRenderTargetSize.Height);
+			setViewPortRaw(destRenderTargetSize.Width, destRenderTargetSize.Height);
 		}
 		else
 		{
@@ -2468,7 +2475,7 @@ COGLES2Driver::~COGLES2Driver()
 
 			destRenderTargetSize = core::dimension2d<u32>(0, 0);
 
-			CacheHandler->setViewport(0, 0, ScreenSize.Width, ScreenSize.Height);
+			setViewPortRaw(ScreenSize.Width, ScreenSize.Height);
 		}
 
 		if (CurrentRenderTargetSize != destRenderTargetSize)
