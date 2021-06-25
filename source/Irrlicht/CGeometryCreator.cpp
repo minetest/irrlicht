@@ -378,7 +378,7 @@ IMesh* CGeometryCreator::createTerrainMesh(video::IImage* texture,
 				blockSize.Height = hMapSize.Height - processed.Y;
 
 			SMeshBuffer* buffer = new SMeshBuffer();
-			buffer->setHardwareMappingHint(scene::EHM_STATIC);
+			buffer->setHardwareMappingHint(EHM_STATIC);
 			buffer->Vertices.reallocate(blockSize.getArea());
 			// add vertices of vertex block
 			u32 y;
@@ -500,7 +500,7 @@ IMesh* CGeometryCreator::createArrowMesh(const u32 tesselationCylinder,
 	IMesh* mesh2 = createConeMesh(width1, height-cylinderHeight, tesselationCone, vtxColor1, vtxColor0);
 	for (u32 i=0; i<mesh2->getMeshBufferCount(); ++i)
 	{
-		scene::IMeshBuffer* buffer = mesh2->getMeshBuffer(i);
+		IMeshBuffer* buffer = mesh2->getMeshBuffer(i);
 		for (u32 j=0; j<buffer->getVertexCount(); ++j)
 			buffer->getPosition(j).Y += cylinderHeight;
 		buffer->setDirty(EBT_VERTEX);
@@ -925,6 +925,101 @@ IMesh* CGeometryCreator::createConeMesh(f32 radius, f32 length, u32 tesselation,
 	return mesh;
 }
 
+irr::scene::IMesh* CGeometryCreator::createTorusMesh(irr::f32 majorRadius, irr::f32 minorRadius, irr::u32 majorSegments, irr::u32 minorSegments) const
+{
+	if ( majorRadius == 0.f || minorRadius == 0.f )
+		return 0;
+
+	if ( majorSegments < 3 )
+		majorSegments = 3;
+	if ( minorSegments < 3 )
+		minorSegments = 3;
+
+	// Note: first/last vertices of major and minor lines are on same position, but not shared to allow for independent uv's.
+
+	// prevent 16-bit vertex buffer overflow
+	u32 numVertices = (majorSegments+1)*(minorSegments+1);
+	while (numVertices > 65536)
+	{
+		if ( majorSegments > 2*minorSegments )
+			majorSegments /= 2;
+		else if ( minorSegments > 2*majorSegments )
+			minorSegments /= 2;
+		else
+		{
+			majorSegments /= 2;
+			minorSegments /= 2;
+		}
+		numVertices = (majorSegments+1)*(minorSegments+1);
+	}
+
+	const u32 majorLines = majorSegments+1;
+	const u32 minorLines = minorSegments+1;
+
+	const video::SColor color(255,255,255,255);
+	SMeshBuffer* buffer = new SMeshBuffer();
+	buffer->Indices.reallocate(majorSegments*minorSegments*6);
+	buffer->Vertices.reallocate(numVertices);
+
+	const f32 TWO_PI = 2.f*core::PI;
+	const f32 angleStepMajor = TWO_PI / majorSegments;
+	const f32 angleStepMinor = TWO_PI / minorSegments;
+
+	// vertices
+	for ( irr::u32 major = 0; major < majorLines; ++major)
+	{
+		const f32 angleMajor = major*angleStepMajor;
+		const f32 cosMajor = cos(angleMajor);
+		const f32 sinMajor = sin(angleMajor);
+
+		// points of major circle
+		const core::vector3df pm(majorRadius*cosMajor, 0.f, majorRadius * sinMajor);	
+
+		for ( irr::u32 minor = 0; minor < minorLines; ++minor)
+		{
+			const f32 angleMinor = minor*angleStepMinor;
+			const f32 cosMinor = cos(angleMinor);
+
+			core::vector3df p;
+			p.X = pm.X + minorRadius * cosMinor * cosMajor;
+			p.Z = pm.Z + minorRadius * cosMinor * sinMajor;
+			p.Y = minorRadius * sin(angleMinor);
+			const core::vector3df n((p-pm)/minorRadius);
+			const core::vector2df uv(angleMajor/TWO_PI, angleMinor/TWO_PI);
+			buffer->Vertices.push_back( video::S3DVertex(p, n, color, uv) );
+		}
+	}
+
+	// indices
+	for ( irr::u32 major = 0; major < majorSegments; ++major)
+	{
+		for ( irr::u32 minor = 0; minor < minorSegments; ++minor)
+		{
+			irr::u16 i = major*minorLines+minor;
+			buffer->Indices.push_back(i+1);
+			buffer->Indices.push_back(i+minorLines);
+			buffer->Indices.push_back(i);
+
+			buffer->Indices.push_back(i+1);
+			buffer->Indices.push_back(i+minorLines+1);
+			buffer->Indices.push_back(i+minorLines);
+		}
+	}
+
+	// recalculate bounding box
+	buffer->BoundingBox.MaxEdge.X = core::abs_(majorRadius)+core::abs_(minorRadius);
+	buffer->BoundingBox.MaxEdge.Z = buffer->BoundingBox.MaxEdge.X;
+	buffer->BoundingBox.MaxEdge.Y = core::abs_(minorRadius);
+	buffer->BoundingBox.MinEdge = buffer->BoundingBox.MaxEdge*-1.f;
+
+	SMesh* mesh = new SMesh();
+	mesh->addMeshBuffer(buffer);
+	buffer->drop();
+
+	mesh->setHardwareMappingHint(EHM_STATIC);
+	mesh->recalculateBoundingBox();
+	return mesh;
+}
 
 void CGeometryCreator::addToBuffer(const video::S3DVertex& v, SMeshBuffer* Buffer) const
 {

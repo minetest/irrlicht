@@ -183,6 +183,16 @@ public:
 			const video::SColor& colorBottom=video::SColor(0xffffffff),
 			f32 oblique=0.f) const =0;
 
+	//! Create a torus mesh
+	/** Note: Segments might get reduced to ensure it fits into 16-bit meshbuffer.
+	With 256 segments for minor and major circle you'll hit the maximum.
+	\param majorRadius Starting from mesh center
+	\param minorRadius Starting from a circle at majorRadius distance around center
+	\param majorSegments Segments for major circle. Will use at least 3. 
+	\param minorSegments Segments for minor circle. Will use at least 3
+	*/
+	virtual IMesh* createTorusMesh(f32 majorRadius, f32 minorRadius, u32 majorSegments = 32, u32 minorSegments = 16) const = 0;
+
 	//! Create a volume light mesh.
 	/**
 	\param subdivideU Horizontal patch count.

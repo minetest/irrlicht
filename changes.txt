@@ -1,5 +1,6 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- Add IGeometryCreator::createTorusMesh to create donuts.
 - Don't try loading broken image files twice with same loader anymore.
 - Make CImageLoaderJPG thread safe. Thanks @ Edoardo Lolletti for report and patch (patch #324)
 - Add ETCF_SUPPORT_VERTEXT_TEXTURE flag which can be used to enable vertex texture sampling support in Direct3D 9.

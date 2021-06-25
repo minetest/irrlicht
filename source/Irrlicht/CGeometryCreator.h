@@ -51,6 +51,9 @@ public:
 				const video::SColor& colorBottom=0xffffffff,
 				f32 oblique=0.f) const _IRR_OVERRIDE_;
 
+	virtual IMesh* createTorusMesh(f32 majorRadius, f32 minorRadius, 
+				u32 majorSegments, u32 minorSegments) const _IRR_OVERRIDE_;
+
 	virtual IMesh* createVolumeLightMesh(
 			const u32 subdivideU=32, const u32 subdivideV=32,
 			const video::SColor footColor=0xffffffff,
