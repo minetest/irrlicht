@@ -185,11 +185,11 @@ public:
 
 	//! Create a torus mesh
 	/** Note: Segments might get reduced to ensure it fits into 16-bit meshbuffer.
-	With 256 segments for minor and major circle you'll hit the maximum.
+	With 255 segments for minor and major circle you'll hit the maximum.
 	\param majorRadius Starting from mesh center
 	\param minorRadius Starting from a circle at majorRadius distance around center
-	\param majorSegments Segments for major circle. Will use at least 3. 
-	\param minorSegments Segments for minor circle. Will use at least 3
+	\param majorSegments Segments for major circle. Will use at least 3 segments. 
+	\param minorSegments Segments for minor circle. Will use at least 3 segments.
 	*/
 	virtual IMesh* createTorusMesh(f32 majorRadius, f32 minorRadius, u32 majorSegments = 32, u32 minorSegments = 16) const = 0;
 
