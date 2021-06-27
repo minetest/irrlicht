@@ -64,7 +64,6 @@ else()
 	find_package(X11 REQUIRED)
 endif()
 
-# Includes for object libraries.
 set(link_includes
 	"${PROJECT_SOURCE_DIR}/include"
 	"${CMAKE_CURRENT_SOURCE_DIR}"
@@ -81,7 +80,6 @@ set(link_includes
 	${X11_INCLUDE_DIR}
 )
 
-# Libraries for object libraries.
 set(link_libs
 	"${ZLIB_LIBRARY}"
 	"${JPEG_LIBRARY}"
@@ -402,18 +400,11 @@ option(BUILD_SHARED_LIBS "Build shared library" TRUE)
 
 add_library(IrrlichtMt)
 foreach(object_lib
-	IRRMESHOBJ
-	IRROBJ
-	IRRPARTICLEOBJ
-	IRRANIMOBJ
-	IRRVIDEOOBJ
-	IRRSWRENDEROBJ
-	IRRIOOBJ
-	IRROTHEROBJ
-	IRRGUIOBJ)
+	IRRMESHOBJ IRROBJ IRRPARTICLEOBJ IRRANIMOBJ IRRVIDEOOBJ IRRSWRENDEROBJ
+	IRRIOOBJ IRROTHEROBJ IRRGUIOBJ)
 	# Set include directories for object library compilation
-	target_include_directories(${object_lib}     PRIVATE ${link_includes})
-	# Add objects from  object library to main library
+	target_include_directories(${object_lib} PRIVATE ${link_includes})
+	# Add objects from object library to main library
 	target_sources(IrrlichtMt PRIVATE $<TARGET_OBJECTS:${object_lib}>)
 endforeach()
 
@@ -429,7 +420,6 @@ target_include_directories(IrrlichtMt
 		${link_includes}
 )
 
-#target_include_directories(IrrlichtMt PRIVATE ${link_includes})
 target_link_libraries(IrrlichtMt PRIVATE ${link_libs})
 
 set_target_properties(IrrlichtMt PROPERTIES
