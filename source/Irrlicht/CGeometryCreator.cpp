@@ -925,7 +925,7 @@ IMesh* CGeometryCreator::createConeMesh(f32 radius, f32 length, u32 tesselation,
 	return mesh;
 }
 
-irr::scene::IMesh* CGeometryCreator::createTorusMesh(irr::f32 majorRadius, irr::f32 minorRadius, irr::u32 majorSegments, irr::u32 minorSegments) const
+irr::scene::IMesh* CGeometryCreator::createTorusMesh(irr::f32 majorRadius, irr::f32 minorRadius, irr::u32 majorSegments, irr::u32 minorSegments, f32 angleStart, f32 angleEnd, int capEnds) const
 {
 	if ( majorRadius == 0.f || minorRadius == 0.f )
 		return 0;
@@ -938,7 +938,8 @@ irr::scene::IMesh* CGeometryCreator::createTorusMesh(irr::f32 majorRadius, irr::
 	// Note: first/last vertices of major and minor lines are on same position, but not shared to allow for independent uv's.
 
 	// prevent 16-bit vertex buffer overflow
-	u32 numVertices = (majorSegments+1)*(minorSegments+1);
+	const u32 numCapVertices = (capEnds & 1 ? 1 : 0) + (capEnds & 2 ? 1 : 0);
+	u32 numVertices = (majorSegments+1)*(minorSegments+1)+numCapVertices;
 	while (numVertices > 65536)
 	{
 		if ( majorSegments > 2*minorSegments )
@@ -950,7 +951,7 @@ irr::scene::IMesh* CGeometryCreator::createTorusMesh(irr::f32 majorRadius, irr::
 			majorSegments /= 2;
 			minorSegments /= 2;
 		}
-		numVertices = (majorSegments+1)*(minorSegments+1);
+		numVertices = (majorSegments+1)*(minorSegments+1)+numCapVertices;
 	}
 
 	const u32 majorLines = majorSegments+1;
@@ -961,27 +962,32 @@ irr::scene::IMesh* CGeometryCreator::createTorusMesh(irr::f32 majorRadius, irr::
 	buffer->Indices.reallocate(majorSegments*minorSegments*6);
 	buffer->Vertices.reallocate(numVertices);
 
+	if ( angleStart > angleEnd )
+		core::swap(angleStart, angleEnd);
+	const f32 radStart = angleStart * core::DEGTORAD;
+	const f32 radEnd = angleEnd * core::DEGTORAD;
+	const f32 radMajor = radEnd-radStart;
+	const f32 radStepMajor = radMajor / majorSegments;
 	const f32 TWO_PI = 2.f*core::PI;
-	const f32 angleStepMajor = TWO_PI / majorSegments;
-	const f32 angleStepMinor = TWO_PI / minorSegments;
+	const f32 radStepMinor = TWO_PI / minorSegments;
 
 	// vertices
 	for ( irr::u32 major = 0; major < majorLines; ++major)
 	{
-		const f32 angleMajor = major*angleStepMajor;
-		const f32 cosMajor = cosf(angleMajor);
-		const f32 sinMajor = sinf(angleMajor);
+		const f32 radMajor = radStart + major*radStepMajor;
+		const f32 cosMajor = cosf(radMajor);
+		const f32 sinMajor = sinf(radMajor);
 
 		// points of major circle
-		const core::vector3df pm(majorRadius*cosMajor, 0.f, majorRadius * sinMajor);	
+		const core::vector3df pm(majorRadius*cosMajor, 0.f, majorRadius * sinMajor);
 
 		for ( irr::u32 minor = 0; minor < minorLines; ++minor)
 		{
-			const f32 angleMinor = minor*angleStepMinor;
-			const f32 cosMinor = cosf(angleMinor);
+			const f32 radMinor = minor*radStepMinor;
+			const f32 cosMinor = cosf(radMinor);
 
-			const core::vector3df n(cosMinor * cosMajor, sinf(angleMinor), cosMinor * sinMajor);
-			const core::vector2df uv(angleMajor/TWO_PI, angleMinor/TWO_PI);
+			const core::vector3df n(cosMinor * cosMajor, sinf(radMinor), cosMinor * sinMajor);
+			const core::vector2df uv(radMajor/TWO_PI, radMinor/TWO_PI);
 			buffer->Vertices.push_back( video::S3DVertex(pm+n*minorRadius, n, color, uv) );
 		}
 	}
@@ -991,7 +997,7 @@ irr::scene::IMesh* CGeometryCreator::createTorusMesh(irr::f32 majorRadius, irr::
 	{
 		for ( irr::u32 minor = 0; minor < minorSegments; ++minor)
 		{
-			irr::u16 i = major*minorLines+minor;
+			const irr::u16 i = major*minorLines+minor;
 			buffer->Indices.push_back(i+1);
 			buffer->Indices.push_back(i+minorLines);
 			buffer->Indices.push_back(i);
@@ -999,6 +1005,41 @@ irr::scene::IMesh* CGeometryCreator::createTorusMesh(irr::f32 majorRadius, irr::
 			buffer->Indices.push_back(i+1);
 			buffer->Indices.push_back(i+minorLines+1);
 			buffer->Indices.push_back(i+minorLines);
+		}
+	}
+
+	// add start caps
+	if ( capEnds & 1 )
+	{
+		const core::vector3df p(cosf(radStart), 0.f, sinf(radStart));
+		const core::vector3df n( p.crossProduct(core::vector3df(0,-1,0)) );
+		const core::vector2df uv(radStart/TWO_PI, 0.5f);
+		buffer->Vertices.push_back( video::S3DVertex(p*majorRadius, n, color, uv) );
+
+		const irr::u16 i=buffer->Vertices.size()-1;
+		for ( irr::u32 minor = 0; minor < minorSegments; ++minor)
+		{
+			buffer->Indices.push_back(minor+1);
+			buffer->Indices.push_back(minor);
+			buffer->Indices.push_back(i);
+		}
+	}
+
+	// add end caps
+	if ( capEnds & 2 )
+	{
+		const core::vector3df p(cosf(radEnd), 0.f, sinf(radEnd));
+		const core::vector3df n( p.crossProduct(core::vector3df(0,1,0)) );
+		const core::vector2df uv(radEnd/TWO_PI, 0.5f);
+		buffer->Vertices.push_back( video::S3DVertex(p*majorRadius, n, color, uv) );
+
+		const irr::u16 i=buffer->Vertices.size()-1;
+		const irr::u16 k=i-numCapVertices;
+		for ( irr::u32 minor = 0; minor < minorSegments; ++minor)
+		{
+			buffer->Indices.push_back(k-minor-1);
+			buffer->Indices.push_back(k-minor);
+			buffer->Indices.push_back(i);
 		}
 	}
 
