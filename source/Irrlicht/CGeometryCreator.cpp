@@ -969,8 +969,8 @@ irr::scene::IMesh* CGeometryCreator::createTorusMesh(irr::f32 majorRadius, irr::
 	for ( irr::u32 major = 0; major < majorLines; ++major)
 	{
 		const f32 angleMajor = major*angleStepMajor;
-		const f32 cosMajor = cos(angleMajor);
-		const f32 sinMajor = sin(angleMajor);
+		const f32 cosMajor = cosf(angleMajor);
+		const f32 sinMajor = sinf(angleMajor);
 
 		// points of major circle
 		const core::vector3df pm(majorRadius*cosMajor, 0.f, majorRadius * sinMajor);	
@@ -978,15 +978,11 @@ irr::scene::IMesh* CGeometryCreator::createTorusMesh(irr::f32 majorRadius, irr::
 		for ( irr::u32 minor = 0; minor < minorLines; ++minor)
 		{
 			const f32 angleMinor = minor*angleStepMinor;
-			const f32 cosMinor = cos(angleMinor);
+			const f32 cosMinor = cosf(angleMinor);
 
-			core::vector3df p;
-			p.X = pm.X + minorRadius * cosMinor * cosMajor;
-			p.Z = pm.Z + minorRadius * cosMinor * sinMajor;
-			p.Y = minorRadius * sin(angleMinor);
-			const core::vector3df n((p-pm)/minorRadius);
+			const core::vector3df n(cosMinor * cosMajor, sinf(angleMinor), cosMinor * sinMajor);
 			const core::vector2df uv(angleMajor/TWO_PI, angleMinor/TWO_PI);
-			buffer->Vertices.push_back( video::S3DVertex(p, n, color, uv) );
+			buffer->Vertices.push_back( video::S3DVertex(pm+n*minorRadius, n, color, uv) );
 		}
 	}
 
