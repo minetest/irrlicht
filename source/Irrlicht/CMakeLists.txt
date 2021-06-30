@@ -26,7 +26,7 @@ find_package(PNG REQUIRED)
 # To configure the features available in this Irrlicht build please edit
 # include/IrrCompileConfig.h and re-run CMake from a clean state
 include(CheckSymbolExists)
-set(CMAKE_REQUIRED_INCLUDES ${CMAKE_SOURCE_DIR}/include)
+set(CMAKE_REQUIRED_INCLUDES ${PROJECT_SOURCE_DIR}/include)
 unset(OGLES1_ENABLED CACHE)
 unset(OGLES2_ENABLED CACHE)
 unset(OGL_ENABLED CACHE)
