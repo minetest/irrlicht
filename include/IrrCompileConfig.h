@@ -91,8 +91,6 @@
 #define _IRR_IOS_PLATFORM_
 #define _IRR_COMPILE_WITH_IOS_DEVICE_
 #define NO_IRR_COMPILE_WITH_OPENGL_
-#define NO_IRR_COMPILE_WITH_SOFTWARE_
-#define NO_IRR_COMPILE_WITH_BURNINGSVIDEO_
 // The application state events and following methods: IrrlichtDevice::isWindowActive, IrrlichtDevice::isWindowFocused,
 // IrrlichtDevice::isWindowMinimized works out of box only if you'll use built-in CIrrDelegateiOS,
 // so _IRR_COMPILE_WITH_IOS_BUILTIN_MAIN_ must be enabled in this case. If you need a custom UIApplicationDelegate
@@ -118,8 +116,6 @@
 #define _IRR_COMPILE_WITH_SDL_DEVICE_
 #define NO_IRR_COMPILE_WITH_X11_DEVICE_
 #define _IRR_LINUX_PLATFORM_	// emscripten basically working like a unix
-#define NO_IRR_COMPILE_WITH_SOFTWARE_
-#define NO_IRR_COMPILE_WITH_BURNINGSVIDEO_
 #endif // __EMSCRIPTEN__
 
 #if defined(__ANDROID__)
@@ -127,8 +123,6 @@
 #define _IRR_COMPILE_WITH_ANDROID_DEVICE_
 #define _IRR_COMPILE_ANDROID_ASSET_READER_
 #define NO_IRR_COMPILE_WITH_OPENGL_
-#define NO_IRR_COMPILE_WITH_SOFTWARE_
-#define NO_IRR_COMPILE_WITH_BURNINGSVIDEO_
 #endif
 
 #if defined(__SVR4) && defined(__sun)
@@ -307,14 +301,14 @@ define out. */
 //! Define _IRR_COMPILE_WITH_SOFTWARE_ to compile the Irrlicht engine with software driver
 /** If you do not need the software driver, or want to use Burning's Video instead,
 comment this define out */
-#define _IRR_COMPILE_WITH_SOFTWARE_
+//#define _IRR_COMPILE_WITH_SOFTWARE_
 #ifdef NO_IRR_COMPILE_WITH_SOFTWARE_
 #undef _IRR_COMPILE_WITH_SOFTWARE_
 #endif
 
 //! Define _IRR_COMPILE_WITH_BURNINGSVIDEO_ to compile the Irrlicht engine with Burning's video driver
 /** If you do not need this software driver, you can comment this define out. */
-#define _IRR_COMPILE_WITH_BURNINGSVIDEO_
+//#define _IRR_COMPILE_WITH_BURNINGSVIDEO_
 #ifdef NO_IRR_COMPILE_WITH_BURNINGSVIDEO_
 #undef _IRR_COMPILE_WITH_BURNINGSVIDEO_
 #endif
