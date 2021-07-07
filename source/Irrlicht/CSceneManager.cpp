@@ -8,7 +8,6 @@
 #include "IFileSystem.h"
 #include "SAnimatedMesh.h"
 #include "CMeshCache.h"
-#include "IXMLWriter.h"
 #include "ISceneUserDataSerializer.h"
 #include "IGUIEnvironment.h"
 #include "IMaterialRenderer.h"
@@ -24,10 +23,6 @@
 // any such loader
 #ifdef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
 #include "CSkinnedMesh.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_IRR_MESH_LOADER_
-#include "CIrrMeshFileLoader.h"
 #endif
 
 #ifdef _IRR_COMPILE_WITH_BSP_LOADER_
@@ -70,10 +65,6 @@
 #include "CMY3DMeshFileLoader.h"
 #endif
 
-#ifdef _IRR_COMPILE_WITH_COLLADA_LOADER_
-#include "CColladaFileLoader.h"
-#endif
-
 #ifdef _IRR_COMPILE_WITH_DMF_LOADER_
 #include "CDMFLoader.h"
 #endif
@@ -108,18 +99,6 @@
 
 #ifdef _IRR_COMPILE_WITH_SMF_LOADER_
 #include "CSMFMeshFileLoader.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_IRR_SCENE_LOADER_
-#include "CSceneLoaderIrr.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_COLLADA_WRITER_
-#include "CColladaMeshWriter.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_IRR_WRITER_
-#include "CIrrMeshWriter.h"
 #endif
 
 #ifdef _IRR_COMPILE_WITH_STL_WRITER_
@@ -219,8 +198,7 @@ CSceneManager::CSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs,
 : ISceneNode(0, 0), Driver(driver), FileSystem(fs), GUIEnvironment(gui),
 	CursorControl(cursorControl), CollisionManager(0),
 	ActiveCamera(0), ShadowColor(150,0,0,0), AmbientLight(0,0,0,0), Parameters(0),
-	MeshCache(cache), CurrentRenderPass(ESNRP_NONE), LightManager(0),
-	IRR_XML_FORMAT_SCENE(L"irr_scene"), IRR_XML_FORMAT_NODE(L"node"), IRR_XML_FORMAT_NODE_ATTR_TYPE(L"type")
+	MeshCache(cache), CurrentRenderPass(ESNRP_NONE), LightManager(0)
 {
 	#ifdef _DEBUG
 	ISceneManager::setDebugName("CSceneManager ISceneManager");
@@ -304,14 +282,8 @@ CSceneManager::CSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs,
 	#ifdef _IRR_COMPILE_WITH_MD2_LOADER_
 	MeshLoaderList.push_back(new CMD2MeshFileLoader());
 	#endif
-	#ifdef _IRR_COMPILE_WITH_IRR_MESH_LOADER_
-	MeshLoaderList.push_back(new CIrrMeshFileLoader(this, FileSystem));
-	#endif
 	#ifdef _IRR_COMPILE_WITH_BSP_LOADER_
 	MeshLoaderList.push_back(new CBSPMeshFileLoader(this, FileSystem));
-	#endif
-	#ifdef _IRR_COMPILE_WITH_COLLADA_LOADER_
-	MeshLoaderList.push_back(new CColladaFileLoader(this, FileSystem));
 	#endif
 	#ifdef _IRR_COMPILE_WITH_3DS_LOADER_
 	MeshLoaderList.push_back(new C3DSMeshFileLoader(this, FileSystem));
@@ -327,11 +299,6 @@ CSceneManager::CSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs,
 	#endif
 	#ifdef _IRR_COMPILE_WITH_B3D_LOADER_
 	MeshLoaderList.push_back(new CB3DMeshFileLoader(this));
-	#endif
-
-	// scene loaders
-	#ifdef _IRR_COMPILE_WITH_IRR_SCENE_LOADER_
-	SceneLoaderList.push_back(new CSceneLoaderIrr(this, FileSystem));
 	#endif
 
 	// factories
@@ -2298,44 +2265,7 @@ bool CSceneManager::saveScene(const io::path& filename, ISceneUserDataSerializer
 //! Saves the current scene into a file.
 bool CSceneManager::saveScene(io::IWriteFile* file, ISceneUserDataSerializer* userDataSerializer, ISceneNode* node)
 {
-	if (!file)
-	{
-		return false;
-	}
-
-	bool result=false;
-	io::IXMLWriter* writer = FileSystem->createXMLWriter(file);
-	if (!writer)
-	{
-		os::Printer::log("Unable to create XML writer", file->getFileName(), ELL_ERROR);
-	}
-	else
-	{
-		result = saveScene(writer, FileSystem->getFileDir(FileSystem->getAbsolutePath(file->getFileName())), userDataSerializer, node);
-		writer->drop();
-	}
-	return result;
-}
-
-
-//! Saves the current scene into a file.
-bool CSceneManager::saveScene(io::IXMLWriter* writer, const io::path& currentPath, ISceneUserDataSerializer* userDataSerializer, ISceneNode* node)
-{
-	if (!writer)
-		return false;
-
-	if (!node)
-		node=this;
-
-	char* oldLocale = setlocale(LC_NUMERIC, NULL);
-	setlocale(LC_NUMERIC, "C");	// float number should to be saved with dots in this format independent of current locale settings.
-
-	writer->writeXMLHeader();
-	writeSceneNode(writer, node, userDataSerializer, currentPath.c_str(), true);
-
-	setlocale(LC_NUMERIC, oldLocale);
-
-	return true;
+	return false;
 }
 
 
@@ -2377,139 +2307,6 @@ bool CSceneManager::loadScene(io::IReadFile* file, ISceneUserDataSerializer* use
 		os::Printer::log("Could not load scene file, perhaps the format is unsupported: ", file->getFileName().c_str(), ELL_ERROR);
 
 	return ret;
-}
-
-
-//! writes a scene node
-void CSceneManager::writeSceneNode(io::IXMLWriter* writer, ISceneNode* node, ISceneUserDataSerializer* userDataSerializer,
-		const fschar_t* currentPath, bool init)
-{
-	if (!writer || !node || node->isDebugObject())
-		return;
-
-	const wchar_t* name;
-	ISceneNode* tmpNode=node;
-
-	if (init)
-	{
-		name = IRR_XML_FORMAT_SCENE.c_str();
-		writer->writeElement(name, false);
-		node=this;
-	}
-	else
-	{
-		name = IRR_XML_FORMAT_NODE.c_str();
-		writer->writeElement(name, false, IRR_XML_FORMAT_NODE_ATTR_TYPE.c_str(),
-			core::stringw(getSceneNodeTypeName(node->getType())).c_str());
-	}
-
-	writer->writeLineBreak();
-
-	// write properties
-
-	io::IAttributes* attr = FileSystem->createEmptyAttributes(Driver);
-	io::SAttributeReadWriteOptions options;
-	if (currentPath)
-	{
-		options.Filename=currentPath;
-		options.Flags|=io::EARWF_USE_RELATIVE_PATHS;
-	}
-	node->serializeAttributes(attr, &options);
-
-	if (attr->getAttributeCount() != 0)
-	{
-		attr->write(writer);
-		writer->writeLineBreak();
-	}
-
-	// write materials
-
-	if (node->getMaterialCount() && Driver)
-	{
-		const wchar_t* materialElement = L"materials";
-
-		writer->writeElement(materialElement);
-		writer->writeLineBreak();
-
-		for (u32 i=0; i < node->getMaterialCount(); ++i)
-		{
-			io::IAttributes* tmp_attr =
-				Driver->createAttributesFromMaterial(node->getMaterial(i), &options);
-			tmp_attr->write(writer);
-			tmp_attr->drop();
-		}
-
-		writer->writeClosingTag(materialElement);
-		writer->writeLineBreak();
-	}
-
-	// write animators
-
-	if (!node->getAnimators().empty())
-	{
-		const wchar_t* animatorElement = L"animators";
-		writer->writeElement(animatorElement);
-		writer->writeLineBreak();
-
-		ISceneNodeAnimatorList::ConstIterator it = node->getAnimators().begin();
-		for (; it != node->getAnimators().end(); ++it)
-		{
-			attr->clear();
-			attr->addString("Type", getAnimatorTypeName((*it)->getType()));
-
-			(*it)->serializeAttributes(attr);
-
-			attr->write(writer);
-		}
-
-		writer->writeClosingTag(animatorElement);
-		writer->writeLineBreak();
-	}
-
-	// write possible user data
-
-	if (userDataSerializer)
-	{
-		io::IAttributes* userData = userDataSerializer->createUserData(node);
-		if (userData)
-		{
-			const wchar_t* userDataElement = L"userData";
-
-			writer->writeLineBreak();
-			writer->writeElement(userDataElement);
-			writer->writeLineBreak();
-
-			userData->write(writer);
-
-			writer->writeClosingTag(userDataElement);
-			writer->writeLineBreak();
-			writer->writeLineBreak();
-
-			userData->drop();
-		}
-	}
-	// reset to actual root node
-	if (init)
-		node=tmpNode;
-
-	// write children once root node is written
-	// if parent is not scene manager, we need to write out node first
-	if (init && (node != this))
-	{
-		writeSceneNode(writer, node, userDataSerializer, currentPath);
-	}
-	else
-	{
-		ISceneNodeList::ConstIterator it = node->getChildren().begin();
-		for (; it != node->getChildren().end(); ++it)
-			writeSceneNode(writer, (*it), userDataSerializer, currentPath);
-	}
-
-	attr->drop();
-
-	writer->writeClosingTag(name);
-	writer->writeLineBreak();
-	writer->writeLineBreak();
 }
 
 
@@ -2648,17 +2445,8 @@ IMeshWriter* CSceneManager::createMeshWriter(EMESH_WRITER_TYPE type)
 	switch(type)
 	{
 	case EMWT_IRR_MESH:
-#ifdef _IRR_COMPILE_WITH_IRR_WRITER_
-		return new CIrrMeshWriter(Driver, FileSystem);
-#else
-		return 0;
-#endif
 	case EMWT_COLLADA:
-#ifdef _IRR_COMPILE_WITH_COLLADA_WRITER_
-		return new CColladaMeshWriter(this, Driver, FileSystem);
-#else
 		return 0;
-#endif
 	case EMWT_STL:
 #ifdef _IRR_COMPILE_WITH_STL_WRITER_
 		return new CSTLMeshWriter(this);

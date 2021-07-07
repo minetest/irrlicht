@@ -116,7 +116,6 @@
 #include "IMeshSceneNode.h"
 #include "IMeshWriter.h"
 #include "IOctreeSceneNode.h"
-#include "IColladaMeshWriter.h"
 #include "IMetaTriangleSelector.h"
 #include "IOSOperator.h"
 #include "IParticleSystemSceneNode.h" // also includes all emitters and attractors
@@ -134,7 +133,6 @@
 #include "irrString.h"
 #include "irrTypes.h"
 #include "path.h"
-#include "irrXML.h"
 #include "ISceneCollisionManager.h"
 #include "ISceneLoader.h"
 #include "ISceneManager.h"
@@ -159,8 +157,6 @@
 #include "IVideoModeList.h"
 #include "IVolumeLightSceneNode.h"
 #include "IWriteFile.h"
-#include "IXMLReader.h"
-#include "IXMLWriter.h"
 #include "ILightManager.h"
 #include "Keycodes.h"
 #include "line2d.h"
@@ -375,7 +371,7 @@ namespace irr
 	{
 	}
 
-	//! This namespace provides interfaces for input/output: Reading and writing files, accessing zip archives, xml files, ...
+	//! This namespace provides interfaces for input/output: Reading and writing files, accessing zip archives, ...
 	namespace io
 	{
 	}

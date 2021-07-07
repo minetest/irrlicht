@@ -492,9 +492,6 @@ namespace scene
 		//! Saves the current scene into a file.
 		virtual bool saveScene(io::IWriteFile* file, ISceneUserDataSerializer* userDataSerializer=0, ISceneNode* node=0) _IRR_OVERRIDE_;
 
-		//! Saves the current scene into a file.
-		virtual bool saveScene(io::IXMLWriter* writer, const io::path& currentPath, ISceneUserDataSerializer* userDataSerializer=0, ISceneNode* node=0) _IRR_OVERRIDE_;
-
 		//! Loads a scene. Note that the current scene is not cleared before.
 		virtual bool loadScene(const io::path& filename, ISceneUserDataSerializer* userDataSerializer=0, ISceneNode* rootNode=0) _IRR_OVERRIDE_;
 
@@ -541,9 +538,6 @@ namespace scene
 
 		//! clears the deletion list
 		void clearDeletionList();
-
-		//! writes a scene node
-		void writeSceneNode(io::IXMLWriter* writer, ISceneNode* node, ISceneUserDataSerializer* userDataSerializer, const fschar_t* currentPath=0, bool init=false);
 
 		struct DefaultNodeEntry
 		{
@@ -659,12 +653,6 @@ namespace scene
 		//! An optional callbacks manager to allow the user app finer control
 		//! over the scene lighting and rendering.
 		ILightManager* LightManager;
-
-		//! constants for reading and writing XML.
-		//! Not made static due to portability problems.
-		const core::stringw IRR_XML_FORMAT_SCENE;
-		const core::stringw IRR_XML_FORMAT_NODE;
-		const core::stringw IRR_XML_FORMAT_NODE_ATTR_TYPE;
 
 		IGeometryCreator* GeometryCreator;
 	};

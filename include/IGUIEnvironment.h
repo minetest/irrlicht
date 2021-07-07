@@ -11,8 +11,6 @@
 #include "EMessageBoxFlags.h"
 #include "EFocusFlags.h"
 #include "IEventReceiver.h"
-#include "IXMLReader.h"
-#include "IXMLWriter.h"
 #include "path.h"
 
 namespace irr
@@ -621,12 +619,6 @@ public:
 
 	//! Reads attributes of the gui environment
 	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)=0;
-
-	//! writes an element
-	virtual void writeGUIElement(io::IXMLWriter* writer, IGUIElement* element) =0;
-
-	//! reads an element
-	virtual void readGUIElement(io::IXMLReader* reader, IGUIElement* element) =0;
 
 	//! Find the next element which would be selected when pressing the tab-key
 	/** If you set the focus for the result you can manually force focus-changes like they

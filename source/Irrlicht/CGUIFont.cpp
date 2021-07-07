@@ -8,7 +8,6 @@
 #include "os.h"
 #include "coreutil.h"
 #include "IGUIEnvironment.h"
-#include "IXMLReader.h"
 #include "IReadFile.h"
 #include "IVideoDriver.h"
 #include "IGUISpriteBank.h"
@@ -63,6 +62,7 @@ CGUIFont::~CGUIFont()
 }
 
 
+#if 0
 //! loads a font file from xml
 bool CGUIFont::load(io::IXMLReader* xml, const io::path& directory)
 {
@@ -195,6 +195,7 @@ bool CGUIFont::load(io::IXMLReader* xml, const io::path& directory)
 
 	return true;
 }
+#endif
 
 
 void CGUIFont::setMaxHeight()

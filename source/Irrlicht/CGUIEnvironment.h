@@ -254,12 +254,6 @@ public:
 	//! Reads attributes of the environment.
 	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_;
 
-	//! writes an element
-	virtual void writeGUIElement(io::IXMLWriter* writer, IGUIElement* node) _IRR_OVERRIDE_;
-
-	//! reads an element
-	virtual void readGUIElement(io::IXMLReader* reader, IGUIElement* node) _IRR_OVERRIDE_;
-
 	//! Find the next element which would be selected when pressing the tab-key
 	virtual IGUIElement* getNextElement(bool reverse=false, bool group=false) _IRR_OVERRIDE_;
 

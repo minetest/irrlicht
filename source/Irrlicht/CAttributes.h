@@ -62,15 +62,6 @@ public:
 	//! Removes all attributes
 	virtual void clear() _IRR_OVERRIDE_;
 
-	//! Reads attributes from a xml file.
-	//! \param readCurrentElementOnly: If set to true, reading only works if current element has the name 'attributes'.
-	//! IF set to false, the first appearing list attributes are read.
-	virtual bool read(io::IXMLReader* reader, bool readCurrentElementOnly=false,
-					const wchar_t* nonDefaultElementName = 0) _IRR_OVERRIDE_;
-
-	//! Write these attributes into a xml file
-	virtual bool write(io::IXMLWriter* writer, bool writeXMLHeader=false, const wchar_t* nonDefaultElementName=0) _IRR_OVERRIDE_;
-
 
 	/*
 
@@ -721,8 +712,6 @@ public:
 	virtual void setAttribute(s32 index, void* userPointer) _IRR_OVERRIDE_;
 
 protected:
-
-	void readAttributeFromXML(const io::IXMLReader* reader);
 
 	core::array<IAttribute*> Attributes;
 

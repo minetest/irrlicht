@@ -39,7 +39,6 @@
 
 #include "CDefaultGUIElementFactory.h"
 #include "IWriteFile.h"
-#include "IXMLWriter.h"
 
 #include "BuiltInFont.h"
 #include "os.h"
@@ -48,10 +47,6 @@ namespace irr
 {
 namespace gui
 {
-
-const wchar_t IRR_XML_FORMAT_GUI_ENV[]			= L"irr_gui";
-const wchar_t IRR_XML_FORMAT_GUI_ELEMENT[]		= L"element";
-const wchar_t IRR_XML_FORMAT_GUI_ELEMENT_ATTR_TYPE[]	= L"type";
 
 const io::path CGUIEnvironment::DefaultFontName = "#DefaultFont";
 
@@ -788,22 +783,7 @@ bool CGUIEnvironment::saveGUI(const io::path& filename, IGUIElement* start)
 //! Saves the current gui into a file.
 bool CGUIEnvironment::saveGUI(io::IWriteFile* file, IGUIElement* start)
 {
-	if (!file)
-	{
-		return false;
-	}
-
-	io::IXMLWriter* writer = FileSystem->createXMLWriter(file);
-	if (!writer)
-	{
-		return false;
-	}
-
-	writer->writeXMLHeader();
-	writeGUIElement(writer, start ? start : this);
-	writer->drop();
-
-	return true;
+	return false;
 }
 
 
@@ -828,170 +808,7 @@ bool CGUIEnvironment::loadGUI(const io::path& filename, IGUIElement* parent)
 //! Loads the gui. Note that the current gui is not cleared before.
 bool CGUIEnvironment::loadGUI(io::IReadFile* file, IGUIElement* parent)
 {
-	if (!file)
-	{
-		os::Printer::log("Unable to open GUI file", ELL_ERROR);
-		return false;
-	}
-
-	io::IXMLReader* reader = FileSystem->createXMLReader(file);
-	if (!reader)
-	{
-		os::Printer::log("GUI is not a valid XML file", file->getFileName(), ELL_ERROR);
-		return false;
-	}
-
-	// read file
-	while(reader->read())
-	{
-		readGUIElement(reader, parent);
-	}
-
-	// finish up
-
-	reader->drop();
-	return true;
-}
-
-
-//! reads an element
-void CGUIEnvironment::readGUIElement(io::IXMLReader* reader, IGUIElement* node)
-{
-	if (!reader)
-		return;
-
-	io::EXML_NODE nodeType = reader->getNodeType();
-
-	if (nodeType == io::EXN_NONE || nodeType == io::EXN_UNKNOWN || nodeType == io::EXN_ELEMENT_END)
-		return;
-
-	IGUIElement* deferedNode = 0;
-	if (!wcscmp(IRR_XML_FORMAT_GUI_ENV, reader->getNodeName()))
-	{
-		// GuiEnvironment always must be this as it would serialize into a wrong element otherwise.
-		// So we use the given node next time
-		if ( node && node != this )
-			deferedNode = node;
-		node = this; // root
-	}
-	else if	(!wcscmp(IRR_XML_FORMAT_GUI_ELEMENT, reader->getNodeName()))
-	{
-		// find node type and create it
-		const core::stringc attrName = reader->getAttributeValue(IRR_XML_FORMAT_GUI_ELEMENT_ATTR_TYPE);
-
-		node = addGUIElement(attrName.c_str(), node);
-
-		if (!node)
-			os::Printer::log("Could not create GUI element of unknown type", attrName.c_str());
-	}
-
-	// read attributes
-
-	while(reader->read())
-	{
-		bool endreached = false;
-
-		switch (reader->getNodeType())
-		{
-		case io::EXN_ELEMENT_END:
-			if (!wcscmp(IRR_XML_FORMAT_GUI_ELEMENT,  reader->getNodeName()) ||
-				!wcscmp(IRR_XML_FORMAT_GUI_ENV, reader->getNodeName()))
-			{
-				endreached = true;
-			}
-			break;
-		case io::EXN_ELEMENT:
-			if (!wcscmp(L"attributes", reader->getNodeName()))
-			{
-				// read attributes
-				io::IAttributes* attr = FileSystem->createEmptyAttributes(Driver);
-				attr->read(reader, true);
-
-				if (node)
-					node->deserializeAttributes(attr);
-
-				attr->drop();
-			}
-			else
-			if (!wcscmp(IRR_XML_FORMAT_GUI_ELEMENT, reader->getNodeName()) ||
-				!wcscmp(IRR_XML_FORMAT_GUI_ENV, reader->getNodeName()))
-			{
-				if ( deferedNode )
-					readGUIElement(reader, deferedNode);
-				else
-					readGUIElement(reader, node);
-			}
-			else
-			{
-				os::Printer::log("Found unknown element in irrlicht GUI file",
-						core::stringc(reader->getNodeName()).c_str());
-			}
-
-			break;
-		default:
-			break;
-		}
-
-		if (endreached)
-			break;
-	}
-}
-
-
-//! writes an element
-void CGUIEnvironment::writeGUIElement(io::IXMLWriter* writer, IGUIElement* node)
-{
-	if (!writer || !node )
-		return;
-
-	const wchar_t* name = 0;
-
-	// write properties
-
-	io::IAttributes* attr = FileSystem->createEmptyAttributes();
-	node->serializeAttributes(attr);
-
-	// all gui elements must have at least one attribute
-	// if they have nothing then we ignore them.
-	if (attr->getAttributeCount() != 0)
-	{
-		if (node == this)
-		{
-			name = IRR_XML_FORMAT_GUI_ENV;
-			writer->writeElement(name, false);
-		}
-		else
-		{
-			name = IRR_XML_FORMAT_GUI_ELEMENT;
-			writer->writeElement(name, false, IRR_XML_FORMAT_GUI_ELEMENT_ATTR_TYPE,
-				core::stringw(node->getTypeName()).c_str());
-		}
-
-		writer->writeLineBreak();
-
-		attr->write(writer);
-	}
-
-	// write children
-
-	core::list<IGUIElement*>::ConstIterator it = node->getChildren().begin();
-	for (; it != node->getChildren().end(); ++it)
-	{
-		if (!(*it)->isSubElement())
-		{
-			writer->writeLineBreak();
-			writeGUIElement(writer, (*it));
-		}
-	}
-
-	// write closing brace if required
-	if (attr->getAttributeCount() != 0)
-	{
-		writer->writeClosingTag(name);
-		writer->writeLineBreak();
-	}
-
-	attr->drop();
+	return false;
 }
 
 
@@ -1460,35 +1277,7 @@ IGUIFont* CGUIEnvironment::getFont(const io::path& filename)
 	}
 
 	IGUIFont* ifont=0;
-	io::IXMLReader *xml = FileSystem->createXMLReader(filename );
-	if (xml)
-	{
-		// this is an XML font, but we need to know what type
-		EGUI_FONT_TYPE t = EGFT_CUSTOM;
-
-		bool found=false;
-		while(!found && xml->read())
-		{
-			if (xml->getNodeType() == io::EXN_ELEMENT)
-			{
-				if (core::stringw(L"font") == xml->getNodeName())
-				{
-					if (core::stringw(L"vector") == xml->getAttributeValue(L"type"))
-					{
-						t = EGFT_VECTOR;
-						found=true;
-					}
-					else if (core::stringw(L"bitmap") == xml->getAttributeValue(L"type"))
-					{
-						t = EGFT_BITMAP;
-						found=true;
-					}
-					else found=true;
-				}
-			}
-		}
-
-		if (t==EGFT_BITMAP)
+#if 0
 		{
 			CGUIFont* font = new CGUIFont(this, filename);
 			ifont = (IGUIFont*)font;
@@ -1503,17 +1292,7 @@ IGUIFont* CGUIEnvironment::getFont(const io::path& filename)
 				ifont = 0;
 			}
 		}
-		else if (t==EGFT_VECTOR)
-		{
-			// todo: vector fonts
-			os::Printer::log("Unable to load font, XML vector fonts are not supported yet", f.NamedPath, ELL_ERROR);
-
-			//CGUIFontVector* font = new CGUIFontVector(Driver);
-			//ifont = (IGUIFont*)font;
-			//if (!font->load(xml))
-		}
-		xml->drop();
-	}
+#endif
 
 
 	if (!ifont)

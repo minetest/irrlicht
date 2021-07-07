@@ -151,12 +151,6 @@
 //! Maximum number of texture an SMaterial can have, up to 8 are supported by Irrlicht.
 #define _IRR_MATERIAL_MAX_TEXTURES_ 8
 
-//! Whether to support XML and XML-based formats (irrmesh, collada...)
-#define _IRR_COMPILE_WITH_XML_
-#ifdef NO_IRR_COMPILE_WITH_XML_
-#undef _IRR_COMPILE_WITH_XML_
-#endif
-
 //! Add a leak-hunter to Irrlicht which helps finding unreleased reference counted objects.
 //! NOTE: This is slow and should only be used for debugging
 //#define _IRR_COMPILE_WITH_LEAK_HUNTER_
@@ -532,11 +526,6 @@ B3D, MS3D or X meshes */
 #endif
 #endif // _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
 
-//! Define _IRR_COMPILE_WITH_IRR_MESH_LOADER_ if you want to load Irrlicht Engine .irrmesh files
-#define _IRR_COMPILE_WITH_IRR_MESH_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_IRR_MESH_LOADER_
-#undef _IRR_COMPILE_WITH_IRR_MESH_LOADER_
-#endif
 //! Define _IRR_COMPILE_WITH_HALFLIFE_LOADER_ if you want to load Halflife animated files
 #define _IRR_COMPILE_WITH_HALFLIFE_LOADER_
 #ifdef NO_IRR_COMPILE_WITH_HALFLIFE_LOADER_
@@ -556,11 +545,6 @@ B3D, MS3D or X meshes */
 #define _IRR_COMPILE_WITH_3DS_LOADER_
 #ifdef NO_IRR_COMPILE_WITH_3DS_LOADER_
 #undef _IRR_COMPILE_WITH_3DS_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_COLLADA_LOADER_ if you want to load Collada files
-#define _IRR_COMPILE_WITH_COLLADA_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_COLLADA_LOADER_
-#undef _IRR_COMPILE_WITH_COLLADA_LOADER_
 #endif
 //! Define _IRR_COMPILE_WITH_CSM_LOADER_ if you want to load Cartography Shop files
 #define _IRR_COMPILE_WITH_CSM_LOADER_
@@ -618,16 +602,6 @@ B3D, MS3D or X meshes */
 #undef _IRR_COMPILE_WITH_SMF_LOADER_
 #endif
 
-//! Define _IRR_COMPILE_WITH_IRR_WRITER_ if you want to write static .irrMesh files
-#define _IRR_COMPILE_WITH_IRR_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_IRR_WRITER_
-#undef _IRR_COMPILE_WITH_IRR_WRITER_
-#endif
-//! Define _IRR_COMPILE_WITH_COLLADA_WRITER_ if you want to write Collada files
-#define _IRR_COMPILE_WITH_COLLADA_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_COLLADA_WRITER_
-#undef _IRR_COMPILE_WITH_COLLADA_WRITER_
-#endif
 //! Define _IRR_COMPILE_WITH_STL_WRITER_ if you want to write .stl files
 #define _IRR_COMPILE_WITH_STL_WRITER_
 #ifdef NO_IRR_COMPILE_WITH_STL_WRITER_
@@ -864,14 +838,6 @@ precision will be lower but speed higher. currently X86 only
 #define __IRR_HAS_S64
 #ifdef NO__IRR_HAS_S64
 #undef __IRR_HAS_S64
-#endif
-
-// These depend on XML
-#ifndef _IRR_COMPILE_WITH_XML_
-	#undef _IRR_COMPILE_WITH_IRR_MESH_LOADER_
-	#undef _IRR_COMPILE_WITH_IRR_WRITER_
-	#undef _IRR_COMPILE_WITH_COLLADA_WRITER_
-	#undef _IRR_COMPILE_WITH_COLLADA_LOADER_
 #endif
 
 #if defined(__BORLANDC__)

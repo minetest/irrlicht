@@ -110,14 +110,12 @@ set(IRRMESHLOADER
 	C3DSMeshFileLoader.cpp
 	COgreMeshFileLoader.cpp
 	COBJMeshFileLoader.cpp
-	CColladaFileLoader.cpp
 	CCSMLoader.cpp
 	CDMFLoader.cpp
 	CLMTSMeshFileLoader.cpp
 	CMY3DMeshFileLoader.cpp
 	COCTLoader.cpp
 	CXMeshFileLoader.cpp
-	CIrrMeshFileLoader.cpp
 	CSTLMeshFileLoader.cpp
 	CLWOMeshFileLoader.cpp
 	CPLYMeshFileLoader.cpp
@@ -126,8 +124,6 @@ set(IRRMESHLOADER
 )
 
 set(IRRMESHWRITER
-	CColladaMeshWriter.cpp
-	CIrrMeshWriter.cpp
 	CSTLMeshWriter.cpp
 	COBJMeshWriter.cpp
 	CPLYMeshWriter.cpp
@@ -176,7 +172,6 @@ add_library(IRROBJ OBJECT
 	CMeshCache.cpp
 	CDefaultSceneNodeAnimatorFactory.cpp
 	CDefaultSceneNodeFactory.cpp
-	CSceneLoaderIrr.cpp
 )
 
 add_library(IRRPARTICLEOBJ OBJECT
@@ -318,15 +313,12 @@ add_library(IRRIOOBJ OBJECT
 	CMemoryFile.cpp
 	CReadFile.cpp
 	CWriteFile.cpp
-	CXMLReader.cpp
-	CXMLWriter.cpp
 	CWADReader.cpp
 	CZipReader.cpp
 	CPakReader.cpp
 	CNPKReader.cpp
 	CTarReader.cpp
 	CMountPointReader.cpp
-	irrXML.cpp
 	CAttributes.cpp
 )
 

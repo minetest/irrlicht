@@ -4,8 +4,7 @@ This tutorial show how to create a more complex application with the engine.
 We construct a simple mesh viewer using the user interface API and the
 scene management of Irrlicht. The tutorial show how to create and use Buttons,
 Windows, Toolbars, Menus, ComboBoxes, Tabcontrols, Editboxes, Images,
-MessageBoxes, SkyBoxes, and how to parse XML files with the integrated XML
-reader of the engine.
+MessageBoxes, SkyBoxes.
 
 We start like in most other tutorials: Include all necessary header files, add
 a comment to let the engine be linked with the correct .lib file in Visual
@@ -765,55 +764,6 @@ int main(int argc, char* argv[])
 	smgr->setAmbientLight(video::SColorf(0.3f,0.3f,0.3f));
 	// add our media directory as "search path"
 	Device->getFileSystem()->addFileArchive(getExampleMediaPath());
-
-	/*
-	The next step is to read the configuration file. It is stored in the xml
-	format and looks a little bit like this:
-
-	@verbatim
-	<?xml version="1.0"?>
-	<config>
-		<startUpModel file="some filename" />
-		<messageText caption="Irrlicht Engine Mesh Viewer">
-			Hello!
-		</messageText>
-	</config>
-	@endverbatim
-
-	We need the data stored in there to be written into the global variables
-	StartUpModelFile, MessageText and Caption. This is now done using the
-	Irrlicht Engine integrated XML parser:
-	*/
-
-	// read configuration from xml file
-
-	io::IXMLReader* xml = Device->getFileSystem()->createXMLReader( L"config.xml");
-
-	while(xml && xml->read())
-	{
-		switch(xml->getNodeType())
-		{
-		case io::EXN_TEXT:
-			// in this xml file, the only text which occurs is the
-			// messageText
-			MessageText = xml->getNodeData();
-			break;
-		case io::EXN_ELEMENT:
-			{
-				if (core::stringw("startUpModel") == xml->getNodeName())
-					StartUpModelFile = xml->getAttributeValue(L"file");
-				else
-				if (core::stringw("messageText") == xml->getNodeName())
-					Caption = xml->getAttributeValue(L"caption");
-			}
-			break;
-		default:
-			break;
-		}
-	}
-
-	if (xml)
-		xml->drop(); // don't forget to delete the xml reader
 
 	// We can pass a model to load per command line parameter
 	if (argc > 1)

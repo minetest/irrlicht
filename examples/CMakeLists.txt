@@ -13,7 +13,6 @@ set(IRREXAMPLES
 	11.PerPixelLighting
 	12.TerrainRendering
 	13.RenderToTexture
-	15.LoadIrrFile
 	16.Quake3MapShader
 	18.SplitScreen
 	19.MouseAndJoystick
@@ -22,7 +21,6 @@ set(IRREXAMPLES
 	22.MaterialViewer
 	23.SMeshHandling
 	24.CursorControl
-	25.XmlHandling
 	26.OcclusionQuery
 	27.PostProcessing
 	28.CubeMapping

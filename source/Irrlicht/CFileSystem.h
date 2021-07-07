@@ -127,30 +127,6 @@ public:
 	//! determines if a file exists and would be able to be opened.
 	virtual bool existFile(const io::path& filename) const _IRR_OVERRIDE_;
 
-	//! Creates a XML Reader from a file.
-	virtual IXMLReader* createXMLReader(const io::path& filename) _IRR_OVERRIDE_;
-
-	//! Creates a XML Reader from a file.
-	virtual IXMLReader* createXMLReader(IReadFile* file) _IRR_OVERRIDE_;
-
-	//! Creates a XML Reader from a file.
-	virtual IXMLReaderUTF8* createXMLReaderUTF8(const io::path& filename) _IRR_OVERRIDE_;
-
-	//! Creates a XML Reader from a file.
-	virtual IXMLReaderUTF8* createXMLReaderUTF8(IReadFile* file) _IRR_OVERRIDE_;
-
-	//! Creates a XML Writer from a file.
-	virtual IXMLWriter* createXMLWriter(const io::path& filename) _IRR_OVERRIDE_;
-
-	//! Creates a XML Writer from a file.
-	virtual IXMLWriter* createXMLWriter(IWriteFile* file) _IRR_OVERRIDE_;
-
-	//! Creates a XML Writer from a file which will write ASCII/UTF-8 characters (char*).
-	virtual IXMLWriterUTF8* createXMLWriterUTF8(const path& filename) _IRR_OVERRIDE_;
-
-	//! Creates a XML Writer from a file which will write ASCII/UTF-8 characters (char*).
-	virtual IXMLWriterUTF8* createXMLWriterUTF8(IWriteFile* file) _IRR_OVERRIDE_;
-
 	//! Creates a new empty collection of attributes, usable for serialization and more.
 	virtual IAttributes* createEmptyAttributes(video::IVideoDriver* driver) _IRR_OVERRIDE_;
 

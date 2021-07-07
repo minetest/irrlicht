@@ -23,8 +23,6 @@
 #include "line3d.h"
 #include "irrString.h"
 #include "irrArray.h"
-#include "IXMLReader.h"
-#include "IXMLWriter.h"
 #include "EAttributes.h"
 #include "path.h"
 
@@ -75,20 +73,6 @@ public:
 
 	//! Removes all attributes
 	virtual void clear() = 0;
-
-	//! Reads attributes from a xml file.
-	//! \param reader The XML reader to read from
-	//! \param readCurrentElementOnly If set to true, reading only works if current element has the name 'attributes' or
-	//! the name specified using elementName.
-	//! \param elementName The surrounding element name. If it is null, the default one, "attributes" will be taken.
-	//! If set to false, the first appearing list of attributes are read.
-	virtual bool read(io::IXMLReader* reader, bool readCurrentElementOnly=false, const wchar_t* elementName=0) = 0;
-
-	//! Write these attributes into a xml file
-	//! \param writer: The XML writer to write to
-	//! \param writeXMLHeader: Writes a header to the XML file, required if at the beginning of the file
-	//! \param elementName: The surrounding element name. If it is null, the default one, "attributes" will be taken.
-	virtual bool write(io::IXMLWriter* writer, bool writeXMLHeader=false, const wchar_t* elementName=0) = 0;
 
 
 	/*

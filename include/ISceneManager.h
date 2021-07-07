@@ -19,7 +19,6 @@
 #include "SceneParameters.h"
 #include "IGeometryCreator.h"
 #include "ISkinnedMesh.h"
-#include "IXMLWriter.h"
 
 namespace irr
 {
@@ -199,37 +198,6 @@ namespace scene
 		 *      directly in Irrlicht.
 		 *  </TR>
 		 *  <TR>
-		 *    <TD>COLLADA (.dae, .xml)</TD>
-		 *    <TD>COLLADA is an open Digital Asset Exchange Schema for
-		 *        the interactive 3D industry. There are exporters and
-		 *        importers for this format available for most of the
-		 *        big 3d packagesat http://collada.org. Irrlicht can
-		 *        import COLLADA files by using the
-		 *        ISceneManager::getMesh() method. COLLADA files need
-		 *        not contain only one single mesh but multiple meshes
-		 *        and a whole scene setup with lights, cameras and mesh
-		 *        instances, this loader can set up a scene as
-		 *        described by the COLLADA file instead of loading and
-		 *        returning one single mesh. By default, this loader
-		 *        behaves like the other loaders and does not create
-		 *        instances, but it can be switched into this mode by
-		 *        using
-		 *        SceneManager-&gt;getParameters()-&gt;setAttribute(COLLADA_CREATE_SCENE_INSTANCES, true);
-		 *        Created scene nodes will be named as the names of the
-		 *        nodes in the COLLADA file. The returned mesh is just
-		 *        a dummy object in this mode. Meshes included in the
-		 *        scene will be added into the scene manager with the
-		 *        following naming scheme:
-		 *        "path/to/file/file.dea#meshname". The loading of such
-		 *        meshes is logged. Currently, this loader is able to
-
-
-		 *        create meshes (made of only polygons), lights, and
-		 *        cameras. Materials and animations are currently not
-		 *        supported but this will change with future releases.
-		 *    </TD>
-		 *  </TR>
-		 *  <TR>
 		 *    <TD>Delgine DeleD (.dmf)</TD>
 		 *    <TD>DeleD (delgine.com) is a 3D editor and level-editor
 		 *        combined into one and is specifically designed for 3D
@@ -264,13 +232,6 @@ namespace scene
 		 *    <TD>Half-Life model (.mdl)</TD>
 		 *    <TD>This loader opens Half-life 1 models, it was contributed
 		 *        by Fabio Concas and adapted by Thomas Alten.</TD>
-		 *  </TR>
-		 *  <TR>
-		 *    <TD>Irrlicht Mesh (.irrMesh)</TD>
-		 *    <TD>This is a static mesh format written in XML, native
-		 *      to Irrlicht and written by the irr mesh writer.
-		 *      This format is exported by the CopperCube engine's
-		 *      lightmapper.</TD>
 		 *  </TR>
 		 *  <TR>
 		 *    <TD>LightWave (.lwo)</TD>
@@ -1585,26 +1546,6 @@ namespace scene
 		is also the default).
 		\return True if successful. */
 		virtual bool saveScene(io::IWriteFile* file, ISceneUserDataSerializer* userDataSerializer=0, ISceneNode* node=0) = 0;
-
-		//! Saves the current scene into a file.
-		/** Scene nodes with the option isDebugObject set to true are
-		not being saved. The scene is usually written to an .irr file,
-		an xml based format. .irr files can Be edited with the Irrlicht
-		Engine Editor, irrEdit (http://www.ambiera.com/irredit/). To
-		load .irr files again, see ISceneManager::loadScene().
-		\param writer XMLWriter with which the scene is saved.
-		\param currentPath Path which is used for relative file names.
-		Usually the directory of the file written into.
-		\param userDataSerializer If you want to save some user data
-		for every scene node into the file, implement the
-		ISceneUserDataSerializer interface and provide it as parameter
-		here. Otherwise, simply specify 0 as this parameter.
-		\param node Node which is taken as the top node of the scene.
-		This node and all of its descendants are saved into the scene
-		file. Pass 0 or the scene manager to save the full scene (which
-		is also the default).
-		\return True if successful. */
-		virtual bool saveScene(io::IXMLWriter* writer, const io::path& currentPath, ISceneUserDataSerializer* userDataSerializer=0, ISceneNode* node=0) = 0;
 
 		//! Loads a scene. Note that the current scene is not cleared before.
 		/** The scene is usually loaded from an .irr file, an xml based
