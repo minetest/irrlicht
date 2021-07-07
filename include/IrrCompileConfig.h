@@ -5,9 +5,9 @@
 #ifndef __IRR_COMPILE_CONFIG_H_INCLUDED__
 #define __IRR_COMPILE_CONFIG_H_INCLUDED__
 
-//! Identifies Irrlicht fork customized for the Minetest engine
-#define IRRLICHT_VERSION_MT_REVISION 2
-#define IRRLICHT_VERSION_MT "mt2"
+//! Identifies the IrrlichtMt fork customized for the Minetest engine
+#define IRRLICHT_VERSION_MT_REVISION 3
+#define IRRLICHT_VERSION_MT "mt3"
 
 //! Irrlicht SDK Version
 #define IRRLICHT_VERSION_MAJOR 1
