@@ -1,8 +1,12 @@
 CMakeFiles
 CMakeCache.txt
 cmake_install.cmake
+IrrlichtMtConfig.cmake
+IrrlichtMtConfigVersion.cmake
 Makefile
+libs/*
 *.so*
 *.a
 *.exe
+*.dll
 bin/Linux
