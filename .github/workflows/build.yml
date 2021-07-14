@@ -84,3 +84,27 @@ jobs:
         env:
           CC: x86_64-w64-mingw32-gcc
           CXX: x86_64-w64-mingw32-g++
+
+  macos:
+    runs-on: macos-10.15
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install deps
+        run: |
+          brew update
+          brew install gnu-tar cmake libpng jpeg
+
+      - name: Build
+        run: |
+          cmake .
+          make VERBOSE=1 -j2
+
+      - name: Package
+        run: |
+          make DESTDIR=$PWD/_install install
+          gtar -c -I "gzip -9" -f irrlicht-macos.tar.gz -C ./_install/usr/local .
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: irrlicht-macos
+          path: ./irrlicht-macos.tar.gz
