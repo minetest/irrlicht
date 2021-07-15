@@ -96,5 +96,5 @@ jobs:
 
       - name: Build
         run: |
-          cmake . -DCMAKE_FIND_FRAMEWORK
+          cmake . -DCMAKE_FIND_FRAMEWORK=LAST
           make VERBOSE=1 -j2
