@@ -32,11 +32,6 @@ public:
 	/** \return Returns 0 if no string is in there. */
 	virtual const c8* getTextFromClipboard() const = 0;
 
-	//! Get the processor speed in megahertz
-	/** \param MHz The integer variable to store the speed in.
-	\return True if successful, false if not */
-	virtual bool getProcessorSpeedMHz(u32* MHz) const = 0;
-
 	//! Get the total and available system RAM
 	/** \param totalBytes: will contain the total system memory in bytes
 	\param availableBytes: will contain the available memory in bytes

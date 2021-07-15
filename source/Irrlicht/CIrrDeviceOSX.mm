@@ -10,9 +10,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import <OpenGL/gl.h>
-#ifndef __MAC_10_6
-#import <Carbon/Carbon.h>
-#endif
 
 #include "CIrrDeviceOSX.h"
 
@@ -38,12 +35,7 @@
 
 #include <IOKit/IOKitLib.h>
 #include <IOKit/IOCFPlugIn.h>
-#ifdef MACOS_10_0_4
-#include <IOKit/hidsystem/IOHIDUsageTables.h>
-#else
-/* The header was moved here in Mac OS X 10.1 */
 #include <Kernel/IOKit/hidsystem/IOHIDUsageTables.h>
-#endif
 #include <IOKit/hid/IOHIDLib.h>
 #include <IOKit/hid/IOHIDKeys.h>
 
@@ -301,8 +293,6 @@ static void getJoystickDeviceInfo (io_object_t hidDevice, CFMutableDictionaryRef
 
 #endif // _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
 
-// only OSX 10.5 seems to not need these defines...
-#if !defined(__MAC_10_5) || defined(__MAC_10_6)
 // Contents from Events.h from Carbon/HIToolbox but we need it with Cocoa too
 // and for some reason no Cocoa equivalent of these constants seems provided.
 // So I'm doing like everyone else and using copy-and-paste.
@@ -440,7 +430,6 @@ enum {
 	kVK_DownArrow		= 0x7D,
 	kVK_UpArrow		= 0x7E
 };
-#endif
 
 //------------------------------------------------------------------------------------------
 Boolean GetDictionaryBoolean(CFDictionaryRef theDict, const void* key)
@@ -629,11 +618,7 @@ CIrrDeviceMacOSX::CIrrDeviceMacOSX(const SIrrlichtCreationParameters& param)
 CIrrDeviceMacOSX::~CIrrDeviceMacOSX()
 {
 	[SoftwareDriverTarget release];
-#ifdef __MAC_10_6
 	[NSApp setPresentationOptions:(NSApplicationPresentationDefault)];
-#else
-	SetSystemUIMode(kUIModeNormal, kUIOptionAutoShowMenuBar);
-#endif
 	closeDevice();
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
 	for (u32 joystick = 0; joystick < ActiveJoysticks.size(); ++joystick)
@@ -668,11 +653,7 @@ bool CIrrDeviceMacOSX::createWindow()
     Display = CGMainDisplayID();
     
     CGRect displayRect;
-#ifdef __MAC_10_6
     CGDisplayModeRef displaymode, olddisplaymode;
-#else
-    CFDictionaryRef displaymode, olddisplaymode;
-#endif
     
     ScreenWidth = (int)CGDisplayPixelsWide(Display);
     ScreenHeight = (int)CGDisplayPixelsHigh(Display);
@@ -707,7 +688,6 @@ bool CIrrDeviceMacOSX::createWindow()
     {
         IsFullscreen = true;
         
-#ifdef __MAC_10_6
         displaymode = CGDisplayCopyDisplayMode(Display);
         
         CFArrayRef Modes = CGDisplayCopyAllDisplayModes(Display, NULL);
@@ -734,26 +714,15 @@ bool CIrrDeviceMacOSX::createWindow()
                     break;
                 }
         }
-#else
-        displaymode = CGDisplayBestModeForParameters(Display,CreationParams.Bits,CreationParams.WindowSize.Width,CreationParams.WindowSize.Height,NULL);
-#endif
         
         if (displaymode != NULL)
         {
-#ifdef __MAC_10_6
             olddisplaymode = CGDisplayCopyDisplayMode(Display);
-#else
-            olddisplaymode = CGDisplayCurrentMode(Display);
-#endif
             
             error = CGCaptureAllDisplays();
             if (error == CGDisplayNoErr)
             {
-#ifdef __MAC_10_6
                 error = CGDisplaySetDisplayMode(Display, displaymode, NULL);
-#else
-                error = CGDisplaySwitchToMode(Display, displaymode);
-#endif
                 
                 if (error == CGDisplayNoErr)
                 {
@@ -788,11 +757,7 @@ bool CIrrDeviceMacOSX::createWindow()
         
         if (IsFullscreen) //hide menus in fullscreen mode only
         {
-#ifdef __MAC_10_6
             [NSApp setPresentationOptions:(NSApplicationPresentationAutoHideDock | NSApplicationPresentationAutoHideMenuBar)];
-#else
-            SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
-#endif
         }
     }
     
@@ -874,11 +839,6 @@ void CIrrDeviceMacOSX::createDriver()
 					[(NSView*)CreationParams.WindowId setWantsBestResolutionOpenGLSurface:NO];
 					[(NSOpenGLContext*)ContextManager->getContext().OpenGLOSX.Context setView:(NSView*)CreationParams.WindowId];
 				}
-
-#ifndef __MAC_10_6
-                CGLContextObj CGLContext = (CGLContextObj)[(NSOpenGLContext*)ContextManager->getContext().OpenGLOSX.Context CGLContextObj];
-                CGLSetFullScreen(CGLContext);
-#endif
             }
 #else
 			os::Printer::log("No OpenGL support compiled in.", ELL_ERROR);
@@ -1279,14 +1239,9 @@ void CIrrDeviceMacOSX::setMouseLocation(int x,int y)
 	c.x = p.x;
 	c.y = p.y;
 
-#ifdef __MAC_10_6
     CGEventRef ev = CGEventCreateMouseEvent(NULL, kCGEventMouseMoved, c, kCGMouseButtonLeft);
     CGEventPost(kCGHIDEventTap, ev);
     CFRelease(ev);
-#else
-    CGSetLocalEventsSuppressionInterval(0);
-    CGWarpMouseCursorPosition(c);
-#endif
 }
 
 
@@ -1797,7 +1752,6 @@ video::IVideoModeList* CIrrDeviceMacOSX::getVideoModeList()
 		CGDirectDisplayID display;
 		display = CGMainDisplayID();
 
-#ifdef __MAC_10_6
 		CFArrayRef Modes = CGDisplayCopyAllDisplayModes(display, NULL);
 
 		for(int i = 0; i < CFArrayGetCount(Modes); ++i)
@@ -1825,27 +1779,6 @@ video::IVideoModeList* CIrrDeviceMacOSX::getVideoModeList()
 				VideoModeList->addMode(core::dimension2d<u32>(Width, Height), Depth);
 			}
 		}
-#else
-		CFArrayRef availableModes = CGDisplayAvailableModes(display);
-		unsigned int numberOfAvailableModes = CFArrayGetCount(availableModes);
-		for (u32 i= 0; i<numberOfAvailableModes; ++i)
-		{
-			// look at each mode in the available list
-			CFDictionaryRef mode = (CFDictionaryRef)CFArrayGetValueAtIndex(availableModes, i);
-			long bitsPerPixel = GetDictionaryLong(mode, kCGDisplayBitsPerPixel);
-			Boolean safeForHardware = GetDictionaryBoolean(mode, kCGDisplayModeIsSafeForHardware);
-			Boolean stretched = GetDictionaryBoolean(mode, kCGDisplayModeIsStretched);
-
-			if (!safeForHardware)
-				continue;
-
-			long width = GetDictionaryLong(mode, kCGDisplayWidth);
-			long height = GetDictionaryLong(mode, kCGDisplayHeight);
-			// long refresh = GetDictionaryLong((mode), kCGDisplayRefreshRate);
-			VideoModeList.addMode(core::dimension2d<u32>(width, height),
-				bitsPerPixel);
-		}
-#endif
 	}
 	return VideoModeList;
 }

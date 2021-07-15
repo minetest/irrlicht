@@ -117,13 +117,6 @@ namespace irr
 		//! Switch to fullscreen
 		bool switchToFullScreen();
 
-		//! Check for and show last Windows API error to help internal debugging.
-		//! Does call GetLastError and on errors formats the error text and displays it in a messagebox.
-		static void ReportLastWinApiError();
-
-		//! Same function Windows offers in VersionHelpers.h, but we can't use that as it's not available before SDK 8.1
-		static bool isWindowsVistaOrGreater();
-
 		// convert an Irrlicht texture to a windows cursor
 		HCURSOR TextureToCursor(HWND hwnd, irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot);
 
@@ -292,9 +285,8 @@ namespace irr
 				if (!fullscreen)
 				{
 					s32 paddingBorder = 0;
-					#if defined (SM_CXPADDEDBORDER)
-						if (CIrrDeviceWin32::isWindowsVistaOrGreater())
-							paddingBorder = GetSystemMetrics(SM_CXPADDEDBORDER);
+					#ifdef SM_CXPADDEDBORDER
+						paddingBorder = GetSystemMetrics(SM_CXPADDEDBORDER);
 					#endif
 
 					if (resizable)

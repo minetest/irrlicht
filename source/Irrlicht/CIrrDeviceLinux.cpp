@@ -453,8 +453,7 @@ bool CIrrDeviceLinux::createWindow()
 	switchToFullscreen();
 
 	WindowMinimized=false;
-	// Currently broken in X, see Bug ID 2795321
-	// XkbSetDetectableAutoRepeat(XDisplay, True, &AutorepeatSupport);
+	XkbSetDetectableAutoRepeat(XDisplay, True, &AutorepeatSupport);
 
 	Window tmp;
 	u32 borderWidth;
@@ -633,7 +632,6 @@ bool CIrrDeviceLinux::createInputContext()
 	XIMStyles *im_supported_styles;
 	XGetIMValues(XInputMethod, XNQueryInputStyle, &im_supported_styles, (char*)NULL);
 	XIMStyle bestStyle = 0;
-	// TODO: If we want to support languages like chinese or japanese as well we probably have to work with callbacks here.
 	XIMStyle supportedStyle = XIMPreeditNothing | XIMStatusNothing;
     for(int i=0; i < im_supported_styles->count_styles; ++i)
 	{
@@ -692,7 +690,6 @@ EKEY_CODE CIrrDeviceLinux::getKeyCode(XEvent &event)
 
 	SKeyMap mp;
 	mp.X11Key = XkbKeycodeToKeysym(XDisplay, event.xkey.keycode, 0, 0);
-	// mp.X11Key = XKeycodeToKeysym(XDisplay, event.xkey.keycode, 0);	// deprecated, if we still find platforms which need that we have to use some define
 	const s32 idx = KeyMap.binary_search(mp);
 	if (idx != -1)
 	{

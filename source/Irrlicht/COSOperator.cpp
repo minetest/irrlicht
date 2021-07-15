@@ -145,73 +145,10 @@ const c8* COSOperator::getTextFromClipboard() const
 }
 
 
-bool COSOperator::getProcessorSpeedMHz(u32* MHz) const
-{
-	if (MHz)
-		*MHz=0;
-#if defined(_IRR_WINDOWS_API_) && !defined(_WIN32_WCE ) && !defined (_IRR_XBOX_PLATFORM_)
-	LONG Error;
-
-	HKEY Key;
-	Error = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-			__TEXT("HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0"),
-			0, KEY_READ, &Key);
-
-	if(Error != ERROR_SUCCESS)
-		return false;
-
-	DWORD Speed = 0;
-	DWORD Size = sizeof(Speed);
-	Error = RegQueryValueEx(Key, __TEXT("~MHz"), NULL, NULL, (LPBYTE)&Speed, &Size);
-
-	RegCloseKey(Key);
-
-	if (Error != ERROR_SUCCESS)
-		return false;
-	else if (MHz)
-		*MHz = Speed;
-	return true;
-
-#elif defined(_IRR_OSX_PLATFORM_)
-	struct clockinfo CpuClock;
-	size_t Size = sizeof(clockinfo);
-
-	if (!sysctlbyname("kern.clockrate", &CpuClock, &Size, NULL, 0))
-		return false;
-	else if (MHz)
-		*MHz = CpuClock.hz;
-	return true;
-#else
-	// read from "/proc/cpuinfo"
-	FILE* file = fopen("/proc/cpuinfo", "r");
-	if (file)
-	{
-		char buffer[1024];
-		size_t r = fread(buffer, 1, 1023, file);
-		buffer[r] = 0;
-		buffer[1023]=0;
-		core::stringc str(buffer);
-		s32 pos = str.find("cpu MHz");
-		if (pos != -1)
-		{
-			pos = str.findNext(':', pos);
-			if (pos != -1)
-			{
-				while ( str[++pos] == ' ' );
-				*MHz = core::fast_atof(str.c_str()+pos);
-			}
-		}
-		fclose(file);
-	}
-	return (MHz && *MHz != 0);
-#endif
-}
-
 bool COSOperator::getSystemMemory(u32* Total, u32* Avail) const
 {
 #if defined(_IRR_WINDOWS_API_) && !defined (_IRR_XBOX_PLATFORM_)
 
-    #if (_WIN32_WINNT >= 0x0500)
 	MEMORYSTATUSEX MemoryStatusEx;
  	MemoryStatusEx.dwLength = sizeof(MEMORYSTATUSEX);
 
@@ -223,19 +160,6 @@ bool COSOperator::getSystemMemory(u32* Total, u32* Avail) const
 	if (Avail)
 		*Avail = (u32)(MemoryStatusEx.ullAvailPhys>>10);
 	return true;
-	#else
-	MEMORYSTATUS MemoryStatus;
-	MemoryStatus.dwLength = sizeof(MEMORYSTATUS);
-
- 	// cannot fail
-	GlobalMemoryStatus(&MemoryStatus);
-
- 	if (Total)
-		*Total = (u32)(MemoryStatus.dwTotalPhys>>10);
- 	if (Avail)
-		*Avail = (u32)(MemoryStatus.dwAvailPhys>>10);
-    return true;
-	#endif
 
 #elif defined(_IRR_POSIX_API_) && !defined(__FreeBSD__)
 #if defined(_SC_PHYS_PAGES) && defined(_SC_AVPHYS_PAGES)
