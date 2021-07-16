@@ -597,8 +597,6 @@ CIrrDeviceMacOSX::CIrrDeviceMacOSX(const SIrrlichtCreationParameters& param)
 
 	initKeycodes();
 
-	VideoModeList->setDesktop(CreationParams.Bits, core::dimension2d<u32>([[NSScreen mainScreen] frame].size.width, [[NSScreen mainScreen] frame].size.height));
-
 	bool success = true;
 
 	if (CreationParams.DriverType != video::EDT_NULL)
@@ -638,9 +636,6 @@ void CIrrDeviceMacOSX::closeDevice()
 		[Window release];
 		Window = nil;
 	}
-    
-    if (IsFullscreen)
-        CGReleaseAllDisplays();
 
 	IsFullscreen = false;
 	IsActive = false;
@@ -660,7 +655,8 @@ bool CIrrDeviceMacOSX::createWindow()
     
     const NSBackingStoreType type = (CreationParams.DriverType == video::EDT_OPENGL) ? NSBackingStoreBuffered : NSBackingStoreNonretained;
     
-    if (!CreationParams.Fullscreen)
+    // TODO: fullscreen
+    //if (!CreationParams.Fullscreen)
     {
         if (!CreationParams.WindowId) //create another window when WindowId is null
         {
@@ -684,66 +680,6 @@ bool CIrrDeviceMacOSX::createWindow()
         
         result = true;
     }
-    else
-    {
-        IsFullscreen = true;
-        
-        displaymode = CGDisplayCopyDisplayMode(Display);
-        
-        CFArrayRef Modes = CGDisplayCopyAllDisplayModes(Display, NULL);
-        
-        for(int i = 0; i < CFArrayGetCount(Modes); ++i)
-        {
-            CGDisplayModeRef CurrentMode = (CGDisplayModeRef)CFArrayGetValueAtIndex(Modes, i);
-            
-            u8 Depth = 0;
-            
-            CFStringRef pixEnc = CGDisplayModeCopyPixelEncoding(CurrentMode);
-            
-            if (CFStringCompare(pixEnc, CFSTR(IO32BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
-                Depth = 32;
-            else if(CFStringCompare(pixEnc, CFSTR(IO16BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
-                Depth = 16;
-            else if(CFStringCompare(pixEnc, CFSTR(IO8BitIndexedPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
-                Depth = 8;
-            
-            if(Depth == CreationParams.Bits)
-                if((CGDisplayModeGetWidth(CurrentMode) == CreationParams.WindowSize.Width) && (CGDisplayModeGetHeight(CurrentMode) == CreationParams.WindowSize.Height))
-                {
-                    displaymode = CurrentMode;
-                    break;
-                }
-        }
-        
-        if (displaymode != NULL)
-        {
-            olddisplaymode = CGDisplayCopyDisplayMode(Display);
-            
-            error = CGCaptureAllDisplays();
-            if (error == CGDisplayNoErr)
-            {
-                error = CGDisplaySetDisplayMode(Display, displaymode, NULL);
-                
-                if (error == CGDisplayNoErr)
-                {
-                    Window = [[NSWindow alloc] initWithContentRect:[[NSScreen mainScreen] frame] styleMask:NSBorderlessWindowMask backing:type defer:FALSE screen:[NSScreen mainScreen]];
-                    
-                    [Window setLevel: CGShieldingWindowLevel()];
-                    [Window setBackgroundColor:[NSColor blackColor]];
-                    
-                    displayRect = CGDisplayBounds(Display);
-                    ScreenWidth = DeviceWidth = (int)displayRect.size.width;
-                    ScreenHeight = DeviceHeight = (int)displayRect.size.height;
-                    CreationParams.WindowSize.set(ScreenWidth, ScreenHeight);
-                    
-                    result = true;
-                }
-                
-                if (!result)
-                    CGReleaseAllDisplays();
-            }
-        }
-    }
     
     if (result)
     {
@@ -753,11 +689,6 @@ bool CIrrDeviceMacOSX::createWindow()
             [Window setAcceptsMouseMovedEvents:TRUE];
             [Window setIsVisible:TRUE];
             [Window makeKeyAndOrderFront:nil];
-        }
-        
-        if (IsFullscreen) //hide menus in fullscreen mode only
-        {
-            [NSApp setPresentationOptions:(NSApplicationPresentationAutoHideDock | NSApplicationPresentationAutoHideMenuBar)];
         }
     }
     
@@ -1193,6 +1124,7 @@ void CIrrDeviceMacOSX::storeMouseLocation()
 	}
 	else
 	{
+		// Do we still need this?
 		CGEventRef ourEvent = CGEventCreate(NULL);
 		CGPoint point = CGEventGetLocation(ourEvent);
 		CFRelease(ourEvent);
@@ -1203,7 +1135,6 @@ void CIrrDeviceMacOSX::storeMouseLocation()
 		const core::position2di& curr = ((CCursorControl *)CursorControl)->getPosition(true);
 		if (curr.X != x || curr.Y != y)
 		{
-			// In fullscreen mode, events are not sent regularly so rely on polling
 			irr::SEvent ievent;
 			ievent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 			ievent.MouseInput.Event = irr::EMIE_MOUSE_MOVED;
@@ -1743,44 +1674,6 @@ void CIrrDeviceMacOSX::pollJoysticks()
 			postEventFromUser(ActiveJoysticks[joystick].persistentData);
 	}
 #endif // _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
-}
-
-video::IVideoModeList* CIrrDeviceMacOSX::getVideoModeList()
-{
-	if (!VideoModeList->getVideoModeCount())
-	{
-		CGDirectDisplayID display;
-		display = CGMainDisplayID();
-
-		CFArrayRef Modes = CGDisplayCopyAllDisplayModes(display, NULL);
-
-		for(int i = 0; i < CFArrayGetCount(Modes); ++i)
-		{
-			CGDisplayModeRef CurrentMode = (CGDisplayModeRef)CFArrayGetValueAtIndex(Modes, i);
-
-			u8 Depth = 0;
-
-			CFStringRef pixEnc = CGDisplayModeCopyPixelEncoding(CurrentMode);
-
-			if(CFStringCompare(pixEnc, CFSTR(IO32BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
-				Depth = 32;
-			else
-			if(CFStringCompare(pixEnc, CFSTR(IO16BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
-				Depth = 16;
-			else
-			if(CFStringCompare(pixEnc, CFSTR(IO8BitIndexedPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
-				Depth = 8;
-
-			if(Depth)
-			{
-				unsigned int Width = CGDisplayModeGetWidth(CurrentMode);
-				unsigned int Height = CGDisplayModeGetHeight(CurrentMode);
-
-				VideoModeList->addMode(core::dimension2d<u32>(Width, Height), Depth);
-			}
-		}
-	}
-	return VideoModeList;
 }
 
 } // end namespace
