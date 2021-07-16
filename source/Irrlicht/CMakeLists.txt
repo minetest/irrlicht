@@ -1,10 +1,15 @@
-add_definitions(-DIRRLICHT_EXPORTS=1)
+option(BUILD_SHARED_LIBS "Build shared library" TRUE)
+
+# Compiler flags
+
+add_definitions(-DIRRLICHT_EXPORTS)
+if(NOT BUILD_SHARED_LIBS)
+	add_definitions(-D_IRR_STATIC_LIB_)
+endif()
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_definitions(-D_DEBUG)
 endif()
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
-
-# Compiler flags
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
 	set(CMAKE_CXX_FLAGS_RELEASE "-O3")
@@ -388,8 +393,6 @@ add_library(IRRGUIOBJ OBJECT
 
 # Library
 
-option(BUILD_SHARED_LIBS "Build shared library" TRUE)
-
 add_library(IrrlichtMt)
 foreach(object_lib
 	IRRMESHOBJ IRROBJ IRRPARTICLEOBJ IRRANIMOBJ IRRVIDEOOBJ IRRSWRENDEROBJ
@@ -413,6 +416,11 @@ target_include_directories(IrrlichtMt
 )
 
 target_link_libraries(IrrlichtMt PRIVATE ${link_libs})
+
+# Propagate static library flag to lib users, only needed for Windows
+if(NOT BUILD_SHARED_LIBS)
+	target_compile_definitions(IrrlichtMt INTERFACE _IRR_STATIC_LIB_)
+endif()
 
 set_target_properties(IrrlichtMt PROPERTIES
 	VERSION ${PROJECT_VERSION}
