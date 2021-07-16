@@ -12,29 +12,6 @@
 #include <stdlib.h> // for abs() etc.
 #include <limits.h> // For INT_MAX / UINT_MAX
 
-#if defined(_IRR_SOLARIS_PLATFORM_) || defined(__BORLANDC__) || defined (__BCPLUSPLUS__) || defined (_WIN32_WCE)
-	#define sqrtf(X) (irr::f32)sqrt((irr::f64)(X))
-	#define sinf(X) (irr::f32)sin((irr::f64)(X))
-	#define cosf(X) (irr::f32)cos((irr::f64)(X))
-	#define asinf(X) (irr::f32)asin((irr::f64)(X))
-	#define acosf(X) (irr::f32)acos((irr::f64)(X))
-	#define atan2f(X,Y) (irr::f32)atan2((irr::f64)(X),(irr::f64)(Y))
-	#define ceilf(X) (irr::f32)ceil((irr::f64)(X))
-	#define floorf(X) (irr::f32)floor((irr::f64)(X))
-	#define powf(X,Y) (irr::f32)pow((irr::f64)(X),(irr::f64)(Y))
-	#define fmodf(X,Y) (irr::f32)fmod((irr::f64)(X),(irr::f64)(Y))
-	#define fabsf(X) (irr::f32)fabs((irr::f64)(X))
-	#define logf(X) (irr::f32)log((irr::f64)(X))
-#endif
-
-#ifndef FLT_MAX
-#define FLT_MAX 3.402823466E+38F
-#endif
-
-#ifndef FLT_MIN
-#define FLT_MIN 1.17549435e-38F
-#endif
-
 namespace irr
 {
 namespace core
@@ -379,45 +356,14 @@ namespace core
 
 	#define F32_VALUE_0		0x00000000
 	#define F32_VALUE_1		0x3f800000
-	#define F32_SIGN_BIT		0x80000000U
-	#define F32_EXPON_MANTISSA	0x7FFFFFFFU
 
 	//! code is taken from IceFPU
 	//! Integer representation of a floating-point value.
-#ifdef IRRLICHT_FAST_MATH
-	#define IR(x)			((u32&)(x))
-#else
 	inline u32 IR(f32 x) {inttofloat tmp; tmp.f=x; return tmp.u;}
-#endif
-
-	//! Absolute integer representation of a floating-point value
-	#define AIR(x)			(IR(x)&0x7fffffff)
 
 	//! Floating-point representation of an integer value.
-#ifdef IRRLICHT_FAST_MATH
-	#define FR(x)			((f32&)(x))
-#else
 	inline f32 FR(u32 x) {inttofloat tmp; tmp.u=x; return tmp.f;}
 	inline f32 FR(s32 x) {inttofloat tmp; tmp.s=x; return tmp.f;}
-#endif
-
-	//! integer representation of 1.0
-	#define IEEE_1_0		0x3f800000
-	//! integer representation of 255.0
-	#define IEEE_255_0		0x437f0000
-
-#ifdef IRRLICHT_FAST_MATH
-	#define	F32_LOWER_0(f)		(F32_AS_U32(f) >  F32_SIGN_BIT)
-	#define	F32_LOWER_EQUAL_0(f)	(F32_AS_S32(f) <= F32_VALUE_0)
-	#define	F32_GREATER_0(f)	(F32_AS_S32(f) >  F32_VALUE_0)
-	#define	F32_GREATER_EQUAL_0(f)	(F32_AS_U32(f) <= F32_SIGN_BIT)
-	#define	F32_EQUAL_1(f)		(F32_AS_U32(f) == F32_VALUE_1)
-	#define	F32_EQUAL_0(f)		( (F32_AS_U32(f) & F32_EXPON_MANTISSA ) == F32_VALUE_0)
-
-	// only same sign
-	#define	F32_A_GREATER_B(a,b)	(F32_AS_S32((a)) > F32_AS_S32((b)))
-
-#else
 
 	#define	F32_LOWER_0(n)		((n) <  0.0f)
 	#define	F32_LOWER_EQUAL_0(n)	((n) <= 0.0f)
@@ -426,8 +372,6 @@ namespace core
 	#define	F32_EQUAL_1(n)		((n) == 1.0f)
 	#define	F32_EQUAL_0(n)		((n) == 0.0f)
 	#define	F32_A_GREATER_B(a,b)	((a) > (b))
-#endif
-
 
 #ifndef REALINLINE
 	#ifdef _MSC_VER
@@ -436,23 +380,6 @@ namespace core
 		#define REALINLINE inline
 	#endif
 #endif
-
-#if defined(__BORLANDC__) || defined (__BCPLUSPLUS__)
-
-	// 8-bit bools in Borland builder
-
-	//! conditional set based on mask and arithmetic shift
-	REALINLINE u32 if_c_a_else_b ( const c8 condition, const u32 a, const u32 b )
-	{
-		return ( ( -condition >> 7 ) & ( a ^ b ) ) ^ b;
-	}
-
-	//! conditional set based on mask and arithmetic shift
-	REALINLINE u32 if_c_a_else_0 ( const c8 condition, const u32 a )
-	{
-		return ( -condition >> 31 ) & a;
-	}
-#else
 
 	//! conditional set based on mask and arithmetic shift
 	REALINLINE u32 if_c_a_else_b ( const s32 condition, const u32 a, const u32 b )
@@ -471,7 +398,6 @@ namespace core
 	{
 		return ( -condition >> 31 ) & a;
 	}
-#endif
 
 	/*
 		if (condition) state |= m; else state &= ~m;
@@ -526,30 +452,7 @@ namespace core
 	// calculate: 1 / sqrtf ( x )
 	REALINLINE f32 reciprocal_squareroot(const f32 f)
 	{
-#if defined ( IRRLICHT_FAST_MATH )
-		// NOTE: Unlike comment below says I found inaccuracies already at 4'th significant bit.
-		// p.E: Input 1, expected 1, got 0.999755859
-
-	#if defined(_MSC_VER) && !defined(_WIN64)
-		// SSE reciprocal square root estimate, accurate to 12 significant
-		// bits of the mantissa
-		f32 recsqrt;
-		__asm rsqrtss xmm0, f           // xmm0 = rsqrtss(f)
-		__asm movss recsqrt, xmm0       // return xmm0
-		return recsqrt;
-
-/*
-		// comes from Nvidia
-		u32 tmp = (u32(IEEE_1_0 << 1) + IEEE_1_0 - *(u32*)&x) >> 1;
-		f32 y = *(f32*)&tmp;
-		return y * (1.47f - 0.47f * x * y * y);
-*/
-	#else
 		return 1.f / sqrtf(f);
-	#endif
-#else // no fast math
-		return 1.f / sqrtf(f);
-#endif
 	}
 
 	// calculate: 1 / sqrtf( x )
@@ -561,37 +464,7 @@ namespace core
 	// calculate: 1 / x
 	REALINLINE f32 reciprocal( const f32 f )
 	{
-#if defined (IRRLICHT_FAST_MATH)
-		// NOTE: Unlike with 1.f / f the values very close to 0 return -nan instead of inf
-
-		// SSE Newton-Raphson reciprocal estimate, accurate to 23 significant
-		// bi ts of the mantissa
-		// One Newton-Raphson Iteration:
-		// f(i+1) = 2 * rcpss(f) - f * rcpss(f) * rcpss(f)
-#if defined(_MSC_VER) && !defined(_WIN64)
-		f32 rec;
-		__asm rcpss xmm0, f               // xmm0 = rcpss(f)
-		__asm movss xmm1, f               // xmm1 = f
-		__asm mulss xmm1, xmm0            // xmm1 = f * rcpss(f)
-		__asm mulss xmm1, xmm0            // xmm2 = f * rcpss(f) * rcpss(f)
-		__asm addss xmm0, xmm0            // xmm0 = 2 * rcpss(f)
-		__asm subss xmm0, xmm1            // xmm0 = 2 * rcpss(f)
-										  //        - f * rcpss(f) * rcpss(f)
-		__asm movss rec, xmm0             // return xmm0
-		return rec;
-#else // no support yet for other compilers
 		return 1.f / f;
-#endif
-		//! i do not divide through 0.. (fpu expection)
-		// instead set f to a high value to get a return value near zero..
-		// -1000000000000.f.. is use minus to stay negative..
-		// must test's here (plane.normal dot anything ) checks on <= 0.f
-		//u32 x = (-(AIR(f) != 0 ) >> 31 ) & ( IR(f) ^ 0xd368d4a5 ) ^ 0xd368d4a5;
-		//return 1.f / FR ( x );
-
-#else // no fast math
-		return 1.f / f;
-#endif
 	}
 
 	// calculate: 1 / x
@@ -604,44 +477,8 @@ namespace core
 	// calculate: 1 / x, low precision allowed
 	REALINLINE f32 reciprocal_approxim ( const f32 f )
 	{
-#if defined( IRRLICHT_FAST_MATH)
-
-		// SSE Newton-Raphson reciprocal estimate, accurate to 23 significant
-		// bi ts of the mantissa
-		// One Newton-Raphson Iteration:
-		// f(i+1) = 2 * rcpss(f) - f * rcpss(f) * rcpss(f)
-#if defined(_MSC_VER) && !defined(_WIN64)
-		f32 rec;
-		__asm rcpss xmm0, f               // xmm0 = rcpss(f)
-		__asm movss xmm1, f               // xmm1 = f
-		__asm mulss xmm1, xmm0            // xmm1 = f * rcpss(f)
-		__asm mulss xmm1, xmm0            // xmm2 = f * rcpss(f) * rcpss(f)
-		__asm addss xmm0, xmm0            // xmm0 = 2 * rcpss(f)
-		__asm subss xmm0, xmm1            // xmm0 = 2 * rcpss(f)
-										  //        - f * rcpss(f) * rcpss(f)
-		__asm movss rec, xmm0             // return xmm0
-		return rec;
-#else // no support yet for other compilers
 		return 1.f / f;
-#endif
-
-/*
-		// SSE reciprocal estimate, accurate to 12 significant bits of
-		f32 rec;
-		__asm rcpss xmm0, f             // xmm0 = rcpss(f)
-		__asm movss rec , xmm0          // return xmm0
-		return rec;
-*/
-/*
-		u32 x = 0x7F000000 - IR ( p );
-		const f32 r = FR ( x );
-		return r * (2.0f - p * r);
-*/
-#else // no fast math
-		return 1.f / f;
-#endif
 	}
-
 
 	REALINLINE s32 floor32(f32 x)
 	{
@@ -677,9 +514,7 @@ namespace core
 } // end namespace core
 } // end namespace irr
 
-#ifndef IRRLICHT_FAST_MATH
-	using irr::core::IR;
-	using irr::core::FR;
-#endif
+using irr::core::IR;
+using irr::core::FR;
 
 #endif

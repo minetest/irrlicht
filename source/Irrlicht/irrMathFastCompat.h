@@ -24,33 +24,7 @@ namespace core
 	// Input -1.40129846e-45, expected -1, got 0
 	REALINLINE s32 floor32_fast(f32 x)
 	{
-#ifdef IRRLICHT_FAST_MATH
-		const f32 h = 0.5f;
-
-		s32 t;
-
-#if defined(_MSC_VER) && !defined(_WIN64)
-		__asm
-		{
-			fld	x
-			fsub	h
-			fistp	t
-		}
-#elif defined(__GNUC__)
-		__asm__ __volatile__ (
-			"fsub %2 \n\t"
-			"fistpl %0"
-			: "=m" (t)
-			: "t" (x), "f" (h)
-			: "st"
-			);
-#else
 		return (s32) floorf ( x );
-#endif
-		return t;
-#else // no fast math
-		return (s32) floorf ( x );
-#endif
 	}
 	
 	// Some examples for unexpected results when using this with IRRLICHT_FAST_MATH:
@@ -59,33 +33,7 @@ namespace core
 	// Input -3, expected -3, got -2
 	REALINLINE s32 ceil32_fast ( f32 x )
 	{
-#ifdef IRRLICHT_FAST_MATH
-		const f32 h = 0.5f;
-
-		s32 t;
-
-#if defined(_MSC_VER) && !defined(_WIN64)
-		__asm
-		{
-			fld	x
-			fadd	h
-			fistp	t
-		}
-#elif defined(__GNUC__)
-		__asm__ __volatile__ (
-			"fadd %2 \n\t"
-			"fistpl %0 \n\t"
-			: "=m"(t)
-			: "t"(x), "f"(h)
-			: "st"
-			);
-#else
 		return (s32) ceilf ( x );
-#endif
-		return t;
-#else // not fast math
-		return (s32) ceilf ( x );
-#endif
 	}	
 	
 	// Some examples for unexpected results when using this with IRRLICHT_FAST_MATH:
@@ -95,29 +43,7 @@ namespace core
 	// Input -2.80259693e-45, expected -nan(ind), got -inf	
 	REALINLINE s32 round32_fast(f32 x)
 	{
-#if defined(IRRLICHT_FAST_MATH)
-		s32 t;
-
-#if defined(_MSC_VER) && !defined(_WIN64)
-		__asm
-		{
-			fld   x
-			fistp t
-		}
-#elif defined(__GNUC__)
-		__asm__ __volatile__ (
-			"fistpl %0 \n\t"
-			: "=m"(t)
-			: "t"(x)
-			: "st"
-			);
-#else
 		return (s32) round_(x);
-#endif
-		return t;
-#else // no fast math
-		return (s32) round_(x);
-#endif
 	}	
 	
 } // end namespace core

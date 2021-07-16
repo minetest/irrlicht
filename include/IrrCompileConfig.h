@@ -779,17 +779,6 @@ ones. */
 #undef __IRR_COMPILE_WITH_WAD_ARCHIVE_LOADER_
 #endif
 
-//! Set FPU settings
-/** Irrlicht should use approximate float and integer fpu techniques
-precision will be lower but speed higher. currently X86 only
-*/
-#if !defined(_IRR_OSX_PLATFORM_) && !defined(_IRR_SOLARIS_PLATFORM_)
-	//#define IRRLICHT_FAST_MATH
-	#ifdef NO_IRRLICHT_FAST_MATH
-	#undef IRRLICHT_FAST_MATH
-	#endif
-#endif
-
 // Some cleanup and standard stuff
 
 #ifdef _IRR_WINDOWS_API_
