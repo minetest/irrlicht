@@ -92,9 +92,9 @@ jobs:
       - name: Install deps
         run: |
           brew update
-          brew install gnu-tar cmake libpng jpeg
+          brew install cmake libpng jpeg
 
       - name: Build
         run: |
           cmake . -DCMAKE_FIND_FRAMEWORK=LAST
-          make VERBOSE=1 -j2
+          make -j3
