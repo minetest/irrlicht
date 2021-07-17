@@ -84,3 +84,17 @@ jobs:
         env:
           CC: x86_64-w64-mingw32-gcc
           CXX: x86_64-w64-mingw32-g++
+
+  macos:
+    runs-on: macos-10.15
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install deps
+        run: |
+          brew update
+          brew install cmake libpng jpeg
+
+      - name: Build
+        run: |
+          cmake . -DCMAKE_FIND_FRAMEWORK=LAST
+          make -j3
