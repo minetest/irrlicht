@@ -110,18 +110,7 @@ const core::matrix4& CCameraSceneNode::getViewMatrixAffector() const
 //! for changing their position, look at target or whatever.
 bool CCameraSceneNode::OnEvent(const SEvent& event)
 {
-	if (!InputReceiverEnabled)
-		return false;
-
-	// send events to event receiving animators
-
-	ISceneNodeAnimatorList::Iterator ait = Animators.begin();
-
-	for (; ait != Animators.end(); ++ait)
-		if ((*ait)->isEventReceiverEnabled() && (*ait)->OnEvent(event))
-			return true;
-
-	// if nobody processed the event, return false
+	// animators have been deleted; nothing happens here now!
 	return false;
 }
 
@@ -289,9 +278,6 @@ void CCameraSceneNode::updateMatrices()
 //! returns the axis aligned bounding box of this node
 const core::aabbox3d<f32>& CCameraSceneNode::getBoundingBox() const
 {
-	// NOTE: We deliberately don't return the boundingbox of the ViewArea. People can access that already.
-	// We want to prevent cameras from having their bounding box colliding in the SceneCollisionManager.
-	// If another boundingbox is ever necessary then please move BoundingBox to ICameraSceneNode and make it accessible (via a setter or an enum with options).
 	return BoundingBox;
 }
 

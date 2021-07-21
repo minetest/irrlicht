@@ -9,8 +9,6 @@
 #include "ESceneNodeTypes.h"
 #include "ECullingTypes.h"
 #include "EDebugSceneTypes.h"
-#include "ISceneNodeAnimator.h"
-#include "ITriangleSelector.h"
 #include "SMaterial.h"
 #include "irrString.h"
 #include "aabbox3d.h"
@@ -22,12 +20,11 @@ namespace irr
 {
 namespace scene
 {
+	class ISceneNode;
 	class ISceneManager;
 
 	//! Typedef for list of scene nodes
 	typedef core::list<ISceneNode*> ISceneNodeList;
-	//! Typedef for list of scene node animators
-	typedef core::list<ISceneNodeAnimator*> ISceneNodeAnimatorList;
 
 	//! Scene node interface.
 	/** A scene node is a node in the hierarchical scene graph. Every scene
@@ -47,7 +44,7 @@ namespace scene
 				const core::vector3df& rotation = core::vector3df(0,0,0),
 				const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f))
 			: RelativeTranslation(position), RelativeRotation(rotation), RelativeScale(scale),
-				Parent(0), SceneManager(mgr), TriangleSelector(0), ID(id),
+				Parent(0), SceneManager(mgr), ID(id),
 				AutomaticCullingState(EAC_BOX), DebugDataVisible(EDS_OFF),
 				IsVisible(true), IsDebugObject(false)
 		{
@@ -63,14 +60,6 @@ namespace scene
 		{
 			// delete all children
 			removeAll();
-
-			// delete all animators
-			ISceneNodeAnimatorList::Iterator ait = Animators.begin();
-			for (; ait != Animators.end(); ++ait)
-				(*ait)->drop();
-
-			if (TriangleSelector)
-				TriangleSelector->drop();
 		}
 
 
@@ -109,22 +98,6 @@ namespace scene
 		{
 			if (IsVisible)
 			{
-				// animate this node with all animators
-
-				ISceneNodeAnimatorList::Iterator ait = Animators.begin();
-				while (ait != Animators.end())
-					{
-					// continue to the next node before calling animateNode()
-					// so that the animator may remove itself from the scene
-					// node without the iterator becoming invalid
-					ISceneNodeAnimator* anim = *ait;
-					++ait;
-					if ( anim->isEnabled() )
-					{
-						anim->animateNode(this, timeMs);
-					}
-				}
-
 				// update absolute position
 				updateAbsolutePosition();
 
@@ -357,58 +330,6 @@ namespace scene
 		}
 
 
-		//! Adds an animator which should animate this node.
-		/** \param animator A pointer to the new animator. */
-		virtual void addAnimator(ISceneNodeAnimator* animator)
-		{
-			if (animator)
-			{
-				Animators.push_back(animator);
-				animator->grab();
-			}
-		}
-
-
-		//! Get a list of all scene node animators.
-		/** \return The list of animators attached to this node. */
-		const core::list<ISceneNodeAnimator*>& getAnimators() const
-		{
-			return Animators;
-		}
-
-
-		//! Removes an animator from this scene node.
-		/** If the animator is found, it is also dropped and might be
-		deleted if not other grab exists for it.
-		\param animator A pointer to the animator to be deleted. */
-		virtual void removeAnimator(ISceneNodeAnimator* animator)
-		{
-			ISceneNodeAnimatorList::Iterator it = Animators.begin();
-			for (; it != Animators.end(); ++it)
-			{
-				if ((*it) == animator)
-				{
-					(*it)->drop();
-					Animators.erase(it);
-					return;
-				}
-			}
-		}
-
-
-		//! Removes all animators from this scene node.
-		/** The animators might also be deleted if no other grab exists
-		for them. */
-		virtual void removeAnimators()
-		{
-			ISceneNodeAnimatorList::Iterator it = Animators.begin();
-			for (; it != Animators.end(); ++it)
-				(*it)->drop();
-
-			Animators.clear();
-		}
-
-
 		//! Returns the material based on the zero based index i.
 		/** To get the amount of materials used by this scene node, use
 		getMaterialCount(). This function is needed for inserting the
@@ -620,45 +541,6 @@ namespace scene
 		}
 
 
-		//! Returns the triangle selector attached to this scene node.
-		/** The Selector can be used by the engine for doing collision
-		detection. You can create a TriangleSelector with
-		ISceneManager::createTriangleSelector() or
-		ISceneManager::createOctreeTriangleSelector and set it with
-		ISceneNode::setTriangleSelector(). If a scene node got no triangle
-		selector, but collision tests should be done with it, a triangle
-		selector is created using the bounding box of the scene node.
-		\return A pointer to the TriangleSelector or 0, if there
-		is none. */
-		virtual ITriangleSelector* getTriangleSelector() const
-		{
-			return TriangleSelector;
-		}
-
-
-		//! Sets the triangle selector of the scene node.
-		/** The Selector can be used by the engine for doing collision
-		detection. You can create a TriangleSelector with
-		ISceneManager::createTriangleSelector() or
-		ISceneManager::createOctreeTriangleSelector(). Some nodes may
-		create their own selector by default, so it would be good to
-		check if there is already a selector in this node by calling
-		ISceneNode::getTriangleSelector().
-		\param selector New triangle selector for this scene node. */
-		virtual void setTriangleSelector(ITriangleSelector* selector)
-		{
-			if (TriangleSelector != selector)
-			{
-				if (TriangleSelector)
-					TriangleSelector->drop();
-
-				TriangleSelector = selector;
-				if (TriangleSelector)
-					TriangleSelector->grab();
-			}
-		}
-
-
 		//! Updates the absolute position based on the relative and the parents position
 		/** Note: This does not recursively update the parents absolute positions, so if you have a deeper
 			hierarchy you might want to update the parents first.*/
@@ -778,7 +660,6 @@ namespace scene
 			RelativeRotation = toCopyFrom->RelativeRotation;
 			RelativeScale = toCopyFrom->RelativeScale;
 			ID = toCopyFrom->ID;
-			setTriangleSelector(toCopyFrom->TriangleSelector);
 			AutomaticCullingState = toCopyFrom->AutomaticCullingState;
 			DebugDataVisible = toCopyFrom->DebugDataVisible;
 			IsVisible = toCopyFrom->IsVisible;
@@ -794,19 +675,6 @@ namespace scene
 			ISceneNodeList::Iterator it = toCopyFrom->Children.begin();
 			for (; it != toCopyFrom->Children.end(); ++it)
 				(*it)->clone(this, newManager);
-
-			// clone animators
-
-			ISceneNodeAnimatorList::Iterator ait = toCopyFrom->Animators.begin();
-			for (; ait != toCopyFrom->Animators.end(); ++ait)
-			{
-				ISceneNodeAnimator* anim = (*ait)->createClone(this, SceneManager);
-				if (anim)
-				{
-					addAnimator(anim);
-					anim->drop();
-				}
-			}
 		}
 
 		//! Sets the new scene manager for this node and all children.
@@ -841,14 +709,8 @@ namespace scene
 		//! List of all children of this node
 		core::list<ISceneNode*> Children;
 
-		//! List of all animator nodes
-		core::list<ISceneNodeAnimator*> Animators;
-
 		//! Pointer to the scene manager
 		ISceneManager* SceneManager;
-
-		//! Pointer to the triangle selector
-		ITriangleSelector* TriangleSelector;
 
 		//! ID of the node.
 		s32 ID;

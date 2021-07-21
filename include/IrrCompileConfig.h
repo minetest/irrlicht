@@ -191,7 +191,7 @@ If not defined, Windows Multimedia library is used, which offers also broad supp
 #endif
 
 //! enabled Direct3D 9
-#define _IRR_COMPILE_WITH_DIRECT3D_9_
+// #define _IRR_COMPILE_WITH_DIRECT3D_9_
 #ifdef NO_IRR_COMPILE_WITH_DIRECT3D_9_
 #undef _IRR_COMPILE_WITH_DIRECT3D_9_
 #endif
@@ -353,7 +353,7 @@ you will not be able to use anything provided by the GUI Environment, including 
 
 //! Define _IRR_COMPILE_WITH_PARTICLES to compile the engine the withe build-in particle system
 /** You can disable this if you don't need particles or use an external particle system. */
-#define _IRR_COMPILE_WITH_PARTICLES_
+// #define _IRR_COMPILE_WITH_PARTICLES_
 #ifdef NO_IRR_COMPILE_WITH_PARTICLES_
 #undef _IRR_COMPILE_WITH_PARTICLES_
 #endif
@@ -432,68 +432,8 @@ tool <http://developer.nvidia.com/object/nvperfhud_home.html>. */
 			16Bit + SubPixel/SubTexel Correct + ZBuffer
 */
 
-#define BURNINGVIDEO_RENDERER_BEAUTIFUL
-//#define BURNINGVIDEO_RENDERER_FAST
-//#define BURNINGVIDEO_RENDERER_ULTRA_FAST
-//#define BURNINGVIDEO_RENDERER_CE
-
 //! Uncomment the following line if you want to ignore the deprecated warnings
 //#define IGNORE_DEPRECATED_WARNING
-
-//! Define _IRR_COMPILE_WITH_SHADOW_VOLUME_SCENENODE_ to support ShadowVolumes
-#define _IRR_COMPILE_WITH_SHADOW_VOLUME_SCENENODE_
-#ifdef NO_IRR_COMPILE_WITH_SHADOW_VOLUME_SCENENODE_
-#undef _IRR_COMPILE_WITH_SHADOW_VOLUME_SCENENODE_
-#endif
-
-//! Define _IRR_COMPILE_WITH_OCTREE_SCENENODE_ to support OctreeSceneNodes
-#define _IRR_COMPILE_WITH_OCTREE_SCENENODE_
-#ifdef NO_IRR_COMPILE_WITH_OCTREE_SCENENODE_
-#undef _IRR_COMPILE_WITH_OCTREE_SCENENODE_
-#endif
-
-//! Define _IRR_COMPILE_WITH_TERRAIN_SCENENODE_ to support TerrainSceneNodes
-#define _IRR_COMPILE_WITH_TERRAIN_SCENENODE_
-#ifdef NO_IRR_COMPILE_WITH_TERRAIN_SCENENODE_
-#undef _IRR_COMPILE_WITH_TERRAIN_SCENENODE_
-#endif
-
-//! Define _IRR_COMPILE_WITH_BILLBOARD_SCENENODE_ to support BillboardSceneNodes
-#define _IRR_COMPILE_WITH_BILLBOARD_SCENENODE_
-#ifdef NO_IRR_COMPILE_WITH_BILLBOARD_SCENENODE_
-#undef _IRR_COMPILE_WITH_BILLBOARD_SCENENODE_
-#endif
-
-//! Define _IRR_COMPILE_WITH_WATER_SURFACE_SCENENODE_ to support WaterSurfaceSceneNodes
-#define _IRR_COMPILE_WITH_WATER_SURFACE_SCENENODE_
-#ifdef NO_IRR_COMPILE_WITH_WATER_SURFACE_SCENENODE_
-#undef _IRR_COMPILE_WITH_WATER_SURFACE_SCENENODE_
-#endif
-
-//! Define _IRR_COMPILE_WITH_SKYDOME_SCENENODE_ to support SkydomeSceneNodes
-#define _IRR_COMPILE_WITH_SKYDOME_SCENENODE_
-#ifdef NO_IRR_COMPILE_WITH_SKYDOME_SCENENODE_
-#undef _IRR_COMPILE_WITH_SKYDOME_SCENENODE_
-#endif
-
-//! Define _IRR_COMPILE_WITH_CUBE_SCENENODE_ to support CubeSceneNodes
-#define _IRR_COMPILE_WITH_CUBE_SCENENODE_
-#ifdef NO_IRR_COMPILE_WITH_CUBE_SCENENODE_
-#undef _IRR_COMPILE_WITH_CUBE_SCENENODE_
-#endif
-
-//! Define _IRR_COMPILE_WITH_SPHERE_SCENENODE_ to support CubeSceneNodes
-#define _IRR_COMPILE_WITH_SPHERE_SCENENODE_
-#ifdef NO_IRR_COMPILE_WITH_SPHERE_SCENENODE_
-#undef _IRR_COMPILE_WITH_SPHERE_SCENENODE_
-#endif
-
-//! Define _IRR_COMPILE_WITH_IRR_SCENE_LOADER_ if you want to be able to load
-/** .irr scenes using ISceneManager::loadScene */
-#define _IRR_COMPILE_WITH_IRR_SCENE_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_IRR_SCENE_LOADER_
-#undef _IRR_COMPILE_WITH_IRR_SCENE_LOADER_
-#endif
 
 //! Define _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_ if you want to use bone based
 /** animated meshes. If you compile without this, you will be unable to load
@@ -509,118 +449,17 @@ B3D, MS3D or X meshes */
 #ifdef NO_IRR_COMPILE_WITH_B3D_LOADER_
 #undef _IRR_COMPILE_WITH_B3D_LOADER_
 #endif
-//! Define _IRR_COMPILE_WITH_MS3D_LOADER_ if you want to Milkshape files
-#define _IRR_COMPILE_WITH_MS3D_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_MS3D_LOADER_
-#undef _IRR_COMPILE_WITH_MS3D_LOADER_
-#endif
 //! Define _IRR_COMPILE_WITH_X_LOADER_ if you want to use Microsoft X files
 #define _IRR_COMPILE_WITH_X_LOADER_
 #ifdef NO_IRR_COMPILE_WITH_X_LOADER_
 #undef _IRR_COMPILE_WITH_X_LOADER_
 #endif
-//! Define _IRR_COMPILE_WITH_OGRE_LOADER_ if you want to load Ogre 3D files
-#define _IRR_COMPILE_WITH_OGRE_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_OGRE_LOADER_
-#undef _IRR_COMPILE_WITH_OGRE_LOADER_
-#endif
 #endif // _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
 
-//! Define _IRR_COMPILE_WITH_HALFLIFE_LOADER_ if you want to load Halflife animated files
-#define _IRR_COMPILE_WITH_HALFLIFE_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_HALFLIFE_LOADER_
-#undef _IRR_COMPILE_WITH_HALFLIFE_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_MD2_LOADER_ if you want to load Quake 2 animated files
-#define _IRR_COMPILE_WITH_MD2_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_MD2_LOADER_
-#undef _IRR_COMPILE_WITH_MD2_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_MD3_LOADER_ if you want to load Quake 3 animated files
-#define _IRR_COMPILE_WITH_MD3_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_MD3_LOADER_
-#undef _IRR_COMPILE_WITH_MD3_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_3DS_LOADER_ if you want to load 3D Studio Max files
-#define _IRR_COMPILE_WITH_3DS_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_3DS_LOADER_
-#undef _IRR_COMPILE_WITH_3DS_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_CSM_LOADER_ if you want to load Cartography Shop files
-#define _IRR_COMPILE_WITH_CSM_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_CSM_LOADER_
-#undef _IRR_COMPILE_WITH_CSM_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_BSP_LOADER_ if you want to load Quake 3 BSP files
-#define _IRR_COMPILE_WITH_BSP_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_BSP_LOADER_
-#undef _IRR_COMPILE_WITH_BSP_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_DMF_LOADER_ if you want to load DeleD files
-#define _IRR_COMPILE_WITH_DMF_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_DMF_LOADER_
-#undef _IRR_COMPILE_WITH_DMF_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_LMTS_LOADER_ if you want to load LMTools files
-#define _IRR_COMPILE_WITH_LMTS_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_LMTS_LOADER_
-#undef _IRR_COMPILE_WITH_LMTS_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_MY3D_LOADER_ if you want to load MY3D files
-#define _IRR_COMPILE_WITH_MY3D_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_MY3D_LOADER_
-#undef _IRR_COMPILE_WITH_MY3D_LOADER_
-#endif
 //! Define _IRR_COMPILE_WITH_OBJ_LOADER_ if you want to load Wavefront OBJ files
 #define _IRR_COMPILE_WITH_OBJ_LOADER_
 #ifdef NO_IRR_COMPILE_WITH_OBJ_LOADER_
 #undef _IRR_COMPILE_WITH_OBJ_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_OCT_LOADER_ if you want to load FSRad OCT files
-#define _IRR_COMPILE_WITH_OCT_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_OCT_LOADER_
-#undef _IRR_COMPILE_WITH_OCT_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_LWO_LOADER_ if you want to load Lightwave3D files
-#define _IRR_COMPILE_WITH_LWO_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_LWO_LOADER_
-#undef _IRR_COMPILE_WITH_LWO_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_STL_LOADER_ if you want to load stereolithography files
-#define _IRR_COMPILE_WITH_STL_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_STL_LOADER_
-#undef _IRR_COMPILE_WITH_STL_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_PLY_LOADER_ if you want to load Polygon (Stanford Triangle) files
-#define _IRR_COMPILE_WITH_PLY_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_PLY_LOADER_
-#undef _IRR_COMPILE_WITH_PLY_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_SMF_LOADER_ if you want to load 3D World Studio mesh files
-#define _IRR_COMPILE_WITH_SMF_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_SMF_LOADER_
-#undef _IRR_COMPILE_WITH_SMF_LOADER_
-#endif
-
-//! Define _IRR_COMPILE_WITH_STL_WRITER_ if you want to write .stl files
-#define _IRR_COMPILE_WITH_STL_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_STL_WRITER_
-#undef _IRR_COMPILE_WITH_STL_WRITER_
-#endif
-//! Define _IRR_COMPILE_WITH_OBJ_WRITER_ if you want to write .obj files
-#define _IRR_COMPILE_WITH_OBJ_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_OBJ_WRITER_
-#undef _IRR_COMPILE_WITH_OBJ_WRITER_
-#endif
-//! Define _IRR_COMPILE_WITH_PLY_WRITER_ if you want to write .ply files
-#define _IRR_COMPILE_WITH_PLY_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_PLY_WRITER_
-#undef _IRR_COMPILE_WITH_PLY_WRITER_
-#endif
-//! Define _IRR_COMPILE_WITH_B3D_WRITER_ if you want to write .b3d files
-#define _IRR_COMPILE_WITH_B3D_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_B3D_WRITER_
-#undef _IRR_COMPILE_WITH_B3D_WRITER_
 #endif
 
 //! Define _IRR_COMPILE_WITH_BMP_LOADER_ if you want to load .bmp files
@@ -634,106 +473,21 @@ B3D, MS3D or X meshes */
 #ifdef NO_IRR_COMPILE_WITH_JPG_LOADER_
 #undef _IRR_COMPILE_WITH_JPG_LOADER_
 #endif
-//! Define _IRR_COMPILE_WITH_PCX_LOADER_ if you want to load .pcx files
-#define _IRR_COMPILE_WITH_PCX_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_PCX_LOADER_
-#undef _IRR_COMPILE_WITH_PCX_LOADER_
-#endif
 //! Define _IRR_COMPILE_WITH_PNG_LOADER_ if you want to load .png files
 #define _IRR_COMPILE_WITH_PNG_LOADER_
 #ifdef NO_IRR_COMPILE_WITH_PNG_LOADER_
 #undef _IRR_COMPILE_WITH_PNG_LOADER_
 #endif
-//! Define _IRR_COMPILE_WITH_PPM_LOADER_ if you want to load .ppm/.pgm/.pbm files
-#define _IRR_COMPILE_WITH_PPM_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_PPM_LOADER_
-#undef _IRR_COMPILE_WITH_PPM_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_PSD_LOADER_ if you want to load .psd files
-#define _IRR_COMPILE_WITH_PSD_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_PSD_LOADER_
-#undef _IRR_COMPILE_WITH_PSD_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_PVR_LOADER_ if you want to load .pvr files
-#define _IRR_COMPILE_WITH_PVR_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_PVR_LOADER_
-#undef _IRR_COMPILE_WITH_PVR_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_DDS_LOADER_ if you want to load compressed .dds files
-// Patent problem isn't related to this loader.
-#define _IRR_COMPILE_WITH_DDS_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_DDS_LOADER_
-#undef _IRR_COMPILE_WITH_DDS_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_DDS_DECODER_LOADER_ if you want to load .dds files
-//! loader will decompress these files and will send to the memory as uncompressed files.
-// Outcommented because
-// a) it doesn't compile on 64-bit currently
-// b) anyone enabling it should be aware that S3TC compression algorithm which might be used in that loader
-// is patented in the US by S3 and they do collect license fees when it's used in applications.
-// So if you are unfortunate enough to develop applications for US market and their broken patent system be careful.
-// #define _IRR_COMPILE_WITH_DDS_DECODER_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_DDS_DECODER_LOADER_
-#undef _IRR_COMPILE_WITH_DDS_DECODER_LOADER_
-#endif
-#ifdef _IRR_COMPILE_WITH_DDS_DECODER_LOADER_
-#undef _IRR_COMPILE_WITH_DDS_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_TGA_LOADER_ if you want to load .tga files
-#define _IRR_COMPILE_WITH_TGA_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_TGA_LOADER_
-#undef _IRR_COMPILE_WITH_TGA_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_WAL_LOADER_ if you want to load .wal files
-#define _IRR_COMPILE_WITH_WAL_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_WAL_LOADER_
-#undef _IRR_COMPILE_WITH_WAL_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_LMP_LOADER_ if you want to load .lmp files
-#define _IRR_COMPILE_WITH_LMP_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_LMP_LOADER_
-#undef _IRR_COMPILE_WITH_LMP_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_RGB_LOADER_ if you want to load Silicon Graphics .rgb/.rgba/.sgi/.int/.inta/.bw files
-#define _IRR_COMPILE_WITH_RGB_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_RGB_LOADER_
-#undef _IRR_COMPILE_WITH_RGB_LOADER_
-#endif
 
-//! Define _IRR_COMPILE_WITH_BMP_WRITER_ if you want to write .bmp files
-#define _IRR_COMPILE_WITH_BMP_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_BMP_WRITER_
-#undef _IRR_COMPILE_WITH_BMP_WRITER_
-#endif
 //! Define _IRR_COMPILE_WITH_JPG_WRITER_ if you want to write .jpg files
 #define _IRR_COMPILE_WITH_JPG_WRITER_
 #ifdef NO_IRR_COMPILE_WITH_JPG_WRITER_
 #undef _IRR_COMPILE_WITH_JPG_WRITER_
 #endif
-//! Define _IRR_COMPILE_WITH_PCX_WRITER_ if you want to write .pcx files
-#define _IRR_COMPILE_WITH_PCX_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_PCX_WRITER_
-#undef _IRR_COMPILE_WITH_PCX_WRITER_
-#endif
 //! Define _IRR_COMPILE_WITH_PNG_WRITER_ if you want to write .png files
 #define _IRR_COMPILE_WITH_PNG_WRITER_
 #ifdef NO_IRR_COMPILE_WITH_PNG_WRITER_
 #undef _IRR_COMPILE_WITH_PNG_WRITER_
-#endif
-//! Define _IRR_COMPILE_WITH_PPM_WRITER_ if you want to write .ppm files
-#define _IRR_COMPILE_WITH_PPM_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_PPM_WRITER_
-#undef _IRR_COMPILE_WITH_PPM_WRITER_
-#endif
-//! Define _IRR_COMPILE_WITH_PSD_WRITER_ if you want to write .psd files
-#define _IRR_COMPILE_WITH_PSD_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_PSD_WRITER_
-#undef _IRR_COMPILE_WITH_PSD_WRITER_
-#endif
-//! Define _IRR_COMPILE_WITH_TGA_WRITER_ if you want to write .tga files
-#define _IRR_COMPILE_WITH_TGA_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_TGA_WRITER_
-#undef _IRR_COMPILE_WITH_TGA_WRITER_
 #endif
 
 //! Define __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_ if you want to open ZIP and GZIP archives
@@ -757,26 +511,6 @@ ones. */
 #define __IRR_COMPILE_WITH_MOUNT_ARCHIVE_LOADER_
 #ifdef NO__IRR_COMPILE_WITH_MOUNT_ARCHIVE_LOADER_
 #undef __IRR_COMPILE_WITH_MOUNT_ARCHIVE_LOADER_
-#endif
-//! Define __IRR_COMPILE_WITH_PAK_ARCHIVE_LOADER_ if you want to open ID software PAK archives
-#define __IRR_COMPILE_WITH_PAK_ARCHIVE_LOADER_
-#ifdef NO__IRR_COMPILE_WITH_PAK_ARCHIVE_LOADER_
-#undef __IRR_COMPILE_WITH_PAK_ARCHIVE_LOADER_
-#endif
-//! Define __IRR_COMPILE_WITH_NPK_ARCHIVE_LOADER_ if you want to open Nebula Device NPK archives
-#define __IRR_COMPILE_WITH_NPK_ARCHIVE_LOADER_
-#ifdef NO__IRR_COMPILE_WITH_NPK_ARCHIVE_LOADER_
-#undef __IRR_COMPILE_WITH_NPK_ARCHIVE_LOADER_
-#endif
-//! Define __IRR_COMPILE_WITH_TAR_ARCHIVE_LOADER_ if you want to open TAR archives
-#define __IRR_COMPILE_WITH_TAR_ARCHIVE_LOADER_
-#ifdef NO__IRR_COMPILE_WITH_TAR_ARCHIVE_LOADER_
-#undef __IRR_COMPILE_WITH_TAR_ARCHIVE_LOADER_
-#endif
-//! Define __IRR_COMPILE_WITH_WAD_ARCHIVE_LOADER_ if you want to open WAD archives
-#define __IRR_COMPILE_WITH_WAD_ARCHIVE_LOADER_
-#ifdef NO__IRR_COMPILE_WITH_WAD_ARCHIVE_LOADER_
-#undef __IRR_COMPILE_WITH_WAD_ARCHIVE_LOADER_
 #endif
 
 // Some cleanup and standard stuff
