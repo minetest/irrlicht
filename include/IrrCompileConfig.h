@@ -190,12 +190,6 @@ If not defined, Windows Multimedia library is used, which offers also broad supp
 #undef _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
 #endif
 
-//! enabled Direct3D 9
-// #define _IRR_COMPILE_WITH_DIRECT3D_9_
-#ifdef NO_IRR_COMPILE_WITH_DIRECT3D_9_
-#undef _IRR_COMPILE_WITH_DIRECT3D_9_
-#endif
-
 #endif
 
 //! Define _IRR_COMPILE_WITH_OPENGL_ to compile the Irrlicht engine with OpenGL.
@@ -292,21 +286,6 @@ define out. */
 
 
 
-//! Define _IRR_COMPILE_WITH_SOFTWARE_ to compile the Irrlicht engine with software driver
-/** If you do not need the software driver, or want to use Burning's Video instead,
-comment this define out */
-//#define _IRR_COMPILE_WITH_SOFTWARE_
-#ifdef NO_IRR_COMPILE_WITH_SOFTWARE_
-#undef _IRR_COMPILE_WITH_SOFTWARE_
-#endif
-
-//! Define _IRR_COMPILE_WITH_BURNINGSVIDEO_ to compile the Irrlicht engine with Burning's video driver
-/** If you do not need this software driver, you can comment this define out. */
-//#define _IRR_COMPILE_WITH_BURNINGSVIDEO_
-#ifdef NO_IRR_COMPILE_WITH_BURNINGSVIDEO_
-#undef _IRR_COMPILE_WITH_BURNINGSVIDEO_
-#endif
-
 //! Define _IRR_COMPILE_WITH_X11_ to compile the Irrlicht engine with X11 support.
 /** If you do not wish the engine to be compiled with X11, comment this
 define out. */
@@ -349,13 +328,6 @@ you will not be able to use anything provided by the GUI Environment, including 
 #define _IRR_COMPILE_WITH_GUI_
 #ifdef NO_IRR_COMPILE_WITH_GUI_
 #undef _IRR_COMPILE_WITH_GUI_
-#endif
-
-//! Define _IRR_COMPILE_WITH_PARTICLES to compile the engine the withe build-in particle system
-/** You can disable this if you don't need particles or use an external particle system. */
-// #define _IRR_COMPILE_WITH_PARTICLES_
-#ifdef NO_IRR_COMPILE_WITH_PARTICLES_
-#undef _IRR_COMPILE_WITH_PARTICLES_
 #endif
 
 //! Define _IRR_WCHAR_FILESYSTEM to enable unicode filesystem support for the engine.
