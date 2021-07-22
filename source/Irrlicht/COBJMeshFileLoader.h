@@ -70,9 +70,6 @@ private:
 		bool RecalculateNormals;
 	};
 
-	// helper method for material reading
-	const c8* readTextures(const c8* bufPtr, const c8* const bufEnd, SObjMtl* currMaterial, const io::path& relPath);
-
 	// returns a pointer to the first printable character available in the buffer
 	const c8* goFirstWord(const c8* buf, const c8* const bufEnd, bool acrossNewlines=true);
 	// returns a pointer to the first printable character after the first non-printable
@@ -86,9 +83,6 @@ private:
 
 	// combination of goNextWord followed by copyWord
 	const c8* goAndCopyNextWord(c8* outBuf, const c8* inBuf, u32 outBufLength, const c8* const pBufEnd);
-
-	//! Read the material from the given file
-	void readMTL(const c8* fileName, const io::path& relPath);
 
 	//! Find and return the material with the given name
 	SObjMtl* findMtl(const core::stringc& mtlName, const core::stringc& grpName);

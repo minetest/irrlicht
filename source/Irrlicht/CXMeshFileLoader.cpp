@@ -7,7 +7,6 @@
 #ifdef _IRR_COMPILE_WITH_X_LOADER_
 
 #include "CXMeshFileLoader.h"
-#include "CMeshTextureLoader.h"
 #include "os.h"
 
 #include "fast_atof.h"
@@ -36,8 +35,6 @@ CXMeshFileLoader::CXMeshFileLoader(scene::ISceneManager* smgr, io::IFileSystem* 
 	#ifdef _DEBUG
 	setDebugName("CXMeshFileLoader");
 	#endif
-
-	TextureLoader = new CMeshTextureLoader( FileSystem, SceneManager->getVideoDriver() );
 }
 
 
@@ -57,9 +54,6 @@ IAnimatedMesh* CXMeshFileLoader::createMesh(io::IReadFile* file)
 {
 	if (!file)
 		return 0;
-
-	if ( getMeshTextureLoader() )
-		getMeshTextureLoader()->setMeshFile(file);
 
 #ifdef _XREADER_DEBUG
 	u32 time = os::Timer::getRealTime();
@@ -523,14 +517,6 @@ bool CXMeshFileLoader::parseDataObject()
 	if (objectName == "AnimTicksPerSecond")
 	{
 		return parseDataObjectAnimationTicksPerSecond();
-	}
-	else
-	if (objectName == "Material")
-	{
-		// template materials now available thanks to joeWright
-		TemplateMaterials.push_back(SXTemplateMaterial());
-		TemplateMaterials.getLast().Name = getNextToken();
-		return parseDataObjectMaterial(TemplateMaterials.getLast().Material);
 	}
 	else
 	if (objectName == "}")
@@ -1475,13 +1461,6 @@ bool CXMeshFileLoader::parseDataObjectMeshMaterialList(SXMesh &mesh)
 			getNextToken(); // skip }
 		}
 		else
-		if (objectName == "Material")
-		{
-			mesh.Materials.push_back(video::SMaterial());
-			if (!parseDataObjectMaterial(mesh.Materials.getLast()))
-				return false;
-		}
-		else
 		if (objectName == ";")
 		{
 			// ignore
@@ -1493,87 +1472,6 @@ bool CXMeshFileLoader::parseDataObjectMeshMaterialList(SXMesh &mesh)
 				return false;
 		}
 	}
-	return true;
-}
-
-
-bool CXMeshFileLoader::parseDataObjectMaterial(video::SMaterial& material)
-{
-#ifdef _XREADER_DEBUG
-	os::Printer::log("CXFileReader: Reading mesh material", ELL_DEBUG);
-#endif
-
-	if (!readHeadOfDataObject())
-	{
-		os::Printer::log("No opening brace in Mesh Material found in .x file", ELL_WARNING);
-		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
-		return false;
-	}
-
-	// read RGBA
-	readRGBA(material.DiffuseColor); checkForOneFollowingSemicolons();
-
-	// read power
-	material.Shininess = readFloat();
-
-	// read specular
-	readRGB(material.SpecularColor); checkForOneFollowingSemicolons();
-
-	// read emissive
-	readRGB(material.EmissiveColor); checkForOneFollowingSemicolons();
-
-	// read other data objects
-	int textureLayer=0;
-	while(true)
-	{
-		core::stringc objectName = getNextToken();
-
-		if (objectName.size() == 0)
-		{
-			os::Printer::log("Unexpected ending found in Mesh Material in .x file.", ELL_WARNING);
-			os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
-			return false;
-		}
-		else
-		if (objectName == "}")
-		{
-			break; // material finished
-		}
-		else
-		if (objectName.equals_ignore_case("TextureFilename"))
-		{
-			// some exporters write "TextureFileName" instead.
-			core::stringc TextureFileName;
-			if (!parseDataObjectTextureFilename(TextureFileName))
-				return false;
-
-			material.setTexture( textureLayer, getMeshTextureLoader() ? getMeshTextureLoader()->getTexture(TextureFileName) : NULL );
-
-			++textureLayer;
-			if (textureLayer==2)
-				material.MaterialType=video::EMT_LIGHTMAP;
-		}
-		else
-		if (objectName.equals_ignore_case("NormalmapFilename"))
-		{
-			// some exporters write "NormalmapFileName" instead.
-			core::stringc TextureFileName;
-			if (!parseDataObjectTextureFilename(TextureFileName))
-				return false;
-
-			material.setTexture( 1, getMeshTextureLoader() ? getMeshTextureLoader()->getTexture(TextureFileName) : NULL );
-
-			if (textureLayer==1)
-				++textureLayer;
-		}
-		else
-		{
-			os::Printer::log("Unknown data object in material in .x file", objectName.c_str(), ELL_WARNING);
-			if (!parseUnknownDataObject())
-				return false;
-		}
-	}
-
 	return true;
 }
 

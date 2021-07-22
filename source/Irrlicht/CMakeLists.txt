@@ -110,7 +110,6 @@ set(IRRMESHLOADER
 	CB3DMeshFileLoader.cpp
 	COBJMeshFileLoader.cpp
 	CXMeshFileLoader.cpp
-	CMeshTextureLoader.cpp
 )
 
 add_library(IRRMESHOBJ OBJECT
