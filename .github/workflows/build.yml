@@ -13,6 +13,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install deps
         run: |
+          sudo apt-get update
           sudo apt-get install g++ cmake libxxf86vm-dev libgl1-mesa-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
 
       - name: Build
@@ -36,6 +37,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install deps
         run: |
+          sudo apt-get update
           sudo apt-get install g++ cmake libxxf86vm-dev libgles2-mesa-dev libpng-dev libjpeg-dev zlib1g-dev xvfb -qyy
 
       - name: Build
@@ -61,6 +63,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install deps
         run: |
+          sudo apt-get update
           sudo apt-get install cmake g++-mingw-w64-i686 -qyy
 
       - name: Build
@@ -76,6 +79,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install deps
         run: |
+          sudo apt-get update
           sudo apt-get install cmake g++-mingw-w64-x86-64 -qyy
 
       - name: Build
