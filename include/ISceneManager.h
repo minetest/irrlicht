@@ -103,7 +103,6 @@ namespace scene
 	class IBillboardSceneNode;
 	class ICameraSceneNode;
 	class IDummyTransformationSceneNode;
-	class ILightManager;
 	class IMesh;
 	class IMeshBuffer;
 	class IMeshCache;
@@ -117,12 +116,7 @@ namespace scene
 	class ISceneUserDataSerializer;
 
 	//! The Scene Manager manages scene nodes, mesh resources, cameras and all the other stuff.
-	/** All Scene nodes can be created only here. There is a always growing
-	list of scene nodes for lots of purposes: Indoor rendering scene nodes
-	like the Octree (addOctreeSceneNode()) or the terrain renderer
-	(addTerrainSceneNode()), different Camera scene nodes
-	(addCameraSceneNode(), addCameraSceneNodeMaya()), scene nodes for Light
-	(addLightSceneNode()), Billboards (addBillboardSceneNode()) and so on.
+	/** All Scene nodes can be created only here.
 	A scene node is a node in the hierarchical scene graph. Every scene node
 	may have children, which are other scene nodes. Children move relative
 	the their parents position. If the parent of a node is not visible, its
@@ -759,11 +753,6 @@ namespace scene
 
 		//! Get ambient color of the scene
 		virtual const video::SColorf& getAmbientLight() const = 0;
-
-		//! Register a custom callbacks manager which gets callbacks during scene rendering.
-		/** \param[in] lightManager: the new callbacks manager. You may pass 0 to remove the
-			current callbacks manager and restore the default behavior. */
-		virtual void setLightManager(ILightManager* lightManager) = 0;
 
 		//! Get current render pass.
 		virtual E_SCENE_NODE_RENDER_PASS getCurrentRenderPass() const =0;

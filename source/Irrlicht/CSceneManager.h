@@ -12,7 +12,6 @@
 #include "irrArray.h"
 #include "IMeshLoader.h"
 #include "CAttributes.h"
-#include "ILightManager.h"
 
 namespace irr
 {
@@ -237,9 +236,6 @@ namespace scene
 		//! Returns ambient color of the scene
 		virtual const video::SColorf& getAmbientLight() const _IRR_OVERRIDE_;
 
-		//! Register a custom callbacks manager which gets callbacks during scene rendering.
-		virtual void setLightManager(ILightManager* lightManager) _IRR_OVERRIDE_;
-
 		//! Get current render time.
 		virtual E_SCENE_NODE_RENDER_PASS getCurrentRenderPass() const _IRR_OVERRIDE_ { return CurrentRenderPass; }
 
@@ -335,9 +331,6 @@ namespace scene
 
 		//! render pass lists
 		core::array<ISceneNode*> CameraList;
-		core::array<ISceneNode*> LightList;
-		core::array<ISceneNode*> ShadowNodeList;
-		core::array<ISceneNode*> SkyBoxList;
 		core::array<DefaultNodeEntry> SolidNodeList;
 		core::array<TransparentNodeEntry> TransparentNodeList;
 		core::array<TransparentNodeEntry> TransparentEffectNodeList;
@@ -363,10 +356,6 @@ namespace scene
 		IMeshCache* MeshCache;
 
 		E_SCENE_NODE_RENDER_PASS CurrentRenderPass;
-
-		//! An optional callbacks manager to allow the user app finer control
-		//! over the scene lighting and rendering.
-		ILightManager* LightManager;
 	};
 
 } // end namespace video

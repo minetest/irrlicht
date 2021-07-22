@@ -24,9 +24,6 @@ namespace scene
 		//! Mesh Scene Node
 		ESNT_MESH           = MAKE_IRR_ID('m','e','s','h'),
 
-		//! Light Scene Node
-		ESNT_LIGHT          = MAKE_IRR_ID('l','g','h','t'),
-
 		//! Empty Scene Node
 		ESNT_EMPTY          = MAKE_IRR_ID('e','m','t','y'),
 
