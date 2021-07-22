@@ -543,6 +543,10 @@ u32 CSceneManager::registerNodeForRendering(ISceneNode* node, E_SCENE_NODE_RENDE
 			}
 		}
 		break;
+	case ESNRP_SKY_BOX:
+		SkyBoxList.push_back(node);
+		taken = 1;
+		break;
 	case ESNRP_SOLID:
 		if (!isCulled(node))
 		{
@@ -618,6 +622,7 @@ u32 CSceneManager::registerNodeForRendering(ISceneNode* node, E_SCENE_NODE_RENDE
 void CSceneManager::clearAllRegisteredNodesForRendering()
 {
 	CameraList.clear();
+	SkyBoxList.clear();
 	SolidNodeList.clear();
 	TransparentNodeList.clear();
 	TransparentEffectNodeList.clear();
@@ -686,7 +691,19 @@ void CSceneManager::drawAll()
 
 		CameraList.set_used(0);
 	}
+	
+	// render skyboxes
+	{
+		IRR_PROFILE(CProfileScope psSkyBox(EPID_SM_RENDER_SKYBOXES);)
+		CurrentRenderPass = ESNRP_SKY_BOX;
+		Driver->getOverrideMaterial().Enabled = ((Driver->getOverrideMaterial().EnablePasses & CurrentRenderPass) != 0);
 
+		for (i=0; i<SkyBoxList.size(); ++i)
+			SkyBoxList[i]->render();
+
+		SkyBoxList.set_used(0);
+	}
+	
 	// render default objects
 	{
 		IRR_PROFILE(CProfileScope psDefault(EPID_SM_RENDER_DEFAULT);)

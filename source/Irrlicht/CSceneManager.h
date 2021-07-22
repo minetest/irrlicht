@@ -331,6 +331,7 @@ namespace scene
 
 		//! render pass lists
 		core::array<ISceneNode*> CameraList;
+		core::array<ISceneNode*> SkyBoxList;
 		core::array<DefaultNodeEntry> SolidNodeList;
 		core::array<TransparentNodeEntry> TransparentNodeList;
 		core::array<TransparentNodeEntry> TransparentEffectNodeList;
