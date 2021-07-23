@@ -107,32 +107,9 @@ set(link_libs
 # Source files
 
 set(IRRMESHLOADER
-	CBSPMeshFileLoader.cpp
-	CMD2MeshFileLoader.cpp
-	CMD3MeshFileLoader.cpp
-	CMS3DMeshFileLoader.cpp
 	CB3DMeshFileLoader.cpp
-	C3DSMeshFileLoader.cpp
-	COgreMeshFileLoader.cpp
 	COBJMeshFileLoader.cpp
-	CCSMLoader.cpp
-	CDMFLoader.cpp
-	CLMTSMeshFileLoader.cpp
-	CMY3DMeshFileLoader.cpp
-	COCTLoader.cpp
 	CXMeshFileLoader.cpp
-	CSTLMeshFileLoader.cpp
-	CLWOMeshFileLoader.cpp
-	CPLYMeshFileLoader.cpp
-	CSMFMeshFileLoader.cpp
-	CMeshTextureLoader.cpp
-)
-
-set(IRRMESHWRITER
-	CSTLMeshWriter.cpp
-	COBJMeshWriter.cpp
-	CPLYMeshWriter.cpp
-	CB3DMeshWriter.cpp
 )
 
 add_library(IRRMESHOBJ OBJECT
@@ -140,13 +117,7 @@ add_library(IRRMESHOBJ OBJECT
 	CBoneSceneNode.cpp
 	CMeshSceneNode.cpp
 	CAnimatedMeshSceneNode.cpp
-	CAnimatedMeshMD2.cpp
-	CAnimatedMeshMD3.cpp
-	CQ3LevelMesh.cpp
-	CQuake3ShaderSceneNode.cpp
-	CAnimatedMeshHalfLife.cpp
 	${IRRMESHLOADER}
-	${IRRMESHWRITER}
 )
 
 add_library(IRROBJ OBJECT
@@ -154,57 +125,10 @@ add_library(IRROBJ OBJECT
 	CCameraSceneNode.cpp
 	CDummyTransformationSceneNode.cpp
 	CEmptySceneNode.cpp
-	CGeometryCreator.cpp
-	CLightSceneNode.cpp
 	CMeshManipulator.cpp
-	CMetaTriangleSelector.cpp
-	COctreeSceneNode.cpp
-	COctreeTriangleSelector.cpp
-	CSceneCollisionManager.cpp
 	CSceneManager.cpp
-	CShadowVolumeSceneNode.cpp
-	CSkyBoxSceneNode.cpp
-	CSkyDomeSceneNode.cpp
-	CTerrainSceneNode.cpp
-	CTerrainTriangleSelector.cpp
-	CVolumeLightSceneNode.cpp
-	CCubeSceneNode.cpp
-	CSphereSceneNode.cpp
-	CTextSceneNode.cpp
-	CTriangleBBSelector.cpp
-	CTriangleSelector.cpp
-	CWaterSurfaceSceneNode.cpp
 	CMeshCache.cpp
-	CDefaultSceneNodeAnimatorFactory.cpp
 	CDefaultSceneNodeFactory.cpp
-)
-
-add_library(IRRPARTICLEOBJ OBJECT
-	CParticleAnimatedMeshSceneNodeEmitter.cpp
-	CParticleBoxEmitter.cpp
-	CParticleCylinderEmitter.cpp
-	CParticleMeshEmitter.cpp
-	CParticlePointEmitter.cpp
-	CParticleRingEmitter.cpp
-	CParticleSphereEmitter.cpp
-	CParticleAttractionAffector.cpp
-	CParticleFadeOutAffector.cpp
-	CParticleGravityAffector.cpp
-	CParticleRotationAffector.cpp
-	CParticleSystemSceneNode.cpp
-	CParticleScaleAffector.cpp
-)
-
-add_library(IRRANIMOBJ OBJECT
-	CSceneNodeAnimatorCameraFPS.cpp
-	CSceneNodeAnimatorCameraMaya.cpp
-	CSceneNodeAnimatorCollisionResponse.cpp
-	CSceneNodeAnimatorDelete.cpp
-	CSceneNodeAnimatorFlyCircle.cpp
-	CSceneNodeAnimatorFlyStraight.cpp
-	CSceneNodeAnimatorFollowSpline.cpp
-	CSceneNodeAnimatorRotation.cpp
-	CSceneNodeAnimatorTexture.cpp
 )
 
 set(IRRDRVROBJ
@@ -216,12 +140,6 @@ set(IRRDRVROBJ
 	COpenGLShaderMaterialRenderer.cpp
 	COpenGLSLMaterialRenderer.cpp
 	COpenGLExtensionHandler.cpp
-	CD3D9Driver.cpp
-	CD3D9HLSLMaterialRenderer.cpp
-	CD3D9NormalMapRenderer.cpp
-	CD3D9ParallaxMapRenderer.cpp
-	CD3D9ShaderMaterialRenderer.cpp
-	CD3D9Texture.cpp
 	COGLESDriver.cpp
 	COGLESExtensionHandler.cpp
 	COGLES2Driver.cpp
@@ -241,23 +159,10 @@ set(IRRIMAGEOBJ
 	CColorConverter.cpp
 	CImage.cpp
 	CImageLoaderBMP.cpp
-	CImageLoaderDDS.cpp
 	CImageLoaderJPG.cpp
-	CImageLoaderPCX.cpp
 	CImageLoaderPNG.cpp
-	CImageLoaderPSD.cpp
-	CImageLoaderPVR.cpp
-	CImageLoaderTGA.cpp
-	CImageLoaderPPM.cpp
-	CImageLoaderWAL.cpp
-	CImageLoaderRGB.cpp
-	CImageWriterBMP.cpp
 	CImageWriterJPG.cpp
-	CImageWriterPCX.cpp
 	CImageWriterPNG.cpp
-	CImageWriterPPM.cpp
-	CImageWriterPSD.cpp
-	CImageWriterTGA.cpp
 )
 
 add_library(IRRVIDEOOBJ OBJECT
@@ -267,50 +172,6 @@ add_library(IRRVIDEOOBJ OBJECT
 	${IRRIMAGEOBJ}
 )
 
-add_library(IRRSWRENDEROBJ OBJECT
-	CSoftwareDriver.cpp
-	CSoftwareTexture.cpp
-	CTRFlat.cpp
-	CTRFlatWire.cpp
-	CTRGouraud.cpp
-	CTRGouraudWire.cpp
-	CTRNormalMap.cpp
-	CTRStencilShadow.cpp
-	CTRTextureFlat.cpp
-	CTRTextureFlatWire.cpp
-	CTRTextureGouraud.cpp
-	CTRTextureGouraudAdd.cpp
-	CTRTextureGouraudNoZ.cpp
-	CTRTextureGouraudWire.cpp
-	CZBuffer.cpp
-	CTRTextureGouraudVertexAlpha2.cpp
-	CTRTextureGouraudNoZ2.cpp
-	CTRTextureLightMap2_M2.cpp
-	CTRTextureLightMap2_M4.cpp
-	CTRTextureLightMap2_M1.cpp
-	CSoftwareDriver2.cpp
-	CSoftwareTexture2.cpp
-	CTRTextureGouraud2.cpp
-	CTRGouraud2.cpp
-	CTRGouraudAlpha2.cpp
-	CTRGouraudAlphaNoZ2.cpp
-	CTRTextureDetailMap2.cpp
-	CTRTextureGouraudAdd2.cpp
-	CTRTextureGouraudAddNoZ2.cpp
-	CTRTextureWire2.cpp
-	CTRTextureLightMap2_Add.cpp
-	CTRTextureLightMapGouraud2_M4.cpp
-	IBurningShader.cpp
-	CTRTextureBlend.cpp
-	CTRTextureGouraudAlpha.cpp
-	CTRTextureGouraudAlphaNoZ.cpp
-	CDepthBuffer.cpp
-	CBurningShader_Raster_Reference.cpp
-	CTR_transparent_reflection_2_layer.cpp
-	CTRGouraudNoZ2.cpp
-	burning_shader_color.cpp
-)
-
 add_library(IRRIOOBJ OBJECT
 	CFileList.cpp
 	CFileSystem.cpp
@@ -318,11 +179,7 @@ add_library(IRRIOOBJ OBJECT
 	CMemoryFile.cpp
 	CReadFile.cpp
 	CWriteFile.cpp
-	CWADReader.cpp
 	CZipReader.cpp
-	CPakReader.cpp
-	CNPKReader.cpp
-	CTarReader.cpp
 	CMountPointReader.cpp
 	CAttributes.cpp
 )
@@ -395,7 +252,7 @@ add_library(IRRGUIOBJ OBJECT
 
 add_library(IrrlichtMt)
 foreach(object_lib
-	IRRMESHOBJ IRROBJ IRRPARTICLEOBJ IRRANIMOBJ IRRVIDEOOBJ IRRSWRENDEROBJ
+	IRRMESHOBJ IRROBJ IRRVIDEOOBJ
 	IRRIOOBJ IRROTHEROBJ IRRGUIOBJ)
 	# Set include directories for object library compilation
 	target_include_directories(${object_lib} PRIVATE ${link_includes})

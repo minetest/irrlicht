@@ -12,7 +12,6 @@
 #include "irrArray.h"
 #include "IMeshLoader.h"
 #include "CAttributes.h"
-#include "ILightManager.h"
 
 namespace irr
 {
@@ -23,7 +22,6 @@ namespace io
 namespace scene
 {
 	class IMeshCache;
-	class IGeometryCreator;
 
 	/*!
 		The Scene Manager manages scene nodes, mesh resources, cameras and all the other stuff.
@@ -58,29 +56,6 @@ namespace scene
 		//! return the filesystem
 		virtual io::IFileSystem* getFileSystem() _IRR_OVERRIDE_;
 
-		//! adds Volume Lighting Scene Node.
-		//! the returned pointer must not be dropped.
-		virtual IVolumeLightSceneNode* addVolumeLightSceneNode(ISceneNode* parent=0, s32 id=-1,
-			const u32 subdivU = 32, const u32 subdivV = 32,
-			const video::SColor foot = video::SColor(51, 0, 230, 180),
-			const video::SColor tail = video::SColor(0, 0, 0, 0),
-			const core::vector3df& position = core::vector3df(0,0,0),
-			const core::vector3df& rotation = core::vector3df(0,0,0),
-			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f)) _IRR_OVERRIDE_;
-
-		//! adds a cube scene node to the scene. It is a simple cube of (1,1,1) size.
-		//! the returned pointer must not be dropped.
-		virtual IMeshSceneNode* addCubeSceneNode(f32 size=10.0f, ISceneNode* parent=0, s32 id=-1,
-			const core::vector3df& position = core::vector3df(0,0,0),
-			const core::vector3df& rotation = core::vector3df(0,0,0),
-			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f)) _IRR_OVERRIDE_;
-
-		//! Adds a sphere scene node to the scene.
-		virtual IMeshSceneNode* addSphereSceneNode(f32 radius=5.0f, s32 polyCount=16, ISceneNode* parent=0, s32 id=-1,
-			const core::vector3df& position = core::vector3df(0,0,0),
-			const core::vector3df& rotation = core::vector3df(0,0,0),
-			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f)) _IRR_OVERRIDE_;
-
 		//! adds a scene node for rendering an animated mesh model
 		virtual IAnimatedMeshSceneNode* addAnimatedMeshSceneNode(IAnimatedMesh* mesh, ISceneNode* parent=0, s32 id=-1,
 			const core::vector3df& position = core::vector3df(0,0,0),
@@ -95,12 +70,6 @@ namespace scene
 			const core::vector3df& rotation = core::vector3df(0,0,0),
 			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f),
 			bool alsoAddIfMeshPointerZero=false) _IRR_OVERRIDE_;
-
-		//! Adds a scene node for rendering a animated water surface mesh.
-		virtual ISceneNode* addWaterSurfaceSceneNode(IMesh* mesh, f32 waveHeight, f32 waveSpeed, f32 wlength, ISceneNode* parent=0, s32 id=-1,
-			const core::vector3df& position = core::vector3df(0,0,0),
-			const core::vector3df& rotation = core::vector3df(0,0,0),
-			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f)) _IRR_OVERRIDE_;
 
 		//! renders the node.
 		virtual void render() _IRR_OVERRIDE_;
@@ -117,18 +86,6 @@ namespace scene
 		//! draws all scene nodes
 		virtual void drawAll() _IRR_OVERRIDE_;
 
-		//! Adds a scene node for rendering using a octree to the scene graph. This a good method for rendering
-		//! scenes with lots of geometry. The Octree is built on the fly from the mesh, much
-		//! faster then a bsp tree.
-		virtual IOctreeSceneNode* addOctreeSceneNode(IAnimatedMesh* mesh, ISceneNode* parent=0,
-			s32 id=-1, s32 minimalPolysPerNode=512, bool alsoAddIfMeshPointerZero=false) _IRR_OVERRIDE_;
-
-		//! Adss a scene node for rendering using a octree. This a good method for rendering
-		//! scenes with lots of geometry. The Octree is built on the fly from the mesh, much
-		//! faster then a bsp tree.
-		virtual IOctreeSceneNode* addOctreeSceneNode(IMesh* mesh, ISceneNode* parent=0,
-			s32 id=-1, s32 minimalPolysPerNode=128, bool alsoAddIfMeshPointerZero=false) _IRR_OVERRIDE_;
-
 		//! Adds a camera scene node to the tree and sets it as active camera.
 		//! \param position: Position of the space relative to its parent where the camera will be placed.
 		//! \param lookat: Position where the camera will look at. Also known as target.
@@ -140,30 +97,6 @@ namespace scene
 			const core::vector3df& lookat = core::vector3df(0,0,100),
 			s32 id=-1, bool makeActive=true) _IRR_OVERRIDE_;
 
-		//! Adds a camera scene node which is able to be controlle with the mouse similar
-		//! like in the 3D Software Maya by Alias Wavefront.
-		//! The returned pointer must not be dropped.
-		virtual ICameraSceneNode* addCameraSceneNodeMaya(ISceneNode* parent=0,
-			f32 rotateSpeed=-1500.f, f32 zoomSpeed=200.f,
-			f32 translationSpeed=1500.f, s32 id=-1, f32 distance=70.f,
-			bool makeActive=true) _IRR_OVERRIDE_;
-
-		//! Adds a camera scene node which is able to be controled with the mouse and keys
-		//! like in most first person shooters (FPS):
-		virtual ICameraSceneNode* addCameraSceneNodeFPS(ISceneNode* parent = 0,
-			f32 rotateSpeed = 100.0f, f32 moveSpeed = .5f, s32 id=-1,
-			SKeyMap* keyMapArray=0, s32 keyMapSize=0,
-			bool noVerticalMovement=false, f32 jumpSpeed = 0.f,
-			bool invertMouseY=false, bool makeActive=true) _IRR_OVERRIDE_;
-
-		//! Adds a dynamic light scene node. The light will cast dynamic light on all
-		//! other scene nodes in the scene, which have the material flag video::MTF_LIGHTING
-		//! turned on. (This is the default setting in most scene nodes).
-		virtual ILightSceneNode* addLightSceneNode(ISceneNode* parent = 0,
-			const core::vector3df& position = core::vector3df(0,0,0),
-			video::SColorf color = video::SColorf(1.0f, 1.0f, 1.0f),
-			f32 range=100.0f, s32 id=-1) _IRR_OVERRIDE_;
-
 		//! Adds a billboard scene node to the scene. A billboard is like a 3d sprite: A 2d element,
 		//! which always looks to the camera. It is usually used for things like explosions, fire,
 		//! lensflares and things like that.
@@ -171,103 +104,6 @@ namespace scene
 			const core::dimension2d<f32>& size = core::dimension2d<f32>(10.0f, 10.0f),
 			const core::vector3df& position = core::vector3df(0,0,0), s32 id=-1,
 			video::SColor shadeTop = 0xFFFFFFFF, video::SColor shadeBottom = 0xFFFFFFFF) _IRR_OVERRIDE_;
-
-		//! Adds a skybox scene node. A skybox is a big cube with 6 textures on it and
-		//! is drawn around the camera position.
-		virtual ISceneNode* addSkyBoxSceneNode(video::ITexture* top, video::ITexture* bottom,
-			video::ITexture* left, video::ITexture* right, video::ITexture* front,
-			video::ITexture* back, ISceneNode* parent = 0, s32 id=-1) _IRR_OVERRIDE_;
-
-		//! Adds a skydome scene node. A skydome is a large (half-) sphere with a
-		//! panoramic texture on it and is drawn around the camera position.
-		virtual ISceneNode* addSkyDomeSceneNode(video::ITexture* texture,
-			u32 horiRes=16, u32 vertRes=8,
-			f32 texturePercentage=0.9, f32 spherePercentage=2.0,f32 radius = 1000.f,
-			ISceneNode* parent=0, s32 id=-1) _IRR_OVERRIDE_;
-
-		//! Adds a text scene node, which is able to display
-		//! 2d text at a position in three dimensional space
-		virtual ITextSceneNode* addTextSceneNode(gui::IGUIFont* font, const wchar_t* text,
-			video::SColor color=video::SColor(100,255,255,255),
-			ISceneNode* parent = 0,	const core::vector3df& position = core::vector3df(0,0,0),
-			s32 id=-1) _IRR_OVERRIDE_;
-
-		//! Adds a text scene node, which uses billboards
-		virtual IBillboardTextSceneNode* addBillboardTextSceneNode(gui::IGUIFont* font, const wchar_t* text,
-			ISceneNode* parent = 0,
-			const core::dimension2d<f32>& size = core::dimension2d<f32>(10.0f, 10.0f),
-			const core::vector3df& position = core::vector3df(0,0,0), s32 id=-1,
-			video::SColor colorTop = 0xFFFFFFFF, video::SColor colorBottom = 0xFFFFFFFF) _IRR_OVERRIDE_;
-
-		//! Adds a scene node, which can render a quake3 shader
-		virtual IMeshSceneNode* addQuake3SceneNode(const IMeshBuffer* meshBuffer, const quake3::IShader * shader,
-			ISceneNode* parent=0, s32 id=-1) _IRR_OVERRIDE_;
-
-
-		//! Adds a Hill Plane mesh to the mesh pool. The mesh is
-		//! generated on the fly and looks like a plane with some hills
-		//! on it. You can specify how many hills should be on the plane
-		//! and how high they should be. Also you must specify a name
-		//! for the mesh because the mesh is added to the mesh pool and
-		//! can be retrieved back using ISceneManager::getMesh with the
-		//! name as parameter.
-		virtual IAnimatedMesh* addHillPlaneMesh(const io::path& name,
-			const core::dimension2d<f32>& tileSize, const core::dimension2d<u32>& tileCount,
-			video::SMaterial* material = 0,	f32 hillHeight = 0.0f,
-			const core::dimension2d<f32>& countHills = core::dimension2d<f32>(1.0f, 1.0f),
-			const core::dimension2d<f32>& textureRepeatCount = core::dimension2d<f32>(1.0f, 1.0f)) _IRR_OVERRIDE_;
-
-		//! Adds a terrain mesh to the mesh pool.
-		virtual IAnimatedMesh* addTerrainMesh(const io::path& meshname,	video::IImage* texture, video::IImage* heightmap,
-			const core::dimension2d<f32>& stretchSize = core::dimension2d<f32>(10.0f,10.0f),
-			f32 maxHeight=200.0f,
-			const core::dimension2d<u32>& defaultVertexBlockSize = core::dimension2d<u32>(64,64)) _IRR_OVERRIDE_;
-
-		//! Add a arrow mesh to the mesh pool
-		virtual IAnimatedMesh* addArrowMesh(const io::path& name,
-				video::SColor vtxColor0, video::SColor vtxColor1,
-				u32 tesselationCylinder, u32 tesselationCone,
-				f32 height, f32 cylinderHeight, f32 width0,
-				f32 width1) _IRR_OVERRIDE_;
-
-		//! Adds a static sphere mesh to the mesh pool.
-		virtual IAnimatedMesh* addSphereMesh(const io::path& name,
-				f32 radius=5.f, u32 polyCountX=16, u32 polyCountY=16) _IRR_OVERRIDE_;
-
-		//! Adds a static volume light mesh to the mesh pool.
-		virtual IAnimatedMesh* addVolumeLightMesh(const io::path& name,
-			const u32 SubdivideU = 32, const u32 SubdivideV = 32,
-			const video::SColor FootColor = video::SColor(51, 0, 230, 180),
-			const video::SColor TailColor = video::SColor(0, 0, 0, 0)) _IRR_OVERRIDE_;
-
-		//! Adds a particle system scene node.
-		virtual IParticleSystemSceneNode* addParticleSystemSceneNode(
-			bool withDefaultEmitter=true, ISceneNode* parent=0, s32 id=-1,
-			const core::vector3df& position = core::vector3df(0,0,0),
-			const core::vector3df& rotation = core::vector3df(0,0,0),
-			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f)) _IRR_OVERRIDE_;
-
-		//! Adds a terrain scene node to the scene graph.
-		virtual ITerrainSceneNode* addTerrainSceneNode(
-			const io::path& heightMapFileName,
-			ISceneNode* parent=0, s32 id=-1,
-			const core::vector3df& position = core::vector3df(0.0f,0.0f,0.0f),
-			const core::vector3df& rotation = core::vector3df(0.0f,0.0f,0.0f),
-			const core::vector3df& scale = core::vector3df(1.0f,1.0f,1.0f),
-			video::SColor vertexColor = video::SColor(255,255,255,255),
-			s32 maxLOD=4, E_TERRAIN_PATCH_SIZE patchSize=ETPS_17,s32 smoothFactor=0,
-			bool addAlsoIfHeightmapEmpty = false) _IRR_OVERRIDE_;
-
-		//! Adds a terrain scene node to the scene graph.
-		virtual ITerrainSceneNode* addTerrainSceneNode(
-			io::IReadFile* heightMap,
-			ISceneNode* parent=0, s32 id=-1,
-			const core::vector3df& position = core::vector3df(0.0f,0.0f,0.0f),
-			const core::vector3df& rotation = core::vector3df(0.0f,0.0f,0.0f),
-			const core::vector3df& scale = core::vector3df(1.0f,1.0f,1.0f),
-			video::SColor vertexColor = video::SColor(255,255,255,255),
-			s32 maxLOD=4, E_TERRAIN_PATCH_SIZE patchSize=ETPS_17,s32 smoothFactor=0,
-			bool addAlsoIfHeightmapEmpty=false) _IRR_OVERRIDE_;
 
 		//! Adds a dummy transformation scene node to the scene graph.
 		virtual IDummyTransformationSceneNode* addDummyTransformationSceneNode(
@@ -292,92 +128,6 @@ namespace scene
 		//! \param camera: The new camera which should be active.
 		virtual void setActiveCamera(ICameraSceneNode* camera) _IRR_OVERRIDE_;
 
-		//! creates a rotation animator, which rotates the attached scene node around itself.
-		//! \param rotationPerSecond: Specifies the speed of the animation
-		//! \return The animator. Attach it to a scene node with ISceneNode::addAnimator()
-		//! and the animator will animate it.
-		virtual ISceneNodeAnimator* createRotationAnimator(const core::vector3df& rotationPerSecond) _IRR_OVERRIDE_;
-
-		//! creates a fly circle animator
-		/** Lets the attached scene node fly around a center.
-		\param center Center relative to node origin
-		\param speed: The orbital speed, in radians per millisecond.
-		\param direction: Specifies the upvector used for alignment of the mesh.
-		\param startPosition: The position on the circle where the animator will
-		begin. Value is in multiples  of a circle, i.e. 0.5 is half way around.
-		\return The animator. Attach it to a scene node with ISceneNode::addAnimator()
-		*/
-		virtual ISceneNodeAnimator* createFlyCircleAnimator(
-				const core::vector3df& center=core::vector3df(0.f, 0.f, 0.f),
-				f32 radius=100.f, f32 speed=0.001f,
-				const core::vector3df& direction=core::vector3df(0.f, 1.f, 0.f),
-				f32 startPosition = 0.f,
-				f32 radiusEllipsoid = 0.f) _IRR_OVERRIDE_;
-
-		//! Creates a fly straight animator, which lets the attached scene node
-		//! fly or move along a line between two points.
-		virtual ISceneNodeAnimator* createFlyStraightAnimator(const core::vector3df& startPoint,
-			const core::vector3df& endPoint, u32 timeForWay, bool loop=false,bool pingpong = false) _IRR_OVERRIDE_;
-
-		//! Creates a texture animator, which switches the textures of the target scene
-		//! node based on a list of textures.
-		virtual ISceneNodeAnimator* createTextureAnimator(const core::array<video::ITexture*>& textures,
-			s32 timePerFrame, bool loop) _IRR_OVERRIDE_;
-
-		//! Creates a scene node animator, which deletes the scene node after
-		//! some time automatically.
-		virtual ISceneNodeAnimator* createDeleteAnimator(u32 timeMS) _IRR_OVERRIDE_;
-
-
-		//! Creates a special scene node animator for doing automatic collision detection
-		//! and response.
-		virtual ISceneNodeAnimatorCollisionResponse* createCollisionResponseAnimator(
-			ITriangleSelector* world, ISceneNode* sceneNode,
-			const core::vector3df& ellipsoidRadius = core::vector3df(30,60,30),
-			const core::vector3df& gravityPerSecond = core::vector3df(0,-1.0f,0),
-			const core::vector3df& ellipsoidTranslation = core::vector3df(0,0,0),
-			f32 slidingValue = 0.0005f) _IRR_OVERRIDE_;
-
-		//! Creates a follow spline animator.
-		virtual ISceneNodeAnimator* createFollowSplineAnimator(s32 startTime,
-			const core::array< core::vector3df >& points,
-			f32 speed, f32 tightness, bool loop, bool pingpong) _IRR_OVERRIDE_;
-
-
-		//! Creates a simple ITriangleSelector, based on a mesh.
-		virtual ITriangleSelector* createTriangleSelector(IMesh* mesh, ISceneNode* node, bool separateMeshbuffers) _IRR_OVERRIDE_;
-
-		//! Creates a simple ITriangleSelector, based on a meshbuffer.
-		virtual ITriangleSelector* createTriangleSelector(const IMeshBuffer* meshBuffer, irr::u32 materialIndex, ISceneNode* node) _IRR_OVERRIDE_;
-
-		//! Creates a simple ITriangleSelector, based on an animated mesh scene node.
-		//! Details of the mesh associated with the node will be extracted internally.
-		//! Call ITriangleSelector::update() to have the triangle selector updated based
-		//! on the current frame of the animated mesh scene node.
-		//! \param: The animated mesh scene node from which to build the selector
-		virtual ITriangleSelector* createTriangleSelector(IAnimatedMeshSceneNode* node, bool separateMeshbuffers) _IRR_OVERRIDE_;
-
-		//! Creates a simple ITriangleSelector, based on a mesh.
-		virtual ITriangleSelector* createOctreeTriangleSelector(IMesh* mesh,
-			ISceneNode* node, s32 minimalPolysPerNode) _IRR_OVERRIDE_;
-
-		//! Creates a simple ITriangleSelector, based on a meshbuffer.
-		virtual ITriangleSelector* createOctreeTriangleSelector(IMeshBuffer* meshBuffer, irr::u32 materialIndex,
-			ISceneNode* node, s32 minimalPolysPerNode=32) _IRR_OVERRIDE_;
-
-		//! Creates a simple dynamic ITriangleSelector, based on a axis aligned bounding box.
-		virtual ITriangleSelector* createTriangleSelectorFromBoundingBox(
-			ISceneNode* node) _IRR_OVERRIDE_;
-
-		//! Creates a meta triangle selector.
-		virtual IMetaTriangleSelector* createMetaTriangleSelector() _IRR_OVERRIDE_;
-
-		//! Creates a triangle selector which can select triangles from a terrain scene node
-		//! \param: Pointer to the created terrain scene node
-		//! \param: Level of detail, 0 for highest detail.
-		virtual ITriangleSelector* createTerrainTriangleSelector(
-			ITerrainSceneNode* node, s32 LOD=0) _IRR_OVERRIDE_;
-
 		//! Adds an external mesh loader.
 		virtual void addExternalMeshLoader(IMeshLoader* externalLoader) _IRR_OVERRIDE_;
 
@@ -396,20 +146,8 @@ namespace scene
 		//! Retrieve the given scene loader
 		virtual ISceneLoader* getSceneLoader(u32 index) const _IRR_OVERRIDE_;
 
-		//! Returns a pointer to the scene collision manager.
-		virtual ISceneCollisionManager* getSceneCollisionManager() _IRR_OVERRIDE_;
-
 		//! Returns a pointer to the mesh manipulator.
 		virtual IMeshManipulator* getMeshManipulator() _IRR_OVERRIDE_;
-
-		//! Sets the color of stencil buffers shadows drawn by the scene manager.
-		virtual void setShadowColor(video::SColor color) _IRR_OVERRIDE_;
-
-		//! Returns the current color of shadows.
-		virtual video::SColor getShadowColor() const _IRR_OVERRIDE_;
-
-		//! Create a shadow volume scene node to be used with custom nodes
-		virtual IShadowVolumeSceneNode* createShadowVolumeSceneNode(const IMesh* shadowMesh, ISceneNode* parent, s32 id, bool zfailmethod, f32 infinity) _IRR_OVERRIDE_;
 
 		//! Adds a scene node to the deletion queue.
 		virtual void addToDeletionQueue(ISceneNode* node) _IRR_OVERRIDE_;
@@ -465,26 +203,8 @@ namespace scene
 		//! Returns a typename from a scene node type or null if not found
 		virtual const c8* getSceneNodeTypeName(ESCENE_NODE_TYPE type) _IRR_OVERRIDE_;
 
-		//! Returns a typename from a scene node animator type or null if not found
-		virtual const c8* getAnimatorTypeName(ESCENE_NODE_ANIMATOR_TYPE type) _IRR_OVERRIDE_;
-
 		//! Adds a scene node to the scene by name
 		virtual ISceneNode* addSceneNode(const char* sceneNodeTypeName, ISceneNode* parent=0) _IRR_OVERRIDE_;
-
-		//! creates a scene node animator based on its type name
-		virtual ISceneNodeAnimator* createSceneNodeAnimator(const char* typeName, ISceneNode* target=0) _IRR_OVERRIDE_;
-
-		//! Returns the default scene node animator factory which can create all built-in scene node animators
-		virtual ISceneNodeAnimatorFactory* getDefaultSceneNodeAnimatorFactory() _IRR_OVERRIDE_;
-
-		//! Adds a scene node animator factory to the scene manager.
-		virtual void registerSceneNodeAnimatorFactory(ISceneNodeAnimatorFactory* factoryToAdd) _IRR_OVERRIDE_;
-
-		//! Returns amount of registered scene node animator factories.
-		virtual u32 getRegisteredSceneNodeAnimatorFactoryCount() const _IRR_OVERRIDE_;
-
-		//! Returns a scene node animator factory by index
-		virtual ISceneNodeAnimatorFactory* getSceneNodeAnimatorFactory(u32 index) _IRR_OVERRIDE_;
 
 		//! Saves the current scene into a file.
 		virtual bool saveScene(const io::path& filename, ISceneUserDataSerializer* userDataSerializer=0, ISceneNode* node=0) _IRR_OVERRIDE_;
@@ -516,17 +236,11 @@ namespace scene
 		//! Returns ambient color of the scene
 		virtual const video::SColorf& getAmbientLight() const _IRR_OVERRIDE_;
 
-		//! Register a custom callbacks manager which gets callbacks during scene rendering.
-		virtual void setLightManager(ILightManager* lightManager) _IRR_OVERRIDE_;
-
 		//! Get current render time.
 		virtual E_SCENE_NODE_RENDER_PASS getCurrentRenderPass() const _IRR_OVERRIDE_ { return CurrentRenderPass; }
 
 		//! Set current render time.
 		virtual void setCurrentRenderPass(E_SCENE_NODE_RENDER_PASS nextPass) _IRR_OVERRIDE_ { CurrentRenderPass = nextPass; }
-
-		//! Get an instance of a geometry creator.
-		virtual const IGeometryCreator* getGeometryCreator(void) const _IRR_OVERRIDE_ { return GeometryCreator; }
 
 		//! returns if node is culled
 		virtual bool isCulled(const ISceneNode* node) const _IRR_OVERRIDE_;
@@ -615,13 +329,8 @@ namespace scene
 		//! cursor control
 		gui::ICursorControl* CursorControl;
 
-		//! collision manager
-		ISceneCollisionManager* CollisionManager;
-
 		//! render pass lists
 		core::array<ISceneNode*> CameraList;
-		core::array<ISceneNode*> LightList;
-		core::array<ISceneNode*> ShadowNodeList;
 		core::array<ISceneNode*> SkyBoxList;
 		core::array<DefaultNodeEntry> SolidNodeList;
 		core::array<TransparentNodeEntry> TransparentNodeList;
@@ -632,7 +341,6 @@ namespace scene
 		core::array<ISceneLoader*> SceneLoaderList;
 		core::array<ISceneNode*> DeletionList;
 		core::array<ISceneNodeFactory*> SceneNodeFactoryList;
-		core::array<ISceneNodeAnimatorFactory*> SceneNodeAnimatorFactoryList;
 
 		//! current active camera
 		ICameraSceneNode* ActiveCamera;
@@ -649,12 +357,6 @@ namespace scene
 		IMeshCache* MeshCache;
 
 		E_SCENE_NODE_RENDER_PASS CurrentRenderPass;
-
-		//! An optional callbacks manager to allow the user app finer control
-		//! over the scene lighting and rendering.
-		ILightManager* LightManager;
-
-		IGeometryCreator* GeometryCreator;
 	};
 
 } // end namespace video

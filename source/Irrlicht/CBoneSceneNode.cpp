@@ -67,12 +67,6 @@ void CBoneSceneNode::OnAnimate(u32 timeMs)
 {
 	if (IsVisible)
 	{
-		// animate this node with all animators
-
-		ISceneNodeAnimatorList::Iterator ait = Animators.begin();
-		for (; ait != Animators.end(); ++ait)
-			(*ait)->animateNode(this, timeMs);
-
 		// update absolute position
 		//updateAbsolutePosition();
 

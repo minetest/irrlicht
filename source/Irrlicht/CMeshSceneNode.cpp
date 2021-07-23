@@ -11,11 +11,6 @@
 #include "IAnimatedMesh.h"
 #include "IMaterialRenderer.h"
 #include "IFileSystem.h"
-#ifdef _IRR_COMPILE_WITH_SHADOW_VOLUME_SCENENODE_
-#include "CShadowVolumeSceneNode.h"
-#else
-#include "IShadowVolumeSceneNode.h"
-#endif // _IRR_COMPILE_WITH_SHADOW_VOLUME_SCENENODE_
 
 namespace irr
 {
@@ -28,7 +23,7 @@ namespace scene
 CMeshSceneNode::CMeshSceneNode(IMesh* mesh, ISceneNode* parent, ISceneManager* mgr, s32 id,
 			const core::vector3df& position, const core::vector3df& rotation,
 			const core::vector3df& scale)
-: IMeshSceneNode(parent, mgr, id, position, rotation, scale), Mesh(0), Shadow(0),
+: IMeshSceneNode(parent, mgr, id, position, rotation, scale), Mesh(0),
 	PassCount(0), ReadOnlyMaterials(false)
 {
 	#ifdef _DEBUG
@@ -42,8 +37,6 @@ CMeshSceneNode::CMeshSceneNode(IMesh* mesh, ISceneNode* parent, ISceneManager* m
 //! destructor
 CMeshSceneNode::~CMeshSceneNode()
 {
-	if (Shadow)
-		Shadow->drop();
 	if (Mesh)
 		Mesh->drop();
 }
@@ -108,9 +101,6 @@ void CMeshSceneNode::render()
 
 	driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
 	Box = Mesh->getBoundingBox();
-
-	if (Shadow && PassCount==1)
-		Shadow->updateShadowVolumes();
 
 	// for debug purposes only:
 
@@ -210,12 +200,6 @@ void CMeshSceneNode::render()
 //! or to remove attached childs.
 bool CMeshSceneNode::removeChild(ISceneNode* child)
 {
-	if (child && Shadow == child)
-	{
-		Shadow->drop();
-		Shadow = 0;
-	}
-
 	return ISceneNode::removeChild(child);
 }
 
@@ -269,29 +253,6 @@ void CMeshSceneNode::setMesh(IMesh* mesh)
 		Mesh = mesh;
 		copyMaterials();
 	}
-}
-
-
-//! Creates shadow volume scene node as child of this node
-//! and returns a pointer to it.
-IShadowVolumeSceneNode* CMeshSceneNode::addShadowVolumeSceneNode(
-		const IMesh* shadowMesh, s32 id, bool zfailmethod, f32 infinity)
-{
-#ifdef _IRR_COMPILE_WITH_SHADOW_VOLUME_SCENENODE_
-	if (!SceneManager->getVideoDriver()->queryFeature(video::EVDF_STENCIL_BUFFER))
-		return 0;
-
-	if (!shadowMesh)
-		shadowMesh = Mesh; // if null is given, use the mesh of node
-
-	if (Shadow)
-		Shadow->drop();
-
-	Shadow = new CShadowVolumeSceneNode(shadowMesh, this, SceneManager, id,  zfailmethod, infinity);
-	return Shadow;
-#else
-	return 0;
-#endif
 }
 
 
@@ -414,9 +375,6 @@ ISceneNode* CMeshSceneNode::clone(ISceneNode* newParent, ISceneManager* newManag
 	nb->cloneMembers(this, newManager);
 	nb->ReadOnlyMaterials = ReadOnlyMaterials;
 	nb->Materials = Materials;
-	nb->Shadow = Shadow;
-	if ( nb->Shadow )
-		nb->Shadow->grab();
 
 	if (newParent)
 		nb->drop();

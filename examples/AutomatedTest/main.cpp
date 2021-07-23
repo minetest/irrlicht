@@ -45,18 +45,19 @@ int main(int argc, char *argv[])
 
 	const io::path mediaPath = getExampleMediaPath();
 
-	scene::IAnimatedMesh* mesh = smgr->getMesh(mediaPath + "sydney.md2");
+	scene::IAnimatedMesh* mesh = smgr->getMesh(mediaPath + "coolguy_opt.x");
 	if (!mesh)
 		return 1;
 	scene::IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode(mesh);
 	if (node)
 	{
 		node->setMaterialFlag(video::EMF_LIGHTING, false);
-		node->setMD2Animation(scene::EMAT_STAND);
-		node->setMaterialTexture(0, driver->getTexture(mediaPath + "sydney.bmp"));
+		node->setFrameLoop(0, 29);
+		node->setAnimationSpeed(30);
+		node->setMaterialTexture(0, driver->getTexture(mediaPath + "cooltexture.png"));
 	}
 
-	smgr->addCameraSceneNode(0, core::vector3df(0,30,-40), core::vector3df(0,5,0));
+	smgr->addCameraSceneNode(0, core::vector3df(0,4,5), core::vector3df(0,2,0));
 
 	s32 n = 0;
 	SEvent event;

@@ -114,8 +114,6 @@ private:
 
 	bool parseDataObjectMeshMaterialList(SXMesh &mesh);
 
-	bool parseDataObjectMaterial(video::SMaterial& material);
-
 	bool parseDataObjectAnimationSet();
 
 	bool parseDataObjectAnimationTicksPerSecond();

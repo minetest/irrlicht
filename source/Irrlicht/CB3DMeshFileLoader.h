@@ -54,8 +54,6 @@ private:
 	bool readChunkTEXS();
 	bool readChunkBRUS();
 
-	void loadTextures(SB3dMaterial& material) const;
-
 	void readString(core::stringc& newstring);
 	void readFloats(f32* vec, u32 count);
 

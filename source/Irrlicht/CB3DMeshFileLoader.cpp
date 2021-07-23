@@ -10,7 +10,6 @@
 #ifdef _IRR_COMPILE_WITH_B3D_LOADER_
 
 #include "CB3DMeshFileLoader.h"
-#include "CMeshTextureLoader.h"
 
 #include "IVideoDriver.h"
 #include "IFileSystem.h"
@@ -33,8 +32,6 @@ CB3DMeshFileLoader::CB3DMeshFileLoader(scene::ISceneManager* smgr)
 	#ifdef _DEBUG
 	setDebugName("CB3DMeshFileLoader");
 	#endif
-
-	TextureLoader = new CMeshTextureLoader( SceneManager->getFileSystem(), SceneManager->getVideoDriver() );
 }
 
 
@@ -54,9 +51,6 @@ IAnimatedMesh* CB3DMeshFileLoader::createMesh(io::IReadFile* file)
 {
 	if (!file)
 		return 0;
-
-	if ( getMeshTextureLoader() )
-		getMeshTextureLoader()->setMeshFile(file);
 
 	B3DFile = file;
 	AnimatedMesh = new scene::CSkinnedMesh();
@@ -283,7 +277,6 @@ bool CB3DMeshFileLoader::readChunkMESH(CSkinnedMesh::SJoint *inJoint)
 
 			if (brushID!=-1)
 			{
-				loadTextures(Materials[brushID]);
 				meshBuffer->Material=Materials[brushID].Material;
 			}
 
@@ -467,7 +460,6 @@ bool CB3DMeshFileLoader::readChunkTRIS(scene::SSkinMeshBuffer *meshBuffer, u32 m
 
 	if (triangle_brush_id != -1)
 	{
-		loadTextures(Materials[triangle_brush_id]);
 		B3dMaterial = &Materials[triangle_brush_id];
 		meshBuffer->Material = B3dMaterial->Material;
 	}
@@ -1032,46 +1024,6 @@ bool CB3DMeshFileLoader::readChunkBRUS()
 	B3dStack.erase(B3dStack.size()-1);
 
 	return true;
-}
-
-
-void CB3DMeshFileLoader::loadTextures(SB3dMaterial& material) const
-{
-	if ( getMeshTextureLoader() )
-	{
-		if ( SceneManager->getParameters()->existsAttribute(B3D_TEXTURE_PATH) )
-			getMeshTextureLoader()->setTexturePath( SceneManager->getParameters()->getAttributeAsString(B3D_TEXTURE_PATH) );
-	}
-
-	const bool previous32BitTextureFlag = SceneManager->getVideoDriver()->getTextureCreationFlag(video::ETCF_ALWAYS_32_BIT);
-	SceneManager->getVideoDriver()->setTextureCreationFlag(video::ETCF_ALWAYS_32_BIT, true);
-
-	// read texture from disk
-	// note that mipmaps might be disabled by Flags & 0x8
-	const bool doMipMaps = SceneManager->getVideoDriver()->getTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS);
-
-	for (u32 i=0; i<video::MATERIAL_MAX_TEXTURES; ++i)
-	{
-		SB3dTexture* B3dTexture = material.Textures[i];
-		if (B3dTexture && B3dTexture->TextureName.size() && !material.Material.getTexture(i))
-		{
-			if (!SceneManager->getParameters()->getAttributeAsBool(B3D_LOADER_IGNORE_MIPMAP_FLAG))
-				SceneManager->getVideoDriver()->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, (B3dTexture->Flags & 0x8) ? true:false);
-			{
-				video::ITexture* tex = getMeshTextureLoader() ? getMeshTextureLoader()->getTexture(B3dTexture->TextureName) : NULL;
-				material.Material.setTexture(i, tex);
-			}
-			if (material.Textures[i]->Flags & 0x10) // Clamp U
-				material.Material.TextureLayer[i].TextureWrapU=video::ETC_CLAMP;
-			if (material.Textures[i]->Flags & 0x20) // Clamp V
-				material.Material.TextureLayer[i].TextureWrapV=video::ETC_CLAMP;
-			if (material.Textures[i]->Flags & 0x20) // Clamp R
-				material.Material.TextureLayer[i].TextureWrapW=video::ETC_CLAMP;
-		}
-	}
-
-	SceneManager->getVideoDriver()->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, doMipMaps);
-	SceneManager->getVideoDriver()->setTextureCreationFlag(video::ETCF_ALWAYS_32_BIT, previous32BitTextureFlag);
 }
 
 
