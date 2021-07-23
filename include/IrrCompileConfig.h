@@ -407,6 +407,12 @@ tool <http://developer.nvidia.com/object/nvperfhud_home.html>. */
 //! Uncomment the following line if you want to ignore the deprecated warnings
 //#define IGNORE_DEPRECATED_WARNING
 
+//! Define _IRR_COMPILE_WITH_BILLBOARD_SCENENODE_ to support BillboardSceneNodes
+#define _IRR_COMPILE_WITH_BILLBOARD_SCENENODE_
+#ifdef NO_IRR_COMPILE_WITH_BILLBOARD_SCENENODE_
+#undef _IRR_COMPILE_WITH_BILLBOARD_SCENENODE_
+#endif
+
 //! Define _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_ if you want to use bone based
 /** animated meshes. If you compile without this, you will be unable to load
 B3D, MS3D or X meshes */
