@@ -52,7 +52,8 @@ int main(int argc, char *argv[])
 	if (node)
 	{
 		node->setMaterialFlag(video::EMF_LIGHTING, false);
-		node->setAnimationRange();
+		node->setFrameLoop(0, 29);
+		node->setAnimationSpeed(30);
 		node->setMaterialTexture(0, driver->getTexture(mediaPath + "cooltexture.png"));
 	}
 
