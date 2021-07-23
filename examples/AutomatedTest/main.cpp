@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 		node->setMaterialTexture(0, driver->getTexture(mediaPath + "cooltexture.png"));
 	}
 
-	smgr->addCameraSceneNode(0, core::vector3df(0,30,-40), core::vector3df(0,5,0));
+	smgr->addCameraSceneNode(0, core::vector3df(0,4,5), core::vector3df(0,2,0));
 
 	s32 n = 0;
 	SEvent event;
