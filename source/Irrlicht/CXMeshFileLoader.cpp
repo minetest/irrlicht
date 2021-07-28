@@ -89,7 +89,6 @@ IAnimatedMesh* CXMeshFileLoader::createMesh(io::IReadFile* file)
 	P=0;
 	End=0;
 	CurFrame=0;
-	TemplateMaterials.clear();
 
 	delete [] Buffer;
 	Buffer = 0;
@@ -114,26 +113,15 @@ bool CXMeshFileLoader::load(io::IReadFile* file)
 	{
 		SXMesh *mesh=Meshes[n];
 
-		// default material if nothing loaded
-		if (!mesh->Materials.size())
-		{
-			mesh->Materials.push_back(video::SMaterial());
-			mesh->Materials[0].DiffuseColor.set(0xff777777);
-			mesh->Materials[0].Shininess=0.f;
-			mesh->Materials[0].SpecularColor.set(0xff777777);
-			mesh->Materials[0].EmissiveColor.set(0xff000000);
-		}
-
 		u32 i;
 
-		mesh->Buffers.reallocate(mesh->Materials.size());
+		mesh->Buffers.reallocate(mesh->MaterialSlotCount);
 #ifndef BETTER_MESHBUFFER_SPLITTING_FOR_X
 		const u32 bufferOffset = AnimatedMesh->getMeshBufferCount();
 #endif
-		for (i=0; i<mesh->Materials.size(); ++i)
+		for (i=0; i<mesh->MaterialSlotCount; ++i)
 		{
 			mesh->Buffers.push_back( AnimatedMesh->addMeshBuffer() );
-			mesh->Buffers.getLast()->Material = mesh->Materials[i];
 
 			if (!mesh->HasSkinning)
 			{
@@ -150,17 +138,6 @@ bool CXMeshFileLoader::load(io::IReadFile* file)
 			mesh->FaceMaterialIndices.set_used(mesh->Indices.size() / 3);
 			for (i=0; i<mesh->FaceMaterialIndices.size(); ++i)
 				mesh->FaceMaterialIndices[i]=0;
-		}
-
-		if (!mesh->HasVertexColors)
-		{
-			for (u32 j=0;j<mesh->FaceMaterialIndices.size();++j)
-			{
-				for (u32 id=j*3+0;id<=j*3+2;++id)
-				{
-					mesh->Vertices[ mesh->Indices[id] ].Color = mesh->Buffers[mesh->FaceMaterialIndices[j]]->Material.DiffuseColor;
-				}
-			}
 		}
 
 		#ifdef BETTER_MESHBUFFER_SPLITTING_FOR_X
@@ -1401,7 +1378,7 @@ bool CXMeshFileLoader::parseDataObjectMeshMaterialList(SXMesh &mesh)
 	}
 
 	// read material count
-	mesh.Materials.reallocate(readInt());
+	mesh.MaterialSlotCount = readInt();
 
 	// read non triangulated face material index count
 	const u32 nFaceIndices = readInt();
@@ -1455,9 +1432,9 @@ bool CXMeshFileLoader::parseDataObjectMeshMaterialList(SXMesh &mesh)
 		{
 			// template materials now available thanks to joeWright
 			objectName = getNextToken();
-			for (u32 i=0; i<TemplateMaterials.size(); ++i)
-				if (TemplateMaterials[i].Name == objectName)
-					mesh.Materials.push_back(TemplateMaterials[i].Material);
+			// for (u32 i=0; i<TemplateMaterials.size(); ++i)
+				// if (TemplateMaterials[i].Name == objectName)
+					// mesh.Materials.push_back(TemplateMaterials[i].Material);
 			getNextToken(); // skip }
 		}
 		else

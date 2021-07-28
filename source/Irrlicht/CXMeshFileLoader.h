@@ -39,12 +39,6 @@ public:
 	//! See IReferenceCounted::drop() for more information.
 	virtual IAnimatedMesh* createMesh(io::IReadFile* file) _IRR_OVERRIDE_;
 
-	struct SXTemplateMaterial
-	{
-		core::stringc Name; // template name from Xfile
-		video::SMaterial Material; // material
-	};
-
 	struct SXMesh
 	{
 		SXMesh() : MaxSkinWeightsPerVertex(0), MaxSkinWeightsPerFace(0), BoneCount(0),AttachedJointID(-1),HasSkinning(false), HasVertexColors(false) {}
@@ -71,9 +65,8 @@ public:
 
 		core::array<u32> Indices;
 
+		u32 MaterialSlotCount;
 		core::array<u32> FaceMaterialIndices; // index of material for each face
-
-		core::array<video::SMaterial> Materials; // material array
 
 		core::array<u32> WeightJoint;
 		core::array<u32> WeightNum;
@@ -181,8 +174,6 @@ private:
 	CSkinnedMesh::SJoint *CurFrame;
 
 	core::array<SXMesh*> Meshes;
-
-	core::array<SXTemplateMaterial> TemplateMaterials;
 
 	u32 MajorVersion;
 	u32 MinorVersion;
