@@ -69,7 +69,7 @@ write_basic_package_version_file(
 )
 
 install(FILES
-	"${CMAKE_CURRENT_BINARY_DIR}/IrrlichtMtConfig.cmake"
-	"${CMAKE_CURRENT_BINARY_DIR}/IrrlichtMtConfigVersion.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/IrrlichtMtConfig.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/IrrlichtMtConfigVersion.cmake"
 	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/IrrlichtMt"
 )
