@@ -113,16 +113,26 @@ bool CXMeshFileLoader::load(io::IReadFile* file)
 	{
 		SXMesh *mesh=Meshes[n];
 
+		// default material if nothing loaded
+		if (!mesh->Materials.size())
+		{
+			mesh->Materials.push_back(video::SMaterial());
+			mesh->Materials[0].DiffuseColor.set(0xff777777);
+			mesh->Materials[0].Shininess=0.f;
+			mesh->Materials[0].SpecularColor.set(0xff777777);
+			mesh->Materials[0].EmissiveColor.set(0xff000000);
+		}
+
 		u32 i;
 
-		mesh->Buffers.reallocate(mesh->MaterialSlotCount);
+		mesh->Buffers.reallocate(mesh->Materials.size());
 #ifndef BETTER_MESHBUFFER_SPLITTING_FOR_X
 		const u32 bufferOffset = AnimatedMesh->getMeshBufferCount();
 #endif
-		for (i=0; i<mesh->MaterialSlotCount; ++i)
+		for (i=0; i<mesh->Materials.size(); ++i)
 		{
 			mesh->Buffers.push_back( AnimatedMesh->addMeshBuffer() );
-			mesh->Buffers.getLast()->Material = video::SMaterial();
+			mesh->Buffers.getLast()->Material = mesh->Materials[i];
 
 			if (!mesh->HasSkinning)
 			{
@@ -139,6 +149,17 @@ bool CXMeshFileLoader::load(io::IReadFile* file)
 			mesh->FaceMaterialIndices.set_used(mesh->Indices.size() / 3);
 			for (i=0; i<mesh->FaceMaterialIndices.size(); ++i)
 				mesh->FaceMaterialIndices[i]=0;
+		}
+
+		if (!mesh->HasVertexColors)
+		{
+			for (u32 j=0;j<mesh->FaceMaterialIndices.size();++j)
+			{
+				for (u32 id=j*3+0;id<=j*3+2;++id)
+				{
+					mesh->Vertices[ mesh->Indices[id] ].Color = mesh->Buffers[mesh->FaceMaterialIndices[j]]->Material.DiffuseColor;
+				}
+			}
 		}
 
 		#ifdef BETTER_MESHBUFFER_SPLITTING_FOR_X
@@ -456,25 +477,25 @@ bool CXMeshFileLoader::parseFile()
 //! Parses the next Data object in the file
 bool CXMeshFileLoader::parseDataObject()
 {
-	core::stringc objectClass = getNextToken();
+	core::stringc objectName = getNextToken();
 
-	if (objectClass.size() == 0)
+	if (objectName.size() == 0)
 		return false;
 
 	// parse specific object
 #ifdef _XREADER_DEBUG
-	os::Printer::log("debug DataObject:", objectClass.c_str(), ELL_DEBUG);
+	os::Printer::log("debug DataObject:", objectName.c_str(), ELL_DEBUG);
 #endif
 
-	if (objectClass == "template")
+	if (objectName == "template")
 		return parseDataObjectTemplate();
 	else
-	if (objectClass == "Frame")
+	if (objectName == "Frame")
 	{
 		return parseDataObjectFrame( 0 );
 	}
 	else
-	if (objectClass == "Mesh")
+	if (objectName == "Mesh")
 	{
 		// some meshes have no frames at all
 		//CurFrame = AnimatedMesh->addJoint(0);
@@ -487,29 +508,28 @@ bool CXMeshFileLoader::parseDataObject()
 		return parseDataObjectMesh(*mesh);
 	}
 	else
-	if (objectClass == "Material")
-	{
-		// No-op, we do not parse these.
-		return parseUnknownDataObject();
-	}
-	else
-	if (objectClass == "AnimationSet")
+	if (objectName == "AnimationSet")
 	{
 		return parseDataObjectAnimationSet();
 	}
 	else
-	if (objectClass == "AnimTicksPerSecond")
+	if (objectName == "AnimTicksPerSecond")
 	{
 		return parseDataObjectAnimationTicksPerSecond();
 	}
 	else
-	if (objectClass == "}")
+	if (objectName == "Material")
+	{
+		return parseUnknownDataObject();
+	}
+	else
+	if (objectName == "}")
 	{
 		os::Printer::log("} found in dataObject", ELL_WARNING);
 		return true;
 	}
 
-	os::Printer::log("Unknown data object in animation of .x file", objectClass.c_str(), ELL_WARNING);
+	os::Printer::log("Unknown data object in animation of .x file", objectName.c_str(), ELL_WARNING);
 
 	return parseUnknownDataObject();
 }
@@ -1385,7 +1405,7 @@ bool CXMeshFileLoader::parseDataObjectMeshMaterialList(SXMesh &mesh)
 	}
 
 	// read material count
-	mesh.MaterialSlotCount = readInt();
+	mesh.Materials.reallocate(readInt());
 
 	// read non triangulated face material index count
 	const u32 nFaceIndices = readInt();
@@ -1435,14 +1455,17 @@ bool CXMeshFileLoader::parseDataObjectMeshMaterialList(SXMesh &mesh)
 			break; // material list finished
 		}
 		else
-		if (objectName == "Material")
-		{
-			if (!parseUnknownDataObject())
-				return false;
-		}
-		else
 		if (objectName == "{")
 		{
+			// template materials now available thanks to joeWright
+			objectName = getNextToken();
+			mesh.Materials.push_back(video::SMaterial());
+			getNextToken(); // skip }
+		}
+		else
+		if (objectName == "Material")
+		{
+			mesh.Materials.push_back(video::SMaterial());
 			if (!parseUnknownDataObject())
 				return false;
 		}
