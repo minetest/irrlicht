@@ -89,7 +89,6 @@ IAnimatedMesh* CXMeshFileLoader::createMesh(io::IReadFile* file)
 	P=0;
 	End=0;
 	CurFrame=0;
-	MaterialSlotCount=0;
 
 	delete [] Buffer;
 	Buffer = 0;
