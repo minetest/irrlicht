@@ -89,6 +89,7 @@ IAnimatedMesh* CXMeshFileLoader::createMesh(io::IReadFile* file)
 	P=0;
 	End=0;
 	CurFrame=0;
+	MaterialSlotCount=0;
 
 	delete [] Buffer;
 	Buffer = 0;
@@ -455,25 +456,25 @@ bool CXMeshFileLoader::parseFile()
 //! Parses the next Data object in the file
 bool CXMeshFileLoader::parseDataObject()
 {
-	core::stringc objectName = getNextToken();
+	core::stringc objectClass = getNextToken();
 
-	if (objectName.size() == 0)
+	if (objectClass.size() == 0)
 		return false;
 
 	// parse specific object
 #ifdef _XREADER_DEBUG
-	os::Printer::log("debug DataObject:", objectName.c_str(), ELL_DEBUG);
+	os::Printer::log("debug DataObject:", objectClass.c_str(), ELL_DEBUG);
 #endif
 
-	if (objectName == "template")
+	if (objectClass == "template")
 		return parseDataObjectTemplate();
 	else
-	if (objectName == "Frame")
+	if (objectClass == "Frame")
 	{
 		return parseDataObjectFrame( 0 );
 	}
 	else
-	if (objectName == "Mesh")
+	if (objectClass == "Mesh")
 	{
 		// some meshes have no frames at all
 		//CurFrame = AnimatedMesh->addJoint(0);
@@ -486,23 +487,29 @@ bool CXMeshFileLoader::parseDataObject()
 		return parseDataObjectMesh(*mesh);
 	}
 	else
-	if (objectName == "AnimationSet")
+	if (objectClass == "Material")
+	{
+		// No-op, we do not parse these.
+		return parseUnknownDataObject();
+	}
+	else
+	if (objectClass == "AnimationSet")
 	{
 		return parseDataObjectAnimationSet();
 	}
 	else
-	if (objectName == "AnimTicksPerSecond")
+	if (objectClass == "AnimTicksPerSecond")
 	{
 		return parseDataObjectAnimationTicksPerSecond();
 	}
 	else
-	if (objectName == "}")
+	if (objectClass == "}")
 	{
 		os::Printer::log("} found in dataObject", ELL_WARNING);
 		return true;
 	}
 
-	os::Printer::log("Unknown data object in animation of .x file", objectName.c_str(), ELL_WARNING);
+	os::Printer::log("Unknown data object in animation of .x file", objectClass.c_str(), ELL_WARNING);
 
 	return parseUnknownDataObject();
 }
@@ -1428,14 +1435,16 @@ bool CXMeshFileLoader::parseDataObjectMeshMaterialList(SXMesh &mesh)
 			break; // material list finished
 		}
 		else
+		if (objectName == "Material")
+		{
+			if (!parseUnknownDataObject())
+				return false;
+		}
+		else
 		if (objectName == "{")
 		{
-			// template materials now available thanks to joeWright
-			objectName = getNextToken();
-			// for (u32 i=0; i<TemplateMaterials.size(); ++i)
-				// if (TemplateMaterials[i].Name == objectName)
-					// mesh.Materials.push_back(TemplateMaterials[i].Material);
-			getNextToken(); // skip }
+			if (!parseUnknownDataObject())
+				return false;
 		}
 		else
 		if (objectName == ";")
