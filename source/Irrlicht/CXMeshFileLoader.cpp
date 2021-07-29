@@ -122,6 +122,7 @@ bool CXMeshFileLoader::load(io::IReadFile* file)
 		for (i=0; i<mesh->MaterialSlotCount; ++i)
 		{
 			mesh->Buffers.push_back( AnimatedMesh->addMeshBuffer() );
+			mesh->Buffers.getLast()->Material = video::SMaterial();
 
 			if (!mesh->HasSkinning)
 			{
