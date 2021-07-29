@@ -5,6 +5,7 @@
 #ifndef __S_VERTEX_MANIPULATOR_H_INCLUDED__
 #define __S_VERTEX_MANIPULATOR_H_INCLUDED__
 
+#include "matrix4.h"
 #include "S3DVertex.h"
 #include "SColor.h"
 

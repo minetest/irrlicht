@@ -7,7 +7,7 @@
 
 #include "IReferenceCounted.h"
 #include "irrArray.h"
-
+#include "EHardwareBufferFlags.h"
 #include "SVertexIndex.h"
 
 namespace irr

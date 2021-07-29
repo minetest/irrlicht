@@ -8,12 +8,13 @@
 
 #include "IReferenceCounted.h"
 #include "irrArray.h"
+#include "ISceneManager.h" // for E_SCENE_NODE_RENDER_PASS, could probably move that to own header?
 
 namespace irr
 {
 namespace scene
 {
-	class ILightSceneNode;
+	class ISceneNode;
 
 	//! ILightManager provides an interface for user applications to manipulate the list of lights in the scene.
 	/** The light list can be trimmed or re-ordered before device/ hardware
