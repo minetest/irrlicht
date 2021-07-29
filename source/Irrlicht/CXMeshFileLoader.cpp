@@ -89,7 +89,6 @@ IAnimatedMesh* CXMeshFileLoader::createMesh(io::IReadFile* file)
 	P=0;
 	End=0;
 	CurFrame=0;
-	TemplateMaterials.clear();
 
 	delete [] Buffer;
 	Buffer = 0;
@@ -517,6 +516,11 @@ bool CXMeshFileLoader::parseDataObject()
 	if (objectName == "AnimTicksPerSecond")
 	{
 		return parseDataObjectAnimationTicksPerSecond();
+	}
+	else
+	if (objectName == "Material")
+	{
+		return parseUnknownDataObject();
 	}
 	else
 	if (objectName == "}")
@@ -1455,10 +1459,15 @@ bool CXMeshFileLoader::parseDataObjectMeshMaterialList(SXMesh &mesh)
 		{
 			// template materials now available thanks to joeWright
 			objectName = getNextToken();
-			for (u32 i=0; i<TemplateMaterials.size(); ++i)
-				if (TemplateMaterials[i].Name == objectName)
-					mesh.Materials.push_back(TemplateMaterials[i].Material);
+			mesh.Materials.push_back(video::SMaterial());
 			getNextToken(); // skip }
+		}
+		else
+		if (objectName == "Material")
+		{
+			mesh.Materials.push_back(video::SMaterial());
+			if (!parseUnknownDataObject())
+				return false;
 		}
 		else
 		if (objectName == ";")
