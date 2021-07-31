@@ -36,6 +36,14 @@ if(BUILD_EXAMPLES)
 	add_subdirectory(examples)
 endif()
 
+# Export a file that describes the targets that IrrlichtMt creates.
+# The file is placed in the location FILE points to, where CMake can easily
+# locate it by pointing CMAKE_PREFIX_PATH to this project root.
+export(EXPORT IrrlichtMt-export
+	FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/IrrlichtMtTargets.cmake"
+	NAMESPACE IrrlichtMt::
+)
+
 # Installation of headers.
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/"
 	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt"
@@ -50,18 +58,18 @@ install(EXPORT IrrlichtMt-export
 
 include(CMakePackageConfigHelpers)
 configure_package_config_file("${PROJECT_SOURCE_DIR}/Config.cmake.in"
-	"${CMAKE_CURRENT_BINARY_DIR}/IrrlichtMtConfig.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/IrrlichtMtConfig.cmake"
 	INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/IrrlichtMt"
 	NO_SET_AND_CHECK_MACRO
 	NO_CHECK_REQUIRED_COMPONENTS_MACRO
 )
 write_basic_package_version_file(
-	"${CMAKE_CURRENT_BINARY_DIR}/IrrlichtMtConfigVersion.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/IrrlichtMtConfigVersion.cmake"
 	COMPATIBILITY AnyNewerVersion
 )
 
 install(FILES
-	"${CMAKE_CURRENT_BINARY_DIR}/IrrlichtMtConfig.cmake"
-	"${CMAKE_CURRENT_BINARY_DIR}/IrrlichtMtConfigVersion.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/IrrlichtMtConfig.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/IrrlichtMtConfigVersion.cmake"
 	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/IrrlichtMt"
 )
