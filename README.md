@@ -27,7 +27,7 @@ e.g. on a Linux system you might want to build for local use like this:
 	cmake . -DBUILD_SHARED_LIBS=OFF
 	make -j$(nproc)
 
-This will put an IrrlichtMtTargets.cmake file into a cmake/ directory in the current build directory, and it can then be imported from another project by pointing find_package() to the source directory of this project, or by setting the CMAKE_PREFIX_PATH variable to that same path.
+This will put an IrrlichtMtTargets.cmake file into a cmake/ directory in the current build directory, and it can then be imported from another project by pointing find_package() to the build directory, or by setting the CMAKE_PREFIX_PATH variable to that same path.
 
 Platforms
 ---------
