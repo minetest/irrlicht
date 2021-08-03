@@ -153,6 +153,7 @@ set(IRRDRVROBJ
 	CGLXManager.cpp
 	CWGLManager.cpp
 	CEGLManager.cpp
+	mt_opengl_loader.cpp
 )
 
 set(IRRIMAGEOBJ

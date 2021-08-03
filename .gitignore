@@ -12,3 +12,8 @@ libs/*
 *.exe
 *.dll
 bin/Linux
+scripts/gl2ext.h
+scripts/glcorearb.h
+scripts/glext.h
+include/mt_opengl.h
+source/Irrlicht/mt_opengl_loader.cpp

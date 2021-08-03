@@ -322,6 +322,8 @@ void CWGLManager::terminate()
 	if (PrimaryContext.OpenGLWin32.HDc && PrimaryContext.OpenGLWin32.HDc == CurrentContext.OpenGLWin32.HDc)
 		memset(&PrimaryContext, 0, sizeof(PrimaryContext));
 	memset(&CurrentContext, 0, sizeof(CurrentContext));
+	if (libHandle)
+		FreeLibrary(libHandle);
 }
 
 bool CWGLManager::generateSurface()
@@ -367,7 +369,7 @@ bool CWGLManager::generateSurface()
 			if (PixelFormat)
 				break;
 		}
-		
+
 		// set pixel format
 		if (!SetPixelFormat(HDc, PixelFormat, &pfd))
 		{
@@ -488,6 +490,19 @@ void CWGLManager::destroyContext()
 			PrimaryContext.OpenGLWin32.HRc=0;
 		CurrentContext.OpenGLWin32.HRc=0;
 	}
+}
+
+void* CWGLManager::getProcAddress(const std::string procName)
+{
+	void* proc = NULL;
+	proc = (void*)wglGetProcAddress(procName.c_str());
+	if (!proc) { // Fallback
+		if (!libHandle)
+			libHandle = LoadLibraryA("opengl32.dll");
+		if (libHandle)
+			proc = (void*)GetProcAddress(libHandle, procName.c_str());
+	}
+	return proc;
 }
 
 bool CWGLManager::swapBuffers()

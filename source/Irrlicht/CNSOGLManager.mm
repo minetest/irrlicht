@@ -6,6 +6,7 @@
 
 #ifdef _IRR_COMPILE_WITH_NSOGL_MANAGER_
 
+#include <mach-o/dyld.h>
 #include "os.h"
 
 namespace irr
@@ -37,15 +38,15 @@ void CNSOGLManager::terminate()
 }
 
 bool CNSOGLManager::generateSurface()
-{    
+{
 	if (Params.DriverType == video::EDT_OPENGL)
 	{
         int alphaSize = Params.WithAlphaChannel ? 4 : 0;
         int depthSize = Params.ZBufferBits;
-        
+
         if (Params.WithAlphaChannel && Params.Bits == 32)
             alphaSize = 8;
-        
+
         NSOpenGLPixelFormatAttribute Attribs[] =
         {
             NSOpenGLPFANoRecovery,
@@ -62,7 +63,7 @@ bool CNSOGLManager::generateSurface()
         };
 
         u32 Steps = 6;
-        
+
         // Choose the best pixel format.
         do
         {
@@ -85,7 +86,7 @@ bool CNSOGLManager::generateSurface()
                 if (Attribs[8])
                 {
                     Attribs[8] = 0;
-                        
+
                     if (Params.AntiAlias)
                     {
                         Attribs[10] = 1;
@@ -100,7 +101,7 @@ bool CNSOGLManager::generateSurface()
                 if (Attribs[14])
                 {
                     Attribs[14] = 0;
-                        
+
                     if (Params.AntiAlias)
                     {
                         Attribs[10] = 1;
@@ -131,23 +132,23 @@ bool CNSOGLManager::generateSurface()
                 os::Printer::log("Could not get pixel format.");
                 return false;
             }
-            
+
             PixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:Attribs];
         }
         while (PixelFormat == nil);
-        
+
         if (Params.AntiAlias && !Attribs[10])
             os::Printer::log("No multisampling.");
-        
+
         if (Params.WithAlphaChannel && !Attribs[8])
             os::Printer::log("No alpha.");
-        
+
         if (Params.Stencilbuffer && !Attribs[14])
             os::Printer::log("No stencil buffer.");
-        
+
         if (Params.ZBufferBits > Attribs[4])
             os::Printer::log("No full depth buffer.");
-        
+
         if (Params.Bits > Attribs[6])
             os::Printer::log("No full color buffer.");
 	}
@@ -164,7 +165,7 @@ void CNSOGLManager::destroySurface()
 bool CNSOGLManager::generateContext()
 {
     NSOpenGLContext* Context = [[NSOpenGLContext alloc] initWithFormat:PixelFormat shareContext:nil];
-    
+
     GLint Vsync = Params.Vsync ? 1 : 0;
     [Context setValues:&Vsync forParameter:NSOpenGLCPSwapInterval];
 
@@ -176,7 +177,7 @@ bool CNSOGLManager::generateContext()
 
 	// set exposed data
 	CurrentContext.OpenGLOSX.Context = Context;
-    
+
 	if (!PrimaryContext.OpenGLOSX.Context)
 		PrimaryContext.OpenGLOSX.Context = CurrentContext.OpenGLOSX.Context;
 
@@ -196,7 +197,7 @@ bool CNSOGLManager::activateContext(const SExposedVideoData& videoData, bool res
         if ((NSOpenGLContext*)videoData.OpenGLOSX.Context != [NSOpenGLContext currentContext])
         {
             [(NSOpenGLContext*)videoData.OpenGLOSX.Context makeCurrentContext];
-            
+
             CurrentContext = videoData;
         }
     }
@@ -206,11 +207,11 @@ bool CNSOGLManager::activateContext(const SExposedVideoData& videoData, bool res
         if ((NSOpenGLContext*)PrimaryContext.OpenGLOSX.Context != [NSOpenGLContext currentContext])
         {
             [(NSOpenGLContext*)PrimaryContext.OpenGLOSX.Context makeCurrentContext];
-            
+
             CurrentContext = PrimaryContext;
         }
     }
-    
+
 	return true;
 }
 
@@ -225,9 +226,25 @@ void CNSOGLManager::destroyContext()
         [(NSOpenGLContext *)CurrentContext.OpenGLOSX.Context clearDrawable];
         [(NSOpenGLContext *)CurrentContext.OpenGLOSX.Context release];
 		[NSOpenGLContext clearCurrentContext];
-        
+
 		CurrentContext.OpenGLOSX.Context = nil;
 	}
+}
+
+// It appears that there is no separate GL proc address getter on OSX.
+// https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/opengl_entrypts/opengl_entrypts.html
+void* CNSOGLManager::getProcAddress(const std::string procName)
+{
+	NSSymbol symbol = NULL;
+	// Allocate a buffer for the name, an underscore prefix, and a cstring terminator.
+    char *mangledName = malloc(name.size() + 2);
+    strcpy(mangledName + 1, name.c_str());
+    mangledName[0] = '_';
+    if (NSIsSymbolNameDefined(mangledName))
+        symbol = NSLookupAndBindSymbol(mangledName);
+    free(mangledName);
+
+    return symbol ? NSAddressOfSymbol(symbol) : NULL;
 }
 
 bool CNSOGLManager::swapBuffers()

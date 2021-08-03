@@ -57,6 +57,9 @@ namespace video
         //! Change render context, disable old and activate new defined by videoData
         virtual bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero) _IRR_OVERRIDE_;
 
+		// Get procedure address.
+		virtual void* getProcAddress(const std::string procName) _IRR_OVERRIDE_;
+
         // Swap buffers.
         virtual bool swapBuffers() _IRR_OVERRIDE_;
 
@@ -69,6 +72,7 @@ namespace video
         XVisualInfo* VisualInfo;
         void* glxFBConfig; // GLXFBConfig
         XID GlxWin; // GLXWindow
+		void* libHandle; // handle to libGL.so
 	};
 }
 }

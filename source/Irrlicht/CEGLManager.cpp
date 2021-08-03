@@ -9,6 +9,7 @@
 #include "irrString.h"
 #include "irrArray.h"
 #include "os.h"
+#include <dlfcn.h>
 
 #if defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 #include <android/native_activity.h>
@@ -109,6 +110,9 @@ void CEGLManager::terminate()
 
     MajorVersion = 0;
     MinorVersion = 0;
+
+	if (libHandle)
+		dlclose(libHandle);
 }
 
 bool CEGLManager::generateSurface()
@@ -588,6 +592,19 @@ bool CEGLManager::activateContext(const SExposedVideoData& videoData, bool resto
 const SExposedVideoData& CEGLManager::getContext() const
 {
 	return Data;
+}
+
+void* CEGLManager::getProcAddress(const std::string name)
+{
+	void* proc = NULL;
+	proc = eglGetProcAddress(name.c_str());
+	if (!proc) { // fallback
+		if (!libHandle)
+			libHandle = dlopen("libGLESv2.so");
+		if (libHandle)
+			proc = dlsym(libHandle, name.c_str());
+	}
+	return proc;
 }
 
 bool CEGLManager::swapBuffers()

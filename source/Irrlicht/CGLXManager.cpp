@@ -7,6 +7,7 @@
 #ifdef _IRR_COMPILE_WITH_GLX_MANAGER_
 
 #include "os.h"
+#include <dlfcn.h>
 
 #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 	#define GL_GLEXT_LEGACY 1
@@ -279,6 +280,8 @@ bool CGLXManager::initialize(const SIrrlichtCreationParameters& params, const SE
 
 void CGLXManager::terminate()
 {
+	if (libHandle)
+		dlclose(libHandle);
 	memset(&CurrentContext, 0, sizeof(CurrentContext));
 }
 
@@ -426,6 +429,19 @@ void CGLXManager::destroyContext()
 		}
 		glXDestroyContext((Display*)CurrentContext.OpenGLLinux.X11Display, (GLXContext)CurrentContext.OpenGLLinux.X11Context);
 	}
+}
+
+void* CGLXManager::getProcAddress(const std::string name)
+{
+	void* proc = NULL;
+	proc = glXGetProcAddressARB(reinterpret_cast<const GLubyte*>(name.c_str()));
+	if (!proc) {
+		if (!libHandle)
+			libHandle = dlopen("libGL.so");
+		if (libHandle)
+			proc = dlsym(libHandle, name.c_str());
+	}
+	return proc;
 }
 
 bool CGLXManager::swapBuffers()
