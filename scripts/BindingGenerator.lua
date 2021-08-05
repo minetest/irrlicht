@@ -217,7 +217,7 @@ end
 local funcRegex = "GLAPI%s+(.+)APIENTRY%s+(%w+)%s*%((.*)%)";
 local funcRegexES = "GL_APICALL%s+(.+)GL_APIENTRY%s+(%w+)%s*%((.*)%)";
 ParseHeader( glHeaderPath .. "/glcorearb.h", procedures, funcRegex, definitions, nameset );
-ParseHeader( glHeaderPath .. "/glext.h", procedures, funcRegex, definitions, nameset, true );
+-- ParseHeader( glHeaderPath .. "/glext.h", procedures, funcRegex, definitions, nameset, true );
 ParseHeader( glHeaderPath .. "/gl2ext.h", procedures, funcRegexES, definitions, nameset, true );
 
 local procTable = {};
