@@ -597,7 +597,7 @@ const SExposedVideoData& CEGLManager::getContext() const
 void* CEGLManager::getProcAddress(const std::string name)
 {
 	void* proc = NULL;
-	proc = eglGetProcAddress(name.c_str());
+	proc = (void*)eglGetProcAddress(name.c_str());
 	if (!proc) { // fallback
 		if (!libHandle)
 			libHandle = dlopen("libGLESv2.so", RTLD_LAZY);

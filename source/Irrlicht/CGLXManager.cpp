@@ -434,7 +434,7 @@ void CGLXManager::destroyContext()
 void* CGLXManager::getProcAddress(const std::string name)
 {
 	void* proc = NULL;
-	proc = glXGetProcAddressARB(reinterpret_cast<const GLubyte*>(name.c_str()));
+	proc = (void*)glXGetProcAddressARB(reinterpret_cast<const GLubyte*>(name.c_str()));
 	if (!proc) {
 		if (!libHandle)
 			libHandle = dlopen("libGL.so", RTLD_LAZY);
