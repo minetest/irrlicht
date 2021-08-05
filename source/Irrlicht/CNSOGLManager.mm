@@ -237,8 +237,8 @@ void* CNSOGLManager::getProcAddress(const std::string procName)
 {
 	NSSymbol symbol = NULL;
 	// Allocate a buffer for the name, an underscore prefix, and a cstring terminator.
-    char *mangledName = malloc(name.size() + 2);
-    strcpy(mangledName + 1, name.c_str());
+    char *mangledName = malloc(procName.size() + 2);
+    strcpy(mangledName + 1, procName.c_str());
     mangledName[0] = '_';
     if (NSIsSymbolNameDefined(mangledName))
         symbol = NSLookupAndBindSymbol(mangledName);
