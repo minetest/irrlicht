@@ -437,7 +437,7 @@ void* CGLXManager::getProcAddress(const std::string name)
 	proc = glXGetProcAddressARB(reinterpret_cast<const GLubyte*>(name.c_str()));
 	if (!proc) {
 		if (!libHandle)
-			libHandle = dlopen("libGL.so");
+			libHandle = dlopen("libGL.so", RTLD_LAZY);
 		if (libHandle)
 			proc = dlsym(libHandle, name.c_str());
 	}

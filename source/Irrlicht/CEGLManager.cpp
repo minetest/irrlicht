@@ -600,7 +600,7 @@ void* CEGLManager::getProcAddress(const std::string name)
 	proc = eglGetProcAddress(name.c_str());
 	if (!proc) { // fallback
 		if (!libHandle)
-			libHandle = dlopen("libGLESv2.so");
+			libHandle = dlopen("libGLESv2.so", RTLD_LAZY);
 		if (libHandle)
 			proc = dlsym(libHandle, name.c_str());
 	}
