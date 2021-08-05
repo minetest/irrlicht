@@ -8,7 +8,7 @@
 
 // This file contains substantial portions of OpenGL headers
 // originally released under the MIT license:
-// glcorearb.h glext.h gl2ext.h Copyright 2013-2020 The Khronos Group Inc.
+// glcorearb.h gl2ext.h Copyright 2013-2020 The Khronos Group Inc.
 
 // ./glcorearb.h
 
@@ -5670,8 +5670,6 @@ typedef double GLdouble;
 #ifdef __cplusplus
 #endif
 #endif
-
-typedef GLhandleARB GLhandle;
 
 typedef void (APIENTRY *GLDEBUGPROC)(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const void *userParam);
 
