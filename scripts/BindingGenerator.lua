@@ -11,7 +11,6 @@ local glHeaderPath = os.getenv( "GLHEADERPATH" ) or ".";
 -- At the moment we require:
 -- 		"glcorearb.h"
 -- 		"gl2ext.h"
--- 		"glext.h"
 -- Files other than glcorearb.h are only parsed for vendor specific defines
 -- and aliases. Otherwise we only use what exists in glcorearb.h, further
 -- restricted to procedures that are either core or ARB.
@@ -294,12 +293,9 @@ f:write( "// Do not modify or commit it, modify the generator instead.\n\n" );
 f:write( [[
 // This file contains substantial portions of OpenGL headers
 // originally released under the MIT license:
-// glcorearb.h glext.h gl2ext.h Copyright 2013-2020 The Khronos Group Inc.
+// glcorearb.h gl2ext.h Copyright 2013-2020 The Khronos Group Inc.
 ]] );
 f:write( definitions:Concat( "\n" ) );
-f:write( "\n\n" );
--- We end up stripping the ARB suffix from prototypes so we need to typedef this.
-f:write( "typedef GLhandleARB GLhandle;" );
 f:write( "\n\n" );
 -- The script will miss this particular typedef thinking it's a PFN,
 -- so we have to paste it in manually. It's the only such type in OpenGL.
