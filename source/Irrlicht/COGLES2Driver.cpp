@@ -76,6 +76,7 @@ COGLES2Driver::COGLES2Driver(const SIrrlichtCreationParameters& params, io::IFil
 	ContextManager->generateContext();
 	ExposedData = ContextManager->getContext();
 	ContextManager->activateContext(ExposedData, false);
+	GL.LoadAllProcedures(ContextManager);
 }
 
 COGLES2Driver::~COGLES2Driver()
