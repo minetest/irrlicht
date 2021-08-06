@@ -1,8 +1,12 @@
 #include "mt_opengl.h"
+#include <string>
+#include <sstream>
 
 OpenGLProcedures GL = OpenGLProcedures();
 
-void OpenGLProcedures::LoadAllProcedures(irr::video::IContextManager *cmgr) {
+void OpenGLProcedures::LoadAllProcedures(irr::video::IContextManager *cmgr)
+{
+
 	if (!CullFace) CullFace = (PFNGLCULLFACEPROC_MT)cmgr->getProcAddress("glCullFace");
 	if (!FrontFace) FrontFace = (PFNGLFRONTFACEPROC_MT)cmgr->getProcAddress("glFrontFace");
 	if (!Hint) Hint = (PFNGLHINTPROC_MT)cmgr->getProcAddress("glHint");
@@ -922,4 +926,12 @@ void OpenGLProcedures::LoadAllProcedures(irr::video::IContextManager *cmgr) {
 	if (!NamedBufferPageCommitment) NamedBufferPageCommitment = (PFNGLNAMEDBUFFERPAGECOMMITMENTPROC_MT)cmgr->getProcAddress("glNamedBufferPageCommitmentARB");
 	if (!NamedBufferPageCommitment) NamedBufferPageCommitment = (PFNGLNAMEDBUFFERPAGECOMMITMENTPROC_MT)cmgr->getProcAddress("glNamedBufferPageCommitmentEXT");
 	if (!TexPageCommitment) TexPageCommitment = (PFNGLTEXPAGECOMMITMENTPROC_MT)cmgr->getProcAddress("glTexPageCommitmentARB");
+
+	// get the extension string, chop it up
+	std::string ext_string = std::string((char*)GetString(GL_EXTENSIONS));
+	std::stringstream ext_ss(ext_string);
+	std::string tmp;
+	while (getline(ext_ss, tmp, ' '))
+		extensions.emplace(tmp);
+
 }
