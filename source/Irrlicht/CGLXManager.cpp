@@ -29,7 +29,7 @@ namespace video
 {
 
 CGLXManager::CGLXManager(const SIrrlichtCreationParameters& params, const SExposedVideoData& videodata, int screennr)
-	: Params(params), PrimaryContext(videodata), VisualInfo(0), glxFBConfig(0), GlxWin(0)
+	: Params(params), PrimaryContext(videodata), VisualInfo(0), glxFBConfig(0), GlxWin(0), libHandle(NULL)
 {
 	#ifdef _DEBUG
 	setDebugName("CGLXManager");
