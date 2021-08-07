@@ -349,6 +349,7 @@ f:write[[
 
 #include <string>
 #include <unordered_set>
+#include "IrrCompileConfig.h"
 #include "irrTypes.h"
 #include "IContextManager.h"
 #include <KHR/khrplatform.h>
@@ -399,20 +400,7 @@ f:write( cppConsts:Concat( "\n" ) );
 f:write( "\n\n" );
 f:write( "};\n" );
 f:write( "\n//Global GL procedures object.\n" );
-f:write( [[
-#ifdef _WIN32
-	#ifdef MINETEST_CLIENT
-		#define DLL_SHARED __declspec(dllimport)
-	#else
-		#define DLL_SHARED __declspec(dllexport)
-	#endif
-#else
-	// Non-Windows platforms do not seem to need anything like this.
-	#define DLL_SHARED
-#endif
-
-]] );
-f:write( "DLL_SHARED extern OpenGLProcedures GL;\n" );
+f:write( "IRRLICHT_API extern OpenGLProcedures GL;\n" );
 f:close();
 
 -- Write loader implementation

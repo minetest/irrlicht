@@ -5,6 +5,7 @@
 
 #include <string>
 #include <unordered_set>
+#include "IrrCompileConfig.h"
 #include "irrTypes.h"
 #include "IContextManager.h"
 #include <KHR/khrplatform.h>
@@ -3149,16 +3150,4 @@ public:
 };
 
 //Global GL procedures object.
-#ifdef WIN32
-	#ifdef MINETEST_CLIENT
-		#define DLL_SHARED __declspec(dllimport)
-	#else
-		#define DLL_SHARED __declspec(dllexport)
-	#endif
-#else
-	// On Linux, this supposedly works out of the box.
-	#define DLL_SHARED
-	// And on OSX, everything is linked statically anyway.
-#endif
-
-DLL_SHARED extern OpenGLProcedures GL;
+IRRLICHT_API extern OpenGLProcedures GL;
