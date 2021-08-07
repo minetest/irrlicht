@@ -383,7 +383,6 @@ f:write( typedefs:Concat( "\n" ) );
 f:write( "\n\n" );
 f:write [[
 	std::unordered_set<std::string> extensions;
-	void* GetProcAddress();
 public:
 	// Call this once after creating the context.
 	void LoadAllProcedures(irr::video::IContextManager *cmgr);
