@@ -777,7 +777,6 @@ private:
 	typedef void (APIENTRYP PFNGLTEXPAGECOMMITMENTPROC_MT) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLboolean commit);
 
 	std::unordered_set<std::string> extensions;
-	void* GetProcAddress();
 public:
 	// Call this once after creating the context.
 	void LoadAllProcedures(irr::video::IContextManager *cmgr);
