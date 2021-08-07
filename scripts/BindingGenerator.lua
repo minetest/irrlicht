@@ -77,22 +77,35 @@ List = function( t )
 	} );
 end
 
+
+------------ Header parsing ------------
+
 -- GL and GLES alike
+local driverVendors = {
+	"NV", "AMD", "INTEL", "OVR", "QCOM", "IMG", "ANGLE", "APPLE", "MESA"
+}
 local vendorSuffixes = {
 	"ARB", "EXT", "KHR", "OES",
-	"NV", "AMD", "INTEL", "OVR", "QCOM", "IMG", "ANGLE", "APPLE", "MESA"
+	unpack( driverVendors )
 };
 local vendorSuffixPattern = {};
+local constSuffixPattern = {};
 for i=1, #vendorSuffixes do
 	vendorSuffixPattern[i] = vendorSuffixes[i] .. "$";
+	constSuffixPattern[i] = ("_%s$")( vendorSuffixes[i] );
+end
+local constBanned = {};
+for i=1, #driverVendors do
+	constBanned[driverVendors[i]] = true;
 end
 -- Strip the uppercase extension vendor suffix from a name.
-local function StripVendorSuffix( str )
+local function StripVendorSuffix( str, const )
+	local patterns = const and constSuffixPattern or vendorSuffixPattern;
 	local n;
-	for k=1, #vendorSuffixPattern do
-		str, n = str:gsub( vendorSuffixPattern[k], "" );
+	for i=1, #patterns do
+		str, n = str:gsub( patterns[i], "" );
 		if n > 0 then
-			return str, vendorSuffixes[k];
+			return str, vendorSuffixes[i];
 		end
 	end
 	return str;
@@ -169,6 +182,7 @@ end
 local procedures = List();
 local nameset = {};
 local definitions = List();
+local consts = List();
 
 --[[
 	Structured procedure representation:
@@ -182,8 +196,8 @@ local definitions = List();
 	};
 ]]
 -- Parse a whole header, extracting the data.
-local function ParseHeader( path, into, apiRegex, defs, nameSet, noNewNames )
-	defs:AddFormat( "\n// %s\n\n", path );
+local function ParseHeader( path, into, apiRegex, defs, consts, nameSet, noNewNames )
+	defs:AddFormat( "\t// %s", path );
 	local f = assert( io.open( path, "r" ), "Could not open " .. path );
 	for line in f:lines() do
 		-- Do not parse PFN typedefs; they're easily reconstructible.
@@ -204,20 +218,71 @@ local function ParseHeader( path, into, apiRegex, defs, nameSet, noNewNames )
 					args = NormalizeArgList( args );
 				};
 			end
-		elseif ( line:find( "#" ) and not line:find( "#include" ) )
-			or ( line:find( "typedef" ) and not line:find( "%(" ) ) then
-			-- Passthrough non-PFN typedefs and all preprocessing except #include
-			defs:Add( line );
+		elseif ( line:find( "#" ) and not line:find( "#include" ) ) then
+			local rawName, value = line:match( "#define%s+GL_([_%w]+)%s+0x(%w+)" );
+			if rawName and value then
+				local name, vendor = StripVendorSuffix( rawName );
+				if not constBanned[vendor] then
+					consts:Add{ name = name, vendor = vendor, value = "0x"..value };
+				end
+			end
+			::skip::
+		elseif( line:find( "typedef" ) and not line:find( "%(" ) ) then
+			-- Passthrough non-PFN typedefs
+			defs:Add( "\t" .. line );
 		end
 	end
+	defs:Add "";
 	f:close();
 end
 
+------------ Parse the headers ------------
+
+-- ES/gl2.h is a subset of glcorearb.h and does not need parsing.
+
 local funcRegex = "GLAPI%s+(.+)APIENTRY%s+(%w+)%s*%((.*)%)";
 local funcRegexES = "GL_APICALL%s+(.+)GL_APIENTRY%s+(%w+)%s*%((.*)%)";
-ParseHeader( glHeaderPath .. "/glcorearb.h", procedures, funcRegex, definitions, nameset );
--- ParseHeader( glHeaderPath .. "/glext.h", procedures, funcRegex, definitions, nameset, true );
-ParseHeader( glHeaderPath .. "/gl2ext.h", procedures, funcRegexES, definitions, nameset, true );
+ParseHeader( glHeaderPath .. "/glcorearb.h", procedures, funcRegex, definitions, consts, nameset );
+ParseHeader( glHeaderPath .. "/gl2ext.h", procedures, funcRegexES, List(), consts, nameset, true );
+-- Typedefs are redirected to a dummy list here on purpose.
+-- The only unique typedef from gl2ext is this:
+definitions:Add "\ttypedef void *GLeglClientBufferEXT;";
+
+------------ Sort out constants ------------
+
+local cppConsts = List();
+do
+	local constBuckets = {};
+	for i=1, #consts do
+		local vendor = consts[i].vendor or "core";
+		constBuckets[consts[i].name] = constBuckets[consts[i].name] or {};
+		constBuckets[consts[i].name][vendor] = consts[i].value;
+	end
+	local names = {};
+	for i=1, #consts do
+		local k = consts[i].name;
+		local b = constBuckets[k];
+		if k == "WAIT_FAILED" then
+			-- Win32 actually #defines WAIT_FAILED !
+			-- This is epic fail on MS's part and
+			-- forces us to do this nonsense:
+			k = "_WAIT_FAILED";
+		end
+		if b and not names[k] then
+			names[k] = true;
+			-- I have empirically tested that constants in GL with the same name do not differ,
+			-- at least for these suffixes.
+			local v = b.core or b.KHR or b.ARB or b.OES or b.EXT;
+			if v then
+				local T = v:find( "ull" ) and "GLuint64" or "GLenum";
+				cppConsts:AddFormat( "\tstatic constexpr const %s %s = %s;", T, k, v );
+			end
+		end
+	end
+end
+
+
+------------ Sort out procedures ------------
 
 local procTable = {};
 
@@ -247,15 +312,7 @@ for i=1, #procedures do
 	procTable[p.name][key] = p;
 end
 
--- Sort procedures by procaddress priority.
--- Use the first function signature encountered,
--- and discard any signatures that do no match it.
--- For example, if a function exists in core,
--- try loading any of its aliases with the same signature as in core.
--- If a function does not exist in core but in ARB extensions, try that first
--- and compare all the signatures to the ARB version.
--- For sanity's sake, do not support mismatching function signatures,
--- and do not try to specialize the loader between platforms.
+-- Procedure load priority: core -> ARB -> EXT -> KHR -> OES
 local priorityList = List{ "core" }:Join( vendorSuffixes );
 
 local typedefs = List();
@@ -282,6 +339,9 @@ for s, str in ipairs( uniqueNames ) do
 	end
 end
 
+
+------------ Write files ------------
+
 -- Write loader header
 local f = io.open( sourceTreePath .. "/include/mt_opengl.h", "wb" );
 f:write[[
@@ -296,22 +356,31 @@ f:write[[
 #include "IContextManager.h"
 #include <KHR/khrplatform.h>
 
-// This file contains substantial portions of OpenGL headers
-// originally released under the MIT license:
-// glcorearb.h gl2ext.h Copyright 2013-2020 The Khronos Group Inc.
+#ifndef APIENTRY
+	#define APIENTRY
+#endif
+#ifndef APIENTRYP
+	#define APIENTRYP APIENTRY *
+#endif
+#ifndef GLAPI
+	#define GLAPI extern
+#endif
 
 ]];
-f:write( definitions:Concat( "\n" ) );
+
 f:write[[
-
-// The script will miss this particular typedef thinking it's a PFN,
-// so we have to paste it in manually. It's the only such type in OpenGL.
-typedef void (APIENTRY *GLDEBUGPROC)
-	(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const void *userParam);
-
 class OpenGLProcedures {
 private:
 ]];
+f:write( definitions:Concat( "\n" ) );
+f:write( "\n" );
+f:write[[
+	// The script will miss this particular typedef thinking it's a PFN,
+	// so we have to paste it in manually. It's the only such type in OpenGL.
+	typedef void (APIENTRY *GLDEBUGPROC)
+		(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const void *userParam);
+
+]]
 f:write( typedefs:Concat( "\n" ) );
 f:write( "\n\n" );
 f:write [[
@@ -325,23 +394,27 @@ public:
 	{
 		return extensions.find(ext) != extensions.end();
 	}
+
 ]];
 f:write( pointers:Concat( "\n" ) );
+f:write( "\n\n" );
+f:write( cppConsts:Concat( "\n" ) );
 f:write( "\n\n" );
 f:write( "};\n" );
 f:write( "\n//Global GL procedures object.\n" );
 f:write( [[
-	#ifdef WIN32
-		#ifdef MINETEST_CLIENT
-			#define DLL_SHARED __declspec(dllimport)
-		#else
-			#define DLL_SHARED __declspec(dllexport)
-		#endif
+#ifdef WIN32
+	#ifdef MINETEST_CLIENT
+		#define DLL_SHARED __declspec(dllimport)
 	#else
-		// On Linux, this supposedly works out of the box.
-		#define DLL_SHARED
-		// And on OSX, everything is linked statically anyway.
+		#define DLL_SHARED __declspec(dllexport)
 	#endif
+#else
+	// On Linux, this supposedly works out of the box.
+	#define DLL_SHARED
+	// And on OSX, everything is linked statically anyway.
+#endif
+
 ]] );
 f:write( "DLL_SHARED extern OpenGLProcedures GL;\n" );
 f:close();
@@ -363,7 +436,7 @@ f:write( loader:Concat() );
 f:write[[
 
 	// get the extension string, chop it up
-	std::string ext_string = std::string((char*)GetString(GL_EXTENSIONS));
+	std::string ext_string = std::string((char*)GetString(EXTENSIONS));
 	std::stringstream ext_ss(ext_string);
 	std::string tmp;
 	while (getline(ext_ss, tmp, ' '))

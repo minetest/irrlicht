@@ -9,5678 +9,51 @@
 #include "IContextManager.h"
 #include <KHR/khrplatform.h>
 
-// This file contains substantial portions of OpenGL headers
-// originally released under the MIT license:
-// glcorearb.h gl2ext.h Copyright 2013-2020 The Khronos Group Inc.
-
-
-// ./glcorearb.h
-
-
-#ifndef __gl_glcorearb_h_
-#define __gl_glcorearb_h_ 1
-#ifdef __cplusplus
-#endif
-#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-#endif
 #ifndef APIENTRY
-#define APIENTRY
+	#define APIENTRY
 #endif
 #ifndef APIENTRYP
-#define APIENTRYP APIENTRY *
+	#define APIENTRYP APIENTRY *
 #endif
 #ifndef GLAPI
-#define GLAPI extern
+	#define GLAPI extern
 #endif
-#ifndef GL_VERSION_1_0
-#define GL_VERSION_1_0 1
-typedef void GLvoid;
-typedef unsigned int GLenum;
-typedef khronos_float_t GLfloat;
-typedef int GLint;
-typedef int GLsizei;
-typedef unsigned int GLbitfield;
-typedef double GLdouble;
-typedef unsigned int GLuint;
-typedef unsigned char GLboolean;
-typedef khronos_uint8_t GLubyte;
-#define GL_DEPTH_BUFFER_BIT               0x00000100
-#define GL_STENCIL_BUFFER_BIT             0x00000400
-#define GL_COLOR_BUFFER_BIT               0x00004000
-#define GL_FALSE                          0
-#define GL_TRUE                           1
-#define GL_POINTS                         0x0000
-#define GL_LINES                          0x0001
-#define GL_LINE_LOOP                      0x0002
-#define GL_LINE_STRIP                     0x0003
-#define GL_TRIANGLES                      0x0004
-#define GL_TRIANGLE_STRIP                 0x0005
-#define GL_TRIANGLE_FAN                   0x0006
-#define GL_QUADS                          0x0007
-#define GL_NEVER                          0x0200
-#define GL_LESS                           0x0201
-#define GL_EQUAL                          0x0202
-#define GL_LEQUAL                         0x0203
-#define GL_GREATER                        0x0204
-#define GL_NOTEQUAL                       0x0205
-#define GL_GEQUAL                         0x0206
-#define GL_ALWAYS                         0x0207
-#define GL_ZERO                           0
-#define GL_ONE                            1
-#define GL_SRC_COLOR                      0x0300
-#define GL_ONE_MINUS_SRC_COLOR            0x0301
-#define GL_SRC_ALPHA                      0x0302
-#define GL_ONE_MINUS_SRC_ALPHA            0x0303
-#define GL_DST_ALPHA                      0x0304
-#define GL_ONE_MINUS_DST_ALPHA            0x0305
-#define GL_DST_COLOR                      0x0306
-#define GL_ONE_MINUS_DST_COLOR            0x0307
-#define GL_SRC_ALPHA_SATURATE             0x0308
-#define GL_NONE                           0
-#define GL_FRONT_LEFT                     0x0400
-#define GL_FRONT_RIGHT                    0x0401
-#define GL_BACK_LEFT                      0x0402
-#define GL_BACK_RIGHT                     0x0403
-#define GL_FRONT                          0x0404
-#define GL_BACK                           0x0405
-#define GL_LEFT                           0x0406
-#define GL_RIGHT                          0x0407
-#define GL_FRONT_AND_BACK                 0x0408
-#define GL_NO_ERROR                       0
-#define GL_INVALID_ENUM                   0x0500
-#define GL_INVALID_VALUE                  0x0501
-#define GL_INVALID_OPERATION              0x0502
-#define GL_OUT_OF_MEMORY                  0x0505
-#define GL_CW                             0x0900
-#define GL_CCW                            0x0901
-#define GL_POINT_SIZE                     0x0B11
-#define GL_POINT_SIZE_RANGE               0x0B12
-#define GL_POINT_SIZE_GRANULARITY         0x0B13
-#define GL_LINE_SMOOTH                    0x0B20
-#define GL_LINE_WIDTH                     0x0B21
-#define GL_LINE_WIDTH_RANGE               0x0B22
-#define GL_LINE_WIDTH_GRANULARITY         0x0B23
-#define GL_POLYGON_MODE                   0x0B40
-#define GL_POLYGON_SMOOTH                 0x0B41
-#define GL_CULL_FACE                      0x0B44
-#define GL_CULL_FACE_MODE                 0x0B45
-#define GL_FRONT_FACE                     0x0B46
-#define GL_DEPTH_RANGE                    0x0B70
-#define GL_DEPTH_TEST                     0x0B71
-#define GL_DEPTH_WRITEMASK                0x0B72
-#define GL_DEPTH_CLEAR_VALUE              0x0B73
-#define GL_DEPTH_FUNC                     0x0B74
-#define GL_STENCIL_TEST                   0x0B90
-#define GL_STENCIL_CLEAR_VALUE            0x0B91
-#define GL_STENCIL_FUNC                   0x0B92
-#define GL_STENCIL_VALUE_MASK             0x0B93
-#define GL_STENCIL_FAIL                   0x0B94
-#define GL_STENCIL_PASS_DEPTH_FAIL        0x0B95
-#define GL_STENCIL_PASS_DEPTH_PASS        0x0B96
-#define GL_STENCIL_REF                    0x0B97
-#define GL_STENCIL_WRITEMASK              0x0B98
-#define GL_VIEWPORT                       0x0BA2
-#define GL_DITHER                         0x0BD0
-#define GL_BLEND_DST                      0x0BE0
-#define GL_BLEND_SRC                      0x0BE1
-#define GL_BLEND                          0x0BE2
-#define GL_LOGIC_OP_MODE                  0x0BF0
-#define GL_DRAW_BUFFER                    0x0C01
-#define GL_READ_BUFFER                    0x0C02
-#define GL_SCISSOR_BOX                    0x0C10
-#define GL_SCISSOR_TEST                   0x0C11
-#define GL_COLOR_CLEAR_VALUE              0x0C22
-#define GL_COLOR_WRITEMASK                0x0C23
-#define GL_DOUBLEBUFFER                   0x0C32
-#define GL_STEREO                         0x0C33
-#define GL_LINE_SMOOTH_HINT               0x0C52
-#define GL_POLYGON_SMOOTH_HINT            0x0C53
-#define GL_UNPACK_SWAP_BYTES              0x0CF0
-#define GL_UNPACK_LSB_FIRST               0x0CF1
-#define GL_UNPACK_ROW_LENGTH              0x0CF2
-#define GL_UNPACK_SKIP_ROWS               0x0CF3
-#define GL_UNPACK_SKIP_PIXELS             0x0CF4
-#define GL_UNPACK_ALIGNMENT               0x0CF5
-#define GL_PACK_SWAP_BYTES                0x0D00
-#define GL_PACK_LSB_FIRST                 0x0D01
-#define GL_PACK_ROW_LENGTH                0x0D02
-#define GL_PACK_SKIP_ROWS                 0x0D03
-#define GL_PACK_SKIP_PIXELS               0x0D04
-#define GL_PACK_ALIGNMENT                 0x0D05
-#define GL_MAX_TEXTURE_SIZE               0x0D33
-#define GL_MAX_VIEWPORT_DIMS              0x0D3A
-#define GL_SUBPIXEL_BITS                  0x0D50
-#define GL_TEXTURE_1D                     0x0DE0
-#define GL_TEXTURE_2D                     0x0DE1
-#define GL_TEXTURE_WIDTH                  0x1000
-#define GL_TEXTURE_HEIGHT                 0x1001
-#define GL_TEXTURE_BORDER_COLOR           0x1004
-#define GL_DONT_CARE                      0x1100
-#define GL_FASTEST                        0x1101
-#define GL_NICEST                         0x1102
-#define GL_BYTE                           0x1400
-#define GL_UNSIGNED_BYTE                  0x1401
-#define GL_SHORT                          0x1402
-#define GL_UNSIGNED_SHORT                 0x1403
-#define GL_INT                            0x1404
-#define GL_UNSIGNED_INT                   0x1405
-#define GL_FLOAT                          0x1406
-#define GL_STACK_OVERFLOW                 0x0503
-#define GL_STACK_UNDERFLOW                0x0504
-#define GL_CLEAR                          0x1500
-#define GL_AND                            0x1501
-#define GL_AND_REVERSE                    0x1502
-#define GL_COPY                           0x1503
-#define GL_AND_INVERTED                   0x1504
-#define GL_NOOP                           0x1505
-#define GL_XOR                            0x1506
-#define GL_OR                             0x1507
-#define GL_NOR                            0x1508
-#define GL_EQUIV                          0x1509
-#define GL_INVERT                         0x150A
-#define GL_OR_REVERSE                     0x150B
-#define GL_COPY_INVERTED                  0x150C
-#define GL_OR_INVERTED                    0x150D
-#define GL_NAND                           0x150E
-#define GL_SET                            0x150F
-#define GL_TEXTURE                        0x1702
-#define GL_COLOR                          0x1800
-#define GL_DEPTH                          0x1801
-#define GL_STENCIL                        0x1802
-#define GL_STENCIL_INDEX                  0x1901
-#define GL_DEPTH_COMPONENT                0x1902
-#define GL_RED                            0x1903
-#define GL_GREEN                          0x1904
-#define GL_BLUE                           0x1905
-#define GL_ALPHA                          0x1906
-#define GL_RGB                            0x1907
-#define GL_RGBA                           0x1908
-#define GL_POINT                          0x1B00
-#define GL_LINE                           0x1B01
-#define GL_FILL                           0x1B02
-#define GL_KEEP                           0x1E00
-#define GL_REPLACE                        0x1E01
-#define GL_INCR                           0x1E02
-#define GL_DECR                           0x1E03
-#define GL_VENDOR                         0x1F00
-#define GL_RENDERER                       0x1F01
-#define GL_VERSION                        0x1F02
-#define GL_EXTENSIONS                     0x1F03
-#define GL_NEAREST                        0x2600
-#define GL_LINEAR                         0x2601
-#define GL_NEAREST_MIPMAP_NEAREST         0x2700
-#define GL_LINEAR_MIPMAP_NEAREST          0x2701
-#define GL_NEAREST_MIPMAP_LINEAR          0x2702
-#define GL_LINEAR_MIPMAP_LINEAR           0x2703
-#define GL_TEXTURE_MAG_FILTER             0x2800
-#define GL_TEXTURE_MIN_FILTER             0x2801
-#define GL_TEXTURE_WRAP_S                 0x2802
-#define GL_TEXTURE_WRAP_T                 0x2803
-#define GL_REPEAT                         0x2901
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_1_0 */
-#ifndef GL_VERSION_1_1
-#define GL_VERSION_1_1 1
-typedef khronos_float_t GLclampf;
-typedef double GLclampd;
-#define GL_COLOR_LOGIC_OP                 0x0BF2
-#define GL_POLYGON_OFFSET_UNITS           0x2A00
-#define GL_POLYGON_OFFSET_POINT           0x2A01
-#define GL_POLYGON_OFFSET_LINE            0x2A02
-#define GL_POLYGON_OFFSET_FILL            0x8037
-#define GL_POLYGON_OFFSET_FACTOR          0x8038
-#define GL_TEXTURE_BINDING_1D             0x8068
-#define GL_TEXTURE_BINDING_2D             0x8069
-#define GL_TEXTURE_INTERNAL_FORMAT        0x1003
-#define GL_TEXTURE_RED_SIZE               0x805C
-#define GL_TEXTURE_GREEN_SIZE             0x805D
-#define GL_TEXTURE_BLUE_SIZE              0x805E
-#define GL_TEXTURE_ALPHA_SIZE             0x805F
-#define GL_DOUBLE                         0x140A
-#define GL_PROXY_TEXTURE_1D               0x8063
-#define GL_PROXY_TEXTURE_2D               0x8064
-#define GL_R3_G3_B2                       0x2A10
-#define GL_RGB4                           0x804F
-#define GL_RGB5                           0x8050
-#define GL_RGB8                           0x8051
-#define GL_RGB10                          0x8052
-#define GL_RGB12                          0x8053
-#define GL_RGB16                          0x8054
-#define GL_RGBA2                          0x8055
-#define GL_RGBA4                          0x8056
-#define GL_RGB5_A1                        0x8057
-#define GL_RGBA8                          0x8058
-#define GL_RGB10_A2                       0x8059
-#define GL_RGBA12                         0x805A
-#define GL_RGBA16                         0x805B
-#define GL_VERTEX_ARRAY                   0x8074
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_1_1 */
-#ifndef GL_VERSION_1_2
-#define GL_VERSION_1_2 1
-#define GL_UNSIGNED_BYTE_3_3_2            0x8032
-#define GL_UNSIGNED_SHORT_4_4_4_4         0x8033
-#define GL_UNSIGNED_SHORT_5_5_5_1         0x8034
-#define GL_UNSIGNED_INT_8_8_8_8           0x8035
-#define GL_UNSIGNED_INT_10_10_10_2        0x8036
-#define GL_TEXTURE_BINDING_3D             0x806A
-#define GL_PACK_SKIP_IMAGES               0x806B
-#define GL_PACK_IMAGE_HEIGHT              0x806C
-#define GL_UNPACK_SKIP_IMAGES             0x806D
-#define GL_UNPACK_IMAGE_HEIGHT            0x806E
-#define GL_TEXTURE_3D                     0x806F
-#define GL_PROXY_TEXTURE_3D               0x8070
-#define GL_TEXTURE_DEPTH                  0x8071
-#define GL_TEXTURE_WRAP_R                 0x8072
-#define GL_MAX_3D_TEXTURE_SIZE            0x8073
-#define GL_UNSIGNED_BYTE_2_3_3_REV        0x8362
-#define GL_UNSIGNED_SHORT_5_6_5           0x8363
-#define GL_UNSIGNED_SHORT_5_6_5_REV       0x8364
-#define GL_UNSIGNED_SHORT_4_4_4_4_REV     0x8365
-#define GL_UNSIGNED_SHORT_1_5_5_5_REV     0x8366
-#define GL_UNSIGNED_INT_8_8_8_8_REV       0x8367
-#define GL_UNSIGNED_INT_2_10_10_10_REV    0x8368
-#define GL_BGR                            0x80E0
-#define GL_BGRA                           0x80E1
-#define GL_MAX_ELEMENTS_VERTICES          0x80E8
-#define GL_MAX_ELEMENTS_INDICES           0x80E9
-#define GL_CLAMP_TO_EDGE                  0x812F
-#define GL_TEXTURE_MIN_LOD                0x813A
-#define GL_TEXTURE_MAX_LOD                0x813B
-#define GL_TEXTURE_BASE_LEVEL             0x813C
-#define GL_TEXTURE_MAX_LEVEL              0x813D
-#define GL_SMOOTH_POINT_SIZE_RANGE        0x0B12
-#define GL_SMOOTH_POINT_SIZE_GRANULARITY  0x0B13
-#define GL_SMOOTH_LINE_WIDTH_RANGE        0x0B22
-#define GL_SMOOTH_LINE_WIDTH_GRANULARITY  0x0B23
-#define GL_ALIASED_LINE_WIDTH_RANGE       0x846E
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_1_2 */
-#ifndef GL_VERSION_1_3
-#define GL_VERSION_1_3 1
-#define GL_TEXTURE0                       0x84C0
-#define GL_TEXTURE1                       0x84C1
-#define GL_TEXTURE2                       0x84C2
-#define GL_TEXTURE3                       0x84C3
-#define GL_TEXTURE4                       0x84C4
-#define GL_TEXTURE5                       0x84C5
-#define GL_TEXTURE6                       0x84C6
-#define GL_TEXTURE7                       0x84C7
-#define GL_TEXTURE8                       0x84C8
-#define GL_TEXTURE9                       0x84C9
-#define GL_TEXTURE10                      0x84CA
-#define GL_TEXTURE11                      0x84CB
-#define GL_TEXTURE12                      0x84CC
-#define GL_TEXTURE13                      0x84CD
-#define GL_TEXTURE14                      0x84CE
-#define GL_TEXTURE15                      0x84CF
-#define GL_TEXTURE16                      0x84D0
-#define GL_TEXTURE17                      0x84D1
-#define GL_TEXTURE18                      0x84D2
-#define GL_TEXTURE19                      0x84D3
-#define GL_TEXTURE20                      0x84D4
-#define GL_TEXTURE21                      0x84D5
-#define GL_TEXTURE22                      0x84D6
-#define GL_TEXTURE23                      0x84D7
-#define GL_TEXTURE24                      0x84D8
-#define GL_TEXTURE25                      0x84D9
-#define GL_TEXTURE26                      0x84DA
-#define GL_TEXTURE27                      0x84DB
-#define GL_TEXTURE28                      0x84DC
-#define GL_TEXTURE29                      0x84DD
-#define GL_TEXTURE30                      0x84DE
-#define GL_TEXTURE31                      0x84DF
-#define GL_ACTIVE_TEXTURE                 0x84E0
-#define GL_MULTISAMPLE                    0x809D
-#define GL_SAMPLE_ALPHA_TO_COVERAGE       0x809E
-#define GL_SAMPLE_ALPHA_TO_ONE            0x809F
-#define GL_SAMPLE_COVERAGE                0x80A0
-#define GL_SAMPLE_BUFFERS                 0x80A8
-#define GL_SAMPLES                        0x80A9
-#define GL_SAMPLE_COVERAGE_VALUE          0x80AA
-#define GL_SAMPLE_COVERAGE_INVERT         0x80AB
-#define GL_TEXTURE_CUBE_MAP               0x8513
-#define GL_TEXTURE_BINDING_CUBE_MAP       0x8514
-#define GL_TEXTURE_CUBE_MAP_POSITIVE_X    0x8515
-#define GL_TEXTURE_CUBE_MAP_NEGATIVE_X    0x8516
-#define GL_TEXTURE_CUBE_MAP_POSITIVE_Y    0x8517
-#define GL_TEXTURE_CUBE_MAP_NEGATIVE_Y    0x8518
-#define GL_TEXTURE_CUBE_MAP_POSITIVE_Z    0x8519
-#define GL_TEXTURE_CUBE_MAP_NEGATIVE_Z    0x851A
-#define GL_PROXY_TEXTURE_CUBE_MAP         0x851B
-#define GL_MAX_CUBE_MAP_TEXTURE_SIZE      0x851C
-#define GL_COMPRESSED_RGB                 0x84ED
-#define GL_COMPRESSED_RGBA                0x84EE
-#define GL_TEXTURE_COMPRESSION_HINT       0x84EF
-#define GL_TEXTURE_COMPRESSED_IMAGE_SIZE  0x86A0
-#define GL_TEXTURE_COMPRESSED             0x86A1
-#define GL_NUM_COMPRESSED_TEXTURE_FORMATS 0x86A2
-#define GL_COMPRESSED_TEXTURE_FORMATS     0x86A3
-#define GL_CLAMP_TO_BORDER                0x812D
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_1_3 */
-#ifndef GL_VERSION_1_4
-#define GL_VERSION_1_4 1
-#define GL_BLEND_DST_RGB                  0x80C8
-#define GL_BLEND_SRC_RGB                  0x80C9
-#define GL_BLEND_DST_ALPHA                0x80CA
-#define GL_BLEND_SRC_ALPHA                0x80CB
-#define GL_POINT_FADE_THRESHOLD_SIZE      0x8128
-#define GL_DEPTH_COMPONENT16              0x81A5
-#define GL_DEPTH_COMPONENT24              0x81A6
-#define GL_DEPTH_COMPONENT32              0x81A7
-#define GL_MIRRORED_REPEAT                0x8370
-#define GL_MAX_TEXTURE_LOD_BIAS           0x84FD
-#define GL_TEXTURE_LOD_BIAS               0x8501
-#define GL_INCR_WRAP                      0x8507
-#define GL_DECR_WRAP                      0x8508
-#define GL_TEXTURE_DEPTH_SIZE             0x884A
-#define GL_TEXTURE_COMPARE_MODE           0x884C
-#define GL_TEXTURE_COMPARE_FUNC           0x884D
-#define GL_BLEND_COLOR                    0x8005
-#define GL_BLEND_EQUATION                 0x8009
-#define GL_CONSTANT_COLOR                 0x8001
-#define GL_ONE_MINUS_CONSTANT_COLOR       0x8002
-#define GL_CONSTANT_ALPHA                 0x8003
-#define GL_ONE_MINUS_CONSTANT_ALPHA       0x8004
-#define GL_FUNC_ADD                       0x8006
-#define GL_FUNC_REVERSE_SUBTRACT          0x800B
-#define GL_FUNC_SUBTRACT                  0x800A
-#define GL_MIN                            0x8007
-#define GL_MAX                            0x8008
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_1_4 */
-#ifndef GL_VERSION_1_5
-#define GL_VERSION_1_5 1
-typedef khronos_ssize_t GLsizeiptr;
-typedef khronos_intptr_t GLintptr;
-#define GL_BUFFER_SIZE                    0x8764
-#define GL_BUFFER_USAGE                   0x8765
-#define GL_QUERY_COUNTER_BITS             0x8864
-#define GL_CURRENT_QUERY                  0x8865
-#define GL_QUERY_RESULT                   0x8866
-#define GL_QUERY_RESULT_AVAILABLE         0x8867
-#define GL_ARRAY_BUFFER                   0x8892
-#define GL_ELEMENT_ARRAY_BUFFER           0x8893
-#define GL_ARRAY_BUFFER_BINDING           0x8894
-#define GL_ELEMENT_ARRAY_BUFFER_BINDING   0x8895
-#define GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING 0x889F
-#define GL_READ_ONLY                      0x88B8
-#define GL_WRITE_ONLY                     0x88B9
-#define GL_READ_WRITE                     0x88BA
-#define GL_BUFFER_ACCESS                  0x88BB
-#define GL_BUFFER_MAPPED                  0x88BC
-#define GL_BUFFER_MAP_POINTER             0x88BD
-#define GL_STREAM_DRAW                    0x88E0
-#define GL_STREAM_READ                    0x88E1
-#define GL_STREAM_COPY                    0x88E2
-#define GL_STATIC_DRAW                    0x88E4
-#define GL_STATIC_READ                    0x88E5
-#define GL_STATIC_COPY                    0x88E6
-#define GL_DYNAMIC_DRAW                   0x88E8
-#define GL_DYNAMIC_READ                   0x88E9
-#define GL_DYNAMIC_COPY                   0x88EA
-#define GL_SAMPLES_PASSED                 0x8914
-#define GL_SRC1_ALPHA                     0x8589
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_1_5 */
-#ifndef GL_VERSION_2_0
-#define GL_VERSION_2_0 1
-typedef char GLchar;
-typedef khronos_int16_t GLshort;
-typedef khronos_int8_t GLbyte;
-typedef khronos_uint16_t GLushort;
-#define GL_BLEND_EQUATION_RGB             0x8009
-#define GL_VERTEX_ATTRIB_ARRAY_ENABLED    0x8622
-#define GL_VERTEX_ATTRIB_ARRAY_SIZE       0x8623
-#define GL_VERTEX_ATTRIB_ARRAY_STRIDE     0x8624
-#define GL_VERTEX_ATTRIB_ARRAY_TYPE       0x8625
-#define GL_CURRENT_VERTEX_ATTRIB          0x8626
-#define GL_VERTEX_PROGRAM_POINT_SIZE      0x8642
-#define GL_VERTEX_ATTRIB_ARRAY_POINTER    0x8645
-#define GL_STENCIL_BACK_FUNC              0x8800
-#define GL_STENCIL_BACK_FAIL              0x8801
-#define GL_STENCIL_BACK_PASS_DEPTH_FAIL   0x8802
-#define GL_STENCIL_BACK_PASS_DEPTH_PASS   0x8803
-#define GL_MAX_DRAW_BUFFERS               0x8824
-#define GL_DRAW_BUFFER0                   0x8825
-#define GL_DRAW_BUFFER1                   0x8826
-#define GL_DRAW_BUFFER2                   0x8827
-#define GL_DRAW_BUFFER3                   0x8828
-#define GL_DRAW_BUFFER4                   0x8829
-#define GL_DRAW_BUFFER5                   0x882A
-#define GL_DRAW_BUFFER6                   0x882B
-#define GL_DRAW_BUFFER7                   0x882C
-#define GL_DRAW_BUFFER8                   0x882D
-#define GL_DRAW_BUFFER9                   0x882E
-#define GL_DRAW_BUFFER10                  0x882F
-#define GL_DRAW_BUFFER11                  0x8830
-#define GL_DRAW_BUFFER12                  0x8831
-#define GL_DRAW_BUFFER13                  0x8832
-#define GL_DRAW_BUFFER14                  0x8833
-#define GL_DRAW_BUFFER15                  0x8834
-#define GL_BLEND_EQUATION_ALPHA           0x883D
-#define GL_MAX_VERTEX_ATTRIBS             0x8869
-#define GL_VERTEX_ATTRIB_ARRAY_NORMALIZED 0x886A
-#define GL_MAX_TEXTURE_IMAGE_UNITS        0x8872
-#define GL_FRAGMENT_SHADER                0x8B30
-#define GL_VERTEX_SHADER                  0x8B31
-#define GL_MAX_FRAGMENT_UNIFORM_COMPONENTS 0x8B49
-#define GL_MAX_VERTEX_UNIFORM_COMPONENTS  0x8B4A
-#define GL_MAX_VARYING_FLOATS             0x8B4B
-#define GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS 0x8B4C
-#define GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS 0x8B4D
-#define GL_SHADER_TYPE                    0x8B4F
-#define GL_FLOAT_VEC2                     0x8B50
-#define GL_FLOAT_VEC3                     0x8B51
-#define GL_FLOAT_VEC4                     0x8B52
-#define GL_INT_VEC2                       0x8B53
-#define GL_INT_VEC3                       0x8B54
-#define GL_INT_VEC4                       0x8B55
-#define GL_BOOL                           0x8B56
-#define GL_BOOL_VEC2                      0x8B57
-#define GL_BOOL_VEC3                      0x8B58
-#define GL_BOOL_VEC4                      0x8B59
-#define GL_FLOAT_MAT2                     0x8B5A
-#define GL_FLOAT_MAT3                     0x8B5B
-#define GL_FLOAT_MAT4                     0x8B5C
-#define GL_SAMPLER_1D                     0x8B5D
-#define GL_SAMPLER_2D                     0x8B5E
-#define GL_SAMPLER_3D                     0x8B5F
-#define GL_SAMPLER_CUBE                   0x8B60
-#define GL_SAMPLER_1D_SHADOW              0x8B61
-#define GL_SAMPLER_2D_SHADOW              0x8B62
-#define GL_DELETE_STATUS                  0x8B80
-#define GL_COMPILE_STATUS                 0x8B81
-#define GL_LINK_STATUS                    0x8B82
-#define GL_VALIDATE_STATUS                0x8B83
-#define GL_INFO_LOG_LENGTH                0x8B84
-#define GL_ATTACHED_SHADERS               0x8B85
-#define GL_ACTIVE_UNIFORMS                0x8B86
-#define GL_ACTIVE_UNIFORM_MAX_LENGTH      0x8B87
-#define GL_SHADER_SOURCE_LENGTH           0x8B88
-#define GL_ACTIVE_ATTRIBUTES              0x8B89
-#define GL_ACTIVE_ATTRIBUTE_MAX_LENGTH    0x8B8A
-#define GL_FRAGMENT_SHADER_DERIVATIVE_HINT 0x8B8B
-#define GL_SHADING_LANGUAGE_VERSION       0x8B8C
-#define GL_CURRENT_PROGRAM                0x8B8D
-#define GL_POINT_SPRITE_COORD_ORIGIN      0x8CA0
-#define GL_LOWER_LEFT                     0x8CA1
-#define GL_UPPER_LEFT                     0x8CA2
-#define GL_STENCIL_BACK_REF               0x8CA3
-#define GL_STENCIL_BACK_VALUE_MASK        0x8CA4
-#define GL_STENCIL_BACK_WRITEMASK         0x8CA5
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_2_0 */
-#ifndef GL_VERSION_2_1
-#define GL_VERSION_2_1 1
-#define GL_PIXEL_PACK_BUFFER              0x88EB
-#define GL_PIXEL_UNPACK_BUFFER            0x88EC
-#define GL_PIXEL_PACK_BUFFER_BINDING      0x88ED
-#define GL_PIXEL_UNPACK_BUFFER_BINDING    0x88EF
-#define GL_FLOAT_MAT2x3                   0x8B65
-#define GL_FLOAT_MAT2x4                   0x8B66
-#define GL_FLOAT_MAT3x2                   0x8B67
-#define GL_FLOAT_MAT3x4                   0x8B68
-#define GL_FLOAT_MAT4x2                   0x8B69
-#define GL_FLOAT_MAT4x3                   0x8B6A
-#define GL_SRGB                           0x8C40
-#define GL_SRGB8                          0x8C41
-#define GL_SRGB_ALPHA                     0x8C42
-#define GL_SRGB8_ALPHA8                   0x8C43
-#define GL_COMPRESSED_SRGB                0x8C48
-#define GL_COMPRESSED_SRGB_ALPHA          0x8C49
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_2_1 */
-#ifndef GL_VERSION_3_0
-#define GL_VERSION_3_0 1
-typedef khronos_uint16_t GLhalf;
-#define GL_COMPARE_REF_TO_TEXTURE         0x884E
-#define GL_CLIP_DISTANCE0                 0x3000
-#define GL_CLIP_DISTANCE1                 0x3001
-#define GL_CLIP_DISTANCE2                 0x3002
-#define GL_CLIP_DISTANCE3                 0x3003
-#define GL_CLIP_DISTANCE4                 0x3004
-#define GL_CLIP_DISTANCE5                 0x3005
-#define GL_CLIP_DISTANCE6                 0x3006
-#define GL_CLIP_DISTANCE7                 0x3007
-#define GL_MAX_CLIP_DISTANCES             0x0D32
-#define GL_MAJOR_VERSION                  0x821B
-#define GL_MINOR_VERSION                  0x821C
-#define GL_NUM_EXTENSIONS                 0x821D
-#define GL_CONTEXT_FLAGS                  0x821E
-#define GL_COMPRESSED_RED                 0x8225
-#define GL_COMPRESSED_RG                  0x8226
-#define GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT 0x00000001
-#define GL_RGBA32F                        0x8814
-#define GL_RGB32F                         0x8815
-#define GL_RGBA16F                        0x881A
-#define GL_RGB16F                         0x881B
-#define GL_VERTEX_ATTRIB_ARRAY_INTEGER    0x88FD
-#define GL_MAX_ARRAY_TEXTURE_LAYERS       0x88FF
-#define GL_MIN_PROGRAM_TEXEL_OFFSET       0x8904
-#define GL_MAX_PROGRAM_TEXEL_OFFSET       0x8905
-#define GL_CLAMP_READ_COLOR               0x891C
-#define GL_FIXED_ONLY                     0x891D
-#define GL_MAX_VARYING_COMPONENTS         0x8B4B
-#define GL_TEXTURE_1D_ARRAY               0x8C18
-#define GL_PROXY_TEXTURE_1D_ARRAY         0x8C19
-#define GL_TEXTURE_2D_ARRAY               0x8C1A
-#define GL_PROXY_TEXTURE_2D_ARRAY         0x8C1B
-#define GL_TEXTURE_BINDING_1D_ARRAY       0x8C1C
-#define GL_TEXTURE_BINDING_2D_ARRAY       0x8C1D
-#define GL_R11F_G11F_B10F                 0x8C3A
-#define GL_UNSIGNED_INT_10F_11F_11F_REV   0x8C3B
-#define GL_RGB9_E5                        0x8C3D
-#define GL_UNSIGNED_INT_5_9_9_9_REV       0x8C3E
-#define GL_TEXTURE_SHARED_SIZE            0x8C3F
-#define GL_TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH 0x8C76
-#define GL_TRANSFORM_FEEDBACK_BUFFER_MODE 0x8C7F
-#define GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS 0x8C80
-#define GL_TRANSFORM_FEEDBACK_VARYINGS    0x8C83
-#define GL_TRANSFORM_FEEDBACK_BUFFER_START 0x8C84
-#define GL_TRANSFORM_FEEDBACK_BUFFER_SIZE 0x8C85
-#define GL_PRIMITIVES_GENERATED           0x8C87
-#define GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN 0x8C88
-#define GL_RASTERIZER_DISCARD             0x8C89
-#define GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS 0x8C8A
-#define GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS 0x8C8B
-#define GL_INTERLEAVED_ATTRIBS            0x8C8C
-#define GL_SEPARATE_ATTRIBS               0x8C8D
-#define GL_TRANSFORM_FEEDBACK_BUFFER      0x8C8E
-#define GL_TRANSFORM_FEEDBACK_BUFFER_BINDING 0x8C8F
-#define GL_RGBA32UI                       0x8D70
-#define GL_RGB32UI                        0x8D71
-#define GL_RGBA16UI                       0x8D76
-#define GL_RGB16UI                        0x8D77
-#define GL_RGBA8UI                        0x8D7C
-#define GL_RGB8UI                         0x8D7D
-#define GL_RGBA32I                        0x8D82
-#define GL_RGB32I                         0x8D83
-#define GL_RGBA16I                        0x8D88
-#define GL_RGB16I                         0x8D89
-#define GL_RGBA8I                         0x8D8E
-#define GL_RGB8I                          0x8D8F
-#define GL_RED_INTEGER                    0x8D94
-#define GL_GREEN_INTEGER                  0x8D95
-#define GL_BLUE_INTEGER                   0x8D96
-#define GL_RGB_INTEGER                    0x8D98
-#define GL_RGBA_INTEGER                   0x8D99
-#define GL_BGR_INTEGER                    0x8D9A
-#define GL_BGRA_INTEGER                   0x8D9B
-#define GL_SAMPLER_1D_ARRAY               0x8DC0
-#define GL_SAMPLER_2D_ARRAY               0x8DC1
-#define GL_SAMPLER_1D_ARRAY_SHADOW        0x8DC3
-#define GL_SAMPLER_2D_ARRAY_SHADOW        0x8DC4
-#define GL_SAMPLER_CUBE_SHADOW            0x8DC5
-#define GL_UNSIGNED_INT_VEC2              0x8DC6
-#define GL_UNSIGNED_INT_VEC3              0x8DC7
-#define GL_UNSIGNED_INT_VEC4              0x8DC8
-#define GL_INT_SAMPLER_1D                 0x8DC9
-#define GL_INT_SAMPLER_2D                 0x8DCA
-#define GL_INT_SAMPLER_3D                 0x8DCB
-#define GL_INT_SAMPLER_CUBE               0x8DCC
-#define GL_INT_SAMPLER_1D_ARRAY           0x8DCE
-#define GL_INT_SAMPLER_2D_ARRAY           0x8DCF
-#define GL_UNSIGNED_INT_SAMPLER_1D        0x8DD1
-#define GL_UNSIGNED_INT_SAMPLER_2D        0x8DD2
-#define GL_UNSIGNED_INT_SAMPLER_3D        0x8DD3
-#define GL_UNSIGNED_INT_SAMPLER_CUBE      0x8DD4
-#define GL_UNSIGNED_INT_SAMPLER_1D_ARRAY  0x8DD6
-#define GL_UNSIGNED_INT_SAMPLER_2D_ARRAY  0x8DD7
-#define GL_QUERY_WAIT                     0x8E13
-#define GL_QUERY_NO_WAIT                  0x8E14
-#define GL_QUERY_BY_REGION_WAIT           0x8E15
-#define GL_QUERY_BY_REGION_NO_WAIT        0x8E16
-#define GL_BUFFER_ACCESS_FLAGS            0x911F
-#define GL_BUFFER_MAP_LENGTH              0x9120
-#define GL_BUFFER_MAP_OFFSET              0x9121
-#define GL_DEPTH_COMPONENT32F             0x8CAC
-#define GL_DEPTH32F_STENCIL8              0x8CAD
-#define GL_FLOAT_32_UNSIGNED_INT_24_8_REV 0x8DAD
-#define GL_INVALID_FRAMEBUFFER_OPERATION  0x0506
-#define GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING 0x8210
-#define GL_FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE 0x8211
-#define GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE 0x8212
-#define GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE 0x8213
-#define GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE 0x8214
-#define GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE 0x8215
-#define GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE 0x8216
-#define GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE 0x8217
-#define GL_FRAMEBUFFER_DEFAULT            0x8218
-#define GL_FRAMEBUFFER_UNDEFINED          0x8219
-#define GL_DEPTH_STENCIL_ATTACHMENT       0x821A
-#define GL_MAX_RENDERBUFFER_SIZE          0x84E8
-#define GL_DEPTH_STENCIL                  0x84F9
-#define GL_UNSIGNED_INT_24_8              0x84FA
-#define GL_DEPTH24_STENCIL8               0x88F0
-#define GL_TEXTURE_STENCIL_SIZE           0x88F1
-#define GL_TEXTURE_RED_TYPE               0x8C10
-#define GL_TEXTURE_GREEN_TYPE             0x8C11
-#define GL_TEXTURE_BLUE_TYPE              0x8C12
-#define GL_TEXTURE_ALPHA_TYPE             0x8C13
-#define GL_TEXTURE_DEPTH_TYPE             0x8C16
-#define GL_UNSIGNED_NORMALIZED            0x8C17
-#define GL_FRAMEBUFFER_BINDING            0x8CA6
-#define GL_DRAW_FRAMEBUFFER_BINDING       0x8CA6
-#define GL_RENDERBUFFER_BINDING           0x8CA7
-#define GL_READ_FRAMEBUFFER               0x8CA8
-#define GL_DRAW_FRAMEBUFFER               0x8CA9
-#define GL_READ_FRAMEBUFFER_BINDING       0x8CAA
-#define GL_RENDERBUFFER_SAMPLES           0x8CAB
-#define GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE 0x8CD0
-#define GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME 0x8CD1
-#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL 0x8CD2
-#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE 0x8CD3
-#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER 0x8CD4
-#define GL_FRAMEBUFFER_COMPLETE           0x8CD5
-#define GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT 0x8CD6
-#define GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT 0x8CD7
-#define GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER 0x8CDB
-#define GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER 0x8CDC
-#define GL_FRAMEBUFFER_UNSUPPORTED        0x8CDD
-#define GL_MAX_COLOR_ATTACHMENTS          0x8CDF
-#define GL_COLOR_ATTACHMENT0              0x8CE0
-#define GL_COLOR_ATTACHMENT1              0x8CE1
-#define GL_COLOR_ATTACHMENT2              0x8CE2
-#define GL_COLOR_ATTACHMENT3              0x8CE3
-#define GL_COLOR_ATTACHMENT4              0x8CE4
-#define GL_COLOR_ATTACHMENT5              0x8CE5
-#define GL_COLOR_ATTACHMENT6              0x8CE6
-#define GL_COLOR_ATTACHMENT7              0x8CE7
-#define GL_COLOR_ATTACHMENT8              0x8CE8
-#define GL_COLOR_ATTACHMENT9              0x8CE9
-#define GL_COLOR_ATTACHMENT10             0x8CEA
-#define GL_COLOR_ATTACHMENT11             0x8CEB
-#define GL_COLOR_ATTACHMENT12             0x8CEC
-#define GL_COLOR_ATTACHMENT13             0x8CED
-#define GL_COLOR_ATTACHMENT14             0x8CEE
-#define GL_COLOR_ATTACHMENT15             0x8CEF
-#define GL_COLOR_ATTACHMENT16             0x8CF0
-#define GL_COLOR_ATTACHMENT17             0x8CF1
-#define GL_COLOR_ATTACHMENT18             0x8CF2
-#define GL_COLOR_ATTACHMENT19             0x8CF3
-#define GL_COLOR_ATTACHMENT20             0x8CF4
-#define GL_COLOR_ATTACHMENT21             0x8CF5
-#define GL_COLOR_ATTACHMENT22             0x8CF6
-#define GL_COLOR_ATTACHMENT23             0x8CF7
-#define GL_COLOR_ATTACHMENT24             0x8CF8
-#define GL_COLOR_ATTACHMENT25             0x8CF9
-#define GL_COLOR_ATTACHMENT26             0x8CFA
-#define GL_COLOR_ATTACHMENT27             0x8CFB
-#define GL_COLOR_ATTACHMENT28             0x8CFC
-#define GL_COLOR_ATTACHMENT29             0x8CFD
-#define GL_COLOR_ATTACHMENT30             0x8CFE
-#define GL_COLOR_ATTACHMENT31             0x8CFF
-#define GL_DEPTH_ATTACHMENT               0x8D00
-#define GL_STENCIL_ATTACHMENT             0x8D20
-#define GL_FRAMEBUFFER                    0x8D40
-#define GL_RENDERBUFFER                   0x8D41
-#define GL_RENDERBUFFER_WIDTH             0x8D42
-#define GL_RENDERBUFFER_HEIGHT            0x8D43
-#define GL_RENDERBUFFER_INTERNAL_FORMAT   0x8D44
-#define GL_STENCIL_INDEX1                 0x8D46
-#define GL_STENCIL_INDEX4                 0x8D47
-#define GL_STENCIL_INDEX8                 0x8D48
-#define GL_STENCIL_INDEX16                0x8D49
-#define GL_RENDERBUFFER_RED_SIZE          0x8D50
-#define GL_RENDERBUFFER_GREEN_SIZE        0x8D51
-#define GL_RENDERBUFFER_BLUE_SIZE         0x8D52
-#define GL_RENDERBUFFER_ALPHA_SIZE        0x8D53
-#define GL_RENDERBUFFER_DEPTH_SIZE        0x8D54
-#define GL_RENDERBUFFER_STENCIL_SIZE      0x8D55
-#define GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE 0x8D56
-#define GL_MAX_SAMPLES                    0x8D57
-#define GL_FRAMEBUFFER_SRGB               0x8DB9
-#define GL_HALF_FLOAT                     0x140B
-#define GL_MAP_READ_BIT                   0x0001
-#define GL_MAP_WRITE_BIT                  0x0002
-#define GL_MAP_INVALIDATE_RANGE_BIT       0x0004
-#define GL_MAP_INVALIDATE_BUFFER_BIT      0x0008
-#define GL_MAP_FLUSH_EXPLICIT_BIT         0x0010
-#define GL_MAP_UNSYNCHRONIZED_BIT         0x0020
-#define GL_COMPRESSED_RED_RGTC1           0x8DBB
-#define GL_COMPRESSED_SIGNED_RED_RGTC1    0x8DBC
-#define GL_COMPRESSED_RG_RGTC2            0x8DBD
-#define GL_COMPRESSED_SIGNED_RG_RGTC2     0x8DBE
-#define GL_RG                             0x8227
-#define GL_RG_INTEGER                     0x8228
-#define GL_R8                             0x8229
-#define GL_R16                            0x822A
-#define GL_RG8                            0x822B
-#define GL_RG16                           0x822C
-#define GL_R16F                           0x822D
-#define GL_R32F                           0x822E
-#define GL_RG16F                          0x822F
-#define GL_RG32F                          0x8230
-#define GL_R8I                            0x8231
-#define GL_R8UI                           0x8232
-#define GL_R16I                           0x8233
-#define GL_R16UI                          0x8234
-#define GL_R32I                           0x8235
-#define GL_R32UI                          0x8236
-#define GL_RG8I                           0x8237
-#define GL_RG8UI                          0x8238
-#define GL_RG16I                          0x8239
-#define GL_RG16UI                         0x823A
-#define GL_RG32I                          0x823B
-#define GL_RG32UI                         0x823C
-#define GL_VERTEX_ARRAY_BINDING           0x85B5
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_3_0 */
-#ifndef GL_VERSION_3_1
-#define GL_VERSION_3_1 1
-#define GL_SAMPLER_2D_RECT                0x8B63
-#define GL_SAMPLER_2D_RECT_SHADOW         0x8B64
-#define GL_SAMPLER_BUFFER                 0x8DC2
-#define GL_INT_SAMPLER_2D_RECT            0x8DCD
-#define GL_INT_SAMPLER_BUFFER             0x8DD0
-#define GL_UNSIGNED_INT_SAMPLER_2D_RECT   0x8DD5
-#define GL_UNSIGNED_INT_SAMPLER_BUFFER    0x8DD8
-#define GL_TEXTURE_BUFFER                 0x8C2A
-#define GL_MAX_TEXTURE_BUFFER_SIZE        0x8C2B
-#define GL_TEXTURE_BINDING_BUFFER         0x8C2C
-#define GL_TEXTURE_BUFFER_DATA_STORE_BINDING 0x8C2D
-#define GL_TEXTURE_RECTANGLE              0x84F5
-#define GL_TEXTURE_BINDING_RECTANGLE      0x84F6
-#define GL_PROXY_TEXTURE_RECTANGLE        0x84F7
-#define GL_MAX_RECTANGLE_TEXTURE_SIZE     0x84F8
-#define GL_R8_SNORM                       0x8F94
-#define GL_RG8_SNORM                      0x8F95
-#define GL_RGB8_SNORM                     0x8F96
-#define GL_RGBA8_SNORM                    0x8F97
-#define GL_R16_SNORM                      0x8F98
-#define GL_RG16_SNORM                     0x8F99
-#define GL_RGB16_SNORM                    0x8F9A
-#define GL_RGBA16_SNORM                   0x8F9B
-#define GL_SIGNED_NORMALIZED              0x8F9C
-#define GL_PRIMITIVE_RESTART              0x8F9D
-#define GL_PRIMITIVE_RESTART_INDEX        0x8F9E
-#define GL_COPY_READ_BUFFER               0x8F36
-#define GL_COPY_WRITE_BUFFER              0x8F37
-#define GL_UNIFORM_BUFFER                 0x8A11
-#define GL_UNIFORM_BUFFER_BINDING         0x8A28
-#define GL_UNIFORM_BUFFER_START           0x8A29
-#define GL_UNIFORM_BUFFER_SIZE            0x8A2A
-#define GL_MAX_VERTEX_UNIFORM_BLOCKS      0x8A2B
-#define GL_MAX_GEOMETRY_UNIFORM_BLOCKS    0x8A2C
-#define GL_MAX_FRAGMENT_UNIFORM_BLOCKS    0x8A2D
-#define GL_MAX_COMBINED_UNIFORM_BLOCKS    0x8A2E
-#define GL_MAX_UNIFORM_BUFFER_BINDINGS    0x8A2F
-#define GL_MAX_UNIFORM_BLOCK_SIZE         0x8A30
-#define GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS 0x8A31
-#define GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS 0x8A32
-#define GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS 0x8A33
-#define GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT 0x8A34
-#define GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH 0x8A35
-#define GL_ACTIVE_UNIFORM_BLOCKS          0x8A36
-#define GL_UNIFORM_TYPE                   0x8A37
-#define GL_UNIFORM_SIZE                   0x8A38
-#define GL_UNIFORM_NAME_LENGTH            0x8A39
-#define GL_UNIFORM_BLOCK_INDEX            0x8A3A
-#define GL_UNIFORM_OFFSET                 0x8A3B
-#define GL_UNIFORM_ARRAY_STRIDE           0x8A3C
-#define GL_UNIFORM_MATRIX_STRIDE          0x8A3D
-#define GL_UNIFORM_IS_ROW_MAJOR           0x8A3E
-#define GL_UNIFORM_BLOCK_BINDING          0x8A3F
-#define GL_UNIFORM_BLOCK_DATA_SIZE        0x8A40
-#define GL_UNIFORM_BLOCK_NAME_LENGTH      0x8A41
-#define GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS  0x8A42
-#define GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES 0x8A43
-#define GL_UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER 0x8A44
-#define GL_UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER 0x8A45
-#define GL_UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER 0x8A46
-#define GL_INVALID_INDEX                  0xFFFFFFFFu
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_3_1 */
-#ifndef GL_VERSION_3_2
-#define GL_VERSION_3_2 1
-typedef struct __GLsync *GLsync;
-typedef khronos_uint64_t GLuint64;
-typedef khronos_int64_t GLint64;
-#define GL_CONTEXT_CORE_PROFILE_BIT       0x00000001
-#define GL_CONTEXT_COMPATIBILITY_PROFILE_BIT 0x00000002
-#define GL_LINES_ADJACENCY                0x000A
-#define GL_LINE_STRIP_ADJACENCY           0x000B
-#define GL_TRIANGLES_ADJACENCY            0x000C
-#define GL_TRIANGLE_STRIP_ADJACENCY       0x000D
-#define GL_PROGRAM_POINT_SIZE             0x8642
-#define GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS 0x8C29
-#define GL_FRAMEBUFFER_ATTACHMENT_LAYERED 0x8DA7
-#define GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS 0x8DA8
-#define GL_GEOMETRY_SHADER                0x8DD9
-#define GL_GEOMETRY_VERTICES_OUT          0x8916
-#define GL_GEOMETRY_INPUT_TYPE            0x8917
-#define GL_GEOMETRY_OUTPUT_TYPE           0x8918
-#define GL_MAX_GEOMETRY_UNIFORM_COMPONENTS 0x8DDF
-#define GL_MAX_GEOMETRY_OUTPUT_VERTICES   0x8DE0
-#define GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS 0x8DE1
-#define GL_MAX_VERTEX_OUTPUT_COMPONENTS   0x9122
-#define GL_MAX_GEOMETRY_INPUT_COMPONENTS  0x9123
-#define GL_MAX_GEOMETRY_OUTPUT_COMPONENTS 0x9124
-#define GL_MAX_FRAGMENT_INPUT_COMPONENTS  0x9125
-#define GL_CONTEXT_PROFILE_MASK           0x9126
-#define GL_DEPTH_CLAMP                    0x864F
-#define GL_QUADS_FOLLOW_PROVOKING_VERTEX_CONVENTION 0x8E4C
-#define GL_FIRST_VERTEX_CONVENTION        0x8E4D
-#define GL_LAST_VERTEX_CONVENTION         0x8E4E
-#define GL_PROVOKING_VERTEX               0x8E4F
-#define GL_TEXTURE_CUBE_MAP_SEAMLESS      0x884F
-#define GL_MAX_SERVER_WAIT_TIMEOUT        0x9111
-#define GL_OBJECT_TYPE                    0x9112
-#define GL_SYNC_CONDITION                 0x9113
-#define GL_SYNC_STATUS                    0x9114
-#define GL_SYNC_FLAGS                     0x9115
-#define GL_SYNC_FENCE                     0x9116
-#define GL_SYNC_GPU_COMMANDS_COMPLETE     0x9117
-#define GL_UNSIGNALED                     0x9118
-#define GL_SIGNALED                       0x9119
-#define GL_ALREADY_SIGNALED               0x911A
-#define GL_TIMEOUT_EXPIRED                0x911B
-#define GL_CONDITION_SATISFIED            0x911C
-#define GL_WAIT_FAILED                    0x911D
-#define GL_TIMEOUT_IGNORED                0xFFFFFFFFFFFFFFFFull
-#define GL_SYNC_FLUSH_COMMANDS_BIT        0x00000001
-#define GL_SAMPLE_POSITION                0x8E50
-#define GL_SAMPLE_MASK                    0x8E51
-#define GL_SAMPLE_MASK_VALUE              0x8E52
-#define GL_MAX_SAMPLE_MASK_WORDS          0x8E59
-#define GL_TEXTURE_2D_MULTISAMPLE         0x9100
-#define GL_PROXY_TEXTURE_2D_MULTISAMPLE   0x9101
-#define GL_TEXTURE_2D_MULTISAMPLE_ARRAY   0x9102
-#define GL_PROXY_TEXTURE_2D_MULTISAMPLE_ARRAY 0x9103
-#define GL_TEXTURE_BINDING_2D_MULTISAMPLE 0x9104
-#define GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY 0x9105
-#define GL_TEXTURE_SAMPLES                0x9106
-#define GL_TEXTURE_FIXED_SAMPLE_LOCATIONS 0x9107
-#define GL_SAMPLER_2D_MULTISAMPLE         0x9108
-#define GL_INT_SAMPLER_2D_MULTISAMPLE     0x9109
-#define GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE 0x910A
-#define GL_SAMPLER_2D_MULTISAMPLE_ARRAY   0x910B
-#define GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY 0x910C
-#define GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY 0x910D
-#define GL_MAX_COLOR_TEXTURE_SAMPLES      0x910E
-#define GL_MAX_DEPTH_TEXTURE_SAMPLES      0x910F
-#define GL_MAX_INTEGER_SAMPLES            0x9110
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_3_2 */
-#ifndef GL_VERSION_3_3
-#define GL_VERSION_3_3 1
-#define GL_VERTEX_ATTRIB_ARRAY_DIVISOR    0x88FE
-#define GL_SRC1_COLOR                     0x88F9
-#define GL_ONE_MINUS_SRC1_COLOR           0x88FA
-#define GL_ONE_MINUS_SRC1_ALPHA           0x88FB
-#define GL_MAX_DUAL_SOURCE_DRAW_BUFFERS   0x88FC
-#define GL_ANY_SAMPLES_PASSED             0x8C2F
-#define GL_SAMPLER_BINDING                0x8919
-#define GL_RGB10_A2UI                     0x906F
-#define GL_TEXTURE_SWIZZLE_R              0x8E42
-#define GL_TEXTURE_SWIZZLE_G              0x8E43
-#define GL_TEXTURE_SWIZZLE_B              0x8E44
-#define GL_TEXTURE_SWIZZLE_A              0x8E45
-#define GL_TEXTURE_SWIZZLE_RGBA           0x8E46
-#define GL_TIME_ELAPSED                   0x88BF
-#define GL_TIMESTAMP                      0x8E28
-#define GL_INT_2_10_10_10_REV             0x8D9F
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_3_3 */
-#ifndef GL_VERSION_4_0
-#define GL_VERSION_4_0 1
-#define GL_SAMPLE_SHADING                 0x8C36
-#define GL_MIN_SAMPLE_SHADING_VALUE       0x8C37
-#define GL_MIN_PROGRAM_TEXTURE_GATHER_OFFSET 0x8E5E
-#define GL_MAX_PROGRAM_TEXTURE_GATHER_OFFSET 0x8E5F
-#define GL_TEXTURE_CUBE_MAP_ARRAY         0x9009
-#define GL_TEXTURE_BINDING_CUBE_MAP_ARRAY 0x900A
-#define GL_PROXY_TEXTURE_CUBE_MAP_ARRAY   0x900B
-#define GL_SAMPLER_CUBE_MAP_ARRAY         0x900C
-#define GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW  0x900D
-#define GL_INT_SAMPLER_CUBE_MAP_ARRAY     0x900E
-#define GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY 0x900F
-#define GL_DRAW_INDIRECT_BUFFER           0x8F3F
-#define GL_DRAW_INDIRECT_BUFFER_BINDING   0x8F43
-#define GL_GEOMETRY_SHADER_INVOCATIONS    0x887F
-#define GL_MAX_GEOMETRY_SHADER_INVOCATIONS 0x8E5A
-#define GL_MIN_FRAGMENT_INTERPOLATION_OFFSET 0x8E5B
-#define GL_MAX_FRAGMENT_INTERPOLATION_OFFSET 0x8E5C
-#define GL_FRAGMENT_INTERPOLATION_OFFSET_BITS 0x8E5D
-#define GL_MAX_VERTEX_STREAMS             0x8E71
-#define GL_DOUBLE_VEC2                    0x8FFC
-#define GL_DOUBLE_VEC3                    0x8FFD
-#define GL_DOUBLE_VEC4                    0x8FFE
-#define GL_DOUBLE_MAT2                    0x8F46
-#define GL_DOUBLE_MAT3                    0x8F47
-#define GL_DOUBLE_MAT4                    0x8F48
-#define GL_DOUBLE_MAT2x3                  0x8F49
-#define GL_DOUBLE_MAT2x4                  0x8F4A
-#define GL_DOUBLE_MAT3x2                  0x8F4B
-#define GL_DOUBLE_MAT3x4                  0x8F4C
-#define GL_DOUBLE_MAT4x2                  0x8F4D
-#define GL_DOUBLE_MAT4x3                  0x8F4E
-#define GL_ACTIVE_SUBROUTINES             0x8DE5
-#define GL_ACTIVE_SUBROUTINE_UNIFORMS     0x8DE6
-#define GL_ACTIVE_SUBROUTINE_UNIFORM_LOCATIONS 0x8E47
-#define GL_ACTIVE_SUBROUTINE_MAX_LENGTH   0x8E48
-#define GL_ACTIVE_SUBROUTINE_UNIFORM_MAX_LENGTH 0x8E49
-#define GL_MAX_SUBROUTINES                0x8DE7
-#define GL_MAX_SUBROUTINE_UNIFORM_LOCATIONS 0x8DE8
-#define GL_NUM_COMPATIBLE_SUBROUTINES     0x8E4A
-#define GL_COMPATIBLE_SUBROUTINES         0x8E4B
-#define GL_PATCHES                        0x000E
-#define GL_PATCH_VERTICES                 0x8E72
-#define GL_PATCH_DEFAULT_INNER_LEVEL      0x8E73
-#define GL_PATCH_DEFAULT_OUTER_LEVEL      0x8E74
-#define GL_TESS_CONTROL_OUTPUT_VERTICES   0x8E75
-#define GL_TESS_GEN_MODE                  0x8E76
-#define GL_TESS_GEN_SPACING               0x8E77
-#define GL_TESS_GEN_VERTEX_ORDER          0x8E78
-#define GL_TESS_GEN_POINT_MODE            0x8E79
-#define GL_ISOLINES                       0x8E7A
-#define GL_FRACTIONAL_ODD                 0x8E7B
-#define GL_FRACTIONAL_EVEN                0x8E7C
-#define GL_MAX_PATCH_VERTICES             0x8E7D
-#define GL_MAX_TESS_GEN_LEVEL             0x8E7E
-#define GL_MAX_TESS_CONTROL_UNIFORM_COMPONENTS 0x8E7F
-#define GL_MAX_TESS_EVALUATION_UNIFORM_COMPONENTS 0x8E80
-#define GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS 0x8E81
-#define GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS 0x8E82
-#define GL_MAX_TESS_CONTROL_OUTPUT_COMPONENTS 0x8E83
-#define GL_MAX_TESS_PATCH_COMPONENTS      0x8E84
-#define GL_MAX_TESS_CONTROL_TOTAL_OUTPUT_COMPONENTS 0x8E85
-#define GL_MAX_TESS_EVALUATION_OUTPUT_COMPONENTS 0x8E86
-#define GL_MAX_TESS_CONTROL_UNIFORM_BLOCKS 0x8E89
-#define GL_MAX_TESS_EVALUATION_UNIFORM_BLOCKS 0x8E8A
-#define GL_MAX_TESS_CONTROL_INPUT_COMPONENTS 0x886C
-#define GL_MAX_TESS_EVALUATION_INPUT_COMPONENTS 0x886D
-#define GL_MAX_COMBINED_TESS_CONTROL_UNIFORM_COMPONENTS 0x8E1E
-#define GL_MAX_COMBINED_TESS_EVALUATION_UNIFORM_COMPONENTS 0x8E1F
-#define GL_UNIFORM_BLOCK_REFERENCED_BY_TESS_CONTROL_SHADER 0x84F0
-#define GL_UNIFORM_BLOCK_REFERENCED_BY_TESS_EVALUATION_SHADER 0x84F1
-#define GL_TESS_EVALUATION_SHADER         0x8E87
-#define GL_TESS_CONTROL_SHADER            0x8E88
-#define GL_TRANSFORM_FEEDBACK             0x8E22
-#define GL_TRANSFORM_FEEDBACK_BUFFER_PAUSED 0x8E23
-#define GL_TRANSFORM_FEEDBACK_BUFFER_ACTIVE 0x8E24
-#define GL_TRANSFORM_FEEDBACK_BINDING     0x8E25
-#define GL_MAX_TRANSFORM_FEEDBACK_BUFFERS 0x8E70
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_4_0 */
-#ifndef GL_VERSION_4_1
-#define GL_VERSION_4_1 1
-#define GL_FIXED                          0x140C
-#define GL_IMPLEMENTATION_COLOR_READ_TYPE 0x8B9A
-#define GL_IMPLEMENTATION_COLOR_READ_FORMAT 0x8B9B
-#define GL_LOW_FLOAT                      0x8DF0
-#define GL_MEDIUM_FLOAT                   0x8DF1
-#define GL_HIGH_FLOAT                     0x8DF2
-#define GL_LOW_INT                        0x8DF3
-#define GL_MEDIUM_INT                     0x8DF4
-#define GL_HIGH_INT                       0x8DF5
-#define GL_SHADER_COMPILER                0x8DFA
-#define GL_SHADER_BINARY_FORMATS          0x8DF8
-#define GL_NUM_SHADER_BINARY_FORMATS      0x8DF9
-#define GL_MAX_VERTEX_UNIFORM_VECTORS     0x8DFB
-#define GL_MAX_VARYING_VECTORS            0x8DFC
-#define GL_MAX_FRAGMENT_UNIFORM_VECTORS   0x8DFD
-#define GL_RGB565                         0x8D62
-#define GL_PROGRAM_BINARY_RETRIEVABLE_HINT 0x8257
-#define GL_PROGRAM_BINARY_LENGTH          0x8741
-#define GL_NUM_PROGRAM_BINARY_FORMATS     0x87FE
-#define GL_PROGRAM_BINARY_FORMATS         0x87FF
-#define GL_VERTEX_SHADER_BIT              0x00000001
-#define GL_FRAGMENT_SHADER_BIT            0x00000002
-#define GL_GEOMETRY_SHADER_BIT            0x00000004
-#define GL_TESS_CONTROL_SHADER_BIT        0x00000008
-#define GL_TESS_EVALUATION_SHADER_BIT     0x00000010
-#define GL_ALL_SHADER_BITS                0xFFFFFFFF
-#define GL_PROGRAM_SEPARABLE              0x8258
-#define GL_ACTIVE_PROGRAM                 0x8259
-#define GL_PROGRAM_PIPELINE_BINDING       0x825A
-#define GL_MAX_VIEWPORTS                  0x825B
-#define GL_VIEWPORT_SUBPIXEL_BITS         0x825C
-#define GL_VIEWPORT_BOUNDS_RANGE          0x825D
-#define GL_LAYER_PROVOKING_VERTEX         0x825E
-#define GL_VIEWPORT_INDEX_PROVOKING_VERTEX 0x825F
-#define GL_UNDEFINED_VERTEX               0x8260
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_4_1 */
-#ifndef GL_VERSION_4_2
-#define GL_VERSION_4_2 1
-#define GL_COPY_READ_BUFFER_BINDING       0x8F36
-#define GL_COPY_WRITE_BUFFER_BINDING      0x8F37
-#define GL_TRANSFORM_FEEDBACK_ACTIVE      0x8E24
-#define GL_TRANSFORM_FEEDBACK_PAUSED      0x8E23
-#define GL_UNPACK_COMPRESSED_BLOCK_WIDTH  0x9127
-#define GL_UNPACK_COMPRESSED_BLOCK_HEIGHT 0x9128
-#define GL_UNPACK_COMPRESSED_BLOCK_DEPTH  0x9129
-#define GL_UNPACK_COMPRESSED_BLOCK_SIZE   0x912A
-#define GL_PACK_COMPRESSED_BLOCK_WIDTH    0x912B
-#define GL_PACK_COMPRESSED_BLOCK_HEIGHT   0x912C
-#define GL_PACK_COMPRESSED_BLOCK_DEPTH    0x912D
-#define GL_PACK_COMPRESSED_BLOCK_SIZE     0x912E
-#define GL_NUM_SAMPLE_COUNTS              0x9380
-#define GL_MIN_MAP_BUFFER_ALIGNMENT       0x90BC
-#define GL_ATOMIC_COUNTER_BUFFER          0x92C0
-#define GL_ATOMIC_COUNTER_BUFFER_BINDING  0x92C1
-#define GL_ATOMIC_COUNTER_BUFFER_START    0x92C2
-#define GL_ATOMIC_COUNTER_BUFFER_SIZE     0x92C3
-#define GL_ATOMIC_COUNTER_BUFFER_DATA_SIZE 0x92C4
-#define GL_ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTERS 0x92C5
-#define GL_ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTER_INDICES 0x92C6
-#define GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_VERTEX_SHADER 0x92C7
-#define GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_CONTROL_SHADER 0x92C8
-#define GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_EVALUATION_SHADER 0x92C9
-#define GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_GEOMETRY_SHADER 0x92CA
-#define GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_FRAGMENT_SHADER 0x92CB
-#define GL_MAX_VERTEX_ATOMIC_COUNTER_BUFFERS 0x92CC
-#define GL_MAX_TESS_CONTROL_ATOMIC_COUNTER_BUFFERS 0x92CD
-#define GL_MAX_TESS_EVALUATION_ATOMIC_COUNTER_BUFFERS 0x92CE
-#define GL_MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS 0x92CF
-#define GL_MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS 0x92D0
-#define GL_MAX_COMBINED_ATOMIC_COUNTER_BUFFERS 0x92D1
-#define GL_MAX_VERTEX_ATOMIC_COUNTERS     0x92D2
-#define GL_MAX_TESS_CONTROL_ATOMIC_COUNTERS 0x92D3
-#define GL_MAX_TESS_EVALUATION_ATOMIC_COUNTERS 0x92D4
-#define GL_MAX_GEOMETRY_ATOMIC_COUNTERS   0x92D5
-#define GL_MAX_FRAGMENT_ATOMIC_COUNTERS   0x92D6
-#define GL_MAX_COMBINED_ATOMIC_COUNTERS   0x92D7
-#define GL_MAX_ATOMIC_COUNTER_BUFFER_SIZE 0x92D8
-#define GL_MAX_ATOMIC_COUNTER_BUFFER_BINDINGS 0x92DC
-#define GL_ACTIVE_ATOMIC_COUNTER_BUFFERS  0x92D9
-#define GL_UNIFORM_ATOMIC_COUNTER_BUFFER_INDEX 0x92DA
-#define GL_UNSIGNED_INT_ATOMIC_COUNTER    0x92DB
-#define GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT 0x00000001
-#define GL_ELEMENT_ARRAY_BARRIER_BIT      0x00000002
-#define GL_UNIFORM_BARRIER_BIT            0x00000004
-#define GL_TEXTURE_FETCH_BARRIER_BIT      0x00000008
-#define GL_SHADER_IMAGE_ACCESS_BARRIER_BIT 0x00000020
-#define GL_COMMAND_BARRIER_BIT            0x00000040
-#define GL_PIXEL_BUFFER_BARRIER_BIT       0x00000080
-#define GL_TEXTURE_UPDATE_BARRIER_BIT     0x00000100
-#define GL_BUFFER_UPDATE_BARRIER_BIT      0x00000200
-#define GL_FRAMEBUFFER_BARRIER_BIT        0x00000400
-#define GL_TRANSFORM_FEEDBACK_BARRIER_BIT 0x00000800
-#define GL_ATOMIC_COUNTER_BARRIER_BIT     0x00001000
-#define GL_ALL_BARRIER_BITS               0xFFFFFFFF
-#define GL_MAX_IMAGE_UNITS                0x8F38
-#define GL_MAX_COMBINED_IMAGE_UNITS_AND_FRAGMENT_OUTPUTS 0x8F39
-#define GL_IMAGE_BINDING_NAME             0x8F3A
-#define GL_IMAGE_BINDING_LEVEL            0x8F3B
-#define GL_IMAGE_BINDING_LAYERED          0x8F3C
-#define GL_IMAGE_BINDING_LAYER            0x8F3D
-#define GL_IMAGE_BINDING_ACCESS           0x8F3E
-#define GL_IMAGE_1D                       0x904C
-#define GL_IMAGE_2D                       0x904D
-#define GL_IMAGE_3D                       0x904E
-#define GL_IMAGE_2D_RECT                  0x904F
-#define GL_IMAGE_CUBE                     0x9050
-#define GL_IMAGE_BUFFER                   0x9051
-#define GL_IMAGE_1D_ARRAY                 0x9052
-#define GL_IMAGE_2D_ARRAY                 0x9053
-#define GL_IMAGE_CUBE_MAP_ARRAY           0x9054
-#define GL_IMAGE_2D_MULTISAMPLE           0x9055
-#define GL_IMAGE_2D_MULTISAMPLE_ARRAY     0x9056
-#define GL_INT_IMAGE_1D                   0x9057
-#define GL_INT_IMAGE_2D                   0x9058
-#define GL_INT_IMAGE_3D                   0x9059
-#define GL_INT_IMAGE_2D_RECT              0x905A
-#define GL_INT_IMAGE_CUBE                 0x905B
-#define GL_INT_IMAGE_BUFFER               0x905C
-#define GL_INT_IMAGE_1D_ARRAY             0x905D
-#define GL_INT_IMAGE_2D_ARRAY             0x905E
-#define GL_INT_IMAGE_CUBE_MAP_ARRAY       0x905F
-#define GL_INT_IMAGE_2D_MULTISAMPLE       0x9060
-#define GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY 0x9061
-#define GL_UNSIGNED_INT_IMAGE_1D          0x9062
-#define GL_UNSIGNED_INT_IMAGE_2D          0x9063
-#define GL_UNSIGNED_INT_IMAGE_3D          0x9064
-#define GL_UNSIGNED_INT_IMAGE_2D_RECT     0x9065
-#define GL_UNSIGNED_INT_IMAGE_CUBE        0x9066
-#define GL_UNSIGNED_INT_IMAGE_BUFFER      0x9067
-#define GL_UNSIGNED_INT_IMAGE_1D_ARRAY    0x9068
-#define GL_UNSIGNED_INT_IMAGE_2D_ARRAY    0x9069
-#define GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY 0x906A
-#define GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE 0x906B
-#define GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY 0x906C
-#define GL_MAX_IMAGE_SAMPLES              0x906D
-#define GL_IMAGE_BINDING_FORMAT           0x906E
-#define GL_IMAGE_FORMAT_COMPATIBILITY_TYPE 0x90C7
-#define GL_IMAGE_FORMAT_COMPATIBILITY_BY_SIZE 0x90C8
-#define GL_IMAGE_FORMAT_COMPATIBILITY_BY_CLASS 0x90C9
-#define GL_MAX_VERTEX_IMAGE_UNIFORMS      0x90CA
-#define GL_MAX_TESS_CONTROL_IMAGE_UNIFORMS 0x90CB
-#define GL_MAX_TESS_EVALUATION_IMAGE_UNIFORMS 0x90CC
-#define GL_MAX_GEOMETRY_IMAGE_UNIFORMS    0x90CD
-#define GL_MAX_FRAGMENT_IMAGE_UNIFORMS    0x90CE
-#define GL_MAX_COMBINED_IMAGE_UNIFORMS    0x90CF
-#define GL_COMPRESSED_RGBA_BPTC_UNORM     0x8E8C
-#define GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM 0x8E8D
-#define GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT 0x8E8E
-#define GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT 0x8E8F
-#define GL_TEXTURE_IMMUTABLE_FORMAT       0x912F
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_4_2 */
-#ifndef GL_VERSION_4_3
-#define GL_VERSION_4_3 1
-#define GL_NUM_SHADING_LANGUAGE_VERSIONS  0x82E9
-#define GL_VERTEX_ATTRIB_ARRAY_LONG       0x874E
-#define GL_COMPRESSED_RGB8_ETC2           0x9274
-#define GL_COMPRESSED_SRGB8_ETC2          0x9275
-#define GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2 0x9276
-#define GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2 0x9277
-#define GL_COMPRESSED_RGBA8_ETC2_EAC      0x9278
-#define GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC 0x9279
-#define GL_COMPRESSED_R11_EAC             0x9270
-#define GL_COMPRESSED_SIGNED_R11_EAC      0x9271
-#define GL_COMPRESSED_RG11_EAC            0x9272
-#define GL_COMPRESSED_SIGNED_RG11_EAC     0x9273
-#define GL_PRIMITIVE_RESTART_FIXED_INDEX  0x8D69
-#define GL_ANY_SAMPLES_PASSED_CONSERVATIVE 0x8D6A
-#define GL_MAX_ELEMENT_INDEX              0x8D6B
-#define GL_COMPUTE_SHADER                 0x91B9
-#define GL_MAX_COMPUTE_UNIFORM_BLOCKS     0x91BB
-#define GL_MAX_COMPUTE_TEXTURE_IMAGE_UNITS 0x91BC
-#define GL_MAX_COMPUTE_IMAGE_UNIFORMS     0x91BD
-#define GL_MAX_COMPUTE_SHARED_MEMORY_SIZE 0x8262
-#define GL_MAX_COMPUTE_UNIFORM_COMPONENTS 0x8263
-#define GL_MAX_COMPUTE_ATOMIC_COUNTER_BUFFERS 0x8264
-#define GL_MAX_COMPUTE_ATOMIC_COUNTERS    0x8265
-#define GL_MAX_COMBINED_COMPUTE_UNIFORM_COMPONENTS 0x8266
-#define GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS 0x90EB
-#define GL_MAX_COMPUTE_WORK_GROUP_COUNT   0x91BE
-#define GL_MAX_COMPUTE_WORK_GROUP_SIZE    0x91BF
-#define GL_COMPUTE_WORK_GROUP_SIZE        0x8267
-#define GL_UNIFORM_BLOCK_REFERENCED_BY_COMPUTE_SHADER 0x90EC
-#define GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_COMPUTE_SHADER 0x90ED
-#define GL_DISPATCH_INDIRECT_BUFFER       0x90EE
-#define GL_DISPATCH_INDIRECT_BUFFER_BINDING 0x90EF
-#define GL_COMPUTE_SHADER_BIT             0x00000020
-#define GL_DEBUG_OUTPUT_SYNCHRONOUS       0x8242
-#define GL_DEBUG_NEXT_LOGGED_MESSAGE_LENGTH 0x8243
-#define GL_DEBUG_CALLBACK_FUNCTION        0x8244
-#define GL_DEBUG_CALLBACK_USER_PARAM      0x8245
-#define GL_DEBUG_SOURCE_API               0x8246
-#define GL_DEBUG_SOURCE_WINDOW_SYSTEM     0x8247
-#define GL_DEBUG_SOURCE_SHADER_COMPILER   0x8248
-#define GL_DEBUG_SOURCE_THIRD_PARTY       0x8249
-#define GL_DEBUG_SOURCE_APPLICATION       0x824A
-#define GL_DEBUG_SOURCE_OTHER             0x824B
-#define GL_DEBUG_TYPE_ERROR               0x824C
-#define GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR 0x824D
-#define GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR  0x824E
-#define GL_DEBUG_TYPE_PORTABILITY         0x824F
-#define GL_DEBUG_TYPE_PERFORMANCE         0x8250
-#define GL_DEBUG_TYPE_OTHER               0x8251
-#define GL_MAX_DEBUG_MESSAGE_LENGTH       0x9143
-#define GL_MAX_DEBUG_LOGGED_MESSAGES      0x9144
-#define GL_DEBUG_LOGGED_MESSAGES          0x9145
-#define GL_DEBUG_SEVERITY_HIGH            0x9146
-#define GL_DEBUG_SEVERITY_MEDIUM          0x9147
-#define GL_DEBUG_SEVERITY_LOW             0x9148
-#define GL_DEBUG_TYPE_MARKER              0x8268
-#define GL_DEBUG_TYPE_PUSH_GROUP          0x8269
-#define GL_DEBUG_TYPE_POP_GROUP           0x826A
-#define GL_DEBUG_SEVERITY_NOTIFICATION    0x826B
-#define GL_MAX_DEBUG_GROUP_STACK_DEPTH    0x826C
-#define GL_DEBUG_GROUP_STACK_DEPTH        0x826D
-#define GL_BUFFER                         0x82E0
-#define GL_SHADER                         0x82E1
-#define GL_PROGRAM                        0x82E2
-#define GL_QUERY                          0x82E3
-#define GL_PROGRAM_PIPELINE               0x82E4
-#define GL_SAMPLER                        0x82E6
-#define GL_MAX_LABEL_LENGTH               0x82E8
-#define GL_DEBUG_OUTPUT                   0x92E0
-#define GL_CONTEXT_FLAG_DEBUG_BIT         0x00000002
-#define GL_MAX_UNIFORM_LOCATIONS          0x826E
-#define GL_FRAMEBUFFER_DEFAULT_WIDTH      0x9310
-#define GL_FRAMEBUFFER_DEFAULT_HEIGHT     0x9311
-#define GL_FRAMEBUFFER_DEFAULT_LAYERS     0x9312
-#define GL_FRAMEBUFFER_DEFAULT_SAMPLES    0x9313
-#define GL_FRAMEBUFFER_DEFAULT_FIXED_SAMPLE_LOCATIONS 0x9314
-#define GL_MAX_FRAMEBUFFER_WIDTH          0x9315
-#define GL_MAX_FRAMEBUFFER_HEIGHT         0x9316
-#define GL_MAX_FRAMEBUFFER_LAYERS         0x9317
-#define GL_MAX_FRAMEBUFFER_SAMPLES        0x9318
-#define GL_INTERNALFORMAT_SUPPORTED       0x826F
-#define GL_INTERNALFORMAT_PREFERRED       0x8270
-#define GL_INTERNALFORMAT_RED_SIZE        0x8271
-#define GL_INTERNALFORMAT_GREEN_SIZE      0x8272
-#define GL_INTERNALFORMAT_BLUE_SIZE       0x8273
-#define GL_INTERNALFORMAT_ALPHA_SIZE      0x8274
-#define GL_INTERNALFORMAT_DEPTH_SIZE      0x8275
-#define GL_INTERNALFORMAT_STENCIL_SIZE    0x8276
-#define GL_INTERNALFORMAT_SHARED_SIZE     0x8277
-#define GL_INTERNALFORMAT_RED_TYPE        0x8278
-#define GL_INTERNALFORMAT_GREEN_TYPE      0x8279
-#define GL_INTERNALFORMAT_BLUE_TYPE       0x827A
-#define GL_INTERNALFORMAT_ALPHA_TYPE      0x827B
-#define GL_INTERNALFORMAT_DEPTH_TYPE      0x827C
-#define GL_INTERNALFORMAT_STENCIL_TYPE    0x827D
-#define GL_MAX_WIDTH                      0x827E
-#define GL_MAX_HEIGHT                     0x827F
-#define GL_MAX_DEPTH                      0x8280
-#define GL_MAX_LAYERS                     0x8281
-#define GL_MAX_COMBINED_DIMENSIONS        0x8282
-#define GL_COLOR_COMPONENTS               0x8283
-#define GL_DEPTH_COMPONENTS               0x8284
-#define GL_STENCIL_COMPONENTS             0x8285
-#define GL_COLOR_RENDERABLE               0x8286
-#define GL_DEPTH_RENDERABLE               0x8287
-#define GL_STENCIL_RENDERABLE             0x8288
-#define GL_FRAMEBUFFER_RENDERABLE         0x8289
-#define GL_FRAMEBUFFER_RENDERABLE_LAYERED 0x828A
-#define GL_FRAMEBUFFER_BLEND              0x828B
-#define GL_READ_PIXELS                    0x828C
-#define GL_READ_PIXELS_FORMAT             0x828D
-#define GL_READ_PIXELS_TYPE               0x828E
-#define GL_TEXTURE_IMAGE_FORMAT           0x828F
-#define GL_TEXTURE_IMAGE_TYPE             0x8290
-#define GL_GET_TEXTURE_IMAGE_FORMAT       0x8291
-#define GL_GET_TEXTURE_IMAGE_TYPE         0x8292
-#define GL_MIPMAP                         0x8293
-#define GL_MANUAL_GENERATE_MIPMAP         0x8294
-#define GL_AUTO_GENERATE_MIPMAP           0x8295
-#define GL_COLOR_ENCODING                 0x8296
-#define GL_SRGB_READ                      0x8297
-#define GL_SRGB_WRITE                     0x8298
-#define GL_FILTER                         0x829A
-#define GL_VERTEX_TEXTURE                 0x829B
-#define GL_TESS_CONTROL_TEXTURE           0x829C
-#define GL_TESS_EVALUATION_TEXTURE        0x829D
-#define GL_GEOMETRY_TEXTURE               0x829E
-#define GL_FRAGMENT_TEXTURE               0x829F
-#define GL_COMPUTE_TEXTURE                0x82A0
-#define GL_TEXTURE_SHADOW                 0x82A1
-#define GL_TEXTURE_GATHER                 0x82A2
-#define GL_TEXTURE_GATHER_SHADOW          0x82A3
-#define GL_SHADER_IMAGE_LOAD              0x82A4
-#define GL_SHADER_IMAGE_STORE             0x82A5
-#define GL_SHADER_IMAGE_ATOMIC            0x82A6
-#define GL_IMAGE_TEXEL_SIZE               0x82A7
-#define GL_IMAGE_COMPATIBILITY_CLASS      0x82A8
-#define GL_IMAGE_PIXEL_FORMAT             0x82A9
-#define GL_IMAGE_PIXEL_TYPE               0x82AA
-#define GL_SIMULTANEOUS_TEXTURE_AND_DEPTH_TEST 0x82AC
-#define GL_SIMULTANEOUS_TEXTURE_AND_STENCIL_TEST 0x82AD
-#define GL_SIMULTANEOUS_TEXTURE_AND_DEPTH_WRITE 0x82AE
-#define GL_SIMULTANEOUS_TEXTURE_AND_STENCIL_WRITE 0x82AF
-#define GL_TEXTURE_COMPRESSED_BLOCK_WIDTH 0x82B1
-#define GL_TEXTURE_COMPRESSED_BLOCK_HEIGHT 0x82B2
-#define GL_TEXTURE_COMPRESSED_BLOCK_SIZE  0x82B3
-#define GL_CLEAR_BUFFER                   0x82B4
-#define GL_TEXTURE_VIEW                   0x82B5
-#define GL_VIEW_COMPATIBILITY_CLASS       0x82B6
-#define GL_FULL_SUPPORT                   0x82B7
-#define GL_CAVEAT_SUPPORT                 0x82B8
-#define GL_IMAGE_CLASS_4_X_32             0x82B9
-#define GL_IMAGE_CLASS_2_X_32             0x82BA
-#define GL_IMAGE_CLASS_1_X_32             0x82BB
-#define GL_IMAGE_CLASS_4_X_16             0x82BC
-#define GL_IMAGE_CLASS_2_X_16             0x82BD
-#define GL_IMAGE_CLASS_1_X_16             0x82BE
-#define GL_IMAGE_CLASS_4_X_8              0x82BF
-#define GL_IMAGE_CLASS_2_X_8              0x82C0
-#define GL_IMAGE_CLASS_1_X_8              0x82C1
-#define GL_IMAGE_CLASS_11_11_10           0x82C2
-#define GL_IMAGE_CLASS_10_10_10_2         0x82C3
-#define GL_VIEW_CLASS_128_BITS            0x82C4
-#define GL_VIEW_CLASS_96_BITS             0x82C5
-#define GL_VIEW_CLASS_64_BITS             0x82C6
-#define GL_VIEW_CLASS_48_BITS             0x82C7
-#define GL_VIEW_CLASS_32_BITS             0x82C8
-#define GL_VIEW_CLASS_24_BITS             0x82C9
-#define GL_VIEW_CLASS_16_BITS             0x82CA
-#define GL_VIEW_CLASS_8_BITS              0x82CB
-#define GL_VIEW_CLASS_S3TC_DXT1_RGB       0x82CC
-#define GL_VIEW_CLASS_S3TC_DXT1_RGBA      0x82CD
-#define GL_VIEW_CLASS_S3TC_DXT3_RGBA      0x82CE
-#define GL_VIEW_CLASS_S3TC_DXT5_RGBA      0x82CF
-#define GL_VIEW_CLASS_RGTC1_RED           0x82D0
-#define GL_VIEW_CLASS_RGTC2_RG            0x82D1
-#define GL_VIEW_CLASS_BPTC_UNORM          0x82D2
-#define GL_VIEW_CLASS_BPTC_FLOAT          0x82D3
-#define GL_UNIFORM                        0x92E1
-#define GL_UNIFORM_BLOCK                  0x92E2
-#define GL_PROGRAM_INPUT                  0x92E3
-#define GL_PROGRAM_OUTPUT                 0x92E4
-#define GL_BUFFER_VARIABLE                0x92E5
-#define GL_SHADER_STORAGE_BLOCK           0x92E6
-#define GL_VERTEX_SUBROUTINE              0x92E8
-#define GL_TESS_CONTROL_SUBROUTINE        0x92E9
-#define GL_TESS_EVALUATION_SUBROUTINE     0x92EA
-#define GL_GEOMETRY_SUBROUTINE            0x92EB
-#define GL_FRAGMENT_SUBROUTINE            0x92EC
-#define GL_COMPUTE_SUBROUTINE             0x92ED
-#define GL_VERTEX_SUBROUTINE_UNIFORM      0x92EE
-#define GL_TESS_CONTROL_SUBROUTINE_UNIFORM 0x92EF
-#define GL_TESS_EVALUATION_SUBROUTINE_UNIFORM 0x92F0
-#define GL_GEOMETRY_SUBROUTINE_UNIFORM    0x92F1
-#define GL_FRAGMENT_SUBROUTINE_UNIFORM    0x92F2
-#define GL_COMPUTE_SUBROUTINE_UNIFORM     0x92F3
-#define GL_TRANSFORM_FEEDBACK_VARYING     0x92F4
-#define GL_ACTIVE_RESOURCES               0x92F5
-#define GL_MAX_NAME_LENGTH                0x92F6
-#define GL_MAX_NUM_ACTIVE_VARIABLES       0x92F7
-#define GL_MAX_NUM_COMPATIBLE_SUBROUTINES 0x92F8
-#define GL_NAME_LENGTH                    0x92F9
-#define GL_TYPE                           0x92FA
-#define GL_ARRAY_SIZE                     0x92FB
-#define GL_OFFSET                         0x92FC
-#define GL_BLOCK_INDEX                    0x92FD
-#define GL_ARRAY_STRIDE                   0x92FE
-#define GL_MATRIX_STRIDE                  0x92FF
-#define GL_IS_ROW_MAJOR                   0x9300
-#define GL_ATOMIC_COUNTER_BUFFER_INDEX    0x9301
-#define GL_BUFFER_BINDING                 0x9302
-#define GL_BUFFER_DATA_SIZE               0x9303
-#define GL_NUM_ACTIVE_VARIABLES           0x9304
-#define GL_ACTIVE_VARIABLES               0x9305
-#define GL_REFERENCED_BY_VERTEX_SHADER    0x9306
-#define GL_REFERENCED_BY_TESS_CONTROL_SHADER 0x9307
-#define GL_REFERENCED_BY_TESS_EVALUATION_SHADER 0x9308
-#define GL_REFERENCED_BY_GEOMETRY_SHADER  0x9309
-#define GL_REFERENCED_BY_FRAGMENT_SHADER  0x930A
-#define GL_REFERENCED_BY_COMPUTE_SHADER   0x930B
-#define GL_TOP_LEVEL_ARRAY_SIZE           0x930C
-#define GL_TOP_LEVEL_ARRAY_STRIDE         0x930D
-#define GL_LOCATION                       0x930E
-#define GL_LOCATION_INDEX                 0x930F
-#define GL_IS_PER_PATCH                   0x92E7
-#define GL_SHADER_STORAGE_BUFFER          0x90D2
-#define GL_SHADER_STORAGE_BUFFER_BINDING  0x90D3
-#define GL_SHADER_STORAGE_BUFFER_START    0x90D4
-#define GL_SHADER_STORAGE_BUFFER_SIZE     0x90D5
-#define GL_MAX_VERTEX_SHADER_STORAGE_BLOCKS 0x90D6
-#define GL_MAX_GEOMETRY_SHADER_STORAGE_BLOCKS 0x90D7
-#define GL_MAX_TESS_CONTROL_SHADER_STORAGE_BLOCKS 0x90D8
-#define GL_MAX_TESS_EVALUATION_SHADER_STORAGE_BLOCKS 0x90D9
-#define GL_MAX_FRAGMENT_SHADER_STORAGE_BLOCKS 0x90DA
-#define GL_MAX_COMPUTE_SHADER_STORAGE_BLOCKS 0x90DB
-#define GL_MAX_COMBINED_SHADER_STORAGE_BLOCKS 0x90DC
-#define GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS 0x90DD
-#define GL_MAX_SHADER_STORAGE_BLOCK_SIZE  0x90DE
-#define GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT 0x90DF
-#define GL_SHADER_STORAGE_BARRIER_BIT     0x00002000
-#define GL_MAX_COMBINED_SHADER_OUTPUT_RESOURCES 0x8F39
-#define GL_DEPTH_STENCIL_TEXTURE_MODE     0x90EA
-#define GL_TEXTURE_BUFFER_OFFSET          0x919D
-#define GL_TEXTURE_BUFFER_SIZE            0x919E
-#define GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT 0x919F
-#define GL_TEXTURE_VIEW_MIN_LEVEL         0x82DB
-#define GL_TEXTURE_VIEW_NUM_LEVELS        0x82DC
-#define GL_TEXTURE_VIEW_MIN_LAYER         0x82DD
-#define GL_TEXTURE_VIEW_NUM_LAYERS        0x82DE
-#define GL_TEXTURE_IMMUTABLE_LEVELS       0x82DF
-#define GL_VERTEX_ATTRIB_BINDING          0x82D4
-#define GL_VERTEX_ATTRIB_RELATIVE_OFFSET  0x82D5
-#define GL_VERTEX_BINDING_DIVISOR         0x82D6
-#define GL_VERTEX_BINDING_OFFSET          0x82D7
-#define GL_VERTEX_BINDING_STRIDE          0x82D8
-#define GL_MAX_VERTEX_ATTRIB_RELATIVE_OFFSET 0x82D9
-#define GL_MAX_VERTEX_ATTRIB_BINDINGS     0x82DA
-#define GL_VERTEX_BINDING_BUFFER          0x8F4F
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_4_3 */
-#ifndef GL_VERSION_4_4
-#define GL_VERSION_4_4 1
-#define GL_MAX_VERTEX_ATTRIB_STRIDE       0x82E5
-#define GL_PRIMITIVE_RESTART_FOR_PATCHES_SUPPORTED 0x8221
-#define GL_TEXTURE_BUFFER_BINDING         0x8C2A
-#define GL_MAP_PERSISTENT_BIT             0x0040
-#define GL_MAP_COHERENT_BIT               0x0080
-#define GL_DYNAMIC_STORAGE_BIT            0x0100
-#define GL_CLIENT_STORAGE_BIT             0x0200
-#define GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT 0x00004000
-#define GL_BUFFER_IMMUTABLE_STORAGE       0x821F
-#define GL_BUFFER_STORAGE_FLAGS           0x8220
-#define GL_CLEAR_TEXTURE                  0x9365
-#define GL_LOCATION_COMPONENT             0x934A
-#define GL_TRANSFORM_FEEDBACK_BUFFER_INDEX 0x934B
-#define GL_TRANSFORM_FEEDBACK_BUFFER_STRIDE 0x934C
-#define GL_QUERY_BUFFER                   0x9192
-#define GL_QUERY_BUFFER_BARRIER_BIT       0x00008000
-#define GL_QUERY_BUFFER_BINDING           0x9193
-#define GL_QUERY_RESULT_NO_WAIT           0x9194
-#define GL_MIRROR_CLAMP_TO_EDGE           0x8743
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_4_4 */
-#ifndef GL_VERSION_4_5
-#define GL_VERSION_4_5 1
-#define GL_CONTEXT_LOST                   0x0507
-#define GL_NEGATIVE_ONE_TO_ONE            0x935E
-#define GL_ZERO_TO_ONE                    0x935F
-#define GL_CLIP_ORIGIN                    0x935C
-#define GL_CLIP_DEPTH_MODE                0x935D
-#define GL_QUERY_WAIT_INVERTED            0x8E17
-#define GL_QUERY_NO_WAIT_INVERTED         0x8E18
-#define GL_QUERY_BY_REGION_WAIT_INVERTED  0x8E19
-#define GL_QUERY_BY_REGION_NO_WAIT_INVERTED 0x8E1A
-#define GL_MAX_CULL_DISTANCES             0x82F9
-#define GL_MAX_COMBINED_CLIP_AND_CULL_DISTANCES 0x82FA
-#define GL_TEXTURE_TARGET                 0x1006
-#define GL_QUERY_TARGET                   0x82EA
-#define GL_GUILTY_CONTEXT_RESET           0x8253
-#define GL_INNOCENT_CONTEXT_RESET         0x8254
-#define GL_UNKNOWN_CONTEXT_RESET          0x8255
-#define GL_RESET_NOTIFICATION_STRATEGY    0x8256
-#define GL_LOSE_CONTEXT_ON_RESET          0x8252
-#define GL_NO_RESET_NOTIFICATION          0x8261
-#define GL_CONTEXT_FLAG_ROBUST_ACCESS_BIT 0x00000004
-#define GL_CONTEXT_RELEASE_BEHAVIOR       0x82FB
-#define GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH 0x82FC
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_4_5 */
-#ifndef GL_VERSION_4_6
-#define GL_VERSION_4_6 1
-#define GL_SHADER_BINARY_FORMAT_SPIR_V    0x9551
-#define GL_SPIR_V_BINARY                  0x9552
-#define GL_PARAMETER_BUFFER               0x80EE
-#define GL_PARAMETER_BUFFER_BINDING       0x80EF
-#define GL_CONTEXT_FLAG_NO_ERROR_BIT      0x00000008
-#define GL_VERTICES_SUBMITTED             0x82EE
-#define GL_PRIMITIVES_SUBMITTED           0x82EF
-#define GL_VERTEX_SHADER_INVOCATIONS      0x82F0
-#define GL_TESS_CONTROL_SHADER_PATCHES    0x82F1
-#define GL_TESS_EVALUATION_SHADER_INVOCATIONS 0x82F2
-#define GL_GEOMETRY_SHADER_PRIMITIVES_EMITTED 0x82F3
-#define GL_FRAGMENT_SHADER_INVOCATIONS    0x82F4
-#define GL_COMPUTE_SHADER_INVOCATIONS     0x82F5
-#define GL_CLIPPING_INPUT_PRIMITIVES      0x82F6
-#define GL_CLIPPING_OUTPUT_PRIMITIVES     0x82F7
-#define GL_POLYGON_OFFSET_CLAMP           0x8E1B
-#define GL_SPIR_V_EXTENSIONS              0x9553
-#define GL_NUM_SPIR_V_EXTENSIONS          0x9554
-#define GL_TEXTURE_MAX_ANISOTROPY         0x84FE
-#define GL_MAX_TEXTURE_MAX_ANISOTROPY     0x84FF
-#define GL_TRANSFORM_FEEDBACK_OVERFLOW    0x82EC
-#define GL_TRANSFORM_FEEDBACK_STREAM_OVERFLOW 0x82ED
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_VERSION_4_6 */
-#ifndef GL_ARB_ES2_compatibility
-#define GL_ARB_ES2_compatibility 1
-#endif /* GL_ARB_ES2_compatibility */
-#ifndef GL_ARB_ES3_1_compatibility
-#define GL_ARB_ES3_1_compatibility 1
-#endif /* GL_ARB_ES3_1_compatibility */
-#ifndef GL_ARB_ES3_2_compatibility
-#define GL_ARB_ES3_2_compatibility 1
-#define GL_PRIMITIVE_BOUNDING_BOX_ARB     0x92BE
-#define GL_MULTISAMPLE_LINE_WIDTH_RANGE_ARB 0x9381
-#define GL_MULTISAMPLE_LINE_WIDTH_GRANULARITY_ARB 0x9382
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_ES3_2_compatibility */
-#ifndef GL_ARB_ES3_compatibility
-#define GL_ARB_ES3_compatibility 1
-#endif /* GL_ARB_ES3_compatibility */
-#ifndef GL_ARB_arrays_of_arrays
-#define GL_ARB_arrays_of_arrays 1
-#endif /* GL_ARB_arrays_of_arrays */
-#ifndef GL_ARB_base_instance
-#define GL_ARB_base_instance 1
-#endif /* GL_ARB_base_instance */
-#ifndef GL_ARB_bindless_texture
-#define GL_ARB_bindless_texture 1
-typedef khronos_uint64_t GLuint64EXT;
-#define GL_UNSIGNED_INT64_ARB             0x140F
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_bindless_texture */
-#ifndef GL_ARB_blend_func_extended
-#define GL_ARB_blend_func_extended 1
-#endif /* GL_ARB_blend_func_extended */
-#ifndef GL_ARB_buffer_storage
-#define GL_ARB_buffer_storage 1
-#endif /* GL_ARB_buffer_storage */
-#ifndef GL_ARB_cl_event
-#define GL_ARB_cl_event 1
-#define GL_SYNC_CL_EVENT_ARB              0x8240
-#define GL_SYNC_CL_EVENT_COMPLETE_ARB     0x8241
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_cl_event */
-#ifndef GL_ARB_clear_buffer_object
-#define GL_ARB_clear_buffer_object 1
-#endif /* GL_ARB_clear_buffer_object */
-#ifndef GL_ARB_clear_texture
-#define GL_ARB_clear_texture 1
-#endif /* GL_ARB_clear_texture */
-#ifndef GL_ARB_clip_control
-#define GL_ARB_clip_control 1
-#endif /* GL_ARB_clip_control */
-#ifndef GL_ARB_compressed_texture_pixel_storage
-#define GL_ARB_compressed_texture_pixel_storage 1
-#endif /* GL_ARB_compressed_texture_pixel_storage */
-#ifndef GL_ARB_compute_shader
-#define GL_ARB_compute_shader 1
-#endif /* GL_ARB_compute_shader */
-#ifndef GL_ARB_compute_variable_group_size
-#define GL_ARB_compute_variable_group_size 1
-#define GL_MAX_COMPUTE_VARIABLE_GROUP_INVOCATIONS_ARB 0x9344
-#define GL_MAX_COMPUTE_FIXED_GROUP_INVOCATIONS_ARB 0x90EB
-#define GL_MAX_COMPUTE_VARIABLE_GROUP_SIZE_ARB 0x9345
-#define GL_MAX_COMPUTE_FIXED_GROUP_SIZE_ARB 0x91BF
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_compute_variable_group_size */
-#ifndef GL_ARB_conditional_render_inverted
-#define GL_ARB_conditional_render_inverted 1
-#endif /* GL_ARB_conditional_render_inverted */
-#ifndef GL_ARB_conservative_depth
-#define GL_ARB_conservative_depth 1
-#endif /* GL_ARB_conservative_depth */
-#ifndef GL_ARB_copy_buffer
-#define GL_ARB_copy_buffer 1
-#endif /* GL_ARB_copy_buffer */
-#ifndef GL_ARB_copy_image
-#define GL_ARB_copy_image 1
-#endif /* GL_ARB_copy_image */
-#ifndef GL_ARB_cull_distance
-#define GL_ARB_cull_distance 1
-#endif /* GL_ARB_cull_distance */
-#ifndef GL_ARB_debug_output
-#define GL_ARB_debug_output 1
-#define GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB   0x8242
-#define GL_DEBUG_NEXT_LOGGED_MESSAGE_LENGTH_ARB 0x8243
-#define GL_DEBUG_CALLBACK_FUNCTION_ARB    0x8244
-#define GL_DEBUG_CALLBACK_USER_PARAM_ARB  0x8245
-#define GL_DEBUG_SOURCE_API_ARB           0x8246
-#define GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB 0x8247
-#define GL_DEBUG_SOURCE_SHADER_COMPILER_ARB 0x8248
-#define GL_DEBUG_SOURCE_THIRD_PARTY_ARB   0x8249
-#define GL_DEBUG_SOURCE_APPLICATION_ARB   0x824A
-#define GL_DEBUG_SOURCE_OTHER_ARB         0x824B
-#define GL_DEBUG_TYPE_ERROR_ARB           0x824C
-#define GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB 0x824D
-#define GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB 0x824E
-#define GL_DEBUG_TYPE_PORTABILITY_ARB     0x824F
-#define GL_DEBUG_TYPE_PERFORMANCE_ARB     0x8250
-#define GL_DEBUG_TYPE_OTHER_ARB           0x8251
-#define GL_MAX_DEBUG_MESSAGE_LENGTH_ARB   0x9143
-#define GL_MAX_DEBUG_LOGGED_MESSAGES_ARB  0x9144
-#define GL_DEBUG_LOGGED_MESSAGES_ARB      0x9145
-#define GL_DEBUG_SEVERITY_HIGH_ARB        0x9146
-#define GL_DEBUG_SEVERITY_MEDIUM_ARB      0x9147
-#define GL_DEBUG_SEVERITY_LOW_ARB         0x9148
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_debug_output */
-#ifndef GL_ARB_depth_buffer_float
-#define GL_ARB_depth_buffer_float 1
-#endif /* GL_ARB_depth_buffer_float */
-#ifndef GL_ARB_depth_clamp
-#define GL_ARB_depth_clamp 1
-#endif /* GL_ARB_depth_clamp */
-#ifndef GL_ARB_derivative_control
-#define GL_ARB_derivative_control 1
-#endif /* GL_ARB_derivative_control */
-#ifndef GL_ARB_direct_state_access
-#define GL_ARB_direct_state_access 1
-#endif /* GL_ARB_direct_state_access */
-#ifndef GL_ARB_draw_buffers_blend
-#define GL_ARB_draw_buffers_blend 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_draw_buffers_blend */
-#ifndef GL_ARB_draw_elements_base_vertex
-#define GL_ARB_draw_elements_base_vertex 1
-#endif /* GL_ARB_draw_elements_base_vertex */
-#ifndef GL_ARB_draw_indirect
-#define GL_ARB_draw_indirect 1
-#endif /* GL_ARB_draw_indirect */
-#ifndef GL_ARB_draw_instanced
-#define GL_ARB_draw_instanced 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_draw_instanced */
-#ifndef GL_ARB_enhanced_layouts
-#define GL_ARB_enhanced_layouts 1
-#endif /* GL_ARB_enhanced_layouts */
-#ifndef GL_ARB_explicit_attrib_location
-#define GL_ARB_explicit_attrib_location 1
-#endif /* GL_ARB_explicit_attrib_location */
-#ifndef GL_ARB_explicit_uniform_location
-#define GL_ARB_explicit_uniform_location 1
-#endif /* GL_ARB_explicit_uniform_location */
-#ifndef GL_ARB_fragment_coord_conventions
-#define GL_ARB_fragment_coord_conventions 1
-#endif /* GL_ARB_fragment_coord_conventions */
-#ifndef GL_ARB_fragment_layer_viewport
-#define GL_ARB_fragment_layer_viewport 1
-#endif /* GL_ARB_fragment_layer_viewport */
-#ifndef GL_ARB_fragment_shader_interlock
-#define GL_ARB_fragment_shader_interlock 1
-#endif /* GL_ARB_fragment_shader_interlock */
-#ifndef GL_ARB_framebuffer_no_attachments
-#define GL_ARB_framebuffer_no_attachments 1
-#endif /* GL_ARB_framebuffer_no_attachments */
-#ifndef GL_ARB_framebuffer_object
-#define GL_ARB_framebuffer_object 1
-#endif /* GL_ARB_framebuffer_object */
-#ifndef GL_ARB_framebuffer_sRGB
-#define GL_ARB_framebuffer_sRGB 1
-#endif /* GL_ARB_framebuffer_sRGB */
-#ifndef GL_ARB_geometry_shader4
-#define GL_ARB_geometry_shader4 1
-#define GL_LINES_ADJACENCY_ARB            0x000A
-#define GL_LINE_STRIP_ADJACENCY_ARB       0x000B
-#define GL_TRIANGLES_ADJACENCY_ARB        0x000C
-#define GL_TRIANGLE_STRIP_ADJACENCY_ARB   0x000D
-#define GL_PROGRAM_POINT_SIZE_ARB         0x8642
-#define GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS_ARB 0x8C29
-#define GL_FRAMEBUFFER_ATTACHMENT_LAYERED_ARB 0x8DA7
-#define GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS_ARB 0x8DA8
-#define GL_FRAMEBUFFER_INCOMPLETE_LAYER_COUNT_ARB 0x8DA9
-#define GL_GEOMETRY_SHADER_ARB            0x8DD9
-#define GL_GEOMETRY_VERTICES_OUT_ARB      0x8DDA
-#define GL_GEOMETRY_INPUT_TYPE_ARB        0x8DDB
-#define GL_GEOMETRY_OUTPUT_TYPE_ARB       0x8DDC
-#define GL_MAX_GEOMETRY_VARYING_COMPONENTS_ARB 0x8DDD
-#define GL_MAX_VERTEX_VARYING_COMPONENTS_ARB 0x8DDE
-#define GL_MAX_GEOMETRY_UNIFORM_COMPONENTS_ARB 0x8DDF
-#define GL_MAX_GEOMETRY_OUTPUT_VERTICES_ARB 0x8DE0
-#define GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS_ARB 0x8DE1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_geometry_shader4 */
-#ifndef GL_ARB_get_program_binary
-#define GL_ARB_get_program_binary 1
-#endif /* GL_ARB_get_program_binary */
-#ifndef GL_ARB_get_texture_sub_image
-#define GL_ARB_get_texture_sub_image 1
-#endif /* GL_ARB_get_texture_sub_image */
-#ifndef GL_ARB_gl_spirv
-#define GL_ARB_gl_spirv 1
-#define GL_SHADER_BINARY_FORMAT_SPIR_V_ARB 0x9551
-#define GL_SPIR_V_BINARY_ARB              0x9552
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_gl_spirv */
-#ifndef GL_ARB_gpu_shader5
-#define GL_ARB_gpu_shader5 1
-#endif /* GL_ARB_gpu_shader5 */
-#ifndef GL_ARB_gpu_shader_fp64
-#define GL_ARB_gpu_shader_fp64 1
-#endif /* GL_ARB_gpu_shader_fp64 */
-#ifndef GL_ARB_gpu_shader_int64
-#define GL_ARB_gpu_shader_int64 1
-#define GL_INT64_ARB                      0x140E
-#define GL_INT64_VEC2_ARB                 0x8FE9
-#define GL_INT64_VEC3_ARB                 0x8FEA
-#define GL_INT64_VEC4_ARB                 0x8FEB
-#define GL_UNSIGNED_INT64_VEC2_ARB        0x8FF5
-#define GL_UNSIGNED_INT64_VEC3_ARB        0x8FF6
-#define GL_UNSIGNED_INT64_VEC4_ARB        0x8FF7
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_gpu_shader_int64 */
-#ifndef GL_ARB_half_float_vertex
-#define GL_ARB_half_float_vertex 1
-#endif /* GL_ARB_half_float_vertex */
-#ifndef GL_ARB_imaging
-#define GL_ARB_imaging 1
-#endif /* GL_ARB_imaging */
-#ifndef GL_ARB_indirect_parameters
-#define GL_ARB_indirect_parameters 1
-#define GL_PARAMETER_BUFFER_ARB           0x80EE
-#define GL_PARAMETER_BUFFER_BINDING_ARB   0x80EF
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_indirect_parameters */
-#ifndef GL_ARB_instanced_arrays
-#define GL_ARB_instanced_arrays 1
-#define GL_VERTEX_ATTRIB_ARRAY_DIVISOR_ARB 0x88FE
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_instanced_arrays */
-#ifndef GL_ARB_internalformat_query
-#define GL_ARB_internalformat_query 1
-#endif /* GL_ARB_internalformat_query */
-#ifndef GL_ARB_internalformat_query2
-#define GL_ARB_internalformat_query2 1
-#define GL_SRGB_DECODE_ARB                0x8299
-#define GL_VIEW_CLASS_EAC_R11             0x9383
-#define GL_VIEW_CLASS_EAC_RG11            0x9384
-#define GL_VIEW_CLASS_ETC2_RGB            0x9385
-#define GL_VIEW_CLASS_ETC2_RGBA           0x9386
-#define GL_VIEW_CLASS_ETC2_EAC_RGBA       0x9387
-#define GL_VIEW_CLASS_ASTC_4x4_RGBA       0x9388
-#define GL_VIEW_CLASS_ASTC_5x4_RGBA       0x9389
-#define GL_VIEW_CLASS_ASTC_5x5_RGBA       0x938A
-#define GL_VIEW_CLASS_ASTC_6x5_RGBA       0x938B
-#define GL_VIEW_CLASS_ASTC_6x6_RGBA       0x938C
-#define GL_VIEW_CLASS_ASTC_8x5_RGBA       0x938D
-#define GL_VIEW_CLASS_ASTC_8x6_RGBA       0x938E
-#define GL_VIEW_CLASS_ASTC_8x8_RGBA       0x938F
-#define GL_VIEW_CLASS_ASTC_10x5_RGBA      0x9390
-#define GL_VIEW_CLASS_ASTC_10x6_RGBA      0x9391
-#define GL_VIEW_CLASS_ASTC_10x8_RGBA      0x9392
-#define GL_VIEW_CLASS_ASTC_10x10_RGBA     0x9393
-#define GL_VIEW_CLASS_ASTC_12x10_RGBA     0x9394
-#define GL_VIEW_CLASS_ASTC_12x12_RGBA     0x9395
-#endif /* GL_ARB_internalformat_query2 */
-#ifndef GL_ARB_invalidate_subdata
-#define GL_ARB_invalidate_subdata 1
-#endif /* GL_ARB_invalidate_subdata */
-#ifndef GL_ARB_map_buffer_alignment
-#define GL_ARB_map_buffer_alignment 1
-#endif /* GL_ARB_map_buffer_alignment */
-#ifndef GL_ARB_map_buffer_range
-#define GL_ARB_map_buffer_range 1
-#endif /* GL_ARB_map_buffer_range */
-#ifndef GL_ARB_multi_bind
-#define GL_ARB_multi_bind 1
-#endif /* GL_ARB_multi_bind */
-#ifndef GL_ARB_multi_draw_indirect
-#define GL_ARB_multi_draw_indirect 1
-#endif /* GL_ARB_multi_draw_indirect */
-#ifndef GL_ARB_occlusion_query2
-#define GL_ARB_occlusion_query2 1
-#endif /* GL_ARB_occlusion_query2 */
-#ifndef GL_ARB_parallel_shader_compile
-#define GL_ARB_parallel_shader_compile 1
-#define GL_MAX_SHADER_COMPILER_THREADS_ARB 0x91B0
-#define GL_COMPLETION_STATUS_ARB          0x91B1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_parallel_shader_compile */
-#ifndef GL_ARB_pipeline_statistics_query
-#define GL_ARB_pipeline_statistics_query 1
-#define GL_VERTICES_SUBMITTED_ARB         0x82EE
-#define GL_PRIMITIVES_SUBMITTED_ARB       0x82EF
-#define GL_VERTEX_SHADER_INVOCATIONS_ARB  0x82F0
-#define GL_TESS_CONTROL_SHADER_PATCHES_ARB 0x82F1
-#define GL_TESS_EVALUATION_SHADER_INVOCATIONS_ARB 0x82F2
-#define GL_GEOMETRY_SHADER_PRIMITIVES_EMITTED_ARB 0x82F3
-#define GL_FRAGMENT_SHADER_INVOCATIONS_ARB 0x82F4
-#define GL_COMPUTE_SHADER_INVOCATIONS_ARB 0x82F5
-#define GL_CLIPPING_INPUT_PRIMITIVES_ARB  0x82F6
-#define GL_CLIPPING_OUTPUT_PRIMITIVES_ARB 0x82F7
-#endif /* GL_ARB_pipeline_statistics_query */
-#ifndef GL_ARB_pixel_buffer_object
-#define GL_ARB_pixel_buffer_object 1
-#define GL_PIXEL_PACK_BUFFER_ARB          0x88EB
-#define GL_PIXEL_UNPACK_BUFFER_ARB        0x88EC
-#define GL_PIXEL_PACK_BUFFER_BINDING_ARB  0x88ED
-#define GL_PIXEL_UNPACK_BUFFER_BINDING_ARB 0x88EF
-#endif /* GL_ARB_pixel_buffer_object */
-#ifndef GL_ARB_polygon_offset_clamp
-#define GL_ARB_polygon_offset_clamp 1
-#endif /* GL_ARB_polygon_offset_clamp */
-#ifndef GL_ARB_post_depth_coverage
-#define GL_ARB_post_depth_coverage 1
-#endif /* GL_ARB_post_depth_coverage */
-#ifndef GL_ARB_program_interface_query
-#define GL_ARB_program_interface_query 1
-#endif /* GL_ARB_program_interface_query */
-#ifndef GL_ARB_provoking_vertex
-#define GL_ARB_provoking_vertex 1
-#endif /* GL_ARB_provoking_vertex */
-#ifndef GL_ARB_query_buffer_object
-#define GL_ARB_query_buffer_object 1
-#endif /* GL_ARB_query_buffer_object */
-#ifndef GL_ARB_robust_buffer_access_behavior
-#define GL_ARB_robust_buffer_access_behavior 1
-#endif /* GL_ARB_robust_buffer_access_behavior */
-#ifndef GL_ARB_robustness
-#define GL_ARB_robustness 1
-#define GL_CONTEXT_FLAG_ROBUST_ACCESS_BIT_ARB 0x00000004
-#define GL_LOSE_CONTEXT_ON_RESET_ARB      0x8252
-#define GL_GUILTY_CONTEXT_RESET_ARB       0x8253
-#define GL_INNOCENT_CONTEXT_RESET_ARB     0x8254
-#define GL_UNKNOWN_CONTEXT_RESET_ARB      0x8255
-#define GL_RESET_NOTIFICATION_STRATEGY_ARB 0x8256
-#define GL_NO_RESET_NOTIFICATION_ARB      0x8261
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_robustness */
-#ifndef GL_ARB_robustness_isolation
-#define GL_ARB_robustness_isolation 1
-#endif /* GL_ARB_robustness_isolation */
-#ifndef GL_ARB_sample_locations
-#define GL_ARB_sample_locations 1
-#define GL_SAMPLE_LOCATION_SUBPIXEL_BITS_ARB 0x933D
-#define GL_SAMPLE_LOCATION_PIXEL_GRID_WIDTH_ARB 0x933E
-#define GL_SAMPLE_LOCATION_PIXEL_GRID_HEIGHT_ARB 0x933F
-#define GL_PROGRAMMABLE_SAMPLE_LOCATION_TABLE_SIZE_ARB 0x9340
-#define GL_SAMPLE_LOCATION_ARB            0x8E50
-#define GL_PROGRAMMABLE_SAMPLE_LOCATION_ARB 0x9341
-#define GL_FRAMEBUFFER_PROGRAMMABLE_SAMPLE_LOCATIONS_ARB 0x9342
-#define GL_FRAMEBUFFER_SAMPLE_LOCATION_PIXEL_GRID_ARB 0x9343
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_sample_locations */
-#ifndef GL_ARB_sample_shading
-#define GL_ARB_sample_shading 1
-#define GL_SAMPLE_SHADING_ARB             0x8C36
-#define GL_MIN_SAMPLE_SHADING_VALUE_ARB   0x8C37
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_sample_shading */
-#ifndef GL_ARB_sampler_objects
-#define GL_ARB_sampler_objects 1
-#endif /* GL_ARB_sampler_objects */
-#ifndef GL_ARB_seamless_cube_map
-#define GL_ARB_seamless_cube_map 1
-#endif /* GL_ARB_seamless_cube_map */
-#ifndef GL_ARB_seamless_cubemap_per_texture
-#define GL_ARB_seamless_cubemap_per_texture 1
-#endif /* GL_ARB_seamless_cubemap_per_texture */
-#ifndef GL_ARB_separate_shader_objects
-#define GL_ARB_separate_shader_objects 1
-#endif /* GL_ARB_separate_shader_objects */
-#ifndef GL_ARB_shader_atomic_counter_ops
-#define GL_ARB_shader_atomic_counter_ops 1
-#endif /* GL_ARB_shader_atomic_counter_ops */
-#ifndef GL_ARB_shader_atomic_counters
-#define GL_ARB_shader_atomic_counters 1
-#endif /* GL_ARB_shader_atomic_counters */
-#ifndef GL_ARB_shader_ballot
-#define GL_ARB_shader_ballot 1
-#endif /* GL_ARB_shader_ballot */
-#ifndef GL_ARB_shader_bit_encoding
-#define GL_ARB_shader_bit_encoding 1
-#endif /* GL_ARB_shader_bit_encoding */
-#ifndef GL_ARB_shader_clock
-#define GL_ARB_shader_clock 1
-#endif /* GL_ARB_shader_clock */
-#ifndef GL_ARB_shader_draw_parameters
-#define GL_ARB_shader_draw_parameters 1
-#endif /* GL_ARB_shader_draw_parameters */
-#ifndef GL_ARB_shader_group_vote
-#define GL_ARB_shader_group_vote 1
-#endif /* GL_ARB_shader_group_vote */
-#ifndef GL_ARB_shader_image_load_store
-#define GL_ARB_shader_image_load_store 1
-#endif /* GL_ARB_shader_image_load_store */
-#ifndef GL_ARB_shader_image_size
-#define GL_ARB_shader_image_size 1
-#endif /* GL_ARB_shader_image_size */
-#ifndef GL_ARB_shader_precision
-#define GL_ARB_shader_precision 1
-#endif /* GL_ARB_shader_precision */
-#ifndef GL_ARB_shader_stencil_export
-#define GL_ARB_shader_stencil_export 1
-#endif /* GL_ARB_shader_stencil_export */
-#ifndef GL_ARB_shader_storage_buffer_object
-#define GL_ARB_shader_storage_buffer_object 1
-#endif /* GL_ARB_shader_storage_buffer_object */
-#ifndef GL_ARB_shader_subroutine
-#define GL_ARB_shader_subroutine 1
-#endif /* GL_ARB_shader_subroutine */
-#ifndef GL_ARB_shader_texture_image_samples
-#define GL_ARB_shader_texture_image_samples 1
-#endif /* GL_ARB_shader_texture_image_samples */
-#ifndef GL_ARB_shader_viewport_layer_array
-#define GL_ARB_shader_viewport_layer_array 1
-#endif /* GL_ARB_shader_viewport_layer_array */
-#ifndef GL_ARB_shading_language_420pack
-#define GL_ARB_shading_language_420pack 1
-#endif /* GL_ARB_shading_language_420pack */
-#ifndef GL_ARB_shading_language_include
-#define GL_ARB_shading_language_include 1
-#define GL_SHADER_INCLUDE_ARB             0x8DAE
-#define GL_NAMED_STRING_LENGTH_ARB        0x8DE9
-#define GL_NAMED_STRING_TYPE_ARB          0x8DEA
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_shading_language_include */
-#ifndef GL_ARB_shading_language_packing
-#define GL_ARB_shading_language_packing 1
-#endif /* GL_ARB_shading_language_packing */
-#ifndef GL_ARB_sparse_buffer
-#define GL_ARB_sparse_buffer 1
-#define GL_SPARSE_STORAGE_BIT_ARB         0x0400
-#define GL_SPARSE_BUFFER_PAGE_SIZE_ARB    0x82F8
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_sparse_buffer */
-#ifndef GL_ARB_sparse_texture
-#define GL_ARB_sparse_texture 1
-#define GL_TEXTURE_SPARSE_ARB             0x91A6
-#define GL_VIRTUAL_PAGE_SIZE_INDEX_ARB    0x91A7
-#define GL_NUM_SPARSE_LEVELS_ARB          0x91AA
-#define GL_NUM_VIRTUAL_PAGE_SIZES_ARB     0x91A8
-#define GL_VIRTUAL_PAGE_SIZE_X_ARB        0x9195
-#define GL_VIRTUAL_PAGE_SIZE_Y_ARB        0x9196
-#define GL_VIRTUAL_PAGE_SIZE_Z_ARB        0x9197
-#define GL_MAX_SPARSE_TEXTURE_SIZE_ARB    0x9198
-#define GL_MAX_SPARSE_3D_TEXTURE_SIZE_ARB 0x9199
-#define GL_MAX_SPARSE_ARRAY_TEXTURE_LAYERS_ARB 0x919A
-#define GL_SPARSE_TEXTURE_FULL_ARRAY_CUBE_MIPMAPS_ARB 0x91A9
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_sparse_texture */
-#ifndef GL_ARB_sparse_texture2
-#define GL_ARB_sparse_texture2 1
-#endif /* GL_ARB_sparse_texture2 */
-#ifndef GL_ARB_sparse_texture_clamp
-#define GL_ARB_sparse_texture_clamp 1
-#endif /* GL_ARB_sparse_texture_clamp */
-#ifndef GL_ARB_spirv_extensions
-#define GL_ARB_spirv_extensions 1
-#endif /* GL_ARB_spirv_extensions */
-#ifndef GL_ARB_stencil_texturing
-#define GL_ARB_stencil_texturing 1
-#endif /* GL_ARB_stencil_texturing */
-#ifndef GL_ARB_sync
-#define GL_ARB_sync 1
-#endif /* GL_ARB_sync */
-#ifndef GL_ARB_tessellation_shader
-#define GL_ARB_tessellation_shader 1
-#endif /* GL_ARB_tessellation_shader */
-#ifndef GL_ARB_texture_barrier
-#define GL_ARB_texture_barrier 1
-#endif /* GL_ARB_texture_barrier */
-#ifndef GL_ARB_texture_border_clamp
-#define GL_ARB_texture_border_clamp 1
-#define GL_CLAMP_TO_BORDER_ARB            0x812D
-#endif /* GL_ARB_texture_border_clamp */
-#ifndef GL_ARB_texture_buffer_object
-#define GL_ARB_texture_buffer_object 1
-#define GL_TEXTURE_BUFFER_ARB             0x8C2A
-#define GL_MAX_TEXTURE_BUFFER_SIZE_ARB    0x8C2B
-#define GL_TEXTURE_BINDING_BUFFER_ARB     0x8C2C
-#define GL_TEXTURE_BUFFER_DATA_STORE_BINDING_ARB 0x8C2D
-#define GL_TEXTURE_BUFFER_FORMAT_ARB      0x8C2E
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_texture_buffer_object */
-#ifndef GL_ARB_texture_buffer_object_rgb32
-#define GL_ARB_texture_buffer_object_rgb32 1
-#endif /* GL_ARB_texture_buffer_object_rgb32 */
-#ifndef GL_ARB_texture_buffer_range
-#define GL_ARB_texture_buffer_range 1
-#endif /* GL_ARB_texture_buffer_range */
-#ifndef GL_ARB_texture_compression_bptc
-#define GL_ARB_texture_compression_bptc 1
-#define GL_COMPRESSED_RGBA_BPTC_UNORM_ARB 0x8E8C
-#define GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM_ARB 0x8E8D
-#define GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT_ARB 0x8E8E
-#define GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_ARB 0x8E8F
-#endif /* GL_ARB_texture_compression_bptc */
-#ifndef GL_ARB_texture_compression_rgtc
-#define GL_ARB_texture_compression_rgtc 1
-#endif /* GL_ARB_texture_compression_rgtc */
-#ifndef GL_ARB_texture_cube_map_array
-#define GL_ARB_texture_cube_map_array 1
-#define GL_TEXTURE_CUBE_MAP_ARRAY_ARB     0x9009
-#define GL_TEXTURE_BINDING_CUBE_MAP_ARRAY_ARB 0x900A
-#define GL_PROXY_TEXTURE_CUBE_MAP_ARRAY_ARB 0x900B
-#define GL_SAMPLER_CUBE_MAP_ARRAY_ARB     0x900C
-#define GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW_ARB 0x900D
-#define GL_INT_SAMPLER_CUBE_MAP_ARRAY_ARB 0x900E
-#define GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY_ARB 0x900F
-#endif /* GL_ARB_texture_cube_map_array */
-#ifndef GL_ARB_texture_filter_anisotropic
-#define GL_ARB_texture_filter_anisotropic 1
-#endif /* GL_ARB_texture_filter_anisotropic */
-#ifndef GL_ARB_texture_filter_minmax
-#define GL_ARB_texture_filter_minmax 1
-#define GL_TEXTURE_REDUCTION_MODE_ARB     0x9366
-#define GL_WEIGHTED_AVERAGE_ARB           0x9367
-#endif /* GL_ARB_texture_filter_minmax */
-#ifndef GL_ARB_texture_gather
-#define GL_ARB_texture_gather 1
-#define GL_MIN_PROGRAM_TEXTURE_GATHER_OFFSET_ARB 0x8E5E
-#define GL_MAX_PROGRAM_TEXTURE_GATHER_OFFSET_ARB 0x8E5F
-#define GL_MAX_PROGRAM_TEXTURE_GATHER_COMPONENTS_ARB 0x8F9F
-#endif /* GL_ARB_texture_gather */
-#ifndef GL_ARB_texture_mirror_clamp_to_edge
-#define GL_ARB_texture_mirror_clamp_to_edge 1
-#endif /* GL_ARB_texture_mirror_clamp_to_edge */
-#ifndef GL_ARB_texture_mirrored_repeat
-#define GL_ARB_texture_mirrored_repeat 1
-#define GL_MIRRORED_REPEAT_ARB            0x8370
-#endif /* GL_ARB_texture_mirrored_repeat */
-#ifndef GL_ARB_texture_multisample
-#define GL_ARB_texture_multisample 1
-#endif /* GL_ARB_texture_multisample */
-#ifndef GL_ARB_texture_non_power_of_two
-#define GL_ARB_texture_non_power_of_two 1
-#endif /* GL_ARB_texture_non_power_of_two */
-#ifndef GL_ARB_texture_query_levels
-#define GL_ARB_texture_query_levels 1
-#endif /* GL_ARB_texture_query_levels */
-#ifndef GL_ARB_texture_query_lod
-#define GL_ARB_texture_query_lod 1
-#endif /* GL_ARB_texture_query_lod */
-#ifndef GL_ARB_texture_rg
-#define GL_ARB_texture_rg 1
-#endif /* GL_ARB_texture_rg */
-#ifndef GL_ARB_texture_rgb10_a2ui
-#define GL_ARB_texture_rgb10_a2ui 1
-#endif /* GL_ARB_texture_rgb10_a2ui */
-#ifndef GL_ARB_texture_stencil8
-#define GL_ARB_texture_stencil8 1
-#endif /* GL_ARB_texture_stencil8 */
-#ifndef GL_ARB_texture_storage
-#define GL_ARB_texture_storage 1
-#endif /* GL_ARB_texture_storage */
-#ifndef GL_ARB_texture_storage_multisample
-#define GL_ARB_texture_storage_multisample 1
-#endif /* GL_ARB_texture_storage_multisample */
-#ifndef GL_ARB_texture_swizzle
-#define GL_ARB_texture_swizzle 1
-#endif /* GL_ARB_texture_swizzle */
-#ifndef GL_ARB_texture_view
-#define GL_ARB_texture_view 1
-#endif /* GL_ARB_texture_view */
-#ifndef GL_ARB_timer_query
-#define GL_ARB_timer_query 1
-#endif /* GL_ARB_timer_query */
-#ifndef GL_ARB_transform_feedback2
-#define GL_ARB_transform_feedback2 1
-#endif /* GL_ARB_transform_feedback2 */
-#ifndef GL_ARB_transform_feedback3
-#define GL_ARB_transform_feedback3 1
-#endif /* GL_ARB_transform_feedback3 */
-#ifndef GL_ARB_transform_feedback_instanced
-#define GL_ARB_transform_feedback_instanced 1
-#endif /* GL_ARB_transform_feedback_instanced */
-#ifndef GL_ARB_transform_feedback_overflow_query
-#define GL_ARB_transform_feedback_overflow_query 1
-#define GL_TRANSFORM_FEEDBACK_OVERFLOW_ARB 0x82EC
-#define GL_TRANSFORM_FEEDBACK_STREAM_OVERFLOW_ARB 0x82ED
-#endif /* GL_ARB_transform_feedback_overflow_query */
-#ifndef GL_ARB_uniform_buffer_object
-#define GL_ARB_uniform_buffer_object 1
-#endif /* GL_ARB_uniform_buffer_object */
-#ifndef GL_ARB_vertex_array_bgra
-#define GL_ARB_vertex_array_bgra 1
-#endif /* GL_ARB_vertex_array_bgra */
-#ifndef GL_ARB_vertex_array_object
-#define GL_ARB_vertex_array_object 1
-#endif /* GL_ARB_vertex_array_object */
-#ifndef GL_ARB_vertex_attrib_64bit
-#define GL_ARB_vertex_attrib_64bit 1
-#endif /* GL_ARB_vertex_attrib_64bit */
-#ifndef GL_ARB_vertex_attrib_binding
-#define GL_ARB_vertex_attrib_binding 1
-#endif /* GL_ARB_vertex_attrib_binding */
-#ifndef GL_ARB_vertex_type_10f_11f_11f_rev
-#define GL_ARB_vertex_type_10f_11f_11f_rev 1
-#endif /* GL_ARB_vertex_type_10f_11f_11f_rev */
-#ifndef GL_ARB_vertex_type_2_10_10_10_rev
-#define GL_ARB_vertex_type_2_10_10_10_rev 1
-#endif /* GL_ARB_vertex_type_2_10_10_10_rev */
-#ifndef GL_ARB_viewport_array
-#define GL_ARB_viewport_array 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ARB_viewport_array */
-#ifndef GL_KHR_blend_equation_advanced
-#define GL_KHR_blend_equation_advanced 1
-#define GL_MULTIPLY_KHR                   0x9294
-#define GL_SCREEN_KHR                     0x9295
-#define GL_OVERLAY_KHR                    0x9296
-#define GL_DARKEN_KHR                     0x9297
-#define GL_LIGHTEN_KHR                    0x9298
-#define GL_COLORDODGE_KHR                 0x9299
-#define GL_COLORBURN_KHR                  0x929A
-#define GL_HARDLIGHT_KHR                  0x929B
-#define GL_SOFTLIGHT_KHR                  0x929C
-#define GL_DIFFERENCE_KHR                 0x929E
-#define GL_EXCLUSION_KHR                  0x92A0
-#define GL_HSL_HUE_KHR                    0x92AD
-#define GL_HSL_SATURATION_KHR             0x92AE
-#define GL_HSL_COLOR_KHR                  0x92AF
-#define GL_HSL_LUMINOSITY_KHR             0x92B0
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_KHR_blend_equation_advanced */
-#ifndef GL_KHR_blend_equation_advanced_coherent
-#define GL_KHR_blend_equation_advanced_coherent 1
-#define GL_BLEND_ADVANCED_COHERENT_KHR    0x9285
-#endif /* GL_KHR_blend_equation_advanced_coherent */
-#ifndef GL_KHR_context_flush_control
-#define GL_KHR_context_flush_control 1
-#endif /* GL_KHR_context_flush_control */
-#ifndef GL_KHR_debug
-#define GL_KHR_debug 1
-#endif /* GL_KHR_debug */
-#ifndef GL_KHR_no_error
-#define GL_KHR_no_error 1
-#define GL_CONTEXT_FLAG_NO_ERROR_BIT_KHR  0x00000008
-#endif /* GL_KHR_no_error */
-#ifndef GL_KHR_parallel_shader_compile
-#define GL_KHR_parallel_shader_compile 1
-#define GL_MAX_SHADER_COMPILER_THREADS_KHR 0x91B0
-#define GL_COMPLETION_STATUS_KHR          0x91B1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_KHR_parallel_shader_compile */
-#ifndef GL_KHR_robust_buffer_access_behavior
-#define GL_KHR_robust_buffer_access_behavior 1
-#endif /* GL_KHR_robust_buffer_access_behavior */
-#ifndef GL_KHR_robustness
-#define GL_KHR_robustness 1
-#define GL_CONTEXT_ROBUST_ACCESS          0x90F3
-#endif /* GL_KHR_robustness */
-#ifndef GL_KHR_shader_subgroup
-#define GL_KHR_shader_subgroup 1
-#define GL_SUBGROUP_SIZE_KHR              0x9532
-#define GL_SUBGROUP_SUPPORTED_STAGES_KHR  0x9533
-#define GL_SUBGROUP_SUPPORTED_FEATURES_KHR 0x9534
-#define GL_SUBGROUP_QUAD_ALL_STAGES_KHR   0x9535
-#define GL_SUBGROUP_FEATURE_BASIC_BIT_KHR 0x00000001
-#define GL_SUBGROUP_FEATURE_VOTE_BIT_KHR  0x00000002
-#define GL_SUBGROUP_FEATURE_ARITHMETIC_BIT_KHR 0x00000004
-#define GL_SUBGROUP_FEATURE_BALLOT_BIT_KHR 0x00000008
-#define GL_SUBGROUP_FEATURE_SHUFFLE_BIT_KHR 0x00000010
-#define GL_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT_KHR 0x00000020
-#define GL_SUBGROUP_FEATURE_CLUSTERED_BIT_KHR 0x00000040
-#define GL_SUBGROUP_FEATURE_QUAD_BIT_KHR  0x00000080
-#endif /* GL_KHR_shader_subgroup */
-#ifndef GL_KHR_texture_compression_astc_hdr
-#define GL_KHR_texture_compression_astc_hdr 1
-#define GL_COMPRESSED_RGBA_ASTC_4x4_KHR   0x93B0
-#define GL_COMPRESSED_RGBA_ASTC_5x4_KHR   0x93B1
-#define GL_COMPRESSED_RGBA_ASTC_5x5_KHR   0x93B2
-#define GL_COMPRESSED_RGBA_ASTC_6x5_KHR   0x93B3
-#define GL_COMPRESSED_RGBA_ASTC_6x6_KHR   0x93B4
-#define GL_COMPRESSED_RGBA_ASTC_8x5_KHR   0x93B5
-#define GL_COMPRESSED_RGBA_ASTC_8x6_KHR   0x93B6
-#define GL_COMPRESSED_RGBA_ASTC_8x8_KHR   0x93B7
-#define GL_COMPRESSED_RGBA_ASTC_10x5_KHR  0x93B8
-#define GL_COMPRESSED_RGBA_ASTC_10x6_KHR  0x93B9
-#define GL_COMPRESSED_RGBA_ASTC_10x8_KHR  0x93BA
-#define GL_COMPRESSED_RGBA_ASTC_10x10_KHR 0x93BB
-#define GL_COMPRESSED_RGBA_ASTC_12x10_KHR 0x93BC
-#define GL_COMPRESSED_RGBA_ASTC_12x12_KHR 0x93BD
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR 0x93D0
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR 0x93D1
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR 0x93D2
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR 0x93D3
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR 0x93D4
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR 0x93D5
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR 0x93D6
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR 0x93D7
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR 0x93D8
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR 0x93D9
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR 0x93DA
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR 0x93DB
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR 0x93DC
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR 0x93DD
-#endif /* GL_KHR_texture_compression_astc_hdr */
-#ifndef GL_KHR_texture_compression_astc_ldr
-#define GL_KHR_texture_compression_astc_ldr 1
-#endif /* GL_KHR_texture_compression_astc_ldr */
-#ifndef GL_KHR_texture_compression_astc_sliced_3d
-#define GL_KHR_texture_compression_astc_sliced_3d 1
-#endif /* GL_KHR_texture_compression_astc_sliced_3d */
-#ifndef GL_AMD_framebuffer_multisample_advanced
-#define GL_AMD_framebuffer_multisample_advanced 1
-#define GL_RENDERBUFFER_STORAGE_SAMPLES_AMD 0x91B2
-#define GL_MAX_COLOR_FRAMEBUFFER_SAMPLES_AMD 0x91B3
-#define GL_MAX_COLOR_FRAMEBUFFER_STORAGE_SAMPLES_AMD 0x91B4
-#define GL_MAX_DEPTH_STENCIL_FRAMEBUFFER_SAMPLES_AMD 0x91B5
-#define GL_NUM_SUPPORTED_MULTISAMPLE_MODES_AMD 0x91B6
-#define GL_SUPPORTED_MULTISAMPLE_MODES_AMD 0x91B7
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_AMD_framebuffer_multisample_advanced */
-#ifndef GL_AMD_performance_monitor
-#define GL_AMD_performance_monitor 1
-#define GL_COUNTER_TYPE_AMD               0x8BC0
-#define GL_COUNTER_RANGE_AMD              0x8BC1
-#define GL_UNSIGNED_INT64_AMD             0x8BC2
-#define GL_PERCENTAGE_AMD                 0x8BC3
-#define GL_PERFMON_RESULT_AVAILABLE_AMD   0x8BC4
-#define GL_PERFMON_RESULT_SIZE_AMD        0x8BC5
-#define GL_PERFMON_RESULT_AMD             0x8BC6
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_AMD_performance_monitor */
-#ifndef GL_APPLE_rgb_422
-#define GL_APPLE_rgb_422 1
-#define GL_RGB_422_APPLE                  0x8A1F
-#define GL_UNSIGNED_SHORT_8_8_APPLE       0x85BA
-#define GL_UNSIGNED_SHORT_8_8_REV_APPLE   0x85BB
-#define GL_RGB_RAW_422_APPLE              0x8A51
-#endif /* GL_APPLE_rgb_422 */
-#ifndef GL_EXT_EGL_image_storage
-#define GL_EXT_EGL_image_storage 1
-typedef void *GLeglImageOES;
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_EGL_image_storage */
-#ifndef GL_EXT_EGL_sync
-#define GL_EXT_EGL_sync 1
-#endif /* GL_EXT_EGL_sync */
-#ifndef GL_EXT_debug_label
-#define GL_EXT_debug_label 1
-#define GL_PROGRAM_PIPELINE_OBJECT_EXT    0x8A4F
-#define GL_PROGRAM_OBJECT_EXT             0x8B40
-#define GL_SHADER_OBJECT_EXT              0x8B48
-#define GL_BUFFER_OBJECT_EXT              0x9151
-#define GL_QUERY_OBJECT_EXT               0x9153
-#define GL_VERTEX_ARRAY_OBJECT_EXT        0x9154
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_debug_label */
-#ifndef GL_EXT_debug_marker
-#define GL_EXT_debug_marker 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_debug_marker */
-#ifndef GL_EXT_direct_state_access
-#define GL_EXT_direct_state_access 1
-#define GL_PROGRAM_MATRIX_EXT             0x8E2D
-#define GL_TRANSPOSE_PROGRAM_MATRIX_EXT   0x8E2E
-#define GL_PROGRAM_MATRIX_STACK_DEPTH_EXT 0x8E2F
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_direct_state_access */
-#ifndef GL_EXT_draw_instanced
-#define GL_EXT_draw_instanced 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_draw_instanced */
-#ifndef GL_EXT_multiview_tessellation_geometry_shader
-#define GL_EXT_multiview_tessellation_geometry_shader 1
-#endif /* GL_EXT_multiview_tessellation_geometry_shader */
-#ifndef GL_EXT_multiview_texture_multisample
-#define GL_EXT_multiview_texture_multisample 1
-#endif /* GL_EXT_multiview_texture_multisample */
-#ifndef GL_EXT_multiview_timer_query
-#define GL_EXT_multiview_timer_query 1
-#endif /* GL_EXT_multiview_timer_query */
-#ifndef GL_EXT_polygon_offset_clamp
-#define GL_EXT_polygon_offset_clamp 1
-#define GL_POLYGON_OFFSET_CLAMP_EXT       0x8E1B
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_polygon_offset_clamp */
-#ifndef GL_EXT_post_depth_coverage
-#define GL_EXT_post_depth_coverage 1
-#endif /* GL_EXT_post_depth_coverage */
-#ifndef GL_EXT_raster_multisample
-#define GL_EXT_raster_multisample 1
-#define GL_RASTER_MULTISAMPLE_EXT         0x9327
-#define GL_RASTER_SAMPLES_EXT             0x9328
-#define GL_MAX_RASTER_SAMPLES_EXT         0x9329
-#define GL_RASTER_FIXED_SAMPLE_LOCATIONS_EXT 0x932A
-#define GL_MULTISAMPLE_RASTERIZATION_ALLOWED_EXT 0x932B
-#define GL_EFFECTIVE_RASTER_SAMPLES_EXT   0x932C
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_raster_multisample */
-#ifndef GL_EXT_separate_shader_objects
-#define GL_EXT_separate_shader_objects 1
-#define GL_ACTIVE_PROGRAM_EXT             0x8B8D
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_separate_shader_objects */
-#ifndef GL_EXT_shader_framebuffer_fetch
-#define GL_EXT_shader_framebuffer_fetch 1
-#define GL_FRAGMENT_SHADER_DISCARDS_SAMPLES_EXT 0x8A52
-#endif /* GL_EXT_shader_framebuffer_fetch */
-#ifndef GL_EXT_shader_framebuffer_fetch_non_coherent
-#define GL_EXT_shader_framebuffer_fetch_non_coherent 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_shader_framebuffer_fetch_non_coherent */
-#ifndef GL_EXT_shader_integer_mix
-#define GL_EXT_shader_integer_mix 1
-#endif /* GL_EXT_shader_integer_mix */
-#ifndef GL_EXT_texture_compression_s3tc
-#define GL_EXT_texture_compression_s3tc 1
-#define GL_COMPRESSED_RGB_S3TC_DXT1_EXT   0x83F0
-#define GL_COMPRESSED_RGBA_S3TC_DXT1_EXT  0x83F1
-#define GL_COMPRESSED_RGBA_S3TC_DXT3_EXT  0x83F2
-#define GL_COMPRESSED_RGBA_S3TC_DXT5_EXT  0x83F3
-#endif /* GL_EXT_texture_compression_s3tc */
-#ifndef GL_EXT_texture_filter_minmax
-#define GL_EXT_texture_filter_minmax 1
-#define GL_TEXTURE_REDUCTION_MODE_EXT     0x9366
-#define GL_WEIGHTED_AVERAGE_EXT           0x9367
-#endif /* GL_EXT_texture_filter_minmax */
-#ifndef GL_EXT_texture_sRGB_R8
-#define GL_EXT_texture_sRGB_R8 1
-#define GL_SR8_EXT                        0x8FBD
-#endif /* GL_EXT_texture_sRGB_R8 */
-#ifndef GL_EXT_texture_sRGB_RG8
-#define GL_EXT_texture_sRGB_RG8 1
-#define GL_SRG8_EXT                       0x8FBE
-#endif /* GL_EXT_texture_sRGB_RG8 */
-#ifndef GL_EXT_texture_sRGB_decode
-#define GL_EXT_texture_sRGB_decode 1
-#define GL_TEXTURE_SRGB_DECODE_EXT        0x8A48
-#define GL_DECODE_EXT                     0x8A49
-#define GL_SKIP_DECODE_EXT                0x8A4A
-#endif /* GL_EXT_texture_sRGB_decode */
-#ifndef GL_EXT_texture_shadow_lod
-#define GL_EXT_texture_shadow_lod 1
-#endif /* GL_EXT_texture_shadow_lod */
-#ifndef GL_EXT_window_rectangles
-#define GL_EXT_window_rectangles 1
-#define GL_INCLUSIVE_EXT                  0x8F10
-#define GL_EXCLUSIVE_EXT                  0x8F11
-#define GL_WINDOW_RECTANGLE_EXT           0x8F12
-#define GL_WINDOW_RECTANGLE_MODE_EXT      0x8F13
-#define GL_MAX_WINDOW_RECTANGLES_EXT      0x8F14
-#define GL_NUM_WINDOW_RECTANGLES_EXT      0x8F15
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_window_rectangles */
-#ifndef GL_INTEL_blackhole_render
-#define GL_INTEL_blackhole_render 1
-#define GL_BLACKHOLE_RENDER_INTEL         0x83FC
-#endif /* GL_INTEL_blackhole_render */
-#ifndef GL_INTEL_conservative_rasterization
-#define GL_INTEL_conservative_rasterization 1
-#define GL_CONSERVATIVE_RASTERIZATION_INTEL 0x83FE
-#endif /* GL_INTEL_conservative_rasterization */
-#ifndef GL_INTEL_framebuffer_CMAA
-#define GL_INTEL_framebuffer_CMAA 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_INTEL_framebuffer_CMAA */
-#ifndef GL_INTEL_performance_query
-#define GL_INTEL_performance_query 1
-#define GL_PERFQUERY_SINGLE_CONTEXT_INTEL 0x00000000
-#define GL_PERFQUERY_GLOBAL_CONTEXT_INTEL 0x00000001
-#define GL_PERFQUERY_WAIT_INTEL           0x83FB
-#define GL_PERFQUERY_FLUSH_INTEL          0x83FA
-#define GL_PERFQUERY_DONOT_FLUSH_INTEL    0x83F9
-#define GL_PERFQUERY_COUNTER_EVENT_INTEL  0x94F0
-#define GL_PERFQUERY_COUNTER_DURATION_NORM_INTEL 0x94F1
-#define GL_PERFQUERY_COUNTER_DURATION_RAW_INTEL 0x94F2
-#define GL_PERFQUERY_COUNTER_THROUGHPUT_INTEL 0x94F3
-#define GL_PERFQUERY_COUNTER_RAW_INTEL    0x94F4
-#define GL_PERFQUERY_COUNTER_TIMESTAMP_INTEL 0x94F5
-#define GL_PERFQUERY_COUNTER_DATA_UINT32_INTEL 0x94F8
-#define GL_PERFQUERY_COUNTER_DATA_UINT64_INTEL 0x94F9
-#define GL_PERFQUERY_COUNTER_DATA_FLOAT_INTEL 0x94FA
-#define GL_PERFQUERY_COUNTER_DATA_DOUBLE_INTEL 0x94FB
-#define GL_PERFQUERY_COUNTER_DATA_BOOL32_INTEL 0x94FC
-#define GL_PERFQUERY_QUERY_NAME_LENGTH_MAX_INTEL 0x94FD
-#define GL_PERFQUERY_COUNTER_NAME_LENGTH_MAX_INTEL 0x94FE
-#define GL_PERFQUERY_COUNTER_DESC_LENGTH_MAX_INTEL 0x94FF
-#define GL_PERFQUERY_GPA_EXTENDED_COUNTERS_INTEL 0x9500
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_INTEL_performance_query */
-#ifndef GL_MESA_framebuffer_flip_x
-#define GL_MESA_framebuffer_flip_x 1
-#define GL_FRAMEBUFFER_FLIP_X_MESA        0x8BBC
-#endif /* GL_MESA_framebuffer_flip_x */
-#ifndef GL_MESA_framebuffer_flip_y
-#define GL_MESA_framebuffer_flip_y 1
-#define GL_FRAMEBUFFER_FLIP_Y_MESA        0x8BBB
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_MESA_framebuffer_flip_y */
-#ifndef GL_MESA_framebuffer_swap_xy
-#define GL_MESA_framebuffer_swap_xy 1
-#define GL_FRAMEBUFFER_SWAP_XY_MESA       0x8BBD
-#endif /* GL_MESA_framebuffer_swap_xy */
-#ifndef GL_NV_bindless_multi_draw_indirect
-#define GL_NV_bindless_multi_draw_indirect 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_bindless_multi_draw_indirect */
-#ifndef GL_NV_bindless_multi_draw_indirect_count
-#define GL_NV_bindless_multi_draw_indirect_count 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_bindless_multi_draw_indirect_count */
-#ifndef GL_NV_bindless_texture
-#define GL_NV_bindless_texture 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_bindless_texture */
-#ifndef GL_NV_blend_equation_advanced
-#define GL_NV_blend_equation_advanced 1
-#define GL_BLEND_OVERLAP_NV               0x9281
-#define GL_BLEND_PREMULTIPLIED_SRC_NV     0x9280
-#define GL_BLUE_NV                        0x1905
-#define GL_COLORBURN_NV                   0x929A
-#define GL_COLORDODGE_NV                  0x9299
-#define GL_CONJOINT_NV                    0x9284
-#define GL_CONTRAST_NV                    0x92A1
-#define GL_DARKEN_NV                      0x9297
-#define GL_DIFFERENCE_NV                  0x929E
-#define GL_DISJOINT_NV                    0x9283
-#define GL_DST_ATOP_NV                    0x928F
-#define GL_DST_IN_NV                      0x928B
-#define GL_DST_NV                         0x9287
-#define GL_DST_OUT_NV                     0x928D
-#define GL_DST_OVER_NV                    0x9289
-#define GL_EXCLUSION_NV                   0x92A0
-#define GL_GREEN_NV                       0x1904
-#define GL_HARDLIGHT_NV                   0x929B
-#define GL_HARDMIX_NV                     0x92A9
-#define GL_HSL_COLOR_NV                   0x92AF
-#define GL_HSL_HUE_NV                     0x92AD
-#define GL_HSL_LUMINOSITY_NV              0x92B0
-#define GL_HSL_SATURATION_NV              0x92AE
-#define GL_INVERT_OVG_NV                  0x92B4
-#define GL_INVERT_RGB_NV                  0x92A3
-#define GL_LIGHTEN_NV                     0x9298
-#define GL_LINEARBURN_NV                  0x92A5
-#define GL_LINEARDODGE_NV                 0x92A4
-#define GL_LINEARLIGHT_NV                 0x92A7
-#define GL_MINUS_CLAMPED_NV               0x92B3
-#define GL_MINUS_NV                       0x929F
-#define GL_MULTIPLY_NV                    0x9294
-#define GL_OVERLAY_NV                     0x9296
-#define GL_PINLIGHT_NV                    0x92A8
-#define GL_PLUS_CLAMPED_ALPHA_NV          0x92B2
-#define GL_PLUS_CLAMPED_NV                0x92B1
-#define GL_PLUS_DARKER_NV                 0x9292
-#define GL_PLUS_NV                        0x9291
-#define GL_RED_NV                         0x1903
-#define GL_SCREEN_NV                      0x9295
-#define GL_SOFTLIGHT_NV                   0x929C
-#define GL_SRC_ATOP_NV                    0x928E
-#define GL_SRC_IN_NV                      0x928A
-#define GL_SRC_NV                         0x9286
-#define GL_SRC_OUT_NV                     0x928C
-#define GL_SRC_OVER_NV                    0x9288
-#define GL_UNCORRELATED_NV                0x9282
-#define GL_VIVIDLIGHT_NV                  0x92A6
-#define GL_XOR_NV                         0x1506
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_blend_equation_advanced */
-#ifndef GL_NV_blend_equation_advanced_coherent
-#define GL_NV_blend_equation_advanced_coherent 1
-#define GL_BLEND_ADVANCED_COHERENT_NV     0x9285
-#endif /* GL_NV_blend_equation_advanced_coherent */
-#ifndef GL_NV_blend_minmax_factor
-#define GL_NV_blend_minmax_factor 1
-#define GL_FACTOR_MIN_AMD                 0x901C
-#define GL_FACTOR_MAX_AMD                 0x901D
-#endif /* GL_NV_blend_minmax_factor */
-#ifndef GL_NV_clip_space_w_scaling
-#define GL_NV_clip_space_w_scaling 1
-#define GL_VIEWPORT_POSITION_W_SCALE_NV   0x937C
-#define GL_VIEWPORT_POSITION_W_SCALE_X_COEFF_NV 0x937D
-#define GL_VIEWPORT_POSITION_W_SCALE_Y_COEFF_NV 0x937E
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_clip_space_w_scaling */
-#ifndef GL_NV_command_list
-#define GL_NV_command_list 1
-#define GL_TERMINATE_SEQUENCE_COMMAND_NV  0x0000
-#define GL_NOP_COMMAND_NV                 0x0001
-#define GL_DRAW_ELEMENTS_COMMAND_NV       0x0002
-#define GL_DRAW_ARRAYS_COMMAND_NV         0x0003
-#define GL_DRAW_ELEMENTS_STRIP_COMMAND_NV 0x0004
-#define GL_DRAW_ARRAYS_STRIP_COMMAND_NV   0x0005
-#define GL_DRAW_ELEMENTS_INSTANCED_COMMAND_NV 0x0006
-#define GL_DRAW_ARRAYS_INSTANCED_COMMAND_NV 0x0007
-#define GL_ELEMENT_ADDRESS_COMMAND_NV     0x0008
-#define GL_ATTRIBUTE_ADDRESS_COMMAND_NV   0x0009
-#define GL_UNIFORM_ADDRESS_COMMAND_NV     0x000A
-#define GL_BLEND_COLOR_COMMAND_NV         0x000B
-#define GL_STENCIL_REF_COMMAND_NV         0x000C
-#define GL_LINE_WIDTH_COMMAND_NV          0x000D
-#define GL_POLYGON_OFFSET_COMMAND_NV      0x000E
-#define GL_ALPHA_REF_COMMAND_NV           0x000F
-#define GL_VIEWPORT_COMMAND_NV            0x0010
-#define GL_SCISSOR_COMMAND_NV             0x0011
-#define GL_FRONT_FACE_COMMAND_NV          0x0012
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_command_list */
-#ifndef GL_NV_compute_shader_derivatives
-#define GL_NV_compute_shader_derivatives 1
-#endif /* GL_NV_compute_shader_derivatives */
-#ifndef GL_NV_conditional_render
-#define GL_NV_conditional_render 1
-#define GL_QUERY_WAIT_NV                  0x8E13
-#define GL_QUERY_NO_WAIT_NV               0x8E14
-#define GL_QUERY_BY_REGION_WAIT_NV        0x8E15
-#define GL_QUERY_BY_REGION_NO_WAIT_NV     0x8E16
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_conditional_render */
-#ifndef GL_NV_conservative_raster
-#define GL_NV_conservative_raster 1
-#define GL_CONSERVATIVE_RASTERIZATION_NV  0x9346
-#define GL_SUBPIXEL_PRECISION_BIAS_X_BITS_NV 0x9347
-#define GL_SUBPIXEL_PRECISION_BIAS_Y_BITS_NV 0x9348
-#define GL_MAX_SUBPIXEL_PRECISION_BIAS_BITS_NV 0x9349
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_conservative_raster */
-#ifndef GL_NV_conservative_raster_dilate
-#define GL_NV_conservative_raster_dilate 1
-#define GL_CONSERVATIVE_RASTER_DILATE_NV  0x9379
-#define GL_CONSERVATIVE_RASTER_DILATE_RANGE_NV 0x937A
-#define GL_CONSERVATIVE_RASTER_DILATE_GRANULARITY_NV 0x937B
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_conservative_raster_dilate */
-#ifndef GL_NV_conservative_raster_pre_snap
-#define GL_NV_conservative_raster_pre_snap 1
-#define GL_CONSERVATIVE_RASTER_MODE_PRE_SNAP_NV 0x9550
-#endif /* GL_NV_conservative_raster_pre_snap */
-#ifndef GL_NV_conservative_raster_pre_snap_triangles
-#define GL_NV_conservative_raster_pre_snap_triangles 1
-#define GL_CONSERVATIVE_RASTER_MODE_NV    0x954D
-#define GL_CONSERVATIVE_RASTER_MODE_POST_SNAP_NV 0x954E
-#define GL_CONSERVATIVE_RASTER_MODE_PRE_SNAP_TRIANGLES_NV 0x954F
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_conservative_raster_pre_snap_triangles */
-#ifndef GL_NV_conservative_raster_underestimation
-#define GL_NV_conservative_raster_underestimation 1
-#endif /* GL_NV_conservative_raster_underestimation */
-#ifndef GL_NV_depth_buffer_float
-#define GL_NV_depth_buffer_float 1
-#define GL_DEPTH_COMPONENT32F_NV          0x8DAB
-#define GL_DEPTH32F_STENCIL8_NV           0x8DAC
-#define GL_FLOAT_32_UNSIGNED_INT_24_8_REV_NV 0x8DAD
-#define GL_DEPTH_BUFFER_FLOAT_MODE_NV     0x8DAF
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_depth_buffer_float */
-#ifndef GL_NV_draw_vulkan_image
-#define GL_NV_draw_vulkan_image 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_draw_vulkan_image */
-#ifndef GL_NV_fill_rectangle
-#define GL_NV_fill_rectangle 1
-#define GL_FILL_RECTANGLE_NV              0x933C
-#endif /* GL_NV_fill_rectangle */
-#ifndef GL_NV_fragment_coverage_to_color
-#define GL_NV_fragment_coverage_to_color 1
-#define GL_FRAGMENT_COVERAGE_TO_COLOR_NV  0x92DD
-#define GL_FRAGMENT_COVERAGE_COLOR_NV     0x92DE
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_fragment_coverage_to_color */
-#ifndef GL_NV_fragment_shader_barycentric
-#define GL_NV_fragment_shader_barycentric 1
-#endif /* GL_NV_fragment_shader_barycentric */
-#ifndef GL_NV_fragment_shader_interlock
-#define GL_NV_fragment_shader_interlock 1
-#endif /* GL_NV_fragment_shader_interlock */
-#ifndef GL_NV_framebuffer_mixed_samples
-#define GL_NV_framebuffer_mixed_samples 1
-#define GL_COVERAGE_MODULATION_TABLE_NV   0x9331
-#define GL_COLOR_SAMPLES_NV               0x8E20
-#define GL_DEPTH_SAMPLES_NV               0x932D
-#define GL_STENCIL_SAMPLES_NV             0x932E
-#define GL_MIXED_DEPTH_SAMPLES_SUPPORTED_NV 0x932F
-#define GL_MIXED_STENCIL_SAMPLES_SUPPORTED_NV 0x9330
-#define GL_COVERAGE_MODULATION_NV         0x9332
-#define GL_COVERAGE_MODULATION_TABLE_SIZE_NV 0x9333
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_framebuffer_mixed_samples */
-#ifndef GL_NV_framebuffer_multisample_coverage
-#define GL_NV_framebuffer_multisample_coverage 1
-#define GL_RENDERBUFFER_COVERAGE_SAMPLES_NV 0x8CAB
-#define GL_RENDERBUFFER_COLOR_SAMPLES_NV  0x8E10
-#define GL_MAX_MULTISAMPLE_COVERAGE_MODES_NV 0x8E11
-#define GL_MULTISAMPLE_COVERAGE_MODES_NV  0x8E12
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_framebuffer_multisample_coverage */
-#ifndef GL_NV_geometry_shader_passthrough
-#define GL_NV_geometry_shader_passthrough 1
-#endif /* GL_NV_geometry_shader_passthrough */
-#ifndef GL_NV_gpu_shader5
-#define GL_NV_gpu_shader5 1
-typedef khronos_int64_t GLint64EXT;
-#define GL_INT64_NV                       0x140E
-#define GL_UNSIGNED_INT64_NV              0x140F
-#define GL_INT8_NV                        0x8FE0
-#define GL_INT8_VEC2_NV                   0x8FE1
-#define GL_INT8_VEC3_NV                   0x8FE2
-#define GL_INT8_VEC4_NV                   0x8FE3
-#define GL_INT16_NV                       0x8FE4
-#define GL_INT16_VEC2_NV                  0x8FE5
-#define GL_INT16_VEC3_NV                  0x8FE6
-#define GL_INT16_VEC4_NV                  0x8FE7
-#define GL_INT64_VEC2_NV                  0x8FE9
-#define GL_INT64_VEC3_NV                  0x8FEA
-#define GL_INT64_VEC4_NV                  0x8FEB
-#define GL_UNSIGNED_INT8_NV               0x8FEC
-#define GL_UNSIGNED_INT8_VEC2_NV          0x8FED
-#define GL_UNSIGNED_INT8_VEC3_NV          0x8FEE
-#define GL_UNSIGNED_INT8_VEC4_NV          0x8FEF
-#define GL_UNSIGNED_INT16_NV              0x8FF0
-#define GL_UNSIGNED_INT16_VEC2_NV         0x8FF1
-#define GL_UNSIGNED_INT16_VEC3_NV         0x8FF2
-#define GL_UNSIGNED_INT16_VEC4_NV         0x8FF3
-#define GL_UNSIGNED_INT64_VEC2_NV         0x8FF5
-#define GL_UNSIGNED_INT64_VEC3_NV         0x8FF6
-#define GL_UNSIGNED_INT64_VEC4_NV         0x8FF7
-#define GL_FLOAT16_NV                     0x8FF8
-#define GL_FLOAT16_VEC2_NV                0x8FF9
-#define GL_FLOAT16_VEC3_NV                0x8FFA
-#define GL_FLOAT16_VEC4_NV                0x8FFB
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_gpu_shader5 */
-#ifndef GL_NV_internalformat_sample_query
-#define GL_NV_internalformat_sample_query 1
-#define GL_MULTISAMPLES_NV                0x9371
-#define GL_SUPERSAMPLE_SCALE_X_NV         0x9372
-#define GL_SUPERSAMPLE_SCALE_Y_NV         0x9373
-#define GL_CONFORMANT_NV                  0x9374
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_internalformat_sample_query */
-#ifndef GL_NV_memory_attachment
-#define GL_NV_memory_attachment 1
-#define GL_ATTACHED_MEMORY_OBJECT_NV      0x95A4
-#define GL_ATTACHED_MEMORY_OFFSET_NV      0x95A5
-#define GL_MEMORY_ATTACHABLE_ALIGNMENT_NV 0x95A6
-#define GL_MEMORY_ATTACHABLE_SIZE_NV      0x95A7
-#define GL_MEMORY_ATTACHABLE_NV           0x95A8
-#define GL_DETACHED_MEMORY_INCARNATION_NV 0x95A9
-#define GL_DETACHED_TEXTURES_NV           0x95AA
-#define GL_DETACHED_BUFFERS_NV            0x95AB
-#define GL_MAX_DETACHED_TEXTURES_NV       0x95AC
-#define GL_MAX_DETACHED_BUFFERS_NV        0x95AD
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_memory_attachment */
-#ifndef GL_NV_memory_object_sparse
-#define GL_NV_memory_object_sparse 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_memory_object_sparse */
-#ifndef GL_NV_mesh_shader
-#define GL_NV_mesh_shader 1
-#define GL_MESH_SHADER_NV                 0x9559
-#define GL_TASK_SHADER_NV                 0x955A
-#define GL_MAX_MESH_UNIFORM_BLOCKS_NV     0x8E60
-#define GL_MAX_MESH_TEXTURE_IMAGE_UNITS_NV 0x8E61
-#define GL_MAX_MESH_IMAGE_UNIFORMS_NV     0x8E62
-#define GL_MAX_MESH_UNIFORM_COMPONENTS_NV 0x8E63
-#define GL_MAX_MESH_ATOMIC_COUNTER_BUFFERS_NV 0x8E64
-#define GL_MAX_MESH_ATOMIC_COUNTERS_NV    0x8E65
-#define GL_MAX_MESH_SHADER_STORAGE_BLOCKS_NV 0x8E66
-#define GL_MAX_COMBINED_MESH_UNIFORM_COMPONENTS_NV 0x8E67
-#define GL_MAX_TASK_UNIFORM_BLOCKS_NV     0x8E68
-#define GL_MAX_TASK_TEXTURE_IMAGE_UNITS_NV 0x8E69
-#define GL_MAX_TASK_IMAGE_UNIFORMS_NV     0x8E6A
-#define GL_MAX_TASK_UNIFORM_COMPONENTS_NV 0x8E6B
-#define GL_MAX_TASK_ATOMIC_COUNTER_BUFFERS_NV 0x8E6C
-#define GL_MAX_TASK_ATOMIC_COUNTERS_NV    0x8E6D
-#define GL_MAX_TASK_SHADER_STORAGE_BLOCKS_NV 0x8E6E
-#define GL_MAX_COMBINED_TASK_UNIFORM_COMPONENTS_NV 0x8E6F
-#define GL_MAX_MESH_WORK_GROUP_INVOCATIONS_NV 0x95A2
-#define GL_MAX_TASK_WORK_GROUP_INVOCATIONS_NV 0x95A3
-#define GL_MAX_MESH_TOTAL_MEMORY_SIZE_NV  0x9536
-#define GL_MAX_TASK_TOTAL_MEMORY_SIZE_NV  0x9537
-#define GL_MAX_MESH_OUTPUT_VERTICES_NV    0x9538
-#define GL_MAX_MESH_OUTPUT_PRIMITIVES_NV  0x9539
-#define GL_MAX_TASK_OUTPUT_COUNT_NV       0x953A
-#define GL_MAX_DRAW_MESH_TASKS_COUNT_NV   0x953D
-#define GL_MAX_MESH_VIEWS_NV              0x9557
-#define GL_MESH_OUTPUT_PER_VERTEX_GRANULARITY_NV 0x92DF
-#define GL_MESH_OUTPUT_PER_PRIMITIVE_GRANULARITY_NV 0x9543
-#define GL_MAX_MESH_WORK_GROUP_SIZE_NV    0x953B
-#define GL_MAX_TASK_WORK_GROUP_SIZE_NV    0x953C
-#define GL_MESH_WORK_GROUP_SIZE_NV        0x953E
-#define GL_TASK_WORK_GROUP_SIZE_NV        0x953F
-#define GL_MESH_VERTICES_OUT_NV           0x9579
-#define GL_MESH_PRIMITIVES_OUT_NV         0x957A
-#define GL_MESH_OUTPUT_TYPE_NV            0x957B
-#define GL_UNIFORM_BLOCK_REFERENCED_BY_MESH_SHADER_NV 0x959C
-#define GL_UNIFORM_BLOCK_REFERENCED_BY_TASK_SHADER_NV 0x959D
-#define GL_REFERENCED_BY_MESH_SHADER_NV   0x95A0
-#define GL_REFERENCED_BY_TASK_SHADER_NV   0x95A1
-#define GL_MESH_SHADER_BIT_NV             0x00000040
-#define GL_TASK_SHADER_BIT_NV             0x00000080
-#define GL_MESH_SUBROUTINE_NV             0x957C
-#define GL_TASK_SUBROUTINE_NV             0x957D
-#define GL_MESH_SUBROUTINE_UNIFORM_NV     0x957E
-#define GL_TASK_SUBROUTINE_UNIFORM_NV     0x957F
-#define GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_MESH_SHADER_NV 0x959E
-#define GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TASK_SHADER_NV 0x959F
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_mesh_shader */
-#ifndef GL_NV_path_rendering
-#define GL_NV_path_rendering 1
-#define GL_PATH_FORMAT_SVG_NV             0x9070
-#define GL_PATH_FORMAT_PS_NV              0x9071
-#define GL_STANDARD_FONT_NAME_NV          0x9072
-#define GL_SYSTEM_FONT_NAME_NV            0x9073
-#define GL_FILE_NAME_NV                   0x9074
-#define GL_PATH_STROKE_WIDTH_NV           0x9075
-#define GL_PATH_END_CAPS_NV               0x9076
-#define GL_PATH_INITIAL_END_CAP_NV        0x9077
-#define GL_PATH_TERMINAL_END_CAP_NV       0x9078
-#define GL_PATH_JOIN_STYLE_NV             0x9079
-#define GL_PATH_MITER_LIMIT_NV            0x907A
-#define GL_PATH_DASH_CAPS_NV              0x907B
-#define GL_PATH_INITIAL_DASH_CAP_NV       0x907C
-#define GL_PATH_TERMINAL_DASH_CAP_NV      0x907D
-#define GL_PATH_DASH_OFFSET_NV            0x907E
-#define GL_PATH_CLIENT_LENGTH_NV          0x907F
-#define GL_PATH_FILL_MODE_NV              0x9080
-#define GL_PATH_FILL_MASK_NV              0x9081
-#define GL_PATH_FILL_COVER_MODE_NV        0x9082
-#define GL_PATH_STROKE_COVER_MODE_NV      0x9083
-#define GL_PATH_STROKE_MASK_NV            0x9084
-#define GL_COUNT_UP_NV                    0x9088
-#define GL_COUNT_DOWN_NV                  0x9089
-#define GL_PATH_OBJECT_BOUNDING_BOX_NV    0x908A
-#define GL_CONVEX_HULL_NV                 0x908B
-#define GL_BOUNDING_BOX_NV                0x908D
-#define GL_TRANSLATE_X_NV                 0x908E
-#define GL_TRANSLATE_Y_NV                 0x908F
-#define GL_TRANSLATE_2D_NV                0x9090
-#define GL_TRANSLATE_3D_NV                0x9091
-#define GL_AFFINE_2D_NV                   0x9092
-#define GL_AFFINE_3D_NV                   0x9094
-#define GL_TRANSPOSE_AFFINE_2D_NV         0x9096
-#define GL_TRANSPOSE_AFFINE_3D_NV         0x9098
-#define GL_UTF8_NV                        0x909A
-#define GL_UTF16_NV                       0x909B
-#define GL_BOUNDING_BOX_OF_BOUNDING_BOXES_NV 0x909C
-#define GL_PATH_COMMAND_COUNT_NV          0x909D
-#define GL_PATH_COORD_COUNT_NV            0x909E
-#define GL_PATH_DASH_ARRAY_COUNT_NV       0x909F
-#define GL_PATH_COMPUTED_LENGTH_NV        0x90A0
-#define GL_PATH_FILL_BOUNDING_BOX_NV      0x90A1
-#define GL_PATH_STROKE_BOUNDING_BOX_NV    0x90A2
-#define GL_SQUARE_NV                      0x90A3
-#define GL_ROUND_NV                       0x90A4
-#define GL_TRIANGULAR_NV                  0x90A5
-#define GL_BEVEL_NV                       0x90A6
-#define GL_MITER_REVERT_NV                0x90A7
-#define GL_MITER_TRUNCATE_NV              0x90A8
-#define GL_SKIP_MISSING_GLYPH_NV          0x90A9
-#define GL_USE_MISSING_GLYPH_NV           0x90AA
-#define GL_PATH_ERROR_POSITION_NV         0x90AB
-#define GL_ACCUM_ADJACENT_PAIRS_NV        0x90AD
-#define GL_ADJACENT_PAIRS_NV              0x90AE
-#define GL_FIRST_TO_REST_NV               0x90AF
-#define GL_PATH_GEN_MODE_NV               0x90B0
-#define GL_PATH_GEN_COEFF_NV              0x90B1
-#define GL_PATH_GEN_COMPONENTS_NV         0x90B3
-#define GL_PATH_STENCIL_FUNC_NV           0x90B7
-#define GL_PATH_STENCIL_REF_NV            0x90B8
-#define GL_PATH_STENCIL_VALUE_MASK_NV     0x90B9
-#define GL_PATH_STENCIL_DEPTH_OFFSET_FACTOR_NV 0x90BD
-#define GL_PATH_STENCIL_DEPTH_OFFSET_UNITS_NV 0x90BE
-#define GL_PATH_COVER_DEPTH_FUNC_NV       0x90BF
-#define GL_PATH_DASH_OFFSET_RESET_NV      0x90B4
-#define GL_MOVE_TO_RESETS_NV              0x90B5
-#define GL_MOVE_TO_CONTINUES_NV           0x90B6
-#define GL_CLOSE_PATH_NV                  0x00
-#define GL_MOVE_TO_NV                     0x02
-#define GL_RELATIVE_MOVE_TO_NV            0x03
-#define GL_LINE_TO_NV                     0x04
-#define GL_RELATIVE_LINE_TO_NV            0x05
-#define GL_HORIZONTAL_LINE_TO_NV          0x06
-#define GL_RELATIVE_HORIZONTAL_LINE_TO_NV 0x07
-#define GL_VERTICAL_LINE_TO_NV            0x08
-#define GL_RELATIVE_VERTICAL_LINE_TO_NV   0x09
-#define GL_QUADRATIC_CURVE_TO_NV          0x0A
-#define GL_RELATIVE_QUADRATIC_CURVE_TO_NV 0x0B
-#define GL_CUBIC_CURVE_TO_NV              0x0C
-#define GL_RELATIVE_CUBIC_CURVE_TO_NV     0x0D
-#define GL_SMOOTH_QUADRATIC_CURVE_TO_NV   0x0E
-#define GL_RELATIVE_SMOOTH_QUADRATIC_CURVE_TO_NV 0x0F
-#define GL_SMOOTH_CUBIC_CURVE_TO_NV       0x10
-#define GL_RELATIVE_SMOOTH_CUBIC_CURVE_TO_NV 0x11
-#define GL_SMALL_CCW_ARC_TO_NV            0x12
-#define GL_RELATIVE_SMALL_CCW_ARC_TO_NV   0x13
-#define GL_SMALL_CW_ARC_TO_NV             0x14
-#define GL_RELATIVE_SMALL_CW_ARC_TO_NV    0x15
-#define GL_LARGE_CCW_ARC_TO_NV            0x16
-#define GL_RELATIVE_LARGE_CCW_ARC_TO_NV   0x17
-#define GL_LARGE_CW_ARC_TO_NV             0x18
-#define GL_RELATIVE_LARGE_CW_ARC_TO_NV    0x19
-#define GL_RESTART_PATH_NV                0xF0
-#define GL_DUP_FIRST_CUBIC_CURVE_TO_NV    0xF2
-#define GL_DUP_LAST_CUBIC_CURVE_TO_NV     0xF4
-#define GL_RECT_NV                        0xF6
-#define GL_CIRCULAR_CCW_ARC_TO_NV         0xF8
-#define GL_CIRCULAR_CW_ARC_TO_NV          0xFA
-#define GL_CIRCULAR_TANGENT_ARC_TO_NV     0xFC
-#define GL_ARC_TO_NV                      0xFE
-#define GL_RELATIVE_ARC_TO_NV             0xFF
-#define GL_BOLD_BIT_NV                    0x01
-#define GL_ITALIC_BIT_NV                  0x02
-#define GL_GLYPH_WIDTH_BIT_NV             0x01
-#define GL_GLYPH_HEIGHT_BIT_NV            0x02
-#define GL_GLYPH_HORIZONTAL_BEARING_X_BIT_NV 0x04
-#define GL_GLYPH_HORIZONTAL_BEARING_Y_BIT_NV 0x08
-#define GL_GLYPH_HORIZONTAL_BEARING_ADVANCE_BIT_NV 0x10
-#define GL_GLYPH_VERTICAL_BEARING_X_BIT_NV 0x20
-#define GL_GLYPH_VERTICAL_BEARING_Y_BIT_NV 0x40
-#define GL_GLYPH_VERTICAL_BEARING_ADVANCE_BIT_NV 0x80
-#define GL_GLYPH_HAS_KERNING_BIT_NV       0x100
-#define GL_FONT_X_MIN_BOUNDS_BIT_NV       0x00010000
-#define GL_FONT_Y_MIN_BOUNDS_BIT_NV       0x00020000
-#define GL_FONT_X_MAX_BOUNDS_BIT_NV       0x00040000
-#define GL_FONT_Y_MAX_BOUNDS_BIT_NV       0x00080000
-#define GL_FONT_UNITS_PER_EM_BIT_NV       0x00100000
-#define GL_FONT_ASCENDER_BIT_NV           0x00200000
-#define GL_FONT_DESCENDER_BIT_NV          0x00400000
-#define GL_FONT_HEIGHT_BIT_NV             0x00800000
-#define GL_FONT_MAX_ADVANCE_WIDTH_BIT_NV  0x01000000
-#define GL_FONT_MAX_ADVANCE_HEIGHT_BIT_NV 0x02000000
-#define GL_FONT_UNDERLINE_POSITION_BIT_NV 0x04000000
-#define GL_FONT_UNDERLINE_THICKNESS_BIT_NV 0x08000000
-#define GL_FONT_HAS_KERNING_BIT_NV        0x10000000
-#define GL_ROUNDED_RECT_NV                0xE8
-#define GL_RELATIVE_ROUNDED_RECT_NV       0xE9
-#define GL_ROUNDED_RECT2_NV               0xEA
-#define GL_RELATIVE_ROUNDED_RECT2_NV      0xEB
-#define GL_ROUNDED_RECT4_NV               0xEC
-#define GL_RELATIVE_ROUNDED_RECT4_NV      0xED
-#define GL_ROUNDED_RECT8_NV               0xEE
-#define GL_RELATIVE_ROUNDED_RECT8_NV      0xEF
-#define GL_RELATIVE_RECT_NV               0xF7
-#define GL_FONT_GLYPHS_AVAILABLE_NV       0x9368
-#define GL_FONT_TARGET_UNAVAILABLE_NV     0x9369
-#define GL_FONT_UNAVAILABLE_NV            0x936A
-#define GL_FONT_UNINTELLIGIBLE_NV         0x936B
-#define GL_CONIC_CURVE_TO_NV              0x1A
-#define GL_RELATIVE_CONIC_CURVE_TO_NV     0x1B
-#define GL_FONT_NUM_GLYPH_INDICES_BIT_NV  0x20000000
-#define GL_STANDARD_FONT_FORMAT_NV        0x936C
-#define GL_PATH_PROJECTION_NV             0x1701
-#define GL_PATH_MODELVIEW_NV              0x1700
-#define GL_PATH_MODELVIEW_STACK_DEPTH_NV  0x0BA3
-#define GL_PATH_MODELVIEW_MATRIX_NV       0x0BA6
-#define GL_PATH_MAX_MODELVIEW_STACK_DEPTH_NV 0x0D36
-#define GL_PATH_TRANSPOSE_MODELVIEW_MATRIX_NV 0x84E3
-#define GL_PATH_PROJECTION_STACK_DEPTH_NV 0x0BA4
-#define GL_PATH_PROJECTION_MATRIX_NV      0x0BA7
-#define GL_PATH_MAX_PROJECTION_STACK_DEPTH_NV 0x0D38
-#define GL_PATH_TRANSPOSE_PROJECTION_MATRIX_NV 0x84E4
-#define GL_FRAGMENT_INPUT_NV              0x936D
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_path_rendering */
-#ifndef GL_NV_path_rendering_shared_edge
-#define GL_NV_path_rendering_shared_edge 1
-#define GL_SHARED_EDGE_NV                 0xC0
-#endif /* GL_NV_path_rendering_shared_edge */
-#ifndef GL_NV_primitive_shading_rate
-#define GL_NV_primitive_shading_rate 1
-#define GL_SHADING_RATE_IMAGE_PER_PRIMITIVE_NV 0x95B1
-#define GL_SHADING_RATE_IMAGE_PALETTE_COUNT_NV 0x95B2
-#endif /* GL_NV_primitive_shading_rate */
-#ifndef GL_NV_representative_fragment_test
-#define GL_NV_representative_fragment_test 1
-#define GL_REPRESENTATIVE_FRAGMENT_TEST_NV 0x937F
-#endif /* GL_NV_representative_fragment_test */
-#ifndef GL_NV_sample_locations
-#define GL_NV_sample_locations 1
-#define GL_SAMPLE_LOCATION_SUBPIXEL_BITS_NV 0x933D
-#define GL_SAMPLE_LOCATION_PIXEL_GRID_WIDTH_NV 0x933E
-#define GL_SAMPLE_LOCATION_PIXEL_GRID_HEIGHT_NV 0x933F
-#define GL_PROGRAMMABLE_SAMPLE_LOCATION_TABLE_SIZE_NV 0x9340
-#define GL_SAMPLE_LOCATION_NV             0x8E50
-#define GL_PROGRAMMABLE_SAMPLE_LOCATION_NV 0x9341
-#define GL_FRAMEBUFFER_PROGRAMMABLE_SAMPLE_LOCATIONS_NV 0x9342
-#define GL_FRAMEBUFFER_SAMPLE_LOCATION_PIXEL_GRID_NV 0x9343
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_sample_locations */
-#ifndef GL_NV_sample_mask_override_coverage
-#define GL_NV_sample_mask_override_coverage 1
-#endif /* GL_NV_sample_mask_override_coverage */
-#ifndef GL_NV_scissor_exclusive
-#define GL_NV_scissor_exclusive 1
-#define GL_SCISSOR_TEST_EXCLUSIVE_NV      0x9555
-#define GL_SCISSOR_BOX_EXCLUSIVE_NV       0x9556
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_scissor_exclusive */
-#ifndef GL_NV_shader_atomic_counters
-#define GL_NV_shader_atomic_counters 1
-#endif /* GL_NV_shader_atomic_counters */
-#ifndef GL_NV_shader_atomic_float
-#define GL_NV_shader_atomic_float 1
-#endif /* GL_NV_shader_atomic_float */
-#ifndef GL_NV_shader_atomic_float64
-#define GL_NV_shader_atomic_float64 1
-#endif /* GL_NV_shader_atomic_float64 */
-#ifndef GL_NV_shader_atomic_fp16_vector
-#define GL_NV_shader_atomic_fp16_vector 1
-#endif /* GL_NV_shader_atomic_fp16_vector */
-#ifndef GL_NV_shader_atomic_int64
-#define GL_NV_shader_atomic_int64 1
-#endif /* GL_NV_shader_atomic_int64 */
-#ifndef GL_NV_shader_buffer_load
-#define GL_NV_shader_buffer_load 1
-#define GL_BUFFER_GPU_ADDRESS_NV          0x8F1D
-#define GL_GPU_ADDRESS_NV                 0x8F34
-#define GL_MAX_SHADER_BUFFER_ADDRESS_NV   0x8F35
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_shader_buffer_load */
-#ifndef GL_NV_shader_buffer_store
-#define GL_NV_shader_buffer_store 1
-#define GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV 0x00000010
-#endif /* GL_NV_shader_buffer_store */
-#ifndef GL_NV_shader_subgroup_partitioned
-#define GL_NV_shader_subgroup_partitioned 1
-#define GL_SUBGROUP_FEATURE_PARTITIONED_BIT_NV 0x00000100
-#endif /* GL_NV_shader_subgroup_partitioned */
-#ifndef GL_NV_shader_texture_footprint
-#define GL_NV_shader_texture_footprint 1
-#endif /* GL_NV_shader_texture_footprint */
-#ifndef GL_NV_shader_thread_group
-#define GL_NV_shader_thread_group 1
-#define GL_WARP_SIZE_NV                   0x9339
-#define GL_WARPS_PER_SM_NV                0x933A
-#define GL_SM_COUNT_NV                    0x933B
-#endif /* GL_NV_shader_thread_group */
-#ifndef GL_NV_shader_thread_shuffle
-#define GL_NV_shader_thread_shuffle 1
-#endif /* GL_NV_shader_thread_shuffle */
-#ifndef GL_NV_shading_rate_image
-#define GL_NV_shading_rate_image 1
-#define GL_SHADING_RATE_IMAGE_NV          0x9563
-#define GL_SHADING_RATE_NO_INVOCATIONS_NV 0x9564
-#define GL_SHADING_RATE_1_INVOCATION_PER_PIXEL_NV 0x9565
-#define GL_SHADING_RATE_1_INVOCATION_PER_1X2_PIXELS_NV 0x9566
-#define GL_SHADING_RATE_1_INVOCATION_PER_2X1_PIXELS_NV 0x9567
-#define GL_SHADING_RATE_1_INVOCATION_PER_2X2_PIXELS_NV 0x9568
-#define GL_SHADING_RATE_1_INVOCATION_PER_2X4_PIXELS_NV 0x9569
-#define GL_SHADING_RATE_1_INVOCATION_PER_4X2_PIXELS_NV 0x956A
-#define GL_SHADING_RATE_1_INVOCATION_PER_4X4_PIXELS_NV 0x956B
-#define GL_SHADING_RATE_2_INVOCATIONS_PER_PIXEL_NV 0x956C
-#define GL_SHADING_RATE_4_INVOCATIONS_PER_PIXEL_NV 0x956D
-#define GL_SHADING_RATE_8_INVOCATIONS_PER_PIXEL_NV 0x956E
-#define GL_SHADING_RATE_16_INVOCATIONS_PER_PIXEL_NV 0x956F
-#define GL_SHADING_RATE_IMAGE_BINDING_NV  0x955B
-#define GL_SHADING_RATE_IMAGE_TEXEL_WIDTH_NV 0x955C
-#define GL_SHADING_RATE_IMAGE_TEXEL_HEIGHT_NV 0x955D
-#define GL_SHADING_RATE_IMAGE_PALETTE_SIZE_NV 0x955E
-#define GL_MAX_COARSE_FRAGMENT_SAMPLES_NV 0x955F
-#define GL_SHADING_RATE_SAMPLE_ORDER_DEFAULT_NV 0x95AE
-#define GL_SHADING_RATE_SAMPLE_ORDER_PIXEL_MAJOR_NV 0x95AF
-#define GL_SHADING_RATE_SAMPLE_ORDER_SAMPLE_MAJOR_NV 0x95B0
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_shading_rate_image */
-#ifndef GL_NV_stereo_view_rendering
-#define GL_NV_stereo_view_rendering 1
-#endif /* GL_NV_stereo_view_rendering */
-#ifndef GL_NV_texture_barrier
-#define GL_NV_texture_barrier 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_texture_barrier */
-#ifndef GL_NV_texture_rectangle_compressed
-#define GL_NV_texture_rectangle_compressed 1
-#endif /* GL_NV_texture_rectangle_compressed */
-#ifndef GL_NV_uniform_buffer_unified_memory
-#define GL_NV_uniform_buffer_unified_memory 1
-#define GL_UNIFORM_BUFFER_UNIFIED_NV      0x936E
-#define GL_UNIFORM_BUFFER_ADDRESS_NV      0x936F
-#define GL_UNIFORM_BUFFER_LENGTH_NV       0x9370
-#endif /* GL_NV_uniform_buffer_unified_memory */
-#ifndef GL_NV_vertex_attrib_integer_64bit
-#define GL_NV_vertex_attrib_integer_64bit 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_vertex_attrib_integer_64bit */
-#ifndef GL_NV_vertex_buffer_unified_memory
-#define GL_NV_vertex_buffer_unified_memory 1
-#define GL_VERTEX_ATTRIB_ARRAY_UNIFIED_NV 0x8F1E
-#define GL_ELEMENT_ARRAY_UNIFIED_NV       0x8F1F
-#define GL_VERTEX_ATTRIB_ARRAY_ADDRESS_NV 0x8F20
-#define GL_VERTEX_ARRAY_ADDRESS_NV        0x8F21
-#define GL_NORMAL_ARRAY_ADDRESS_NV        0x8F22
-#define GL_COLOR_ARRAY_ADDRESS_NV         0x8F23
-#define GL_INDEX_ARRAY_ADDRESS_NV         0x8F24
-#define GL_TEXTURE_COORD_ARRAY_ADDRESS_NV 0x8F25
-#define GL_EDGE_FLAG_ARRAY_ADDRESS_NV     0x8F26
-#define GL_SECONDARY_COLOR_ARRAY_ADDRESS_NV 0x8F27
-#define GL_FOG_COORD_ARRAY_ADDRESS_NV     0x8F28
-#define GL_ELEMENT_ARRAY_ADDRESS_NV       0x8F29
-#define GL_VERTEX_ATTRIB_ARRAY_LENGTH_NV  0x8F2A
-#define GL_VERTEX_ARRAY_LENGTH_NV         0x8F2B
-#define GL_NORMAL_ARRAY_LENGTH_NV         0x8F2C
-#define GL_COLOR_ARRAY_LENGTH_NV          0x8F2D
-#define GL_INDEX_ARRAY_LENGTH_NV          0x8F2E
-#define GL_TEXTURE_COORD_ARRAY_LENGTH_NV  0x8F2F
-#define GL_EDGE_FLAG_ARRAY_LENGTH_NV      0x8F30
-#define GL_SECONDARY_COLOR_ARRAY_LENGTH_NV 0x8F31
-#define GL_FOG_COORD_ARRAY_LENGTH_NV      0x8F32
-#define GL_ELEMENT_ARRAY_LENGTH_NV        0x8F33
-#define GL_DRAW_INDIRECT_UNIFIED_NV       0x8F40
-#define GL_DRAW_INDIRECT_ADDRESS_NV       0x8F41
-#define GL_DRAW_INDIRECT_LENGTH_NV        0x8F42
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_vertex_buffer_unified_memory */
-#ifndef GL_NV_viewport_array2
-#define GL_NV_viewport_array2 1
-#endif /* GL_NV_viewport_array2 */
-#ifndef GL_NV_viewport_swizzle
-#define GL_NV_viewport_swizzle 1
-#define GL_VIEWPORT_SWIZZLE_POSITIVE_X_NV 0x9350
-#define GL_VIEWPORT_SWIZZLE_NEGATIVE_X_NV 0x9351
-#define GL_VIEWPORT_SWIZZLE_POSITIVE_Y_NV 0x9352
-#define GL_VIEWPORT_SWIZZLE_NEGATIVE_Y_NV 0x9353
-#define GL_VIEWPORT_SWIZZLE_POSITIVE_Z_NV 0x9354
-#define GL_VIEWPORT_SWIZZLE_NEGATIVE_Z_NV 0x9355
-#define GL_VIEWPORT_SWIZZLE_POSITIVE_W_NV 0x9356
-#define GL_VIEWPORT_SWIZZLE_NEGATIVE_W_NV 0x9357
-#define GL_VIEWPORT_SWIZZLE_X_NV          0x9358
-#define GL_VIEWPORT_SWIZZLE_Y_NV          0x9359
-#define GL_VIEWPORT_SWIZZLE_Z_NV          0x935A
-#define GL_VIEWPORT_SWIZZLE_W_NV          0x935B
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_viewport_swizzle */
-#ifndef GL_OVR_multiview
-#define GL_OVR_multiview 1
-#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_NUM_VIEWS_OVR 0x9630
-#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_BASE_VIEW_INDEX_OVR 0x9632
-#define GL_MAX_VIEWS_OVR                  0x9631
-#define GL_FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR 0x9633
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OVR_multiview */
-#ifndef GL_OVR_multiview2
-#define GL_OVR_multiview2 1
-#endif /* GL_OVR_multiview2 */
-#ifdef __cplusplus
-#endif
-#endif
-
-// ./gl2ext.h
-
-
-#ifndef __gles2_gl2ext_h_
-#define __gles2_gl2ext_h_ 1
-#ifdef __cplusplus
-#endif
-#ifndef GL_APIENTRYP
-#define GL_APIENTRYP GL_APIENTRY*
-#endif
-#ifndef GL_KHR_blend_equation_advanced
-#define GL_KHR_blend_equation_advanced 1
-#define GL_MULTIPLY_KHR                   0x9294
-#define GL_SCREEN_KHR                     0x9295
-#define GL_OVERLAY_KHR                    0x9296
-#define GL_DARKEN_KHR                     0x9297
-#define GL_LIGHTEN_KHR                    0x9298
-#define GL_COLORDODGE_KHR                 0x9299
-#define GL_COLORBURN_KHR                  0x929A
-#define GL_HARDLIGHT_KHR                  0x929B
-#define GL_SOFTLIGHT_KHR                  0x929C
-#define GL_DIFFERENCE_KHR                 0x929E
-#define GL_EXCLUSION_KHR                  0x92A0
-#define GL_HSL_HUE_KHR                    0x92AD
-#define GL_HSL_SATURATION_KHR             0x92AE
-#define GL_HSL_COLOR_KHR                  0x92AF
-#define GL_HSL_LUMINOSITY_KHR             0x92B0
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_KHR_blend_equation_advanced */
-#ifndef GL_KHR_blend_equation_advanced_coherent
-#define GL_KHR_blend_equation_advanced_coherent 1
-#define GL_BLEND_ADVANCED_COHERENT_KHR    0x9285
-#endif /* GL_KHR_blend_equation_advanced_coherent */
-#ifndef GL_KHR_context_flush_control
-#define GL_KHR_context_flush_control 1
-#define GL_CONTEXT_RELEASE_BEHAVIOR_KHR   0x82FB
-#define GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH_KHR 0x82FC
-#endif /* GL_KHR_context_flush_control */
-#ifndef GL_KHR_debug
-#define GL_KHR_debug 1
-#define GL_SAMPLER                        0x82E6
-#define GL_DEBUG_OUTPUT_SYNCHRONOUS_KHR   0x8242
-#define GL_DEBUG_NEXT_LOGGED_MESSAGE_LENGTH_KHR 0x8243
-#define GL_DEBUG_CALLBACK_FUNCTION_KHR    0x8244
-#define GL_DEBUG_CALLBACK_USER_PARAM_KHR  0x8245
-#define GL_DEBUG_SOURCE_API_KHR           0x8246
-#define GL_DEBUG_SOURCE_WINDOW_SYSTEM_KHR 0x8247
-#define GL_DEBUG_SOURCE_SHADER_COMPILER_KHR 0x8248
-#define GL_DEBUG_SOURCE_THIRD_PARTY_KHR   0x8249
-#define GL_DEBUG_SOURCE_APPLICATION_KHR   0x824A
-#define GL_DEBUG_SOURCE_OTHER_KHR         0x824B
-#define GL_DEBUG_TYPE_ERROR_KHR           0x824C
-#define GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_KHR 0x824D
-#define GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_KHR 0x824E
-#define GL_DEBUG_TYPE_PORTABILITY_KHR     0x824F
-#define GL_DEBUG_TYPE_PERFORMANCE_KHR     0x8250
-#define GL_DEBUG_TYPE_OTHER_KHR           0x8251
-#define GL_DEBUG_TYPE_MARKER_KHR          0x8268
-#define GL_DEBUG_TYPE_PUSH_GROUP_KHR      0x8269
-#define GL_DEBUG_TYPE_POP_GROUP_KHR       0x826A
-#define GL_DEBUG_SEVERITY_NOTIFICATION_KHR 0x826B
-#define GL_MAX_DEBUG_GROUP_STACK_DEPTH_KHR 0x826C
-#define GL_DEBUG_GROUP_STACK_DEPTH_KHR    0x826D
-#define GL_BUFFER_KHR                     0x82E0
-#define GL_SHADER_KHR                     0x82E1
-#define GL_PROGRAM_KHR                    0x82E2
-#define GL_VERTEX_ARRAY_KHR               0x8074
-#define GL_QUERY_KHR                      0x82E3
-#define GL_PROGRAM_PIPELINE_KHR           0x82E4
-#define GL_SAMPLER_KHR                    0x82E6
-#define GL_MAX_LABEL_LENGTH_KHR           0x82E8
-#define GL_MAX_DEBUG_MESSAGE_LENGTH_KHR   0x9143
-#define GL_MAX_DEBUG_LOGGED_MESSAGES_KHR  0x9144
-#define GL_DEBUG_LOGGED_MESSAGES_KHR      0x9145
-#define GL_DEBUG_SEVERITY_HIGH_KHR        0x9146
-#define GL_DEBUG_SEVERITY_MEDIUM_KHR      0x9147
-#define GL_DEBUG_SEVERITY_LOW_KHR         0x9148
-#define GL_DEBUG_OUTPUT_KHR               0x92E0
-#define GL_CONTEXT_FLAG_DEBUG_BIT_KHR     0x00000002
-#define GL_STACK_OVERFLOW_KHR             0x0503
-#define GL_STACK_UNDERFLOW_KHR            0x0504
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_KHR_debug */
-#ifndef GL_KHR_no_error
-#define GL_KHR_no_error 1
-#define GL_CONTEXT_FLAG_NO_ERROR_BIT_KHR  0x00000008
-#endif /* GL_KHR_no_error */
-#ifndef GL_KHR_parallel_shader_compile
-#define GL_KHR_parallel_shader_compile 1
-#define GL_MAX_SHADER_COMPILER_THREADS_KHR 0x91B0
-#define GL_COMPLETION_STATUS_KHR          0x91B1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_KHR_parallel_shader_compile */
-#ifndef GL_KHR_robust_buffer_access_behavior
-#define GL_KHR_robust_buffer_access_behavior 1
-#endif /* GL_KHR_robust_buffer_access_behavior */
-#ifndef GL_KHR_robustness
-#define GL_KHR_robustness 1
-#define GL_CONTEXT_ROBUST_ACCESS_KHR      0x90F3
-#define GL_LOSE_CONTEXT_ON_RESET_KHR      0x8252
-#define GL_GUILTY_CONTEXT_RESET_KHR       0x8253
-#define GL_INNOCENT_CONTEXT_RESET_KHR     0x8254
-#define GL_UNKNOWN_CONTEXT_RESET_KHR      0x8255
-#define GL_RESET_NOTIFICATION_STRATEGY_KHR 0x8256
-#define GL_NO_RESET_NOTIFICATION_KHR      0x8261
-#define GL_CONTEXT_LOST_KHR               0x0507
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_KHR_robustness */
-#ifndef GL_KHR_shader_subgroup
-#define GL_KHR_shader_subgroup 1
-#define GL_SUBGROUP_SIZE_KHR              0x9532
-#define GL_SUBGROUP_SUPPORTED_STAGES_KHR  0x9533
-#define GL_SUBGROUP_SUPPORTED_FEATURES_KHR 0x9534
-#define GL_SUBGROUP_QUAD_ALL_STAGES_KHR   0x9535
-#define GL_SUBGROUP_FEATURE_BASIC_BIT_KHR 0x00000001
-#define GL_SUBGROUP_FEATURE_VOTE_BIT_KHR  0x00000002
-#define GL_SUBGROUP_FEATURE_ARITHMETIC_BIT_KHR 0x00000004
-#define GL_SUBGROUP_FEATURE_BALLOT_BIT_KHR 0x00000008
-#define GL_SUBGROUP_FEATURE_SHUFFLE_BIT_KHR 0x00000010
-#define GL_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT_KHR 0x00000020
-#define GL_SUBGROUP_FEATURE_CLUSTERED_BIT_KHR 0x00000040
-#define GL_SUBGROUP_FEATURE_QUAD_BIT_KHR  0x00000080
-#endif /* GL_KHR_shader_subgroup */
-#ifndef GL_KHR_texture_compression_astc_hdr
-#define GL_KHR_texture_compression_astc_hdr 1
-#define GL_COMPRESSED_RGBA_ASTC_4x4_KHR   0x93B0
-#define GL_COMPRESSED_RGBA_ASTC_5x4_KHR   0x93B1
-#define GL_COMPRESSED_RGBA_ASTC_5x5_KHR   0x93B2
-#define GL_COMPRESSED_RGBA_ASTC_6x5_KHR   0x93B3
-#define GL_COMPRESSED_RGBA_ASTC_6x6_KHR   0x93B4
-#define GL_COMPRESSED_RGBA_ASTC_8x5_KHR   0x93B5
-#define GL_COMPRESSED_RGBA_ASTC_8x6_KHR   0x93B6
-#define GL_COMPRESSED_RGBA_ASTC_8x8_KHR   0x93B7
-#define GL_COMPRESSED_RGBA_ASTC_10x5_KHR  0x93B8
-#define GL_COMPRESSED_RGBA_ASTC_10x6_KHR  0x93B9
-#define GL_COMPRESSED_RGBA_ASTC_10x8_KHR  0x93BA
-#define GL_COMPRESSED_RGBA_ASTC_10x10_KHR 0x93BB
-#define GL_COMPRESSED_RGBA_ASTC_12x10_KHR 0x93BC
-#define GL_COMPRESSED_RGBA_ASTC_12x12_KHR 0x93BD
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR 0x93D0
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR 0x93D1
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR 0x93D2
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR 0x93D3
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR 0x93D4
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR 0x93D5
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR 0x93D6
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR 0x93D7
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR 0x93D8
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR 0x93D9
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR 0x93DA
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR 0x93DB
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR 0x93DC
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR 0x93DD
-#endif /* GL_KHR_texture_compression_astc_hdr */
-#ifndef GL_KHR_texture_compression_astc_ldr
-#define GL_KHR_texture_compression_astc_ldr 1
-#endif /* GL_KHR_texture_compression_astc_ldr */
-#ifndef GL_KHR_texture_compression_astc_sliced_3d
-#define GL_KHR_texture_compression_astc_sliced_3d 1
-#endif /* GL_KHR_texture_compression_astc_sliced_3d */
-#ifndef GL_OES_EGL_image
-#define GL_OES_EGL_image 1
-typedef void *GLeglImageOES;
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_EGL_image */
-#ifndef GL_OES_EGL_image_external
-#define GL_OES_EGL_image_external 1
-#define GL_TEXTURE_EXTERNAL_OES           0x8D65
-#define GL_TEXTURE_BINDING_EXTERNAL_OES   0x8D67
-#define GL_REQUIRED_TEXTURE_IMAGE_UNITS_OES 0x8D68
-#define GL_SAMPLER_EXTERNAL_OES           0x8D66
-#endif /* GL_OES_EGL_image_external */
-#ifndef GL_OES_EGL_image_external_essl3
-#define GL_OES_EGL_image_external_essl3 1
-#endif /* GL_OES_EGL_image_external_essl3 */
-#ifndef GL_OES_compressed_ETC1_RGB8_sub_texture
-#define GL_OES_compressed_ETC1_RGB8_sub_texture 1
-#endif /* GL_OES_compressed_ETC1_RGB8_sub_texture */
-#ifndef GL_OES_compressed_ETC1_RGB8_texture
-#define GL_OES_compressed_ETC1_RGB8_texture 1
-#define GL_ETC1_RGB8_OES                  0x8D64
-#endif /* GL_OES_compressed_ETC1_RGB8_texture */
-#ifndef GL_OES_compressed_paletted_texture
-#define GL_OES_compressed_paletted_texture 1
-#define GL_PALETTE4_RGB8_OES              0x8B90
-#define GL_PALETTE4_RGBA8_OES             0x8B91
-#define GL_PALETTE4_R5_G6_B5_OES          0x8B92
-#define GL_PALETTE4_RGBA4_OES             0x8B93
-#define GL_PALETTE4_RGB5_A1_OES           0x8B94
-#define GL_PALETTE8_RGB8_OES              0x8B95
-#define GL_PALETTE8_RGBA8_OES             0x8B96
-#define GL_PALETTE8_R5_G6_B5_OES          0x8B97
-#define GL_PALETTE8_RGBA4_OES             0x8B98
-#define GL_PALETTE8_RGB5_A1_OES           0x8B99
-#endif /* GL_OES_compressed_paletted_texture */
-#ifndef GL_OES_copy_image
-#define GL_OES_copy_image 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_copy_image */
-#ifndef GL_OES_depth24
-#define GL_OES_depth24 1
-#define GL_DEPTH_COMPONENT24_OES          0x81A6
-#endif /* GL_OES_depth24 */
-#ifndef GL_OES_depth32
-#define GL_OES_depth32 1
-#define GL_DEPTH_COMPONENT32_OES          0x81A7
-#endif /* GL_OES_depth32 */
-#ifndef GL_OES_depth_texture
-#define GL_OES_depth_texture 1
-#endif /* GL_OES_depth_texture */
-#ifndef GL_OES_draw_buffers_indexed
-#define GL_OES_draw_buffers_indexed 1
-#define GL_MIN                            0x8007
-#define GL_MAX                            0x8008
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_draw_buffers_indexed */
-#ifndef GL_OES_draw_elements_base_vertex
-#define GL_OES_draw_elements_base_vertex 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_draw_elements_base_vertex */
-#ifndef GL_OES_element_index_uint
-#define GL_OES_element_index_uint 1
-#endif /* GL_OES_element_index_uint */
-#ifndef GL_OES_fbo_render_mipmap
-#define GL_OES_fbo_render_mipmap 1
-#endif /* GL_OES_fbo_render_mipmap */
-#ifndef GL_OES_fragment_precision_high
-#define GL_OES_fragment_precision_high 1
-#endif /* GL_OES_fragment_precision_high */
-#ifndef GL_OES_geometry_point_size
-#define GL_OES_geometry_point_size 1
-#endif /* GL_OES_geometry_point_size */
-#ifndef GL_OES_geometry_shader
-#define GL_OES_geometry_shader 1
-#define GL_GEOMETRY_SHADER_OES            0x8DD9
-#define GL_GEOMETRY_SHADER_BIT_OES        0x00000004
-#define GL_GEOMETRY_LINKED_VERTICES_OUT_OES 0x8916
-#define GL_GEOMETRY_LINKED_INPUT_TYPE_OES 0x8917
-#define GL_GEOMETRY_LINKED_OUTPUT_TYPE_OES 0x8918
-#define GL_GEOMETRY_SHADER_INVOCATIONS_OES 0x887F
-#define GL_LAYER_PROVOKING_VERTEX_OES     0x825E
-#define GL_LINES_ADJACENCY_OES            0x000A
-#define GL_LINE_STRIP_ADJACENCY_OES       0x000B
-#define GL_TRIANGLES_ADJACENCY_OES        0x000C
-#define GL_TRIANGLE_STRIP_ADJACENCY_OES   0x000D
-#define GL_MAX_GEOMETRY_UNIFORM_COMPONENTS_OES 0x8DDF
-#define GL_MAX_GEOMETRY_UNIFORM_BLOCKS_OES 0x8A2C
-#define GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS_OES 0x8A32
-#define GL_MAX_GEOMETRY_INPUT_COMPONENTS_OES 0x9123
-#define GL_MAX_GEOMETRY_OUTPUT_COMPONENTS_OES 0x9124
-#define GL_MAX_GEOMETRY_OUTPUT_VERTICES_OES 0x8DE0
-#define GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS_OES 0x8DE1
-#define GL_MAX_GEOMETRY_SHADER_INVOCATIONS_OES 0x8E5A
-#define GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS_OES 0x8C29
-#define GL_MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS_OES 0x92CF
-#define GL_MAX_GEOMETRY_ATOMIC_COUNTERS_OES 0x92D5
-#define GL_MAX_GEOMETRY_IMAGE_UNIFORMS_OES 0x90CD
-#define GL_MAX_GEOMETRY_SHADER_STORAGE_BLOCKS_OES 0x90D7
-#define GL_FIRST_VERTEX_CONVENTION_OES    0x8E4D
-#define GL_LAST_VERTEX_CONVENTION_OES     0x8E4E
-#define GL_UNDEFINED_VERTEX_OES           0x8260
-#define GL_PRIMITIVES_GENERATED_OES       0x8C87
-#define GL_FRAMEBUFFER_DEFAULT_LAYERS_OES 0x9312
-#define GL_MAX_FRAMEBUFFER_LAYERS_OES     0x9317
-#define GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS_OES 0x8DA8
-#define GL_FRAMEBUFFER_ATTACHMENT_LAYERED_OES 0x8DA7
-#define GL_REFERENCED_BY_GEOMETRY_SHADER_OES 0x9309
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_geometry_shader */
-#ifndef GL_OES_get_program_binary
-#define GL_OES_get_program_binary 1
-#define GL_PROGRAM_BINARY_LENGTH_OES      0x8741
-#define GL_NUM_PROGRAM_BINARY_FORMATS_OES 0x87FE
-#define GL_PROGRAM_BINARY_FORMATS_OES     0x87FF
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_get_program_binary */
-#ifndef GL_OES_gpu_shader5
-#define GL_OES_gpu_shader5 1
-#endif /* GL_OES_gpu_shader5 */
-#ifndef GL_OES_mapbuffer
-#define GL_OES_mapbuffer 1
-#define GL_WRITE_ONLY_OES                 0x88B9
-#define GL_BUFFER_ACCESS_OES              0x88BB
-#define GL_BUFFER_MAPPED_OES              0x88BC
-#define GL_BUFFER_MAP_POINTER_OES         0x88BD
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_mapbuffer */
-#ifndef GL_OES_packed_depth_stencil
-#define GL_OES_packed_depth_stencil 1
-#define GL_DEPTH_STENCIL_OES              0x84F9
-#define GL_UNSIGNED_INT_24_8_OES          0x84FA
-#define GL_DEPTH24_STENCIL8_OES           0x88F0
-#endif /* GL_OES_packed_depth_stencil */
-#ifndef GL_OES_primitive_bounding_box
-#define GL_OES_primitive_bounding_box 1
-#define GL_PRIMITIVE_BOUNDING_BOX_OES     0x92BE
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_primitive_bounding_box */
-#ifndef GL_OES_required_internalformat
-#define GL_OES_required_internalformat 1
-#define GL_ALPHA8_OES                     0x803C
-#define GL_DEPTH_COMPONENT16_OES          0x81A5
-#define GL_LUMINANCE4_ALPHA4_OES          0x8043
-#define GL_LUMINANCE8_ALPHA8_OES          0x8045
-#define GL_LUMINANCE8_OES                 0x8040
-#define GL_RGBA4_OES                      0x8056
-#define GL_RGB5_A1_OES                    0x8057
-#define GL_RGB565_OES                     0x8D62
-#define GL_RGB8_OES                       0x8051
-#define GL_RGBA8_OES                      0x8058
-#define GL_RGB10_EXT                      0x8052
-#define GL_RGB10_A2_EXT                   0x8059
-#endif /* GL_OES_required_internalformat */
-#ifndef GL_OES_rgb8_rgba8
-#define GL_OES_rgb8_rgba8 1
-#endif /* GL_OES_rgb8_rgba8 */
-#ifndef GL_OES_sample_shading
-#define GL_OES_sample_shading 1
-#define GL_SAMPLE_SHADING_OES             0x8C36
-#define GL_MIN_SAMPLE_SHADING_VALUE_OES   0x8C37
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_sample_shading */
-#ifndef GL_OES_sample_variables
-#define GL_OES_sample_variables 1
-#endif /* GL_OES_sample_variables */
-#ifndef GL_OES_shader_image_atomic
-#define GL_OES_shader_image_atomic 1
-#endif /* GL_OES_shader_image_atomic */
-#ifndef GL_OES_shader_io_blocks
-#define GL_OES_shader_io_blocks 1
-#endif /* GL_OES_shader_io_blocks */
-#ifndef GL_OES_shader_multisample_interpolation
-#define GL_OES_shader_multisample_interpolation 1
-#define GL_MIN_FRAGMENT_INTERPOLATION_OFFSET_OES 0x8E5B
-#define GL_MAX_FRAGMENT_INTERPOLATION_OFFSET_OES 0x8E5C
-#define GL_FRAGMENT_INTERPOLATION_OFFSET_BITS_OES 0x8E5D
-#endif /* GL_OES_shader_multisample_interpolation */
-#ifndef GL_OES_standard_derivatives
-#define GL_OES_standard_derivatives 1
-#define GL_FRAGMENT_SHADER_DERIVATIVE_HINT_OES 0x8B8B
-#endif /* GL_OES_standard_derivatives */
-#ifndef GL_OES_stencil1
-#define GL_OES_stencil1 1
-#define GL_STENCIL_INDEX1_OES             0x8D46
-#endif /* GL_OES_stencil1 */
-#ifndef GL_OES_stencil4
-#define GL_OES_stencil4 1
-#define GL_STENCIL_INDEX4_OES             0x8D47
-#endif /* GL_OES_stencil4 */
-#ifndef GL_OES_surfaceless_context
-#define GL_OES_surfaceless_context 1
-#define GL_FRAMEBUFFER_UNDEFINED_OES      0x8219
-#endif /* GL_OES_surfaceless_context */
-#ifndef GL_OES_tessellation_point_size
-#define GL_OES_tessellation_point_size 1
-#endif /* GL_OES_tessellation_point_size */
-#ifndef GL_OES_tessellation_shader
-#define GL_OES_tessellation_shader 1
-#define GL_PATCHES_OES                    0x000E
-#define GL_PATCH_VERTICES_OES             0x8E72
-#define GL_TESS_CONTROL_OUTPUT_VERTICES_OES 0x8E75
-#define GL_TESS_GEN_MODE_OES              0x8E76
-#define GL_TESS_GEN_SPACING_OES           0x8E77
-#define GL_TESS_GEN_VERTEX_ORDER_OES      0x8E78
-#define GL_TESS_GEN_POINT_MODE_OES        0x8E79
-#define GL_ISOLINES_OES                   0x8E7A
-#define GL_QUADS_OES                      0x0007
-#define GL_FRACTIONAL_ODD_OES             0x8E7B
-#define GL_FRACTIONAL_EVEN_OES            0x8E7C
-#define GL_MAX_PATCH_VERTICES_OES         0x8E7D
-#define GL_MAX_TESS_GEN_LEVEL_OES         0x8E7E
-#define GL_MAX_TESS_CONTROL_UNIFORM_COMPONENTS_OES 0x8E7F
-#define GL_MAX_TESS_EVALUATION_UNIFORM_COMPONENTS_OES 0x8E80
-#define GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS_OES 0x8E81
-#define GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS_OES 0x8E82
-#define GL_MAX_TESS_CONTROL_OUTPUT_COMPONENTS_OES 0x8E83
-#define GL_MAX_TESS_PATCH_COMPONENTS_OES  0x8E84
-#define GL_MAX_TESS_CONTROL_TOTAL_OUTPUT_COMPONENTS_OES 0x8E85
-#define GL_MAX_TESS_EVALUATION_OUTPUT_COMPONENTS_OES 0x8E86
-#define GL_MAX_TESS_CONTROL_UNIFORM_BLOCKS_OES 0x8E89
-#define GL_MAX_TESS_EVALUATION_UNIFORM_BLOCKS_OES 0x8E8A
-#define GL_MAX_TESS_CONTROL_INPUT_COMPONENTS_OES 0x886C
-#define GL_MAX_TESS_EVALUATION_INPUT_COMPONENTS_OES 0x886D
-#define GL_MAX_COMBINED_TESS_CONTROL_UNIFORM_COMPONENTS_OES 0x8E1E
-#define GL_MAX_COMBINED_TESS_EVALUATION_UNIFORM_COMPONENTS_OES 0x8E1F
-#define GL_MAX_TESS_CONTROL_ATOMIC_COUNTER_BUFFERS_OES 0x92CD
-#define GL_MAX_TESS_EVALUATION_ATOMIC_COUNTER_BUFFERS_OES 0x92CE
-#define GL_MAX_TESS_CONTROL_ATOMIC_COUNTERS_OES 0x92D3
-#define GL_MAX_TESS_EVALUATION_ATOMIC_COUNTERS_OES 0x92D4
-#define GL_MAX_TESS_CONTROL_IMAGE_UNIFORMS_OES 0x90CB
-#define GL_MAX_TESS_EVALUATION_IMAGE_UNIFORMS_OES 0x90CC
-#define GL_MAX_TESS_CONTROL_SHADER_STORAGE_BLOCKS_OES 0x90D8
-#define GL_MAX_TESS_EVALUATION_SHADER_STORAGE_BLOCKS_OES 0x90D9
-#define GL_PRIMITIVE_RESTART_FOR_PATCHES_SUPPORTED_OES 0x8221
-#define GL_IS_PER_PATCH_OES               0x92E7
-#define GL_REFERENCED_BY_TESS_CONTROL_SHADER_OES 0x9307
-#define GL_REFERENCED_BY_TESS_EVALUATION_SHADER_OES 0x9308
-#define GL_TESS_CONTROL_SHADER_OES        0x8E88
-#define GL_TESS_EVALUATION_SHADER_OES     0x8E87
-#define GL_TESS_CONTROL_SHADER_BIT_OES    0x00000008
-#define GL_TESS_EVALUATION_SHADER_BIT_OES 0x00000010
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_tessellation_shader */
-#ifndef GL_OES_texture_3D
-#define GL_OES_texture_3D 1
-#define GL_TEXTURE_WRAP_R_OES             0x8072
-#define GL_TEXTURE_3D_OES                 0x806F
-#define GL_TEXTURE_BINDING_3D_OES         0x806A
-#define GL_MAX_3D_TEXTURE_SIZE_OES        0x8073
-#define GL_SAMPLER_3D_OES                 0x8B5F
-#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_3D_ZOFFSET_OES 0x8CD4
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_texture_3D */
-#ifndef GL_OES_texture_border_clamp
-#define GL_OES_texture_border_clamp 1
-#define GL_TEXTURE_BORDER_COLOR_OES       0x1004
-#define GL_CLAMP_TO_BORDER_OES            0x812D
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_texture_border_clamp */
-#ifndef GL_OES_texture_buffer
-#define GL_OES_texture_buffer 1
-#define GL_TEXTURE_BUFFER_OES             0x8C2A
-#define GL_TEXTURE_BUFFER_BINDING_OES     0x8C2A
-#define GL_MAX_TEXTURE_BUFFER_SIZE_OES    0x8C2B
-#define GL_TEXTURE_BINDING_BUFFER_OES     0x8C2C
-#define GL_TEXTURE_BUFFER_DATA_STORE_BINDING_OES 0x8C2D
-#define GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT_OES 0x919F
-#define GL_SAMPLER_BUFFER_OES             0x8DC2
-#define GL_INT_SAMPLER_BUFFER_OES         0x8DD0
-#define GL_UNSIGNED_INT_SAMPLER_BUFFER_OES 0x8DD8
-#define GL_IMAGE_BUFFER_OES               0x9051
-#define GL_INT_IMAGE_BUFFER_OES           0x905C
-#define GL_UNSIGNED_INT_IMAGE_BUFFER_OES  0x9067
-#define GL_TEXTURE_BUFFER_OFFSET_OES      0x919D
-#define GL_TEXTURE_BUFFER_SIZE_OES        0x919E
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_texture_buffer */
-#ifndef GL_OES_texture_compression_astc
-#define GL_OES_texture_compression_astc 1
-#define GL_COMPRESSED_RGBA_ASTC_3x3x3_OES 0x93C0
-#define GL_COMPRESSED_RGBA_ASTC_4x3x3_OES 0x93C1
-#define GL_COMPRESSED_RGBA_ASTC_4x4x3_OES 0x93C2
-#define GL_COMPRESSED_RGBA_ASTC_4x4x4_OES 0x93C3
-#define GL_COMPRESSED_RGBA_ASTC_5x4x4_OES 0x93C4
-#define GL_COMPRESSED_RGBA_ASTC_5x5x4_OES 0x93C5
-#define GL_COMPRESSED_RGBA_ASTC_5x5x5_OES 0x93C6
-#define GL_COMPRESSED_RGBA_ASTC_6x5x5_OES 0x93C7
-#define GL_COMPRESSED_RGBA_ASTC_6x6x5_OES 0x93C8
-#define GL_COMPRESSED_RGBA_ASTC_6x6x6_OES 0x93C9
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_3x3x3_OES 0x93E0
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x3x3_OES 0x93E1
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x3_OES 0x93E2
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x4_OES 0x93E3
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4x4_OES 0x93E4
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x4_OES 0x93E5
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x5_OES 0x93E6
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5x5_OES 0x93E7
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x5_OES 0x93E8
-#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x6_OES 0x93E9
-#endif /* GL_OES_texture_compression_astc */
-#ifndef GL_OES_texture_cube_map_array
-#define GL_OES_texture_cube_map_array 1
-#define GL_TEXTURE_CUBE_MAP_ARRAY_OES     0x9009
-#define GL_TEXTURE_BINDING_CUBE_MAP_ARRAY_OES 0x900A
-#define GL_SAMPLER_CUBE_MAP_ARRAY_OES     0x900C
-#define GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW_OES 0x900D
-#define GL_INT_SAMPLER_CUBE_MAP_ARRAY_OES 0x900E
-#define GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY_OES 0x900F
-#define GL_IMAGE_CUBE_MAP_ARRAY_OES       0x9054
-#define GL_INT_IMAGE_CUBE_MAP_ARRAY_OES   0x905F
-#define GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY_OES 0x906A
-#endif /* GL_OES_texture_cube_map_array */
-#ifndef GL_OES_texture_float
-#define GL_OES_texture_float 1
-#endif /* GL_OES_texture_float */
-#ifndef GL_OES_texture_float_linear
-#define GL_OES_texture_float_linear 1
-#endif /* GL_OES_texture_float_linear */
-#ifndef GL_OES_texture_half_float
-#define GL_OES_texture_half_float 1
-#define GL_HALF_FLOAT_OES                 0x8D61
-#endif /* GL_OES_texture_half_float */
-#ifndef GL_OES_texture_half_float_linear
-#define GL_OES_texture_half_float_linear 1
-#endif /* GL_OES_texture_half_float_linear */
-#ifndef GL_OES_texture_npot
-#define GL_OES_texture_npot 1
-#endif /* GL_OES_texture_npot */
-#ifndef GL_OES_texture_stencil8
-#define GL_OES_texture_stencil8 1
-#define GL_STENCIL_INDEX_OES              0x1901
-#define GL_STENCIL_INDEX8_OES             0x8D48
-#endif /* GL_OES_texture_stencil8 */
-#ifndef GL_OES_texture_storage_multisample_2d_array
-#define GL_OES_texture_storage_multisample_2d_array 1
-#define GL_TEXTURE_2D_MULTISAMPLE_ARRAY_OES 0x9102
-#define GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY_OES 0x9105
-#define GL_SAMPLER_2D_MULTISAMPLE_ARRAY_OES 0x910B
-#define GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY_OES 0x910C
-#define GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY_OES 0x910D
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_texture_storage_multisample_2d_array */
-#ifndef GL_OES_texture_view
-#define GL_OES_texture_view 1
-#define GL_TEXTURE_VIEW_MIN_LEVEL_OES     0x82DB
-#define GL_TEXTURE_VIEW_NUM_LEVELS_OES    0x82DC
-#define GL_TEXTURE_VIEW_MIN_LAYER_OES     0x82DD
-#define GL_TEXTURE_VIEW_NUM_LAYERS_OES    0x82DE
-#define GL_TEXTURE_IMMUTABLE_LEVELS       0x82DF
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_texture_view */
-#ifndef GL_OES_vertex_array_object
-#define GL_OES_vertex_array_object 1
-#define GL_VERTEX_ARRAY_BINDING_OES       0x85B5
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_vertex_array_object */
-#ifndef GL_OES_vertex_half_float
-#define GL_OES_vertex_half_float 1
-#endif /* GL_OES_vertex_half_float */
-#ifndef GL_OES_vertex_type_10_10_10_2
-#define GL_OES_vertex_type_10_10_10_2 1
-#define GL_UNSIGNED_INT_10_10_10_2_OES    0x8DF6
-#define GL_INT_10_10_10_2_OES             0x8DF7
-#endif /* GL_OES_vertex_type_10_10_10_2 */
-#ifndef GL_OES_viewport_array
-#define GL_OES_viewport_array 1
-#define GL_MAX_VIEWPORTS_OES              0x825B
-#define GL_VIEWPORT_SUBPIXEL_BITS_OES     0x825C
-#define GL_VIEWPORT_BOUNDS_RANGE_OES      0x825D
-#define GL_VIEWPORT_INDEX_PROVOKING_VERTEX_OES 0x825F
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OES_viewport_array */
-#ifndef GL_AMD_compressed_3DC_texture
-#define GL_AMD_compressed_3DC_texture 1
-#define GL_3DC_X_AMD                      0x87F9
-#define GL_3DC_XY_AMD                     0x87FA
-#endif /* GL_AMD_compressed_3DC_texture */
-#ifndef GL_AMD_compressed_ATC_texture
-#define GL_AMD_compressed_ATC_texture 1
-#define GL_ATC_RGB_AMD                    0x8C92
-#define GL_ATC_RGBA_EXPLICIT_ALPHA_AMD    0x8C93
-#define GL_ATC_RGBA_INTERPOLATED_ALPHA_AMD 0x87EE
-#endif /* GL_AMD_compressed_ATC_texture */
-#ifndef GL_AMD_framebuffer_multisample_advanced
-#define GL_AMD_framebuffer_multisample_advanced 1
-#define GL_RENDERBUFFER_STORAGE_SAMPLES_AMD 0x91B2
-#define GL_MAX_COLOR_FRAMEBUFFER_SAMPLES_AMD 0x91B3
-#define GL_MAX_COLOR_FRAMEBUFFER_STORAGE_SAMPLES_AMD 0x91B4
-#define GL_MAX_DEPTH_STENCIL_FRAMEBUFFER_SAMPLES_AMD 0x91B5
-#define GL_NUM_SUPPORTED_MULTISAMPLE_MODES_AMD 0x91B6
-#define GL_SUPPORTED_MULTISAMPLE_MODES_AMD 0x91B7
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_AMD_framebuffer_multisample_advanced */
-#ifndef GL_AMD_performance_monitor
-#define GL_AMD_performance_monitor 1
-#define GL_COUNTER_TYPE_AMD               0x8BC0
-#define GL_COUNTER_RANGE_AMD              0x8BC1
-#define GL_UNSIGNED_INT64_AMD             0x8BC2
-#define GL_PERCENTAGE_AMD                 0x8BC3
-#define GL_PERFMON_RESULT_AVAILABLE_AMD   0x8BC4
-#define GL_PERFMON_RESULT_SIZE_AMD        0x8BC5
-#define GL_PERFMON_RESULT_AMD             0x8BC6
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_AMD_performance_monitor */
-#ifndef GL_AMD_program_binary_Z400
-#define GL_AMD_program_binary_Z400 1
-#define GL_Z400_BINARY_AMD                0x8740
-#endif /* GL_AMD_program_binary_Z400 */
-#ifndef GL_ANDROID_extension_pack_es31a
-#define GL_ANDROID_extension_pack_es31a 1
-#endif /* GL_ANDROID_extension_pack_es31a */
-#ifndef GL_ANGLE_depth_texture
-#define GL_ANGLE_depth_texture 1
-#endif /* GL_ANGLE_depth_texture */
-#ifndef GL_ANGLE_framebuffer_blit
-#define GL_ANGLE_framebuffer_blit 1
-#define GL_READ_FRAMEBUFFER_ANGLE         0x8CA8
-#define GL_DRAW_FRAMEBUFFER_ANGLE         0x8CA9
-#define GL_DRAW_FRAMEBUFFER_BINDING_ANGLE 0x8CA6
-#define GL_READ_FRAMEBUFFER_BINDING_ANGLE 0x8CAA
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ANGLE_framebuffer_blit */
-#ifndef GL_ANGLE_framebuffer_multisample
-#define GL_ANGLE_framebuffer_multisample 1
-#define GL_RENDERBUFFER_SAMPLES_ANGLE     0x8CAB
-#define GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_ANGLE 0x8D56
-#define GL_MAX_SAMPLES_ANGLE              0x8D57
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ANGLE_framebuffer_multisample */
-#ifndef GL_ANGLE_instanced_arrays
-#define GL_ANGLE_instanced_arrays 1
-#define GL_VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE 0x88FE
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ANGLE_instanced_arrays */
-#ifndef GL_ANGLE_pack_reverse_row_order
-#define GL_ANGLE_pack_reverse_row_order 1
-#define GL_PACK_REVERSE_ROW_ORDER_ANGLE   0x93A4
-#endif /* GL_ANGLE_pack_reverse_row_order */
-#ifndef GL_ANGLE_program_binary
-#define GL_ANGLE_program_binary 1
-#define GL_PROGRAM_BINARY_ANGLE           0x93A6
-#endif /* GL_ANGLE_program_binary */
-#ifndef GL_ANGLE_texture_compression_dxt3
-#define GL_ANGLE_texture_compression_dxt3 1
-#define GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE 0x83F2
-#endif /* GL_ANGLE_texture_compression_dxt3 */
-#ifndef GL_ANGLE_texture_compression_dxt5
-#define GL_ANGLE_texture_compression_dxt5 1
-#define GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE 0x83F3
-#endif /* GL_ANGLE_texture_compression_dxt5 */
-#ifndef GL_ANGLE_texture_usage
-#define GL_ANGLE_texture_usage 1
-#define GL_TEXTURE_USAGE_ANGLE            0x93A2
-#define GL_FRAMEBUFFER_ATTACHMENT_ANGLE   0x93A3
-#endif /* GL_ANGLE_texture_usage */
-#ifndef GL_ANGLE_translated_shader_source
-#define GL_ANGLE_translated_shader_source 1
-#define GL_TRANSLATED_SHADER_SOURCE_LENGTH_ANGLE 0x93A0
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_ANGLE_translated_shader_source */
-#ifndef GL_APPLE_clip_distance
-#define GL_APPLE_clip_distance 1
-#define GL_MAX_CLIP_DISTANCES_APPLE       0x0D32
-#define GL_CLIP_DISTANCE0_APPLE           0x3000
-#define GL_CLIP_DISTANCE1_APPLE           0x3001
-#define GL_CLIP_DISTANCE2_APPLE           0x3002
-#define GL_CLIP_DISTANCE3_APPLE           0x3003
-#define GL_CLIP_DISTANCE4_APPLE           0x3004
-#define GL_CLIP_DISTANCE5_APPLE           0x3005
-#define GL_CLIP_DISTANCE6_APPLE           0x3006
-#define GL_CLIP_DISTANCE7_APPLE           0x3007
-#endif /* GL_APPLE_clip_distance */
-#ifndef GL_APPLE_color_buffer_packed_float
-#define GL_APPLE_color_buffer_packed_float 1
-#endif /* GL_APPLE_color_buffer_packed_float */
-#ifndef GL_APPLE_copy_texture_levels
-#define GL_APPLE_copy_texture_levels 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_APPLE_copy_texture_levels */
-#ifndef GL_APPLE_framebuffer_multisample
-#define GL_APPLE_framebuffer_multisample 1
-#define GL_RENDERBUFFER_SAMPLES_APPLE     0x8CAB
-#define GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_APPLE 0x8D56
-#define GL_MAX_SAMPLES_APPLE              0x8D57
-#define GL_READ_FRAMEBUFFER_APPLE         0x8CA8
-#define GL_DRAW_FRAMEBUFFER_APPLE         0x8CA9
-#define GL_DRAW_FRAMEBUFFER_BINDING_APPLE 0x8CA6
-#define GL_READ_FRAMEBUFFER_BINDING_APPLE 0x8CAA
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_APPLE_framebuffer_multisample */
-#ifndef GL_APPLE_rgb_422
-#define GL_APPLE_rgb_422 1
-#define GL_RGB_422_APPLE                  0x8A1F
-#define GL_UNSIGNED_SHORT_8_8_APPLE       0x85BA
-#define GL_UNSIGNED_SHORT_8_8_REV_APPLE   0x85BB
-#define GL_RGB_RAW_422_APPLE              0x8A51
-#endif /* GL_APPLE_rgb_422 */
-#ifndef GL_APPLE_sync
-#define GL_APPLE_sync 1
-#define GL_SYNC_OBJECT_APPLE              0x8A53
-#define GL_MAX_SERVER_WAIT_TIMEOUT_APPLE  0x9111
-#define GL_OBJECT_TYPE_APPLE              0x9112
-#define GL_SYNC_CONDITION_APPLE           0x9113
-#define GL_SYNC_STATUS_APPLE              0x9114
-#define GL_SYNC_FLAGS_APPLE               0x9115
-#define GL_SYNC_FENCE_APPLE               0x9116
-#define GL_SYNC_GPU_COMMANDS_COMPLETE_APPLE 0x9117
-#define GL_UNSIGNALED_APPLE               0x9118
-#define GL_SIGNALED_APPLE                 0x9119
-#define GL_ALREADY_SIGNALED_APPLE         0x911A
-#define GL_TIMEOUT_EXPIRED_APPLE          0x911B
-#define GL_CONDITION_SATISFIED_APPLE      0x911C
-#define GL_WAIT_FAILED_APPLE              0x911D
-#define GL_SYNC_FLUSH_COMMANDS_BIT_APPLE  0x00000001
-#define GL_TIMEOUT_IGNORED_APPLE          0xFFFFFFFFFFFFFFFFull
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_APPLE_sync */
-#ifndef GL_APPLE_texture_format_BGRA8888
-#define GL_APPLE_texture_format_BGRA8888 1
-#define GL_BGRA_EXT                       0x80E1
-#define GL_BGRA8_EXT                      0x93A1
-#endif /* GL_APPLE_texture_format_BGRA8888 */
-#ifndef GL_APPLE_texture_max_level
-#define GL_APPLE_texture_max_level 1
-#define GL_TEXTURE_MAX_LEVEL_APPLE        0x813D
-#endif /* GL_APPLE_texture_max_level */
-#ifndef GL_APPLE_texture_packed_float
-#define GL_APPLE_texture_packed_float 1
-#define GL_UNSIGNED_INT_10F_11F_11F_REV_APPLE 0x8C3B
-#define GL_UNSIGNED_INT_5_9_9_9_REV_APPLE 0x8C3E
-#define GL_R11F_G11F_B10F_APPLE           0x8C3A
-#define GL_RGB9_E5_APPLE                  0x8C3D
-#endif /* GL_APPLE_texture_packed_float */
-#ifndef GL_ARM_mali_program_binary
-#define GL_ARM_mali_program_binary 1
-#define GL_MALI_PROGRAM_BINARY_ARM        0x8F61
-#endif /* GL_ARM_mali_program_binary */
-#ifndef GL_ARM_mali_shader_binary
-#define GL_ARM_mali_shader_binary 1
-#define GL_MALI_SHADER_BINARY_ARM         0x8F60
-#endif /* GL_ARM_mali_shader_binary */
-#ifndef GL_ARM_rgba8
-#define GL_ARM_rgba8 1
-#endif /* GL_ARM_rgba8 */
-#ifndef GL_ARM_shader_framebuffer_fetch
-#define GL_ARM_shader_framebuffer_fetch 1
-#define GL_FETCH_PER_SAMPLE_ARM           0x8F65
-#define GL_FRAGMENT_SHADER_FRAMEBUFFER_FETCH_MRT_ARM 0x8F66
-#endif /* GL_ARM_shader_framebuffer_fetch */
-#ifndef GL_ARM_shader_framebuffer_fetch_depth_stencil
-#define GL_ARM_shader_framebuffer_fetch_depth_stencil 1
-#endif /* GL_ARM_shader_framebuffer_fetch_depth_stencil */
-#ifndef GL_ARM_texture_unnormalized_coordinates
-#define GL_ARM_texture_unnormalized_coordinates 1
-#define GL_TEXTURE_UNNORMALIZED_COORDINATES_ARM 0x8F6A
-#endif /* GL_ARM_texture_unnormalized_coordinates */
-#ifndef GL_DMP_program_binary
-#define GL_DMP_program_binary 1
-#define GL_SMAPHS30_PROGRAM_BINARY_DMP    0x9251
-#define GL_SMAPHS_PROGRAM_BINARY_DMP      0x9252
-#define GL_DMP_PROGRAM_BINARY_DMP         0x9253
-#endif /* GL_DMP_program_binary */
-#ifndef GL_DMP_shader_binary
-#define GL_DMP_shader_binary 1
-#define GL_SHADER_BINARY_DMP              0x9250
-#endif /* GL_DMP_shader_binary */
-#ifndef GL_EXT_EGL_image_array
-#define GL_EXT_EGL_image_array 1
-#endif /* GL_EXT_EGL_image_array */
-#ifndef GL_EXT_EGL_image_storage
-#define GL_EXT_EGL_image_storage 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_EGL_image_storage */
-#ifndef GL_EXT_YUV_target
-#define GL_EXT_YUV_target 1
-#define GL_SAMPLER_EXTERNAL_2D_Y2Y_EXT    0x8BE7
-#endif /* GL_EXT_YUV_target */
-#ifndef GL_EXT_base_instance
-#define GL_EXT_base_instance 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_base_instance */
-#ifndef GL_EXT_blend_func_extended
-#define GL_EXT_blend_func_extended 1
-#define GL_SRC1_COLOR_EXT                 0x88F9
-#define GL_SRC1_ALPHA_EXT                 0x8589
-#define GL_ONE_MINUS_SRC1_COLOR_EXT       0x88FA
-#define GL_ONE_MINUS_SRC1_ALPHA_EXT       0x88FB
-#define GL_SRC_ALPHA_SATURATE_EXT         0x0308
-#define GL_LOCATION_INDEX_EXT             0x930F
-#define GL_MAX_DUAL_SOURCE_DRAW_BUFFERS_EXT 0x88FC
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_blend_func_extended */
-#ifndef GL_EXT_blend_minmax
-#define GL_EXT_blend_minmax 1
-#define GL_MIN_EXT                        0x8007
-#define GL_MAX_EXT                        0x8008
-#endif /* GL_EXT_blend_minmax */
-#ifndef GL_EXT_buffer_storage
-#define GL_EXT_buffer_storage 1
-#define GL_MAP_READ_BIT                   0x0001
-#define GL_MAP_WRITE_BIT                  0x0002
-#define GL_MAP_PERSISTENT_BIT_EXT         0x0040
-#define GL_MAP_COHERENT_BIT_EXT           0x0080
-#define GL_DYNAMIC_STORAGE_BIT_EXT        0x0100
-#define GL_CLIENT_STORAGE_BIT_EXT         0x0200
-#define GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT_EXT 0x00004000
-#define GL_BUFFER_IMMUTABLE_STORAGE_EXT   0x821F
-#define GL_BUFFER_STORAGE_FLAGS_EXT       0x8220
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_buffer_storage */
-#ifndef GL_EXT_clear_texture
-#define GL_EXT_clear_texture 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_clear_texture */
-#ifndef GL_EXT_clip_control
-#define GL_EXT_clip_control 1
-#define GL_LOWER_LEFT_EXT                 0x8CA1
-#define GL_UPPER_LEFT_EXT                 0x8CA2
-#define GL_NEGATIVE_ONE_TO_ONE_EXT        0x935E
-#define GL_ZERO_TO_ONE_EXT                0x935F
-#define GL_CLIP_ORIGIN_EXT                0x935C
-#define GL_CLIP_DEPTH_MODE_EXT            0x935D
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_clip_control */
-#ifndef GL_EXT_clip_cull_distance
-#define GL_EXT_clip_cull_distance 1
-#define GL_MAX_CLIP_DISTANCES_EXT         0x0D32
-#define GL_MAX_CULL_DISTANCES_EXT         0x82F9
-#define GL_MAX_COMBINED_CLIP_AND_CULL_DISTANCES_EXT 0x82FA
-#define GL_CLIP_DISTANCE0_EXT             0x3000
-#define GL_CLIP_DISTANCE1_EXT             0x3001
-#define GL_CLIP_DISTANCE2_EXT             0x3002
-#define GL_CLIP_DISTANCE3_EXT             0x3003
-#define GL_CLIP_DISTANCE4_EXT             0x3004
-#define GL_CLIP_DISTANCE5_EXT             0x3005
-#define GL_CLIP_DISTANCE6_EXT             0x3006
-#define GL_CLIP_DISTANCE7_EXT             0x3007
-#endif /* GL_EXT_clip_cull_distance */
-#ifndef GL_EXT_color_buffer_float
-#define GL_EXT_color_buffer_float 1
-#endif /* GL_EXT_color_buffer_float */
-#ifndef GL_EXT_color_buffer_half_float
-#define GL_EXT_color_buffer_half_float 1
-#define GL_RGBA16F_EXT                    0x881A
-#define GL_RGB16F_EXT                     0x881B
-#define GL_RG16F_EXT                      0x822F
-#define GL_R16F_EXT                       0x822D
-#define GL_FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT 0x8211
-#define GL_UNSIGNED_NORMALIZED_EXT        0x8C17
-#endif /* GL_EXT_color_buffer_half_float */
-#ifndef GL_EXT_conservative_depth
-#define GL_EXT_conservative_depth 1
-#endif /* GL_EXT_conservative_depth */
-#ifndef GL_EXT_copy_image
-#define GL_EXT_copy_image 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_copy_image */
-#ifndef GL_EXT_debug_label
-#define GL_EXT_debug_label 1
-#define GL_PROGRAM_PIPELINE_OBJECT_EXT    0x8A4F
-#define GL_PROGRAM_OBJECT_EXT             0x8B40
-#define GL_SHADER_OBJECT_EXT              0x8B48
-#define GL_BUFFER_OBJECT_EXT              0x9151
-#define GL_QUERY_OBJECT_EXT               0x9153
-#define GL_VERTEX_ARRAY_OBJECT_EXT        0x9154
-#define GL_TRANSFORM_FEEDBACK             0x8E22
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_debug_label */
-#ifndef GL_EXT_debug_marker
-#define GL_EXT_debug_marker 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_debug_marker */
-#ifndef GL_EXT_depth_clamp
-#define GL_EXT_depth_clamp 1
-#define GL_DEPTH_CLAMP_EXT                0x864F
-#endif /* GL_EXT_depth_clamp */
-#ifndef GL_EXT_discard_framebuffer
-#define GL_EXT_discard_framebuffer 1
-#define GL_COLOR_EXT                      0x1800
-#define GL_DEPTH_EXT                      0x1801
-#define GL_STENCIL_EXT                    0x1802
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_discard_framebuffer */
-#ifndef GL_EXT_disjoint_timer_query
-#define GL_EXT_disjoint_timer_query 1
-#define GL_QUERY_COUNTER_BITS_EXT         0x8864
-#define GL_CURRENT_QUERY_EXT              0x8865
-#define GL_QUERY_RESULT_EXT               0x8866
-#define GL_QUERY_RESULT_AVAILABLE_EXT     0x8867
-#define GL_TIME_ELAPSED_EXT               0x88BF
-#define GL_TIMESTAMP_EXT                  0x8E28
-#define GL_GPU_DISJOINT_EXT               0x8FBB
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_disjoint_timer_query */
-#ifndef GL_EXT_draw_buffers
-#define GL_EXT_draw_buffers 1
-#define GL_MAX_COLOR_ATTACHMENTS_EXT      0x8CDF
-#define GL_MAX_DRAW_BUFFERS_EXT           0x8824
-#define GL_DRAW_BUFFER0_EXT               0x8825
-#define GL_DRAW_BUFFER1_EXT               0x8826
-#define GL_DRAW_BUFFER2_EXT               0x8827
-#define GL_DRAW_BUFFER3_EXT               0x8828
-#define GL_DRAW_BUFFER4_EXT               0x8829
-#define GL_DRAW_BUFFER5_EXT               0x882A
-#define GL_DRAW_BUFFER6_EXT               0x882B
-#define GL_DRAW_BUFFER7_EXT               0x882C
-#define GL_DRAW_BUFFER8_EXT               0x882D
-#define GL_DRAW_BUFFER9_EXT               0x882E
-#define GL_DRAW_BUFFER10_EXT              0x882F
-#define GL_DRAW_BUFFER11_EXT              0x8830
-#define GL_DRAW_BUFFER12_EXT              0x8831
-#define GL_DRAW_BUFFER13_EXT              0x8832
-#define GL_DRAW_BUFFER14_EXT              0x8833
-#define GL_DRAW_BUFFER15_EXT              0x8834
-#define GL_COLOR_ATTACHMENT0_EXT          0x8CE0
-#define GL_COLOR_ATTACHMENT1_EXT          0x8CE1
-#define GL_COLOR_ATTACHMENT2_EXT          0x8CE2
-#define GL_COLOR_ATTACHMENT3_EXT          0x8CE3
-#define GL_COLOR_ATTACHMENT4_EXT          0x8CE4
-#define GL_COLOR_ATTACHMENT5_EXT          0x8CE5
-#define GL_COLOR_ATTACHMENT6_EXT          0x8CE6
-#define GL_COLOR_ATTACHMENT7_EXT          0x8CE7
-#define GL_COLOR_ATTACHMENT8_EXT          0x8CE8
-#define GL_COLOR_ATTACHMENT9_EXT          0x8CE9
-#define GL_COLOR_ATTACHMENT10_EXT         0x8CEA
-#define GL_COLOR_ATTACHMENT11_EXT         0x8CEB
-#define GL_COLOR_ATTACHMENT12_EXT         0x8CEC
-#define GL_COLOR_ATTACHMENT13_EXT         0x8CED
-#define GL_COLOR_ATTACHMENT14_EXT         0x8CEE
-#define GL_COLOR_ATTACHMENT15_EXT         0x8CEF
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_draw_buffers */
-#ifndef GL_EXT_draw_buffers_indexed
-#define GL_EXT_draw_buffers_indexed 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_draw_buffers_indexed */
-#ifndef GL_EXT_draw_elements_base_vertex
-#define GL_EXT_draw_elements_base_vertex 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_draw_elements_base_vertex */
-#ifndef GL_EXT_draw_instanced
-#define GL_EXT_draw_instanced 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_draw_instanced */
-#ifndef GL_EXT_draw_transform_feedback
-#define GL_EXT_draw_transform_feedback 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_draw_transform_feedback */
-#ifndef GL_EXT_external_buffer
-#define GL_EXT_external_buffer 1
-typedef void *GLeglClientBufferEXT;
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_external_buffer */
-#ifndef GL_EXT_float_blend
-#define GL_EXT_float_blend 1
-#endif /* GL_EXT_float_blend */
-#ifndef GL_EXT_geometry_point_size
-#define GL_EXT_geometry_point_size 1
-#endif /* GL_EXT_geometry_point_size */
-#ifndef GL_EXT_geometry_shader
-#define GL_EXT_geometry_shader 1
-#define GL_GEOMETRY_SHADER_EXT            0x8DD9
-#define GL_GEOMETRY_SHADER_BIT_EXT        0x00000004
-#define GL_GEOMETRY_LINKED_VERTICES_OUT_EXT 0x8916
-#define GL_GEOMETRY_LINKED_INPUT_TYPE_EXT 0x8917
-#define GL_GEOMETRY_LINKED_OUTPUT_TYPE_EXT 0x8918
-#define GL_GEOMETRY_SHADER_INVOCATIONS_EXT 0x887F
-#define GL_LAYER_PROVOKING_VERTEX_EXT     0x825E
-#define GL_LINES_ADJACENCY_EXT            0x000A
-#define GL_LINE_STRIP_ADJACENCY_EXT       0x000B
-#define GL_TRIANGLES_ADJACENCY_EXT        0x000C
-#define GL_TRIANGLE_STRIP_ADJACENCY_EXT   0x000D
-#define GL_MAX_GEOMETRY_UNIFORM_COMPONENTS_EXT 0x8DDF
-#define GL_MAX_GEOMETRY_UNIFORM_BLOCKS_EXT 0x8A2C
-#define GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS_EXT 0x8A32
-#define GL_MAX_GEOMETRY_INPUT_COMPONENTS_EXT 0x9123
-#define GL_MAX_GEOMETRY_OUTPUT_COMPONENTS_EXT 0x9124
-#define GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT 0x8DE0
-#define GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS_EXT 0x8DE1
-#define GL_MAX_GEOMETRY_SHADER_INVOCATIONS_EXT 0x8E5A
-#define GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS_EXT 0x8C29
-#define GL_MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS_EXT 0x92CF
-#define GL_MAX_GEOMETRY_ATOMIC_COUNTERS_EXT 0x92D5
-#define GL_MAX_GEOMETRY_IMAGE_UNIFORMS_EXT 0x90CD
-#define GL_MAX_GEOMETRY_SHADER_STORAGE_BLOCKS_EXT 0x90D7
-#define GL_FIRST_VERTEX_CONVENTION_EXT    0x8E4D
-#define GL_LAST_VERTEX_CONVENTION_EXT     0x8E4E
-#define GL_UNDEFINED_VERTEX_EXT           0x8260
-#define GL_PRIMITIVES_GENERATED_EXT       0x8C87
-#define GL_FRAMEBUFFER_DEFAULT_LAYERS_EXT 0x9312
-#define GL_MAX_FRAMEBUFFER_LAYERS_EXT     0x9317
-#define GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS_EXT 0x8DA8
-#define GL_FRAMEBUFFER_ATTACHMENT_LAYERED_EXT 0x8DA7
-#define GL_REFERENCED_BY_GEOMETRY_SHADER_EXT 0x9309
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_geometry_shader */
-#ifndef GL_EXT_gpu_shader5
-#define GL_EXT_gpu_shader5 1
-#endif /* GL_EXT_gpu_shader5 */
-#ifndef GL_EXT_instanced_arrays
-#define GL_EXT_instanced_arrays 1
-#define GL_VERTEX_ATTRIB_ARRAY_DIVISOR_EXT 0x88FE
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_instanced_arrays */
-#ifndef GL_EXT_map_buffer_range
-#define GL_EXT_map_buffer_range 1
-#define GL_MAP_READ_BIT_EXT               0x0001
-#define GL_MAP_WRITE_BIT_EXT              0x0002
-#define GL_MAP_INVALIDATE_RANGE_BIT_EXT   0x0004
-#define GL_MAP_INVALIDATE_BUFFER_BIT_EXT  0x0008
-#define GL_MAP_FLUSH_EXPLICIT_BIT_EXT     0x0010
-#define GL_MAP_UNSYNCHRONIZED_BIT_EXT     0x0020
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_map_buffer_range */
-#ifndef GL_EXT_memory_object
-#define GL_EXT_memory_object 1
-#define GL_TEXTURE_TILING_EXT             0x9580
-#define GL_DEDICATED_MEMORY_OBJECT_EXT    0x9581
-#define GL_PROTECTED_MEMORY_OBJECT_EXT    0x959B
-#define GL_NUM_TILING_TYPES_EXT           0x9582
-#define GL_TILING_TYPES_EXT               0x9583
-#define GL_OPTIMAL_TILING_EXT             0x9584
-#define GL_LINEAR_TILING_EXT              0x9585
-#define GL_NUM_DEVICE_UUIDS_EXT           0x9596
-#define GL_DEVICE_UUID_EXT                0x9597
-#define GL_DRIVER_UUID_EXT                0x9598
-#define GL_UUID_SIZE_EXT                  16
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_memory_object */
-#ifndef GL_EXT_memory_object_fd
-#define GL_EXT_memory_object_fd 1
-#define GL_HANDLE_TYPE_OPAQUE_FD_EXT      0x9586
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_memory_object_fd */
-#ifndef GL_EXT_memory_object_win32
-#define GL_EXT_memory_object_win32 1
-#define GL_HANDLE_TYPE_OPAQUE_WIN32_EXT   0x9587
-#define GL_HANDLE_TYPE_OPAQUE_WIN32_KMT_EXT 0x9588
-#define GL_DEVICE_LUID_EXT                0x9599
-#define GL_DEVICE_NODE_MASK_EXT           0x959A
-#define GL_LUID_SIZE_EXT                  8
-#define GL_HANDLE_TYPE_D3D12_TILEPOOL_EXT 0x9589
-#define GL_HANDLE_TYPE_D3D12_RESOURCE_EXT 0x958A
-#define GL_HANDLE_TYPE_D3D11_IMAGE_EXT    0x958B
-#define GL_HANDLE_TYPE_D3D11_IMAGE_KMT_EXT 0x958C
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_memory_object_win32 */
-#ifndef GL_EXT_multi_draw_arrays
-#define GL_EXT_multi_draw_arrays 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_multi_draw_arrays */
-#ifndef GL_EXT_multi_draw_indirect
-#define GL_EXT_multi_draw_indirect 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_multi_draw_indirect */
-#ifndef GL_EXT_multisampled_compatibility
-#define GL_EXT_multisampled_compatibility 1
-#define GL_MULTISAMPLE_EXT                0x809D
-#define GL_SAMPLE_ALPHA_TO_ONE_EXT        0x809F
-#endif /* GL_EXT_multisampled_compatibility */
-#ifndef GL_EXT_multisampled_render_to_texture
-#define GL_EXT_multisampled_render_to_texture 1
-#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_SAMPLES_EXT 0x8D6C
-#define GL_RENDERBUFFER_SAMPLES_EXT       0x8CAB
-#define GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT 0x8D56
-#define GL_MAX_SAMPLES_EXT                0x8D57
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_multisampled_render_to_texture */
-#ifndef GL_EXT_multisampled_render_to_texture2
-#define GL_EXT_multisampled_render_to_texture2 1
-#endif /* GL_EXT_multisampled_render_to_texture2 */
-#ifndef GL_EXT_multiview_draw_buffers
-#define GL_EXT_multiview_draw_buffers 1
-#define GL_COLOR_ATTACHMENT_EXT           0x90F0
-#define GL_MULTIVIEW_EXT                  0x90F1
-#define GL_DRAW_BUFFER_EXT                0x0C01
-#define GL_READ_BUFFER_EXT                0x0C02
-#define GL_MAX_MULTIVIEW_BUFFERS_EXT      0x90F2
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_multiview_draw_buffers */
-#ifndef GL_EXT_multiview_tessellation_geometry_shader
-#define GL_EXT_multiview_tessellation_geometry_shader 1
-#endif /* GL_EXT_multiview_tessellation_geometry_shader */
-#ifndef GL_EXT_multiview_texture_multisample
-#define GL_EXT_multiview_texture_multisample 1
-#endif /* GL_EXT_multiview_texture_multisample */
-#ifndef GL_EXT_multiview_timer_query
-#define GL_EXT_multiview_timer_query 1
-#endif /* GL_EXT_multiview_timer_query */
-#ifndef GL_EXT_occlusion_query_boolean
-#define GL_EXT_occlusion_query_boolean 1
-#define GL_ANY_SAMPLES_PASSED_EXT         0x8C2F
-#define GL_ANY_SAMPLES_PASSED_CONSERVATIVE_EXT 0x8D6A
-#endif /* GL_EXT_occlusion_query_boolean */
-#ifndef GL_EXT_polygon_offset_clamp
-#define GL_EXT_polygon_offset_clamp 1
-#define GL_POLYGON_OFFSET_CLAMP_EXT       0x8E1B
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_polygon_offset_clamp */
-#ifndef GL_EXT_post_depth_coverage
-#define GL_EXT_post_depth_coverage 1
-#endif /* GL_EXT_post_depth_coverage */
-#ifndef GL_EXT_primitive_bounding_box
-#define GL_EXT_primitive_bounding_box 1
-#define GL_PRIMITIVE_BOUNDING_BOX_EXT     0x92BE
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_primitive_bounding_box */
-#ifndef GL_EXT_protected_textures
-#define GL_EXT_protected_textures 1
-#define GL_CONTEXT_FLAG_PROTECTED_CONTENT_BIT_EXT 0x00000010
-#define GL_TEXTURE_PROTECTED_EXT          0x8BFA
-#endif /* GL_EXT_protected_textures */
-#ifndef GL_EXT_pvrtc_sRGB
-#define GL_EXT_pvrtc_sRGB 1
-#define GL_COMPRESSED_SRGB_PVRTC_2BPPV1_EXT 0x8A54
-#define GL_COMPRESSED_SRGB_PVRTC_4BPPV1_EXT 0x8A55
-#define GL_COMPRESSED_SRGB_ALPHA_PVRTC_2BPPV1_EXT 0x8A56
-#define GL_COMPRESSED_SRGB_ALPHA_PVRTC_4BPPV1_EXT 0x8A57
-#define GL_COMPRESSED_SRGB_ALPHA_PVRTC_2BPPV2_IMG 0x93F0
-#define GL_COMPRESSED_SRGB_ALPHA_PVRTC_4BPPV2_IMG 0x93F1
-#endif /* GL_EXT_pvrtc_sRGB */
-#ifndef GL_EXT_raster_multisample
-#define GL_EXT_raster_multisample 1
-#define GL_RASTER_MULTISAMPLE_EXT         0x9327
-#define GL_RASTER_SAMPLES_EXT             0x9328
-#define GL_MAX_RASTER_SAMPLES_EXT         0x9329
-#define GL_RASTER_FIXED_SAMPLE_LOCATIONS_EXT 0x932A
-#define GL_MULTISAMPLE_RASTERIZATION_ALLOWED_EXT 0x932B
-#define GL_EFFECTIVE_RASTER_SAMPLES_EXT   0x932C
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_raster_multisample */
-#ifndef GL_EXT_read_format_bgra
-#define GL_EXT_read_format_bgra 1
-#define GL_UNSIGNED_SHORT_4_4_4_4_REV_EXT 0x8365
-#define GL_UNSIGNED_SHORT_1_5_5_5_REV_EXT 0x8366
-#endif /* GL_EXT_read_format_bgra */
-#ifndef GL_EXT_render_snorm
-#define GL_EXT_render_snorm 1
-#define GL_R8_SNORM                       0x8F94
-#define GL_RG8_SNORM                      0x8F95
-#define GL_RGBA8_SNORM                    0x8F97
-#define GL_R16_SNORM_EXT                  0x8F98
-#define GL_RG16_SNORM_EXT                 0x8F99
-#define GL_RGBA16_SNORM_EXT               0x8F9B
-#endif /* GL_EXT_render_snorm */
-#ifndef GL_EXT_robustness
-#define GL_EXT_robustness 1
-#define GL_GUILTY_CONTEXT_RESET_EXT       0x8253
-#define GL_INNOCENT_CONTEXT_RESET_EXT     0x8254
-#define GL_UNKNOWN_CONTEXT_RESET_EXT      0x8255
-#define GL_CONTEXT_ROBUST_ACCESS_EXT      0x90F3
-#define GL_RESET_NOTIFICATION_STRATEGY_EXT 0x8256
-#define GL_LOSE_CONTEXT_ON_RESET_EXT      0x8252
-#define GL_NO_RESET_NOTIFICATION_EXT      0x8261
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_robustness */
-#ifndef GL_EXT_sRGB
-#define GL_EXT_sRGB 1
-#define GL_SRGB_EXT                       0x8C40
-#define GL_SRGB_ALPHA_EXT                 0x8C42
-#define GL_SRGB8_ALPHA8_EXT               0x8C43
-#define GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING_EXT 0x8210
-#endif /* GL_EXT_sRGB */
-#ifndef GL_EXT_sRGB_write_control
-#define GL_EXT_sRGB_write_control 1
-#define GL_FRAMEBUFFER_SRGB_EXT           0x8DB9
-#endif /* GL_EXT_sRGB_write_control */
-#ifndef GL_EXT_semaphore
-#define GL_EXT_semaphore 1
-#define GL_LAYOUT_GENERAL_EXT             0x958D
-#define GL_LAYOUT_COLOR_ATTACHMENT_EXT    0x958E
-#define GL_LAYOUT_DEPTH_STENCIL_ATTACHMENT_EXT 0x958F
-#define GL_LAYOUT_DEPTH_STENCIL_READ_ONLY_EXT 0x9590
-#define GL_LAYOUT_SHADER_READ_ONLY_EXT    0x9591
-#define GL_LAYOUT_TRANSFER_SRC_EXT        0x9592
-#define GL_LAYOUT_TRANSFER_DST_EXT        0x9593
-#define GL_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_EXT 0x9530
-#define GL_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_EXT 0x9531
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_semaphore */
-#ifndef GL_EXT_semaphore_fd
-#define GL_EXT_semaphore_fd 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_semaphore_fd */
-#ifndef GL_EXT_semaphore_win32
-#define GL_EXT_semaphore_win32 1
-#define GL_HANDLE_TYPE_D3D12_FENCE_EXT    0x9594
-#define GL_D3D12_FENCE_VALUE_EXT          0x9595
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_semaphore_win32 */
-#ifndef GL_EXT_separate_shader_objects
-#define GL_EXT_separate_shader_objects 1
-#define GL_ACTIVE_PROGRAM_EXT             0x8259
-#define GL_VERTEX_SHADER_BIT_EXT          0x00000001
-#define GL_FRAGMENT_SHADER_BIT_EXT        0x00000002
-#define GL_ALL_SHADER_BITS_EXT            0xFFFFFFFF
-#define GL_PROGRAM_SEPARABLE_EXT          0x8258
-#define GL_PROGRAM_PIPELINE_BINDING_EXT   0x825A
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_separate_shader_objects */
-#ifndef GL_EXT_shader_framebuffer_fetch
-#define GL_EXT_shader_framebuffer_fetch 1
-#define GL_FRAGMENT_SHADER_DISCARDS_SAMPLES_EXT 0x8A52
-#endif /* GL_EXT_shader_framebuffer_fetch */
-#ifndef GL_EXT_shader_framebuffer_fetch_non_coherent
-#define GL_EXT_shader_framebuffer_fetch_non_coherent 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_shader_framebuffer_fetch_non_coherent */
-#ifndef GL_EXT_shader_group_vote
-#define GL_EXT_shader_group_vote 1
-#endif /* GL_EXT_shader_group_vote */
-#ifndef GL_EXT_shader_implicit_conversions
-#define GL_EXT_shader_implicit_conversions 1
-#endif /* GL_EXT_shader_implicit_conversions */
-#ifndef GL_EXT_shader_integer_mix
-#define GL_EXT_shader_integer_mix 1
-#endif /* GL_EXT_shader_integer_mix */
-#ifndef GL_EXT_shader_io_blocks
-#define GL_EXT_shader_io_blocks 1
-#endif /* GL_EXT_shader_io_blocks */
-#ifndef GL_EXT_shader_non_constant_global_initializers
-#define GL_EXT_shader_non_constant_global_initializers 1
-#endif /* GL_EXT_shader_non_constant_global_initializers */
-#ifndef GL_EXT_shader_pixel_local_storage
-#define GL_EXT_shader_pixel_local_storage 1
-#define GL_MAX_SHADER_PIXEL_LOCAL_STORAGE_FAST_SIZE_EXT 0x8F63
-#define GL_MAX_SHADER_PIXEL_LOCAL_STORAGE_SIZE_EXT 0x8F67
-#define GL_SHADER_PIXEL_LOCAL_STORAGE_EXT 0x8F64
-#endif /* GL_EXT_shader_pixel_local_storage */
-#ifndef GL_EXT_shader_pixel_local_storage2
-#define GL_EXT_shader_pixel_local_storage2 1
-#define GL_MAX_SHADER_COMBINED_LOCAL_STORAGE_FAST_SIZE_EXT 0x9650
-#define GL_MAX_SHADER_COMBINED_LOCAL_STORAGE_SIZE_EXT 0x9651
-#define GL_FRAMEBUFFER_INCOMPLETE_INSUFFICIENT_SHADER_COMBINED_LOCAL_STORAGE_EXT 0x9652
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_shader_pixel_local_storage2 */
-#ifndef GL_EXT_shader_texture_lod
-#define GL_EXT_shader_texture_lod 1
-#endif /* GL_EXT_shader_texture_lod */
-#ifndef GL_EXT_shadow_samplers
-#define GL_EXT_shadow_samplers 1
-#define GL_TEXTURE_COMPARE_MODE_EXT       0x884C
-#define GL_TEXTURE_COMPARE_FUNC_EXT       0x884D
-#define GL_COMPARE_REF_TO_TEXTURE_EXT     0x884E
-#define GL_SAMPLER_2D_SHADOW_EXT          0x8B62
-#endif /* GL_EXT_shadow_samplers */
-#ifndef GL_EXT_sparse_texture
-#define GL_EXT_sparse_texture 1
-#define GL_TEXTURE_SPARSE_EXT             0x91A6
-#define GL_VIRTUAL_PAGE_SIZE_INDEX_EXT    0x91A7
-#define GL_NUM_SPARSE_LEVELS_EXT          0x91AA
-#define GL_NUM_VIRTUAL_PAGE_SIZES_EXT     0x91A8
-#define GL_VIRTUAL_PAGE_SIZE_X_EXT        0x9195
-#define GL_VIRTUAL_PAGE_SIZE_Y_EXT        0x9196
-#define GL_VIRTUAL_PAGE_SIZE_Z_EXT        0x9197
-#define GL_TEXTURE_2D_ARRAY               0x8C1A
-#define GL_TEXTURE_3D                     0x806F
-#define GL_MAX_SPARSE_TEXTURE_SIZE_EXT    0x9198
-#define GL_MAX_SPARSE_3D_TEXTURE_SIZE_EXT 0x9199
-#define GL_MAX_SPARSE_ARRAY_TEXTURE_LAYERS_EXT 0x919A
-#define GL_SPARSE_TEXTURE_FULL_ARRAY_CUBE_MIPMAPS_EXT 0x91A9
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_sparse_texture */
-#ifndef GL_EXT_sparse_texture2
-#define GL_EXT_sparse_texture2 1
-#endif /* GL_EXT_sparse_texture2 */
-#ifndef GL_EXT_tessellation_point_size
-#define GL_EXT_tessellation_point_size 1
-#endif /* GL_EXT_tessellation_point_size */
-#ifndef GL_EXT_tessellation_shader
-#define GL_EXT_tessellation_shader 1
-#define GL_PATCHES_EXT                    0x000E
-#define GL_PATCH_VERTICES_EXT             0x8E72
-#define GL_TESS_CONTROL_OUTPUT_VERTICES_EXT 0x8E75
-#define GL_TESS_GEN_MODE_EXT              0x8E76
-#define GL_TESS_GEN_SPACING_EXT           0x8E77
-#define GL_TESS_GEN_VERTEX_ORDER_EXT      0x8E78
-#define GL_TESS_GEN_POINT_MODE_EXT        0x8E79
-#define GL_ISOLINES_EXT                   0x8E7A
-#define GL_QUADS_EXT                      0x0007
-#define GL_FRACTIONAL_ODD_EXT             0x8E7B
-#define GL_FRACTIONAL_EVEN_EXT            0x8E7C
-#define GL_MAX_PATCH_VERTICES_EXT         0x8E7D
-#define GL_MAX_TESS_GEN_LEVEL_EXT         0x8E7E
-#define GL_MAX_TESS_CONTROL_UNIFORM_COMPONENTS_EXT 0x8E7F
-#define GL_MAX_TESS_EVALUATION_UNIFORM_COMPONENTS_EXT 0x8E80
-#define GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS_EXT 0x8E81
-#define GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS_EXT 0x8E82
-#define GL_MAX_TESS_CONTROL_OUTPUT_COMPONENTS_EXT 0x8E83
-#define GL_MAX_TESS_PATCH_COMPONENTS_EXT  0x8E84
-#define GL_MAX_TESS_CONTROL_TOTAL_OUTPUT_COMPONENTS_EXT 0x8E85
-#define GL_MAX_TESS_EVALUATION_OUTPUT_COMPONENTS_EXT 0x8E86
-#define GL_MAX_TESS_CONTROL_UNIFORM_BLOCKS_EXT 0x8E89
-#define GL_MAX_TESS_EVALUATION_UNIFORM_BLOCKS_EXT 0x8E8A
-#define GL_MAX_TESS_CONTROL_INPUT_COMPONENTS_EXT 0x886C
-#define GL_MAX_TESS_EVALUATION_INPUT_COMPONENTS_EXT 0x886D
-#define GL_MAX_COMBINED_TESS_CONTROL_UNIFORM_COMPONENTS_EXT 0x8E1E
-#define GL_MAX_COMBINED_TESS_EVALUATION_UNIFORM_COMPONENTS_EXT 0x8E1F
-#define GL_MAX_TESS_CONTROL_ATOMIC_COUNTER_BUFFERS_EXT 0x92CD
-#define GL_MAX_TESS_EVALUATION_ATOMIC_COUNTER_BUFFERS_EXT 0x92CE
-#define GL_MAX_TESS_CONTROL_ATOMIC_COUNTERS_EXT 0x92D3
-#define GL_MAX_TESS_EVALUATION_ATOMIC_COUNTERS_EXT 0x92D4
-#define GL_MAX_TESS_CONTROL_IMAGE_UNIFORMS_EXT 0x90CB
-#define GL_MAX_TESS_EVALUATION_IMAGE_UNIFORMS_EXT 0x90CC
-#define GL_MAX_TESS_CONTROL_SHADER_STORAGE_BLOCKS_EXT 0x90D8
-#define GL_MAX_TESS_EVALUATION_SHADER_STORAGE_BLOCKS_EXT 0x90D9
-#define GL_PRIMITIVE_RESTART_FOR_PATCHES_SUPPORTED 0x8221
-#define GL_IS_PER_PATCH_EXT               0x92E7
-#define GL_REFERENCED_BY_TESS_CONTROL_SHADER_EXT 0x9307
-#define GL_REFERENCED_BY_TESS_EVALUATION_SHADER_EXT 0x9308
-#define GL_TESS_CONTROL_SHADER_EXT        0x8E88
-#define GL_TESS_EVALUATION_SHADER_EXT     0x8E87
-#define GL_TESS_CONTROL_SHADER_BIT_EXT    0x00000008
-#define GL_TESS_EVALUATION_SHADER_BIT_EXT 0x00000010
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_tessellation_shader */
-#ifndef GL_EXT_texture_border_clamp
-#define GL_EXT_texture_border_clamp 1
-#define GL_TEXTURE_BORDER_COLOR_EXT       0x1004
-#define GL_CLAMP_TO_BORDER_EXT            0x812D
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_texture_border_clamp */
-#ifndef GL_EXT_texture_buffer
-#define GL_EXT_texture_buffer 1
-#define GL_TEXTURE_BUFFER_EXT             0x8C2A
-#define GL_TEXTURE_BUFFER_BINDING_EXT     0x8C2A
-#define GL_MAX_TEXTURE_BUFFER_SIZE_EXT    0x8C2B
-#define GL_TEXTURE_BINDING_BUFFER_EXT     0x8C2C
-#define GL_TEXTURE_BUFFER_DATA_STORE_BINDING_EXT 0x8C2D
-#define GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT_EXT 0x919F
-#define GL_SAMPLER_BUFFER_EXT             0x8DC2
-#define GL_INT_SAMPLER_BUFFER_EXT         0x8DD0
-#define GL_UNSIGNED_INT_SAMPLER_BUFFER_EXT 0x8DD8
-#define GL_IMAGE_BUFFER_EXT               0x9051
-#define GL_INT_IMAGE_BUFFER_EXT           0x905C
-#define GL_UNSIGNED_INT_IMAGE_BUFFER_EXT  0x9067
-#define GL_TEXTURE_BUFFER_OFFSET_EXT      0x919D
-#define GL_TEXTURE_BUFFER_SIZE_EXT        0x919E
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_texture_buffer */
-#ifndef GL_EXT_texture_compression_astc_decode_mode
-#define GL_EXT_texture_compression_astc_decode_mode 1
-#define GL_TEXTURE_ASTC_DECODE_PRECISION_EXT 0x8F69
-#endif /* GL_EXT_texture_compression_astc_decode_mode */
-#ifndef GL_EXT_texture_compression_bptc
-#define GL_EXT_texture_compression_bptc 1
-#define GL_COMPRESSED_RGBA_BPTC_UNORM_EXT 0x8E8C
-#define GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT 0x8E8D
-#define GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT_EXT 0x8E8E
-#define GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_EXT 0x8E8F
-#endif /* GL_EXT_texture_compression_bptc */
-#ifndef GL_EXT_texture_compression_dxt1
-#define GL_EXT_texture_compression_dxt1 1
-#define GL_COMPRESSED_RGB_S3TC_DXT1_EXT   0x83F0
-#define GL_COMPRESSED_RGBA_S3TC_DXT1_EXT  0x83F1
-#endif /* GL_EXT_texture_compression_dxt1 */
-#ifndef GL_EXT_texture_compression_rgtc
-#define GL_EXT_texture_compression_rgtc 1
-#define GL_COMPRESSED_RED_RGTC1_EXT       0x8DBB
-#define GL_COMPRESSED_SIGNED_RED_RGTC1_EXT 0x8DBC
-#define GL_COMPRESSED_RED_GREEN_RGTC2_EXT 0x8DBD
-#define GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT 0x8DBE
-#endif /* GL_EXT_texture_compression_rgtc */
-#ifndef GL_EXT_texture_compression_s3tc
-#define GL_EXT_texture_compression_s3tc 1
-#define GL_COMPRESSED_RGBA_S3TC_DXT3_EXT  0x83F2
-#define GL_COMPRESSED_RGBA_S3TC_DXT5_EXT  0x83F3
-#endif /* GL_EXT_texture_compression_s3tc */
-#ifndef GL_EXT_texture_compression_s3tc_srgb
-#define GL_EXT_texture_compression_s3tc_srgb 1
-#define GL_COMPRESSED_SRGB_S3TC_DXT1_EXT  0x8C4C
-#define GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT 0x8C4D
-#define GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT 0x8C4E
-#define GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT 0x8C4F
-#endif /* GL_EXT_texture_compression_s3tc_srgb */
-#ifndef GL_EXT_texture_cube_map_array
-#define GL_EXT_texture_cube_map_array 1
-#define GL_TEXTURE_CUBE_MAP_ARRAY_EXT     0x9009
-#define GL_TEXTURE_BINDING_CUBE_MAP_ARRAY_EXT 0x900A
-#define GL_SAMPLER_CUBE_MAP_ARRAY_EXT     0x900C
-#define GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW_EXT 0x900D
-#define GL_INT_SAMPLER_CUBE_MAP_ARRAY_EXT 0x900E
-#define GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY_EXT 0x900F
-#define GL_IMAGE_CUBE_MAP_ARRAY_EXT       0x9054
-#define GL_INT_IMAGE_CUBE_MAP_ARRAY_EXT   0x905F
-#define GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY_EXT 0x906A
-#endif /* GL_EXT_texture_cube_map_array */
-#ifndef GL_EXT_texture_filter_anisotropic
-#define GL_EXT_texture_filter_anisotropic 1
-#define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE
-#define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
-#endif /* GL_EXT_texture_filter_anisotropic */
-#ifndef GL_EXT_texture_filter_minmax
-#define GL_EXT_texture_filter_minmax 1
-#define GL_TEXTURE_REDUCTION_MODE_EXT     0x9366
-#define GL_WEIGHTED_AVERAGE_EXT           0x9367
-#endif /* GL_EXT_texture_filter_minmax */
-#ifndef GL_EXT_texture_format_BGRA8888
-#define GL_EXT_texture_format_BGRA8888 1
-#endif /* GL_EXT_texture_format_BGRA8888 */
-#ifndef GL_EXT_texture_format_sRGB_override
-#define GL_EXT_texture_format_sRGB_override 1
-#define GL_TEXTURE_FORMAT_SRGB_OVERRIDE_EXT 0x8FBF
-#endif /* GL_EXT_texture_format_sRGB_override */
-#ifndef GL_EXT_texture_mirror_clamp_to_edge
-#define GL_EXT_texture_mirror_clamp_to_edge 1
-#define GL_MIRROR_CLAMP_TO_EDGE_EXT       0x8743
-#endif /* GL_EXT_texture_mirror_clamp_to_edge */
-#ifndef GL_EXT_texture_norm16
-#define GL_EXT_texture_norm16 1
-#define GL_R16_EXT                        0x822A
-#define GL_RG16_EXT                       0x822C
-#define GL_RGBA16_EXT                     0x805B
-#define GL_RGB16_EXT                      0x8054
-#define GL_RGB16_SNORM_EXT                0x8F9A
-#endif /* GL_EXT_texture_norm16 */
-#ifndef GL_EXT_texture_query_lod
-#define GL_EXT_texture_query_lod 1
-#endif /* GL_EXT_texture_query_lod */
-#ifndef GL_EXT_texture_rg
-#define GL_EXT_texture_rg 1
-#define GL_RED_EXT                        0x1903
-#define GL_RG_EXT                         0x8227
-#define GL_R8_EXT                         0x8229
-#define GL_RG8_EXT                        0x822B
-#endif /* GL_EXT_texture_rg */
-#ifndef GL_EXT_texture_sRGB_R8
-#define GL_EXT_texture_sRGB_R8 1
-#define GL_SR8_EXT                        0x8FBD
-#endif /* GL_EXT_texture_sRGB_R8 */
-#ifndef GL_EXT_texture_sRGB_RG8
-#define GL_EXT_texture_sRGB_RG8 1
-#define GL_SRG8_EXT                       0x8FBE
-#endif /* GL_EXT_texture_sRGB_RG8 */
-#ifndef GL_EXT_texture_sRGB_decode
-#define GL_EXT_texture_sRGB_decode 1
-#define GL_TEXTURE_SRGB_DECODE_EXT        0x8A48
-#define GL_DECODE_EXT                     0x8A49
-#define GL_SKIP_DECODE_EXT                0x8A4A
-#endif /* GL_EXT_texture_sRGB_decode */
-#ifndef GL_EXT_texture_shadow_lod
-#define GL_EXT_texture_shadow_lod 1
-#endif /* GL_EXT_texture_shadow_lod */
-#ifndef GL_EXT_texture_storage
-#define GL_EXT_texture_storage 1
-#define GL_TEXTURE_IMMUTABLE_FORMAT_EXT   0x912F
-#define GL_ALPHA8_EXT                     0x803C
-#define GL_LUMINANCE8_EXT                 0x8040
-#define GL_LUMINANCE8_ALPHA8_EXT          0x8045
-#define GL_RGBA32F_EXT                    0x8814
-#define GL_RGB32F_EXT                     0x8815
-#define GL_ALPHA32F_EXT                   0x8816
-#define GL_LUMINANCE32F_EXT               0x8818
-#define GL_LUMINANCE_ALPHA32F_EXT         0x8819
-#define GL_ALPHA16F_EXT                   0x881C
-#define GL_LUMINANCE16F_EXT               0x881E
-#define GL_LUMINANCE_ALPHA16F_EXT         0x881F
-#define GL_R32F_EXT                       0x822E
-#define GL_RG32F_EXT                      0x8230
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_texture_storage */
-#ifndef GL_EXT_texture_type_2_10_10_10_REV
-#define GL_EXT_texture_type_2_10_10_10_REV 1
-#define GL_UNSIGNED_INT_2_10_10_10_REV_EXT 0x8368
-#endif /* GL_EXT_texture_type_2_10_10_10_REV */
-#ifndef GL_EXT_texture_view
-#define GL_EXT_texture_view 1
-#define GL_TEXTURE_VIEW_MIN_LEVEL_EXT     0x82DB
-#define GL_TEXTURE_VIEW_NUM_LEVELS_EXT    0x82DC
-#define GL_TEXTURE_VIEW_MIN_LAYER_EXT     0x82DD
-#define GL_TEXTURE_VIEW_NUM_LAYERS_EXT    0x82DE
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_texture_view */
-#ifndef GL_EXT_unpack_subimage
-#define GL_EXT_unpack_subimage 1
-#define GL_UNPACK_ROW_LENGTH_EXT          0x0CF2
-#define GL_UNPACK_SKIP_ROWS_EXT           0x0CF3
-#define GL_UNPACK_SKIP_PIXELS_EXT         0x0CF4
-#endif /* GL_EXT_unpack_subimage */
-#ifndef GL_EXT_win32_keyed_mutex
-#define GL_EXT_win32_keyed_mutex 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_win32_keyed_mutex */
-#ifndef GL_EXT_window_rectangles
-#define GL_EXT_window_rectangles 1
-#define GL_INCLUSIVE_EXT                  0x8F10
-#define GL_EXCLUSIVE_EXT                  0x8F11
-#define GL_WINDOW_RECTANGLE_EXT           0x8F12
-#define GL_WINDOW_RECTANGLE_MODE_EXT      0x8F13
-#define GL_MAX_WINDOW_RECTANGLES_EXT      0x8F14
-#define GL_NUM_WINDOW_RECTANGLES_EXT      0x8F15
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_EXT_window_rectangles */
-#ifndef GL_FJ_shader_binary_GCCSO
-#define GL_FJ_shader_binary_GCCSO 1
-#define GL_GCCSO_SHADER_BINARY_FJ         0x9260
-#endif /* GL_FJ_shader_binary_GCCSO */
-#ifndef GL_IMG_bindless_texture
-#define GL_IMG_bindless_texture 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_IMG_bindless_texture */
-#ifndef GL_IMG_framebuffer_downsample
-#define GL_IMG_framebuffer_downsample 1
-#define GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_AND_DOWNSAMPLE_IMG 0x913C
-#define GL_NUM_DOWNSAMPLE_SCALES_IMG      0x913D
-#define GL_DOWNSAMPLE_SCALES_IMG          0x913E
-#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_SCALE_IMG 0x913F
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_IMG_framebuffer_downsample */
-#ifndef GL_IMG_multisampled_render_to_texture
-#define GL_IMG_multisampled_render_to_texture 1
-#define GL_RENDERBUFFER_SAMPLES_IMG       0x9133
-#define GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_IMG 0x9134
-#define GL_MAX_SAMPLES_IMG                0x9135
-#define GL_TEXTURE_SAMPLES_IMG            0x9136
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_IMG_multisampled_render_to_texture */
-#ifndef GL_IMG_program_binary
-#define GL_IMG_program_binary 1
-#define GL_SGX_PROGRAM_BINARY_IMG         0x9130
-#endif /* GL_IMG_program_binary */
-#ifndef GL_IMG_read_format
-#define GL_IMG_read_format 1
-#define GL_BGRA_IMG                       0x80E1
-#define GL_UNSIGNED_SHORT_4_4_4_4_REV_IMG 0x8365
-#endif /* GL_IMG_read_format */
-#ifndef GL_IMG_shader_binary
-#define GL_IMG_shader_binary 1
-#define GL_SGX_BINARY_IMG                 0x8C0A
-#endif /* GL_IMG_shader_binary */
-#ifndef GL_IMG_texture_compression_pvrtc
-#define GL_IMG_texture_compression_pvrtc 1
-#define GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG 0x8C00
-#define GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG 0x8C01
-#define GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG 0x8C02
-#define GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG 0x8C03
-#endif /* GL_IMG_texture_compression_pvrtc */
-#ifndef GL_IMG_texture_compression_pvrtc2
-#define GL_IMG_texture_compression_pvrtc2 1
-#define GL_COMPRESSED_RGBA_PVRTC_2BPPV2_IMG 0x9137
-#define GL_COMPRESSED_RGBA_PVRTC_4BPPV2_IMG 0x9138
-#endif /* GL_IMG_texture_compression_pvrtc2 */
-#ifndef GL_IMG_texture_filter_cubic
-#define GL_IMG_texture_filter_cubic 1
-#define GL_CUBIC_IMG                      0x9139
-#define GL_CUBIC_MIPMAP_NEAREST_IMG       0x913A
-#define GL_CUBIC_MIPMAP_LINEAR_IMG        0x913B
-#endif /* GL_IMG_texture_filter_cubic */
-#ifndef GL_INTEL_blackhole_render
-#define GL_INTEL_blackhole_render 1
-#define GL_BLACKHOLE_RENDER_INTEL         0x83FC
-#endif /* GL_INTEL_blackhole_render */
-#ifndef GL_INTEL_conservative_rasterization
-#define GL_INTEL_conservative_rasterization 1
-#define GL_CONSERVATIVE_RASTERIZATION_INTEL 0x83FE
-#endif /* GL_INTEL_conservative_rasterization */
-#ifndef GL_INTEL_framebuffer_CMAA
-#define GL_INTEL_framebuffer_CMAA 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_INTEL_framebuffer_CMAA */
-#ifndef GL_INTEL_performance_query
-#define GL_INTEL_performance_query 1
-#define GL_PERFQUERY_SINGLE_CONTEXT_INTEL 0x00000000
-#define GL_PERFQUERY_GLOBAL_CONTEXT_INTEL 0x00000001
-#define GL_PERFQUERY_WAIT_INTEL           0x83FB
-#define GL_PERFQUERY_FLUSH_INTEL          0x83FA
-#define GL_PERFQUERY_DONOT_FLUSH_INTEL    0x83F9
-#define GL_PERFQUERY_COUNTER_EVENT_INTEL  0x94F0
-#define GL_PERFQUERY_COUNTER_DURATION_NORM_INTEL 0x94F1
-#define GL_PERFQUERY_COUNTER_DURATION_RAW_INTEL 0x94F2
-#define GL_PERFQUERY_COUNTER_THROUGHPUT_INTEL 0x94F3
-#define GL_PERFQUERY_COUNTER_RAW_INTEL    0x94F4
-#define GL_PERFQUERY_COUNTER_TIMESTAMP_INTEL 0x94F5
-#define GL_PERFQUERY_COUNTER_DATA_UINT32_INTEL 0x94F8
-#define GL_PERFQUERY_COUNTER_DATA_UINT64_INTEL 0x94F9
-#define GL_PERFQUERY_COUNTER_DATA_FLOAT_INTEL 0x94FA
-#define GL_PERFQUERY_COUNTER_DATA_DOUBLE_INTEL 0x94FB
-#define GL_PERFQUERY_COUNTER_DATA_BOOL32_INTEL 0x94FC
-#define GL_PERFQUERY_QUERY_NAME_LENGTH_MAX_INTEL 0x94FD
-#define GL_PERFQUERY_COUNTER_NAME_LENGTH_MAX_INTEL 0x94FE
-#define GL_PERFQUERY_COUNTER_DESC_LENGTH_MAX_INTEL 0x94FF
-#define GL_PERFQUERY_GPA_EXTENDED_COUNTERS_INTEL 0x9500
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_INTEL_performance_query */
-#ifndef GL_MESA_framebuffer_flip_x
-#define GL_MESA_framebuffer_flip_x 1
-#define GL_FRAMEBUFFER_FLIP_X_MESA        0x8BBC
-#endif /* GL_MESA_framebuffer_flip_x */
-#ifndef GL_MESA_framebuffer_flip_y
-#define GL_MESA_framebuffer_flip_y 1
-#define GL_FRAMEBUFFER_FLIP_Y_MESA        0x8BBB
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_MESA_framebuffer_flip_y */
-#ifndef GL_MESA_framebuffer_swap_xy
-#define GL_MESA_framebuffer_swap_xy 1
-#define GL_FRAMEBUFFER_SWAP_XY_MESA       0x8BBD
-#endif /* GL_MESA_framebuffer_swap_xy */
-#ifndef GL_MESA_program_binary_formats
-#define GL_MESA_program_binary_formats 1
-#define GL_PROGRAM_BINARY_FORMAT_MESA     0x875F
-#endif /* GL_MESA_program_binary_formats */
-#ifndef GL_MESA_shader_integer_functions
-#define GL_MESA_shader_integer_functions 1
-#endif /* GL_MESA_shader_integer_functions */
-#ifndef GL_NVX_blend_equation_advanced_multi_draw_buffers
-#define GL_NVX_blend_equation_advanced_multi_draw_buffers 1
-#endif /* GL_NVX_blend_equation_advanced_multi_draw_buffers */
-#ifndef GL_NV_bindless_texture
-#define GL_NV_bindless_texture 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_bindless_texture */
-#ifndef GL_NV_blend_equation_advanced
-#define GL_NV_blend_equation_advanced 1
-#define GL_BLEND_OVERLAP_NV               0x9281
-#define GL_BLEND_PREMULTIPLIED_SRC_NV     0x9280
-#define GL_BLUE_NV                        0x1905
-#define GL_COLORBURN_NV                   0x929A
-#define GL_COLORDODGE_NV                  0x9299
-#define GL_CONJOINT_NV                    0x9284
-#define GL_CONTRAST_NV                    0x92A1
-#define GL_DARKEN_NV                      0x9297
-#define GL_DIFFERENCE_NV                  0x929E
-#define GL_DISJOINT_NV                    0x9283
-#define GL_DST_ATOP_NV                    0x928F
-#define GL_DST_IN_NV                      0x928B
-#define GL_DST_NV                         0x9287
-#define GL_DST_OUT_NV                     0x928D
-#define GL_DST_OVER_NV                    0x9289
-#define GL_EXCLUSION_NV                   0x92A0
-#define GL_GREEN_NV                       0x1904
-#define GL_HARDLIGHT_NV                   0x929B
-#define GL_HARDMIX_NV                     0x92A9
-#define GL_HSL_COLOR_NV                   0x92AF
-#define GL_HSL_HUE_NV                     0x92AD
-#define GL_HSL_LUMINOSITY_NV              0x92B0
-#define GL_HSL_SATURATION_NV              0x92AE
-#define GL_INVERT_OVG_NV                  0x92B4
-#define GL_INVERT_RGB_NV                  0x92A3
-#define GL_LIGHTEN_NV                     0x9298
-#define GL_LINEARBURN_NV                  0x92A5
-#define GL_LINEARDODGE_NV                 0x92A4
-#define GL_LINEARLIGHT_NV                 0x92A7
-#define GL_MINUS_CLAMPED_NV               0x92B3
-#define GL_MINUS_NV                       0x929F
-#define GL_MULTIPLY_NV                    0x9294
-#define GL_OVERLAY_NV                     0x9296
-#define GL_PINLIGHT_NV                    0x92A8
-#define GL_PLUS_CLAMPED_ALPHA_NV          0x92B2
-#define GL_PLUS_CLAMPED_NV                0x92B1
-#define GL_PLUS_DARKER_NV                 0x9292
-#define GL_PLUS_NV                        0x9291
-#define GL_RED_NV                         0x1903
-#define GL_SCREEN_NV                      0x9295
-#define GL_SOFTLIGHT_NV                   0x929C
-#define GL_SRC_ATOP_NV                    0x928E
-#define GL_SRC_IN_NV                      0x928A
-#define GL_SRC_NV                         0x9286
-#define GL_SRC_OUT_NV                     0x928C
-#define GL_SRC_OVER_NV                    0x9288
-#define GL_UNCORRELATED_NV                0x9282
-#define GL_VIVIDLIGHT_NV                  0x92A6
-#define GL_XOR_NV                         0x1506
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_blend_equation_advanced */
-#ifndef GL_NV_blend_equation_advanced_coherent
-#define GL_NV_blend_equation_advanced_coherent 1
-#define GL_BLEND_ADVANCED_COHERENT_NV     0x9285
-#endif /* GL_NV_blend_equation_advanced_coherent */
-#ifndef GL_NV_blend_minmax_factor
-#define GL_NV_blend_minmax_factor 1
-#define GL_FACTOR_MIN_AMD                 0x901C
-#define GL_FACTOR_MAX_AMD                 0x901D
-#endif /* GL_NV_blend_minmax_factor */
-#ifndef GL_NV_clip_space_w_scaling
-#define GL_NV_clip_space_w_scaling 1
-#define GL_VIEWPORT_POSITION_W_SCALE_NV   0x937C
-#define GL_VIEWPORT_POSITION_W_SCALE_X_COEFF_NV 0x937D
-#define GL_VIEWPORT_POSITION_W_SCALE_Y_COEFF_NV 0x937E
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_clip_space_w_scaling */
-#ifndef GL_NV_compute_shader_derivatives
-#define GL_NV_compute_shader_derivatives 1
-#endif /* GL_NV_compute_shader_derivatives */
-#ifndef GL_NV_conditional_render
-#define GL_NV_conditional_render 1
-#define GL_QUERY_WAIT_NV                  0x8E13
-#define GL_QUERY_NO_WAIT_NV               0x8E14
-#define GL_QUERY_BY_REGION_WAIT_NV        0x8E15
-#define GL_QUERY_BY_REGION_NO_WAIT_NV     0x8E16
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_conditional_render */
-#ifndef GL_NV_conservative_raster
-#define GL_NV_conservative_raster 1
-#define GL_CONSERVATIVE_RASTERIZATION_NV  0x9346
-#define GL_SUBPIXEL_PRECISION_BIAS_X_BITS_NV 0x9347
-#define GL_SUBPIXEL_PRECISION_BIAS_Y_BITS_NV 0x9348
-#define GL_MAX_SUBPIXEL_PRECISION_BIAS_BITS_NV 0x9349
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_conservative_raster */
-#ifndef GL_NV_conservative_raster_pre_snap
-#define GL_NV_conservative_raster_pre_snap 1
-#define GL_CONSERVATIVE_RASTER_MODE_PRE_SNAP_NV 0x9550
-#endif /* GL_NV_conservative_raster_pre_snap */
-#ifndef GL_NV_conservative_raster_pre_snap_triangles
-#define GL_NV_conservative_raster_pre_snap_triangles 1
-#define GL_CONSERVATIVE_RASTER_MODE_NV    0x954D
-#define GL_CONSERVATIVE_RASTER_MODE_POST_SNAP_NV 0x954E
-#define GL_CONSERVATIVE_RASTER_MODE_PRE_SNAP_TRIANGLES_NV 0x954F
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_conservative_raster_pre_snap_triangles */
-#ifndef GL_NV_copy_buffer
-#define GL_NV_copy_buffer 1
-#define GL_COPY_READ_BUFFER_NV            0x8F36
-#define GL_COPY_WRITE_BUFFER_NV           0x8F37
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_copy_buffer */
-#ifndef GL_NV_coverage_sample
-#define GL_NV_coverage_sample 1
-#define GL_COVERAGE_COMPONENT_NV          0x8ED0
-#define GL_COVERAGE_COMPONENT4_NV         0x8ED1
-#define GL_COVERAGE_ATTACHMENT_NV         0x8ED2
-#define GL_COVERAGE_BUFFERS_NV            0x8ED3
-#define GL_COVERAGE_SAMPLES_NV            0x8ED4
-#define GL_COVERAGE_ALL_FRAGMENTS_NV      0x8ED5
-#define GL_COVERAGE_EDGE_FRAGMENTS_NV     0x8ED6
-#define GL_COVERAGE_AUTOMATIC_NV          0x8ED7
-#define GL_COVERAGE_BUFFER_BIT_NV         0x00008000
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_coverage_sample */
-#ifndef GL_NV_depth_nonlinear
-#define GL_NV_depth_nonlinear 1
-#define GL_DEPTH_COMPONENT16_NONLINEAR_NV 0x8E2C
-#endif /* GL_NV_depth_nonlinear */
-#ifndef GL_NV_draw_buffers
-#define GL_NV_draw_buffers 1
-#define GL_MAX_DRAW_BUFFERS_NV            0x8824
-#define GL_DRAW_BUFFER0_NV                0x8825
-#define GL_DRAW_BUFFER1_NV                0x8826
-#define GL_DRAW_BUFFER2_NV                0x8827
-#define GL_DRAW_BUFFER3_NV                0x8828
-#define GL_DRAW_BUFFER4_NV                0x8829
-#define GL_DRAW_BUFFER5_NV                0x882A
-#define GL_DRAW_BUFFER6_NV                0x882B
-#define GL_DRAW_BUFFER7_NV                0x882C
-#define GL_DRAW_BUFFER8_NV                0x882D
-#define GL_DRAW_BUFFER9_NV                0x882E
-#define GL_DRAW_BUFFER10_NV               0x882F
-#define GL_DRAW_BUFFER11_NV               0x8830
-#define GL_DRAW_BUFFER12_NV               0x8831
-#define GL_DRAW_BUFFER13_NV               0x8832
-#define GL_DRAW_BUFFER14_NV               0x8833
-#define GL_DRAW_BUFFER15_NV               0x8834
-#define GL_COLOR_ATTACHMENT0_NV           0x8CE0
-#define GL_COLOR_ATTACHMENT1_NV           0x8CE1
-#define GL_COLOR_ATTACHMENT2_NV           0x8CE2
-#define GL_COLOR_ATTACHMENT3_NV           0x8CE3
-#define GL_COLOR_ATTACHMENT4_NV           0x8CE4
-#define GL_COLOR_ATTACHMENT5_NV           0x8CE5
-#define GL_COLOR_ATTACHMENT6_NV           0x8CE6
-#define GL_COLOR_ATTACHMENT7_NV           0x8CE7
-#define GL_COLOR_ATTACHMENT8_NV           0x8CE8
-#define GL_COLOR_ATTACHMENT9_NV           0x8CE9
-#define GL_COLOR_ATTACHMENT10_NV          0x8CEA
-#define GL_COLOR_ATTACHMENT11_NV          0x8CEB
-#define GL_COLOR_ATTACHMENT12_NV          0x8CEC
-#define GL_COLOR_ATTACHMENT13_NV          0x8CED
-#define GL_COLOR_ATTACHMENT14_NV          0x8CEE
-#define GL_COLOR_ATTACHMENT15_NV          0x8CEF
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_draw_buffers */
-#ifndef GL_NV_draw_instanced
-#define GL_NV_draw_instanced 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_draw_instanced */
-#ifndef GL_NV_draw_vulkan_image
-#define GL_NV_draw_vulkan_image 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_draw_vulkan_image */
-#ifndef GL_NV_explicit_attrib_location
-#define GL_NV_explicit_attrib_location 1
-#endif /* GL_NV_explicit_attrib_location */
-#ifndef GL_NV_fbo_color_attachments
-#define GL_NV_fbo_color_attachments 1
-#define GL_MAX_COLOR_ATTACHMENTS_NV       0x8CDF
-#endif /* GL_NV_fbo_color_attachments */
-#ifndef GL_NV_fence
-#define GL_NV_fence 1
-#define GL_ALL_COMPLETED_NV               0x84F2
-#define GL_FENCE_STATUS_NV                0x84F3
-#define GL_FENCE_CONDITION_NV             0x84F4
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_fence */
-#ifndef GL_NV_fill_rectangle
-#define GL_NV_fill_rectangle 1
-#define GL_FILL_RECTANGLE_NV              0x933C
-#endif /* GL_NV_fill_rectangle */
-#ifndef GL_NV_fragment_coverage_to_color
-#define GL_NV_fragment_coverage_to_color 1
-#define GL_FRAGMENT_COVERAGE_TO_COLOR_NV  0x92DD
-#define GL_FRAGMENT_COVERAGE_COLOR_NV     0x92DE
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_fragment_coverage_to_color */
-#ifndef GL_NV_fragment_shader_barycentric
-#define GL_NV_fragment_shader_barycentric 1
-#endif /* GL_NV_fragment_shader_barycentric */
-#ifndef GL_NV_fragment_shader_interlock
-#define GL_NV_fragment_shader_interlock 1
-#endif /* GL_NV_fragment_shader_interlock */
-#ifndef GL_NV_framebuffer_blit
-#define GL_NV_framebuffer_blit 1
-#define GL_READ_FRAMEBUFFER_NV            0x8CA8
-#define GL_DRAW_FRAMEBUFFER_NV            0x8CA9
-#define GL_DRAW_FRAMEBUFFER_BINDING_NV    0x8CA6
-#define GL_READ_FRAMEBUFFER_BINDING_NV    0x8CAA
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_framebuffer_blit */
-#ifndef GL_NV_framebuffer_mixed_samples
-#define GL_NV_framebuffer_mixed_samples 1
-#define GL_COVERAGE_MODULATION_TABLE_NV   0x9331
-#define GL_COLOR_SAMPLES_NV               0x8E20
-#define GL_DEPTH_SAMPLES_NV               0x932D
-#define GL_STENCIL_SAMPLES_NV             0x932E
-#define GL_MIXED_DEPTH_SAMPLES_SUPPORTED_NV 0x932F
-#define GL_MIXED_STENCIL_SAMPLES_SUPPORTED_NV 0x9330
-#define GL_COVERAGE_MODULATION_NV         0x9332
-#define GL_COVERAGE_MODULATION_TABLE_SIZE_NV 0x9333
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_framebuffer_mixed_samples */
-#ifndef GL_NV_framebuffer_multisample
-#define GL_NV_framebuffer_multisample 1
-#define GL_RENDERBUFFER_SAMPLES_NV        0x8CAB
-#define GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_NV 0x8D56
-#define GL_MAX_SAMPLES_NV                 0x8D57
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_framebuffer_multisample */
-#ifndef GL_NV_generate_mipmap_sRGB
-#define GL_NV_generate_mipmap_sRGB 1
-#endif /* GL_NV_generate_mipmap_sRGB */
-#ifndef GL_NV_geometry_shader_passthrough
-#define GL_NV_geometry_shader_passthrough 1
-#endif /* GL_NV_geometry_shader_passthrough */
-#ifndef GL_NV_gpu_shader5
-#define GL_NV_gpu_shader5 1
-typedef khronos_int64_t GLint64EXT;
-typedef khronos_uint64_t GLuint64EXT;
-#define GL_INT64_NV                       0x140E
-#define GL_UNSIGNED_INT64_NV              0x140F
-#define GL_INT8_NV                        0x8FE0
-#define GL_INT8_VEC2_NV                   0x8FE1
-#define GL_INT8_VEC3_NV                   0x8FE2
-#define GL_INT8_VEC4_NV                   0x8FE3
-#define GL_INT16_NV                       0x8FE4
-#define GL_INT16_VEC2_NV                  0x8FE5
-#define GL_INT16_VEC3_NV                  0x8FE6
-#define GL_INT16_VEC4_NV                  0x8FE7
-#define GL_INT64_VEC2_NV                  0x8FE9
-#define GL_INT64_VEC3_NV                  0x8FEA
-#define GL_INT64_VEC4_NV                  0x8FEB
-#define GL_UNSIGNED_INT8_NV               0x8FEC
-#define GL_UNSIGNED_INT8_VEC2_NV          0x8FED
-#define GL_UNSIGNED_INT8_VEC3_NV          0x8FEE
-#define GL_UNSIGNED_INT8_VEC4_NV          0x8FEF
-#define GL_UNSIGNED_INT16_NV              0x8FF0
-#define GL_UNSIGNED_INT16_VEC2_NV         0x8FF1
-#define GL_UNSIGNED_INT16_VEC3_NV         0x8FF2
-#define GL_UNSIGNED_INT16_VEC4_NV         0x8FF3
-#define GL_UNSIGNED_INT64_VEC2_NV         0x8FF5
-#define GL_UNSIGNED_INT64_VEC3_NV         0x8FF6
-#define GL_UNSIGNED_INT64_VEC4_NV         0x8FF7
-#define GL_FLOAT16_NV                     0x8FF8
-#define GL_FLOAT16_VEC2_NV                0x8FF9
-#define GL_FLOAT16_VEC3_NV                0x8FFA
-#define GL_FLOAT16_VEC4_NV                0x8FFB
-#define GL_PATCHES                        0x000E
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_gpu_shader5 */
-#ifndef GL_NV_image_formats
-#define GL_NV_image_formats 1
-#endif /* GL_NV_image_formats */
-#ifndef GL_NV_instanced_arrays
-#define GL_NV_instanced_arrays 1
-#define GL_VERTEX_ATTRIB_ARRAY_DIVISOR_NV 0x88FE
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_instanced_arrays */
-#ifndef GL_NV_internalformat_sample_query
-#define GL_NV_internalformat_sample_query 1
-#define GL_TEXTURE_2D_MULTISAMPLE         0x9100
-#define GL_TEXTURE_2D_MULTISAMPLE_ARRAY   0x9102
-#define GL_MULTISAMPLES_NV                0x9371
-#define GL_SUPERSAMPLE_SCALE_X_NV         0x9372
-#define GL_SUPERSAMPLE_SCALE_Y_NV         0x9373
-#define GL_CONFORMANT_NV                  0x9374
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_internalformat_sample_query */
-#ifndef GL_NV_memory_attachment
-#define GL_NV_memory_attachment 1
-#define GL_ATTACHED_MEMORY_OBJECT_NV      0x95A4
-#define GL_ATTACHED_MEMORY_OFFSET_NV      0x95A5
-#define GL_MEMORY_ATTACHABLE_ALIGNMENT_NV 0x95A6
-#define GL_MEMORY_ATTACHABLE_SIZE_NV      0x95A7
-#define GL_MEMORY_ATTACHABLE_NV           0x95A8
-#define GL_DETACHED_MEMORY_INCARNATION_NV 0x95A9
-#define GL_DETACHED_TEXTURES_NV           0x95AA
-#define GL_DETACHED_BUFFERS_NV            0x95AB
-#define GL_MAX_DETACHED_TEXTURES_NV       0x95AC
-#define GL_MAX_DETACHED_BUFFERS_NV        0x95AD
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_memory_attachment */
-#ifndef GL_NV_memory_object_sparse
-#define GL_NV_memory_object_sparse 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_memory_object_sparse */
-#ifndef GL_NV_mesh_shader
-#define GL_NV_mesh_shader 1
-#define GL_MESH_SHADER_NV                 0x9559
-#define GL_TASK_SHADER_NV                 0x955A
-#define GL_MAX_MESH_UNIFORM_BLOCKS_NV     0x8E60
-#define GL_MAX_MESH_TEXTURE_IMAGE_UNITS_NV 0x8E61
-#define GL_MAX_MESH_IMAGE_UNIFORMS_NV     0x8E62
-#define GL_MAX_MESH_UNIFORM_COMPONENTS_NV 0x8E63
-#define GL_MAX_MESH_ATOMIC_COUNTER_BUFFERS_NV 0x8E64
-#define GL_MAX_MESH_ATOMIC_COUNTERS_NV    0x8E65
-#define GL_MAX_MESH_SHADER_STORAGE_BLOCKS_NV 0x8E66
-#define GL_MAX_COMBINED_MESH_UNIFORM_COMPONENTS_NV 0x8E67
-#define GL_MAX_TASK_UNIFORM_BLOCKS_NV     0x8E68
-#define GL_MAX_TASK_TEXTURE_IMAGE_UNITS_NV 0x8E69
-#define GL_MAX_TASK_IMAGE_UNIFORMS_NV     0x8E6A
-#define GL_MAX_TASK_UNIFORM_COMPONENTS_NV 0x8E6B
-#define GL_MAX_TASK_ATOMIC_COUNTER_BUFFERS_NV 0x8E6C
-#define GL_MAX_TASK_ATOMIC_COUNTERS_NV    0x8E6D
-#define GL_MAX_TASK_SHADER_STORAGE_BLOCKS_NV 0x8E6E
-#define GL_MAX_COMBINED_TASK_UNIFORM_COMPONENTS_NV 0x8E6F
-#define GL_MAX_MESH_WORK_GROUP_INVOCATIONS_NV 0x95A2
-#define GL_MAX_TASK_WORK_GROUP_INVOCATIONS_NV 0x95A3
-#define GL_MAX_MESH_TOTAL_MEMORY_SIZE_NV  0x9536
-#define GL_MAX_TASK_TOTAL_MEMORY_SIZE_NV  0x9537
-#define GL_MAX_MESH_OUTPUT_VERTICES_NV    0x9538
-#define GL_MAX_MESH_OUTPUT_PRIMITIVES_NV  0x9539
-#define GL_MAX_TASK_OUTPUT_COUNT_NV       0x953A
-#define GL_MAX_DRAW_MESH_TASKS_COUNT_NV   0x953D
-#define GL_MAX_MESH_VIEWS_NV              0x9557
-#define GL_MESH_OUTPUT_PER_VERTEX_GRANULARITY_NV 0x92DF
-#define GL_MESH_OUTPUT_PER_PRIMITIVE_GRANULARITY_NV 0x9543
-#define GL_MAX_MESH_WORK_GROUP_SIZE_NV    0x953B
-#define GL_MAX_TASK_WORK_GROUP_SIZE_NV    0x953C
-#define GL_MESH_WORK_GROUP_SIZE_NV        0x953E
-#define GL_TASK_WORK_GROUP_SIZE_NV        0x953F
-#define GL_MESH_VERTICES_OUT_NV           0x9579
-#define GL_MESH_PRIMITIVES_OUT_NV         0x957A
-#define GL_MESH_OUTPUT_TYPE_NV            0x957B
-#define GL_UNIFORM_BLOCK_REFERENCED_BY_MESH_SHADER_NV 0x959C
-#define GL_UNIFORM_BLOCK_REFERENCED_BY_TASK_SHADER_NV 0x959D
-#define GL_REFERENCED_BY_MESH_SHADER_NV   0x95A0
-#define GL_REFERENCED_BY_TASK_SHADER_NV   0x95A1
-#define GL_MESH_SHADER_BIT_NV             0x00000040
-#define GL_TASK_SHADER_BIT_NV             0x00000080
-#define GL_MESH_SUBROUTINE_NV             0x957C
-#define GL_TASK_SUBROUTINE_NV             0x957D
-#define GL_MESH_SUBROUTINE_UNIFORM_NV     0x957E
-#define GL_TASK_SUBROUTINE_UNIFORM_NV     0x957F
-#define GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_MESH_SHADER_NV 0x959E
-#define GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TASK_SHADER_NV 0x959F
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_mesh_shader */
-#ifndef GL_NV_non_square_matrices
-#define GL_NV_non_square_matrices 1
-#define GL_FLOAT_MAT2x3_NV                0x8B65
-#define GL_FLOAT_MAT2x4_NV                0x8B66
-#define GL_FLOAT_MAT3x2_NV                0x8B67
-#define GL_FLOAT_MAT3x4_NV                0x8B68
-#define GL_FLOAT_MAT4x2_NV                0x8B69
-#define GL_FLOAT_MAT4x3_NV                0x8B6A
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_non_square_matrices */
-#ifndef GL_NV_path_rendering
-#define GL_NV_path_rendering 1
-typedef double GLdouble;
-#define GL_PATH_FORMAT_SVG_NV             0x9070
-#define GL_PATH_FORMAT_PS_NV              0x9071
-#define GL_STANDARD_FONT_NAME_NV          0x9072
-#define GL_SYSTEM_FONT_NAME_NV            0x9073
-#define GL_FILE_NAME_NV                   0x9074
-#define GL_PATH_STROKE_WIDTH_NV           0x9075
-#define GL_PATH_END_CAPS_NV               0x9076
-#define GL_PATH_INITIAL_END_CAP_NV        0x9077
-#define GL_PATH_TERMINAL_END_CAP_NV       0x9078
-#define GL_PATH_JOIN_STYLE_NV             0x9079
-#define GL_PATH_MITER_LIMIT_NV            0x907A
-#define GL_PATH_DASH_CAPS_NV              0x907B
-#define GL_PATH_INITIAL_DASH_CAP_NV       0x907C
-#define GL_PATH_TERMINAL_DASH_CAP_NV      0x907D
-#define GL_PATH_DASH_OFFSET_NV            0x907E
-#define GL_PATH_CLIENT_LENGTH_NV          0x907F
-#define GL_PATH_FILL_MODE_NV              0x9080
-#define GL_PATH_FILL_MASK_NV              0x9081
-#define GL_PATH_FILL_COVER_MODE_NV        0x9082
-#define GL_PATH_STROKE_COVER_MODE_NV      0x9083
-#define GL_PATH_STROKE_MASK_NV            0x9084
-#define GL_COUNT_UP_NV                    0x9088
-#define GL_COUNT_DOWN_NV                  0x9089
-#define GL_PATH_OBJECT_BOUNDING_BOX_NV    0x908A
-#define GL_CONVEX_HULL_NV                 0x908B
-#define GL_BOUNDING_BOX_NV                0x908D
-#define GL_TRANSLATE_X_NV                 0x908E
-#define GL_TRANSLATE_Y_NV                 0x908F
-#define GL_TRANSLATE_2D_NV                0x9090
-#define GL_TRANSLATE_3D_NV                0x9091
-#define GL_AFFINE_2D_NV                   0x9092
-#define GL_AFFINE_3D_NV                   0x9094
-#define GL_TRANSPOSE_AFFINE_2D_NV         0x9096
-#define GL_TRANSPOSE_AFFINE_3D_NV         0x9098
-#define GL_UTF8_NV                        0x909A
-#define GL_UTF16_NV                       0x909B
-#define GL_BOUNDING_BOX_OF_BOUNDING_BOXES_NV 0x909C
-#define GL_PATH_COMMAND_COUNT_NV          0x909D
-#define GL_PATH_COORD_COUNT_NV            0x909E
-#define GL_PATH_DASH_ARRAY_COUNT_NV       0x909F
-#define GL_PATH_COMPUTED_LENGTH_NV        0x90A0
-#define GL_PATH_FILL_BOUNDING_BOX_NV      0x90A1
-#define GL_PATH_STROKE_BOUNDING_BOX_NV    0x90A2
-#define GL_SQUARE_NV                      0x90A3
-#define GL_ROUND_NV                       0x90A4
-#define GL_TRIANGULAR_NV                  0x90A5
-#define GL_BEVEL_NV                       0x90A6
-#define GL_MITER_REVERT_NV                0x90A7
-#define GL_MITER_TRUNCATE_NV              0x90A8
-#define GL_SKIP_MISSING_GLYPH_NV          0x90A9
-#define GL_USE_MISSING_GLYPH_NV           0x90AA
-#define GL_PATH_ERROR_POSITION_NV         0x90AB
-#define GL_ACCUM_ADJACENT_PAIRS_NV        0x90AD
-#define GL_ADJACENT_PAIRS_NV              0x90AE
-#define GL_FIRST_TO_REST_NV               0x90AF
-#define GL_PATH_GEN_MODE_NV               0x90B0
-#define GL_PATH_GEN_COEFF_NV              0x90B1
-#define GL_PATH_GEN_COMPONENTS_NV         0x90B3
-#define GL_PATH_STENCIL_FUNC_NV           0x90B7
-#define GL_PATH_STENCIL_REF_NV            0x90B8
-#define GL_PATH_STENCIL_VALUE_MASK_NV     0x90B9
-#define GL_PATH_STENCIL_DEPTH_OFFSET_FACTOR_NV 0x90BD
-#define GL_PATH_STENCIL_DEPTH_OFFSET_UNITS_NV 0x90BE
-#define GL_PATH_COVER_DEPTH_FUNC_NV       0x90BF
-#define GL_PATH_DASH_OFFSET_RESET_NV      0x90B4
-#define GL_MOVE_TO_RESETS_NV              0x90B5
-#define GL_MOVE_TO_CONTINUES_NV           0x90B6
-#define GL_CLOSE_PATH_NV                  0x00
-#define GL_MOVE_TO_NV                     0x02
-#define GL_RELATIVE_MOVE_TO_NV            0x03
-#define GL_LINE_TO_NV                     0x04
-#define GL_RELATIVE_LINE_TO_NV            0x05
-#define GL_HORIZONTAL_LINE_TO_NV          0x06
-#define GL_RELATIVE_HORIZONTAL_LINE_TO_NV 0x07
-#define GL_VERTICAL_LINE_TO_NV            0x08
-#define GL_RELATIVE_VERTICAL_LINE_TO_NV   0x09
-#define GL_QUADRATIC_CURVE_TO_NV          0x0A
-#define GL_RELATIVE_QUADRATIC_CURVE_TO_NV 0x0B
-#define GL_CUBIC_CURVE_TO_NV              0x0C
-#define GL_RELATIVE_CUBIC_CURVE_TO_NV     0x0D
-#define GL_SMOOTH_QUADRATIC_CURVE_TO_NV   0x0E
-#define GL_RELATIVE_SMOOTH_QUADRATIC_CURVE_TO_NV 0x0F
-#define GL_SMOOTH_CUBIC_CURVE_TO_NV       0x10
-#define GL_RELATIVE_SMOOTH_CUBIC_CURVE_TO_NV 0x11
-#define GL_SMALL_CCW_ARC_TO_NV            0x12
-#define GL_RELATIVE_SMALL_CCW_ARC_TO_NV   0x13
-#define GL_SMALL_CW_ARC_TO_NV             0x14
-#define GL_RELATIVE_SMALL_CW_ARC_TO_NV    0x15
-#define GL_LARGE_CCW_ARC_TO_NV            0x16
-#define GL_RELATIVE_LARGE_CCW_ARC_TO_NV   0x17
-#define GL_LARGE_CW_ARC_TO_NV             0x18
-#define GL_RELATIVE_LARGE_CW_ARC_TO_NV    0x19
-#define GL_RESTART_PATH_NV                0xF0
-#define GL_DUP_FIRST_CUBIC_CURVE_TO_NV    0xF2
-#define GL_DUP_LAST_CUBIC_CURVE_TO_NV     0xF4
-#define GL_RECT_NV                        0xF6
-#define GL_CIRCULAR_CCW_ARC_TO_NV         0xF8
-#define GL_CIRCULAR_CW_ARC_TO_NV          0xFA
-#define GL_CIRCULAR_TANGENT_ARC_TO_NV     0xFC
-#define GL_ARC_TO_NV                      0xFE
-#define GL_RELATIVE_ARC_TO_NV             0xFF
-#define GL_BOLD_BIT_NV                    0x01
-#define GL_ITALIC_BIT_NV                  0x02
-#define GL_GLYPH_WIDTH_BIT_NV             0x01
-#define GL_GLYPH_HEIGHT_BIT_NV            0x02
-#define GL_GLYPH_HORIZONTAL_BEARING_X_BIT_NV 0x04
-#define GL_GLYPH_HORIZONTAL_BEARING_Y_BIT_NV 0x08
-#define GL_GLYPH_HORIZONTAL_BEARING_ADVANCE_BIT_NV 0x10
-#define GL_GLYPH_VERTICAL_BEARING_X_BIT_NV 0x20
-#define GL_GLYPH_VERTICAL_BEARING_Y_BIT_NV 0x40
-#define GL_GLYPH_VERTICAL_BEARING_ADVANCE_BIT_NV 0x80
-#define GL_GLYPH_HAS_KERNING_BIT_NV       0x100
-#define GL_FONT_X_MIN_BOUNDS_BIT_NV       0x00010000
-#define GL_FONT_Y_MIN_BOUNDS_BIT_NV       0x00020000
-#define GL_FONT_X_MAX_BOUNDS_BIT_NV       0x00040000
-#define GL_FONT_Y_MAX_BOUNDS_BIT_NV       0x00080000
-#define GL_FONT_UNITS_PER_EM_BIT_NV       0x00100000
-#define GL_FONT_ASCENDER_BIT_NV           0x00200000
-#define GL_FONT_DESCENDER_BIT_NV          0x00400000
-#define GL_FONT_HEIGHT_BIT_NV             0x00800000
-#define GL_FONT_MAX_ADVANCE_WIDTH_BIT_NV  0x01000000
-#define GL_FONT_MAX_ADVANCE_HEIGHT_BIT_NV 0x02000000
-#define GL_FONT_UNDERLINE_POSITION_BIT_NV 0x04000000
-#define GL_FONT_UNDERLINE_THICKNESS_BIT_NV 0x08000000
-#define GL_FONT_HAS_KERNING_BIT_NV        0x10000000
-#define GL_ROUNDED_RECT_NV                0xE8
-#define GL_RELATIVE_ROUNDED_RECT_NV       0xE9
-#define GL_ROUNDED_RECT2_NV               0xEA
-#define GL_RELATIVE_ROUNDED_RECT2_NV      0xEB
-#define GL_ROUNDED_RECT4_NV               0xEC
-#define GL_RELATIVE_ROUNDED_RECT4_NV      0xED
-#define GL_ROUNDED_RECT8_NV               0xEE
-#define GL_RELATIVE_ROUNDED_RECT8_NV      0xEF
-#define GL_RELATIVE_RECT_NV               0xF7
-#define GL_FONT_GLYPHS_AVAILABLE_NV       0x9368
-#define GL_FONT_TARGET_UNAVAILABLE_NV     0x9369
-#define GL_FONT_UNAVAILABLE_NV            0x936A
-#define GL_FONT_UNINTELLIGIBLE_NV         0x936B
-#define GL_CONIC_CURVE_TO_NV              0x1A
-#define GL_RELATIVE_CONIC_CURVE_TO_NV     0x1B
-#define GL_FONT_NUM_GLYPH_INDICES_BIT_NV  0x20000000
-#define GL_STANDARD_FONT_FORMAT_NV        0x936C
-#define GL_PATH_PROJECTION_NV             0x1701
-#define GL_PATH_MODELVIEW_NV              0x1700
-#define GL_PATH_MODELVIEW_STACK_DEPTH_NV  0x0BA3
-#define GL_PATH_MODELVIEW_MATRIX_NV       0x0BA6
-#define GL_PATH_MAX_MODELVIEW_STACK_DEPTH_NV 0x0D36
-#define GL_PATH_TRANSPOSE_MODELVIEW_MATRIX_NV 0x84E3
-#define GL_PATH_PROJECTION_STACK_DEPTH_NV 0x0BA4
-#define GL_PATH_PROJECTION_MATRIX_NV      0x0BA7
-#define GL_PATH_MAX_PROJECTION_STACK_DEPTH_NV 0x0D38
-#define GL_PATH_TRANSPOSE_PROJECTION_MATRIX_NV 0x84E4
-#define GL_FRAGMENT_INPUT_NV              0x936D
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_path_rendering */
-#ifndef GL_NV_path_rendering_shared_edge
-#define GL_NV_path_rendering_shared_edge 1
-#define GL_SHARED_EDGE_NV                 0xC0
-#endif /* GL_NV_path_rendering_shared_edge */
-#ifndef GL_NV_pixel_buffer_object
-#define GL_NV_pixel_buffer_object 1
-#define GL_PIXEL_PACK_BUFFER_NV           0x88EB
-#define GL_PIXEL_UNPACK_BUFFER_NV         0x88EC
-#define GL_PIXEL_PACK_BUFFER_BINDING_NV   0x88ED
-#define GL_PIXEL_UNPACK_BUFFER_BINDING_NV 0x88EF
-#endif /* GL_NV_pixel_buffer_object */
-#ifndef GL_NV_polygon_mode
-#define GL_NV_polygon_mode 1
-#define GL_POLYGON_MODE_NV                0x0B40
-#define GL_POLYGON_OFFSET_POINT_NV        0x2A01
-#define GL_POLYGON_OFFSET_LINE_NV         0x2A02
-#define GL_POINT_NV                       0x1B00
-#define GL_LINE_NV                        0x1B01
-#define GL_FILL_NV                        0x1B02
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_polygon_mode */
-#ifndef GL_NV_primitive_shading_rate
-#define GL_NV_primitive_shading_rate 1
-#define GL_SHADING_RATE_IMAGE_PER_PRIMITIVE_NV 0x95B1
-#define GL_SHADING_RATE_IMAGE_PALETTE_COUNT_NV 0x95B2
-#endif /* GL_NV_primitive_shading_rate */
-#ifndef GL_NV_read_buffer
-#define GL_NV_read_buffer 1
-#define GL_READ_BUFFER_NV                 0x0C02
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_read_buffer */
-#ifndef GL_NV_read_buffer_front
-#define GL_NV_read_buffer_front 1
-#endif /* GL_NV_read_buffer_front */
-#ifndef GL_NV_read_depth
-#define GL_NV_read_depth 1
-#endif /* GL_NV_read_depth */
-#ifndef GL_NV_read_depth_stencil
-#define GL_NV_read_depth_stencil 1
-#endif /* GL_NV_read_depth_stencil */
-#ifndef GL_NV_read_stencil
-#define GL_NV_read_stencil 1
-#endif /* GL_NV_read_stencil */
-#ifndef GL_NV_representative_fragment_test
-#define GL_NV_representative_fragment_test 1
-#define GL_REPRESENTATIVE_FRAGMENT_TEST_NV 0x937F
-#endif /* GL_NV_representative_fragment_test */
-#ifndef GL_NV_sRGB_formats
-#define GL_NV_sRGB_formats 1
-#define GL_SLUMINANCE_NV                  0x8C46
-#define GL_SLUMINANCE_ALPHA_NV            0x8C44
-#define GL_SRGB8_NV                       0x8C41
-#define GL_SLUMINANCE8_NV                 0x8C47
-#define GL_SLUMINANCE8_ALPHA8_NV          0x8C45
-#define GL_COMPRESSED_SRGB_S3TC_DXT1_NV   0x8C4C
-#define GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_NV 0x8C4D
-#define GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_NV 0x8C4E
-#define GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_NV 0x8C4F
-#define GL_ETC1_SRGB8_NV                  0x88EE
-#endif /* GL_NV_sRGB_formats */
-#ifndef GL_NV_sample_locations
-#define GL_NV_sample_locations 1
-#define GL_SAMPLE_LOCATION_SUBPIXEL_BITS_NV 0x933D
-#define GL_SAMPLE_LOCATION_PIXEL_GRID_WIDTH_NV 0x933E
-#define GL_SAMPLE_LOCATION_PIXEL_GRID_HEIGHT_NV 0x933F
-#define GL_PROGRAMMABLE_SAMPLE_LOCATION_TABLE_SIZE_NV 0x9340
-#define GL_SAMPLE_LOCATION_NV             0x8E50
-#define GL_PROGRAMMABLE_SAMPLE_LOCATION_NV 0x9341
-#define GL_FRAMEBUFFER_PROGRAMMABLE_SAMPLE_LOCATIONS_NV 0x9342
-#define GL_FRAMEBUFFER_SAMPLE_LOCATION_PIXEL_GRID_NV 0x9343
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_sample_locations */
-#ifndef GL_NV_sample_mask_override_coverage
-#define GL_NV_sample_mask_override_coverage 1
-#endif /* GL_NV_sample_mask_override_coverage */
-#ifndef GL_NV_scissor_exclusive
-#define GL_NV_scissor_exclusive 1
-#define GL_SCISSOR_TEST_EXCLUSIVE_NV      0x9555
-#define GL_SCISSOR_BOX_EXCLUSIVE_NV       0x9556
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_scissor_exclusive */
-#ifndef GL_NV_shader_atomic_fp16_vector
-#define GL_NV_shader_atomic_fp16_vector 1
-#endif /* GL_NV_shader_atomic_fp16_vector */
-#ifndef GL_NV_shader_noperspective_interpolation
-#define GL_NV_shader_noperspective_interpolation 1
-#endif /* GL_NV_shader_noperspective_interpolation */
-#ifndef GL_NV_shader_subgroup_partitioned
-#define GL_NV_shader_subgroup_partitioned 1
-#define GL_SUBGROUP_FEATURE_PARTITIONED_BIT_NV 0x00000100
-#endif /* GL_NV_shader_subgroup_partitioned */
-#ifndef GL_NV_shader_texture_footprint
-#define GL_NV_shader_texture_footprint 1
-#endif /* GL_NV_shader_texture_footprint */
-#ifndef GL_NV_shading_rate_image
-#define GL_NV_shading_rate_image 1
-#define GL_SHADING_RATE_IMAGE_NV          0x9563
-#define GL_SHADING_RATE_NO_INVOCATIONS_NV 0x9564
-#define GL_SHADING_RATE_1_INVOCATION_PER_PIXEL_NV 0x9565
-#define GL_SHADING_RATE_1_INVOCATION_PER_1X2_PIXELS_NV 0x9566
-#define GL_SHADING_RATE_1_INVOCATION_PER_2X1_PIXELS_NV 0x9567
-#define GL_SHADING_RATE_1_INVOCATION_PER_2X2_PIXELS_NV 0x9568
-#define GL_SHADING_RATE_1_INVOCATION_PER_2X4_PIXELS_NV 0x9569
-#define GL_SHADING_RATE_1_INVOCATION_PER_4X2_PIXELS_NV 0x956A
-#define GL_SHADING_RATE_1_INVOCATION_PER_4X4_PIXELS_NV 0x956B
-#define GL_SHADING_RATE_2_INVOCATIONS_PER_PIXEL_NV 0x956C
-#define GL_SHADING_RATE_4_INVOCATIONS_PER_PIXEL_NV 0x956D
-#define GL_SHADING_RATE_8_INVOCATIONS_PER_PIXEL_NV 0x956E
-#define GL_SHADING_RATE_16_INVOCATIONS_PER_PIXEL_NV 0x956F
-#define GL_SHADING_RATE_IMAGE_BINDING_NV  0x955B
-#define GL_SHADING_RATE_IMAGE_TEXEL_WIDTH_NV 0x955C
-#define GL_SHADING_RATE_IMAGE_TEXEL_HEIGHT_NV 0x955D
-#define GL_SHADING_RATE_IMAGE_PALETTE_SIZE_NV 0x955E
-#define GL_MAX_COARSE_FRAGMENT_SAMPLES_NV 0x955F
-#define GL_SHADING_RATE_SAMPLE_ORDER_DEFAULT_NV 0x95AE
-#define GL_SHADING_RATE_SAMPLE_ORDER_PIXEL_MAJOR_NV 0x95AF
-#define GL_SHADING_RATE_SAMPLE_ORDER_SAMPLE_MAJOR_NV 0x95B0
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_shading_rate_image */
-#ifndef GL_NV_shadow_samplers_array
-#define GL_NV_shadow_samplers_array 1
-#define GL_SAMPLER_2D_ARRAY_SHADOW_NV     0x8DC4
-#endif /* GL_NV_shadow_samplers_array */
-#ifndef GL_NV_shadow_samplers_cube
-#define GL_NV_shadow_samplers_cube 1
-#define GL_SAMPLER_CUBE_SHADOW_NV         0x8DC5
-#endif /* GL_NV_shadow_samplers_cube */
-#ifndef GL_NV_stereo_view_rendering
-#define GL_NV_stereo_view_rendering 1
-#endif /* GL_NV_stereo_view_rendering */
-#ifndef GL_NV_texture_border_clamp
-#define GL_NV_texture_border_clamp 1
-#define GL_TEXTURE_BORDER_COLOR_NV        0x1004
-#define GL_CLAMP_TO_BORDER_NV             0x812D
-#endif /* GL_NV_texture_border_clamp */
-#ifndef GL_NV_texture_compression_s3tc_update
-#define GL_NV_texture_compression_s3tc_update 1
-#endif /* GL_NV_texture_compression_s3tc_update */
-#ifndef GL_NV_texture_npot_2D_mipmap
-#define GL_NV_texture_npot_2D_mipmap 1
-#endif /* GL_NV_texture_npot_2D_mipmap */
-#ifndef GL_NV_timeline_semaphore
-#define GL_NV_timeline_semaphore 1
-#define GL_TIMELINE_SEMAPHORE_VALUE_NV    0x9595
-#define GL_SEMAPHORE_TYPE_NV              0x95B3
-#define GL_SEMAPHORE_TYPE_BINARY_NV       0x95B4
-#define GL_SEMAPHORE_TYPE_TIMELINE_NV     0x95B5
-#define GL_MAX_TIMELINE_SEMAPHORE_VALUE_DIFFERENCE_NV 0x95B6
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_timeline_semaphore */
-#ifndef GL_NV_viewport_array
-#define GL_NV_viewport_array 1
-#define GL_MAX_VIEWPORTS_NV               0x825B
-#define GL_VIEWPORT_SUBPIXEL_BITS_NV      0x825C
-#define GL_VIEWPORT_BOUNDS_RANGE_NV       0x825D
-#define GL_VIEWPORT_INDEX_PROVOKING_VERTEX_NV 0x825F
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_viewport_array */
-#ifndef GL_NV_viewport_array2
-#define GL_NV_viewport_array2 1
-#endif /* GL_NV_viewport_array2 */
-#ifndef GL_NV_viewport_swizzle
-#define GL_NV_viewport_swizzle 1
-#define GL_VIEWPORT_SWIZZLE_POSITIVE_X_NV 0x9350
-#define GL_VIEWPORT_SWIZZLE_NEGATIVE_X_NV 0x9351
-#define GL_VIEWPORT_SWIZZLE_POSITIVE_Y_NV 0x9352
-#define GL_VIEWPORT_SWIZZLE_NEGATIVE_Y_NV 0x9353
-#define GL_VIEWPORT_SWIZZLE_POSITIVE_Z_NV 0x9354
-#define GL_VIEWPORT_SWIZZLE_NEGATIVE_Z_NV 0x9355
-#define GL_VIEWPORT_SWIZZLE_POSITIVE_W_NV 0x9356
-#define GL_VIEWPORT_SWIZZLE_NEGATIVE_W_NV 0x9357
-#define GL_VIEWPORT_SWIZZLE_X_NV          0x9358
-#define GL_VIEWPORT_SWIZZLE_Y_NV          0x9359
-#define GL_VIEWPORT_SWIZZLE_Z_NV          0x935A
-#define GL_VIEWPORT_SWIZZLE_W_NV          0x935B
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_NV_viewport_swizzle */
-#ifndef GL_OVR_multiview
-#define GL_OVR_multiview 1
-#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_NUM_VIEWS_OVR 0x9630
-#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_BASE_VIEW_INDEX_OVR 0x9632
-#define GL_MAX_VIEWS_OVR                  0x9631
-#define GL_FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR 0x9633
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OVR_multiview */
-#ifndef GL_OVR_multiview2
-#define GL_OVR_multiview2 1
-#endif /* GL_OVR_multiview2 */
-#ifndef GL_OVR_multiview_multisampled_render_to_texture
-#define GL_OVR_multiview_multisampled_render_to_texture 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_OVR_multiview_multisampled_render_to_texture */
-#ifndef GL_QCOM_YUV_texture_gather
-#define GL_QCOM_YUV_texture_gather 1
-#endif /* GL_QCOM_YUV_texture_gather */
-#ifndef GL_QCOM_alpha_test
-#define GL_QCOM_alpha_test 1
-#define GL_ALPHA_TEST_QCOM                0x0BC0
-#define GL_ALPHA_TEST_FUNC_QCOM           0x0BC1
-#define GL_ALPHA_TEST_REF_QCOM            0x0BC2
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_QCOM_alpha_test */
-#ifndef GL_QCOM_binning_control
-#define GL_QCOM_binning_control 1
-#define GL_BINNING_CONTROL_HINT_QCOM      0x8FB0
-#define GL_CPU_OPTIMIZED_QCOM             0x8FB1
-#define GL_GPU_OPTIMIZED_QCOM             0x8FB2
-#define GL_RENDER_DIRECT_TO_FRAMEBUFFER_QCOM 0x8FB3
-#endif /* GL_QCOM_binning_control */
-#ifndef GL_QCOM_driver_control
-#define GL_QCOM_driver_control 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_QCOM_driver_control */
-#ifndef GL_QCOM_extended_get
-#define GL_QCOM_extended_get 1
-#define GL_TEXTURE_WIDTH_QCOM             0x8BD2
-#define GL_TEXTURE_HEIGHT_QCOM            0x8BD3
-#define GL_TEXTURE_DEPTH_QCOM             0x8BD4
-#define GL_TEXTURE_INTERNAL_FORMAT_QCOM   0x8BD5
-#define GL_TEXTURE_FORMAT_QCOM            0x8BD6
-#define GL_TEXTURE_TYPE_QCOM              0x8BD7
-#define GL_TEXTURE_IMAGE_VALID_QCOM       0x8BD8
-#define GL_TEXTURE_NUM_LEVELS_QCOM        0x8BD9
-#define GL_TEXTURE_TARGET_QCOM            0x8BDA
-#define GL_TEXTURE_OBJECT_VALID_QCOM      0x8BDB
-#define GL_STATE_RESTORE                  0x8BDC
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_QCOM_extended_get */
-#ifndef GL_QCOM_extended_get2
-#define GL_QCOM_extended_get2 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_QCOM_extended_get2 */
-#ifndef GL_QCOM_frame_extrapolation
-#define GL_QCOM_frame_extrapolation 1
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_QCOM_frame_extrapolation */
-#ifndef GL_QCOM_framebuffer_foveated
-#define GL_QCOM_framebuffer_foveated 1
-#define GL_FOVEATION_ENABLE_BIT_QCOM      0x00000001
-#define GL_FOVEATION_SCALED_BIN_METHOD_BIT_QCOM 0x00000002
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_QCOM_framebuffer_foveated */
-#ifndef GL_QCOM_motion_estimation
-#define GL_QCOM_motion_estimation 1
-#define GL_MOTION_ESTIMATION_SEARCH_BLOCK_X_QCOM 0x8C90
-#define GL_MOTION_ESTIMATION_SEARCH_BLOCK_Y_QCOM 0x8C91
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_QCOM_motion_estimation */
-#ifndef GL_QCOM_perfmon_global_mode
-#define GL_QCOM_perfmon_global_mode 1
-#define GL_PERFMON_GLOBAL_MODE_QCOM       0x8FA0
-#endif /* GL_QCOM_perfmon_global_mode */
-#ifndef GL_QCOM_render_shared_exponent
-#define GL_QCOM_render_shared_exponent 1
-#endif /* GL_QCOM_render_shared_exponent */
-#ifndef GL_QCOM_shader_framebuffer_fetch_noncoherent
-#define GL_QCOM_shader_framebuffer_fetch_noncoherent 1
-#define GL_FRAMEBUFFER_FETCH_NONCOHERENT_QCOM 0x96A2
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_QCOM_shader_framebuffer_fetch_noncoherent */
-#ifndef GL_QCOM_shader_framebuffer_fetch_rate
-#define GL_QCOM_shader_framebuffer_fetch_rate 1
-#endif /* GL_QCOM_shader_framebuffer_fetch_rate */
-#ifndef GL_QCOM_shading_rate
-#define GL_QCOM_shading_rate 1
-#define GL_SHADING_RATE_QCOM              0x96A4
-#define GL_SHADING_RATE_PRESERVE_ASPECT_RATIO_QCOM 0x96A5
-#define GL_SHADING_RATE_1X1_PIXELS_QCOM   0x96A6
-#define GL_SHADING_RATE_1X2_PIXELS_QCOM   0x96A7
-#define GL_SHADING_RATE_2X1_PIXELS_QCOM   0x96A8
-#define GL_SHADING_RATE_2X2_PIXELS_QCOM   0x96A9
-#define GL_SHADING_RATE_4X2_PIXELS_QCOM   0x96AC
-#define GL_SHADING_RATE_4X4_PIXELS_QCOM   0x96AE
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_QCOM_shading_rate */
-#ifndef GL_QCOM_texture_foveated
-#define GL_QCOM_texture_foveated 1
-#define GL_TEXTURE_FOVEATED_FEATURE_BITS_QCOM 0x8BFB
-#define GL_TEXTURE_FOVEATED_MIN_PIXEL_DENSITY_QCOM 0x8BFC
-#define GL_TEXTURE_FOVEATED_FEATURE_QUERY_QCOM 0x8BFD
-#define GL_TEXTURE_FOVEATED_NUM_FOCAL_POINTS_QUERY_QCOM 0x8BFE
-#define GL_FRAMEBUFFER_INCOMPLETE_FOVEATION_QCOM 0x8BFF
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_QCOM_texture_foveated */
-#ifndef GL_QCOM_texture_foveated2
-#define GL_QCOM_texture_foveated2 1
-#define GL_TEXTURE_FOVEATED_CUTOFF_DENSITY_QCOM 0x96A0
-#endif /* GL_QCOM_texture_foveated2 */
-#ifndef GL_QCOM_texture_foveated_subsampled_layout
-#define GL_QCOM_texture_foveated_subsampled_layout 1
-#define GL_FOVEATION_SUBSAMPLED_LAYOUT_METHOD_BIT_QCOM 0x00000004
-#define GL_MAX_SHADER_SUBSAMPLED_IMAGE_UNITS_QCOM 0x8FA1
-#endif /* GL_QCOM_texture_foveated_subsampled_layout */
-#ifndef GL_QCOM_tiled_rendering
-#define GL_QCOM_tiled_rendering 1
-#define GL_COLOR_BUFFER_BIT0_QCOM         0x00000001
-#define GL_COLOR_BUFFER_BIT1_QCOM         0x00000002
-#define GL_COLOR_BUFFER_BIT2_QCOM         0x00000004
-#define GL_COLOR_BUFFER_BIT3_QCOM         0x00000008
-#define GL_COLOR_BUFFER_BIT4_QCOM         0x00000010
-#define GL_COLOR_BUFFER_BIT5_QCOM         0x00000020
-#define GL_COLOR_BUFFER_BIT6_QCOM         0x00000040
-#define GL_COLOR_BUFFER_BIT7_QCOM         0x00000080
-#define GL_DEPTH_BUFFER_BIT0_QCOM         0x00000100
-#define GL_DEPTH_BUFFER_BIT1_QCOM         0x00000200
-#define GL_DEPTH_BUFFER_BIT2_QCOM         0x00000400
-#define GL_DEPTH_BUFFER_BIT3_QCOM         0x00000800
-#define GL_DEPTH_BUFFER_BIT4_QCOM         0x00001000
-#define GL_DEPTH_BUFFER_BIT5_QCOM         0x00002000
-#define GL_DEPTH_BUFFER_BIT6_QCOM         0x00004000
-#define GL_DEPTH_BUFFER_BIT7_QCOM         0x00008000
-#define GL_STENCIL_BUFFER_BIT0_QCOM       0x00010000
-#define GL_STENCIL_BUFFER_BIT1_QCOM       0x00020000
-#define GL_STENCIL_BUFFER_BIT2_QCOM       0x00040000
-#define GL_STENCIL_BUFFER_BIT3_QCOM       0x00080000
-#define GL_STENCIL_BUFFER_BIT4_QCOM       0x00100000
-#define GL_STENCIL_BUFFER_BIT5_QCOM       0x00200000
-#define GL_STENCIL_BUFFER_BIT6_QCOM       0x00400000
-#define GL_STENCIL_BUFFER_BIT7_QCOM       0x00800000
-#define GL_MULTISAMPLE_BUFFER_BIT0_QCOM   0x01000000
-#define GL_MULTISAMPLE_BUFFER_BIT1_QCOM   0x02000000
-#define GL_MULTISAMPLE_BUFFER_BIT2_QCOM   0x04000000
-#define GL_MULTISAMPLE_BUFFER_BIT3_QCOM   0x08000000
-#define GL_MULTISAMPLE_BUFFER_BIT4_QCOM   0x10000000
-#define GL_MULTISAMPLE_BUFFER_BIT5_QCOM   0x20000000
-#define GL_MULTISAMPLE_BUFFER_BIT6_QCOM   0x40000000
-#define GL_MULTISAMPLE_BUFFER_BIT7_QCOM   0x80000000
-#ifdef GL_GLEXT_PROTOTYPES
-#endif
-#endif /* GL_QCOM_tiled_rendering */
-#ifndef GL_QCOM_writeonly_rendering
-#define GL_QCOM_writeonly_rendering 1
-#define GL_WRITEONLY_RENDERING_QCOM       0x8823
-#endif /* GL_QCOM_writeonly_rendering */
-#ifndef GL_VIV_shader_binary
-#define GL_VIV_shader_binary 1
-#define GL_SHADER_BINARY_VIV              0x8FC4
-#endif /* GL_VIV_shader_binary */
-#ifdef __cplusplus
-#endif
-#endif
-// The script will miss this particular typedef thinking it's a PFN,
-// so we have to paste it in manually. It's the only such type in OpenGL.
-typedef void (APIENTRY *GLDEBUGPROC)
-	(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const void *userParam);
 
 class OpenGLProcedures {
 private:
+	// ./glcorearb.h
+	typedef void GLvoid;
+	typedef unsigned int GLenum;
+	typedef khronos_float_t GLfloat;
+	typedef int GLint;
+	typedef int GLsizei;
+	typedef unsigned int GLbitfield;
+	typedef double GLdouble;
+	typedef unsigned int GLuint;
+	typedef unsigned char GLboolean;
+	typedef khronos_uint8_t GLubyte;
+	typedef khronos_float_t GLclampf;
+	typedef double GLclampd;
+	typedef khronos_ssize_t GLsizeiptr;
+	typedef khronos_intptr_t GLintptr;
+	typedef char GLchar;
+	typedef khronos_int16_t GLshort;
+	typedef khronos_int8_t GLbyte;
+	typedef khronos_uint16_t GLushort;
+	typedef khronos_uint16_t GLhalf;
+	typedef struct __GLsync *GLsync;
+	typedef khronos_uint64_t GLuint64;
+	typedef khronos_int64_t GLint64;
+	typedef khronos_uint64_t GLuint64EXT;
+	typedef void *GLeglImageOES;
+	typedef khronos_int64_t GLint64EXT;
+
+	typedef void *GLeglClientBufferEXT;
+	// The script will miss this particular typedef thinking it's a PFN,
+	// so we have to paste it in manually. It's the only such type in OpenGL.
+	typedef void (APIENTRY *GLDEBUGPROC)
+		(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const void *userParam);
+
 	typedef void (APIENTRYP PFNGLCULLFACEPROC_MT) (GLenum mode);
 	typedef void (APIENTRYP PFNGLFRONTFACEPROC_MT) (GLenum mode);
 	typedef void (APIENTRYP PFNGLHINTPROC_MT) (GLenum target, GLenum mode);
@@ -6412,6 +785,7 @@ public:
 	{
 		return extensions.find(ext) != extensions.end();
 	}
+
 	PFNGLCULLFACEPROC_MT CullFace = NULL;
 	PFNGLFRONTFACEPROC_MT FrontFace = NULL;
 	PFNGLHINTPROC_MT Hint = NULL;
@@ -7133,18 +1507,2033 @@ public:
 	PFNGLNAMEDBUFFERPAGECOMMITMENTPROC_MT NamedBufferPageCommitment = NULL;
 	PFNGLTEXPAGECOMMITMENTPROC_MT TexPageCommitment = NULL;
 
+	const GLenum DEPTH_BUFFER_BIT = 0x00000100;
+	const GLenum STENCIL_BUFFER_BIT = 0x00000400;
+	const GLenum COLOR_BUFFER_BIT = 0x00004000;
+	const GLenum POINTS = 0x0000;
+	const GLenum LINES = 0x0001;
+	const GLenum LINE_LOOP = 0x0002;
+	const GLenum LINE_STRIP = 0x0003;
+	const GLenum TRIANGLES = 0x0004;
+	const GLenum TRIANGLE_STRIP = 0x0005;
+	const GLenum TRIANGLE_FAN = 0x0006;
+	const GLenum QUADS = 0x0007;
+	const GLenum NEVER = 0x0200;
+	const GLenum LESS = 0x0201;
+	const GLenum EQUAL = 0x0202;
+	const GLenum LEQUAL = 0x0203;
+	const GLenum GREATER = 0x0204;
+	const GLenum NOTEQUAL = 0x0205;
+	const GLenum GEQUAL = 0x0206;
+	const GLenum ALWAYS = 0x0207;
+	const GLenum SRC_COLOR = 0x0300;
+	const GLenum ONE_MINUS_SRC_COLOR = 0x0301;
+	const GLenum SRC_ALPHA = 0x0302;
+	const GLenum ONE_MINUS_SRC_ALPHA = 0x0303;
+	const GLenum DST_ALPHA = 0x0304;
+	const GLenum ONE_MINUS_DST_ALPHA = 0x0305;
+	const GLenum DST_COLOR = 0x0306;
+	const GLenum ONE_MINUS_DST_COLOR = 0x0307;
+	const GLenum SRC_ALPHA_SATURATE = 0x0308;
+	const GLenum FRONT_LEFT = 0x0400;
+	const GLenum FRONT_RIGHT = 0x0401;
+	const GLenum BACK_LEFT = 0x0402;
+	const GLenum BACK_RIGHT = 0x0403;
+	const GLenum FRONT = 0x0404;
+	const GLenum BACK = 0x0405;
+	const GLenum LEFT = 0x0406;
+	const GLenum RIGHT = 0x0407;
+	const GLenum FRONT_AND_BACK = 0x0408;
+	const GLenum INVALID_ENUM = 0x0500;
+	const GLenum INVALID_VALUE = 0x0501;
+	const GLenum INVALID_OPERATION = 0x0502;
+	const GLenum OUT_OF_MEMORY = 0x0505;
+	const GLenum CW = 0x0900;
+	const GLenum CCW = 0x0901;
+	const GLenum POINT_SIZE = 0x0B11;
+	const GLenum POINT_SIZE_RANGE = 0x0B12;
+	const GLenum POINT_SIZE_GRANULARITY = 0x0B13;
+	const GLenum LINE_SMOOTH = 0x0B20;
+	const GLenum LINE_WIDTH = 0x0B21;
+	const GLenum LINE_WIDTH_RANGE = 0x0B22;
+	const GLenum LINE_WIDTH_GRANULARITY = 0x0B23;
+	const GLenum POLYGON_MODE = 0x0B40;
+	const GLenum POLYGON_SMOOTH = 0x0B41;
+	const GLenum CULL_FACE = 0x0B44;
+	const GLenum CULL_FACE_MODE = 0x0B45;
+	const GLenum FRONT_FACE = 0x0B46;
+	const GLenum DEPTH_RANGE = 0x0B70;
+	const GLenum DEPTH_TEST = 0x0B71;
+	const GLenum DEPTH_WRITEMASK = 0x0B72;
+	const GLenum DEPTH_CLEAR_VALUE = 0x0B73;
+	const GLenum DEPTH_FUNC = 0x0B74;
+	const GLenum STENCIL_TEST = 0x0B90;
+	const GLenum STENCIL_CLEAR_VALUE = 0x0B91;
+	const GLenum STENCIL_FUNC = 0x0B92;
+	const GLenum STENCIL_VALUE_MASK = 0x0B93;
+	const GLenum STENCIL_FAIL = 0x0B94;
+	const GLenum STENCIL_PASS_DEPTH_FAIL = 0x0B95;
+	const GLenum STENCIL_PASS_DEPTH_PASS = 0x0B96;
+	const GLenum STENCIL_REF = 0x0B97;
+	const GLenum STENCIL_WRITEMASK = 0x0B98;
+	const GLenum VIEWPORT = 0x0BA2;
+	const GLenum DITHER = 0x0BD0;
+	const GLenum BLEND_DST = 0x0BE0;
+	const GLenum BLEND_SRC = 0x0BE1;
+	const GLenum BLEND = 0x0BE2;
+	const GLenum LOGIC_OP_MODE = 0x0BF0;
+	const GLenum DRAW_BUFFER = 0x0C01;
+	const GLenum READ_BUFFER = 0x0C02;
+	const GLenum SCISSOR_BOX = 0x0C10;
+	const GLenum SCISSOR_TEST = 0x0C11;
+	const GLenum COLOR_CLEAR_VALUE = 0x0C22;
+	const GLenum COLOR_WRITEMASK = 0x0C23;
+	const GLenum DOUBLEBUFFER = 0x0C32;
+	const GLenum STEREO = 0x0C33;
+	const GLenum LINE_SMOOTH_HINT = 0x0C52;
+	const GLenum POLYGON_SMOOTH_HINT = 0x0C53;
+	const GLenum UNPACK_SWAP_BYTES = 0x0CF0;
+	const GLenum UNPACK_LSB_FIRST = 0x0CF1;
+	const GLenum UNPACK_ROW_LENGTH = 0x0CF2;
+	const GLenum UNPACK_SKIP_ROWS = 0x0CF3;
+	const GLenum UNPACK_SKIP_PIXELS = 0x0CF4;
+	const GLenum UNPACK_ALIGNMENT = 0x0CF5;
+	const GLenum PACK_SWAP_BYTES = 0x0D00;
+	const GLenum PACK_LSB_FIRST = 0x0D01;
+	const GLenum PACK_ROW_LENGTH = 0x0D02;
+	const GLenum PACK_SKIP_ROWS = 0x0D03;
+	const GLenum PACK_SKIP_PIXELS = 0x0D04;
+	const GLenum PACK_ALIGNMENT = 0x0D05;
+	const GLenum MAX_TEXTURE_SIZE = 0x0D33;
+	const GLenum MAX_VIEWPORT_DIMS = 0x0D3A;
+	const GLenum SUBPIXEL_BITS = 0x0D50;
+	const GLenum TEXTURE_1D = 0x0DE0;
+	const GLenum TEXTURE_2D = 0x0DE1;
+	const GLenum TEXTURE_WIDTH = 0x1000;
+	const GLenum TEXTURE_HEIGHT = 0x1001;
+	const GLenum TEXTURE_BORDER_COLOR = 0x1004;
+	const GLenum DONT_CARE = 0x1100;
+	const GLenum FASTEST = 0x1101;
+	const GLenum NICEST = 0x1102;
+	const GLenum BYTE = 0x1400;
+	const GLenum UNSIGNED_BYTE = 0x1401;
+	const GLenum SHORT = 0x1402;
+	const GLenum UNSIGNED_SHORT = 0x1403;
+	const GLenum INT = 0x1404;
+	const GLenum UNSIGNED_INT = 0x1405;
+	const GLenum FLOAT = 0x1406;
+	const GLenum STACK_OVERFLOW = 0x0503;
+	const GLenum STACK_UNDERFLOW = 0x0504;
+	const GLenum CLEAR = 0x1500;
+	const GLenum AND = 0x1501;
+	const GLenum AND_REVERSE = 0x1502;
+	const GLenum COPY = 0x1503;
+	const GLenum AND_INVERTED = 0x1504;
+	const GLenum NOOP = 0x1505;
+	const GLenum XOR = 0x1506;
+	const GLenum OR = 0x1507;
+	const GLenum NOR = 0x1508;
+	const GLenum EQUIV = 0x1509;
+	const GLenum INVERT = 0x150A;
+	const GLenum OR_REVERSE = 0x150B;
+	const GLenum COPY_INVERTED = 0x150C;
+	const GLenum OR_INVERTED = 0x150D;
+	const GLenum NAND = 0x150E;
+	const GLenum SET = 0x150F;
+	const GLenum TEXTURE = 0x1702;
+	const GLenum COLOR = 0x1800;
+	const GLenum DEPTH = 0x1801;
+	const GLenum STENCIL = 0x1802;
+	const GLenum STENCIL_INDEX = 0x1901;
+	const GLenum DEPTH_COMPONENT = 0x1902;
+	const GLenum RED = 0x1903;
+	const GLenum GREEN = 0x1904;
+	const GLenum BLUE = 0x1905;
+	const GLenum ALPHA = 0x1906;
+	const GLenum RGB = 0x1907;
+	const GLenum RGBA = 0x1908;
+	const GLenum POINT = 0x1B00;
+	const GLenum LINE = 0x1B01;
+	const GLenum FILL = 0x1B02;
+	const GLenum KEEP = 0x1E00;
+	const GLenum REPLACE = 0x1E01;
+	const GLenum INCR = 0x1E02;
+	const GLenum DECR = 0x1E03;
+	const GLenum VENDOR = 0x1F00;
+	const GLenum RENDERER = 0x1F01;
+	const GLenum VERSION = 0x1F02;
+	const GLenum EXTENSIONS = 0x1F03;
+	const GLenum NEAREST = 0x2600;
+	const GLenum LINEAR = 0x2601;
+	const GLenum NEAREST_MIPMAP_NEAREST = 0x2700;
+	const GLenum LINEAR_MIPMAP_NEAREST = 0x2701;
+	const GLenum NEAREST_MIPMAP_LINEAR = 0x2702;
+	const GLenum LINEAR_MIPMAP_LINEAR = 0x2703;
+	const GLenum TEXTURE_MAG_FILTER = 0x2800;
+	const GLenum TEXTURE_MIN_FILTER = 0x2801;
+	const GLenum TEXTURE_WRAP_S = 0x2802;
+	const GLenum TEXTURE_WRAP_T = 0x2803;
+	const GLenum REPEAT = 0x2901;
+	const GLenum COLOR_LOGIC_OP = 0x0BF2;
+	const GLenum POLYGON_OFFSET_UNITS = 0x2A00;
+	const GLenum POLYGON_OFFSET_POINT = 0x2A01;
+	const GLenum POLYGON_OFFSET_LINE = 0x2A02;
+	const GLenum POLYGON_OFFSET_FILL = 0x8037;
+	const GLenum POLYGON_OFFSET_FACTOR = 0x8038;
+	const GLenum TEXTURE_BINDING_1D = 0x8068;
+	const GLenum TEXTURE_BINDING_2D = 0x8069;
+	const GLenum TEXTURE_INTERNAL_FORMAT = 0x1003;
+	const GLenum TEXTURE_RED_SIZE = 0x805C;
+	const GLenum TEXTURE_GREEN_SIZE = 0x805D;
+	const GLenum TEXTURE_BLUE_SIZE = 0x805E;
+	const GLenum TEXTURE_ALPHA_SIZE = 0x805F;
+	const GLenum DOUBLE = 0x140A;
+	const GLenum PROXY_TEXTURE_1D = 0x8063;
+	const GLenum PROXY_TEXTURE_2D = 0x8064;
+	const GLenum R3_G3_B2 = 0x2A10;
+	const GLenum RGB4 = 0x804F;
+	const GLenum RGB5 = 0x8050;
+	const GLenum RGB8 = 0x8051;
+	const GLenum RGB10 = 0x8052;
+	const GLenum RGB12 = 0x8053;
+	const GLenum RGB16 = 0x8054;
+	const GLenum RGBA2 = 0x8055;
+	const GLenum RGBA4 = 0x8056;
+	const GLenum RGB5_A1 = 0x8057;
+	const GLenum RGBA8 = 0x8058;
+	const GLenum RGB10_A2 = 0x8059;
+	const GLenum RGBA12 = 0x805A;
+	const GLenum RGBA16 = 0x805B;
+	const GLenum VERTEX_ARRAY = 0x8074;
+	const GLenum UNSIGNED_BYTE_3_3_2 = 0x8032;
+	const GLenum UNSIGNED_SHORT_4_4_4_4 = 0x8033;
+	const GLenum UNSIGNED_SHORT_5_5_5_1 = 0x8034;
+	const GLenum UNSIGNED_INT_8_8_8_8 = 0x8035;
+	const GLenum UNSIGNED_INT_10_10_10_2 = 0x8036;
+	const GLenum TEXTURE_BINDING_3D = 0x806A;
+	const GLenum PACK_SKIP_IMAGES = 0x806B;
+	const GLenum PACK_IMAGE_HEIGHT = 0x806C;
+	const GLenum UNPACK_SKIP_IMAGES = 0x806D;
+	const GLenum UNPACK_IMAGE_HEIGHT = 0x806E;
+	const GLenum TEXTURE_3D = 0x806F;
+	const GLenum PROXY_TEXTURE_3D = 0x8070;
+	const GLenum TEXTURE_DEPTH = 0x8071;
+	const GLenum TEXTURE_WRAP_R = 0x8072;
+	const GLenum MAX_3D_TEXTURE_SIZE = 0x8073;
+	const GLenum UNSIGNED_BYTE_2_3_3_REV = 0x8362;
+	const GLenum UNSIGNED_SHORT_5_6_5 = 0x8363;
+	const GLenum UNSIGNED_SHORT_5_6_5_REV = 0x8364;
+	const GLenum UNSIGNED_SHORT_4_4_4_4_REV = 0x8365;
+	const GLenum UNSIGNED_SHORT_1_5_5_5_REV = 0x8366;
+	const GLenum UNSIGNED_INT_8_8_8_8_REV = 0x8367;
+	const GLenum UNSIGNED_INT_2_10_10_10_REV = 0x8368;
+	const GLenum BGR = 0x80E0;
+	const GLenum BGRA = 0x80E1;
+	const GLenum MAX_ELEMENTS_VERTICES = 0x80E8;
+	const GLenum MAX_ELEMENTS_INDICES = 0x80E9;
+	const GLenum CLAMP_TO_EDGE = 0x812F;
+	const GLenum TEXTURE_MIN_LOD = 0x813A;
+	const GLenum TEXTURE_MAX_LOD = 0x813B;
+	const GLenum TEXTURE_BASE_LEVEL = 0x813C;
+	const GLenum TEXTURE_MAX_LEVEL = 0x813D;
+	const GLenum SMOOTH_POINT_SIZE_RANGE = 0x0B12;
+	const GLenum SMOOTH_POINT_SIZE_GRANULARITY = 0x0B13;
+	const GLenum SMOOTH_LINE_WIDTH_RANGE = 0x0B22;
+	const GLenum SMOOTH_LINE_WIDTH_GRANULARITY = 0x0B23;
+	const GLenum ALIASED_LINE_WIDTH_RANGE = 0x846E;
+	const GLenum TEXTURE0 = 0x84C0;
+	const GLenum TEXTURE1 = 0x84C1;
+	const GLenum TEXTURE2 = 0x84C2;
+	const GLenum TEXTURE3 = 0x84C3;
+	const GLenum TEXTURE4 = 0x84C4;
+	const GLenum TEXTURE5 = 0x84C5;
+	const GLenum TEXTURE6 = 0x84C6;
+	const GLenum TEXTURE7 = 0x84C7;
+	const GLenum TEXTURE8 = 0x84C8;
+	const GLenum TEXTURE9 = 0x84C9;
+	const GLenum TEXTURE10 = 0x84CA;
+	const GLenum TEXTURE11 = 0x84CB;
+	const GLenum TEXTURE12 = 0x84CC;
+	const GLenum TEXTURE13 = 0x84CD;
+	const GLenum TEXTURE14 = 0x84CE;
+	const GLenum TEXTURE15 = 0x84CF;
+	const GLenum TEXTURE16 = 0x84D0;
+	const GLenum TEXTURE17 = 0x84D1;
+	const GLenum TEXTURE18 = 0x84D2;
+	const GLenum TEXTURE19 = 0x84D3;
+	const GLenum TEXTURE20 = 0x84D4;
+	const GLenum TEXTURE21 = 0x84D5;
+	const GLenum TEXTURE22 = 0x84D6;
+	const GLenum TEXTURE23 = 0x84D7;
+	const GLenum TEXTURE24 = 0x84D8;
+	const GLenum TEXTURE25 = 0x84D9;
+	const GLenum TEXTURE26 = 0x84DA;
+	const GLenum TEXTURE27 = 0x84DB;
+	const GLenum TEXTURE28 = 0x84DC;
+	const GLenum TEXTURE29 = 0x84DD;
+	const GLenum TEXTURE30 = 0x84DE;
+	const GLenum TEXTURE31 = 0x84DF;
+	const GLenum ACTIVE_TEXTURE = 0x84E0;
+	const GLenum MULTISAMPLE = 0x809D;
+	const GLenum SAMPLE_ALPHA_TO_COVERAGE = 0x809E;
+	const GLenum SAMPLE_ALPHA_TO_ONE = 0x809F;
+	const GLenum SAMPLE_COVERAGE = 0x80A0;
+	const GLenum SAMPLE_BUFFERS = 0x80A8;
+	const GLenum SAMPLES = 0x80A9;
+	const GLenum SAMPLE_COVERAGE_VALUE = 0x80AA;
+	const GLenum SAMPLE_COVERAGE_INVERT = 0x80AB;
+	const GLenum TEXTURE_CUBE_MAP = 0x8513;
+	const GLenum TEXTURE_BINDING_CUBE_MAP = 0x8514;
+	const GLenum TEXTURE_CUBE_MAP_POSITIVE_X = 0x8515;
+	const GLenum TEXTURE_CUBE_MAP_NEGATIVE_X = 0x8516;
+	const GLenum TEXTURE_CUBE_MAP_POSITIVE_Y = 0x8517;
+	const GLenum TEXTURE_CUBE_MAP_NEGATIVE_Y = 0x8518;
+	const GLenum TEXTURE_CUBE_MAP_POSITIVE_Z = 0x8519;
+	const GLenum TEXTURE_CUBE_MAP_NEGATIVE_Z = 0x851A;
+	const GLenum PROXY_TEXTURE_CUBE_MAP = 0x851B;
+	const GLenum MAX_CUBE_MAP_TEXTURE_SIZE = 0x851C;
+	const GLenum COMPRESSED_RGB = 0x84ED;
+	const GLenum COMPRESSED_RGBA = 0x84EE;
+	const GLenum TEXTURE_COMPRESSION_HINT = 0x84EF;
+	const GLenum TEXTURE_COMPRESSED_IMAGE_SIZE = 0x86A0;
+	const GLenum TEXTURE_COMPRESSED = 0x86A1;
+	const GLenum NUM_COMPRESSED_TEXTURE_FORMATS = 0x86A2;
+	const GLenum COMPRESSED_TEXTURE_FORMATS = 0x86A3;
+	const GLenum CLAMP_TO_BORDER = 0x812D;
+	const GLenum BLEND_DST_RGB = 0x80C8;
+	const GLenum BLEND_SRC_RGB = 0x80C9;
+	const GLenum BLEND_DST_ALPHA = 0x80CA;
+	const GLenum BLEND_SRC_ALPHA = 0x80CB;
+	const GLenum POINT_FADE_THRESHOLD_SIZE = 0x8128;
+	const GLenum DEPTH_COMPONENT16 = 0x81A5;
+	const GLenum DEPTH_COMPONENT24 = 0x81A6;
+	const GLenum DEPTH_COMPONENT32 = 0x81A7;
+	const GLenum MIRRORED_REPEAT = 0x8370;
+	const GLenum MAX_TEXTURE_LOD_BIAS = 0x84FD;
+	const GLenum TEXTURE_LOD_BIAS = 0x8501;
+	const GLenum INCR_WRAP = 0x8507;
+	const GLenum DECR_WRAP = 0x8508;
+	const GLenum TEXTURE_DEPTH_SIZE = 0x884A;
+	const GLenum TEXTURE_COMPARE_MODE = 0x884C;
+	const GLenum TEXTURE_COMPARE_FUNC = 0x884D;
+	const GLenum BLEND_COLOR = 0x8005;
+	const GLenum BLEND_EQUATION = 0x8009;
+	const GLenum CONSTANT_COLOR = 0x8001;
+	const GLenum ONE_MINUS_CONSTANT_COLOR = 0x8002;
+	const GLenum CONSTANT_ALPHA = 0x8003;
+	const GLenum ONE_MINUS_CONSTANT_ALPHA = 0x8004;
+	const GLenum FUNC_ADD = 0x8006;
+	const GLenum FUNC_REVERSE_SUBTRACT = 0x800B;
+	const GLenum FUNC_SUBTRACT = 0x800A;
+	const GLenum MIN = 0x8007;
+	const GLenum MAX = 0x8008;
+	const GLenum BUFFER_SIZE = 0x8764;
+	const GLenum BUFFER_USAGE = 0x8765;
+	const GLenum QUERY_COUNTER_BITS = 0x8864;
+	const GLenum CURRENT_QUERY = 0x8865;
+	const GLenum QUERY_RESULT = 0x8866;
+	const GLenum QUERY_RESULT_AVAILABLE = 0x8867;
+	const GLenum ARRAY_BUFFER = 0x8892;
+	const GLenum ELEMENT_ARRAY_BUFFER = 0x8893;
+	const GLenum ARRAY_BUFFER_BINDING = 0x8894;
+	const GLenum ELEMENT_ARRAY_BUFFER_BINDING = 0x8895;
+	const GLenum VERTEX_ATTRIB_ARRAY_BUFFER_BINDING = 0x889F;
+	const GLenum READ_ONLY = 0x88B8;
+	const GLenum WRITE_ONLY = 0x88B9;
+	const GLenum READ_WRITE = 0x88BA;
+	const GLenum BUFFER_ACCESS = 0x88BB;
+	const GLenum BUFFER_MAPPED = 0x88BC;
+	const GLenum BUFFER_MAP_POINTER = 0x88BD;
+	const GLenum STREAM_DRAW = 0x88E0;
+	const GLenum STREAM_READ = 0x88E1;
+	const GLenum STREAM_COPY = 0x88E2;
+	const GLenum STATIC_DRAW = 0x88E4;
+	const GLenum STATIC_READ = 0x88E5;
+	const GLenum STATIC_COPY = 0x88E6;
+	const GLenum DYNAMIC_DRAW = 0x88E8;
+	const GLenum DYNAMIC_READ = 0x88E9;
+	const GLenum DYNAMIC_COPY = 0x88EA;
+	const GLenum SAMPLES_PASSED = 0x8914;
+	const GLenum SRC1_ALPHA = 0x8589;
+	const GLenum BLEND_EQUATION_RGB = 0x8009;
+	const GLenum VERTEX_ATTRIB_ARRAY_ENABLED = 0x8622;
+	const GLenum VERTEX_ATTRIB_ARRAY_SIZE = 0x8623;
+	const GLenum VERTEX_ATTRIB_ARRAY_STRIDE = 0x8624;
+	const GLenum VERTEX_ATTRIB_ARRAY_TYPE = 0x8625;
+	const GLenum CURRENT_VERTEX_ATTRIB = 0x8626;
+	const GLenum VERTEX_PROGRAM_POINT_SIZE = 0x8642;
+	const GLenum VERTEX_ATTRIB_ARRAY_POINTER = 0x8645;
+	const GLenum STENCIL_BACK_FUNC = 0x8800;
+	const GLenum STENCIL_BACK_FAIL = 0x8801;
+	const GLenum STENCIL_BACK_PASS_DEPTH_FAIL = 0x8802;
+	const GLenum STENCIL_BACK_PASS_DEPTH_PASS = 0x8803;
+	const GLenum MAX_DRAW_BUFFERS = 0x8824;
+	const GLenum DRAW_BUFFER0 = 0x8825;
+	const GLenum DRAW_BUFFER1 = 0x8826;
+	const GLenum DRAW_BUFFER2 = 0x8827;
+	const GLenum DRAW_BUFFER3 = 0x8828;
+	const GLenum DRAW_BUFFER4 = 0x8829;
+	const GLenum DRAW_BUFFER5 = 0x882A;
+	const GLenum DRAW_BUFFER6 = 0x882B;
+	const GLenum DRAW_BUFFER7 = 0x882C;
+	const GLenum DRAW_BUFFER8 = 0x882D;
+	const GLenum DRAW_BUFFER9 = 0x882E;
+	const GLenum DRAW_BUFFER10 = 0x882F;
+	const GLenum DRAW_BUFFER11 = 0x8830;
+	const GLenum DRAW_BUFFER12 = 0x8831;
+	const GLenum DRAW_BUFFER13 = 0x8832;
+	const GLenum DRAW_BUFFER14 = 0x8833;
+	const GLenum DRAW_BUFFER15 = 0x8834;
+	const GLenum BLEND_EQUATION_ALPHA = 0x883D;
+	const GLenum MAX_VERTEX_ATTRIBS = 0x8869;
+	const GLenum VERTEX_ATTRIB_ARRAY_NORMALIZED = 0x886A;
+	const GLenum MAX_TEXTURE_IMAGE_UNITS = 0x8872;
+	const GLenum FRAGMENT_SHADER = 0x8B30;
+	const GLenum VERTEX_SHADER = 0x8B31;
+	const GLenum MAX_FRAGMENT_UNIFORM_COMPONENTS = 0x8B49;
+	const GLenum MAX_VERTEX_UNIFORM_COMPONENTS = 0x8B4A;
+	const GLenum MAX_VARYING_FLOATS = 0x8B4B;
+	const GLenum MAX_VERTEX_TEXTURE_IMAGE_UNITS = 0x8B4C;
+	const GLenum MAX_COMBINED_TEXTURE_IMAGE_UNITS = 0x8B4D;
+	const GLenum SHADER_TYPE = 0x8B4F;
+	const GLenum FLOAT_VEC2 = 0x8B50;
+	const GLenum FLOAT_VEC3 = 0x8B51;
+	const GLenum FLOAT_VEC4 = 0x8B52;
+	const GLenum INT_VEC2 = 0x8B53;
+	const GLenum INT_VEC3 = 0x8B54;
+	const GLenum INT_VEC4 = 0x8B55;
+	const GLenum BOOL = 0x8B56;
+	const GLenum BOOL_VEC2 = 0x8B57;
+	const GLenum BOOL_VEC3 = 0x8B58;
+	const GLenum BOOL_VEC4 = 0x8B59;
+	const GLenum FLOAT_MAT2 = 0x8B5A;
+	const GLenum FLOAT_MAT3 = 0x8B5B;
+	const GLenum FLOAT_MAT4 = 0x8B5C;
+	const GLenum SAMPLER_1D = 0x8B5D;
+	const GLenum SAMPLER_2D = 0x8B5E;
+	const GLenum SAMPLER_3D = 0x8B5F;
+	const GLenum SAMPLER_CUBE = 0x8B60;
+	const GLenum SAMPLER_1D_SHADOW = 0x8B61;
+	const GLenum SAMPLER_2D_SHADOW = 0x8B62;
+	const GLenum DELETE_STATUS = 0x8B80;
+	const GLenum COMPILE_STATUS = 0x8B81;
+	const GLenum LINK_STATUS = 0x8B82;
+	const GLenum VALIDATE_STATUS = 0x8B83;
+	const GLenum INFO_LOG_LENGTH = 0x8B84;
+	const GLenum ATTACHED_SHADERS = 0x8B85;
+	const GLenum ACTIVE_UNIFORMS = 0x8B86;
+	const GLenum ACTIVE_UNIFORM_MAX_LENGTH = 0x8B87;
+	const GLenum SHADER_SOURCE_LENGTH = 0x8B88;
+	const GLenum ACTIVE_ATTRIBUTES = 0x8B89;
+	const GLenum ACTIVE_ATTRIBUTE_MAX_LENGTH = 0x8B8A;
+	const GLenum FRAGMENT_SHADER_DERIVATIVE_HINT = 0x8B8B;
+	const GLenum SHADING_LANGUAGE_VERSION = 0x8B8C;
+	const GLenum CURRENT_PROGRAM = 0x8B8D;
+	const GLenum POINT_SPRITE_COORD_ORIGIN = 0x8CA0;
+	const GLenum LOWER_LEFT = 0x8CA1;
+	const GLenum UPPER_LEFT = 0x8CA2;
+	const GLenum STENCIL_BACK_REF = 0x8CA3;
+	const GLenum STENCIL_BACK_VALUE_MASK = 0x8CA4;
+	const GLenum STENCIL_BACK_WRITEMASK = 0x8CA5;
+	const GLenum PIXEL_PACK_BUFFER = 0x88EB;
+	const GLenum PIXEL_UNPACK_BUFFER = 0x88EC;
+	const GLenum PIXEL_PACK_BUFFER_BINDING = 0x88ED;
+	const GLenum PIXEL_UNPACK_BUFFER_BINDING = 0x88EF;
+	const GLenum FLOAT_MAT2x3 = 0x8B65;
+	const GLenum FLOAT_MAT2x4 = 0x8B66;
+	const GLenum FLOAT_MAT3x2 = 0x8B67;
+	const GLenum FLOAT_MAT3x4 = 0x8B68;
+	const GLenum FLOAT_MAT4x2 = 0x8B69;
+	const GLenum FLOAT_MAT4x3 = 0x8B6A;
+	const GLenum SRGB = 0x8C40;
+	const GLenum SRGB8 = 0x8C41;
+	const GLenum SRGB_ALPHA = 0x8C42;
+	const GLenum SRGB8_ALPHA8 = 0x8C43;
+	const GLenum COMPRESSED_SRGB = 0x8C48;
+	const GLenum COMPRESSED_SRGB_ALPHA = 0x8C49;
+	const GLenum COMPARE_REF_TO_TEXTURE = 0x884E;
+	const GLenum CLIP_DISTANCE0 = 0x3000;
+	const GLenum CLIP_DISTANCE1 = 0x3001;
+	const GLenum CLIP_DISTANCE2 = 0x3002;
+	const GLenum CLIP_DISTANCE3 = 0x3003;
+	const GLenum CLIP_DISTANCE4 = 0x3004;
+	const GLenum CLIP_DISTANCE5 = 0x3005;
+	const GLenum CLIP_DISTANCE6 = 0x3006;
+	const GLenum CLIP_DISTANCE7 = 0x3007;
+	const GLenum MAX_CLIP_DISTANCES = 0x0D32;
+	const GLenum MAJOR_VERSION = 0x821B;
+	const GLenum MINOR_VERSION = 0x821C;
+	const GLenum NUM_EXTENSIONS = 0x821D;
+	const GLenum CONTEXT_FLAGS = 0x821E;
+	const GLenum COMPRESSED_RED = 0x8225;
+	const GLenum COMPRESSED_RG = 0x8226;
+	const GLenum CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT = 0x00000001;
+	const GLenum RGBA32F = 0x8814;
+	const GLenum RGB32F = 0x8815;
+	const GLenum RGBA16F = 0x881A;
+	const GLenum RGB16F = 0x881B;
+	const GLenum VERTEX_ATTRIB_ARRAY_INTEGER = 0x88FD;
+	const GLenum MAX_ARRAY_TEXTURE_LAYERS = 0x88FF;
+	const GLenum MIN_PROGRAM_TEXEL_OFFSET = 0x8904;
+	const GLenum MAX_PROGRAM_TEXEL_OFFSET = 0x8905;
+	const GLenum CLAMP_READ_COLOR = 0x891C;
+	const GLenum FIXED_ONLY = 0x891D;
+	const GLenum MAX_VARYING_COMPONENTS = 0x8B4B;
+	const GLenum TEXTURE_1D_ARRAY = 0x8C18;
+	const GLenum PROXY_TEXTURE_1D_ARRAY = 0x8C19;
+	const GLenum TEXTURE_2D_ARRAY = 0x8C1A;
+	const GLenum PROXY_TEXTURE_2D_ARRAY = 0x8C1B;
+	const GLenum TEXTURE_BINDING_1D_ARRAY = 0x8C1C;
+	const GLenum TEXTURE_BINDING_2D_ARRAY = 0x8C1D;
+	const GLenum R11F_G11F_B10F = 0x8C3A;
+	const GLenum UNSIGNED_INT_10F_11F_11F_REV = 0x8C3B;
+	const GLenum RGB9_E5 = 0x8C3D;
+	const GLenum UNSIGNED_INT_5_9_9_9_REV = 0x8C3E;
+	const GLenum TEXTURE_SHARED_SIZE = 0x8C3F;
+	const GLenum TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH = 0x8C76;
+	const GLenum TRANSFORM_FEEDBACK_BUFFER_MODE = 0x8C7F;
+	const GLenum MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS = 0x8C80;
+	const GLenum TRANSFORM_FEEDBACK_VARYINGS = 0x8C83;
+	const GLenum TRANSFORM_FEEDBACK_BUFFER_START = 0x8C84;
+	const GLenum TRANSFORM_FEEDBACK_BUFFER_SIZE = 0x8C85;
+	const GLenum PRIMITIVES_GENERATED = 0x8C87;
+	const GLenum TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN = 0x8C88;
+	const GLenum RASTERIZER_DISCARD = 0x8C89;
+	const GLenum MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS = 0x8C8A;
+	const GLenum MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = 0x8C8B;
+	const GLenum INTERLEAVED_ATTRIBS = 0x8C8C;
+	const GLenum SEPARATE_ATTRIBS = 0x8C8D;
+	const GLenum TRANSFORM_FEEDBACK_BUFFER = 0x8C8E;
+	const GLenum TRANSFORM_FEEDBACK_BUFFER_BINDING = 0x8C8F;
+	const GLenum RGBA32UI = 0x8D70;
+	const GLenum RGB32UI = 0x8D71;
+	const GLenum RGBA16UI = 0x8D76;
+	const GLenum RGB16UI = 0x8D77;
+	const GLenum RGBA8UI = 0x8D7C;
+	const GLenum RGB8UI = 0x8D7D;
+	const GLenum RGBA32I = 0x8D82;
+	const GLenum RGB32I = 0x8D83;
+	const GLenum RGBA16I = 0x8D88;
+	const GLenum RGB16I = 0x8D89;
+	const GLenum RGBA8I = 0x8D8E;
+	const GLenum RGB8I = 0x8D8F;
+	const GLenum RED_INTEGER = 0x8D94;
+	const GLenum GREEN_INTEGER = 0x8D95;
+	const GLenum BLUE_INTEGER = 0x8D96;
+	const GLenum RGB_INTEGER = 0x8D98;
+	const GLenum RGBA_INTEGER = 0x8D99;
+	const GLenum BGR_INTEGER = 0x8D9A;
+	const GLenum BGRA_INTEGER = 0x8D9B;
+	const GLenum SAMPLER_1D_ARRAY = 0x8DC0;
+	const GLenum SAMPLER_2D_ARRAY = 0x8DC1;
+	const GLenum SAMPLER_1D_ARRAY_SHADOW = 0x8DC3;
+	const GLenum SAMPLER_2D_ARRAY_SHADOW = 0x8DC4;
+	const GLenum SAMPLER_CUBE_SHADOW = 0x8DC5;
+	const GLenum UNSIGNED_INT_VEC2 = 0x8DC6;
+	const GLenum UNSIGNED_INT_VEC3 = 0x8DC7;
+	const GLenum UNSIGNED_INT_VEC4 = 0x8DC8;
+	const GLenum INT_SAMPLER_1D = 0x8DC9;
+	const GLenum INT_SAMPLER_2D = 0x8DCA;
+	const GLenum INT_SAMPLER_3D = 0x8DCB;
+	const GLenum INT_SAMPLER_CUBE = 0x8DCC;
+	const GLenum INT_SAMPLER_1D_ARRAY = 0x8DCE;
+	const GLenum INT_SAMPLER_2D_ARRAY = 0x8DCF;
+	const GLenum UNSIGNED_INT_SAMPLER_1D = 0x8DD1;
+	const GLenum UNSIGNED_INT_SAMPLER_2D = 0x8DD2;
+	const GLenum UNSIGNED_INT_SAMPLER_3D = 0x8DD3;
+	const GLenum UNSIGNED_INT_SAMPLER_CUBE = 0x8DD4;
+	const GLenum UNSIGNED_INT_SAMPLER_1D_ARRAY = 0x8DD6;
+	const GLenum UNSIGNED_INT_SAMPLER_2D_ARRAY = 0x8DD7;
+	const GLenum QUERY_WAIT = 0x8E13;
+	const GLenum QUERY_NO_WAIT = 0x8E14;
+	const GLenum QUERY_BY_REGION_WAIT = 0x8E15;
+	const GLenum QUERY_BY_REGION_NO_WAIT = 0x8E16;
+	const GLenum BUFFER_ACCESS_FLAGS = 0x911F;
+	const GLenum BUFFER_MAP_LENGTH = 0x9120;
+	const GLenum BUFFER_MAP_OFFSET = 0x9121;
+	const GLenum DEPTH_COMPONENT32F = 0x8CAC;
+	const GLenum DEPTH32F_STENCIL8 = 0x8CAD;
+	const GLenum FLOAT_32_UNSIGNED_INT_24_8_REV = 0x8DAD;
+	const GLenum INVALID_FRAMEBUFFER_OPERATION = 0x0506;
+	const GLenum FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING = 0x8210;
+	const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE = 0x8211;
+	const GLenum FRAMEBUFFER_ATTACHMENT_RED_SIZE = 0x8212;
+	const GLenum FRAMEBUFFER_ATTACHMENT_GREEN_SIZE = 0x8213;
+	const GLenum FRAMEBUFFER_ATTACHMENT_BLUE_SIZE = 0x8214;
+	const GLenum FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE = 0x8215;
+	const GLenum FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE = 0x8216;
+	const GLenum FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE = 0x8217;
+	const GLenum FRAMEBUFFER_DEFAULT = 0x8218;
+	const GLenum FRAMEBUFFER_UNDEFINED = 0x8219;
+	const GLenum DEPTH_STENCIL_ATTACHMENT = 0x821A;
+	const GLenum MAX_RENDERBUFFER_SIZE = 0x84E8;
+	const GLenum DEPTH_STENCIL = 0x84F9;
+	const GLenum UNSIGNED_INT_24_8 = 0x84FA;
+	const GLenum DEPTH24_STENCIL8 = 0x88F0;
+	const GLenum TEXTURE_STENCIL_SIZE = 0x88F1;
+	const GLenum TEXTURE_RED_TYPE = 0x8C10;
+	const GLenum TEXTURE_GREEN_TYPE = 0x8C11;
+	const GLenum TEXTURE_BLUE_TYPE = 0x8C12;
+	const GLenum TEXTURE_ALPHA_TYPE = 0x8C13;
+	const GLenum TEXTURE_DEPTH_TYPE = 0x8C16;
+	const GLenum UNSIGNED_NORMALIZED = 0x8C17;
+	const GLenum FRAMEBUFFER_BINDING = 0x8CA6;
+	const GLenum DRAW_FRAMEBUFFER_BINDING = 0x8CA6;
+	const GLenum RENDERBUFFER_BINDING = 0x8CA7;
+	const GLenum READ_FRAMEBUFFER = 0x8CA8;
+	const GLenum DRAW_FRAMEBUFFER = 0x8CA9;
+	const GLenum READ_FRAMEBUFFER_BINDING = 0x8CAA;
+	const GLenum RENDERBUFFER_SAMPLES = 0x8CAB;
+	const GLenum FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE = 0x8CD0;
+	const GLenum FRAMEBUFFER_ATTACHMENT_OBJECT_NAME = 0x8CD1;
+	const GLenum FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL = 0x8CD2;
+	const GLenum FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE = 0x8CD3;
+	const GLenum FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER = 0x8CD4;
+	const GLenum FRAMEBUFFER_COMPLETE = 0x8CD5;
+	const GLenum FRAMEBUFFER_INCOMPLETE_ATTACHMENT = 0x8CD6;
+	const GLenum FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT = 0x8CD7;
+	const GLenum FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER = 0x8CDB;
+	const GLenum FRAMEBUFFER_INCOMPLETE_READ_BUFFER = 0x8CDC;
+	const GLenum FRAMEBUFFER_UNSUPPORTED = 0x8CDD;
+	const GLenum MAX_COLOR_ATTACHMENTS = 0x8CDF;
+	const GLenum COLOR_ATTACHMENT0 = 0x8CE0;
+	const GLenum COLOR_ATTACHMENT1 = 0x8CE1;
+	const GLenum COLOR_ATTACHMENT2 = 0x8CE2;
+	const GLenum COLOR_ATTACHMENT3 = 0x8CE3;
+	const GLenum COLOR_ATTACHMENT4 = 0x8CE4;
+	const GLenum COLOR_ATTACHMENT5 = 0x8CE5;
+	const GLenum COLOR_ATTACHMENT6 = 0x8CE6;
+	const GLenum COLOR_ATTACHMENT7 = 0x8CE7;
+	const GLenum COLOR_ATTACHMENT8 = 0x8CE8;
+	const GLenum COLOR_ATTACHMENT9 = 0x8CE9;
+	const GLenum COLOR_ATTACHMENT10 = 0x8CEA;
+	const GLenum COLOR_ATTACHMENT11 = 0x8CEB;
+	const GLenum COLOR_ATTACHMENT12 = 0x8CEC;
+	const GLenum COLOR_ATTACHMENT13 = 0x8CED;
+	const GLenum COLOR_ATTACHMENT14 = 0x8CEE;
+	const GLenum COLOR_ATTACHMENT15 = 0x8CEF;
+	const GLenum COLOR_ATTACHMENT16 = 0x8CF0;
+	const GLenum COLOR_ATTACHMENT17 = 0x8CF1;
+	const GLenum COLOR_ATTACHMENT18 = 0x8CF2;
+	const GLenum COLOR_ATTACHMENT19 = 0x8CF3;
+	const GLenum COLOR_ATTACHMENT20 = 0x8CF4;
+	const GLenum COLOR_ATTACHMENT21 = 0x8CF5;
+	const GLenum COLOR_ATTACHMENT22 = 0x8CF6;
+	const GLenum COLOR_ATTACHMENT23 = 0x8CF7;
+	const GLenum COLOR_ATTACHMENT24 = 0x8CF8;
+	const GLenum COLOR_ATTACHMENT25 = 0x8CF9;
+	const GLenum COLOR_ATTACHMENT26 = 0x8CFA;
+	const GLenum COLOR_ATTACHMENT27 = 0x8CFB;
+	const GLenum COLOR_ATTACHMENT28 = 0x8CFC;
+	const GLenum COLOR_ATTACHMENT29 = 0x8CFD;
+	const GLenum COLOR_ATTACHMENT30 = 0x8CFE;
+	const GLenum COLOR_ATTACHMENT31 = 0x8CFF;
+	const GLenum DEPTH_ATTACHMENT = 0x8D00;
+	const GLenum STENCIL_ATTACHMENT = 0x8D20;
+	const GLenum FRAMEBUFFER = 0x8D40;
+	const GLenum RENDERBUFFER = 0x8D41;
+	const GLenum RENDERBUFFER_WIDTH = 0x8D42;
+	const GLenum RENDERBUFFER_HEIGHT = 0x8D43;
+	const GLenum RENDERBUFFER_INTERNAL_FORMAT = 0x8D44;
+	const GLenum STENCIL_INDEX1 = 0x8D46;
+	const GLenum STENCIL_INDEX4 = 0x8D47;
+	const GLenum STENCIL_INDEX8 = 0x8D48;
+	const GLenum STENCIL_INDEX16 = 0x8D49;
+	const GLenum RENDERBUFFER_RED_SIZE = 0x8D50;
+	const GLenum RENDERBUFFER_GREEN_SIZE = 0x8D51;
+	const GLenum RENDERBUFFER_BLUE_SIZE = 0x8D52;
+	const GLenum RENDERBUFFER_ALPHA_SIZE = 0x8D53;
+	const GLenum RENDERBUFFER_DEPTH_SIZE = 0x8D54;
+	const GLenum RENDERBUFFER_STENCIL_SIZE = 0x8D55;
+	const GLenum FRAMEBUFFER_INCOMPLETE_MULTISAMPLE = 0x8D56;
+	const GLenum MAX_SAMPLES = 0x8D57;
+	const GLenum FRAMEBUFFER_SRGB = 0x8DB9;
+	const GLenum HALF_FLOAT = 0x140B;
+	const GLenum MAP_READ_BIT = 0x0001;
+	const GLenum MAP_WRITE_BIT = 0x0002;
+	const GLenum MAP_INVALIDATE_RANGE_BIT = 0x0004;
+	const GLenum MAP_INVALIDATE_BUFFER_BIT = 0x0008;
+	const GLenum MAP_FLUSH_EXPLICIT_BIT = 0x0010;
+	const GLenum MAP_UNSYNCHRONIZED_BIT = 0x0020;
+	const GLenum COMPRESSED_RED_RGTC1 = 0x8DBB;
+	const GLenum COMPRESSED_SIGNED_RED_RGTC1 = 0x8DBC;
+	const GLenum COMPRESSED_RG_RGTC2 = 0x8DBD;
+	const GLenum COMPRESSED_SIGNED_RG_RGTC2 = 0x8DBE;
+	const GLenum RG = 0x8227;
+	const GLenum RG_INTEGER = 0x8228;
+	const GLenum R8 = 0x8229;
+	const GLenum R16 = 0x822A;
+	const GLenum RG8 = 0x822B;
+	const GLenum RG16 = 0x822C;
+	const GLenum R16F = 0x822D;
+	const GLenum R32F = 0x822E;
+	const GLenum RG16F = 0x822F;
+	const GLenum RG32F = 0x8230;
+	const GLenum R8I = 0x8231;
+	const GLenum R8UI = 0x8232;
+	const GLenum R16I = 0x8233;
+	const GLenum R16UI = 0x8234;
+	const GLenum R32I = 0x8235;
+	const GLenum R32UI = 0x8236;
+	const GLenum RG8I = 0x8237;
+	const GLenum RG8UI = 0x8238;
+	const GLenum RG16I = 0x8239;
+	const GLenum RG16UI = 0x823A;
+	const GLenum RG32I = 0x823B;
+	const GLenum RG32UI = 0x823C;
+	const GLenum VERTEX_ARRAY_BINDING = 0x85B5;
+	const GLenum SAMPLER_2D_RECT = 0x8B63;
+	const GLenum SAMPLER_2D_RECT_SHADOW = 0x8B64;
+	const GLenum SAMPLER_BUFFER = 0x8DC2;
+	const GLenum INT_SAMPLER_2D_RECT = 0x8DCD;
+	const GLenum INT_SAMPLER_BUFFER = 0x8DD0;
+	const GLenum UNSIGNED_INT_SAMPLER_2D_RECT = 0x8DD5;
+	const GLenum UNSIGNED_INT_SAMPLER_BUFFER = 0x8DD8;
+	const GLenum TEXTURE_BUFFER = 0x8C2A;
+	const GLenum MAX_TEXTURE_BUFFER_SIZE = 0x8C2B;
+	const GLenum TEXTURE_BINDING_BUFFER = 0x8C2C;
+	const GLenum TEXTURE_BUFFER_DATA_STORE_BINDING = 0x8C2D;
+	const GLenum MAX_RECTANGLE_TEXTURE_SIZE = 0x84F8;
+	const GLenum R8_SNORM = 0x8F94;
+	const GLenum RG8_SNORM = 0x8F95;
+	const GLenum RGB8_SNORM = 0x8F96;
+	const GLenum RGBA8_SNORM = 0x8F97;
+	const GLenum R16_SNORM = 0x8F98;
+	const GLenum RG16_SNORM = 0x8F99;
+	const GLenum RGB16_SNORM = 0x8F9A;
+	const GLenum RGBA16_SNORM = 0x8F9B;
+	const GLenum SIGNED_NORMALIZED = 0x8F9C;
+	const GLenum PRIMITIVE_RESTART = 0x8F9D;
+	const GLenum PRIMITIVE_RESTART_INDEX = 0x8F9E;
+	const GLenum COPY_READ_BUFFER = 0x8F36;
+	const GLenum COPY_WRITE_BUFFER = 0x8F37;
+	const GLenum UNIFORM_BUFFER = 0x8A11;
+	const GLenum UNIFORM_BUFFER_BINDING = 0x8A28;
+	const GLenum UNIFORM_BUFFER_START = 0x8A29;
+	const GLenum UNIFORM_BUFFER_SIZE = 0x8A2A;
+	const GLenum MAX_VERTEX_UNIFORM_BLOCKS = 0x8A2B;
+	const GLenum MAX_GEOMETRY_UNIFORM_BLOCKS = 0x8A2C;
+	const GLenum MAX_FRAGMENT_UNIFORM_BLOCKS = 0x8A2D;
+	const GLenum MAX_COMBINED_UNIFORM_BLOCKS = 0x8A2E;
+	const GLenum MAX_UNIFORM_BUFFER_BINDINGS = 0x8A2F;
+	const GLenum MAX_UNIFORM_BLOCK_SIZE = 0x8A30;
+	const GLenum MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS = 0x8A31;
+	const GLenum MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS = 0x8A32;
+	const GLenum MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS = 0x8A33;
+	const GLenum UNIFORM_BUFFER_OFFSET_ALIGNMENT = 0x8A34;
+	const GLenum ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH = 0x8A35;
+	const GLenum ACTIVE_UNIFORM_BLOCKS = 0x8A36;
+	const GLenum UNIFORM_TYPE = 0x8A37;
+	const GLenum UNIFORM_SIZE = 0x8A38;
+	const GLenum UNIFORM_NAME_LENGTH = 0x8A39;
+	const GLenum UNIFORM_BLOCK_INDEX = 0x8A3A;
+	const GLenum UNIFORM_OFFSET = 0x8A3B;
+	const GLenum UNIFORM_ARRAY_STRIDE = 0x8A3C;
+	const GLenum UNIFORM_MATRIX_STRIDE = 0x8A3D;
+	const GLenum UNIFORM_IS_ROW_MAJOR = 0x8A3E;
+	const GLenum UNIFORM_BLOCK_BINDING = 0x8A3F;
+	const GLenum UNIFORM_BLOCK_DATA_SIZE = 0x8A40;
+	const GLenum UNIFORM_BLOCK_NAME_LENGTH = 0x8A41;
+	const GLenum UNIFORM_BLOCK_ACTIVE_UNIFORMS = 0x8A42;
+	const GLenum UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES = 0x8A43;
+	const GLenum UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER = 0x8A44;
+	const GLenum UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER = 0x8A45;
+	const GLenum UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER = 0x8A46;
+	const GLenum INVALID_INDEX = 0xFFFFFFFFu;
+	const GLenum CONTEXT_CORE_PROFILE_BIT = 0x00000001;
+	const GLenum CONTEXT_COMPATIBILITY_PROFILE_BIT = 0x00000002;
+	const GLenum LINES_ADJACENCY = 0x000A;
+	const GLenum LINE_STRIP_ADJACENCY = 0x000B;
+	const GLenum TRIANGLES_ADJACENCY = 0x000C;
+	const GLenum TRIANGLE_STRIP_ADJACENCY = 0x000D;
+	const GLenum PROGRAM_POINT_SIZE = 0x8642;
+	const GLenum MAX_GEOMETRY_TEXTURE_IMAGE_UNITS = 0x8C29;
+	const GLenum FRAMEBUFFER_ATTACHMENT_LAYERED = 0x8DA7;
+	const GLenum FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS = 0x8DA8;
+	const GLenum GEOMETRY_SHADER = 0x8DD9;
+	const GLenum GEOMETRY_VERTICES_OUT = 0x8916;
+	const GLenum GEOMETRY_INPUT_TYPE = 0x8917;
+	const GLenum GEOMETRY_OUTPUT_TYPE = 0x8918;
+	const GLenum MAX_GEOMETRY_UNIFORM_COMPONENTS = 0x8DDF;
+	const GLenum MAX_GEOMETRY_OUTPUT_VERTICES = 0x8DE0;
+	const GLenum MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS = 0x8DE1;
+	const GLenum MAX_VERTEX_OUTPUT_COMPONENTS = 0x9122;
+	const GLenum MAX_GEOMETRY_INPUT_COMPONENTS = 0x9123;
+	const GLenum MAX_GEOMETRY_OUTPUT_COMPONENTS = 0x9124;
+	const GLenum MAX_FRAGMENT_INPUT_COMPONENTS = 0x9125;
+	const GLenum CONTEXT_PROFILE_MASK = 0x9126;
+	const GLenum DEPTH_CLAMP = 0x864F;
+	const GLenum QUADS_FOLLOW_PROVOKING_VERTEX_CONVENTION = 0x8E4C;
+	const GLenum FIRST_VERTEX_CONVENTION = 0x8E4D;
+	const GLenum LAST_VERTEX_CONVENTION = 0x8E4E;
+	const GLenum PROVOKING_VERTEX = 0x8E4F;
+	const GLenum TEXTURE_CUBE_MAP_SEAMLESS = 0x884F;
+	const GLenum MAX_SERVER_WAIT_TIMEOUT = 0x9111;
+	const GLenum OBJECT_TYPE = 0x9112;
+	const GLenum SYNC_CONDITION = 0x9113;
+	const GLenum SYNC_STATUS = 0x9114;
+	const GLenum SYNC_FLAGS = 0x9115;
+	const GLenum SYNC_FENCE = 0x9116;
+	const GLenum SYNC_GPU_COMMANDS_COMPLETE = 0x9117;
+	const GLenum UNSIGNALED = 0x9118;
+	const GLenum SIGNALED = 0x9119;
+	const GLenum ALREADY_SIGNALED = 0x911A;
+	const GLenum TIMEOUT_EXPIRED = 0x911B;
+	const GLenum CONDITION_SATISFIED = 0x911C;
+	const GLenum _WAIT_FAILED = 0x911D;
+	const GLuint64 TIMEOUT_IGNORED = 0xFFFFFFFFFFFFFFFFull;
+	const GLenum SYNC_FLUSH_COMMANDS_BIT = 0x00000001;
+	const GLenum SAMPLE_POSITION = 0x8E50;
+	const GLenum SAMPLE_MASK = 0x8E51;
+	const GLenum SAMPLE_MASK_VALUE = 0x8E52;
+	const GLenum MAX_SAMPLE_MASK_WORDS = 0x8E59;
+	const GLenum TEXTURE_2D_MULTISAMPLE = 0x9100;
+	const GLenum PROXY_TEXTURE_2D_MULTISAMPLE = 0x9101;
+	const GLenum TEXTURE_2D_MULTISAMPLE_ARRAY = 0x9102;
+	const GLenum PROXY_TEXTURE_2D_MULTISAMPLE_ARRAY = 0x9103;
+	const GLenum TEXTURE_BINDING_2D_MULTISAMPLE = 0x9104;
+	const GLenum TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY = 0x9105;
+	const GLenum TEXTURE_SAMPLES = 0x9106;
+	const GLenum TEXTURE_FIXED_SAMPLE_LOCATIONS = 0x9107;
+	const GLenum SAMPLER_2D_MULTISAMPLE = 0x9108;
+	const GLenum INT_SAMPLER_2D_MULTISAMPLE = 0x9109;
+	const GLenum UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE = 0x910A;
+	const GLenum SAMPLER_2D_MULTISAMPLE_ARRAY = 0x910B;
+	const GLenum INT_SAMPLER_2D_MULTISAMPLE_ARRAY = 0x910C;
+	const GLenum UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY = 0x910D;
+	const GLenum MAX_COLOR_TEXTURE_SAMPLES = 0x910E;
+	const GLenum MAX_DEPTH_TEXTURE_SAMPLES = 0x910F;
+	const GLenum MAX_INTEGER_SAMPLES = 0x9110;
+	const GLenum VERTEX_ATTRIB_ARRAY_DIVISOR = 0x88FE;
+	const GLenum SRC1_COLOR = 0x88F9;
+	const GLenum ONE_MINUS_SRC1_COLOR = 0x88FA;
+	const GLenum ONE_MINUS_SRC1_ALPHA = 0x88FB;
+	const GLenum MAX_DUAL_SOURCE_DRAW_BUFFERS = 0x88FC;
+	const GLenum ANY_SAMPLES_PASSED = 0x8C2F;
+	const GLenum SAMPLER_BINDING = 0x8919;
+	const GLenum RGB10_A2UI = 0x906F;
+	const GLenum TEXTURE_SWIZZLE_R = 0x8E42;
+	const GLenum TEXTURE_SWIZZLE_G = 0x8E43;
+	const GLenum TEXTURE_SWIZZLE_B = 0x8E44;
+	const GLenum TEXTURE_SWIZZLE_A = 0x8E45;
+	const GLenum TEXTURE_SWIZZLE_RGBA = 0x8E46;
+	const GLenum TIME_ELAPSED = 0x88BF;
+	const GLenum TIMESTAMP = 0x8E28;
+	const GLenum INT_2_10_10_10_REV = 0x8D9F;
+	const GLenum SAMPLE_SHADING = 0x8C36;
+	const GLenum MIN_SAMPLE_SHADING_VALUE = 0x8C37;
+	const GLenum MIN_PROGRAM_TEXTURE_GATHER_OFFSET = 0x8E5E;
+	const GLenum MAX_PROGRAM_TEXTURE_GATHER_OFFSET = 0x8E5F;
+	const GLenum TEXTURE_CUBE_MAP_ARRAY = 0x9009;
+	const GLenum TEXTURE_BINDING_CUBE_MAP_ARRAY = 0x900A;
+	const GLenum PROXY_TEXTURE_CUBE_MAP_ARRAY = 0x900B;
+	const GLenum SAMPLER_CUBE_MAP_ARRAY = 0x900C;
+	const GLenum SAMPLER_CUBE_MAP_ARRAY_SHADOW = 0x900D;
+	const GLenum INT_SAMPLER_CUBE_MAP_ARRAY = 0x900E;
+	const GLenum UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY = 0x900F;
+	const GLenum DRAW_INDIRECT_BUFFER = 0x8F3F;
+	const GLenum DRAW_INDIRECT_BUFFER_BINDING = 0x8F43;
+	const GLenum GEOMETRY_SHADER_INVOCATIONS = 0x887F;
+	const GLenum MAX_GEOMETRY_SHADER_INVOCATIONS = 0x8E5A;
+	const GLenum MIN_FRAGMENT_INTERPOLATION_OFFSET = 0x8E5B;
+	const GLenum MAX_FRAGMENT_INTERPOLATION_OFFSET = 0x8E5C;
+	const GLenum FRAGMENT_INTERPOLATION_OFFSET_BITS = 0x8E5D;
+	const GLenum MAX_VERTEX_STREAMS = 0x8E71;
+	const GLenum DOUBLE_VEC2 = 0x8FFC;
+	const GLenum DOUBLE_VEC3 = 0x8FFD;
+	const GLenum DOUBLE_VEC4 = 0x8FFE;
+	const GLenum DOUBLE_MAT2 = 0x8F46;
+	const GLenum DOUBLE_MAT3 = 0x8F47;
+	const GLenum DOUBLE_MAT4 = 0x8F48;
+	const GLenum DOUBLE_MAT2x3 = 0x8F49;
+	const GLenum DOUBLE_MAT2x4 = 0x8F4A;
+	const GLenum DOUBLE_MAT3x2 = 0x8F4B;
+	const GLenum DOUBLE_MAT3x4 = 0x8F4C;
+	const GLenum DOUBLE_MAT4x2 = 0x8F4D;
+	const GLenum DOUBLE_MAT4x3 = 0x8F4E;
+	const GLenum ACTIVE_SUBROUTINES = 0x8DE5;
+	const GLenum ACTIVE_SUBROUTINE_UNIFORMS = 0x8DE6;
+	const GLenum ACTIVE_SUBROUTINE_UNIFORM_LOCATIONS = 0x8E47;
+	const GLenum ACTIVE_SUBROUTINE_MAX_LENGTH = 0x8E48;
+	const GLenum ACTIVE_SUBROUTINE_UNIFORM_MAX_LENGTH = 0x8E49;
+	const GLenum MAX_SUBROUTINES = 0x8DE7;
+	const GLenum MAX_SUBROUTINE_UNIFORM_LOCATIONS = 0x8DE8;
+	const GLenum NUM_COMPATIBLE_SUBROUTINES = 0x8E4A;
+	const GLenum COMPATIBLE_SUBROUTINES = 0x8E4B;
+	const GLenum PATCHES = 0x000E;
+	const GLenum PATCH_VERTICES = 0x8E72;
+	const GLenum PATCH_DEFAULT_INNER_LEVEL = 0x8E73;
+	const GLenum PATCH_DEFAULT_OUTER_LEVEL = 0x8E74;
+	const GLenum TESS_CONTROL_OUTPUT_VERTICES = 0x8E75;
+	const GLenum TESS_GEN_MODE = 0x8E76;
+	const GLenum TESS_GEN_SPACING = 0x8E77;
+	const GLenum TESS_GEN_VERTEX_ORDER = 0x8E78;
+	const GLenum TESS_GEN_POINT_MODE = 0x8E79;
+	const GLenum ISOLINES = 0x8E7A;
+	const GLenum FRACTIONAL_ODD = 0x8E7B;
+	const GLenum FRACTIONAL_EVEN = 0x8E7C;
+	const GLenum MAX_PATCH_VERTICES = 0x8E7D;
+	const GLenum MAX_TESS_GEN_LEVEL = 0x8E7E;
+	const GLenum MAX_TESS_CONTROL_UNIFORM_COMPONENTS = 0x8E7F;
+	const GLenum MAX_TESS_EVALUATION_UNIFORM_COMPONENTS = 0x8E80;
+	const GLenum MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS = 0x8E81;
+	const GLenum MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS = 0x8E82;
+	const GLenum MAX_TESS_CONTROL_OUTPUT_COMPONENTS = 0x8E83;
+	const GLenum MAX_TESS_PATCH_COMPONENTS = 0x8E84;
+	const GLenum MAX_TESS_CONTROL_TOTAL_OUTPUT_COMPONENTS = 0x8E85;
+	const GLenum MAX_TESS_EVALUATION_OUTPUT_COMPONENTS = 0x8E86;
+	const GLenum MAX_TESS_CONTROL_UNIFORM_BLOCKS = 0x8E89;
+	const GLenum MAX_TESS_EVALUATION_UNIFORM_BLOCKS = 0x8E8A;
+	const GLenum MAX_TESS_CONTROL_INPUT_COMPONENTS = 0x886C;
+	const GLenum MAX_TESS_EVALUATION_INPUT_COMPONENTS = 0x886D;
+	const GLenum MAX_COMBINED_TESS_CONTROL_UNIFORM_COMPONENTS = 0x8E1E;
+	const GLenum MAX_COMBINED_TESS_EVALUATION_UNIFORM_COMPONENTS = 0x8E1F;
+	const GLenum UNIFORM_BLOCK_REFERENCED_BY_TESS_CONTROL_SHADER = 0x84F0;
+	const GLenum UNIFORM_BLOCK_REFERENCED_BY_TESS_EVALUATION_SHADER = 0x84F1;
+	const GLenum TESS_EVALUATION_SHADER = 0x8E87;
+	const GLenum TESS_CONTROL_SHADER = 0x8E88;
+	const GLenum TRANSFORM_FEEDBACK = 0x8E22;
+	const GLenum TRANSFORM_FEEDBACK_BUFFER_PAUSED = 0x8E23;
+	const GLenum TRANSFORM_FEEDBACK_BUFFER_ACTIVE = 0x8E24;
+	const GLenum TRANSFORM_FEEDBACK_BINDING = 0x8E25;
+	const GLenum MAX_TRANSFORM_FEEDBACK_BUFFERS = 0x8E70;
+	const GLenum FIXED = 0x140C;
+	const GLenum IMPLEMENTATION_COLOR_READ_TYPE = 0x8B9A;
+	const GLenum IMPLEMENTATION_COLOR_READ_FORMAT = 0x8B9B;
+	const GLenum LOW_FLOAT = 0x8DF0;
+	const GLenum MEDIUM_FLOAT = 0x8DF1;
+	const GLenum HIGH_FLOAT = 0x8DF2;
+	const GLenum LOW_INT = 0x8DF3;
+	const GLenum MEDIUM_INT = 0x8DF4;
+	const GLenum HIGH_INT = 0x8DF5;
+	const GLenum SHADER_COMPILER = 0x8DFA;
+	const GLenum SHADER_BINARY_FORMATS = 0x8DF8;
+	const GLenum NUM_SHADER_BINARY_FORMATS = 0x8DF9;
+	const GLenum MAX_VERTEX_UNIFORM_VECTORS = 0x8DFB;
+	const GLenum MAX_VARYING_VECTORS = 0x8DFC;
+	const GLenum MAX_FRAGMENT_UNIFORM_VECTORS = 0x8DFD;
+	const GLenum RGB565 = 0x8D62;
+	const GLenum PROGRAM_BINARY_RETRIEVABLE_HINT = 0x8257;
+	const GLenum PROGRAM_BINARY_LENGTH = 0x8741;
+	const GLenum NUM_PROGRAM_BINARY_FORMATS = 0x87FE;
+	const GLenum PROGRAM_BINARY_FORMATS = 0x87FF;
+	const GLenum VERTEX_SHADER_BIT = 0x00000001;
+	const GLenum FRAGMENT_SHADER_BIT = 0x00000002;
+	const GLenum GEOMETRY_SHADER_BIT = 0x00000004;
+	const GLenum TESS_CONTROL_SHADER_BIT = 0x00000008;
+	const GLenum TESS_EVALUATION_SHADER_BIT = 0x00000010;
+	const GLenum ALL_SHADER_BITS = 0xFFFFFFFF;
+	const GLenum PROGRAM_SEPARABLE = 0x8258;
+	const GLenum ACTIVE_PROGRAM = 0x8259;
+	const GLenum PROGRAM_PIPELINE_BINDING = 0x825A;
+	const GLenum MAX_VIEWPORTS = 0x825B;
+	const GLenum VIEWPORT_SUBPIXEL_BITS = 0x825C;
+	const GLenum VIEWPORT_BOUNDS_RANGE = 0x825D;
+	const GLenum LAYER_PROVOKING_VERTEX = 0x825E;
+	const GLenum VIEWPORT_INDEX_PROVOKING_VERTEX = 0x825F;
+	const GLenum UNDEFINED_VERTEX = 0x8260;
+	const GLenum COPY_READ_BUFFER_BINDING = 0x8F36;
+	const GLenum COPY_WRITE_BUFFER_BINDING = 0x8F37;
+	const GLenum TRANSFORM_FEEDBACK_ACTIVE = 0x8E24;
+	const GLenum TRANSFORM_FEEDBACK_PAUSED = 0x8E23;
+	const GLenum UNPACK_COMPRESSED_BLOCK_WIDTH = 0x9127;
+	const GLenum UNPACK_COMPRESSED_BLOCK_HEIGHT = 0x9128;
+	const GLenum UNPACK_COMPRESSED_BLOCK_DEPTH = 0x9129;
+	const GLenum UNPACK_COMPRESSED_BLOCK_SIZE = 0x912A;
+	const GLenum PACK_COMPRESSED_BLOCK_WIDTH = 0x912B;
+	const GLenum PACK_COMPRESSED_BLOCK_HEIGHT = 0x912C;
+	const GLenum PACK_COMPRESSED_BLOCK_DEPTH = 0x912D;
+	const GLenum PACK_COMPRESSED_BLOCK_SIZE = 0x912E;
+	const GLenum NUM_SAMPLE_COUNTS = 0x9380;
+	const GLenum MIN_MAP_BUFFER_ALIGNMENT = 0x90BC;
+	const GLenum ATOMIC_COUNTER_BUFFER = 0x92C0;
+	const GLenum ATOMIC_COUNTER_BUFFER_BINDING = 0x92C1;
+	const GLenum ATOMIC_COUNTER_BUFFER_START = 0x92C2;
+	const GLenum ATOMIC_COUNTER_BUFFER_SIZE = 0x92C3;
+	const GLenum ATOMIC_COUNTER_BUFFER_DATA_SIZE = 0x92C4;
+	const GLenum ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTERS = 0x92C5;
+	const GLenum ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTER_INDICES = 0x92C6;
+	const GLenum ATOMIC_COUNTER_BUFFER_REFERENCED_BY_VERTEX_SHADER = 0x92C7;
+	const GLenum ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_CONTROL_SHADER = 0x92C8;
+	const GLenum ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_EVALUATION_SHADER = 0x92C9;
+	const GLenum ATOMIC_COUNTER_BUFFER_REFERENCED_BY_GEOMETRY_SHADER = 0x92CA;
+	const GLenum ATOMIC_COUNTER_BUFFER_REFERENCED_BY_FRAGMENT_SHADER = 0x92CB;
+	const GLenum MAX_VERTEX_ATOMIC_COUNTER_BUFFERS = 0x92CC;
+	const GLenum MAX_TESS_CONTROL_ATOMIC_COUNTER_BUFFERS = 0x92CD;
+	const GLenum MAX_TESS_EVALUATION_ATOMIC_COUNTER_BUFFERS = 0x92CE;
+	const GLenum MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS = 0x92CF;
+	const GLenum MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS = 0x92D0;
+	const GLenum MAX_COMBINED_ATOMIC_COUNTER_BUFFERS = 0x92D1;
+	const GLenum MAX_VERTEX_ATOMIC_COUNTERS = 0x92D2;
+	const GLenum MAX_TESS_CONTROL_ATOMIC_COUNTERS = 0x92D3;
+	const GLenum MAX_TESS_EVALUATION_ATOMIC_COUNTERS = 0x92D4;
+	const GLenum MAX_GEOMETRY_ATOMIC_COUNTERS = 0x92D5;
+	const GLenum MAX_FRAGMENT_ATOMIC_COUNTERS = 0x92D6;
+	const GLenum MAX_COMBINED_ATOMIC_COUNTERS = 0x92D7;
+	const GLenum MAX_ATOMIC_COUNTER_BUFFER_SIZE = 0x92D8;
+	const GLenum MAX_ATOMIC_COUNTER_BUFFER_BINDINGS = 0x92DC;
+	const GLenum ACTIVE_ATOMIC_COUNTER_BUFFERS = 0x92D9;
+	const GLenum UNIFORM_ATOMIC_COUNTER_BUFFER_INDEX = 0x92DA;
+	const GLenum UNSIGNED_INT_ATOMIC_COUNTER = 0x92DB;
+	const GLenum VERTEX_ATTRIB_ARRAY_BARRIER_BIT = 0x00000001;
+	const GLenum ELEMENT_ARRAY_BARRIER_BIT = 0x00000002;
+	const GLenum UNIFORM_BARRIER_BIT = 0x00000004;
+	const GLenum TEXTURE_FETCH_BARRIER_BIT = 0x00000008;
+	const GLenum SHADER_IMAGE_ACCESS_BARRIER_BIT = 0x00000020;
+	const GLenum COMMAND_BARRIER_BIT = 0x00000040;
+	const GLenum PIXEL_BUFFER_BARRIER_BIT = 0x00000080;
+	const GLenum TEXTURE_UPDATE_BARRIER_BIT = 0x00000100;
+	const GLenum BUFFER_UPDATE_BARRIER_BIT = 0x00000200;
+	const GLenum FRAMEBUFFER_BARRIER_BIT = 0x00000400;
+	const GLenum TRANSFORM_FEEDBACK_BARRIER_BIT = 0x00000800;
+	const GLenum ATOMIC_COUNTER_BARRIER_BIT = 0x00001000;
+	const GLenum ALL_BARRIER_BITS = 0xFFFFFFFF;
+	const GLenum MAX_IMAGE_UNITS = 0x8F38;
+	const GLenum MAX_COMBINED_IMAGE_UNITS_AND_FRAGMENT_OUTPUTS = 0x8F39;
+	const GLenum IMAGE_BINDING_NAME = 0x8F3A;
+	const GLenum IMAGE_BINDING_LEVEL = 0x8F3B;
+	const GLenum IMAGE_BINDING_LAYERED = 0x8F3C;
+	const GLenum IMAGE_BINDING_LAYER = 0x8F3D;
+	const GLenum IMAGE_BINDING_ACCESS = 0x8F3E;
+	const GLenum IMAGE_1D = 0x904C;
+	const GLenum IMAGE_2D = 0x904D;
+	const GLenum IMAGE_3D = 0x904E;
+	const GLenum IMAGE_2D_RECT = 0x904F;
+	const GLenum IMAGE_CUBE = 0x9050;
+	const GLenum IMAGE_BUFFER = 0x9051;
+	const GLenum IMAGE_1D_ARRAY = 0x9052;
+	const GLenum IMAGE_2D_ARRAY = 0x9053;
+	const GLenum IMAGE_CUBE_MAP_ARRAY = 0x9054;
+	const GLenum IMAGE_2D_MULTISAMPLE = 0x9055;
+	const GLenum IMAGE_2D_MULTISAMPLE_ARRAY = 0x9056;
+	const GLenum INT_IMAGE_1D = 0x9057;
+	const GLenum INT_IMAGE_2D = 0x9058;
+	const GLenum INT_IMAGE_3D = 0x9059;
+	const GLenum INT_IMAGE_2D_RECT = 0x905A;
+	const GLenum INT_IMAGE_CUBE = 0x905B;
+	const GLenum INT_IMAGE_BUFFER = 0x905C;
+	const GLenum INT_IMAGE_1D_ARRAY = 0x905D;
+	const GLenum INT_IMAGE_2D_ARRAY = 0x905E;
+	const GLenum INT_IMAGE_CUBE_MAP_ARRAY = 0x905F;
+	const GLenum INT_IMAGE_2D_MULTISAMPLE = 0x9060;
+	const GLenum INT_IMAGE_2D_MULTISAMPLE_ARRAY = 0x9061;
+	const GLenum UNSIGNED_INT_IMAGE_1D = 0x9062;
+	const GLenum UNSIGNED_INT_IMAGE_2D = 0x9063;
+	const GLenum UNSIGNED_INT_IMAGE_3D = 0x9064;
+	const GLenum UNSIGNED_INT_IMAGE_2D_RECT = 0x9065;
+	const GLenum UNSIGNED_INT_IMAGE_CUBE = 0x9066;
+	const GLenum UNSIGNED_INT_IMAGE_BUFFER = 0x9067;
+	const GLenum UNSIGNED_INT_IMAGE_1D_ARRAY = 0x9068;
+	const GLenum UNSIGNED_INT_IMAGE_2D_ARRAY = 0x9069;
+	const GLenum UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY = 0x906A;
+	const GLenum UNSIGNED_INT_IMAGE_2D_MULTISAMPLE = 0x906B;
+	const GLenum UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY = 0x906C;
+	const GLenum MAX_IMAGE_SAMPLES = 0x906D;
+	const GLenum IMAGE_BINDING_FORMAT = 0x906E;
+	const GLenum IMAGE_FORMAT_COMPATIBILITY_TYPE = 0x90C7;
+	const GLenum IMAGE_FORMAT_COMPATIBILITY_BY_SIZE = 0x90C8;
+	const GLenum IMAGE_FORMAT_COMPATIBILITY_BY_CLASS = 0x90C9;
+	const GLenum MAX_VERTEX_IMAGE_UNIFORMS = 0x90CA;
+	const GLenum MAX_TESS_CONTROL_IMAGE_UNIFORMS = 0x90CB;
+	const GLenum MAX_TESS_EVALUATION_IMAGE_UNIFORMS = 0x90CC;
+	const GLenum MAX_GEOMETRY_IMAGE_UNIFORMS = 0x90CD;
+	const GLenum MAX_FRAGMENT_IMAGE_UNIFORMS = 0x90CE;
+	const GLenum MAX_COMBINED_IMAGE_UNIFORMS = 0x90CF;
+	const GLenum COMPRESSED_RGBA_BPTC_UNORM = 0x8E8C;
+	const GLenum COMPRESSED_SRGB_ALPHA_BPTC_UNORM = 0x8E8D;
+	const GLenum COMPRESSED_RGB_BPTC_SIGNED_FLOAT = 0x8E8E;
+	const GLenum COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT = 0x8E8F;
+	const GLenum TEXTURE_IMMUTABLE_FORMAT = 0x912F;
+	const GLenum NUM_SHADING_LANGUAGE_VERSIONS = 0x82E9;
+	const GLenum VERTEX_ATTRIB_ARRAY_LONG = 0x874E;
+	const GLenum COMPRESSED_RGB8_ETC2 = 0x9274;
+	const GLenum COMPRESSED_SRGB8_ETC2 = 0x9275;
+	const GLenum COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2 = 0x9276;
+	const GLenum COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2 = 0x9277;
+	const GLenum COMPRESSED_RGBA8_ETC2_EAC = 0x9278;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ETC2_EAC = 0x9279;
+	const GLenum COMPRESSED_R11_EAC = 0x9270;
+	const GLenum COMPRESSED_SIGNED_R11_EAC = 0x9271;
+	const GLenum COMPRESSED_RG11_EAC = 0x9272;
+	const GLenum COMPRESSED_SIGNED_RG11_EAC = 0x9273;
+	const GLenum PRIMITIVE_RESTART_FIXED_INDEX = 0x8D69;
+	const GLenum ANY_SAMPLES_PASSED_CONSERVATIVE = 0x8D6A;
+	const GLenum MAX_ELEMENT_INDEX = 0x8D6B;
+	const GLenum COMPUTE_SHADER = 0x91B9;
+	const GLenum MAX_COMPUTE_UNIFORM_BLOCKS = 0x91BB;
+	const GLenum MAX_COMPUTE_TEXTURE_IMAGE_UNITS = 0x91BC;
+	const GLenum MAX_COMPUTE_IMAGE_UNIFORMS = 0x91BD;
+	const GLenum MAX_COMPUTE_SHARED_MEMORY_SIZE = 0x8262;
+	const GLenum MAX_COMPUTE_UNIFORM_COMPONENTS = 0x8263;
+	const GLenum MAX_COMPUTE_ATOMIC_COUNTER_BUFFERS = 0x8264;
+	const GLenum MAX_COMPUTE_ATOMIC_COUNTERS = 0x8265;
+	const GLenum MAX_COMBINED_COMPUTE_UNIFORM_COMPONENTS = 0x8266;
+	const GLenum MAX_COMPUTE_WORK_GROUP_INVOCATIONS = 0x90EB;
+	const GLenum MAX_COMPUTE_WORK_GROUP_COUNT = 0x91BE;
+	const GLenum MAX_COMPUTE_WORK_GROUP_SIZE = 0x91BF;
+	const GLenum COMPUTE_WORK_GROUP_SIZE = 0x8267;
+	const GLenum UNIFORM_BLOCK_REFERENCED_BY_COMPUTE_SHADER = 0x90EC;
+	const GLenum ATOMIC_COUNTER_BUFFER_REFERENCED_BY_COMPUTE_SHADER = 0x90ED;
+	const GLenum DISPATCH_INDIRECT_BUFFER = 0x90EE;
+	const GLenum DISPATCH_INDIRECT_BUFFER_BINDING = 0x90EF;
+	const GLenum COMPUTE_SHADER_BIT = 0x00000020;
+	const GLenum DEBUG_OUTPUT_SYNCHRONOUS = 0x8242;
+	const GLenum DEBUG_NEXT_LOGGED_MESSAGE_LENGTH = 0x8243;
+	const GLenum DEBUG_CALLBACK_FUNCTION = 0x8244;
+	const GLenum DEBUG_CALLBACK_USER_PARAM = 0x8245;
+	const GLenum DEBUG_SOURCE_API = 0x8246;
+	const GLenum DEBUG_SOURCE_WINDOW_SYSTEM = 0x8247;
+	const GLenum DEBUG_SOURCE_SHADER_COMPILER = 0x8248;
+	const GLenum DEBUG_SOURCE_THIRD_PARTY = 0x8249;
+	const GLenum DEBUG_SOURCE_APPLICATION = 0x824A;
+	const GLenum DEBUG_SOURCE_OTHER = 0x824B;
+	const GLenum DEBUG_TYPE_ERROR = 0x824C;
+	const GLenum DEBUG_TYPE_DEPRECATED_BEHAVIOR = 0x824D;
+	const GLenum DEBUG_TYPE_UNDEFINED_BEHAVIOR = 0x824E;
+	const GLenum DEBUG_TYPE_PORTABILITY = 0x824F;
+	const GLenum DEBUG_TYPE_PERFORMANCE = 0x8250;
+	const GLenum DEBUG_TYPE_OTHER = 0x8251;
+	const GLenum MAX_DEBUG_MESSAGE_LENGTH = 0x9143;
+	const GLenum MAX_DEBUG_LOGGED_MESSAGES = 0x9144;
+	const GLenum DEBUG_LOGGED_MESSAGES = 0x9145;
+	const GLenum DEBUG_SEVERITY_HIGH = 0x9146;
+	const GLenum DEBUG_SEVERITY_MEDIUM = 0x9147;
+	const GLenum DEBUG_SEVERITY_LOW = 0x9148;
+	const GLenum DEBUG_TYPE_MARKER = 0x8268;
+	const GLenum DEBUG_TYPE_PUSH_GROUP = 0x8269;
+	const GLenum DEBUG_TYPE_POP_GROUP = 0x826A;
+	const GLenum DEBUG_SEVERITY_NOTIFICATION = 0x826B;
+	const GLenum MAX_DEBUG_GROUP_STACK_DEPTH = 0x826C;
+	const GLenum DEBUG_GROUP_STACK_DEPTH = 0x826D;
+	const GLenum BUFFER = 0x82E0;
+	const GLenum SHADER = 0x82E1;
+	const GLenum PROGRAM = 0x82E2;
+	const GLenum QUERY = 0x82E3;
+	const GLenum PROGRAM_PIPELINE = 0x82E4;
+	const GLenum SAMPLER = 0x82E6;
+	const GLenum MAX_LABEL_LENGTH = 0x82E8;
+	const GLenum DEBUG_OUTPUT = 0x92E0;
+	const GLenum CONTEXT_FLAG_DEBUG_BIT = 0x00000002;
+	const GLenum MAX_UNIFORM_LOCATIONS = 0x826E;
+	const GLenum FRAMEBUFFER_DEFAULT_WIDTH = 0x9310;
+	const GLenum FRAMEBUFFER_DEFAULT_HEIGHT = 0x9311;
+	const GLenum FRAMEBUFFER_DEFAULT_LAYERS = 0x9312;
+	const GLenum FRAMEBUFFER_DEFAULT_SAMPLES = 0x9313;
+	const GLenum FRAMEBUFFER_DEFAULT_FIXED_SAMPLE_LOCATIONS = 0x9314;
+	const GLenum MAX_FRAMEBUFFER_WIDTH = 0x9315;
+	const GLenum MAX_FRAMEBUFFER_HEIGHT = 0x9316;
+	const GLenum MAX_FRAMEBUFFER_LAYERS = 0x9317;
+	const GLenum MAX_FRAMEBUFFER_SAMPLES = 0x9318;
+	const GLenum INTERNALFORMAT_SUPPORTED = 0x826F;
+	const GLenum INTERNALFORMAT_PREFERRED = 0x8270;
+	const GLenum INTERNALFORMAT_RED_SIZE = 0x8271;
+	const GLenum INTERNALFORMAT_GREEN_SIZE = 0x8272;
+	const GLenum INTERNALFORMAT_BLUE_SIZE = 0x8273;
+	const GLenum INTERNALFORMAT_ALPHA_SIZE = 0x8274;
+	const GLenum INTERNALFORMAT_DEPTH_SIZE = 0x8275;
+	const GLenum INTERNALFORMAT_STENCIL_SIZE = 0x8276;
+	const GLenum INTERNALFORMAT_SHARED_SIZE = 0x8277;
+	const GLenum INTERNALFORMAT_RED_TYPE = 0x8278;
+	const GLenum INTERNALFORMAT_GREEN_TYPE = 0x8279;
+	const GLenum INTERNALFORMAT_BLUE_TYPE = 0x827A;
+	const GLenum INTERNALFORMAT_ALPHA_TYPE = 0x827B;
+	const GLenum INTERNALFORMAT_DEPTH_TYPE = 0x827C;
+	const GLenum INTERNALFORMAT_STENCIL_TYPE = 0x827D;
+	const GLenum MAX_WIDTH = 0x827E;
+	const GLenum MAX_HEIGHT = 0x827F;
+	const GLenum MAX_DEPTH = 0x8280;
+	const GLenum MAX_LAYERS = 0x8281;
+	const GLenum MAX_COMBINED_DIMENSIONS = 0x8282;
+	const GLenum COLOR_COMPONENTS = 0x8283;
+	const GLenum DEPTH_COMPONENTS = 0x8284;
+	const GLenum STENCIL_COMPONENTS = 0x8285;
+	const GLenum COLOR_RENDERABLE = 0x8286;
+	const GLenum DEPTH_RENDERABLE = 0x8287;
+	const GLenum STENCIL_RENDERABLE = 0x8288;
+	const GLenum FRAMEBUFFER_RENDERABLE = 0x8289;
+	const GLenum FRAMEBUFFER_RENDERABLE_LAYERED = 0x828A;
+	const GLenum FRAMEBUFFER_BLEND = 0x828B;
+	const GLenum READ_PIXELS = 0x828C;
+	const GLenum READ_PIXELS_FORMAT = 0x828D;
+	const GLenum READ_PIXELS_TYPE = 0x828E;
+	const GLenum TEXTURE_IMAGE_FORMAT = 0x828F;
+	const GLenum TEXTURE_IMAGE_TYPE = 0x8290;
+	const GLenum GET_TEXTURE_IMAGE_FORMAT = 0x8291;
+	const GLenum GET_TEXTURE_IMAGE_TYPE = 0x8292;
+	const GLenum MIPMAP = 0x8293;
+	const GLenum MANUAL_GENERATE_MIPMAP = 0x8294;
+	const GLenum AUTO_GENERATE_MIPMAP = 0x8295;
+	const GLenum COLOR_ENCODING = 0x8296;
+	const GLenum SRGB_READ = 0x8297;
+	const GLenum SRGB_WRITE = 0x8298;
+	const GLenum FILTER = 0x829A;
+	const GLenum VERTEX_TEXTURE = 0x829B;
+	const GLenum TESS_CONTROL_TEXTURE = 0x829C;
+	const GLenum TESS_EVALUATION_TEXTURE = 0x829D;
+	const GLenum GEOMETRY_TEXTURE = 0x829E;
+	const GLenum FRAGMENT_TEXTURE = 0x829F;
+	const GLenum COMPUTE_TEXTURE = 0x82A0;
+	const GLenum TEXTURE_SHADOW = 0x82A1;
+	const GLenum TEXTURE_GATHER = 0x82A2;
+	const GLenum TEXTURE_GATHER_SHADOW = 0x82A3;
+	const GLenum SHADER_IMAGE_LOAD = 0x82A4;
+	const GLenum SHADER_IMAGE_STORE = 0x82A5;
+	const GLenum SHADER_IMAGE_ATOMIC = 0x82A6;
+	const GLenum IMAGE_TEXEL_SIZE = 0x82A7;
+	const GLenum IMAGE_COMPATIBILITY_CLASS = 0x82A8;
+	const GLenum IMAGE_PIXEL_FORMAT = 0x82A9;
+	const GLenum IMAGE_PIXEL_TYPE = 0x82AA;
+	const GLenum SIMULTANEOUS_TEXTURE_AND_DEPTH_TEST = 0x82AC;
+	const GLenum SIMULTANEOUS_TEXTURE_AND_STENCIL_TEST = 0x82AD;
+	const GLenum SIMULTANEOUS_TEXTURE_AND_DEPTH_WRITE = 0x82AE;
+	const GLenum SIMULTANEOUS_TEXTURE_AND_STENCIL_WRITE = 0x82AF;
+	const GLenum TEXTURE_COMPRESSED_BLOCK_WIDTH = 0x82B1;
+	const GLenum TEXTURE_COMPRESSED_BLOCK_HEIGHT = 0x82B2;
+	const GLenum TEXTURE_COMPRESSED_BLOCK_SIZE = 0x82B3;
+	const GLenum CLEAR_BUFFER = 0x82B4;
+	const GLenum TEXTURE_VIEW = 0x82B5;
+	const GLenum VIEW_COMPATIBILITY_CLASS = 0x82B6;
+	const GLenum FULL_SUPPORT = 0x82B7;
+	const GLenum CAVEAT_SUPPORT = 0x82B8;
+	const GLenum IMAGE_CLASS_4_X_32 = 0x82B9;
+	const GLenum IMAGE_CLASS_2_X_32 = 0x82BA;
+	const GLenum IMAGE_CLASS_1_X_32 = 0x82BB;
+	const GLenum IMAGE_CLASS_4_X_16 = 0x82BC;
+	const GLenum IMAGE_CLASS_2_X_16 = 0x82BD;
+	const GLenum IMAGE_CLASS_1_X_16 = 0x82BE;
+	const GLenum IMAGE_CLASS_4_X_8 = 0x82BF;
+	const GLenum IMAGE_CLASS_2_X_8 = 0x82C0;
+	const GLenum IMAGE_CLASS_1_X_8 = 0x82C1;
+	const GLenum IMAGE_CLASS_11_11_10 = 0x82C2;
+	const GLenum IMAGE_CLASS_10_10_10_2 = 0x82C3;
+	const GLenum VIEW_CLASS_128_BITS = 0x82C4;
+	const GLenum VIEW_CLASS_96_BITS = 0x82C5;
+	const GLenum VIEW_CLASS_64_BITS = 0x82C6;
+	const GLenum VIEW_CLASS_48_BITS = 0x82C7;
+	const GLenum VIEW_CLASS_32_BITS = 0x82C8;
+	const GLenum VIEW_CLASS_24_BITS = 0x82C9;
+	const GLenum VIEW_CLASS_16_BITS = 0x82CA;
+	const GLenum VIEW_CLASS_8_BITS = 0x82CB;
+	const GLenum VIEW_CLASS_S3TC_DXT1_RGB = 0x82CC;
+	const GLenum VIEW_CLASS_S3TC_DXT1_RGBA = 0x82CD;
+	const GLenum VIEW_CLASS_S3TC_DXT3_RGBA = 0x82CE;
+	const GLenum VIEW_CLASS_S3TC_DXT5_RGBA = 0x82CF;
+	const GLenum VIEW_CLASS_RGTC1_RED = 0x82D0;
+	const GLenum VIEW_CLASS_RGTC2_RG = 0x82D1;
+	const GLenum VIEW_CLASS_BPTC_UNORM = 0x82D2;
+	const GLenum VIEW_CLASS_BPTC_FLOAT = 0x82D3;
+	const GLenum UNIFORM = 0x92E1;
+	const GLenum UNIFORM_BLOCK = 0x92E2;
+	const GLenum PROGRAM_INPUT = 0x92E3;
+	const GLenum PROGRAM_OUTPUT = 0x92E4;
+	const GLenum BUFFER_VARIABLE = 0x92E5;
+	const GLenum SHADER_STORAGE_BLOCK = 0x92E6;
+	const GLenum VERTEX_SUBROUTINE = 0x92E8;
+	const GLenum TESS_CONTROL_SUBROUTINE = 0x92E9;
+	const GLenum TESS_EVALUATION_SUBROUTINE = 0x92EA;
+	const GLenum GEOMETRY_SUBROUTINE = 0x92EB;
+	const GLenum FRAGMENT_SUBROUTINE = 0x92EC;
+	const GLenum COMPUTE_SUBROUTINE = 0x92ED;
+	const GLenum VERTEX_SUBROUTINE_UNIFORM = 0x92EE;
+	const GLenum TESS_CONTROL_SUBROUTINE_UNIFORM = 0x92EF;
+	const GLenum TESS_EVALUATION_SUBROUTINE_UNIFORM = 0x92F0;
+	const GLenum GEOMETRY_SUBROUTINE_UNIFORM = 0x92F1;
+	const GLenum FRAGMENT_SUBROUTINE_UNIFORM = 0x92F2;
+	const GLenum COMPUTE_SUBROUTINE_UNIFORM = 0x92F3;
+	const GLenum TRANSFORM_FEEDBACK_VARYING = 0x92F4;
+	const GLenum ACTIVE_RESOURCES = 0x92F5;
+	const GLenum MAX_NAME_LENGTH = 0x92F6;
+	const GLenum MAX_NUM_ACTIVE_VARIABLES = 0x92F7;
+	const GLenum MAX_NUM_COMPATIBLE_SUBROUTINES = 0x92F8;
+	const GLenum NAME_LENGTH = 0x92F9;
+	const GLenum TYPE = 0x92FA;
+	const GLenum ARRAY_SIZE = 0x92FB;
+	const GLenum OFFSET = 0x92FC;
+	const GLenum BLOCK_INDEX = 0x92FD;
+	const GLenum ARRAY_STRIDE = 0x92FE;
+	const GLenum MATRIX_STRIDE = 0x92FF;
+	const GLenum IS_ROW_MAJOR = 0x9300;
+	const GLenum ATOMIC_COUNTER_BUFFER_INDEX = 0x9301;
+	const GLenum BUFFER_BINDING = 0x9302;
+	const GLenum BUFFER_DATA_SIZE = 0x9303;
+	const GLenum NUM_ACTIVE_VARIABLES = 0x9304;
+	const GLenum ACTIVE_VARIABLES = 0x9305;
+	const GLenum REFERENCED_BY_VERTEX_SHADER = 0x9306;
+	const GLenum REFERENCED_BY_TESS_CONTROL_SHADER = 0x9307;
+	const GLenum REFERENCED_BY_TESS_EVALUATION_SHADER = 0x9308;
+	const GLenum REFERENCED_BY_GEOMETRY_SHADER = 0x9309;
+	const GLenum REFERENCED_BY_FRAGMENT_SHADER = 0x930A;
+	const GLenum REFERENCED_BY_COMPUTE_SHADER = 0x930B;
+	const GLenum TOP_LEVEL_ARRAY_SIZE = 0x930C;
+	const GLenum TOP_LEVEL_ARRAY_STRIDE = 0x930D;
+	const GLenum LOCATION = 0x930E;
+	const GLenum LOCATION_INDEX = 0x930F;
+	const GLenum IS_PER_PATCH = 0x92E7;
+	const GLenum SHADER_STORAGE_BUFFER = 0x90D2;
+	const GLenum SHADER_STORAGE_BUFFER_BINDING = 0x90D3;
+	const GLenum SHADER_STORAGE_BUFFER_START = 0x90D4;
+	const GLenum SHADER_STORAGE_BUFFER_SIZE = 0x90D5;
+	const GLenum MAX_VERTEX_SHADER_STORAGE_BLOCKS = 0x90D6;
+	const GLenum MAX_GEOMETRY_SHADER_STORAGE_BLOCKS = 0x90D7;
+	const GLenum MAX_TESS_CONTROL_SHADER_STORAGE_BLOCKS = 0x90D8;
+	const GLenum MAX_TESS_EVALUATION_SHADER_STORAGE_BLOCKS = 0x90D9;
+	const GLenum MAX_FRAGMENT_SHADER_STORAGE_BLOCKS = 0x90DA;
+	const GLenum MAX_COMPUTE_SHADER_STORAGE_BLOCKS = 0x90DB;
+	const GLenum MAX_COMBINED_SHADER_STORAGE_BLOCKS = 0x90DC;
+	const GLenum MAX_SHADER_STORAGE_BUFFER_BINDINGS = 0x90DD;
+	const GLenum MAX_SHADER_STORAGE_BLOCK_SIZE = 0x90DE;
+	const GLenum SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT = 0x90DF;
+	const GLenum SHADER_STORAGE_BARRIER_BIT = 0x00002000;
+	const GLenum MAX_COMBINED_SHADER_OUTPUT_RESOURCES = 0x8F39;
+	const GLenum DEPTH_STENCIL_TEXTURE_MODE = 0x90EA;
+	const GLenum TEXTURE_BUFFER_OFFSET = 0x919D;
+	const GLenum TEXTURE_BUFFER_SIZE = 0x919E;
+	const GLenum TEXTURE_BUFFER_OFFSET_ALIGNMENT = 0x919F;
+	const GLenum TEXTURE_VIEW_MIN_LEVEL = 0x82DB;
+	const GLenum TEXTURE_VIEW_NUM_LEVELS = 0x82DC;
+	const GLenum TEXTURE_VIEW_MIN_LAYER = 0x82DD;
+	const GLenum TEXTURE_VIEW_NUM_LAYERS = 0x82DE;
+	const GLenum TEXTURE_IMMUTABLE_LEVELS = 0x82DF;
+	const GLenum VERTEX_ATTRIB_BINDING = 0x82D4;
+	const GLenum VERTEX_ATTRIB_RELATIVE_OFFSET = 0x82D5;
+	const GLenum VERTEX_BINDING_DIVISOR = 0x82D6;
+	const GLenum VERTEX_BINDING_OFFSET = 0x82D7;
+	const GLenum VERTEX_BINDING_STRIDE = 0x82D8;
+	const GLenum MAX_VERTEX_ATTRIB_RELATIVE_OFFSET = 0x82D9;
+	const GLenum MAX_VERTEX_ATTRIB_BINDINGS = 0x82DA;
+	const GLenum VERTEX_BINDING_BUFFER = 0x8F4F;
+	const GLenum MAX_VERTEX_ATTRIB_STRIDE = 0x82E5;
+	const GLenum PRIMITIVE_RESTART_FOR_PATCHES_SUPPORTED = 0x8221;
+	const GLenum TEXTURE_BUFFER_BINDING = 0x8C2A;
+	const GLenum MAP_PERSISTENT_BIT = 0x0040;
+	const GLenum MAP_COHERENT_BIT = 0x0080;
+	const GLenum DYNAMIC_STORAGE_BIT = 0x0100;
+	const GLenum CLIENT_STORAGE_BIT = 0x0200;
+	const GLenum CLIENT_MAPPED_BUFFER_BARRIER_BIT = 0x00004000;
+	const GLenum BUFFER_IMMUTABLE_STORAGE = 0x821F;
+	const GLenum BUFFER_STORAGE_FLAGS = 0x8220;
+	const GLenum CLEAR_TEXTURE = 0x9365;
+	const GLenum LOCATION_COMPONENT = 0x934A;
+	const GLenum TRANSFORM_FEEDBACK_BUFFER_INDEX = 0x934B;
+	const GLenum TRANSFORM_FEEDBACK_BUFFER_STRIDE = 0x934C;
+	const GLenum QUERY_BUFFER = 0x9192;
+	const GLenum QUERY_BUFFER_BARRIER_BIT = 0x00008000;
+	const GLenum QUERY_BUFFER_BINDING = 0x9193;
+	const GLenum QUERY_RESULT_NO_WAIT = 0x9194;
+	const GLenum MIRROR_CLAMP_TO_EDGE = 0x8743;
+	const GLenum CONTEXT_LOST = 0x0507;
+	const GLenum NEGATIVE_ONE_TO_ONE = 0x935E;
+	const GLenum ZERO_TO_ONE = 0x935F;
+	const GLenum CLIP_ORIGIN = 0x935C;
+	const GLenum CLIP_DEPTH_MODE = 0x935D;
+	const GLenum QUERY_WAIT_INVERTED = 0x8E17;
+	const GLenum QUERY_NO_WAIT_INVERTED = 0x8E18;
+	const GLenum QUERY_BY_REGION_WAIT_INVERTED = 0x8E19;
+	const GLenum QUERY_BY_REGION_NO_WAIT_INVERTED = 0x8E1A;
+	const GLenum MAX_CULL_DISTANCES = 0x82F9;
+	const GLenum MAX_COMBINED_CLIP_AND_CULL_DISTANCES = 0x82FA;
+	const GLenum TEXTURE_TARGET = 0x1006;
+	const GLenum QUERY_TARGET = 0x82EA;
+	const GLenum GUILTY_CONTEXT_RESET = 0x8253;
+	const GLenum INNOCENT_CONTEXT_RESET = 0x8254;
+	const GLenum UNKNOWN_CONTEXT_RESET = 0x8255;
+	const GLenum RESET_NOTIFICATION_STRATEGY = 0x8256;
+	const GLenum LOSE_CONTEXT_ON_RESET = 0x8252;
+	const GLenum NO_RESET_NOTIFICATION = 0x8261;
+	const GLenum CONTEXT_FLAG_ROBUST_ACCESS_BIT = 0x00000004;
+	const GLenum CONTEXT_RELEASE_BEHAVIOR = 0x82FB;
+	const GLenum CONTEXT_RELEASE_BEHAVIOR_FLUSH = 0x82FC;
+	const GLenum SHADER_BINARY_FORMAT_SPIR_V = 0x9551;
+	const GLenum SPIR_V_BINARY = 0x9552;
+	const GLenum PARAMETER_BUFFER = 0x80EE;
+	const GLenum PARAMETER_BUFFER_BINDING = 0x80EF;
+	const GLenum CONTEXT_FLAG_NO_ERROR_BIT = 0x00000008;
+	const GLenum VERTICES_SUBMITTED = 0x82EE;
+	const GLenum PRIMITIVES_SUBMITTED = 0x82EF;
+	const GLenum VERTEX_SHADER_INVOCATIONS = 0x82F0;
+	const GLenum TESS_CONTROL_SHADER_PATCHES = 0x82F1;
+	const GLenum TESS_EVALUATION_SHADER_INVOCATIONS = 0x82F2;
+	const GLenum GEOMETRY_SHADER_PRIMITIVES_EMITTED = 0x82F3;
+	const GLenum FRAGMENT_SHADER_INVOCATIONS = 0x82F4;
+	const GLenum COMPUTE_SHADER_INVOCATIONS = 0x82F5;
+	const GLenum CLIPPING_INPUT_PRIMITIVES = 0x82F6;
+	const GLenum CLIPPING_OUTPUT_PRIMITIVES = 0x82F7;
+	const GLenum POLYGON_OFFSET_CLAMP = 0x8E1B;
+	const GLenum SPIR_V_EXTENSIONS = 0x9553;
+	const GLenum NUM_SPIR_V_EXTENSIONS = 0x9554;
+	const GLenum TEXTURE_MAX_ANISOTROPY = 0x84FE;
+	const GLenum MAX_TEXTURE_MAX_ANISOTROPY = 0x84FF;
+	const GLenum TRANSFORM_FEEDBACK_OVERFLOW = 0x82EC;
+	const GLenum TRANSFORM_FEEDBACK_STREAM_OVERFLOW = 0x82ED;
+	const GLenum PRIMITIVE_BOUNDING_BOX_ = 0x92BE;
+	const GLenum MULTISAMPLE_LINE_WIDTH_RANGE_ = 0x9381;
+	const GLenum MULTISAMPLE_LINE_WIDTH_GRANULARITY_ = 0x9382;
+	const GLenum UNSIGNED_INT64_ = 0x140F;
+	const GLenum SYNC_CL_EVENT_ = 0x8240;
+	const GLenum SYNC_CL_EVENT_COMPLETE_ = 0x8241;
+	const GLenum MAX_COMPUTE_VARIABLE_GROUP_INVOCATIONS_ = 0x9344;
+	const GLenum MAX_COMPUTE_FIXED_GROUP_INVOCATIONS_ = 0x90EB;
+	const GLenum MAX_COMPUTE_VARIABLE_GROUP_SIZE_ = 0x9345;
+	const GLenum MAX_COMPUTE_FIXED_GROUP_SIZE_ = 0x91BF;
+	const GLenum DEBUG_OUTPUT_SYNCHRONOUS_ = 0x8242;
+	const GLenum DEBUG_NEXT_LOGGED_MESSAGE_LENGTH_ = 0x8243;
+	const GLenum DEBUG_CALLBACK_FUNCTION_ = 0x8244;
+	const GLenum DEBUG_CALLBACK_USER_PARAM_ = 0x8245;
+	const GLenum DEBUG_SOURCE_API_ = 0x8246;
+	const GLenum DEBUG_SOURCE_WINDOW_SYSTEM_ = 0x8247;
+	const GLenum DEBUG_SOURCE_SHADER_COMPILER_ = 0x8248;
+	const GLenum DEBUG_SOURCE_THIRD_PARTY_ = 0x8249;
+	const GLenum DEBUG_SOURCE_APPLICATION_ = 0x824A;
+	const GLenum DEBUG_SOURCE_OTHER_ = 0x824B;
+	const GLenum DEBUG_TYPE_ERROR_ = 0x824C;
+	const GLenum DEBUG_TYPE_DEPRECATED_BEHAVIOR_ = 0x824D;
+	const GLenum DEBUG_TYPE_UNDEFINED_BEHAVIOR_ = 0x824E;
+	const GLenum DEBUG_TYPE_PORTABILITY_ = 0x824F;
+	const GLenum DEBUG_TYPE_PERFORMANCE_ = 0x8250;
+	const GLenum DEBUG_TYPE_OTHER_ = 0x8251;
+	const GLenum MAX_DEBUG_MESSAGE_LENGTH_ = 0x9143;
+	const GLenum MAX_DEBUG_LOGGED_MESSAGES_ = 0x9144;
+	const GLenum DEBUG_LOGGED_MESSAGES_ = 0x9145;
+	const GLenum DEBUG_SEVERITY_HIGH_ = 0x9146;
+	const GLenum DEBUG_SEVERITY_MEDIUM_ = 0x9147;
+	const GLenum DEBUG_SEVERITY_LOW_ = 0x9148;
+	const GLenum LINES_ADJACENCY_ = 0x000A;
+	const GLenum LINE_STRIP_ADJACENCY_ = 0x000B;
+	const GLenum TRIANGLES_ADJACENCY_ = 0x000C;
+	const GLenum TRIANGLE_STRIP_ADJACENCY_ = 0x000D;
+	const GLenum PROGRAM_POINT_SIZE_ = 0x8642;
+	const GLenum MAX_GEOMETRY_TEXTURE_IMAGE_UNITS_ = 0x8C29;
+	const GLenum FRAMEBUFFER_ATTACHMENT_LAYERED_ = 0x8DA7;
+	const GLenum FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS_ = 0x8DA8;
+	const GLenum FRAMEBUFFER_INCOMPLETE_LAYER_COUNT_ = 0x8DA9;
+	const GLenum GEOMETRY_SHADER_ = 0x8DD9;
+	const GLenum GEOMETRY_VERTICES_OUT_ = 0x8DDA;
+	const GLenum GEOMETRY_INPUT_TYPE_ = 0x8DDB;
+	const GLenum GEOMETRY_OUTPUT_TYPE_ = 0x8DDC;
+	const GLenum MAX_GEOMETRY_VARYING_COMPONENTS_ = 0x8DDD;
+	const GLenum MAX_VERTEX_VARYING_COMPONENTS_ = 0x8DDE;
+	const GLenum MAX_GEOMETRY_UNIFORM_COMPONENTS_ = 0x8DDF;
+	const GLenum MAX_GEOMETRY_OUTPUT_VERTICES_ = 0x8DE0;
+	const GLenum MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS_ = 0x8DE1;
+	const GLenum SHADER_BINARY_FORMAT_SPIR_V_ = 0x9551;
+	const GLenum SPIR_V_BINARY_ = 0x9552;
+	const GLenum INT64_ = 0x140E;
+	const GLenum INT64_VEC2_ = 0x8FE9;
+	const GLenum INT64_VEC3_ = 0x8FEA;
+	const GLenum INT64_VEC4_ = 0x8FEB;
+	const GLenum UNSIGNED_INT64_VEC2_ = 0x8FF5;
+	const GLenum UNSIGNED_INT64_VEC3_ = 0x8FF6;
+	const GLenum UNSIGNED_INT64_VEC4_ = 0x8FF7;
+	const GLenum PARAMETER_BUFFER_ = 0x80EE;
+	const GLenum PARAMETER_BUFFER_BINDING_ = 0x80EF;
+	const GLenum VERTEX_ATTRIB_ARRAY_DIVISOR_ = 0x88FE;
+	const GLenum SRGB_DECODE_ = 0x8299;
+	const GLenum VIEW_CLASS_EAC_R11 = 0x9383;
+	const GLenum VIEW_CLASS_EAC_RG11 = 0x9384;
+	const GLenum VIEW_CLASS_ETC2_RGB = 0x9385;
+	const GLenum VIEW_CLASS_ETC2_RGBA = 0x9386;
+	const GLenum VIEW_CLASS_ETC2_EAC_RGBA = 0x9387;
+	const GLenum VIEW_CLASS_ASTC_4x4_RGBA = 0x9388;
+	const GLenum VIEW_CLASS_ASTC_5x4_RGBA = 0x9389;
+	const GLenum VIEW_CLASS_ASTC_5x5_RGBA = 0x938A;
+	const GLenum VIEW_CLASS_ASTC_6x5_RGBA = 0x938B;
+	const GLenum VIEW_CLASS_ASTC_6x6_RGBA = 0x938C;
+	const GLenum VIEW_CLASS_ASTC_8x5_RGBA = 0x938D;
+	const GLenum VIEW_CLASS_ASTC_8x6_RGBA = 0x938E;
+	const GLenum VIEW_CLASS_ASTC_8x8_RGBA = 0x938F;
+	const GLenum VIEW_CLASS_ASTC_10x5_RGBA = 0x9390;
+	const GLenum VIEW_CLASS_ASTC_10x6_RGBA = 0x9391;
+	const GLenum VIEW_CLASS_ASTC_10x8_RGBA = 0x9392;
+	const GLenum VIEW_CLASS_ASTC_10x10_RGBA = 0x9393;
+	const GLenum VIEW_CLASS_ASTC_12x10_RGBA = 0x9394;
+	const GLenum VIEW_CLASS_ASTC_12x12_RGBA = 0x9395;
+	const GLenum MAX_SHADER_COMPILER_THREADS_ = 0x91B0;
+	const GLenum COMPLETION_STATUS_ = 0x91B1;
+	const GLenum VERTICES_SUBMITTED_ = 0x82EE;
+	const GLenum PRIMITIVES_SUBMITTED_ = 0x82EF;
+	const GLenum VERTEX_SHADER_INVOCATIONS_ = 0x82F0;
+	const GLenum TESS_CONTROL_SHADER_PATCHES_ = 0x82F1;
+	const GLenum TESS_EVALUATION_SHADER_INVOCATIONS_ = 0x82F2;
+	const GLenum GEOMETRY_SHADER_PRIMITIVES_EMITTED_ = 0x82F3;
+	const GLenum FRAGMENT_SHADER_INVOCATIONS_ = 0x82F4;
+	const GLenum COMPUTE_SHADER_INVOCATIONS_ = 0x82F5;
+	const GLenum CLIPPING_INPUT_PRIMITIVES_ = 0x82F6;
+	const GLenum CLIPPING_OUTPUT_PRIMITIVES_ = 0x82F7;
+	const GLenum PIXEL_PACK_BUFFER_ = 0x88EB;
+	const GLenum PIXEL_UNPACK_BUFFER_ = 0x88EC;
+	const GLenum PIXEL_PACK_BUFFER_BINDING_ = 0x88ED;
+	const GLenum PIXEL_UNPACK_BUFFER_BINDING_ = 0x88EF;
+	const GLenum CONTEXT_FLAG_ROBUST_ACCESS_BIT_ = 0x00000004;
+	const GLenum LOSE_CONTEXT_ON_RESET_ = 0x8252;
+	const GLenum GUILTY_CONTEXT_RESET_ = 0x8253;
+	const GLenum INNOCENT_CONTEXT_RESET_ = 0x8254;
+	const GLenum UNKNOWN_CONTEXT_RESET_ = 0x8255;
+	const GLenum RESET_NOTIFICATION_STRATEGY_ = 0x8256;
+	const GLenum NO_RESET_NOTIFICATION_ = 0x8261;
+	const GLenum SAMPLE_LOCATION_SUBPIXEL_BITS_ = 0x933D;
+	const GLenum SAMPLE_LOCATION_PIXEL_GRID_WIDTH_ = 0x933E;
+	const GLenum SAMPLE_LOCATION_PIXEL_GRID_HEIGHT_ = 0x933F;
+	const GLenum PROGRAMMABLE_SAMPLE_LOCATION_TABLE_SIZE_ = 0x9340;
+	const GLenum SAMPLE_LOCATION_ = 0x8E50;
+	const GLenum PROGRAMMABLE_SAMPLE_LOCATION_ = 0x9341;
+	const GLenum FRAMEBUFFER_PROGRAMMABLE_SAMPLE_LOCATIONS_ = 0x9342;
+	const GLenum FRAMEBUFFER_SAMPLE_LOCATION_PIXEL_GRID_ = 0x9343;
+	const GLenum SAMPLE_SHADING_ = 0x8C36;
+	const GLenum MIN_SAMPLE_SHADING_VALUE_ = 0x8C37;
+	const GLenum SHADER_INCLUDE_ = 0x8DAE;
+	const GLenum NAMED_STRING_LENGTH_ = 0x8DE9;
+	const GLenum NAMED_STRING_TYPE_ = 0x8DEA;
+	const GLenum SPARSE_STORAGE_BIT_ = 0x0400;
+	const GLenum SPARSE_BUFFER_PAGE_SIZE_ = 0x82F8;
+	const GLenum TEXTURE_SPARSE_ = 0x91A6;
+	const GLenum VIRTUAL_PAGE_SIZE_INDEX_ = 0x91A7;
+	const GLenum NUM_SPARSE_LEVELS_ = 0x91AA;
+	const GLenum NUM_VIRTUAL_PAGE_SIZES_ = 0x91A8;
+	const GLenum VIRTUAL_PAGE_SIZE_X_ = 0x9195;
+	const GLenum VIRTUAL_PAGE_SIZE_Y_ = 0x9196;
+	const GLenum VIRTUAL_PAGE_SIZE_Z_ = 0x9197;
+	const GLenum MAX_SPARSE_TEXTURE_SIZE_ = 0x9198;
+	const GLenum MAX_SPARSE_3D_TEXTURE_SIZE_ = 0x9199;
+	const GLenum MAX_SPARSE_ARRAY_TEXTURE_LAYERS_ = 0x919A;
+	const GLenum SPARSE_TEXTURE_FULL_ARRAY_CUBE_MIPMAPS_ = 0x91A9;
+	const GLenum CLAMP_TO_BORDER_ = 0x812D;
+	const GLenum TEXTURE_BUFFER_ = 0x8C2A;
+	const GLenum MAX_TEXTURE_BUFFER_SIZE_ = 0x8C2B;
+	const GLenum TEXTURE_BINDING_BUFFER_ = 0x8C2C;
+	const GLenum TEXTURE_BUFFER_DATA_STORE_BINDING_ = 0x8C2D;
+	const GLenum TEXTURE_BUFFER_FORMAT_ = 0x8C2E;
+	const GLenum COMPRESSED_RGBA_BPTC_UNORM_ = 0x8E8C;
+	const GLenum COMPRESSED_SRGB_ALPHA_BPTC_UNORM_ = 0x8E8D;
+	const GLenum COMPRESSED_RGB_BPTC_SIGNED_FLOAT_ = 0x8E8E;
+	const GLenum COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_ = 0x8E8F;
+	const GLenum TEXTURE_CUBE_MAP_ARRAY_ = 0x9009;
+	const GLenum TEXTURE_BINDING_CUBE_MAP_ARRAY_ = 0x900A;
+	const GLenum PROXY_TEXTURE_CUBE_MAP_ARRAY_ = 0x900B;
+	const GLenum SAMPLER_CUBE_MAP_ARRAY_ = 0x900C;
+	const GLenum SAMPLER_CUBE_MAP_ARRAY_SHADOW_ = 0x900D;
+	const GLenum INT_SAMPLER_CUBE_MAP_ARRAY_ = 0x900E;
+	const GLenum UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY_ = 0x900F;
+	const GLenum TEXTURE_REDUCTION_MODE_ = 0x9366;
+	const GLenum WEIGHTED_AVERAGE_ = 0x9367;
+	const GLenum MIN_PROGRAM_TEXTURE_GATHER_OFFSET_ = 0x8E5E;
+	const GLenum MAX_PROGRAM_TEXTURE_GATHER_OFFSET_ = 0x8E5F;
+	const GLenum MAX_PROGRAM_TEXTURE_GATHER_COMPONENTS_ = 0x8F9F;
+	const GLenum MIRRORED_REPEAT_ = 0x8370;
+	const GLenum TRANSFORM_FEEDBACK_OVERFLOW_ = 0x82EC;
+	const GLenum TRANSFORM_FEEDBACK_STREAM_OVERFLOW_ = 0x82ED;
+	const GLenum MULTIPLY_ = 0x9294;
+	const GLenum SCREEN_ = 0x9295;
+	const GLenum OVERLAY_ = 0x9296;
+	const GLenum DARKEN_ = 0x9297;
+	const GLenum LIGHTEN_ = 0x9298;
+	const GLenum COLORDODGE_ = 0x9299;
+	const GLenum COLORBURN_ = 0x929A;
+	const GLenum HARDLIGHT_ = 0x929B;
+	const GLenum SOFTLIGHT_ = 0x929C;
+	const GLenum DIFFERENCE_ = 0x929E;
+	const GLenum EXCLUSION_ = 0x92A0;
+	const GLenum HSL_HUE_ = 0x92AD;
+	const GLenum HSL_SATURATION_ = 0x92AE;
+	const GLenum HSL_COLOR_ = 0x92AF;
+	const GLenum HSL_LUMINOSITY_ = 0x92B0;
+	const GLenum BLEND_ADVANCED_COHERENT_ = 0x9285;
+	const GLenum CONTEXT_FLAG_NO_ERROR_BIT_ = 0x00000008;
+	const GLenum CONTEXT_ROBUST_ACCESS = 0x90F3;
+	const GLenum SUBGROUP_SIZE_ = 0x9532;
+	const GLenum SUBGROUP_SUPPORTED_STAGES_ = 0x9533;
+	const GLenum SUBGROUP_SUPPORTED_FEATURES_ = 0x9534;
+	const GLenum SUBGROUP_QUAD_ALL_STAGES_ = 0x9535;
+	const GLenum SUBGROUP_FEATURE_BASIC_BIT_ = 0x00000001;
+	const GLenum SUBGROUP_FEATURE_VOTE_BIT_ = 0x00000002;
+	const GLenum SUBGROUP_FEATURE_ARITHMETIC_BIT_ = 0x00000004;
+	const GLenum SUBGROUP_FEATURE_BALLOT_BIT_ = 0x00000008;
+	const GLenum SUBGROUP_FEATURE_SHUFFLE_BIT_ = 0x00000010;
+	const GLenum SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT_ = 0x00000020;
+	const GLenum SUBGROUP_FEATURE_CLUSTERED_BIT_ = 0x00000040;
+	const GLenum SUBGROUP_FEATURE_QUAD_BIT_ = 0x00000080;
+	const GLenum COMPRESSED_RGBA_ASTC_4x4_ = 0x93B0;
+	const GLenum COMPRESSED_RGBA_ASTC_5x4_ = 0x93B1;
+	const GLenum COMPRESSED_RGBA_ASTC_5x5_ = 0x93B2;
+	const GLenum COMPRESSED_RGBA_ASTC_6x5_ = 0x93B3;
+	const GLenum COMPRESSED_RGBA_ASTC_6x6_ = 0x93B4;
+	const GLenum COMPRESSED_RGBA_ASTC_8x5_ = 0x93B5;
+	const GLenum COMPRESSED_RGBA_ASTC_8x6_ = 0x93B6;
+	const GLenum COMPRESSED_RGBA_ASTC_8x8_ = 0x93B7;
+	const GLenum COMPRESSED_RGBA_ASTC_10x5_ = 0x93B8;
+	const GLenum COMPRESSED_RGBA_ASTC_10x6_ = 0x93B9;
+	const GLenum COMPRESSED_RGBA_ASTC_10x8_ = 0x93BA;
+	const GLenum COMPRESSED_RGBA_ASTC_10x10_ = 0x93BB;
+	const GLenum COMPRESSED_RGBA_ASTC_12x10_ = 0x93BC;
+	const GLenum COMPRESSED_RGBA_ASTC_12x12_ = 0x93BD;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_ = 0x93D0;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_ = 0x93D1;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_ = 0x93D2;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_ = 0x93D3;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_ = 0x93D4;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_ = 0x93D5;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_ = 0x93D6;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_ = 0x93D7;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_ = 0x93D8;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_ = 0x93D9;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_ = 0x93DA;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_ = 0x93DB;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_ = 0x93DC;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_ = 0x93DD;
+	const GLenum PROGRAM_PIPELINE_OBJECT_ = 0x8A4F;
+	const GLenum PROGRAM_OBJECT_ = 0x8B40;
+	const GLenum SHADER_OBJECT_ = 0x8B48;
+	const GLenum BUFFER_OBJECT_ = 0x9151;
+	const GLenum QUERY_OBJECT_ = 0x9153;
+	const GLenum VERTEX_ARRAY_OBJECT_ = 0x9154;
+	const GLenum PROGRAM_MATRIX_ = 0x8E2D;
+	const GLenum TRANSPOSE_PROGRAM_MATRIX_ = 0x8E2E;
+	const GLenum PROGRAM_MATRIX_STACK_DEPTH_ = 0x8E2F;
+	const GLenum POLYGON_OFFSET_CLAMP_ = 0x8E1B;
+	const GLenum RASTER_MULTISAMPLE_ = 0x9327;
+	const GLenum RASTER_SAMPLES_ = 0x9328;
+	const GLenum MAX_RASTER_SAMPLES_ = 0x9329;
+	const GLenum RASTER_FIXED_SAMPLE_LOCATIONS_ = 0x932A;
+	const GLenum MULTISAMPLE_RASTERIZATION_ALLOWED_ = 0x932B;
+	const GLenum EFFECTIVE_RASTER_SAMPLES_ = 0x932C;
+	const GLenum ACTIVE_PROGRAM_ = 0x8259;
+	const GLenum FRAGMENT_SHADER_DISCARDS_SAMPLES_ = 0x8A52;
+	const GLenum COMPRESSED_RGB_S3TC_DXT1_ = 0x83F0;
+	const GLenum COMPRESSED_RGBA_S3TC_DXT1_ = 0x83F1;
+	const GLenum COMPRESSED_RGBA_S3TC_DXT3_ = 0x83F2;
+	const GLenum COMPRESSED_RGBA_S3TC_DXT5_ = 0x83F3;
+	const GLenum SR8_ = 0x8FBD;
+	const GLenum SRG8_ = 0x8FBE;
+	const GLenum TEXTURE_SRGB_DECODE_ = 0x8A48;
+	const GLenum DECODE_ = 0x8A49;
+	const GLenum SKIP_DECODE_ = 0x8A4A;
+	const GLenum INCLUSIVE_ = 0x8F10;
+	const GLenum EXCLUSIVE_ = 0x8F11;
+	const GLenum WINDOW_RECTANGLE_ = 0x8F12;
+	const GLenum WINDOW_RECTANGLE_MODE_ = 0x8F13;
+	const GLenum MAX_WINDOW_RECTANGLES_ = 0x8F14;
+	const GLenum NUM_WINDOW_RECTANGLES_ = 0x8F15;
+	const GLenum CONTEXT_RELEASE_BEHAVIOR_ = 0x82FB;
+	const GLenum CONTEXT_RELEASE_BEHAVIOR_FLUSH_ = 0x82FC;
+	const GLenum DEBUG_TYPE_MARKER_ = 0x8268;
+	const GLenum DEBUG_TYPE_PUSH_GROUP_ = 0x8269;
+	const GLenum DEBUG_TYPE_POP_GROUP_ = 0x826A;
+	const GLenum DEBUG_SEVERITY_NOTIFICATION_ = 0x826B;
+	const GLenum MAX_DEBUG_GROUP_STACK_DEPTH_ = 0x826C;
+	const GLenum DEBUG_GROUP_STACK_DEPTH_ = 0x826D;
+	const GLenum BUFFER_ = 0x82E0;
+	const GLenum SHADER_ = 0x82E1;
+	const GLenum PROGRAM_ = 0x82E2;
+	const GLenum VERTEX_ARRAY_ = 0x8074;
+	const GLenum QUERY_ = 0x82E3;
+	const GLenum PROGRAM_PIPELINE_ = 0x82E4;
+	const GLenum SAMPLER_ = 0x82E6;
+	const GLenum MAX_LABEL_LENGTH_ = 0x82E8;
+	const GLenum DEBUG_OUTPUT_ = 0x92E0;
+	const GLenum CONTEXT_FLAG_DEBUG_BIT_ = 0x00000002;
+	const GLenum STACK_OVERFLOW_ = 0x0503;
+	const GLenum STACK_UNDERFLOW_ = 0x0504;
+	const GLenum CONTEXT_ROBUST_ACCESS_ = 0x90F3;
+	const GLenum CONTEXT_LOST_ = 0x0507;
+	const GLenum TEXTURE_EXTERNAL_ = 0x8D65;
+	const GLenum TEXTURE_BINDING_EXTERNAL_ = 0x8D67;
+	const GLenum REQUIRED_TEXTURE_IMAGE_UNITS_ = 0x8D68;
+	const GLenum SAMPLER_EXTERNAL_ = 0x8D66;
+	const GLenum ETC1_RGB8_ = 0x8D64;
+	const GLenum PALETTE4_RGB8_ = 0x8B90;
+	const GLenum PALETTE4_RGBA8_ = 0x8B91;
+	const GLenum PALETTE4_R5_G6_B5_ = 0x8B92;
+	const GLenum PALETTE4_RGBA4_ = 0x8B93;
+	const GLenum PALETTE4_RGB5_A1_ = 0x8B94;
+	const GLenum PALETTE8_RGB8_ = 0x8B95;
+	const GLenum PALETTE8_RGBA8_ = 0x8B96;
+	const GLenum PALETTE8_R5_G6_B5_ = 0x8B97;
+	const GLenum PALETTE8_RGBA4_ = 0x8B98;
+	const GLenum PALETTE8_RGB5_A1_ = 0x8B99;
+	const GLenum DEPTH_COMPONENT24_ = 0x81A6;
+	const GLenum DEPTH_COMPONENT32_ = 0x81A7;
+	const GLenum GEOMETRY_SHADER_BIT_ = 0x00000004;
+	const GLenum GEOMETRY_LINKED_VERTICES_OUT_ = 0x8916;
+	const GLenum GEOMETRY_LINKED_INPUT_TYPE_ = 0x8917;
+	const GLenum GEOMETRY_LINKED_OUTPUT_TYPE_ = 0x8918;
+	const GLenum GEOMETRY_SHADER_INVOCATIONS_ = 0x887F;
+	const GLenum LAYER_PROVOKING_VERTEX_ = 0x825E;
+	const GLenum MAX_GEOMETRY_UNIFORM_BLOCKS_ = 0x8A2C;
+	const GLenum MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS_ = 0x8A32;
+	const GLenum MAX_GEOMETRY_INPUT_COMPONENTS_ = 0x9123;
+	const GLenum MAX_GEOMETRY_OUTPUT_COMPONENTS_ = 0x9124;
+	const GLenum MAX_GEOMETRY_SHADER_INVOCATIONS_ = 0x8E5A;
+	const GLenum MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS_ = 0x92CF;
+	const GLenum MAX_GEOMETRY_ATOMIC_COUNTERS_ = 0x92D5;
+	const GLenum MAX_GEOMETRY_IMAGE_UNIFORMS_ = 0x90CD;
+	const GLenum MAX_GEOMETRY_SHADER_STORAGE_BLOCKS_ = 0x90D7;
+	const GLenum FIRST_VERTEX_CONVENTION_ = 0x8E4D;
+	const GLenum LAST_VERTEX_CONVENTION_ = 0x8E4E;
+	const GLenum UNDEFINED_VERTEX_ = 0x8260;
+	const GLenum PRIMITIVES_GENERATED_ = 0x8C87;
+	const GLenum FRAMEBUFFER_DEFAULT_LAYERS_ = 0x9312;
+	const GLenum MAX_FRAMEBUFFER_LAYERS_ = 0x9317;
+	const GLenum REFERENCED_BY_GEOMETRY_SHADER_ = 0x9309;
+	const GLenum PROGRAM_BINARY_LENGTH_ = 0x8741;
+	const GLenum NUM_PROGRAM_BINARY_FORMATS_ = 0x87FE;
+	const GLenum PROGRAM_BINARY_FORMATS_ = 0x87FF;
+	const GLenum WRITE_ONLY_ = 0x88B9;
+	const GLenum BUFFER_ACCESS_ = 0x88BB;
+	const GLenum BUFFER_MAPPED_ = 0x88BC;
+	const GLenum BUFFER_MAP_POINTER_ = 0x88BD;
+	const GLenum DEPTH_STENCIL_ = 0x84F9;
+	const GLenum UNSIGNED_INT_24_8_ = 0x84FA;
+	const GLenum DEPTH24_STENCIL8_ = 0x88F0;
+	const GLenum ALPHA8_ = 0x803C;
+	const GLenum DEPTH_COMPONENT16_ = 0x81A5;
+	const GLenum LUMINANCE4_ALPHA4_ = 0x8043;
+	const GLenum LUMINANCE8_ALPHA8_ = 0x8045;
+	const GLenum LUMINANCE8_ = 0x8040;
+	const GLenum RGBA4_ = 0x8056;
+	const GLenum RGB5_A1_ = 0x8057;
+	const GLenum RGB565_ = 0x8D62;
+	const GLenum RGB8_ = 0x8051;
+	const GLenum RGBA8_ = 0x8058;
+	const GLenum RGB10_ = 0x8052;
+	const GLenum RGB10_A2_ = 0x8059;
+	const GLenum MIN_FRAGMENT_INTERPOLATION_OFFSET_ = 0x8E5B;
+	const GLenum MAX_FRAGMENT_INTERPOLATION_OFFSET_ = 0x8E5C;
+	const GLenum FRAGMENT_INTERPOLATION_OFFSET_BITS_ = 0x8E5D;
+	const GLenum FRAGMENT_SHADER_DERIVATIVE_HINT_ = 0x8B8B;
+	const GLenum STENCIL_INDEX1_ = 0x8D46;
+	const GLenum STENCIL_INDEX4_ = 0x8D47;
+	const GLenum FRAMEBUFFER_UNDEFINED_ = 0x8219;
+	const GLenum PATCHES_ = 0x000E;
+	const GLenum PATCH_VERTICES_ = 0x8E72;
+	const GLenum TESS_CONTROL_OUTPUT_VERTICES_ = 0x8E75;
+	const GLenum TESS_GEN_MODE_ = 0x8E76;
+	const GLenum TESS_GEN_SPACING_ = 0x8E77;
+	const GLenum TESS_GEN_VERTEX_ORDER_ = 0x8E78;
+	const GLenum TESS_GEN_POINT_MODE_ = 0x8E79;
+	const GLenum ISOLINES_ = 0x8E7A;
+	const GLenum QUADS_ = 0x0007;
+	const GLenum FRACTIONAL_ODD_ = 0x8E7B;
+	const GLenum FRACTIONAL_EVEN_ = 0x8E7C;
+	const GLenum MAX_PATCH_VERTICES_ = 0x8E7D;
+	const GLenum MAX_TESS_GEN_LEVEL_ = 0x8E7E;
+	const GLenum MAX_TESS_CONTROL_UNIFORM_COMPONENTS_ = 0x8E7F;
+	const GLenum MAX_TESS_EVALUATION_UNIFORM_COMPONENTS_ = 0x8E80;
+	const GLenum MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS_ = 0x8E81;
+	const GLenum MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS_ = 0x8E82;
+	const GLenum MAX_TESS_CONTROL_OUTPUT_COMPONENTS_ = 0x8E83;
+	const GLenum MAX_TESS_PATCH_COMPONENTS_ = 0x8E84;
+	const GLenum MAX_TESS_CONTROL_TOTAL_OUTPUT_COMPONENTS_ = 0x8E85;
+	const GLenum MAX_TESS_EVALUATION_OUTPUT_COMPONENTS_ = 0x8E86;
+	const GLenum MAX_TESS_CONTROL_UNIFORM_BLOCKS_ = 0x8E89;
+	const GLenum MAX_TESS_EVALUATION_UNIFORM_BLOCKS_ = 0x8E8A;
+	const GLenum MAX_TESS_CONTROL_INPUT_COMPONENTS_ = 0x886C;
+	const GLenum MAX_TESS_EVALUATION_INPUT_COMPONENTS_ = 0x886D;
+	const GLenum MAX_COMBINED_TESS_CONTROL_UNIFORM_COMPONENTS_ = 0x8E1E;
+	const GLenum MAX_COMBINED_TESS_EVALUATION_UNIFORM_COMPONENTS_ = 0x8E1F;
+	const GLenum MAX_TESS_CONTROL_ATOMIC_COUNTER_BUFFERS_ = 0x92CD;
+	const GLenum MAX_TESS_EVALUATION_ATOMIC_COUNTER_BUFFERS_ = 0x92CE;
+	const GLenum MAX_TESS_CONTROL_ATOMIC_COUNTERS_ = 0x92D3;
+	const GLenum MAX_TESS_EVALUATION_ATOMIC_COUNTERS_ = 0x92D4;
+	const GLenum MAX_TESS_CONTROL_IMAGE_UNIFORMS_ = 0x90CB;
+	const GLenum MAX_TESS_EVALUATION_IMAGE_UNIFORMS_ = 0x90CC;
+	const GLenum MAX_TESS_CONTROL_SHADER_STORAGE_BLOCKS_ = 0x90D8;
+	const GLenum MAX_TESS_EVALUATION_SHADER_STORAGE_BLOCKS_ = 0x90D9;
+	const GLenum PRIMITIVE_RESTART_FOR_PATCHES_SUPPORTED_ = 0x8221;
+	const GLenum IS_PER_PATCH_ = 0x92E7;
+	const GLenum REFERENCED_BY_TESS_CONTROL_SHADER_ = 0x9307;
+	const GLenum REFERENCED_BY_TESS_EVALUATION_SHADER_ = 0x9308;
+	const GLenum TESS_CONTROL_SHADER_ = 0x8E88;
+	const GLenum TESS_EVALUATION_SHADER_ = 0x8E87;
+	const GLenum TESS_CONTROL_SHADER_BIT_ = 0x00000008;
+	const GLenum TESS_EVALUATION_SHADER_BIT_ = 0x00000010;
+	const GLenum TEXTURE_WRAP_R_ = 0x8072;
+	const GLenum TEXTURE_3D_ = 0x806F;
+	const GLenum TEXTURE_BINDING_3D_ = 0x806A;
+	const GLenum MAX_3D_TEXTURE_SIZE_ = 0x8073;
+	const GLenum SAMPLER_3D_ = 0x8B5F;
+	const GLenum FRAMEBUFFER_ATTACHMENT_TEXTURE_3D_ZOFFSET_ = 0x8CD4;
+	const GLenum TEXTURE_BORDER_COLOR_ = 0x1004;
+	const GLenum TEXTURE_BUFFER_BINDING_ = 0x8C2A;
+	const GLenum TEXTURE_BUFFER_OFFSET_ALIGNMENT_ = 0x919F;
+	const GLenum SAMPLER_BUFFER_ = 0x8DC2;
+	const GLenum INT_SAMPLER_BUFFER_ = 0x8DD0;
+	const GLenum UNSIGNED_INT_SAMPLER_BUFFER_ = 0x8DD8;
+	const GLenum IMAGE_BUFFER_ = 0x9051;
+	const GLenum INT_IMAGE_BUFFER_ = 0x905C;
+	const GLenum UNSIGNED_INT_IMAGE_BUFFER_ = 0x9067;
+	const GLenum TEXTURE_BUFFER_OFFSET_ = 0x919D;
+	const GLenum TEXTURE_BUFFER_SIZE_ = 0x919E;
+	const GLenum COMPRESSED_RGBA_ASTC_3x3x3_ = 0x93C0;
+	const GLenum COMPRESSED_RGBA_ASTC_4x3x3_ = 0x93C1;
+	const GLenum COMPRESSED_RGBA_ASTC_4x4x3_ = 0x93C2;
+	const GLenum COMPRESSED_RGBA_ASTC_4x4x4_ = 0x93C3;
+	const GLenum COMPRESSED_RGBA_ASTC_5x4x4_ = 0x93C4;
+	const GLenum COMPRESSED_RGBA_ASTC_5x5x4_ = 0x93C5;
+	const GLenum COMPRESSED_RGBA_ASTC_5x5x5_ = 0x93C6;
+	const GLenum COMPRESSED_RGBA_ASTC_6x5x5_ = 0x93C7;
+	const GLenum COMPRESSED_RGBA_ASTC_6x6x5_ = 0x93C8;
+	const GLenum COMPRESSED_RGBA_ASTC_6x6x6_ = 0x93C9;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_3x3x3_ = 0x93E0;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_4x3x3_ = 0x93E1;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x3_ = 0x93E2;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x4_ = 0x93E3;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_5x4x4_ = 0x93E4;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x4_ = 0x93E5;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x5_ = 0x93E6;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_6x5x5_ = 0x93E7;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x5_ = 0x93E8;
+	const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x6_ = 0x93E9;
+	const GLenum IMAGE_CUBE_MAP_ARRAY_ = 0x9054;
+	const GLenum INT_IMAGE_CUBE_MAP_ARRAY_ = 0x905F;
+	const GLenum UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY_ = 0x906A;
+	const GLenum HALF_FLOAT_ = 0x8D61;
+	const GLenum STENCIL_INDEX_ = 0x1901;
+	const GLenum STENCIL_INDEX8_ = 0x8D48;
+	const GLenum TEXTURE_2D_MULTISAMPLE_ARRAY_ = 0x9102;
+	const GLenum TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY_ = 0x9105;
+	const GLenum SAMPLER_2D_MULTISAMPLE_ARRAY_ = 0x910B;
+	const GLenum INT_SAMPLER_2D_MULTISAMPLE_ARRAY_ = 0x910C;
+	const GLenum UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY_ = 0x910D;
+	const GLenum TEXTURE_VIEW_MIN_LEVEL_ = 0x82DB;
+	const GLenum TEXTURE_VIEW_NUM_LEVELS_ = 0x82DC;
+	const GLenum TEXTURE_VIEW_MIN_LAYER_ = 0x82DD;
+	const GLenum TEXTURE_VIEW_NUM_LAYERS_ = 0x82DE;
+	const GLenum VERTEX_ARRAY_BINDING_ = 0x85B5;
+	const GLenum UNSIGNED_INT_10_10_10_2_ = 0x8DF6;
+	const GLenum INT_10_10_10_2_ = 0x8DF7;
+	const GLenum MAX_VIEWPORTS_ = 0x825B;
+	const GLenum VIEWPORT_SUBPIXEL_BITS_ = 0x825C;
+	const GLenum VIEWPORT_BOUNDS_RANGE_ = 0x825D;
+	const GLenum VIEWPORT_INDEX_PROVOKING_VERTEX_ = 0x825F;
+	const GLenum BGRA_ = 0x80E1;
+	const GLenum BGRA8_ = 0x93A1;
+	const GLenum MALI_PROGRAM_BINARY_ARM = 0x8F61;
+	const GLenum MALI_SHADER_BINARY_ARM = 0x8F60;
+	const GLenum FETCH_PER_SAMPLE_ARM = 0x8F65;
+	const GLenum FRAGMENT_SHADER_FRAMEBUFFER_FETCH_MRT_ARM = 0x8F66;
+	const GLenum TEXTURE_UNNORMALIZED_COORDINATES_ARM = 0x8F6A;
+	const GLenum SMAPHS30_PROGRAM_BINARY_DMP = 0x9251;
+	const GLenum SMAPHS_PROGRAM_BINARY_DMP = 0x9252;
+	const GLenum DMP_PROGRAM_BINARY_DMP = 0x9253;
+	const GLenum SHADER_BINARY_DMP = 0x9250;
+	const GLenum SAMPLER_EXTERNAL_2D_Y2Y_ = 0x8BE7;
+	const GLenum SRC1_COLOR_ = 0x88F9;
+	const GLenum SRC1_ALPHA_ = 0x8589;
+	const GLenum ONE_MINUS_SRC1_COLOR_ = 0x88FA;
+	const GLenum ONE_MINUS_SRC1_ALPHA_ = 0x88FB;
+	const GLenum SRC_ALPHA_SATURATE_ = 0x0308;
+	const GLenum LOCATION_INDEX_ = 0x930F;
+	const GLenum MAX_DUAL_SOURCE_DRAW_BUFFERS_ = 0x88FC;
+	const GLenum MIN_ = 0x8007;
+	const GLenum MAX_ = 0x8008;
+	const GLenum MAP_PERSISTENT_BIT_ = 0x0040;
+	const GLenum MAP_COHERENT_BIT_ = 0x0080;
+	const GLenum DYNAMIC_STORAGE_BIT_ = 0x0100;
+	const GLenum CLIENT_STORAGE_BIT_ = 0x0200;
+	const GLenum CLIENT_MAPPED_BUFFER_BARRIER_BIT_ = 0x00004000;
+	const GLenum BUFFER_IMMUTABLE_STORAGE_ = 0x821F;
+	const GLenum BUFFER_STORAGE_FLAGS_ = 0x8220;
+	const GLenum LOWER_LEFT_ = 0x8CA1;
+	const GLenum UPPER_LEFT_ = 0x8CA2;
+	const GLenum NEGATIVE_ONE_TO_ONE_ = 0x935E;
+	const GLenum ZERO_TO_ONE_ = 0x935F;
+	const GLenum CLIP_ORIGIN_ = 0x935C;
+	const GLenum CLIP_DEPTH_MODE_ = 0x935D;
+	const GLenum MAX_CLIP_DISTANCES_ = 0x0D32;
+	const GLenum MAX_CULL_DISTANCES_ = 0x82F9;
+	const GLenum MAX_COMBINED_CLIP_AND_CULL_DISTANCES_ = 0x82FA;
+	const GLenum CLIP_DISTANCE0_ = 0x3000;
+	const GLenum CLIP_DISTANCE1_ = 0x3001;
+	const GLenum CLIP_DISTANCE2_ = 0x3002;
+	const GLenum CLIP_DISTANCE3_ = 0x3003;
+	const GLenum CLIP_DISTANCE4_ = 0x3004;
+	const GLenum CLIP_DISTANCE5_ = 0x3005;
+	const GLenum CLIP_DISTANCE6_ = 0x3006;
+	const GLenum CLIP_DISTANCE7_ = 0x3007;
+	const GLenum RGBA16F_ = 0x881A;
+	const GLenum RGB16F_ = 0x881B;
+	const GLenum RG16F_ = 0x822F;
+	const GLenum R16F_ = 0x822D;
+	const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_ = 0x8211;
+	const GLenum UNSIGNED_NORMALIZED_ = 0x8C17;
+	const GLenum DEPTH_CLAMP_ = 0x864F;
+	const GLenum COLOR_ = 0x1800;
+	const GLenum DEPTH_ = 0x1801;
+	const GLenum STENCIL_ = 0x1802;
+	const GLenum QUERY_COUNTER_BITS_ = 0x8864;
+	const GLenum CURRENT_QUERY_ = 0x8865;
+	const GLenum QUERY_RESULT_ = 0x8866;
+	const GLenum QUERY_RESULT_AVAILABLE_ = 0x8867;
+	const GLenum TIME_ELAPSED_ = 0x88BF;
+	const GLenum TIMESTAMP_ = 0x8E28;
+	const GLenum GPU_DISJOINT_ = 0x8FBB;
+	const GLenum MAX_COLOR_ATTACHMENTS_ = 0x8CDF;
+	const GLenum MAX_DRAW_BUFFERS_ = 0x8824;
+	const GLenum DRAW_BUFFER0_ = 0x8825;
+	const GLenum DRAW_BUFFER1_ = 0x8826;
+	const GLenum DRAW_BUFFER2_ = 0x8827;
+	const GLenum DRAW_BUFFER3_ = 0x8828;
+	const GLenum DRAW_BUFFER4_ = 0x8829;
+	const GLenum DRAW_BUFFER5_ = 0x882A;
+	const GLenum DRAW_BUFFER6_ = 0x882B;
+	const GLenum DRAW_BUFFER7_ = 0x882C;
+	const GLenum DRAW_BUFFER8_ = 0x882D;
+	const GLenum DRAW_BUFFER9_ = 0x882E;
+	const GLenum DRAW_BUFFER10_ = 0x882F;
+	const GLenum DRAW_BUFFER11_ = 0x8830;
+	const GLenum DRAW_BUFFER12_ = 0x8831;
+	const GLenum DRAW_BUFFER13_ = 0x8832;
+	const GLenum DRAW_BUFFER14_ = 0x8833;
+	const GLenum DRAW_BUFFER15_ = 0x8834;
+	const GLenum COLOR_ATTACHMENT0_ = 0x8CE0;
+	const GLenum COLOR_ATTACHMENT1_ = 0x8CE1;
+	const GLenum COLOR_ATTACHMENT2_ = 0x8CE2;
+	const GLenum COLOR_ATTACHMENT3_ = 0x8CE3;
+	const GLenum COLOR_ATTACHMENT4_ = 0x8CE4;
+	const GLenum COLOR_ATTACHMENT5_ = 0x8CE5;
+	const GLenum COLOR_ATTACHMENT6_ = 0x8CE6;
+	const GLenum COLOR_ATTACHMENT7_ = 0x8CE7;
+	const GLenum COLOR_ATTACHMENT8_ = 0x8CE8;
+	const GLenum COLOR_ATTACHMENT9_ = 0x8CE9;
+	const GLenum COLOR_ATTACHMENT10_ = 0x8CEA;
+	const GLenum COLOR_ATTACHMENT11_ = 0x8CEB;
+	const GLenum COLOR_ATTACHMENT12_ = 0x8CEC;
+	const GLenum COLOR_ATTACHMENT13_ = 0x8CED;
+	const GLenum COLOR_ATTACHMENT14_ = 0x8CEE;
+	const GLenum COLOR_ATTACHMENT15_ = 0x8CEF;
+	const GLenum MAP_READ_BIT_ = 0x0001;
+	const GLenum MAP_WRITE_BIT_ = 0x0002;
+	const GLenum MAP_INVALIDATE_RANGE_BIT_ = 0x0004;
+	const GLenum MAP_INVALIDATE_BUFFER_BIT_ = 0x0008;
+	const GLenum MAP_FLUSH_EXPLICIT_BIT_ = 0x0010;
+	const GLenum MAP_UNSYNCHRONIZED_BIT_ = 0x0020;
+	const GLenum TEXTURE_TILING_ = 0x9580;
+	const GLenum DEDICATED_MEMORY_OBJECT_ = 0x9581;
+	const GLenum PROTECTED_MEMORY_OBJECT_ = 0x959B;
+	const GLenum NUM_TILING_TYPES_ = 0x9582;
+	const GLenum TILING_TYPES_ = 0x9583;
+	const GLenum OPTIMAL_TILING_ = 0x9584;
+	const GLenum LINEAR_TILING_ = 0x9585;
+	const GLenum NUM_DEVICE_UUIDS_ = 0x9596;
+	const GLenum DEVICE_UUID_ = 0x9597;
+	const GLenum DRIVER_UUID_ = 0x9598;
+	const GLenum HANDLE_TYPE_OPAQUE_FD_ = 0x9586;
+	const GLenum HANDLE_TYPE_OPAQUE_WIN32_ = 0x9587;
+	const GLenum HANDLE_TYPE_OPAQUE_WIN32_KMT_ = 0x9588;
+	const GLenum DEVICE_LUID_ = 0x9599;
+	const GLenum DEVICE_NODE_MASK_ = 0x959A;
+	const GLenum HANDLE_TYPE_D3D12_TILEPOOL_ = 0x9589;
+	const GLenum HANDLE_TYPE_D3D12_RESOURCE_ = 0x958A;
+	const GLenum HANDLE_TYPE_D3D11_IMAGE_ = 0x958B;
+	const GLenum HANDLE_TYPE_D3D11_IMAGE_KMT_ = 0x958C;
+	const GLenum MULTISAMPLE_ = 0x809D;
+	const GLenum SAMPLE_ALPHA_TO_ONE_ = 0x809F;
+	const GLenum FRAMEBUFFER_ATTACHMENT_TEXTURE_SAMPLES_ = 0x8D6C;
+	const GLenum RENDERBUFFER_SAMPLES_ = 0x8CAB;
+	const GLenum FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_ = 0x8D56;
+	const GLenum MAX_SAMPLES_ = 0x8D57;
+	const GLenum COLOR_ATTACHMENT_ = 0x90F0;
+	const GLenum MULTIVIEW_ = 0x90F1;
+	const GLenum DRAW_BUFFER_ = 0x0C01;
+	const GLenum READ_BUFFER_ = 0x0C02;
+	const GLenum MAX_MULTIVIEW_BUFFERS_ = 0x90F2;
+	const GLenum ANY_SAMPLES_PASSED_ = 0x8C2F;
+	const GLenum ANY_SAMPLES_PASSED_CONSERVATIVE_ = 0x8D6A;
+	const GLenum CONTEXT_FLAG_PROTECTED_CONTENT_BIT_ = 0x00000010;
+	const GLenum TEXTURE_PROTECTED_ = 0x8BFA;
+	const GLenum COMPRESSED_SRGB_PVRTC_2BPPV1_ = 0x8A54;
+	const GLenum COMPRESSED_SRGB_PVRTC_4BPPV1_ = 0x8A55;
+	const GLenum COMPRESSED_SRGB_ALPHA_PVRTC_2BPPV1_ = 0x8A56;
+	const GLenum COMPRESSED_SRGB_ALPHA_PVRTC_4BPPV1_ = 0x8A57;
+	const GLenum UNSIGNED_SHORT_4_4_4_4_REV_ = 0x8365;
+	const GLenum UNSIGNED_SHORT_1_5_5_5_REV_ = 0x8366;
+	const GLenum R16_SNORM_ = 0x8F98;
+	const GLenum RG16_SNORM_ = 0x8F99;
+	const GLenum RGBA16_SNORM_ = 0x8F9B;
+	const GLenum SRGB_ = 0x8C40;
+	const GLenum SRGB_ALPHA_ = 0x8C42;
+	const GLenum SRGB8_ALPHA8_ = 0x8C43;
+	const GLenum FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING_ = 0x8210;
+	const GLenum FRAMEBUFFER_SRGB_ = 0x8DB9;
+	const GLenum LAYOUT_GENERAL_ = 0x958D;
+	const GLenum LAYOUT_COLOR_ATTACHMENT_ = 0x958E;
+	const GLenum LAYOUT_DEPTH_STENCIL_ATTACHMENT_ = 0x958F;
+	const GLenum LAYOUT_DEPTH_STENCIL_READ_ONLY_ = 0x9590;
+	const GLenum LAYOUT_SHADER_READ_ONLY_ = 0x9591;
+	const GLenum LAYOUT_TRANSFER_SRC_ = 0x9592;
+	const GLenum LAYOUT_TRANSFER_DST_ = 0x9593;
+	const GLenum LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_ = 0x9530;
+	const GLenum LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_ = 0x9531;
+	const GLenum HANDLE_TYPE_D3D12_FENCE_ = 0x9594;
+	const GLenum D3D12_FENCE_VALUE_ = 0x9595;
+	const GLenum VERTEX_SHADER_BIT_ = 0x00000001;
+	const GLenum FRAGMENT_SHADER_BIT_ = 0x00000002;
+	const GLenum ALL_SHADER_BITS_ = 0xFFFFFFFF;
+	const GLenum PROGRAM_SEPARABLE_ = 0x8258;
+	const GLenum PROGRAM_PIPELINE_BINDING_ = 0x825A;
+	const GLenum MAX_SHADER_PIXEL_LOCAL_STORAGE_FAST_SIZE_ = 0x8F63;
+	const GLenum MAX_SHADER_PIXEL_LOCAL_STORAGE_SIZE_ = 0x8F67;
+	const GLenum SHADER_PIXEL_LOCAL_STORAGE_ = 0x8F64;
+	const GLenum MAX_SHADER_COMBINED_LOCAL_STORAGE_FAST_SIZE_ = 0x9650;
+	const GLenum MAX_SHADER_COMBINED_LOCAL_STORAGE_SIZE_ = 0x9651;
+	const GLenum FRAMEBUFFER_INCOMPLETE_INSUFFICIENT_SHADER_COMBINED_LOCAL_STORAGE_ = 0x9652;
+	const GLenum TEXTURE_COMPARE_MODE_ = 0x884C;
+	const GLenum TEXTURE_COMPARE_FUNC_ = 0x884D;
+	const GLenum COMPARE_REF_TO_TEXTURE_ = 0x884E;
+	const GLenum SAMPLER_2D_SHADOW_ = 0x8B62;
+	const GLenum TEXTURE_ASTC_DECODE_PRECISION_ = 0x8F69;
+	const GLenum COMPRESSED_RED_RGTC1_ = 0x8DBB;
+	const GLenum COMPRESSED_SIGNED_RED_RGTC1_ = 0x8DBC;
+	const GLenum COMPRESSED_RED_GREEN_RGTC2_ = 0x8DBD;
+	const GLenum COMPRESSED_SIGNED_RED_GREEN_RGTC2_ = 0x8DBE;
+	const GLenum COMPRESSED_SRGB_S3TC_DXT1_ = 0x8C4C;
+	const GLenum COMPRESSED_SRGB_ALPHA_S3TC_DXT1_ = 0x8C4D;
+	const GLenum COMPRESSED_SRGB_ALPHA_S3TC_DXT3_ = 0x8C4E;
+	const GLenum COMPRESSED_SRGB_ALPHA_S3TC_DXT5_ = 0x8C4F;
+	const GLenum TEXTURE_MAX_ANISOTROPY_ = 0x84FE;
+	const GLenum MAX_TEXTURE_MAX_ANISOTROPY_ = 0x84FF;
+	const GLenum TEXTURE_FORMAT_SRGB_OVERRIDE_ = 0x8FBF;
+	const GLenum MIRROR_CLAMP_TO_EDGE_ = 0x8743;
+	const GLenum R16_ = 0x822A;
+	const GLenum RG16_ = 0x822C;
+	const GLenum RGBA16_ = 0x805B;
+	const GLenum RGB16_ = 0x8054;
+	const GLenum RGB16_SNORM_ = 0x8F9A;
+	const GLenum RED_ = 0x1903;
+	const GLenum RG_ = 0x8227;
+	const GLenum R8_ = 0x8229;
+	const GLenum RG8_ = 0x822B;
+	const GLenum TEXTURE_IMMUTABLE_FORMAT_ = 0x912F;
+	const GLenum RGBA32F_ = 0x8814;
+	const GLenum RGB32F_ = 0x8815;
+	const GLenum ALPHA32F_ = 0x8816;
+	const GLenum LUMINANCE32F_ = 0x8818;
+	const GLenum LUMINANCE_ALPHA32F_ = 0x8819;
+	const GLenum ALPHA16F_ = 0x881C;
+	const GLenum LUMINANCE16F_ = 0x881E;
+	const GLenum LUMINANCE_ALPHA16F_ = 0x881F;
+	const GLenum R32F_ = 0x822E;
+	const GLenum RG32F_ = 0x8230;
+	const GLenum UNSIGNED_INT_2_10_10_10_REV_ = 0x8368;
+	const GLenum UNPACK_ROW_LENGTH_ = 0x0CF2;
+	const GLenum UNPACK_SKIP_ROWS_ = 0x0CF3;
+	const GLenum UNPACK_SKIP_PIXELS_ = 0x0CF4;
+	const GLenum GCCSO_SHADER_BINARY_FJ = 0x9260;
+	const GLenum STATE_RESTORE = 0x8BDC;
+	const GLenum SHADER_BINARY_VIV = 0x8FC4;
+
 };
 
 //Global GL procedures object.
-	#ifdef WIN32
-		#ifdef MINETEST_CLIENT
-			#define DLL_SHARED __declspec(dllimport)
-		#else
-			#define DLL_SHARED __declspec(dllexport)
-		#endif
+#ifdef WIN32
+	#ifdef MINETEST_CLIENT
+		#define DLL_SHARED __declspec(dllimport)
 	#else
-		// On Linux, this supposedly works out of the box.
-		#define DLL_SHARED
-		// And on OSX, everything is linked statically anyway.
+		#define DLL_SHARED __declspec(dllexport)
 	#endif
+#else
+	// On Linux, this supposedly works out of the box.
+	#define DLL_SHARED
+	// And on OSX, everything is linked statically anyway.
+#endif
+
 DLL_SHARED extern OpenGLProcedures GL;

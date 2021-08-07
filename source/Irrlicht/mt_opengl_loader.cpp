@@ -928,7 +928,7 @@ void OpenGLProcedures::LoadAllProcedures(irr::video::IContextManager *cmgr)
 	if (!TexPageCommitment) TexPageCommitment = (PFNGLTEXPAGECOMMITMENTPROC_MT)cmgr->getProcAddress("glTexPageCommitmentARB");
 
 	// get the extension string, chop it up
-	std::string ext_string = std::string((char*)GetString(GL_EXTENSIONS));
+	std::string ext_string = std::string((char*)GetString(EXTENSIONS));
 	std::stringstream ext_ss(ext_string);
 	std::string tmp;
 	while (getline(ext_ss, tmp, ' '))
