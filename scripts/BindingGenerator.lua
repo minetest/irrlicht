@@ -221,7 +221,7 @@ local function ParseHeader( path, into, apiRegex, defs, consts, nameSet, noNewNa
 		elseif ( line:find( "#" ) and not line:find( "#include" ) ) then
 			local rawName, value = line:match( "#define%s+GL_([_%w]+)%s+0x(%w+)" );
 			if rawName and value then
-				local name, vendor = StripVendorSuffix( rawName );
+				local name, vendor = StripVendorSuffix( rawName, true );
 				if not constBanned[vendor] then
 					consts:Add{ name = name, vendor = vendor, value = "0x"..value };
 				end
