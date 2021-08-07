@@ -2947,7 +2947,7 @@ public:
 	static constexpr const GLenum COLORBURN = 0x929A;
 	static constexpr const GLenum HARDLIGHT = 0x929B;
 	static constexpr const GLenum SOFTLIGHT = 0x929C;
-	static constexpr const GLenum DIFFERENCE = 0x929E;
+	static constexpr const GLenum _DIFFERENCE = 0x929E;
 	static constexpr const GLenum EXCLUSION = 0x92A0;
 	static constexpr const GLenum HSL_HUE = 0x92AD;
 	static constexpr const GLenum HSL_SATURATION = 0x92AE;

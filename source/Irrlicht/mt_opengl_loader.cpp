@@ -760,7 +760,7 @@ void OpenGLProcedures::LoadAllProcedures(irr::video::IContextManager *cmgr)
 	std::string ext_string = std::string((char*)GetString(EXTENSIONS));
 	std::stringstream ext_ss(ext_string);
 	std::string tmp;
-	while (getline(ext_ss, tmp, ' '))
+	while (std::getline(ext_ss, tmp, ' '))
 		extensions.emplace(tmp);
 
 }

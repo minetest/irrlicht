@@ -262,11 +262,9 @@ do
 	for i=1, #consts do
 		local k = consts[i].name;
 		local b = constBuckets[k];
-		if k == "WAIT_FAILED" then
-			-- Win32 actually #defines WAIT_FAILED !
-			-- This is epic fail on MS's part and
-			-- forces us to do this nonsense:
-			k = "_WAIT_FAILED";
+		if k == "WAIT_FAILED" or k == "DIFFERENCE" then
+			-- This is why using #define as const is evil.
+			k = "_" .. k;
 		end
 		if b and not names[k] then
 			names[k] = true;
@@ -438,7 +436,7 @@ f:write[[
 	std::string ext_string = std::string((char*)GetString(EXTENSIONS));
 	std::stringstream ext_ss(ext_string);
 	std::string tmp;
-	while (getline(ext_ss, tmp, ' '))
+	while (std::getline(ext_ss, tmp, ' '))
 		extensions.emplace(tmp);
 
 }
