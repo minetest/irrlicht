@@ -312,8 +312,7 @@ for i=1, #procedures do
 	procTable[p.name][key] = p;
 end
 
--- Procedure load priority: core -> ARB -> EXT -> KHR -> OES
-local priorityList = List{ "core" }:Join( vendorSuffixes );
+local priorityList = List{ "core", "ARB", "OES", "KHR" };
 
 local typedefs = List();
 local pointers = List();
