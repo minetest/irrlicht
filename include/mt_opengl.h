@@ -3148,10 +3148,7 @@ public:
 
 	static constexpr const GLenum ZERO = 0;
 	static constexpr const GLenum ONE = 1;
-	static constexpr const GLenum FALSE = 0;
-	static constexpr const GLenum TRUE = 1;
 	static constexpr const GLenum NONE = 0;
-	static constexpr const GLenum NO_ERROR = 0;
 };
 
 //Global GL procedures object.
