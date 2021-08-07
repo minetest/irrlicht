@@ -12,3 +12,6 @@ libs/*
 *.exe
 *.dll
 bin/Linux
+scripts/gl2ext.h
+scripts/glcorearb.h
+scripts/glext.h

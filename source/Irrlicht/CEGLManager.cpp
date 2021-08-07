@@ -9,6 +9,7 @@
 #include "irrString.h"
 #include "irrArray.h"
 #include "os.h"
+#include <dlfcn.h>
 
 #if defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 #include <android/native_activity.h>
@@ -20,7 +21,7 @@ namespace video
 {
 
 CEGLManager::CEGLManager() : IContextManager(), EglWindow(0), EglDisplay(EGL_NO_DISPLAY),
-    EglSurface(EGL_NO_SURFACE), EglContext(EGL_NO_CONTEXT), EglConfig(0), MajorVersion(0), MinorVersion(0)
+    EglSurface(EGL_NO_SURFACE), EglContext(EGL_NO_CONTEXT), EglConfig(0), MajorVersion(0), MinorVersion(0), libHandle(NULL)
 {
 	#ifdef _DEBUG
 	setDebugName("CEGLManager");
@@ -109,6 +110,9 @@ void CEGLManager::terminate()
 
     MajorVersion = 0;
     MinorVersion = 0;
+
+	if (libHandle)
+		dlclose(libHandle);
 }
 
 bool CEGLManager::generateSurface()
@@ -588,6 +592,19 @@ bool CEGLManager::activateContext(const SExposedVideoData& videoData, bool resto
 const SExposedVideoData& CEGLManager::getContext() const
 {
 	return Data;
+}
+
+void* CEGLManager::getProcAddress(const std::string &procName)
+{
+	void* proc = NULL;
+	proc = (void*)eglGetProcAddress(procName.c_str());
+	if (!proc) { // fallback
+		if (!libHandle)
+			libHandle = dlopen("libGLESv2.so", RTLD_LAZY);
+		if (libHandle)
+			proc = dlsym(libHandle, procName.c_str());
+	}
+	return proc;
 }
 
 bool CEGLManager::swapBuffers()

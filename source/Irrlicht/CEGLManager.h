@@ -67,6 +67,9 @@ namespace video
 
 		virtual bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero) _IRR_OVERRIDE_;
 
+		// Get procedure address.
+		virtual void* getProcAddress(const std::string &procName) _IRR_OVERRIDE_;
+
 		// Swap buffers.
 		virtual bool swapBuffers() _IRR_OVERRIDE_;
 
@@ -112,6 +115,8 @@ namespace video
 
 		EGLint MajorVersion;
 		EGLint MinorVersion;
+
+		void* libHandle;
 	};
 }
 }

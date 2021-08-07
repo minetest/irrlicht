@@ -7,6 +7,7 @@
 
 #include "SExposedVideoData.h"
 #include "SIrrCreationParameters.h"
+#include <string>
 
 namespace irr
 {
@@ -47,6 +48,9 @@ namespace video
 			New thread takes over context with: activateContext(videoDriver->getExposedVideoData());
 			Note that only 1 thread at a time may access an OpenGL context.	*/
 		virtual bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero=false) =0;
+
+		//! Get the address of any OpenGL procedure (including core procedures).
+		virtual void* getProcAddress(const std::string &procName) =0;
 
         //! Swap buffers.
         virtual bool swapBuffers() =0;

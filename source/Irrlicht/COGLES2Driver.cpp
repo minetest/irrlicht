@@ -29,6 +29,8 @@
 #include "android_native_app_glue.h"
 #endif
 
+#include "mt_opengl.h"
+
 namespace irr
 {
 namespace video
@@ -76,6 +78,7 @@ COGLES2Driver::COGLES2Driver(const SIrrlichtCreationParameters& params, io::IFil
 	ContextManager->generateContext();
 	ExposedData = ContextManager->getContext();
 	ContextManager->activateContext(ExposedData, false);
+	GL.LoadAllProcedures(ContextManager);
 }
 
 COGLES2Driver::~COGLES2Driver()
