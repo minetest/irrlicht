@@ -197,7 +197,6 @@ local consts = List();
 ]]
 -- Parse a whole header, extracting the data.
 local function ParseHeader( path, into, apiRegex, defs, consts, nameSet, noNewNames )
-	defs:AddFormat( "\t// %s", path );
 	local f = assert( io.open( path, "r" ), "Could not open " .. path );
 	for line in f:lines() do
 		-- Do not parse PFN typedefs; they're easily reconstructible.
@@ -229,7 +228,7 @@ local function ParseHeader( path, into, apiRegex, defs, consts, nameSet, noNewNa
 			::skip::
 		elseif( line:find( "typedef" ) and not line:find( "%(" ) ) then
 			-- Passthrough non-PFN typedefs
-			defs:Add( "\t" .. line );
+			defs:Add( line );
 		end
 	end
 	defs:Add "";
@@ -246,7 +245,7 @@ ParseHeader( glHeaderPath .. "/glcorearb.h", procedures, funcRegex, definitions,
 ParseHeader( glHeaderPath .. "/gl2ext.h", procedures, funcRegexES, List(), consts, nameset, true );
 -- Typedefs are redirected to a dummy list here on purpose.
 -- The only unique typedef from gl2ext is this:
-definitions:Add "\ttypedef void *GLeglClientBufferEXT;";
+definitions:Add "typedef void *GLeglClientBufferEXT;";
 
 ------------ Sort out constants ------------
 
@@ -366,19 +365,20 @@ f:write[[
 
 ]];
 
+f:write( definitions:Concat( "\n" ) );
+f:write( "\n" );
+f:write[[
+// The script will miss this particular typedef thinking it's a PFN,
+// so we have to paste it in manually. It's the only such type in OpenGL.
+typedef void (APIENTRY *GLDEBUGPROC)
+	(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const void *userParam);
+
+]]
+
 f:write[[
 class OpenGLProcedures {
 private:
 ]];
-f:write( definitions:Concat( "\n" ) );
-f:write( "\n" );
-f:write[[
-	// The script will miss this particular typedef thinking it's a PFN,
-	// so we have to paste it in manually. It's the only such type in OpenGL.
-	typedef void (APIENTRY *GLDEBUGPROC)
-		(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const void *userParam);
-
-]]
 f:write( typedefs:Concat( "\n" ) );
 f:write( "\n\n" );
 f:write [[
