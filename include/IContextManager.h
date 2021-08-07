@@ -50,7 +50,7 @@ namespace video
 		virtual bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero=false) =0;
 
 		//! Get the address of any OpenGL procedure (including core procedures).
-		virtual void* getProcAddress(const std::string procName) =0;
+		virtual void* getProcAddress(const std::string &procName) =0;
 
         //! Swap buffers.
         virtual bool swapBuffers() =0;

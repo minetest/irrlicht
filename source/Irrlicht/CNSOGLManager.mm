@@ -233,7 +233,7 @@ void CNSOGLManager::destroyContext()
 
 // It appears that there is no separate GL proc address getter on OSX.
 // https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/opengl_entrypts/opengl_entrypts.html
-void* CNSOGLManager::getProcAddress(const std::string procName)
+void* CNSOGLManager::getProcAddress(const std::string &procName)
 {
 	NSSymbol symbol = NULL;
 	// Allocate a buffer for the name, an underscore prefix, and a cstring terminator.

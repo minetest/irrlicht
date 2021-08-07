@@ -431,15 +431,15 @@ void CGLXManager::destroyContext()
 	}
 }
 
-void* CGLXManager::getProcAddress(const std::string name)
+void* CGLXManager::getProcAddress(const std::string &procName)
 {
 	void* proc = NULL;
-	proc = (void*)glXGetProcAddressARB(reinterpret_cast<const GLubyte*>(name.c_str()));
+	proc = (void*)glXGetProcAddressARB(reinterpret_cast<const GLubyte*>(procName.c_str()));
 	if (!proc) {
 		if (!libHandle)
 			libHandle = dlopen("libGL.so", RTLD_LAZY);
 		if (libHandle)
-			proc = dlsym(libHandle, name.c_str());
+			proc = dlsym(libHandle, procName.c_str());
 	}
 	return proc;
 }

@@ -492,7 +492,7 @@ void CWGLManager::destroyContext()
 	}
 }
 
-void* CWGLManager::getProcAddress(const std::string procName)
+void* CWGLManager::getProcAddress(const std::string &procName)
 {
 	void* proc = NULL;
 	proc = (void*)wglGetProcAddress(procName.c_str());

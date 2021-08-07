@@ -55,7 +55,7 @@ namespace video
 		bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero) _IRR_OVERRIDE_;
 
 		// Get procedure address.
-		virtual void* getProcAddress(const std::string procName) _IRR_OVERRIDE_;
+		virtual void* getProcAddress(const std::string &procName) _IRR_OVERRIDE_;
 
         // Swap buffers.
         bool swapBuffers();

@@ -400,16 +400,15 @@ f:write( "\n\n" );
 f:write( "};\n" );
 f:write( "\n//Global GL procedures object.\n" );
 f:write( [[
-#ifdef WIN32
+#ifdef _WIN32
 	#ifdef MINETEST_CLIENT
 		#define DLL_SHARED __declspec(dllimport)
 	#else
 		#define DLL_SHARED __declspec(dllexport)
 	#endif
 #else
-	// On Linux, this supposedly works out of the box.
+	// Non-Windows platforms do not seem to need anything like this.
 	#define DLL_SHARED
-	// And on OSX, everything is linked statically anyway.
 #endif
 
 ]] );
