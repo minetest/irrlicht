@@ -1856,26 +1856,15 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 	XConvertSelection(XDisplay, X_ATOM_CLIPBOARD, XA_STRING, XA_PRIMARY, XWindow, CurrentTime);
 	XSync(XDisplay, False);
 
-	// wait for event
+	// wait for event via a blocking call
 	XEvent event_ret;
-	Bool did_get_notify = XCheckTypedWindowEvent(XDisplay, XWindow, SelectionNotify, &event_ret);
-	if (did_get_notify) {
-		fprintf(stderr, "CIrrDeviceLinux::getTextFromClipboard: did_get_notify=true\n");
-		// continue till last one
-		while (did_get_notify) {
-			did_get_notify = XCheckTypedWindowEvent(XDisplay, XWindow, SelectionNotify, &event_ret);
-		}
-	} else {
-		fprintf(stderr, "CIrrDeviceLinux::getTextFromClipboard: did_get_notify=false\n");
-		// do a blocking call to wait
-		XIfEvent(XDisplay, &event_ret, [](Display *_display, XEvent *event, XPointer arg) {
-			Window *my_window = (Window *)arg;
-			return (Bool) (event->type == SelectionNotify &&
-					event->xselection.requestor == *my_window &&
-					event->xselection.selection == X_ATOM_CLIPBOARD &&
-					event->xselection.target == XA_STRING);
-		}, (XPointer)&XWindow);
-	}
+	XIfEvent(XDisplay, &event_ret, [](Display *_display, XEvent *event, XPointer arg) {
+		Window *my_window = (Window *)arg;
+		return (Bool) (event->type == SelectionNotify &&
+				event->xselection.requestor == *my_window &&
+				event->xselection.selection == X_ATOM_CLIPBOARD &&
+				event->xselection.target == XA_STRING);
+	}, (XPointer)&XWindow);
 
 	assert(event_ret.type == SelectionNotify &&
 			event_ret.xselection.requestor == XWindow &&
