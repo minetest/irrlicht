@@ -109,7 +109,8 @@ namespace irr
 
 		//! copies text to the clipboard
 		//! This sets the clipboard selection and _not_ the primary selection which you have on X on the middle mouse button.
-		virtual void copyToClipboard(const c8* text) const;
+		//! @param text The text in utf-8
+		virtual void copyToClipboard(const c8 *text) const;
 
 		//! Remove all messages pending in the system message loop
 		virtual void clearSystemMessages() _IRR_OVERRIDE_;
@@ -385,6 +386,7 @@ namespace irr
 		XIM XInputMethod;
 		XIC XInputContext;
 		bool HasNetWM;
+		// text is utf-8
 		mutable core::stringc Clipboard;
 #endif
 		u32 Width, Height;

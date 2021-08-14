@@ -90,6 +90,7 @@ namespace
 	Atom X_ATOM_CLIPBOARD;
 	Atom X_ATOM_TARGETS;
 	Atom X_ATOM_UTF8_STRING;
+	Atom X_ATOM_UTF8_STRING_2;
 	Atom X_ATOM_TEXT;
 	Atom X_ATOM_NETWM_MAXIMIZE_VERT;
 	Atom X_ATOM_NETWM_MAXIMIZE_HORZ;
@@ -993,49 +994,129 @@ bool CIrrDeviceLinux::run()
 
 			case SelectionRequest:
 				{
-					XEvent respond;
 					XSelectionRequestEvent *req = &(event.xselectionrequest);
-					if (  req->target == XA_STRING)
+
+					auto send_response = [this, req](Atom property) {
+						XEvent response;
+						response.xselection.type = SelectionNotify;
+						response.xselection.display = req->display;
+						response.xselection.requestor = req->requestor;
+						response.xselection.selection = req->selection;
+						response.xselection.target = req->target;
+						response.xselection.property = property;
+						response.xselection.time = req->time;
+						XSendEvent (XDisplay, req->requestor, 0, 0, &response);
+						XFlush (XDisplay);
+					};
+					auto send_response_refuse = [&send_response] {
+						send_response(None);
+					};
+
+					// sets the required property to data of type type and
+					// sends the according response
+					auto set_property_and_notify = [this, req, &send_response]
+							(Atom type, int format, const void *data, u32 data_size) {
+						XChangeProperty(XDisplay,
+								req->requestor,
+								req->property,
+								type,
+								format,
+								PropModeReplace,
+								(const unsigned char *)data,
+								data_size);
+						send_response(req->property);
+					};
+
+					if (req->selection != X_ATOM_CLIPBOARD ||
+							req->owner != XWindow ||
+							false) { // TODO: time
+						// we are not the owner, refuse request
+						send_response_refuse();
+						fprintf(stderr, "CIrrDeviceLinux::run: I'm not the owner\n");
+						break;
+					}
+
+					// for debugging:
 					{
+						char *target_name = XGetAtomName(XDisplay, req->target);
+						fprintf(stderr, "CIrrDeviceLinux::run: target: %s (=%ld)\n",
+								target_name, req->target);
+						XFree(target_name);
+					}
+
+					if (req->property == None) {
+						// req is from obsolete client, use target as property name
+						// and XA_STRING as type
+						// Note: this was not tested and might be incorrect
+						os::Printer::log("CIrrDeviceLinux::run: SelectionRequest from obsolete client",
+								ELL_WARNING);
 						XChangeProperty (XDisplay,
 								req->requestor,
-								req->property, req->target,
-								8, // format
+								req->target, XA_STRING,
+								8, // format = 8-bit
 								PropModeReplace,
-								(unsigned char*) Clipboard.c_str(),
+								(unsigned char *)Clipboard.c_str(),
 								Clipboard.size());
-						respond.xselection.property = req->property;
+						send_response(req->target);
+						break;
 					}
-					else if ( req->target == X_ATOM_TARGETS )
-					{
-						long data[2];
 
-						data[0] = X_ATOM_TEXT;
-						data[1] = XA_STRING;
+					if (req->target == X_ATOM_TARGETS) {
+						Atom data[] = {
+							X_ATOM_TEXT,
+							XA_STRING,
+							X_ATOM_UTF8_STRING,
+							X_ATOM_UTF8_STRING_2
+						};
+						set_property_and_notify(
+								XA_ATOM,
+								8, // sizeof(Atom)*8=64, and max format is 32,
+								   // hence we can not have byte-swapping
+								&data,
+								sizeof(data)
+							);
 
-						XChangeProperty (XDisplay, req->requestor,
-								req->property, req->target,
-								8, PropModeReplace,
-								(unsigned char *) &data,
-								sizeof (data));
-						respond.xselection.property = req->property;
+					} else if (req->target == X_ATOM_TEXT) {
+						set_property_and_notify(
+								X_ATOM_TEXT,
+								8,
+								Clipboard.c_str(),
+								Clipboard.size()
+							);
+
+					} else if (req->target == XA_STRING) {
+						set_property_and_notify(
+								XA_STRING,
+								8,
+								Clipboard.c_str(),
+								Clipboard.size()
+							);
+
+					} else if (req->target == X_ATOM_UTF8_STRING) {
+						set_property_and_notify(
+								X_ATOM_UTF8_STRING,
+								8,
+								Clipboard.c_str(),
+								Clipboard.size()
+							);
+
+					} else if (req->target == X_ATOM_UTF8_STRING_2) {
+						set_property_and_notify(
+								X_ATOM_UTF8_STRING_2,
+								8,
+								Clipboard.c_str(),
+								Clipboard.size()
+							);
+
+					} else {
+						// refuse the request
+						send_response_refuse();
 					}
-					else
-					{
-						respond.xselection.property= None;
-					}
-					respond.xselection.type= SelectionNotify;
-					respond.xselection.display= req->display;
-					respond.xselection.requestor= req->requestor;
-					respond.xselection.selection=req->selection;
-					respond.xselection.target= req->target;
-					respond.xselection.time = req->time;
-					XSendEvent (XDisplay, req->requestor,0,0,&respond);
-					XFlush (XDisplay);
 				}
 				break;
+
 #if defined(_IRR_LINUX_X11_XINPUT2_)
-				case GenericEvent:
+			case GenericEvent:
 				{
 					XGenericEventCookie *cookie = &event.xcookie;
 					if (XGetEventData(XDisplay, cookie) && cookie->extension == XI_EXTENSIONS_OPCODE && XI_EXTENSIONS_OPCODE
@@ -1825,14 +1906,21 @@ const c8* CIrrDeviceLinux::getTextFromClipboard() const
 }
 
 //! copies text to the clipboard
-void CIrrDeviceLinux::copyToClipboard(const c8* text) const
+void CIrrDeviceLinux::copyToClipboard(const c8 *text) const
 {
 #if defined(_IRR_COMPILE_WITH_X11_)
+	fprintf(stderr, "CIrrDeviceLinux::copyToClipboard: called, text=\"%s\"\n", text); // TODO: remove
+
 	// Actually there is no clipboard on X but applications just say they own the clipboard and return text when asked.
 	// Which btw. also means that on X you lose clipboard content when closing applications.
 	Clipboard = text;
+	// TODO: don't use CurrentTime
 	XSetSelectionOwner (XDisplay, X_ATOM_CLIPBOARD, XWindow, CurrentTime);
-	XFlush (XDisplay);
+	XFlush (XDisplay); // TODO: why flush?
+	Window owner = XGetSelectionOwner(XDisplay, X_ATOM_CLIPBOARD);
+	if (owner != XWindow) {
+		os::Printer::log("CIrrDeviceLinux::copyToClipboard: failed to set owner", ELL_WARNING);
+	}
 #endif
 }
 
@@ -1875,8 +1963,9 @@ void CIrrDeviceLinux::initXAtoms()
 #ifdef _IRR_COMPILE_WITH_X11_
 	X_ATOM_CLIPBOARD = XInternAtom(XDisplay, "CLIPBOARD", False);
 	X_ATOM_TARGETS = XInternAtom(XDisplay, "TARGETS", False);
-	X_ATOM_UTF8_STRING = XInternAtom (XDisplay, "UTF8_STRING", False);
-	X_ATOM_TEXT = XInternAtom (XDisplay, "TEXT", False);
+	X_ATOM_UTF8_STRING = XInternAtom(XDisplay, "UTF8_STRING", False);
+	X_ATOM_UTF8_STRING_2 = XInternAtom(XDisplay, "text/plain;charset=utf-8", False);
+	X_ATOM_TEXT = XInternAtom(XDisplay, "TEXT", False);
 	X_ATOM_NETWM_MAXIMIZE_VERT = XInternAtom(XDisplay, "_NET_WM_STATE_MAXIMIZED_VERT", true);
 	X_ATOM_NETWM_MAXIMIZE_HORZ = XInternAtom(XDisplay, "_NET_WM_STATE_MAXIMIZED_HORZ", true);
 	X_ATOM_NETWM_STATE = XInternAtom(XDisplay, "_NET_WM_STATE", true);
