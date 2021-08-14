@@ -1854,7 +1854,39 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 
 	// TODO: don't use CurrentTime
 	XConvertSelection(XDisplay, X_ATOM_CLIPBOARD, XA_STRING, XA_PRIMARY, XWindow, CurrentTime);
-	XFlush(XDisplay);
+	XSync(XDisplay, False);
+
+	// wait for event
+	XEvent event_ret;
+	Bool did_get_notify = XCheckTypedWindowEvent(XDisplay, XWindow, SelectionNotify, &event_ret);
+	if (did_get_notify) {
+		fprintf(stderr, "CIrrDeviceLinux::getTextFromClipboard: did_get_notify=true\n");
+		// continue till last one
+		while (did_get_notify) {
+			did_get_notify = XCheckTypedWindowEvent(XDisplay, XWindow, SelectionNotify, &event_ret);
+		}
+	} else {
+		fprintf(stderr, "CIrrDeviceLinux::getTextFromClipboard: did_get_notify=false\n");
+		// do a blocking call to wait
+		XIfEvent(XDisplay, &event_ret, [](Display *_display, XEvent *event, XPointer arg) {
+			Window *my_window = (Window *)arg;
+			return (Bool) (event->type == SelectionNotify &&
+					event->xselection.requestor == *my_window &&
+					event->xselection.selection == X_ATOM_CLIPBOARD &&
+					event->xselection.target == XA_STRING);
+		}, (XPointer)&XWindow);
+	}
+
+	assert(event_ret.type == SelectionNotify &&
+			event_ret.xselection.requestor == XWindow &&
+			event_ret.xselection.selection == X_ATOM_CLIPBOARD &&
+			event_ret.xselection.target == XA_STRING);
+
+	Atom property_set = event_ret.xselection.property;
+	if (event_ret.xselection.property == None) {
+		// request failed => empty string
+		return Clipboard.c_str();
+	}
 
 	// check for data
 	Atom type;
@@ -1862,7 +1894,7 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 	unsigned long numItems, bytesLeft, dummy;
 	unsigned char *data;
 	XGetWindowProperty (XDisplay, XWindow,
-			XA_PRIMARY, // property name
+			property_set, // property name
 			0, // offset
 			0, // length (we only check for data, so 0)
 			0, // Delete 0==false
@@ -1874,13 +1906,16 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 			&data); // data
 	if (bytesLeft > 0) {
 		// there is some data to get
-		int result = XGetWindowProperty (XDisplay, XWindow, XA_PRIMARY, 0,
+		int result = XGetWindowProperty (XDisplay, XWindow, property_set, 0,
 									bytesLeft, 0, AnyPropertyType, &type, &format,
 									&numItems, &dummy, &data);
 		if (result == Success)
 			Clipboard = (irr::c8*)data;
 		XFree (data);
 	}
+
+	// delete the property again, to inform the owner about the successful transfer
+	XDeleteProperty(XDisplay, XWindow, property_set);
 
 	return Clipboard.c_str();
 
