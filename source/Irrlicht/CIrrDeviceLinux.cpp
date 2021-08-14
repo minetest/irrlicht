@@ -1076,33 +1076,12 @@ bool CIrrDeviceLinux::run()
 								sizeof(data)
 							);
 
-					} else if (req->target == X_ATOM_TEXT) {
-						set_property_and_notify(
-								X_ATOM_TEXT,
-								8,
-								Clipboard.c_str(),
-								Clipboard.size()
-							);
-
-					} else if (req->target == XA_STRING) {
+					} else if (req->target == X_ATOM_TEXT ||
+							req->target == XA_STRING ||
+							req->target == X_ATOM_UTF8_STRING ||
+							req->target == X_ATOM_UTF8_STRING_2) {
 						set_property_and_notify(
 								XA_STRING,
-								8,
-								Clipboard.c_str(),
-								Clipboard.size()
-							);
-
-					} else if (req->target == X_ATOM_UTF8_STRING) {
-						set_property_and_notify(
-								X_ATOM_UTF8_STRING,
-								8,
-								Clipboard.c_str(),
-								Clipboard.size()
-							);
-
-					} else if (req->target == X_ATOM_UTF8_STRING_2) {
-						set_property_and_notify(
-								X_ATOM_UTF8_STRING_2,
 								8,
 								Clipboard.c_str(),
 								Clipboard.size()
@@ -1856,52 +1835,57 @@ bool CIrrDeviceLinux::getGammaRamp( f32 &red, f32 &green, f32 &blue, f32 &bright
 
 //! gets text from the clipboard
 //! \return Returns 0 if no string is in there.
-const c8* CIrrDeviceLinux::getTextFromClipboard() const
+const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 {
 #if defined(_IRR_COMPILE_WITH_X11_)
-	Window ownerWindow = XGetSelectionOwner (XDisplay, X_ATOM_CLIPBOARD);
-	if ( ownerWindow ==  XWindow )
-	{
+	Window ownerWindow = XGetSelectionOwner(XDisplay, X_ATOM_CLIPBOARD);
+	if (ownerWindow == XWindow) {
 		return Clipboard.c_str();
 	}
-	Clipboard = "";
-	if (ownerWindow != None )
-	{
-		XConvertSelection (XDisplay, X_ATOM_CLIPBOARD, XA_STRING, XA_PRIMARY, ownerWindow, CurrentTime);
-		XFlush (XDisplay);
 
-		// check for data
-		Atom type;
-		int format;
-		unsigned long numItems, bytesLeft, dummy;
-		unsigned char *data;
-		XGetWindowProperty (XDisplay, ownerWindow,
-				XA_PRIMARY, // property name
-				0, // offset
-				0, // length (we only check for data, so 0)
-				0, // Delete 0==false
-				AnyPropertyType, // AnyPropertyType or property identifier
-				&type, // return type
-				&format, // return format
-				&numItems, // number items
-				&bytesLeft, // remaining bytes for partial reads
-				&data); // data
-		if ( bytesLeft > 0 )
-		{
-			// there is some data to get
-			int result = XGetWindowProperty (XDisplay, ownerWindow, XA_PRIMARY, 0,
-										bytesLeft, 0, AnyPropertyType, &type, &format,
-										&numItems, &dummy, &data);
-			if (result == Success)
-				Clipboard = (irr::c8*)data;
-			XFree (data);
-		}
+	Clipboard = "";
+
+	if (ownerWindow == None) {
+		return Clipboard.c_str();
+	}
+
+	// delete the property to be set beforehand
+	XDeleteProperty(XDisplay, XWindow, XA_PRIMARY);
+
+	// TODO: don't use CurrentTime
+	XConvertSelection(XDisplay, X_ATOM_CLIPBOARD, XA_STRING, XA_PRIMARY, XWindow, CurrentTime);
+	XFlush(XDisplay);
+
+	// check for data
+	Atom type;
+	int format;
+	unsigned long numItems, bytesLeft, dummy;
+	unsigned char *data;
+	XGetWindowProperty (XDisplay, XWindow,
+			XA_PRIMARY, // property name
+			0, // offset
+			0, // length (we only check for data, so 0)
+			0, // Delete 0==false
+			AnyPropertyType, // AnyPropertyType or property identifier
+			&type, // return type
+			&format, // return format
+			&numItems, // number items
+			&bytesLeft, // remaining bytes for partial reads
+			&data); // data
+	if (bytesLeft > 0) {
+		// there is some data to get
+		int result = XGetWindowProperty (XDisplay, XWindow, XA_PRIMARY, 0,
+									bytesLeft, 0, AnyPropertyType, &type, &format,
+									&numItems, &dummy, &data);
+		if (result == Success)
+			Clipboard = (irr::c8*)data;
+		XFree (data);
 	}
 
 	return Clipboard.c_str();
 
 #else
-	return 0;
+	return nullptr;
 #endif
 }
 
