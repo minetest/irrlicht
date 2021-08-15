@@ -722,17 +722,6 @@ bool CIrrDeviceLinux::run()
 {
 	os::Timer::tick();
 
-	// TODO: remove
-	// results: 16 ms focused, 50 ms unfocused;
-	// one selection request per run(), no run()s between => we make it slow
-	//~ {
-		//~ static u32 old_time = os::Timer::getTime();
-		//~ u32 current_time = os::Timer::getTime();
-		//~ fprintf(stderr, "CIrrDeviceLinux::run: delta time = %u ms\n",
-				//~ current_time - old_time);
-		//~ old_time = current_time;
-	//~ }
-
 #ifdef _IRR_COMPILE_WITH_X11_
 
 	if ( CursorControl )
@@ -1040,21 +1029,19 @@ bool CIrrDeviceLinux::run()
 					};
 
 					if (req->selection != X_ATOM_CLIPBOARD ||
-							req->owner != XWindow ||
-							false) { // TODO: time
+							req->owner != XWindow) {
 						// we are not the owner, refuse request
 						send_response_refuse();
-						fprintf(stderr, "CIrrDeviceLinux::run: I'm not the owner\n");
 						break;
 					}
 
 					// for debugging:
-					{
-						char *target_name = XGetAtomName(XDisplay, req->target);
-						fprintf(stderr, "CIrrDeviceLinux::run: target: %s (=%ld)\n",
-								target_name, req->target);
-						XFree(target_name);
-					}
+					//~ {
+						//~ char *target_name = XGetAtomName(XDisplay, req->target);
+						//~ fprintf(stderr, "CIrrDeviceLinux::run: target: %s (=%ld)\n",
+								//~ target_name, req->target);
+						//~ XFree(target_name);
+					//~ }
 
 					if (req->property == None) {
 						// req is from obsolete client, use target as property name
@@ -1848,7 +1835,6 @@ bool CIrrDeviceLinux::getGammaRamp( f32 &red, f32 &green, f32 &blue, f32 &bright
 const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 {
 #if defined(_IRR_COMPILE_WITH_X11_)
-	fprintf(stderr, "CIrrDeviceLinux::getTextFromClipboard: called\n");
 	Window ownerWindow = XGetSelectionOwner(XDisplay, X_ATOM_CLIPBOARD);
 	if (ownerWindow == XWindow) {
 		return Clipboard.c_str();
@@ -1863,7 +1849,6 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 	// delete the property to be set beforehand
 	XDeleteProperty(XDisplay, XWindow, XA_PRIMARY);
 
-	// TODO: don't use CurrentTime
 	XConvertSelection(XDisplay, X_ATOM_CLIPBOARD, X_ATOM_UTF8_STRING, XA_PRIMARY,
 			XWindow, CurrentTime);
 	XFlush(XDisplay);
@@ -1912,12 +1897,12 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 	}
 
 	// for debugging:
-	{
-		char *type_name = XGetAtomName(XDisplay, type);
-		fprintf(stderr, "CIrrDeviceLinux::getTextFromClipboard: actual type: %s (=%ld)\n",
-				type_name, type);
-		XFree(type_name);
-	}
+	//~ {
+		//~ char *type_name = XGetAtomName(XDisplay, type);
+		//~ fprintf(stderr, "CIrrDeviceLinux::getTextFromClipboard: actual type: %s (=%ld)\n",
+				//~ type_name, type);
+		//~ XFree(type_name);
+	//~ }
 
 	if (type != X_ATOM_UTF8_STRING && type != X_ATOM_UTF8_MIME_TYPE) {
 		os::Printer::log("CIrrDeviceLinux::getTextFromClipboard: did not get utf-8 string",
@@ -1949,14 +1934,11 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 void CIrrDeviceLinux::copyToClipboard(const c8 *text) const
 {
 #if defined(_IRR_COMPILE_WITH_X11_)
-	fprintf(stderr, "CIrrDeviceLinux::copyToClipboard: called, text=\"%s\"\n", text); // TODO: remove
-
 	// Actually there is no clipboard on X but applications just say they own the clipboard and return text when asked.
 	// Which btw. also means that on X you lose clipboard content when closing applications.
 	Clipboard = text;
-	// TODO: don't use CurrentTime
 	XSetSelectionOwner (XDisplay, X_ATOM_CLIPBOARD, XWindow, CurrentTime);
-	XFlush (XDisplay); // TODO: why flush?
+	XFlush (XDisplay);
 	Window owner = XGetSelectionOwner(XDisplay, X_ATOM_CLIPBOARD);
 	if (owner != XWindow) {
 		os::Printer::log("CIrrDeviceLinux::copyToClipboard: failed to set owner", ELL_WARNING);
