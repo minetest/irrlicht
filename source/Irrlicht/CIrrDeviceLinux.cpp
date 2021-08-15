@@ -6,6 +6,7 @@
 
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 
+#include <cassert>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/utsname.h>
@@ -90,7 +91,7 @@ namespace
 	Atom X_ATOM_CLIPBOARD;
 	Atom X_ATOM_TARGETS;
 	Atom X_ATOM_UTF8_STRING;
-	Atom X_ATOM_UTF8_STRING_2;
+	Atom X_ATOM_UTF8_MIME_TYPE;
 	Atom X_ATOM_TEXT;
 	Atom X_ATOM_NETWM_MAXIMIZE_VERT;
 	Atom X_ATOM_NETWM_MAXIMIZE_HORZ;
@@ -1066,7 +1067,7 @@ bool CIrrDeviceLinux::run()
 							X_ATOM_TEXT,
 							XA_STRING,
 							X_ATOM_UTF8_STRING,
-							X_ATOM_UTF8_STRING_2
+							X_ATOM_UTF8_MIME_TYPE
 						};
 						set_property_and_notify(
 								XA_ATOM,
@@ -1079,7 +1080,7 @@ bool CIrrDeviceLinux::run()
 					} else if (req->target == X_ATOM_TEXT ||
 							req->target == XA_STRING ||
 							req->target == X_ATOM_UTF8_STRING ||
-							req->target == X_ATOM_UTF8_STRING_2) {
+							req->target == X_ATOM_UTF8_MIME_TYPE) {
 						set_property_and_notify(
 								XA_STRING,
 								8,
@@ -1838,6 +1839,7 @@ bool CIrrDeviceLinux::getGammaRamp( f32 &red, f32 &green, f32 &blue, f32 &bright
 const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 {
 #if defined(_IRR_COMPILE_WITH_X11_)
+	fprintf(stderr, "CIrrDeviceLinux::getTextFromClipboard: called\n");
 	Window ownerWindow = XGetSelectionOwner(XDisplay, X_ATOM_CLIPBOARD);
 	if (ownerWindow == XWindow) {
 		return Clipboard.c_str();
@@ -1852,24 +1854,28 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 	// delete the property to be set beforehand
 	XDeleteProperty(XDisplay, XWindow, XA_PRIMARY);
 
+	Atom target_type = X_ATOM_UTF8_STRING;
+
 	// TODO: don't use CurrentTime
-	XConvertSelection(XDisplay, X_ATOM_CLIPBOARD, XA_STRING, XA_PRIMARY, XWindow, CurrentTime);
+	XConvertSelection(XDisplay, X_ATOM_CLIPBOARD, target_type, XA_PRIMARY, XWindow, CurrentTime);
 	XFlush(XDisplay);
 
 	// wait for event via a blocking call
 	XEvent event_ret;
+	std::pair<Window, Atom> property_arg = std::make_pair(XWindow, target_type);
 	XIfEvent(XDisplay, &event_ret, [](Display *_display, XEvent *event, XPointer arg) {
-		Window *my_window = (Window *)arg;
+		//~ Window *my_window = (Window *)arg;
+		auto window_pair_target = (std::pair<Window, Atom> *)arg;
 		return (Bool) (event->type == SelectionNotify &&
-				event->xselection.requestor == *my_window &&
+				event->xselection.requestor == window_pair_target->first &&
 				event->xselection.selection == X_ATOM_CLIPBOARD &&
-				event->xselection.target == XA_STRING);
-	}, (XPointer)&XWindow);
+				event->xselection.target == window_pair_target->second);
+	}, (XPointer)&property_arg);
 
 	assert(event_ret.type == SelectionNotify &&
 			event_ret.xselection.requestor == XWindow &&
 			event_ret.xselection.selection == X_ATOM_CLIPBOARD &&
-			event_ret.xselection.target == XA_STRING);
+			event_ret.xselection.target == target_type);
 
 	Atom property_set = event_ret.xselection.property;
 	if (event_ret.xselection.property == None) {
@@ -1897,6 +1903,15 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 		XFree(data);
 		data = nullptr;
 	}
+
+	// for debugging:
+	{
+		char *type_name = XGetAtomName(XDisplay, type);
+		fprintf(stderr, "CIrrDeviceLinux::getTextFromClipboard: actual type: %s (=%ld)\n",
+				type_name, type);
+		XFree(type_name);
+	}
+
 	if (bytesLeft > 0) {
 		// there is some data to get
 		int result = XGetWindowProperty (XDisplay, XWindow, property_set, 0,
@@ -1976,7 +1991,7 @@ void CIrrDeviceLinux::initXAtoms()
 	X_ATOM_CLIPBOARD = XInternAtom(XDisplay, "CLIPBOARD", False);
 	X_ATOM_TARGETS = XInternAtom(XDisplay, "TARGETS", False);
 	X_ATOM_UTF8_STRING = XInternAtom(XDisplay, "UTF8_STRING", False);
-	X_ATOM_UTF8_STRING_2 = XInternAtom(XDisplay, "text/plain;charset=utf-8", False);
+	X_ATOM_UTF8_MIME_TYPE = XInternAtom(XDisplay, "text/plain;charset=utf-8", False);
 	X_ATOM_TEXT = XInternAtom(XDisplay, "TEXT", False);
 	X_ATOM_NETWM_MAXIMIZE_VERT = XInternAtom(XDisplay, "_NET_WM_STATE_MAXIMIZED_VERT", true);
 	X_ATOM_NETWM_MAXIMIZE_HORZ = XInternAtom(XDisplay, "_NET_WM_STATE_MAXIMIZED_HORZ", true);
