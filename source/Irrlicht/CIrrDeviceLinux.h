@@ -104,8 +104,8 @@ namespace irr
 		virtual bool getGammaRamp( f32 &red, f32 &green, f32 &blue, f32 &brightness, f32 &contrast ) _IRR_OVERRIDE_;
 
 		//! gets text from the clipboard
-		//! \return Returns 0 if no string is in there.
-		virtual const c8* getTextFromClipboard() const;
+		//! \return Returns 0 if no string is in there, otherwise utf-8 text.
+		virtual const c8 *getTextFromClipboard() const;
 
 		//! copies text to the clipboard
 		//! This sets the clipboard selection and _not_ the primary selection which you have on X on the middle mouse button.

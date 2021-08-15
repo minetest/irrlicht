@@ -56,7 +56,8 @@ const core::stringc& COSOperator::getOperatingSystemVersion() const
 
 
 //! copies text to the clipboard
-void COSOperator::copyToClipboard(const c8* text) const
+//! \param text: text in utf-8
+void COSOperator::copyToClipboard(const c8 *text) const
 {
 	if (strlen(text)==0)
 		return;

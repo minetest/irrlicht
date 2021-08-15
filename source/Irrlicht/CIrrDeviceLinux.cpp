@@ -1834,7 +1834,7 @@ bool CIrrDeviceLinux::getGammaRamp( f32 &red, f32 &green, f32 &blue, f32 &bright
 
 
 //! gets text from the clipboard
-//! \return Returns 0 if no string is in there.
+//! \return Returns 0 if no string is in there, otherwise utf-8 text.
 const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 {
 #if defined(_IRR_COMPILE_WITH_X11_)

@@ -300,7 +300,7 @@ bool CGUIEditBox::processKey(const SEvent& event)
 				const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
 
 				core::stringc s;
-				s = Text.subString(realmbgn, realmend - realmbgn).c_str();
+				s = Text.subString(realmbgn, realmend - realmbgn).c_str(); //TODO
 				Operator->copyToClipboard(s.c_str());
 			}
 			break;
@@ -314,7 +314,7 @@ bool CGUIEditBox::processKey(const SEvent& event)
 				// copy
 				core::stringc sc;
 				sc = Text.subString(realmbgn, realmend - realmbgn).c_str();
-				Operator->copyToClipboard(sc.c_str());
+				Operator->copyToClipboard(sc.c_str()); //TODO
 
 				if (isEnabled())
 				{
@@ -341,8 +341,8 @@ bool CGUIEditBox::processKey(const SEvent& event)
 				const s32 realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
 				const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
 
-				// add new character
-				const c8* p = Operator->getTextFromClipboard();
+				// add the string
+				const c8 *p = Operator->getTextFromClipboard();
 				if (p)
 				{
 					irr::core::stringw widep;
