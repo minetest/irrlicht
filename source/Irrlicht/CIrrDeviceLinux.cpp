@@ -1051,7 +1051,7 @@ bool CIrrDeviceLinux::run()
 						// Note: this was not tested and might be incorrect
 						os::Printer::log("CIrrDeviceLinux::run: SelectionRequest from obsolete client",
 								ELL_WARNING);
-						XChangeProperty (XDisplay,
+						XChangeProperty(XDisplay,
 								req->requestor,
 								req->target, X_ATOM_UTF8_STRING,
 								8, // format = 8-bit
@@ -1071,10 +1071,9 @@ bool CIrrDeviceLinux::run()
 						};
 						set_property_and_notify(
 								XA_ATOM,
-								8, // sizeof(Atom)*8=64, and max format is 32,
-								   // hence we can not have byte-swapping
+								32, // Atom is long, we need to set 32 for longs
 								&data,
-								sizeof(data)
+								sizeof(data) / sizeof(*data)
 							);
 
 					} else if (req->target == X_ATOM_TEXT ||
