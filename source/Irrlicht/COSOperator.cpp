@@ -103,7 +103,7 @@ void COSOperator::copyToClipboard(const c8* text) const
 
 
 //! gets text from the clipboard
-//! \return Returns 0 if no string is in there.
+//! \return Returns 0 if no string is in there, otherwise an utf-8 string.
 const c8* COSOperator::getTextFromClipboard() const
 {
 #if defined(_IRR_XBOX_PLATFORM_)

@@ -1047,13 +1047,13 @@ bool CIrrDeviceLinux::run()
 
 					if (req->property == None) {
 						// req is from obsolete client, use target as property name
-						// and XA_STRING as type
+						// and X_ATOM_UTF8_STRING as type
 						// Note: this was not tested and might be incorrect
 						os::Printer::log("CIrrDeviceLinux::run: SelectionRequest from obsolete client",
 								ELL_WARNING);
 						XChangeProperty (XDisplay,
 								req->requestor,
-								req->target, XA_STRING,
+								req->target, X_ATOM_UTF8_STRING,
 								8, // format = 8-bit
 								PropModeReplace,
 								(unsigned char *)Clipboard.c_str(),
@@ -1064,8 +1064,8 @@ bool CIrrDeviceLinux::run()
 
 					if (req->target == X_ATOM_TARGETS) {
 						Atom data[] = {
+							X_ATOM_TARGETS,
 							X_ATOM_TEXT,
-							XA_STRING,
 							X_ATOM_UTF8_STRING,
 							X_ATOM_UTF8_MIME_TYPE
 						};
@@ -1078,11 +1078,10 @@ bool CIrrDeviceLinux::run()
 							);
 
 					} else if (req->target == X_ATOM_TEXT ||
-							req->target == XA_STRING ||
 							req->target == X_ATOM_UTF8_STRING ||
 							req->target == X_ATOM_UTF8_MIME_TYPE) {
 						set_property_and_notify(
-								XA_STRING,
+								X_ATOM_UTF8_STRING,
 								8,
 								Clipboard.c_str(),
 								Clipboard.size()
@@ -1854,15 +1853,14 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 	// delete the property to be set beforehand
 	XDeleteProperty(XDisplay, XWindow, XA_PRIMARY);
 
-	Atom target_type = X_ATOM_UTF8_STRING;
-
 	// TODO: don't use CurrentTime
-	XConvertSelection(XDisplay, X_ATOM_CLIPBOARD, target_type, XA_PRIMARY, XWindow, CurrentTime);
+	XConvertSelection(XDisplay, X_ATOM_CLIPBOARD, X_ATOM_UTF8_STRING, XA_PRIMARY,
+			XWindow, CurrentTime);
 	XFlush(XDisplay);
 
 	// wait for event via a blocking call
 	XEvent event_ret;
-	std::pair<Window, Atom> property_arg = std::make_pair(XWindow, target_type);
+	std::pair<Window, Atom> property_arg = std::make_pair(XWindow, X_ATOM_UTF8_STRING);
 	XIfEvent(XDisplay, &event_ret, [](Display *_display, XEvent *event, XPointer arg) {
 		//~ Window *my_window = (Window *)arg;
 		auto window_pair_target = (std::pair<Window, Atom> *)arg;
@@ -1875,7 +1873,7 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 	assert(event_ret.type == SelectionNotify &&
 			event_ret.xselection.requestor == XWindow &&
 			event_ret.xselection.selection == X_ATOM_CLIPBOARD &&
-			event_ret.xselection.target == target_type);
+			event_ret.xselection.target == X_ATOM_UTF8_STRING);
 
 	Atom property_set = event_ret.xselection.property;
 	if (event_ret.xselection.property == None) {
@@ -1910,6 +1908,12 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 		fprintf(stderr, "CIrrDeviceLinux::getTextFromClipboard: actual type: %s (=%ld)\n",
 				type_name, type);
 		XFree(type_name);
+	}
+
+	if (type != X_ATOM_UTF8_STRING && type != X_ATOM_UTF8_MIME_TYPE) {
+		os::Printer::log("CIrrDeviceLinux::getTextFromClipboard: did not get utf-8 string",
+				ELL_WARNING);
+		return Clipboard.c_str();
 	}
 
 	if (bytesLeft > 0) {
