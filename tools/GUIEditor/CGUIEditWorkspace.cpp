@@ -879,7 +879,7 @@ void CGUIEditWorkspace::CopySelectedElementXML()
 	u32 i = memWrite->getData().size()/sizeof(wchar_t);
 	if (wXMLText.size() > i)
 		wXMLText[i] = L'\0';
-	XMLText = wXMLText.c_str(); // TODO
+	core::wStringToMultibyte(XMLText, wXMLText);
 	memWrite->drop();
 	xml->drop();
 	Environment->getOSOperator()->copyToClipboard(XMLText.c_str());

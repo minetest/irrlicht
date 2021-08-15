@@ -35,7 +35,8 @@ outside the string class for explicit use.
 // forward declarations
 template <typename T, typename TAlloc = irrAllocator<T> >
 class string;
-static size_t multibyteToWString(string<wchar_t>& destination, const char* source, u32 sourceSize);
+static size_t multibyteToWString(string<wchar_t> &destination, const char *source, u32 sourceSize);
+static size_t wStringToMultibyte(string<c8> &destination, const wchar_t *source, u32 sourceSize);
 inline s32 isdigit(s32 c);
 
 enum eLocaleID
@@ -1423,7 +1424,8 @@ public:
 		return ret.size()-oldSize;
 	}
 
-	friend size_t multibyteToWString(string<wchar_t>& destination, const char* source, u32 sourceSize);
+	friend size_t multibyteToWString(string<wchar_t> &destination, const char *source, u32 sourceSize);
+	friend size_t wStringToMultibyte(string<c8> &destination, const wchar_t *source, u32 sourceSize);
 
 private:
 
@@ -1466,7 +1468,7 @@ What the function does exactly depends on the LC_CTYPE of the current c locale.
 \param destination Wide-character string receiving the converted source
 \param source multibyte string
 \return The number of wide characters written to destination, not including the eventual terminating null character or -1 when conversion failed */
-static inline size_t multibyteToWString(string<wchar_t>& destination, const core::string<c8>& source)
+static inline size_t multibyteToWString(string<wchar_t> &destination, const core::string<c8> &source)
 {
 	return multibyteToWString(destination, source.c_str(), (u32)source.size());
 }
@@ -1477,18 +1479,18 @@ What the function does exactly depends on the LC_CTYPE of the current c locale.
 \param destination Wide-character string receiving the converted source
 \param source multibyte string
 \return The number of wide characters written to destination, not including the eventual terminating null character  or -1 when conversion failed. */
-static inline size_t multibyteToWString(string<wchar_t>& destination, const char* source)
+static inline size_t multibyteToWString(string<wchar_t> &destination, const char *source)
 {
 	const u32 s = source ? (u32)strlen(source) : 0;
 	return multibyteToWString(destination, source, s);
 }
 
 //! Internally used by the other multibyteToWString functions
-static size_t multibyteToWString(string<wchar_t>& destination, const char* source, u32 sourceSize)
+static size_t multibyteToWString(string<wchar_t> &destination, const char *source, u32 sourceSize)
 {
-	if ( sourceSize )
+	if (sourceSize)
 	{
-		destination.reserve(sourceSize+1);
+		destination.reserve(sourceSize + 1);
 #if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4996)	// 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead.
@@ -1497,10 +1499,57 @@ static size_t multibyteToWString(string<wchar_t>& destination, const char* sourc
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
-		if ( written != (size_t)-1 )
+		if (written != (size_t)-1)
 		{
-			destination.used = (u32)written+1;
-			destination.array[destination.used-1] = 0;
+			destination.used = (u32)written + 1;
+			destination.array[destination.used - 1] = 0;
+		}
+		else
+		{
+			// Likely character which got converted until the invalid character was encountered are in destination now.
+			// And it seems even 0-terminated, but I found no documentation anywhere that this (the 0-termination) is guaranteed :-(
+			destination.clear();
+		}
+		return written;
+	}
+	else
+	{
+		destination.clear();
+		return 0;
+	}
+}
+
+//! Same as multibyteToWString, but the other way around
+static inline size_t wStringToMultibyte(string<c8> &destination, const core::string<wchar_t> &source)
+{
+	return wStringToMultibyte(destination, source.c_str(), (u32)source.size());
+}
+
+//! Same as multibyteToWString, but the other way around
+static inline size_t wStringToMultibyte(string<c8> &destination, const wchar_t *source)
+{
+	const u32 s = source ? (u32)strlen((const char *)source) : 0;
+	return wStringToMultibyte(destination, source, s);
+}
+
+//! Same as multibyteToWString, but the other way around
+static size_t wStringToMultibyte(string<c8> &destination, const wchar_t *source, u32 sourceSize)
+{
+	if (sourceSize)
+	{
+		destination.reserve(sourceSize + 1);
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable: 4996)	// 'wcstombs': This function or variable may be unsafe. Consider using wcstombs_s instead.
+#endif
+		const size_t written = wcstombs(destination.array, source, (size_t)sourceSize);
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
+		if (written != (size_t)-1)
+		{
+			destination.used = (u32)written + 1;
+			destination.array[destination.used - 1] = 0;
 		}
 		else
 		{

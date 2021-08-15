@@ -1872,7 +1872,6 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 	XEvent event_ret;
 	std::pair<Window, Atom> property_arg = std::make_pair(XWindow, X_ATOM_UTF8_STRING);
 	XIfEvent(XDisplay, &event_ret, [](Display *_display, XEvent *event, XPointer arg) {
-		//~ Window *my_window = (Window *)arg;
 		auto window_pair_target = (std::pair<Window, Atom> *)arg;
 		return (Bool) (event->type == SelectionNotify &&
 				event->xselection.requestor == window_pair_target->first &&

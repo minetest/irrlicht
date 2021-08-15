@@ -300,7 +300,7 @@ bool CGUIEditBox::processKey(const SEvent& event)
 				const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
 
 				core::stringc s;
-				s = Text.subString(realmbgn, realmend - realmbgn).c_str(); //TODO
+				wStringToMultibyte(s, Text.subString(realmbgn, realmend - realmbgn));
 				Operator->copyToClipboard(s.c_str());
 			}
 			break;
@@ -313,8 +313,8 @@ bool CGUIEditBox::processKey(const SEvent& event)
 
 				// copy
 				core::stringc sc;
-				sc = Text.subString(realmbgn, realmend - realmbgn).c_str();
-				Operator->copyToClipboard(sc.c_str()); //TODO
+				wStringToMultibyte(sc, Text.subString(realmbgn, realmend - realmbgn));
+				Operator->copyToClipboard(sc.c_str());
 
 				if (isEnabled())
 				{
