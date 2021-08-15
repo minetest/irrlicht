@@ -722,6 +722,17 @@ bool CIrrDeviceLinux::run()
 {
 	os::Timer::tick();
 
+	// TODO: remove
+	// results: 16 ms focused, 50 ms unfocused;
+	// one selection request per run(), no run()s between => we make it slow
+	//~ {
+		//~ static u32 old_time = os::Timer::getTime();
+		//~ u32 current_time = os::Timer::getTime();
+		//~ fprintf(stderr, "CIrrDeviceLinux::run: delta time = %u ms\n",
+				//~ current_time - old_time);
+		//~ old_time = current_time;
+	//~ }
+
 #ifdef _IRR_COMPILE_WITH_X11_
 
 	if ( CursorControl )
