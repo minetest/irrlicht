@@ -1854,7 +1854,7 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 
 	// TODO: don't use CurrentTime
 	XConvertSelection(XDisplay, X_ATOM_CLIPBOARD, XA_STRING, XA_PRIMARY, XWindow, CurrentTime);
-	XSync(XDisplay, False);
+	XFlush(XDisplay);
 
 	// wait for event via a blocking call
 	XEvent event_ret;
@@ -1881,7 +1881,7 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 	Atom type;
 	int format;
 	unsigned long numItems, bytesLeft, dummy;
-	unsigned char *data;
+	unsigned char *data = nullptr;
 	XGetWindowProperty (XDisplay, XWindow,
 			property_set, // property name
 			0, // offset
@@ -1893,13 +1893,17 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 			&numItems, // number items
 			&bytesLeft, // remaining bytes for partial reads
 			&data); // data
+	if (data) {
+		XFree(data);
+		data = nullptr;
+	}
 	if (bytesLeft > 0) {
 		// there is some data to get
 		int result = XGetWindowProperty (XDisplay, XWindow, property_set, 0,
 									bytesLeft, 0, AnyPropertyType, &type, &format,
 									&numItems, &dummy, &data);
 		if (result == Success)
-			Clipboard = (irr::c8*)data;
+			Clipboard = (irr::c8 *)data;
 		XFree (data);
 	}
 
