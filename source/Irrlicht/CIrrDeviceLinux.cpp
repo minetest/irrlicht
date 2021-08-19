@@ -2154,6 +2154,9 @@ CIrrDeviceLinux::CCursorControl::CCursorControl(CIrrDeviceLinux* dev, bool null)
 	: Device(dev)
 #ifdef _IRR_COMPILE_WITH_X11_
 	, PlatformBehavior(gui::ECPB_NONE), LastQuery(0)
+#ifdef _IRR_LINUX_X11_XINPUT2_
+	, DeviceId(0)
+#endif
 #endif
 	, IsVisible(true), Null(null), UseReferenceRect(false)
 	, ActiveIcon(gui::ECI_NORMAL), ActiveIconStartTime(0)
@@ -2161,6 +2164,10 @@ CIrrDeviceLinux::CCursorControl::CCursorControl(CIrrDeviceLinux* dev, bool null)
 #ifdef _IRR_COMPILE_WITH_X11_
 	if (!Null)
 	{
+#ifdef _IRR_LINUX_X11_XINPUT2_
+		XIGetClientPointer(Device->XDisplay, Device->XWindow, &DeviceId);
+#endif
+
 		XGCValues values;
 		unsigned long valuemask = 0;
 

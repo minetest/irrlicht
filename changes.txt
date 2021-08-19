@@ -1,5 +1,8 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- Add a workaround for XWarpPointer bug that causes mouse to jump when users have set a Coordinate Transformation Matrix for their mouse on X11.
+  This was mentioned in bug #450 by vikaig.
+  The fix needs compiling with _IRR_LINUX_X11_XINPUT2_ enabled (so far disabled by default)
 - Add IGeometryCreator::createTorusMesh to create donuts.
 - Don't try loading broken image files twice with same loader anymore.
 - Make CImageLoaderJPG thread safe. Thanks @ Edoardo Lolletti for report and patch (patch #324)
