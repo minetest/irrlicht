@@ -341,7 +341,7 @@ namespace scene
 		//! Creates a follow spline animator.
 		virtual ISceneNodeAnimator* createFollowSplineAnimator(s32 startTime,
 			const core::array< core::vector3df >& points,
-			f32 speed, f32 tightness, bool loop, bool pingpong) _IRR_OVERRIDE_;
+			f32 speed, f32 tightness, bool loop, bool pingpong, bool steer) _IRR_OVERRIDE_;
 
 
 		//! Creates a simple ITriangleSelector, based on a mesh.
