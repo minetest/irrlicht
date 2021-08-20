@@ -136,6 +136,7 @@ bool CGUIModalScreen::OnEvent(const SEvent& event)
 		{
 			MouseDownTime = os::Timer::getTime();
         }
+        break;
 	case EET_KEY_INPUT_EVENT:
 		// CAREFUL when changing - there's an identical check in CGUIEnvironment::postEventFromUser
 		if (Environment->getFocusBehavior() & EFF_SET_ON_TAB &&
