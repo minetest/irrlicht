@@ -22,8 +22,6 @@ CSceneNodeAnimatorFollowSpline::CSceneNodeAnimatorFollowSpline(u32 time,
 	#endif
 
 	StartTime = time;
-	//if (points.size() != 0)
-	//	LastPos = points[0];
 }
 
 
