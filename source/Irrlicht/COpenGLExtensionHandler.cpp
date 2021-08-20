@@ -22,7 +22,7 @@ COpenGLExtensionHandler::COpenGLExtensionHandler() :
 		MaxAnisotropy(1), MaxUserClipPlanes(0), MaxAuxBuffers(0), MaxIndices(65535),
 		MaxTextureSize(1), MaxGeometryVerticesOut(0),
 		MaxTextureLODBias(0.f), Version(0), ShaderLanguageVersion(0),
-		OcclusionQuerySupport(false)
+		OcclusionQuerySupport(false), IsAtiRadeonX(false)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
 	,pGlActiveTexture(0)
 	,pGlActiveTextureARB(0), pGlClientActiveTextureARB(0),
@@ -386,6 +386,12 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 
 	TextureCompressionExtension = FeatureAvailable[IRR_ARB_texture_compression];
 	StencilBuffer=stencilBuffer;
+
+	const char* renderer = (const char*)glGetString(GL_RENDERER);
+	if ( renderer )
+	{
+		IsAtiRadeonX = (strncmp(renderer, "ATI RADEON X", 12) == 0) || (strncmp(renderer, "ATI MOBILITY RADEON X", 21) == 0);
+	}
 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
 #ifdef _IRR_WINDOWS_API_
@@ -827,7 +833,7 @@ bool COpenGLExtensionHandler::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
 	case EVDF_MIP_MAP:
 		return true;
 	case EVDF_MIP_MAP_AUTO_UPDATE:
-		return FeatureAvailable[IRR_SGIS_generate_mipmap] || FeatureAvailable[IRR_EXT_framebuffer_object] || FeatureAvailable[IRR_ARB_framebuffer_object];
+		return !IsAtiRadeonX && (FeatureAvailable[IRR_SGIS_generate_mipmap] || FeatureAvailable[IRR_EXT_framebuffer_object] || FeatureAvailable[IRR_ARB_framebuffer_object]);
 	case EVDF_STENCIL_BUFFER:
 		return StencilBuffer;
 	case EVDF_VERTEX_SHADER_1_1:
