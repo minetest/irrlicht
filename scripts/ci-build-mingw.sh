@@ -3,7 +3,7 @@
 [[ -z "$CC" || -z "$CXX" ]] && exit 255
 
 variant=win32
-[[ "$CXX" == "x86_64-"* ]] && variant=win64
+[[ "$(basename "$CXX")" == "x86_64-"* ]] && variant=win64
 
 libjpeg_version=2.0.6
 libpng_version=1.6.37
