@@ -9,6 +9,9 @@ message(STATUS "*** Building IrrlichtMt ${PROJECT_VERSION} ***")
 
 include(GNUInstallDirs)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 if(ANDROID)
 	set(sysname Android)
 elseif(APPLE)
