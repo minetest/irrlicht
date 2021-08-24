@@ -113,6 +113,9 @@ CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 	XInputMethod(0), XInputContext(0),
 	HasNetWM(false),
 #endif
+#if defined(_IRR_LINUX_X11_XINPUT2_)
+	currentTouchedCount(0),
+#endif
 	Width(param.WindowSize.Width), Height(param.WindowSize.Height),
 	WindowHasFocus(false), WindowMinimized(false),
 	ExternalWindow(false), AutorepeatSupport(0)
@@ -1050,6 +1053,14 @@ bool CIrrDeviceLinux::run()
 						irrevent.TouchInput.ID = de->detail;
 						irrevent.TouchInput.X = de->event_x;
 						irrevent.TouchInput.Y = de->event_y;
+
+						if (irrevent.TouchInput.Event == ETIE_PRESSED_DOWN) {
+							currentTouchedCount++;
+						}
+						irrevent.TouchInput.touchedCount = currentTouchedCount;
+						if (currentTouchedCount > 0 && irrevent.TouchInput.Event == ETIE_LEFT_UP) {
+							currentTouchedCount--;
+						}
 
 						postEventFromUser(irrevent);
 					}

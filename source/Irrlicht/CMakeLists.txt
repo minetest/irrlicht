@@ -37,6 +37,7 @@ set(CMAKE_REQUIRED_INCLUDES ${PROJECT_SOURCE_DIR}/include)
 unset(OGLES1_ENABLED CACHE)
 unset(OGLES2_ENABLED CACHE)
 unset(OGL_ENABLED CACHE)
+unset(XINPUT2_ENABLED CACHE)
 
 check_symbol_exists(_IRR_COMPILE_WITH_OGLES1_ "IrrCompileConfig.h" OGLES1_ENABLED)
 if(OGLES1_ENABLED)
@@ -54,6 +55,10 @@ check_symbol_exists(_IRR_COMPILE_WITH_OPENGL_ "IrrCompileConfig.h" OGL_ENABLED)
 if(OGL_ENABLED)
 	set(OpenGL_GL_PREFERENCE "LEGACY")
 	find_package(OpenGL REQUIRED)
+endif()
+check_symbol_exists(_IRR_LINUX_X11_XINPUT2_ "IrrCompileConfig.h" XINPUT2_ENABLED)
+if(XINPUT2_ENABLED)
+	find_library(XINPUT_LIBRARY Xi REQUIRED)
 endif()
 
 # Platform-specific libs
@@ -96,6 +101,7 @@ set(link_libs
 	${OPENGLES_LIBRARY}
 	${OPENGLES2_LIBRARIES}
 	${EGL_LIBRARY}
+	${XINPUT_LIBRARY}
 
 	"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
 	${COCOA_LIB}
