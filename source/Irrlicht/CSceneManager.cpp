@@ -48,6 +48,8 @@
 
 #include "CDefaultSceneNodeFactory.h"
 
+#include "CSceneCollisionManager.h"
+
 #include <locale.h>
 
 namespace irr
@@ -94,6 +96,9 @@ CSceneManager::CSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs,
 	Parameters = new io::CAttributes();
 	Parameters->setAttribute(DEBUG_NORMAL_LENGTH, 1.f);
 	Parameters->setAttribute(DEBUG_NORMAL_COLOR, video::SColor(255, 34, 221, 221));
+
+	// create collision manager
+	CollisionManager = new CSceneCollisionManager(this, Driver);
 
 	// add file format loaders. add the least commonly used ones first,
 	// as these are checked last
@@ -153,6 +158,9 @@ CSceneManager::~CSceneManager()
 
 	if (CursorControl)
 		CursorControl->drop();
+
+	if (CollisionManager)
+		CollisionManager->drop();
 
 	if (GUIEnvironment)
 		GUIEnvironment->drop();
@@ -825,6 +833,12 @@ ISceneLoader* CSceneManager::getSceneLoader(u32 index) const
 		return SceneLoaderList[index];
 	else
 		return 0;
+}
+
+//! Returns a pointer to the scene collision manager.
+ISceneCollisionManager* CSceneManager::getSceneCollisionManager()
+{
+	return CollisionManager;
 }
 
 

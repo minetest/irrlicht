@@ -128,6 +128,7 @@ add_library(IRROBJ OBJECT
 	CDummyTransformationSceneNode.cpp
 	CEmptySceneNode.cpp
 	CMeshManipulator.cpp
+	CSceneCollisionManager.cpp
 	CSceneManager.cpp
 	CMeshCache.cpp
 	CDefaultSceneNodeFactory.cpp
