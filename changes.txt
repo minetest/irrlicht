@@ -1,5 +1,8 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- SIrrlichtCreationParameters::IgnoreInput set to false works again on X11. 
+  Thanks @ Victor Gaydov for report + patch + very good test cases! (bug #401)
+  This had been broken since Irrlicht 1.6
 - Add steer parameter to CSceneNodeAnimatorFollowSpline which allows rotating node toward direction of movement. 
   Thanks @ Bate for the patch (patch #175)
 - Add a workaround for XWarpPointer bug that causes mouse to jump when users have set a Coordinate Transformation Matrix for their mouse on X11.
