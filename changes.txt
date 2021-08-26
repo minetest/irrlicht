@@ -1,5 +1,6 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- Add equals and set_data functions to core::array for easier working with blocks of data.
 - SIrrlichtCreationParameters::IgnoreInput set to false works again on X11. 
   Thanks @ Victor Gaydov for report + patch + very good test cases! (bug #401)
   This had been broken since Irrlicht 1.6
