@@ -72,7 +72,7 @@ namespace scene
 		ISceneManager::addCameraSceneNodeFPS, may want to get
 		this input for changing their position, look at target or
 		whatever. */
-		virtual bool OnEvent(const SEvent& event) =0;
+		virtual bool OnEvent(const SEvent& event) _IRR_OVERRIDE_ =0;
 
 		//! Sets the look at target of the camera
 		/** If the camera's target and rotation are bound ( @see
