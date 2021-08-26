@@ -37,10 +37,10 @@ public:
 		if (ColorAttachment > 0)
 			Driver->irrGlGenFramebuffers(1, &BufferID);
 
-		AssignedTexture.set_used(static_cast<u32>(ColorAttachment));
+		AssignedTextures.set_used(static_cast<u32>(ColorAttachment));
 
-		for (u32 i = 0; i < AssignedTexture.size(); ++i)
-			AssignedTexture[i] = GL_NONE;
+		for (u32 i = 0; i < AssignedTextures.size(); ++i)
+			AssignedTextures[i] = GL_NONE;
 	}
 
 	virtual ~COpenGLCoreRenderTarget()
@@ -48,10 +48,10 @@ public:
 		if (ColorAttachment > 0 && BufferID != 0)
 			Driver->irrGlDeleteFramebuffers(1, &BufferID);
 
-		for (u32 i = 0; i < Texture.size(); ++i)
+		for (u32 i = 0; i < Textures.size(); ++i)
 		{
-			if (Texture[i])
-				Texture[i]->drop();
+			if (Textures[i])
+				Textures[i]->drop();
 		}
 
 		if (DepthStencil)
@@ -63,11 +63,11 @@ public:
 		bool needSizeUpdate = false;
 
 		// Set color attachments.
-		if ((Texture != textures) || (CubeSurfaces != cubeSurfaces))
+		if ((Textures != textures) || (CubeSurfaces != cubeSurfaces))
 		{
 			needSizeUpdate = true;
 
-			core::array<ITexture*> prevTextures(Texture);
+			core::array<ITexture*> prevTextures(Textures);
 
 			if (textures.size() > static_cast<u32>(ColorAttachment))
 			{
@@ -78,9 +78,9 @@ public:
 				os::Printer::log(message.c_str(), ELL_WARNING);
 			}
 
-			Texture.set_used(core::min_(textures.size(), static_cast<u32>(ColorAttachment)));
+			Textures.set_used(core::min_(textures.size(), static_cast<u32>(ColorAttachment)));
 
-			for (u32 i = 0; i < Texture.size(); ++i)
+			for (u32 i = 0; i < Textures.size(); ++i)
 			{
 				TOpenGLTexture* currentTexture = (textures[i] && textures[i]->getDriverType() == DriverType) ? static_cast<TOpenGLTexture*>(textures[i]) : 0;
 
@@ -93,12 +93,12 @@ public:
 
 				if (textureID != 0)
 				{
-					Texture[i] = textures[i];
-					Texture[i]->grab();
+					Textures[i] = textures[i];
+					Textures[i]->grab();
 				}
 				else
 				{
-					Texture[i] = 0;
+					Textures[i] = 0;
 				}
 			}
 
@@ -183,26 +183,26 @@ public:
 			{
 				// Set new color textures.
 
-				const u32 textureSize = core::min_(Texture.size(), AssignedTexture.size());
+				const u32 textureSize = core::min_(Textures.size(), AssignedTextures.size());
 
 				for (u32 i = 0; i < textureSize; ++i)
 				{
-					TOpenGLTexture* currentTexture = static_cast<TOpenGLTexture*>(Texture[i]);
+					TOpenGLTexture* currentTexture = static_cast<TOpenGLTexture*>(Textures[i]);
 					GLuint textureID = currentTexture ? currentTexture->getOpenGLTextureName() : 0;
 
 					if (textureID != 0)
 					{
-						AssignedTexture[i] = GL_COLOR_ATTACHMENT0 + i;
+						AssignedTextures[i] = GL_COLOR_ATTACHMENT0 + i;
 						GLenum textarget = currentTexture->getType() == ETT_2D ? GL_TEXTURE_2D : GL_TEXTURE_CUBE_MAP_POSITIVE_X + (int)CubeSurfaces[i];
-						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, AssignedTexture[i], textarget, textureID, 0);
+						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, AssignedTextures[i], textarget, textureID, 0);
 #ifdef _DEBUG
 						Driver->testGLError(__LINE__);
 #endif
 					}
-					else if (AssignedTexture[i] != GL_NONE)
+					else if (AssignedTextures[i] != GL_NONE)
 					{
-						AssignedTexture[i] = GL_NONE;
-						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, AssignedTexture[i], GL_TEXTURE_2D, 0, 0);
+						AssignedTextures[i] = GL_NONE;
+						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, AssignedTextures[i], GL_TEXTURE_2D, 0, 0);
 
 						os::Printer::log("Error: Could not set render target.", ELL_ERROR);
 					}
@@ -210,12 +210,12 @@ public:
 
 				// Reset other render target channels.
 
-				for (u32 i = textureSize; i < AssignedTexture.size(); ++i)
+				for (u32 i = textureSize; i < AssignedTextures.size(); ++i)
 				{
-					if (AssignedTexture[i] != GL_NONE)
+					if (AssignedTextures[i] != GL_NONE)
 					{
-						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, AssignedTexture[i], GL_TEXTURE_2D, 0, 0);
-						AssignedTexture[i] = GL_NONE;
+						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, AssignedTextures[i], GL_TEXTURE_2D, 0, 0);
+						AssignedTextures[i] = GL_NONE;
 					}
 				}
 
@@ -272,7 +272,7 @@ public:
 
 			if (ColorAttachment > 0 && BufferID != 0)
 			{
-				const u32 textureSize = Texture.size();
+				const u32 textureSize = Textures.size();
 
 				if (textureSize == 0)
 					Driver->irrGlDrawBuffer(GL_NONE);
@@ -280,9 +280,9 @@ public:
 					Driver->irrGlDrawBuffer(GL_COLOR_ATTACHMENT0);
 				else
 				{
-					const u32 bufferCount = core::min_(MultipleRenderTarget, core::min_(textureSize, AssignedTexture.size()));
+					const u32 bufferCount = core::min_(MultipleRenderTarget, core::min_(textureSize, AssignedTextures.size()));
 
-					Driver->irrGlDrawBuffers(bufferCount, AssignedTexture.pointer());
+					Driver->irrGlDrawBuffers(bufferCount, AssignedTextures.pointer());
 				}
 
 #ifdef _DEBUG
@@ -309,10 +309,10 @@ public:
 
 	ITexture* getTexture() const
 	{
-		for (u32 i = 0; i < Texture.size(); ++i)
+		for (u32 i = 0; i < Textures.size(); ++i)
 		{
-			if (Texture[i])
-				return Texture[i];
+			if (Textures[i])
+				return Textures[i];
 		}
 
 		return 0;
@@ -359,7 +359,7 @@ protected:
 		return false;
 	}
 
-	core::array<GLenum> AssignedTexture;
+	core::array<GLenum> AssignedTextures;
 	bool AssignedDepth;
 	bool AssignedStencil;
 

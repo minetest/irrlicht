@@ -46,7 +46,7 @@ namespace irr
 		protected:
 			core::dimension2d<u32> Size;
 
-			core::array<IDirect3DSurface9*> Surface;
+			core::array<IDirect3DSurface9*> Surfaces;
 
 			IDirect3DSurface9* DepthStencilSurface;
 

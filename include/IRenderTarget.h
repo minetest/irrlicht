@@ -39,7 +39,7 @@ namespace video
 		//! Returns an array of previously set textures.
 		const core::array<ITexture*>& getTexture() const
 		{
-			return Texture;
+			return Textures;
 		}
 
 		//! Returns a of previously set depth / depth-stencil texture.
@@ -87,7 +87,7 @@ namespace video
 	protected:
 
 		//! Textures assigned to render target.
-		core::array<ITexture*> Texture;
+		core::array<ITexture*> Textures;
 
 		//! Depth or packed depth-stencil texture assigned to render target.
 		ITexture* DepthStencil;

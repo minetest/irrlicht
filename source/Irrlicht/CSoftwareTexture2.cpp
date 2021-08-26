@@ -385,30 +385,30 @@ CSoftwareRenderTarget2::CSoftwareRenderTarget2(CBurningVideoDriver* driver) : Dr
 {
 	DriverType = EDT_BURNINGSVIDEO;
 
-	Texture.set_used(1);
-	Texture[0] = 0;
+	Textures.set_used(1);
+	Textures[0] = 0;
 }
 
 CSoftwareRenderTarget2::~CSoftwareRenderTarget2()
 {
-	if (Texture[0])
-		Texture[0]->drop();
+	if (Textures[0])
+		Textures[0]->drop();
 }
 
-void CSoftwareRenderTarget2::setTexture(const core::array<ITexture*>& texture, ITexture* depthStencil, const core::array<E_CUBE_SURFACE>& cubeSurfaces)
+void CSoftwareRenderTarget2::setTexture(const core::array<ITexture*>& textures, ITexture* depthStencil, const core::array<E_CUBE_SURFACE>& cubeSurfaces)
 {
-	if (Texture != texture)
+	if (Textures != textures)
 	{
-		ITexture* prevTexture = Texture[0];
+		ITexture* prevTexture = Textures[0];
 
 		bool textureDetected = false;
 
-		for (u32 i = 0; i < texture.size(); ++i)
+		for (u32 i = 0; i < textures.size(); ++i)
 		{
-			if (texture[i] && texture[i]->getDriverType() == EDT_BURNINGSVIDEO)
+			if (textures[i] && textures[i]->getDriverType() == EDT_BURNINGSVIDEO)
 			{
-				Texture[0] = texture[i];
-				Texture[0]->grab();
+				Textures[0] = textures[i];
+				Textures[0]->grab();
 				textureDetected = true;
 
 				break;
@@ -419,7 +419,7 @@ void CSoftwareRenderTarget2::setTexture(const core::array<ITexture*>& texture, I
 			prevTexture->drop();
 
 		if (!textureDetected)
-			Texture[0] = 0;
+			Textures[0] = 0;
 	}
 }
 
