@@ -1,225 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Irrlicht Engine Tutorial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Tutorial 5: User Interface</title>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- Wanted to avoid copying .css to each folder, so copied default .css from doxyen in here, kicked out most stuff we don't need for examples and modified some a little bit. 
+     Target was having a single html in each example folder which is created from the main.cpp files and needs no files besides some images below media folder.
+     Feel free to improve :)
+	 -->
+<style>
+body, table, div, p, dl {
+	font: 400 14px/22px;
+}
+body {
+	background-color: #F0F0F0;
+	color: black;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+p.reference, p.definition {
+	font: 400 14px/22px;
+}
+.title {
+	font: 400 14px/28px;
+	font-size: 150%;
+	font-weight: bold;
+	margin: 10px 2px;
+}
+h1, h2, h3, h4, h5, h6 {
+	-webkit-transition: text-shadow 0.5s linear;
+	-moz-transition: text-shadow 0.5s linear;
+	-ms-transition: text-shadow 0.5s linear;
+	-o-transition: text-shadow 0.5s linear;
+	transition: text-shadow 0.5s linear;
+	margin-right: 15px;
+}
+caption {
+	font-weight: bold;
+}
+h3.version {
+	font-size: 90%;
+	text-align: center;
+}
+a {
+	color: #3D578C;
+	font-weight: normal;
+	text-decoration: none;
+}
+.contents a:visited {
+	color: #4665A2;
+}
+a:hover {
+	text-decoration: underline;
+}
+a.el {
+	font-weight: bold;
+}
+a.code, a.code:visited, a.line, a.line:visited {
+	color: #4665A2; 
+}
+a.codeRef, a.codeRef:visited, a.lineRef, a.lineRef:visited {
+	color: #4665A2; 
+}
+pre.fragment {
+	border: 1px solid #C4CFE5;
+	background-color: #FBFCFD;
+	padding: 4px 6px;
+	margin: 4px 8px 4px 2px;
+	overflow: auto;
+	word-wrap: break-word;
+	font-size:  9pt;
+	line-height: 125%;
+	font-family: monospace, fixed;
+	font-size: 105%;
+}
+div.fragment {
+	padding: 0px;
+	margin: 4px 8px 4px 2px;
+	background-color: #FBFCFD;
+	border: 1px solid #C4CFE5;
+}
+div.line {
+	font-family: monospace, fixed;
+	font-size: 13px;
+	min-height: 13px;
+	line-height: 1.0;
+	text-wrap: unrestricted;
+	white-space: -moz-pre-wrap; /* Moz */
+	white-space: -pre-wrap;     /* Opera 4-6 */
+	white-space: -o-pre-wrap;   /* Opera 7 */
+	white-space: pre-wrap;      /* CSS3  */
+	word-wrap: break-word;      /* IE 5.5+ */
+	text-indent: -53px;
+	padding-left: 53px;
+	padding-bottom: 0px;
+	margin: 0px;
+	-webkit-transition-property: background-color, box-shadow;
+	-webkit-transition-duration: 0.5s;
+	-moz-transition-property: background-color, box-shadow;
+	-moz-transition-duration: 0.5s;
+	-ms-transition-property: background-color, box-shadow;
+	-ms-transition-duration: 0.5s;
+	-o-transition-property: background-color, box-shadow;
+	-o-transition-duration: 0.5s;
+	transition-property: background-color, box-shadow;
+	transition-duration: 0.5s;
+}
+div.contents {
+	margin-top: 10px;
+	margin-left: 12px;
+	margin-right: 8px;
+}
+div.center {
+	text-align: center;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding: 0px;
+}
+div.center img {
+	border: 0px;
+}
+span.keyword {
+	color: #008000
+}
+span.keywordtype {
+	color: #604020
+}
+span.keywordflow {
+	color: #e08000
+}
+span.comment {
+	color: #800000
+}
+span.preprocessor {
+	color: #806020
+}
+span.stringliteral {
+	color: #002080
+}
+span.charliteral {
+	color: #008080
+}
+blockquote {
+	background-color: #F7F8FB;
+	border-left: 2px solid #9CAFD4;
+	margin: 0 24px 0 4px;
+	padding: 0 12px 0 16px;
+}
+hr {
+	height: 0px;
+	border: none;
+	border-top: 1px solid #4A6AAA;
+}
+address {
+	font-style: normal;
+	color: #2A3D61;
+}
+div.header {
+	background-image:url('nav_h.png');
+	background-repeat:repeat-x;
+	background-color: #F9FAFC;
+	margin:  0px;
+	border-bottom: 1px solid #C4CFE5;
+}
+div.headertitle {
+	padding: 5px 5px 5px 10px;
+}
+.image {
+	text-align: center;
+}
+.caption {
+	font-weight: bold;
+}
+div.zoom {
+	border: 1px solid #90A5CE;
+}
+tr.heading h2 {
+	margin-top: 12px;
+	margin-bottom: 4px;
+}
+</style>
 </head>
-
-<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699" width="10"><b><a href="http://irrlicht.sourceforge.net" target="_blank"><img src="../../media/irrlichtlogo.jpg" width="88" height="31" border="0"></a></b></td>
-    <td bgcolor="#666699" width="100%">
-<div align="center">
-<div align="center"></div>
-        <div align="left"><b><font color="#FFFFFF">Tutorial 5.User Interface</font></b></div>
-      </div>
-      </td>
-  </tr>
-  <tr bgcolor="#eeeeff"> 
-    <td height="90" colspan="2"> 
-      <div align="left"> 
-        <p>This tutorial shows how to use the built in User Interface of the Irrlicht 
-          Engine. It will give a brief overview and show how to create and use 
-          windows, buttons, scroll bars, static texts and list boxes. </p>
-        <p>The program which is described here will look like this:</p>
-        <p align="center"><img src="../../media/005shot.jpg" width="259" height="204"><br>
-        </p>
-      </div>
-    </td>
-  </tr>
-</table>
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699"> <div align="center"><b><font color="#FFFFFF"></font></b></div>
-      <b><font color="#FFFFFF">Lets start!</font></b></td>
-  </tr>
-  <tr> 
-    <td height="90" bgcolor="#eeeeff" valign="top"> <div align="left"> 
-        <p>As always, we include the header files (conio and curses for getting 
-          user input from the console), and use the irrlicht namespaces. We also 
-          store a pointer to the Irrlicht device, a counter variable for changing 
-          the creation position of a window, and a pointer to a listbox.</p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td> <pre>#include &lt;irrlicht.h&gt;
-#include &lt;iostream&gt;<br>
-using namespace irr;</pre> 
-              <pre>using namespace core;
-using namespace scene;
-using namespace video;
-using namespace io;
-using namespace gui;</pre>
-              <pre>#pragma comment(lib, &quot;Irrlicht.lib&quot;)</pre>
-              <pre>IrrlichtDevice *device = 0;
-s32 cnt = 0;
-IGUIListBox* listbox = 0;
-</pre></td>
-          </tr>
-        </table>
-        <p>The Event Receiver is not only capable of getting keyboard and mouse 
-          input events, but also events of the graphical user interface (gui). 
-          There are events for almost everything: Button click, Listbox selection 
-          change, events that say that a element was hovered and so on. To be 
-          able to react to some of these events, we create <br>
-          an event receiver. We only react to gui events, and if it's such an 
-          event, we get the id of the caller (the gui element which caused the 
-          event) and get the pointer to the gui environment. </p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td> <pre>class MyEventReceiver : public IEventReceiver<br>{<br>public:<br>	virtual bool OnEvent(const SEvent&amp; event)<br>	{<br>		if (event.EventType == EET_GUI_EVENT)<br>		{<br>			s32 id = event.GUIEvent.Caller-&gt;getID();<br>			IGUIEnvironment* env = device-&gt;getGUIEnvironment();</pre>
-              <pre>            switch(event.GUIEvent.EventType)
-            {</pre>
-              </td>
-          </tr>
-        </table>
-        <p> If a scrollbar changed its scroll position, and it is 'our' scrollbar 
-          (the one with id 104), then we change the <br>
-          transparency of all gui elements. This is a very easy task: There is 
-          a skin object, in which all color settings are stored. We simply go 
-          through all colors stored in the skin and change their alpha value. 
-        </p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td height="80"> <pre>case EGET_SCROLL_BAR_CHANGED:<br>	if (id == 104)<br>	{<br>		s32 pos = ((IGUIScrollBar*)event.GUIEvent.Caller)-&gt;getPos();<br>					<br>		for (s32 i=0; i&lt;EGDC_COUNT ; ++i)<br>		{<br>			SColor col = env-&gt;getSkin()-&gt;getColor((EGUI_DEFAULT_COLOR)i);<br>			col.setAlpha(pos);<br>			env-&gt;getSkin()-&gt;setColor((EGUI_DEFAULT_COLOR)i, col);<br>		}<br>	}<br>break;</pre></td>
-          </tr>
-        </table>
-        <p>If a button was clicked, it could be one of 'our' three buttons. If 
-          it is the first, we shut down the engine.<br>
-          If it is the second, we create a little window with some text on it. 
-          We also add a string to the list box to log<br>
-          what happened. And if it is the third button, we create a file open 
-          dialog, and add also this as string to the list box.<br>
-          That's all for the event receiver.</p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td> 
-              <pre>       case EGET_BUTTON_CLICKED:
-              if (id == 101)
-              {
-                 device-&gt;closeDevice();
-                 return true;
-              }</pre>
-              <pre>              if (id == 102)
-              {
-                 listbox-&gt;addItem(L&quot;Window created&quot;);
-                 cnt += 30;
-                 if (cnt &gt; 200) 
-                   cnt = 0;</pre>
-              <pre>                 IGUIWindow* window = env-&gt;addWindow(
-                       rect&lt;s32&gt;(100 + cnt, 100 + cnt, 300 + cnt, 200 + cnt), <br>                       false, // modal?
-                       L&quot;Test window&quot;);</pre> 
-              <pre>                 env-&gt;addStaticText(L&quot;Please close me&quot;, 
-                       rect&lt;s32&gt;(35,35,140,50),
-                       true, // border?,
-                       false, // wordwrap?
-                       window);
-
-                 return true;
-              }</pre>
-              <pre>              if (id == 103)
-              {
-                 listbox-&gt;addItem(L&quot;File open&quot;);
-                 env-&gt;addFileOpenDialog(L&quot;Please choose a file.&quot;);
-                 return true;
-              }</pre>
-              <pre>              break;
-          }
-       }
-       return false;
-    }
- };</pre>
-              </td>
-          </tr>
-        </table>
-        <p>Ok, now for the more interesting part. First, create the Irrlicht device. 
-          As in some examples before, we ask the user which driver he wants to 
-          use for this example:</p>
-      </div>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>int main()
-{
-  // ask user for driver
-  video::E_DRIVER_TYPE driverType;
-
-
-  printf(&quot;Please select the driver you want for this example:\n&quot;\<br>    &quot; (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n&quot;\<br>    &quot; (d) Software Renderer\n (e) Apfelbaum Software Renderer\n&quot;\<br>    &quot; (f) NullDevice\n (otherKey) exit\n\n&quot;);<br><br>  char i;<br>  std::cin &gt;&gt; i;<br>
-  switch(i)<br>  {<br>    case 'a': driverType = video::EDT_DIRECT3D9;break;<br>    case 'b': driverType = video::EDT_DIRECT3D8;break;<br>    case 'c': driverType = video::EDT_OPENGL;   break;<br>    case 'd': driverType = video::EDT_SOFTWARE; break;<br>    case 'e': driverType = video::EDT_BURNINGSVIDEO;break;<br>    case 'f': driverType = video::EDT_NULL;     break;<br>    default: return 1;<br>  }	
-  
-  // create device and exit if creation failed
-  device = createDevice(driverType, core::dimension2d&lt;s32&gt;(640, 480));<br>
-  if (device == 0)
-     return 1;
-</pre> 
-          </td>
-        </tr>
-      </table>
-      <p>The creation was successful, now we set the event receiver and store 
-        pointers to the driver and to the gui environment. </p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td><pre>MyEventReceiver receiver;
-device-&gt;setEventReceiver(&amp;receiver);
-device-&gt;setWindowCaption(L&quot;Irrlicht Engine - User Inferface Demo&quot;);</pre>
-            <pre>video::IVideoDriver* driver = device-&gt;getVideoDriver();
-IGUIEnvironment* env = device-&gt;getGUIEnvironment();
-</pre>
-            </td>
-        </tr>
-      </table>
-      <p>We add three buttons. The first one closes the engine. The second creates 
-        a window and the third opens a file open dialog. The third parameter is 
-        the id of the button, with which we can easily identify the button in 
-        the event receiver.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td><pre>env-&gt;addButton(rect&lt;s32&gt;(10,240,100,270), 0, 101, L&quot;Quit&quot;);<br>env-&gt;addButton(rect&lt;s32&gt;(10,280,100,320), 0, 102, L&quot;New Window&quot;);<br>env-&gt;addButton(rect&lt;s32&gt;(10,330,100,370), 0, 103, L&quot;File Open&quot;);</pre></td>
-        </tr>
-      </table>
-      <p> Now, we add a static text and a scrollbar, which modifies the transparency 
-        of all gui elements. We set the maximum value of the scrollbar to 255, 
-        because that's the maximal value for a color value.<br>
-        Then we create an other static text and a list box.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td><pre>env-&gt;addStaticText(L&quot;Transparent Control:&quot;, rect&lt;s32&gt;(150,20,350,40), true);<br>IGUIScrollBar* scrollbar = env-&gt;addScrollBar(true,
-               rect&lt;s32&gt;(150, 45, 350, 60), 0, 104);<br>scrollbar-&gt;setMax(255);</pre>
-            <pre>env-&gt;addStaticText(L&quot;Logging ListBox:&quot;, rect&lt;s32&gt;(50,110,250,130), true);
-listbox = env-&gt;addListBox(rect&lt;s32&gt;(50, 140, 250, 210));</pre></td>
-        </tr>
-      </table>
-      <br>
-      To make the font a little bit nicer, we load an external font and set it 
-      as new font in the skin. An at last, we create a nice Irrlicht Engine logo 
-      in the top left corner. <br>
-      <br>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>IGUISkin* skin = env-&gt;getSkin();<br>IGUIFont* font = env-&gt;getFont(&quot;../../media/fonthaettenschweiler.bmp&quot;);<br>if (font)<br>	skin-&gt;setFont(font);</pre>
-            <pre>IGUIImage* img = env-&gt;addImage(<br>		driver-&gt;getTexture(&quot;../../media/irrlichtlogoalpha.tga&quot;),<br>		position2d&lt;int&gt;(10,10));</pre></td>
-        </tr>
-      </table>
-      <p>That's all, we only have to draw everything.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> 
-            <pre>  while(device-&gt;run() &amp;&amp; driver)<br>  if (device-&gt;isWindowActive()) <br>  {<br>      driver-&gt;beginScene(true, true, SColor(0,122,65,171));
-      env-&gt;drawAll();
-      driver-&gt;endScene();
-  }
-
-  device-&gt;drop();</pre>
-            <pre>  return 0;
-}</pre>
-            </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-</table>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!--END TITLEAREA-->
+<!-- end header part -->
+<!-- Generated by Doxygen 1.8.13 -->
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">Tutorial 5: User Interface </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><div class="image">
+<img src="../../media/example_screenshots/005shot.jpg" alt="005shot.jpg"/>
+</div>
+ <p>This tutorial shows how to use the built in User Interface of the Irrlicht Engine. It will give a brief overview and show how to create and use windows, buttons, scroll bars, static texts, and list boxes.</p>
+<p>As always, we include the header files, and use the irrlicht namespaces. We also store a pointer to the Irrlicht device, a counter variable for changing the creation position of a window, and a pointer to a listbox. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;irrlicht.h&gt;</span></div><div class="line"><span class="preprocessor">#include &quot;driverChoice.h&quot;</span></div><div class="line"><span class="preprocessor">#include &quot;exampleHelper.h&quot;</span></div><div class="line"></div><div class="line"><span class="keyword">using namespace </span>irr;</div><div class="line"></div><div class="line"><span class="keyword">using namespace </span>core;</div><div class="line"><span class="keyword">using namespace </span>scene;</div><div class="line"><span class="keyword">using namespace </span>video;</div><div class="line"><span class="keyword">using namespace </span>io;</div><div class="line"><span class="keyword">using namespace </span>gui;</div><div class="line"></div><div class="line"><span class="preprocessor">#ifdef _MSC_VER</span></div><div class="line"><span class="preprocessor">#pragma comment(lib, &quot;Irrlicht.lib&quot;)</span></div><div class="line"><span class="preprocessor">#endif</span></div><div class="line"></div><div class="line"><span class="comment">// Declare a structure to hold some context for the event receiver so that it</span></div><div class="line"><span class="comment">// has it available inside its OnEvent() method.</span></div><div class="line"><span class="keyword">struct </span>SAppContext</div><div class="line">{</div><div class="line">    IrrlichtDevice *device;</div><div class="line">    s32             counter;</div><div class="line">    IGUIListBox*    listbox;</div><div class="line">};</div><div class="line"></div><div class="line"><span class="comment">// Define some values that we&#39;ll use to identify individual GUI controls.</span></div><div class="line"><span class="keyword">enum</span></div><div class="line">{</div><div class="line">    GUI_ID_QUIT_BUTTON = 101,</div><div class="line">    GUI_ID_NEW_WINDOW_BUTTON,</div><div class="line">    GUI_ID_FILE_OPEN_BUTTON,</div><div class="line">    GUI_ID_TRANSPARENCY_SCROLL_BAR</div><div class="line">};</div></div><!-- fragment --><p> Set the skin transparency by changing the alpha values of all skin-colors </p><div class="fragment"><div class="line"><span class="keywordtype">void</span> setSkinTransparency(s32 alpha, irr::gui::IGUISkin * skin)</div><div class="line">{</div><div class="line">    <span class="keywordflow">for</span> (s32 i=0; i&lt;irr::gui::EGDC_COUNT ; ++i)</div><div class="line">    {</div><div class="line">        video::SColor col = skin-&gt;getColor((EGUI_DEFAULT_COLOR)i);</div><div class="line">        col.setAlpha(alpha);</div><div class="line">        skin-&gt;setColor((EGUI_DEFAULT_COLOR)i, col);</div><div class="line">    }</div><div class="line">}</div></div><!-- fragment --><p> The Event Receiver is not only capable of getting keyboard and mouse input events, but also events of the graphical user interface (gui). There are events for almost everything: button click, listbox selection change, events that say that a element was hovered and so on. To be able to react to some of these events, we create an event receiver. We only react to gui events, and if it's such an event, we get the id of the caller (the gui element which caused the event) and get the pointer to the gui environment. </p><div class="fragment"><div class="line"><span class="keyword">class </span>MyEventReceiver : <span class="keyword">public</span> IEventReceiver</div><div class="line">{</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    MyEventReceiver(SAppContext &amp; context) : Context(context) { }</div><div class="line"></div><div class="line">    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> OnEvent(<span class="keyword">const</span> SEvent&amp; event)</div><div class="line">    {</div><div class="line">        <span class="keywordflow">if</span> (event.EventType == EET_GUI_EVENT)</div><div class="line">        {</div><div class="line">            s32 <span class="keywordtype">id</span> = <span class="keyword">event</span>.GUIEvent.Caller-&gt;getID();</div><div class="line">            IGUIEnvironment* env = Context.device-&gt;getGUIEnvironment();</div><div class="line"></div><div class="line">            <span class="keywordflow">switch</span>(event.GUIEvent.EventType)</div><div class="line">            {</div></div><!-- fragment --><p> If a scrollbar changed its scroll position, and it is 'our' scrollbar (the one with id GUI_ID_TRANSPARENCY_SCROLL_BAR), then we change the transparency of all gui elements. This is an easy task: There is a skin object, in which all color settings are stored. We simply go through all colors stored in the skin and change their alpha value. </p><div class="fragment"><div class="line"><span class="keywordflow">case</span> EGET_SCROLL_BAR_CHANGED:</div><div class="line">    <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == GUI_ID_TRANSPARENCY_SCROLL_BAR)</div><div class="line">    {</div><div class="line">        s32 pos = ((IGUIScrollBar*)event.GUIEvent.Caller)-&gt;getPos();</div><div class="line">        setSkinTransparency(pos, env-&gt;getSkin());</div><div class="line">    }</div><div class="line">    <span class="keywordflow">break</span>;</div></div><!-- fragment --><p> If a button was clicked, it could be one of 'our' three buttons. If it is the first, we shut down the engine. If it is the second, we create a little window with some text on it. We also add a string to the list box to log what happened. And if it is the third button, we create a file open dialog, and add also this as string to the list box. That's all for the event receiver. </p><div class="fragment"><div class="line">            <span class="keywordflow">case</span> EGET_BUTTON_CLICKED:</div><div class="line">                <span class="keywordflow">switch</span>(<span class="keywordtype">id</span>)</div><div class="line">                {</div><div class="line">                <span class="keywordflow">case</span> GUI_ID_QUIT_BUTTON:</div><div class="line">                    Context.device-&gt;closeDevice();</div><div class="line">                    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div><div class="line"></div><div class="line">                <span class="keywordflow">case</span> GUI_ID_NEW_WINDOW_BUTTON:</div><div class="line">                    {</div><div class="line">                    Context.listbox-&gt;addItem(L<span class="stringliteral">&quot;Window created&quot;</span>);</div><div class="line">                    Context.counter += 30;</div><div class="line">                    <span class="keywordflow">if</span> (Context.counter &gt; 200)</div><div class="line">                        Context.counter = 0;</div><div class="line"></div><div class="line">                    IGUIWindow* window = env-&gt;addWindow(</div><div class="line">                        rect&lt;s32&gt;(100 + Context.counter, 100 + Context.counter, 300 + Context.counter, 200 + Context.counter),</div><div class="line">                        <span class="keyword">false</span>, <span class="comment">// modal?</span></div><div class="line">                        L<span class="stringliteral">&quot;Test window&quot;</span>);</div><div class="line"></div><div class="line">                    env-&gt;addStaticText(L<span class="stringliteral">&quot;Please close me&quot;</span>,</div><div class="line">                        rect&lt;s32&gt;(35,35,140,50),</div><div class="line">                        <span class="keyword">true</span>, <span class="comment">// border?</span></div><div class="line">                        <span class="keyword">false</span>, <span class="comment">// wordwrap?</span></div><div class="line">                        window);</div><div class="line">                    }</div><div class="line">                    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div><div class="line"></div><div class="line">                <span class="keywordflow">case</span> GUI_ID_FILE_OPEN_BUTTON:</div><div class="line">                    Context.listbox-&gt;addItem(L<span class="stringliteral">&quot;File open&quot;</span>);</div><div class="line">                    <span class="comment">// There are some options for the file open dialog</span></div><div class="line">                    <span class="comment">// We set the title, make it a modal window, and make sure</span></div><div class="line">                    <span class="comment">// that the working directory is restored after the dialog</span></div><div class="line">                    <span class="comment">// is finished.</span></div><div class="line">                    env-&gt;addFileOpenDialog(L<span class="stringliteral">&quot;Please choose a file.&quot;</span>, <span class="keyword">true</span>, 0, -1, <span class="keyword">true</span>);</div><div class="line">                    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div><div class="line"></div><div class="line">                <span class="keywordflow">default</span>:</div><div class="line">                    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div><div class="line">                }</div><div class="line">                <span class="keywordflow">break</span>;</div><div class="line"></div><div class="line">            <span class="keywordflow">case</span> EGET_FILE_SELECTED:</div><div class="line">                {</div><div class="line">                    <span class="comment">// show the event and the selected model filename from the file dialog</span></div><div class="line">                    IGUIFileOpenDialog* dialog =</div><div class="line">                        (IGUIFileOpenDialog*)event.GUIEvent.Caller;</div><div class="line">                    Context.listbox-&gt;addItem(L<span class="stringliteral">&quot;EGET_FILE_SELECTED&quot;</span>);</div><div class="line">                    Context.listbox-&gt;addItem(dialog-&gt;getFileName());</div><div class="line">                }</div><div class="line">                <span class="keywordflow">break</span>;</div><div class="line"></div><div class="line">            <span class="keywordflow">case</span> EGET_DIRECTORY_SELECTED:</div><div class="line">                {</div><div class="line">                    <span class="comment">// show the event and the selected directory name from the file dialog</span></div><div class="line">                    IGUIFileOpenDialog* dialog =</div><div class="line">                        (IGUIFileOpenDialog*)event.GUIEvent.Caller;</div><div class="line">                    Context.listbox-&gt;addItem(L<span class="stringliteral">&quot;EGET_DIRECTORY_SELECTED&quot;</span>);</div><div class="line">                    Context.listbox-&gt;addItem(dialog-&gt;getDirectoryNameW());</div><div class="line">                }</div><div class="line">                <span class="keywordflow">break</span>;</div><div class="line"></div><div class="line">            <span class="keywordflow">default</span>:</div><div class="line">                <span class="keywordflow">break</span>;</div><div class="line">            }</div><div class="line">        }</div><div class="line"></div><div class="line">        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">    SAppContext &amp; Context;</div><div class="line">};</div></div><!-- fragment --><p> OK, now for the more interesting part. First, create the Irrlicht device. As in some examples before, we ask the user which driver he wants to use for this example. </p><div class="fragment"><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div><div class="line">    <span class="comment">// ask user for driver</span></div><div class="line">    video::E_DRIVER_TYPE driverType=driverChoiceConsole();</div><div class="line">    <span class="keywordflow">if</span> (driverType==video::EDT_COUNT)</div><div class="line">        <span class="keywordflow">return</span> 1;</div><div class="line"></div><div class="line">    <span class="comment">// create device and exit if creation failed</span></div><div class="line">    IrrlichtDevice * device = createDevice(driverType, core::dimension2d&lt;u32&gt;(640, 480));</div><div class="line"></div><div class="line">    <span class="keywordflow">if</span> (device == 0)</div><div class="line">        <span class="keywordflow">return</span> 1; <span class="comment">// could not create selected driver.</span></div></div><!-- fragment --><p> The creation was successful, now we set the event receiver and store pointers to the driver and to the gui environment.</p><div class="fragment"><div class="line">device-&gt;setWindowCaption(L<span class="stringliteral">&quot;Irrlicht Engine - User Interface Demo&quot;</span>);</div><div class="line">device-&gt;setResizable(<span class="keyword">true</span>);</div><div class="line"></div><div class="line">video::IVideoDriver* driver = device-&gt;getVideoDriver();</div><div class="line">IGUIEnvironment* env = device-&gt;getGUIEnvironment();</div><div class="line"></div><div class="line"><span class="keyword">const</span> io::path mediaPath = getExampleMediaPath();</div></div><!-- fragment --><p> To make the font a little bit nicer, we load an external font and set it as the new default font in the skin. To keep the standard font for tool tip text, we set it to the built-in font. </p><div class="fragment"><div class="line">IGUISkin* skin = env-&gt;getSkin();</div><div class="line">IGUIFont* font = env-&gt;getFont(mediaPath + <span class="stringliteral">&quot;fonthaettenschweiler.bmp&quot;</span>);</div><div class="line"><span class="keywordflow">if</span> (font)</div><div class="line">    skin-&gt;setFont(font);</div><div class="line"></div><div class="line">skin-&gt;setFont(env-&gt;getBuiltInFont(), EGDF_TOOLTIP);</div></div><!-- fragment --><p> We add three buttons. The first one closes the engine. The second creates a window and the third opens a file open dialog. The third parameter is the id of the button, with which we can easily identify the button in the event receiver. </p><div class="fragment"><div class="line">env-&gt;addButton(rect&lt;s32&gt;(10,240,110,240 + 32), 0, GUI_ID_QUIT_BUTTON,</div><div class="line">        L<span class="stringliteral">&quot;Quit&quot;</span>, L<span class="stringliteral">&quot;Exits Program&quot;</span>);</div><div class="line">env-&gt;addButton(rect&lt;s32&gt;(10,280,110,280 + 32), 0, GUI_ID_NEW_WINDOW_BUTTON,</div><div class="line">        L<span class="stringliteral">&quot;New Window&quot;</span>, L<span class="stringliteral">&quot;Launches a new Window&quot;</span>);</div><div class="line">env-&gt;addButton(rect&lt;s32&gt;(10,320,110,320 + 32), 0, GUI_ID_FILE_OPEN_BUTTON,</div><div class="line">        L<span class="stringliteral">&quot;File Open&quot;</span>, L<span class="stringliteral">&quot;Opens a file&quot;</span>);</div></div><!-- fragment --><p> Now, we add a static text and a scrollbar, which modifies the transparency of all gui elements. We set the maximum value of the scrollbar to 255, because that's the maximal value for a color value. Then we create an other static text and a list box. </p><div class="fragment"><div class="line">env-&gt;addStaticText(L<span class="stringliteral">&quot;Transparent Control:&quot;</span>, rect&lt;s32&gt;(150,20,350,40), <span class="keyword">true</span>);</div><div class="line">IGUIScrollBar* scrollbar = env-&gt;addScrollBar(<span class="keyword">true</span>,</div><div class="line">        rect&lt;s32&gt;(150, 45, 350, 60), 0, GUI_ID_TRANSPARENCY_SCROLL_BAR);</div><div class="line">scrollbar-&gt;setMax(255);</div><div class="line">scrollbar-&gt;setPos(255);</div><div class="line">setSkinTransparency( scrollbar-&gt;getPos(), env-&gt;getSkin());</div><div class="line"></div><div class="line"><span class="comment">// set scrollbar position to alpha value of an arbitrary element</span></div><div class="line">scrollbar-&gt;setPos(env-&gt;getSkin()-&gt;getColor(EGDC_WINDOW).getAlpha());</div><div class="line"></div><div class="line">env-&gt;addStaticText(L<span class="stringliteral">&quot;Logging ListBox:&quot;</span>, rect&lt;s32&gt;(10,110,350,130), <span class="keyword">true</span>);</div><div class="line">IGUIListBox * listbox = env-&gt;addListBox(rect&lt;s32&gt;(10, 140, 350, 210));</div><div class="line">env-&gt;addEditBox(L<span class="stringliteral">&quot;Editable Text&quot;</span>, rect&lt;s32&gt;(350, 80, 550, 100));</div><div class="line"></div><div class="line"><span class="comment">// Store the appropriate data in a context structure.</span></div><div class="line">SAppContext context;</div><div class="line">context.device = device;</div><div class="line">context.counter = 0;</div><div class="line">context.listbox = listbox;</div><div class="line"></div><div class="line"><span class="comment">// Then create the event receiver, giving it that context structure.</span></div><div class="line">MyEventReceiver receiver(context);</div><div class="line"></div><div class="line"><span class="comment">// And tell the device to use our custom event receiver.</span></div><div class="line">device-&gt;setEventReceiver(&amp;receiver);</div></div><!-- fragment --><p> And at last, we create a nice Irrlicht Engine logo in the top left corner. </p><div class="fragment"><div class="line">env-&gt;addImage(driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;irrlichtlogo3.png&quot;</span>),</div><div class="line">        position2d&lt;int&gt;(10,10));</div></div><!-- fragment --><p> That's all, we only have to draw everything. </p><div class="fragment"><div class="line">    <span class="keywordflow">while</span>(device-&gt;run() &amp;&amp; driver)</div><div class="line">    <span class="keywordflow">if</span> (device-&gt;isWindowActive())</div><div class="line">    {</div><div class="line">        driver-&gt;beginScene(video::ECBF_COLOR | video::ECBF_DEPTH, SColor(0,200,200,200));</div><div class="line"></div><div class="line">        env-&gt;drawAll();</div><div class="line"></div><div class="line">        driver-&gt;endScene();</div><div class="line">    }</div><div class="line"></div><div class="line">    device-&gt;drop();</div><div class="line"></div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">}</div></div><!-- fragment --> </div></div><!-- contents -->
+<!-- HTML footer for doxygen 1.8.13-->
+<!-- start footer part -->
 <p>&nbsp;</p>
-      </body>
+</body>
 </html>

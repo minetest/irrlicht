@@ -494,14 +494,12 @@ private:
 	// finds a current attribute by name, returns 0 if not found
 	const SAttribute* getAttributeByName(const char_type* name) const
 	{
-		if (!name)
-			return 0;
-
-		core::string<char_type> n = name;
-
-		for (int i=0; i<(int)Attributes.size(); ++i)
-			if (Attributes[i].Name == n)
-				return &Attributes[i];
+		if (name)
+		{
+			for (irr::u32 i=0; i<Attributes.size(); ++i)
+				if (Attributes[i].Name == name)
+					return &Attributes[i];
+		}
 
 		return 0;
 	}
@@ -644,7 +642,7 @@ private:
 	//! converts the text file into the desired format.
 	/** \param source: begin of the text (without byte order mark)
 	\param pointerToStore: pointer to text data block which can be
-	stored or deleted based on the nesessary conversion.
+	stored or deleted based on the necessary conversion.
 	\param sizeWithoutHeader: Text size in characters without header
 	*/
 	template<class src_char_type>

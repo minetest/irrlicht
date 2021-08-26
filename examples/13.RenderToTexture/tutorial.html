@@ -1,244 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Irrlicht Engine Tutorial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-</head>
-
-<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699" width="10"><b><a href="http://irrlicht.sourceforge.net" target="_blank"><img src="../../media/irrlichtlogo.jpg" width="88" height="31" border="0"></a></b></td>
-    <td bgcolor="#666699" width="100%">
-<div align="center">
-        <div align="left"><b><font color="#FFFFFF">Tutorial 13. Render to Texture</font></b></div>
-      </div>
-      </td>
-  </tr>
-  <tr bgcolor="#eeeeff"> 
-    <td height="90" colspan="2"> 
-      <div align="left"> 
-        <p> This tutorial shows how to render to a texture using Irrlicht. Render 
-          to texture is a feature with which it is possible to create nice special 
-          effects. In addition, this tutorial shows how to enable specular highlights.</p>
-        <p>The program which is described here will look like this:</p>
-        <p align="center"><img src="../../media/013shot.jpg" width="256" height="200"><br>
-        </p>
-      </div>
-    </td>
-  </tr>
-</table>
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699"> <b><font color="#FFFFFF">Lets start!</font></b></td>
-  </tr>
-  <tr> 
-    <td height="90" bgcolor="#eeeeff" valign="top"> <div align="left"> 
-        <div align="left"> 
-          <p>In the beginning, everything as usual. Include the needed headers, 
-            ask the user for the rendering driver, create the Irrlicht Device:</p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td><pre>#include &lt;irrlicht.h>
-#include &lt;iostream>
-
-using namespace irr;
-
-#pragma comment(lib, "Irrlicht.lib")
-
-int main()
-{
-	// let user select driver type
-
-	video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
-
-	printf(&quot;Please select the driver you want for this example:\n&quot;\<br>		&quot; (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n&quot;\<br>		&quot; (d) Software Renderer\n (e) Apfelbaum Software Renderer\n&quot;\<br>		&quot; (f) NullDevice\n (otherKey) exit\n\n&quot;);
-
-	char i;
-	std::cin >> i;
-
-	switch(i)<br>	{<br>		case 'a': driverType = video::EDT_DIRECT3D9;break;<br>		case 'b': driverType = video::EDT_DIRECT3D8;break;<br>		case 'c': driverType = video::EDT_OPENGL;   break;<br>		case 'd': driverType = video::EDT_SOFTWARE; break;<br>		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;<br>		case 'f': driverType = video::EDT_NULL;     break;<br>		default: return 1;<br>	}	
-
-	// create device and exit if creation failed
-
-	IrrlichtDevice *device =
-		createDevice(driverType, core::dimension2d<s32>(640, 480),
-		16, false, false);
-
-	if (device == 0)
-		return 1; // could not create selected driver.
-
-	video::IVideoDriver* driver = device->getVideoDriver();
-	scene::ISceneManager* smgr = device->getSceneManager();
-	gui::IGUIEnvironment* env = device->getGUIEnvironment();</pre></td>
-            </tr>
-          </table>
-          <p>Now, we load an animated mesh to be displayed. As in most examples, 
-            we'll take the fairy md2 model. The difference here: We set the shininess<br>
-            of the model to a value other than 0 which is the default value. This 
-            enables specular highlights on the model if dynamic lighting is on. 
-            The value influences the size of the highlights.</p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td><pre>// load and display animated fairy mesh
-
-	scene::IAnimatedMeshSceneNode* fairy = smgr->addAnimatedMeshSceneNode(
-		smgr->getMesh("../../media/faerie.md2"));
-
-	if (fairy)
-	{
-		fairy->setMaterialTexture(0, driver->getTexture("../../media/faerie2.bmp")); // set diffuse texture
-		fairy->setMaterialFlag(video::EMF_LIGHTING, true); // enable dynamic lighting
-		fairy->getMaterial(0).Shininess = 20.0f; // set size of specular highlights
-		fairy->setPosition(core::vector3df(-10,0,-100));
-	}</pre></td>
-            </tr>
-          </table>
-          <p> To make specular highlights appear on the model, we need a dynamic 
-            light in the scene. We add one directly in vicinity of the model. 
-            In addition, to make the model not that dark, we set the ambient light 
-            to gray. </p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td><pre>
-	// add white light
-	scene::ILightSceneNode* light = smgr->addLightSceneNode(0,
-		core::vector3df(-15,5,-105), video::SColorf(1.0f, 1.0f, 1.0f));
-
-	// set ambient light
-	driver->setAmbientLight(video::SColor(0,60,60,60));</pre></td>
-            </tr>
-          </table>
-          <p>The next is just some standard stuff: Add a user controlled camera 
-            to the scene, disable mouse cursor, and add a test cube and let it 
-            rotate to make the scene more interesting.</p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td><pre>
-	// add fps camera
-	scene::ICameraSceneNode* fpsCamera = smgr->addCameraSceneNodeFPS();
-	fpsCamera->setPosition(core::vector3df(-50,50,-150));
-
-	// disable mouse cursor
-	device->getCursorControl()->setVisible(false);
-
-	// create test cube
-	scene::ISceneNode* test = smgr->addCubeSceneNode(60);
-
-	// let the cube rotate and set some light settings
-	scene::ISceneNodeAnimator* anim = smgr->createRotationAnimator(
-		core::vector3df(0.3f, 0.3f,0));
-
-	test->setPosition(core::vector3df(-100,0,-100));
-	test->setMaterialFlag(video::EMF_LIGHTING, false); // disable dynamic lighting
-	test->addAnimator(anim);
-	anim->drop();
-
-	// set window caption
-	device->setWindowCaption(L"Irrlicht Engine - Render to Texture and Specular Highlights example");</pre></td>
-            </tr>
-          </table>
-          <p> To test out the render to texture feature, we need a render target 
-            texture. These are not like standard textures, but need to be created 
-            first. To create one, we call IVideoDriver::createRenderTargetTexture() 
-            and specify the size of the texture. Please don't use sizes bigger 
-            than the frame buffer for this, because the render target shares the 
-            zbuffer with the frame buffer. And because we want to render the scene 
-            not from the user camera into the texture, we add another, fixed camera 
-            to the scene. But before we do all this, we check if the current running 
-            driver is able to render to textures. If it is not, we simply display 
-            a warning text.</p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td><pre>// create render target
-	video::ITexture* rt = 0;
-	scene::ICameraSceneNode* fixedCam = 0;
-	
-
-	if (driver->queryFeature(video::EVDF_RENDER_TO_TARGET))
-	{
-		rt = driver->createRenderTargetTexture(core::dimension2d<s32>(256,256));
-		test->setMaterialTexture(0, rt); // set material of cube to render target
-
-		// add fixed camera
-		fixedCam = smgr->addCameraSceneNode(0, core::vector3df(10,10,-80),
-			core::vector3df(-10,10,-100));
-	}
-	else
-	{
-		// create problem text
-		gui::IGUISkin* skin = env->getSkin();
-		gui::IGUIFont* font = env->getFont("../../media/fonthaettenschweiler.bmp");
-		if (font)
-			skin->setFont(font);
-
-		gui::IGUIStaticText* text = env->addStaticText(
-			L"Your hardware or this renderer is not able to use the "\
-			L"render to texture feature. RTT Disabled.",
-			core::rect<s32>(150,20,470,60));
-
-		text->setOverrideColor(video::SColor(100,255,255,255));
-	}</pre></td>
-            </tr>
-          </table>
-          <p> Nearly finished. Now we need to draw everything. Every frame, we 
-            draw the scene twice. Once from the fixed camera into the render target 
-            texture and once as usual. When rendering into the render target, 
-            we need to disable the visibilty of the test cube, because it has 
-            the render target texture applied to it.<br>
-            That's, wasn't quite complicated I hope. :)</p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td><pre>while(device->run())
-	if (device->isWindowActive())
-	{
-		driver->beginScene(true, true, 0);
-
-		if (rt)
-		{
-			// draw scene into render target
-			
-			// set render target texture
-			driver->setRenderTarget(rt, true, true, video::SColor(0,0,0,255));     
-
-			// make cube invisible and set fixed camera as active camera
-			test->setVisible(false);
-			smgr->setActiveCamera(fixedCam);
-
-			// draw whole scene into render buffer
-			smgr->drawAll();                 
-
-			// set back old render target
-			driver->setRenderTarget(0);      
-
-			// make the cube visible and set the user controlled camera as active one
-			test->setVisible(true);
-			smgr->setActiveCamera(fpsCamera);
-		}
-		
-		// draw scene normally
-		smgr->drawAll(); 
-		env->drawAll();
-
-		driver->endScene();
-	}
-
-	if (rt)
-		rt->drop(); // drop render target because we created if with a create() method
-
-	device->drop(); // drop device
-	return 0;
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Tutorial 13: Render To Texture</title>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- Wanted to avoid copying .css to each folder, so copied default .css from doxyen in here, kicked out most stuff we don't need for examples and modified some a little bit. 
+     Target was having a single html in each example folder which is created from the main.cpp files and needs no files besides some images below media folder.
+     Feel free to improve :)
+	 -->
+<style>
+body, table, div, p, dl {
+	font: 400 14px/22px;
 }
-</pre></td>
-            </tr>
-          </table>
-          
-        <p>&nbsp;</p></div>
-      </div>
-      </td>
-  </tr>
-</table>
+body {
+	background-color: #F0F0F0;
+	color: black;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+p.reference, p.definition {
+	font: 400 14px/22px;
+}
+.title {
+	font: 400 14px/28px;
+	font-size: 150%;
+	font-weight: bold;
+	margin: 10px 2px;
+}
+h1, h2, h3, h4, h5, h6 {
+	-webkit-transition: text-shadow 0.5s linear;
+	-moz-transition: text-shadow 0.5s linear;
+	-ms-transition: text-shadow 0.5s linear;
+	-o-transition: text-shadow 0.5s linear;
+	transition: text-shadow 0.5s linear;
+	margin-right: 15px;
+}
+caption {
+	font-weight: bold;
+}
+h3.version {
+	font-size: 90%;
+	text-align: center;
+}
+a {
+	color: #3D578C;
+	font-weight: normal;
+	text-decoration: none;
+}
+.contents a:visited {
+	color: #4665A2;
+}
+a:hover {
+	text-decoration: underline;
+}
+a.el {
+	font-weight: bold;
+}
+a.code, a.code:visited, a.line, a.line:visited {
+	color: #4665A2; 
+}
+a.codeRef, a.codeRef:visited, a.lineRef, a.lineRef:visited {
+	color: #4665A2; 
+}
+pre.fragment {
+	border: 1px solid #C4CFE5;
+	background-color: #FBFCFD;
+	padding: 4px 6px;
+	margin: 4px 8px 4px 2px;
+	overflow: auto;
+	word-wrap: break-word;
+	font-size:  9pt;
+	line-height: 125%;
+	font-family: monospace, fixed;
+	font-size: 105%;
+}
+div.fragment {
+	padding: 0px;
+	margin: 4px 8px 4px 2px;
+	background-color: #FBFCFD;
+	border: 1px solid #C4CFE5;
+}
+div.line {
+	font-family: monospace, fixed;
+	font-size: 13px;
+	min-height: 13px;
+	line-height: 1.0;
+	text-wrap: unrestricted;
+	white-space: -moz-pre-wrap; /* Moz */
+	white-space: -pre-wrap;     /* Opera 4-6 */
+	white-space: -o-pre-wrap;   /* Opera 7 */
+	white-space: pre-wrap;      /* CSS3  */
+	word-wrap: break-word;      /* IE 5.5+ */
+	text-indent: -53px;
+	padding-left: 53px;
+	padding-bottom: 0px;
+	margin: 0px;
+	-webkit-transition-property: background-color, box-shadow;
+	-webkit-transition-duration: 0.5s;
+	-moz-transition-property: background-color, box-shadow;
+	-moz-transition-duration: 0.5s;
+	-ms-transition-property: background-color, box-shadow;
+	-ms-transition-duration: 0.5s;
+	-o-transition-property: background-color, box-shadow;
+	-o-transition-duration: 0.5s;
+	transition-property: background-color, box-shadow;
+	transition-duration: 0.5s;
+}
+div.contents {
+	margin-top: 10px;
+	margin-left: 12px;
+	margin-right: 8px;
+}
+div.center {
+	text-align: center;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding: 0px;
+}
+div.center img {
+	border: 0px;
+}
+span.keyword {
+	color: #008000
+}
+span.keywordtype {
+	color: #604020
+}
+span.keywordflow {
+	color: #e08000
+}
+span.comment {
+	color: #800000
+}
+span.preprocessor {
+	color: #806020
+}
+span.stringliteral {
+	color: #002080
+}
+span.charliteral {
+	color: #008080
+}
+blockquote {
+	background-color: #F7F8FB;
+	border-left: 2px solid #9CAFD4;
+	margin: 0 24px 0 4px;
+	padding: 0 12px 0 16px;
+}
+hr {
+	height: 0px;
+	border: none;
+	border-top: 1px solid #4A6AAA;
+}
+address {
+	font-style: normal;
+	color: #2A3D61;
+}
+div.header {
+	background-image:url('nav_h.png');
+	background-repeat:repeat-x;
+	background-color: #F9FAFC;
+	margin:  0px;
+	border-bottom: 1px solid #C4CFE5;
+}
+div.headertitle {
+	padding: 5px 5px 5px 10px;
+}
+.image {
+	text-align: center;
+}
+.caption {
+	font-weight: bold;
+}
+div.zoom {
+	border: 1px solid #90A5CE;
+}
+tr.heading h2 {
+	margin-top: 12px;
+	margin-bottom: 4px;
+}
+</style>
+</head>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!--END TITLEAREA-->
+<!-- end header part -->
+<!-- Generated by Doxygen 1.8.13 -->
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">Tutorial 13: Render To Texture </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><div class="image">
+<img src="../../media/example_screenshots/013shot.jpg" alt="013shot.jpg"/>
+</div>
+ <p>This tutorial shows how to render to a texture using Irrlicht. Render to texture is a feature where everything which would usually be rendered to the screen is instead written to a (special) texture. This can be used to create nice special effects. In addition, this tutorial shows how to enable specular highlights.</p>
+<p>In the beginning, everything as usual. Include the needed headers, ask the user for the rendering driver, create the Irrlicht device: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;irrlicht.h&gt;</span></div><div class="line"><span class="preprocessor">#include &quot;driverChoice.h&quot;</span></div><div class="line"><span class="preprocessor">#include &quot;exampleHelper.h&quot;</span></div><div class="line"></div><div class="line"><span class="keyword">using namespace </span>irr;</div><div class="line"></div><div class="line"><span class="preprocessor">#ifdef _MSC_VER</span></div><div class="line"><span class="preprocessor">#pragma comment(lib, &quot;Irrlicht.lib&quot;)</span></div><div class="line"><span class="preprocessor">#endif</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div><div class="line">    <span class="comment">// ask user for driver</span></div><div class="line">    video::E_DRIVER_TYPE driverType=driverChoiceConsole();</div><div class="line">    <span class="keywordflow">if</span> (driverType==video::EDT_COUNT)</div><div class="line">        <span class="keywordflow">return</span> 1;</div><div class="line"></div><div class="line">    <span class="comment">// create device and exit if creation failed</span></div><div class="line"></div><div class="line">    IrrlichtDevice *device =</div><div class="line">        createDevice(driverType, core::dimension2d&lt;u32&gt;(640, 480),</div><div class="line">        16, <span class="keyword">false</span>, <span class="keyword">false</span>);</div><div class="line"></div><div class="line">    <span class="keywordflow">if</span> (device == 0)</div><div class="line">        <span class="keywordflow">return</span> 1; <span class="comment">// could not create selected driver.</span></div><div class="line"></div><div class="line">    video::IVideoDriver* driver = device-&gt;getVideoDriver();</div><div class="line">    scene::ISceneManager* smgr = device-&gt;getSceneManager();</div><div class="line">    gui::IGUIEnvironment* env = device-&gt;getGUIEnvironment();</div><div class="line"></div><div class="line">    <span class="keyword">const</span> io::path mediaPath = getExampleMediaPath();</div></div><!-- fragment --><p> Now, we load an animated mesh to be displayed. As in most examples, we'll take the fairy md2 model. The difference here: We set the shininess of the model to a value other than 0 which is the default value. This enables specular highlights on the model if dynamic lighting is on. The value influences the size of the highlights. </p><div class="fragment"><div class="line"><span class="comment">// load and display animated fairy mesh</span></div><div class="line"></div><div class="line">scene::IAnimatedMeshSceneNode* fairy = smgr-&gt;addAnimatedMeshSceneNode(</div><div class="line">    smgr-&gt;getMesh(mediaPath + <span class="stringliteral">&quot;faerie.md2&quot;</span>));</div><div class="line"></div><div class="line"><span class="keywordflow">if</span> (fairy)</div><div class="line">{</div><div class="line">    fairy-&gt;setMaterialTexture(0,</div><div class="line">            driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;faerie2.bmp&quot;</span>)); <span class="comment">// set diffuse texture</span></div><div class="line">    fairy-&gt;setMaterialFlag(video::EMF_LIGHTING, <span class="keyword">true</span>); <span class="comment">// enable dynamic lighting</span></div><div class="line">    fairy-&gt;getMaterial(0).Shininess = 20.0f; <span class="comment">// set size of specular highlights</span></div><div class="line">    fairy-&gt;setPosition(core::vector3df(-10,0,-100));</div><div class="line">    fairy-&gt;setMD2Animation ( scene::EMAT_STAND );</div><div class="line">}</div></div><!-- fragment --><p> To make specular highlights appear on the model, we need a dynamic light in the scene. We add one directly in vicinity of the model. In addition, to make the model not that dark, we set the ambient light to gray. </p><div class="fragment"><div class="line"><span class="comment">// add white light</span></div><div class="line">smgr-&gt;addLightSceneNode(0, core::vector3df(-15,5,-105),</div><div class="line">        video::SColorf(1.0f, 1.0f, 1.0f));</div><div class="line"></div><div class="line"><span class="comment">// set ambient light</span></div><div class="line">smgr-&gt;setAmbientLight(video::SColor(0,60,60,60));</div></div><!-- fragment --><p> The next is just some standard stuff: Add a test cube and let it rotate to make the scene more interesting. The user defined camera and cursor setup is made later on, right before the render loop. </p><div class="fragment"><div class="line"><span class="comment">// create test cube</span></div><div class="line">scene::ISceneNode* cube = smgr-&gt;addCubeSceneNode(60);</div><div class="line"></div><div class="line"><span class="comment">// let the cube rotate and set some light settings</span></div><div class="line">scene::ISceneNodeAnimator* anim = smgr-&gt;createRotationAnimator(</div><div class="line">    core::vector3df(0.3f, 0.3f,0));</div><div class="line"></div><div class="line">cube-&gt;setPosition(core::vector3df(-100,0,-100));</div><div class="line">cube-&gt;setMaterialFlag(video::EMF_LIGHTING, <span class="keyword">false</span>); <span class="comment">// disable dynamic lighting</span></div><div class="line">cube-&gt;addAnimator(anim);</div><div class="line">anim-&gt;drop();</div><div class="line"></div><div class="line"><span class="comment">// set window caption</span></div><div class="line">device-&gt;setWindowCaption(L<span class="stringliteral">&quot;Irrlicht Engine - Render to Texture and Specular Highlights example&quot;</span>);</div></div><!-- fragment --><p> To test out the render to texture feature, we need to define our new rendertarget. The rendertarget will need one texture to receive the result you would otherwise see on screen and one texture which is used as depth-buffer.</p>
+<p>(Note: If you worked with older Irrlicht versions (before 1.9) you might be used to only create a rendertarget texture and no explicit rendertarget. While that's still possible, it's no longer recommended.)</p>
+<p>The rendertarget textures are not like standard textures, but need to be created first. To create them, we call IVideoDriver::addRenderTargetTexture() and specify the size of the texture and the type. For depth-maps you can use types ECF_D16, ECF_D32 or ECF_D24S8. When ECF_D24S8 you can also use a stencil-buffer.</p>
+<p>Because we want to render the scene not from the user camera into the texture, we add another fixed camera to the scene. But before we do all this, we check if the current running driver is able to render to textures. If it is not, we simply display a warning text. </p><div class="fragment"><div class="line"><span class="comment">// create render target</span></div><div class="line">video::IRenderTarget* renderTarget = 0;</div><div class="line">scene::ICameraSceneNode* fixedCam = 0;</div><div class="line"></div><div class="line"><span class="keywordflow">if</span> (driver-&gt;queryFeature(video::EVDF_RENDER_TO_TARGET))</div><div class="line">{</div><div class="line">    <span class="keyword">const</span> core::dimension2d&lt;u32&gt; rtDim(256, 256);   <span class="comment">// always use same size for render target texture and it&#39;s depth-buffer</span></div><div class="line">    video::ITexture* renderTargetTex = driver-&gt;addRenderTargetTexture(rtDim, <span class="stringliteral">&quot;RTT1&quot;</span>, video::ECF_A8R8G8B8);</div><div class="line">    video::ITexture* renderTargetDepth = driver-&gt;addRenderTargetTexture(rtDim, <span class="stringliteral">&quot;DepthStencil&quot;</span>, video::ECF_D16); </div><div class="line"></div><div class="line">    renderTarget = driver-&gt;addRenderTarget();</div><div class="line">    renderTarget-&gt;setTexture(renderTargetTex, renderTargetDepth);</div><div class="line"></div><div class="line">    cube-&gt;setMaterialTexture(0, renderTargetTex); <span class="comment">// set material of cube to render target</span></div><div class="line"></div><div class="line">    <span class="comment">// add fixed camera</span></div><div class="line">    fixedCam = smgr-&gt;addCameraSceneNode(0, core::vector3df(10,10,-80),</div><div class="line">        core::vector3df(-10,10,-100));</div><div class="line">}</div><div class="line"><span class="keywordflow">else</span></div><div class="line">{</div><div class="line">    <span class="comment">// create problem text</span></div><div class="line">    gui::IGUISkin* skin = env-&gt;getSkin();</div><div class="line">    gui::IGUIFont* font = env-&gt;getFont(mediaPath + <span class="stringliteral">&quot;fonthaettenschweiler.bmp&quot;</span>);</div><div class="line">    <span class="keywordflow">if</span> (font)</div><div class="line">        skin-&gt;setFont(font);</div><div class="line"></div><div class="line">    gui::IGUIStaticText* text = env-&gt;addStaticText(</div><div class="line">        L<span class="stringliteral">&quot;Your hardware or this renderer is not able to use the &quot;</span>\</div><div class="line">        L<span class="stringliteral">&quot;render to texture feature. RTT Disabled.&quot;</span>,</div><div class="line">        core::rect&lt;s32&gt;(150,20,470,60));</div><div class="line"></div><div class="line">    text-&gt;setOverrideColor(video::SColor(100,255,255,255));</div><div class="line">}</div><div class="line"></div><div class="line"><span class="comment">// add fps camera</span></div><div class="line">scene::ICameraSceneNode* fpsCamera = smgr-&gt;addCameraSceneNodeFPS();</div><div class="line">fpsCamera-&gt;setPosition(core::vector3df(-50,50,-150));</div><div class="line"></div><div class="line"><span class="comment">// disable mouse cursor</span></div><div class="line">device-&gt;getCursorControl()-&gt;setVisible(<span class="keyword">false</span>);</div></div><!-- fragment --><p> Nearly finished. Now we need to draw everything. Every frame, we draw the scene twice. Once from the fixed camera into the render target texture and once as usual. When rendering into the render target, we need to disable the visibility of the test cube, because it has the render target texture applied to it. That's it, wasn't too complicated I hope. :) </p><div class="fragment"><div class="line">    <span class="keywordtype">int</span> lastFPS = -1;</div><div class="line"></div><div class="line">    <span class="keywordflow">while</span>(device-&gt;run())</div><div class="line">    <span class="keywordflow">if</span> (device-&gt;isWindowActive())</div><div class="line">    {</div><div class="line">        driver-&gt;beginScene(video::ECBF_COLOR | video::ECBF_DEPTH, video::SColor(0));</div><div class="line"></div><div class="line">        <span class="keywordflow">if</span> (renderTarget)</div><div class="line">        {</div><div class="line">            <span class="comment">// draw scene into render target</span></div><div class="line">            </div><div class="line">            <span class="comment">// set render target</span></div><div class="line">            driver-&gt;setRenderTargetEx(renderTarget, video::ECBF_COLOR | video::ECBF_DEPTH, video::SColor(0,0,0,255));</div><div class="line"></div><div class="line">            <span class="comment">// make cube invisible and set fixed camera as active camera</span></div><div class="line">            cube-&gt;setVisible(<span class="keyword">false</span>);</div><div class="line">            smgr-&gt;setActiveCamera(fixedCam);</div><div class="line"></div><div class="line">            <span class="comment">// draw whole scene into render buffer</span></div><div class="line">            smgr-&gt;drawAll();</div><div class="line"></div><div class="line">            <span class="comment">// set back old render target (the screen)</span></div><div class="line">            driver-&gt;setRenderTargetEx(0, 0);</div><div class="line"></div><div class="line">            <span class="comment">// make the cube visible and set the user controlled camera as active one</span></div><div class="line">            cube-&gt;setVisible(<span class="keyword">true</span>);</div><div class="line">            smgr-&gt;setActiveCamera(fpsCamera);</div><div class="line">        }</div><div class="line">        </div><div class="line">        <span class="comment">// draw scene normally</span></div><div class="line">        smgr-&gt;drawAll();</div><div class="line">        env-&gt;drawAll();</div><div class="line"></div><div class="line">        driver-&gt;endScene();</div><div class="line"></div><div class="line">        <span class="comment">// display frames per second in window title</span></div><div class="line">        <span class="keywordtype">int</span> fps = driver-&gt;getFPS();</div><div class="line">        <span class="keywordflow">if</span> (lastFPS != fps)</div><div class="line">        {</div><div class="line">            core::stringw str = L<span class="stringliteral">&quot;Irrlicht Engine - Render to Texture and Specular Highlights example&quot;</span>;</div><div class="line">            str += <span class="stringliteral">&quot; FPS:&quot;</span>;</div><div class="line">            str += fps;</div><div class="line"></div><div class="line">            device-&gt;setWindowCaption(str.c_str());</div><div class="line">            lastFPS = fps;</div><div class="line">        }</div><div class="line">    }</div><div class="line"></div><div class="line">    device-&gt;drop(); <span class="comment">// drop device</span></div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">}</div></div><!-- fragment --> </div></div><!-- contents -->
+<!-- HTML footer for doxygen 1.8.13-->
+<!-- start footer part -->
 <p>&nbsp;</p>
-      </body>
+</body>
 </html>

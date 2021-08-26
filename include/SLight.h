@@ -6,6 +6,7 @@
 #define __S_LIGHT_H_INCLUDED__
 
 #include "SColor.h"
+#include "vector3d.h"
 
 namespace irr
 {
@@ -98,4 +99,3 @@ struct SLight
 } // end namespace irr
 
 #endif
-

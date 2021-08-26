@@ -841,8 +841,10 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\EDriverFeatures.h" />
     <ClInclude Include="..\..\include\EMaterialFlags.h" />
+    <ClInclude Include="..\..\include\fast_atof.h" />
     <ClInclude Include="..\..\include\IAnimatedMeshMD3.h" />
     <ClInclude Include="..\..\include\IEventReceiver.h" />
+    <ClInclude Include="..\..\include\ILightManager.h" />
     <ClInclude Include="..\..\include\ILogger.h" />
     <ClInclude Include="..\..\include\IOctreeSceneNode.h" />
     <ClInclude Include="..\..\include\IOSOperator.h" />
@@ -895,6 +897,7 @@
     <ClInclude Include="..\..\include\rect.h" />
     <ClInclude Include="..\..\include\SOverrideMaterial.h" />
     <ClInclude Include="..\..\include\SSharedMeshBuffer.h" />
+    <ClInclude Include="..\..\include\SVertexManipulator.h" />
     <ClInclude Include="..\..\include\triangle3d.h" />
     <ClInclude Include="..\..\include\vector2d.h" />
     <ClInclude Include="..\..\include\vector3d.h" />
@@ -1011,7 +1014,7 @@
     <ClInclude Include="burning_shader_compile_fragment_start.h" />
     <ClInclude Include="burning_shader_compile_start.h" />
     <ClInclude Include="burning_shader_compile_triangle.h" />
-    <ClInclude Include="burning_shader_compile_verify.h" />	
+    <ClInclude Include="burning_shader_compile_verify.h" />
     <ClInclude Include="CB3DMeshWriter.h" />
     <ClInclude Include="CD3D9RenderTarget.h" />
     <ClInclude Include="CDefaultSceneNodeAnimatorFactory.h" />
@@ -1278,7 +1281,7 @@
     <None Include="..\..\readme.txt" />
   </ItemGroup>
   <ItemGroup>
-	<ClCompile Include="burning_shader_color.cpp" />
+    <ClCompile Include="burning_shader_color.cpp" />
     <ClCompile Include="CB3DMeshWriter.cpp" />
     <ClCompile Include="CD3D9RenderTarget.cpp" />
     <ClCompile Include="CDefaultSceneNodeAnimatorFactory.cpp" />
@@ -1330,7 +1333,7 @@
     <ClCompile Include="CQ3LevelMesh.cpp" />
     <ClCompile Include="CSkinnedMesh.cpp" />
     <ClCompile Include="CSTLMeshFileLoader.cpp" />
-	<ClCompile Include="CTRGouraudNoZ2.cpp" />
+    <ClCompile Include="CTRGouraudNoZ2.cpp" />
     <ClCompile Include="CTR_transparent_reflection_2_layer.cpp" />
     <ClCompile Include="CWGLManager.cpp" />
     <ClCompile Include="CXMeshFileLoader.cpp" />

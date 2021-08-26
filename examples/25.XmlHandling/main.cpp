@@ -76,7 +76,8 @@ public:
 	/*
 	Load xml from disk, overwrite default settings
 	The xml we are trying to load has the following structure
-	settings nested in sections nested in the root node, like so
+	settings nested in sections nested in the root node, like:
+	\verbatim
 	<pre>
 		<?xml version="1.0"?>
 		<mygame>
@@ -87,6 +88,7 @@ public:
 			</video>
 		</mygame>
 	</pre>
+	\endverbatim
 	*/
 	bool load()
 	{

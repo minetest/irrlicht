@@ -30,36 +30,36 @@ namespace irr
 
 		CD3D9RenderTarget::~CD3D9RenderTarget()
 		{
-			for (u32 i = 0; i < Surface.size(); ++i)
+			for (u32 i = 0; i < Surfaces.size(); ++i)
 			{
-				if (Surface[i])
-					Surface[i]->Release();
+				if (Surfaces[i])
+					Surfaces[i]->Release();
 			}
 
 			if (DepthStencilSurface)
 				DepthStencilSurface->Release();
 
-			for (u32 i = 0; i < Texture.size(); ++i)
+			for (u32 i = 0; i < Textures.size(); ++i)
 			{
-				if (Texture[i])
-					Texture[i]->drop();
+				if (Textures[i])
+					Textures[i]->drop();
 			}
 
 			if (DepthStencil)
 				DepthStencil->drop();
 		}
 
-		void CD3D9RenderTarget::setTexture(const core::array<ITexture*>& texture, ITexture* depthStencil, const core::array<E_CUBE_SURFACE>& cubeSurfaces)
+		void CD3D9RenderTarget::setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces, u32 numCubeSurfaces)
 		{
 			bool needSizeUpdate = false;
 
 			// Set color attachments.
-			if ((Texture != texture) || (CubeSurfaces != cubeSurfaces))
+			if (!Textures.equals(textures, numTextures) || !CubeSurfaces.equals(cubeSurfaces, numCubeSurfaces))
 			{
 				needSizeUpdate = true;
-				CubeSurfaces = cubeSurfaces;	// TODO: we can probably avoid some memory allocating/de-allocating if _only_ CubeSurfaces change.
+				CubeSurfaces.set_data(cubeSurfaces, numCubeSurfaces);	// TODO: we can probably avoid some memory allocating/de-allocating if _only_ CubeSurfaces change.
 
-				if (texture.size() > Driver->ActiveRenderTarget.size())
+				if (numTextures > Driver->ActiveRenderTarget.size())
 				{
 					core::stringc message = "This GPU supports up to ";
 					message += Driver->ActiveRenderTarget.size();
@@ -68,23 +68,23 @@ namespace irr
 					os::Printer::log(message.c_str(), ELL_WARNING);
 				}
 
-				const u32 size = core::min_(texture.size(), static_cast<u32>(Driver->ActiveRenderTarget.size()));
+				const u32 size = core::min_(numTextures, static_cast<u32>(Driver->ActiveRenderTarget.size()));
 
-				for (u32 i = 0; i < Surface.size(); ++i)
+				for (u32 i = 0; i < Surfaces.size(); ++i)
 				{
-					if (Surface[i])
-						Surface[i]->Release();
+					if (Surfaces[i])
+						Surfaces[i]->Release();
 				}
 
-				Surface.set_used(size);
+				Surfaces.set_used(size);
 
-				core::array<ITexture*> prevTextures(Texture);
+				core::array<ITexture*> prevTextures(Textures);
 
-				Texture.set_used(size);
+				Textures.set_used(size);
 
 				for (u32 i = 0; i < size; ++i)
 				{
-					CD3D9Texture* currentTexture = (texture[i] && texture[i]->getDriverType() == DriverType) ? static_cast<CD3D9Texture*>(texture[i]) : 0;
+					CD3D9Texture* currentTexture = (textures[i] && textures[i]->getDriverType() == DriverType) ? static_cast<CD3D9Texture*>(textures[i]) : 0;
 
 					IDirect3DTexture9* textureID = 0;
 					IDirect3DCubeTexture9* cubeTextureId = 0;
@@ -100,29 +100,29 @@ namespace irr
 
 					if (textureID)
 					{
-						Texture[i] = texture[i];
-						Texture[i]->grab();
+						Textures[i] = textures[i];
+						Textures[i]->grab();
 
 						IDirect3DSurface9* currentSurface = 0;
 						textureID->GetSurfaceLevel(level, &currentSurface);
 
-						Surface[i] = currentSurface;
+						Surfaces[i] = currentSurface;
 					}
 					else if ( cubeTextureId )
 					{
-						Texture[i] = texture[i];
-						Texture[i]->grab();
+						Textures[i] = textures[i];
+						Textures[i]->grab();
 
 						IDirect3DSurface9* currentSurface = 0;
 						D3DCUBEMAP_FACES face = (D3DCUBEMAP_FACES)CubeSurfaces[i];	// we use same numbering
 						cubeTextureId->GetCubeMapSurface(face, level, &currentSurface);
 
-						Surface[i] = currentSurface;
+						Surfaces[i] = currentSurface;
 					}
 					else
 					{
-						Surface[i] = 0;
-						Texture[i] = 0;
+						Surfaces[i] = 0;
+						Textures[i] = 0;
 					}
 				}
 
@@ -189,11 +189,11 @@ namespace irr
 
 				bool sizeDetected = false;
 
-				for (u32 i = 0; i < Texture.size(); ++i)
+				for (u32 i = 0; i < Textures.size(); ++i)
 				{
-					if (Texture[i])
+					if (Textures[i])
 					{
-						Size = Texture[i]->getSize();
+						Size = Textures[i]->getSize();
 						sizeDetected = true;
 
 						break;
@@ -217,12 +217,12 @@ namespace irr
 
 		IDirect3DSurface9* CD3D9RenderTarget::getSurface(u32 id) const
 		{
-			return (id < Surface.size()) ? Surface[id] : 0;
+			return (id < Surfaces.size()) ? Surfaces[id] : 0;
 		}
 
 		u32 CD3D9RenderTarget::getSurfaceCount() const
 		{
-			return Surface.size();
+			return Surfaces.size();
 		}
 
 		IDirect3DSurface9* CD3D9RenderTarget::getDepthStencilSurface() const
@@ -232,12 +232,12 @@ namespace irr
 
 		void CD3D9RenderTarget::releaseSurfaces()
 		{
-			for (u32 i = 0; i < Surface.size(); ++i)
+			for (u32 i = 0; i < Surfaces.size(); ++i)
 			{
-				if (Surface[i])
+				if (Surfaces[i])
 				{
-					Surface[i]->Release();
-					Surface[i] = 0;
+					Surfaces[i]->Release();
+					Surfaces[i] = 0;
 				}
 			}
 
@@ -250,16 +250,16 @@ namespace irr
 
 		void CD3D9RenderTarget::generateSurfaces()
 		{
-			for (u32 i = 0; i < Surface.size(); ++i)
+			for (u32 i = 0; i < Surfaces.size(); ++i)
 			{
-				if (!Surface[i] && Texture[i])
+				if (!Surfaces[i] && Textures[i])
 				{
-					IDirect3DTexture9* currentTexture = static_cast<CD3D9Texture*>(Texture[i])->getDX9Texture();
+					IDirect3DTexture9* currentTexture = static_cast<CD3D9Texture*>(Textures[i])->getDX9Texture();
 					if ( currentTexture )
 					{
 						IDirect3DSurface9* currentSurface = 0;
 						currentTexture->GetSurfaceLevel(0, &currentSurface);
-						Surface[i] = currentSurface;
+						Surfaces[i] = currentSurface;
 					}
 				}
 			}

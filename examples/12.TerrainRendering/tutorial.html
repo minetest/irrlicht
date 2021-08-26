@@ -1,122 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Irrlicht Engine Tutorial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Tutorial 12: Terrain Rendering</title>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- Wanted to avoid copying .css to each folder, so copied default .css from doxyen in here, kicked out most stuff we don't need for examples and modified some a little bit. 
+     Target was having a single html in each example folder which is created from the main.cpp files and needs no files besides some images below media folder.
+     Feel free to improve :)
+	 -->
+<style>
+body, table, div, p, dl {
+	font: 400 14px/22px;
+}
+body {
+	background-color: #F0F0F0;
+	color: black;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+p.reference, p.definition {
+	font: 400 14px/22px;
+}
+.title {
+	font: 400 14px/28px;
+	font-size: 150%;
+	font-weight: bold;
+	margin: 10px 2px;
+}
+h1, h2, h3, h4, h5, h6 {
+	-webkit-transition: text-shadow 0.5s linear;
+	-moz-transition: text-shadow 0.5s linear;
+	-ms-transition: text-shadow 0.5s linear;
+	-o-transition: text-shadow 0.5s linear;
+	transition: text-shadow 0.5s linear;
+	margin-right: 15px;
+}
+caption {
+	font-weight: bold;
+}
+h3.version {
+	font-size: 90%;
+	text-align: center;
+}
+a {
+	color: #3D578C;
+	font-weight: normal;
+	text-decoration: none;
+}
+.contents a:visited {
+	color: #4665A2;
+}
+a:hover {
+	text-decoration: underline;
+}
+a.el {
+	font-weight: bold;
+}
+a.code, a.code:visited, a.line, a.line:visited {
+	color: #4665A2; 
+}
+a.codeRef, a.codeRef:visited, a.lineRef, a.lineRef:visited {
+	color: #4665A2; 
+}
+pre.fragment {
+	border: 1px solid #C4CFE5;
+	background-color: #FBFCFD;
+	padding: 4px 6px;
+	margin: 4px 8px 4px 2px;
+	overflow: auto;
+	word-wrap: break-word;
+	font-size:  9pt;
+	line-height: 125%;
+	font-family: monospace, fixed;
+	font-size: 105%;
+}
+div.fragment {
+	padding: 0px;
+	margin: 4px 8px 4px 2px;
+	background-color: #FBFCFD;
+	border: 1px solid #C4CFE5;
+}
+div.line {
+	font-family: monospace, fixed;
+	font-size: 13px;
+	min-height: 13px;
+	line-height: 1.0;
+	text-wrap: unrestricted;
+	white-space: -moz-pre-wrap; /* Moz */
+	white-space: -pre-wrap;     /* Opera 4-6 */
+	white-space: -o-pre-wrap;   /* Opera 7 */
+	white-space: pre-wrap;      /* CSS3  */
+	word-wrap: break-word;      /* IE 5.5+ */
+	text-indent: -53px;
+	padding-left: 53px;
+	padding-bottom: 0px;
+	margin: 0px;
+	-webkit-transition-property: background-color, box-shadow;
+	-webkit-transition-duration: 0.5s;
+	-moz-transition-property: background-color, box-shadow;
+	-moz-transition-duration: 0.5s;
+	-ms-transition-property: background-color, box-shadow;
+	-ms-transition-duration: 0.5s;
+	-o-transition-property: background-color, box-shadow;
+	-o-transition-duration: 0.5s;
+	transition-property: background-color, box-shadow;
+	transition-duration: 0.5s;
+}
+div.contents {
+	margin-top: 10px;
+	margin-left: 12px;
+	margin-right: 8px;
+}
+div.center {
+	text-align: center;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding: 0px;
+}
+div.center img {
+	border: 0px;
+}
+span.keyword {
+	color: #008000
+}
+span.keywordtype {
+	color: #604020
+}
+span.keywordflow {
+	color: #e08000
+}
+span.comment {
+	color: #800000
+}
+span.preprocessor {
+	color: #806020
+}
+span.stringliteral {
+	color: #002080
+}
+span.charliteral {
+	color: #008080
+}
+blockquote {
+	background-color: #F7F8FB;
+	border-left: 2px solid #9CAFD4;
+	margin: 0 24px 0 4px;
+	padding: 0 12px 0 16px;
+}
+hr {
+	height: 0px;
+	border: none;
+	border-top: 1px solid #4A6AAA;
+}
+address {
+	font-style: normal;
+	color: #2A3D61;
+}
+div.header {
+	background-image:url('nav_h.png');
+	background-repeat:repeat-x;
+	background-color: #F9FAFC;
+	margin:  0px;
+	border-bottom: 1px solid #C4CFE5;
+}
+div.headertitle {
+	padding: 5px 5px 5px 10px;
+}
+.image {
+	text-align: center;
+}
+.caption {
+	font-weight: bold;
+}
+div.zoom {
+	border: 1px solid #90A5CE;
+}
+tr.heading h2 {
+	margin-top: 12px;
+	margin-bottom: 4px;
+}
+</style>
 </head>
-
-<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699" width="10"><b><a href="http://irrlicht.sourceforge.net" target="_blank"><img src="../../media/irrlichtlogo.jpg" width="88" height="31" border="0"></a></b></td>
-    <td bgcolor="#666699" width="100%">
-<div align="center">
-        <div align="left"><b><font color="#FFFFFF">Tutorial 12. Terrain Rendering</font></b></div>
-      </div>
-      </td>
-  </tr>
-  <tr bgcolor="#eeeeff"> 
-    <td height="90" colspan="2"> 
-      <div align="left"> 
-        <p> This tutorial will briefly show how to use the terrain renderer of 
-          Irrlicht. It will also show the terrain renderer triangle selector to 
-          be able to do collision detection with terrain.</p>
-        <p>The program which is described here will look like this:</p>
-        <p align="center"><img src="../../media/012shot.jpg" width="258" height="202"></p>
-        <p align="left"><br>
-          Note that the terrain renderer in Irrlicht is based the terrain renderer 
-          by Soconne and the GeoMipMapSceneNode developed by Spinz, lots of thanks 
-          go to them.</p>
-      </div>
-    </td>
-  </tr>
-</table>
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699"> <b><font color="#FFFFFF">Lets start!</font></b></td>
-  </tr>
-  <tr> 
-    <td height="90" bgcolor="#eeeeff" valign="top"> <div align="left"> 
-        <div align="left"> 
-          <p> In the beginning there is nothing special. We include the needed 
-            header files and create an event listener to listen if the user presses 
-            the 'W' key so we can switch to wireframe mode and if he presses 'D' 
-            we toggle to material between solid and detail mapped.</p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>#include &lt;irrlicht.h&gt;<br>#include &lt;iostream&gt;<br>using namespace irr;<br><br>#pragma comment(lib, &quot;Irrlicht.lib&quot;)<br><br>class MyEventReceiver : public IEventReceiver<br>{<br>public:<br>	MyEventReceiver(scene::ISceneNode* terrain)<br>	{<br><font color="#006600">		// store pointer to terrain so we can change its drawing mode<br></font>		Terrain = terrain;<br>	}<br><br>	bool OnEvent(const SEvent& event)<br>	{<br>	<font color="#006600">	// check if user presses the key 'W' or 'D'</font><br>		if (event.EventType == irr::EET_KEY_INPUT_EVENT &amp;&amp; !event.KeyInput.PressedDown)<br>		{<br>			switch (event.KeyInput.Key)<br>			{<br>			case irr::KEY_KEY_W:<font color="#006600"> // switch wire frame mode</font><br>				Terrain-&gt;setMaterialFlag(video::EMF_WIREFRAME, !Terrain-&gt;getMaterial(0).Wireframe);<br>				return true;<br>			case irr::KEY_KEY_D:<font color="#006600"> // toggle detail map</font><br>				Terrain-&gt;setMaterialType(<br>					Terrain-&gt;getMaterial(0).MaterialType == video::EMT_SOLID ? <br>					video::EMT_DETAIL_MAP : video::EMT_SOLID);<br>				return true;<br>			}<br>		}<br>		return false;<br>	}<br><br>private:<br>	scene::ISceneNode* Terrain;<br>};<br><br></pre></td>
-            </tr>
-          </table>
-          <p>The start of the main function starts like in most other example. 
-            We ask the user for the desired renderer and start it up. </p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>int main()<br>{<br><font color="#006600">	// let user select driver type<br></font><br>	video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;<br><br>	printf(&quot;Please select the driver you want for this example:\n&quot;\<br>		&quot; (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n&quot;\<br>		&quot; (d) Software Renderer\n (e) Apfelbaum Software Renderer\n&quot;\<br>		&quot; (f) NullDevice\n (otherKey) exit\n\n&quot;);<br><br>	char i;<br>	std::cin &gt;&gt; i;<br><br>	switch(i)<br>	{<br>		case 'a': driverType = video::EDT_DIRECT3D9;break;<br>		case 'b': driverType = video::EDT_DIRECT3D8;break;<br>		case 'c': driverType = video::EDT_OPENGL;   break;<br>		case 'd': driverType = video::EDT_SOFTWARE; break;<br>		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;<br>		case 'f': driverType = video::EDT_NULL;     break;<br>		default: return 1;<br>	}	<br><font color="#006600"><br>	// create device<br></font>	IrrlichtDevice* device = createDevice(driverType, core::dimension2d&lt;s32&gt;(640, 480));<br><br>	if (device == 0)<br>		return 1; <font color="#006600">// could not create selected driver.</font><br></pre></td>
-            </tr>
-          </table>
-          <p> First, we add standard stuff to the scene: A nice irrlicht engine 
-            logo, a small help text, a user controlled camera, and we disable 
-            the mouse cursor.</p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>video::IVideoDriver* driver = device-&gt;getVideoDriver();<br>scene::ISceneManager* smgr = device-&gt;getSceneManager();<br>gui::IGUIEnvironment* env = device-&gt;getGUIEnvironment();<br><br>driver-&gt;setTextureCreationFlag(video::ETCF_ALWAYS_32_BIT, true);<br><br><font color="#006600">// add irrlicht logo<br></font>env-&gt;addImage(driver-&gt;getTexture(&quot;../../media/irrlichtlogoalpha.tga&quot;),<br>    core::position2d&lt;s32&gt;(10,10));<br>
-<font color="#006600">// add some help text<br></font>gui::IGUIStaticText* text = env-&gt;addStaticText(<br>	L&quot;Press 'W' to change wireframe mode\nPress 'D' to toggle detail map&quot;,<br>	core::rect&lt;s32&gt;(10,453,200,475), true, true, 0, -1, true);<br>
-<font color="#006600">// add camera<br></font>scene::ICameraSceneNode* camera = <br>    smgr-&gt;addCameraSceneNodeFPS(0,100.0f,1200.0f);<br>camera-&gt;setPosition(core::vector3df(1900*2,255*2,3700*2));<br>camera-&gt;setTarget(core::vector3df(2397*2,343*2,2700*2));<br>camera-&gt;setFarValue(12000.0f);<br><br><font color="#006600">// disable mouse cursor<br></font>device-&gt;getCursorControl()-&gt;setVisible(false);</pre></td>
-            </tr>
-          </table>
-          <p> Here comes the terrain renderer scene node: We add it just like 
-            any other scene node to the scene using ISceneManager::addTerrainSceneNode(). 
-            The only parameter we use is a file name to the heightmap we use. 
-            A heightmap is simply a gray scale texture. The terrain renderer loads 
-            it and creates the 3D terrain from it.<br>
-            To make the terrain look more big, we change the scale factor of it 
-            to (40, 4.4, 40). Because we don't have any dynamic lights in the 
-            scene, we switch off the lighting, and we set the file terrain-texture.jpg 
-            as texture for the terrain and detailmap3.jpg as second texture, called 
-            detail map. At last, we set the scale values for the texture: The 
-            first texture will be repeated only one time over the whole terrain, 
-            and the second one (detail map) 20 times. </p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre><font color="#006600">// add terrain scene node<br></font>scene::ITerrainSceneNode* terrain = smgr-&gt;addTerrainSceneNode( <br>      &quot;../../media/terrain-heightmap.bmp&quot;);<br><br>terrain-&gt;setScale(core::vector3df(40, 4.4f, 40));<br>terrain-&gt;setMaterialFlag(video::EMF_LIGHTING, false);<br><br>terrain-&gt;setMaterialTexture(0, driver-&gt;getTexture(&quot;../../media/terrain-texture.jpg&quot;));<br>terrain-&gt;setMaterialTexture(1, driver-&gt;getTexture(&quot;../../media/detailmap3.jpg&quot;));<br>	<br>terrain-&gt;setMaterialType(video::EMT_DETAIL_MAP);<br>terrain-&gt;scaleTexture(1.0f, 20.0f);<font color="#006600"><br></font></pre></td>
-            </tr>
-          </table>
-          <p> To be able to do collision with the terrain, we create a triangle 
-            selector. If you want to know what triangle selectors do, just take 
-            a look into the collision tutorial. The terrain triangle selector 
-            works together with the terrain. To demonstrate this, we create a 
-            collision response animator and attach it to the camera, so that the 
-            camera will not be able to fly through the terrain. </p>
-        </div>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td> <pre><font color="#006600">// create triangle selector for the terrain	<br></font>scene::ITriangleSelector* selector =<br>    smgr-&gt;createTerrainTriangleSelector(terrain, 0);<br>terrain-&gt;setTriangleSelector(selector);<br><br><font color="#006600">// create collision response animator and attach it to the camera<br></font>scene::ISceneNodeAnimator* anim = smgr-&gt;createCollisionResponseAnimator(<br>	selector, camera, core::vector3df(60,100,60),<br>	core::vector3df(0,0,0), <br>	core::vector3df(0,50,0));<br>selector-&gt;drop();<br>camera-&gt;addAnimator(anim);<br>anim-&gt;drop();</pre></td>
-          </tr>
-        </table>
-        <p> To make the user be able to switch between normal and wireframe mode, 
-          we create an instance of the event reciever from above and let Irrlicht 
-          know about it. In addition, we add the skybox which we already used 
-          in lots of Irrlicht examples.</p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td><pre><font color="#006600">// create event receiver<br></font>MyEventReceiver receiver(terrain);<br>device-&gt;setEventReceiver(&amp;receiver);<br><br><font color="#006600">// create skybox<br></font>driver-&gt;setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, false);<br><br>smgr-&gt;addSkyBoxSceneNode(<br>	driver-&gt;getTexture(&quot;../../media/irrlicht2_up.jpg&quot;),<br>	driver-&gt;getTexture(&quot;../../media/irrlicht2_dn.jpg&quot;),<br>	driver-&gt;getTexture(&quot;../../media/irrlicht2_lf.jpg&quot;),<br>	driver-&gt;getTexture(&quot;../../media/irrlicht2_rt.jpg&quot;),<br>	driver-&gt;getTexture(&quot;../../media/irrlicht2_ft.jpg&quot;),<br>	driver-&gt;getTexture(&quot;../../media/irrlicht2_bk.jpg&quot;));<br>
-driver-&gt;setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, true);<br></pre></td>
-          </tr>
-        </table>
-        <p> That's it, draw everything. Now you know how to use terrain in Irrlicht.</p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td><pre>	int lastFPS = -1;<br><br>	while(device-&gt;run())<br>	if (device-&gt;isWindowActive())<br>	{<br>		driver-&gt;beginScene(true, true, 0 );<br><br>		smgr-&gt;drawAll();<br>		env-&gt;drawAll();<br><br>		driver-&gt;endScene();
-<br><font color="#006600">		// display frames per second in window title
-</font>		int fps = driver-&gt;getFPS();<br><br>		if (lastFPS != fps)<br>		{<br>			core::stringw str = L&quot;Terrain Renderer - Irrlicht Engine [&quot;;<br>			str += driver-&gt;getName();<br>			str += &quot;] FPS:&quot;;<br>			str += fps;<br>			device-&gt;setWindowCaption(str.c_str());<br>			lastFPS = fps;<br>		}<br>	}<br><br>	device-&gt;drop();<br>	<br>	return 0;<br>}</pre></td>
-          </tr>
-        </table>
-        <p>&nbsp; </p>
-      </div>
-      </td>
-  </tr>
-</table>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!--END TITLEAREA-->
+<!-- end header part -->
+<!-- Generated by Doxygen 1.8.13 -->
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">Tutorial 12: Terrain Rendering </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><div class="image">
+<img src="../../media/example_screenshots/012shot.jpg" alt="012shot.jpg"/>
+</div>
+ <p>This tutorial will briefly show how to use the terrain renderer of Irrlicht. It will also show the terrain renderer triangle selector to be able to do collision detection with terrain.</p>
+<p>Note that the Terrain Renderer in Irrlicht is based on Spintz' GeoMipMapSceneNode, lots of thanks go to him. DeusXL provided a new elegant simple solution for building larger area on small heightmaps -&gt; terrain smoothing.</p>
+<p>In the beginning there is nothing special. We include the needed header files and create an event listener to listen if the user presses certain keys. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;irrlicht.h&gt;</span></div><div class="line"><span class="preprocessor">#include &quot;driverChoice.h&quot;</span></div><div class="line"><span class="preprocessor">#include &quot;exampleHelper.h&quot;</span></div><div class="line"></div><div class="line"><span class="keyword">using namespace </span>irr;</div><div class="line"></div><div class="line"><span class="preprocessor">#ifdef _MSC_VER</span></div><div class="line"><span class="preprocessor">#pragma comment(lib, &quot;Irrlicht.lib&quot;)</span></div><div class="line"><span class="preprocessor">#endif</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">class </span>MyEventReceiver : <span class="keyword">public</span> IEventReceiver</div><div class="line">{</div><div class="line"><span class="keyword">public</span>:</div><div class="line"></div><div class="line">    MyEventReceiver(scene::ISceneNode* terrain, scene::ISceneNode* skybox, scene::ISceneNode* skydome) :</div><div class="line">        Terrain(terrain), Skybox(skybox), Skydome(skydome), showBox(true), showDebug(false)</div><div class="line">    {</div><div class="line">        Skybox-&gt;setVisible(showBox);</div><div class="line">        Skydome-&gt;setVisible(!showBox);</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="keywordtype">bool</span> OnEvent(<span class="keyword">const</span> SEvent&amp; event)</div><div class="line">    {</div><div class="line">        <span class="comment">// check if user presses the key &#39;W&#39; or &#39;D&#39;</span></div><div class="line">        <span class="keywordflow">if</span> (event.EventType == irr::EET_KEY_INPUT_EVENT &amp;&amp; !event.KeyInput.PressedDown)</div><div class="line">        {</div><div class="line">            <span class="keywordflow">switch</span> (event.KeyInput.Key)</div><div class="line">            {</div><div class="line">            <span class="keywordflow">case</span> irr::KEY_KEY_W: <span class="comment">// switch wire frame mode</span></div><div class="line">                Terrain-&gt;setMaterialFlag(video::EMF_WIREFRAME,</div><div class="line">                        !Terrain-&gt;getMaterial(0).Wireframe);</div><div class="line">                Terrain-&gt;setMaterialFlag(video::EMF_POINTCLOUD, <span class="keyword">false</span>);</div><div class="line">                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div><div class="line">            <span class="keywordflow">case</span> irr::KEY_KEY_P: <span class="comment">// switch point cloud mode</span></div><div class="line">                Terrain-&gt;setMaterialFlag(video::EMF_POINTCLOUD,</div><div class="line">                        !Terrain-&gt;getMaterial(0).PointCloud);</div><div class="line">                Terrain-&gt;setMaterialFlag(video::EMF_WIREFRAME, <span class="keyword">false</span>);</div><div class="line">                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div><div class="line">            <span class="keywordflow">case</span> irr::KEY_KEY_D: <span class="comment">// toggle detail map</span></div><div class="line">                Terrain-&gt;setMaterialType(</div><div class="line">                    Terrain-&gt;getMaterial(0).MaterialType == video::EMT_SOLID ?</div><div class="line">                    video::EMT_DETAIL_MAP : video::EMT_SOLID);</div><div class="line">                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div><div class="line">            <span class="keywordflow">case</span> irr::KEY_KEY_S: <span class="comment">// toggle skies</span></div><div class="line">                showBox=!showBox;</div><div class="line">                Skybox-&gt;setVisible(showBox);</div><div class="line">                Skydome-&gt;setVisible(!showBox);</div><div class="line">                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div><div class="line">            <span class="keywordflow">case</span> irr::KEY_KEY_X: <span class="comment">// toggle debug information</span></div><div class="line">                showDebug=!showDebug;</div><div class="line">                Terrain-&gt;setDebugDataVisible(showDebug?scene::EDS_BBOX_ALL:scene::EDS_OFF);</div><div class="line">                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div><div class="line">            <span class="keywordflow">default</span>:</div><div class="line">                <span class="keywordflow">break</span>;</div><div class="line">            }</div><div class="line">        }</div><div class="line"></div><div class="line">        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">    scene::ISceneNode* Terrain;</div><div class="line">    scene::ISceneNode* Skybox;</div><div class="line">    scene::ISceneNode* Skydome;</div><div class="line">    <span class="keywordtype">bool</span> showBox;</div><div class="line">    <span class="keywordtype">bool</span> showDebug;</div><div class="line">};</div></div><!-- fragment --><p> The start of the main function starts like in most other example. We ask the user for the desired renderer and start it up. This time with the advanced parameter handling. </p><div class="fragment"><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div><div class="line">    <span class="comment">// ask user for driver</span></div><div class="line">    video::E_DRIVER_TYPE driverType=driverChoiceConsole();</div><div class="line">    <span class="keywordflow">if</span> (driverType==video::EDT_COUNT)</div><div class="line">        <span class="keywordflow">return</span> 1;</div><div class="line"></div><div class="line">    <span class="comment">// create device with full flexibility over creation parameters</span></div><div class="line">    <span class="comment">// you can add more parameters if desired, check irr::SIrrlichtCreationParameters</span></div><div class="line">    irr::SIrrlichtCreationParameters params;</div><div class="line">    params.DriverType=driverType;</div><div class="line">    params.WindowSize=core::dimension2d&lt;u32&gt;(640, 480);</div><div class="line">    IrrlichtDevice* device = createDeviceEx(params);</div><div class="line"></div><div class="line">    <span class="keywordflow">if</span> (device == 0)</div><div class="line">        <span class="keywordflow">return</span> 1; <span class="comment">// could not create selected driver.</span></div></div><!-- fragment --><p> First, we add standard stuff to the scene: A nice irrlicht engine logo, a small help text, a user controlled camera, and we disable the mouse cursor. </p><div class="fragment"><div class="line">video::IVideoDriver* driver = device-&gt;getVideoDriver();</div><div class="line">scene::ISceneManager* smgr = device-&gt;getSceneManager();</div><div class="line">gui::IGUIEnvironment* env = device-&gt;getGUIEnvironment();</div><div class="line"></div><div class="line">driver-&gt;setTextureCreationFlag(video::ETCF_ALWAYS_32_BIT, <span class="keyword">true</span>);</div><div class="line"></div><div class="line"><span class="keyword">const</span> io::path mediaPath = getExampleMediaPath();</div><div class="line"></div><div class="line"><span class="comment">// add irrlicht logo</span></div><div class="line">env-&gt;addImage(driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;irrlichtlogo3.png&quot;</span>),</div><div class="line">    core::position2d&lt;s32&gt;(10,10));</div><div class="line"></div><div class="line"><span class="comment">//set other font</span></div><div class="line">env-&gt;getSkin()-&gt;setFont(env-&gt;getFont(mediaPath + <span class="stringliteral">&quot;fontlucida.png&quot;</span>));</div><div class="line"></div><div class="line"><span class="comment">// add some help text (let&#39;s ignore &#39;P&#39; and &#39;X&#39; which are more about debugging)</span></div><div class="line">env-&gt;addStaticText(</div><div class="line">    L<span class="stringliteral">&quot;Press &#39;W&#39; to change wireframe mode\nPress &#39;D&#39; to toggle detail map\nPress &#39;S&#39; to toggle skybox/skydome&quot;</span>,</div><div class="line">    core::rect&lt;s32&gt;(10,421,250,475), <span class="keyword">true</span>, <span class="keyword">true</span>, 0, -1, <span class="keyword">true</span>);</div><div class="line"></div><div class="line"><span class="comment">// add camera</span></div><div class="line">scene::ICameraSceneNode* camera =</div><div class="line">    smgr-&gt;addCameraSceneNodeFPS(0,100.0f,1.2f);</div><div class="line"></div><div class="line">camera-&gt;setPosition(core::vector3df(2700*2,255*2,2600*2));</div><div class="line">camera-&gt;setTarget(core::vector3df(2397*2,343*2,2700*2));</div><div class="line">camera-&gt;setFarValue(42000.0f);</div><div class="line"></div><div class="line"><span class="comment">// disable mouse cursor</span></div><div class="line">device-&gt;getCursorControl()-&gt;setVisible(<span class="keyword">false</span>);</div></div><!-- fragment --><p> Here comes the terrain renderer scene node: We add it just like any other scene node to the scene using ISceneManager::addTerrainSceneNode(). The first parameter is a file name to the heightmap we use. A heightmap is simply a gray scale texture. The terrain renderer loads it and creates the 3D terrain from it.</p>
+<p>To make the terrain look bigger, we change it's scale factor to (40, 4.4, 40). Because we don't have any dynamic lights in the scene, we switch off the lighting, and we set the file terrain-texture.jpg as texture for the terrain and detailmap3.jpg as second texture, called detail map. At last, we set the scale values for the texture: The first texture will be repeated only one time over the whole terrain, and the second one (detail map) 20 times. </p><div class="fragment"><div class="line"><span class="comment">// add terrain scene node</span></div><div class="line">scene::ITerrainSceneNode* terrain = smgr-&gt;addTerrainSceneNode(</div><div class="line">    mediaPath + <span class="stringliteral">&quot;terrain-heightmap.bmp&quot;</span>,</div><div class="line">    0,                  <span class="comment">// parent node</span></div><div class="line">    -1,                 <span class="comment">// node id</span></div><div class="line">    core::vector3df(0.f, 0.f, 0.f),     <span class="comment">// position</span></div><div class="line">    core::vector3df(0.f, 0.f, 0.f),     <span class="comment">// rotation</span></div><div class="line">    core::vector3df(40.f, 4.4f, 40.f),  <span class="comment">// scale</span></div><div class="line">    video::SColor ( 255, 255, 255, 255 ),   <span class="comment">// vertexColor</span></div><div class="line">    5,                  <span class="comment">// maxLOD</span></div><div class="line">    scene::ETPS_17,             <span class="comment">// patchSize</span></div><div class="line">    4                   <span class="comment">// smoothFactor</span></div><div class="line">    );</div><div class="line"></div><div class="line">terrain-&gt;setMaterialFlag(video::EMF_LIGHTING, <span class="keyword">false</span>);</div><div class="line"></div><div class="line">terrain-&gt;setMaterialTexture(0,</div><div class="line">        driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;terrain-texture.jpg&quot;</span>));</div><div class="line">terrain-&gt;setMaterialTexture(1,</div><div class="line">        driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;detailmap3.jpg&quot;</span>));</div><div class="line"></div><div class="line">terrain-&gt;setMaterialType(video::EMT_DETAIL_MAP);</div><div class="line"></div><div class="line">terrain-&gt;scaleTexture(1.0f, 20.0f);</div></div><!-- fragment --><p> To be able to do collision with the terrain, we create a triangle selector. If you want to know what triangle selectors do, just take a look into the collision tutorial. The terrain triangle selector works together with the terrain. To demonstrate this, we create a collision response animator and attach it to the camera, so that the camera will not be able to fly through the terrain. </p><div class="fragment"><div class="line"><span class="comment">// create triangle selector for the terrain </span></div><div class="line">scene::ITriangleSelector* selector</div><div class="line">    = smgr-&gt;createTerrainTriangleSelector(terrain, 0);</div><div class="line">terrain-&gt;setTriangleSelector(selector);</div><div class="line"></div><div class="line"><span class="comment">// create collision response animator and attach it to the camera</span></div><div class="line">scene::ISceneNodeAnimator* anim = smgr-&gt;createCollisionResponseAnimator(</div><div class="line">    selector, camera, core::vector3df(60,100,60),</div><div class="line">    core::vector3df(0,0,0),</div><div class="line">    core::vector3df(0,50,0));</div><div class="line">selector-&gt;drop();</div><div class="line">camera-&gt;addAnimator(anim);</div><div class="line">anim-&gt;drop();</div></div><!-- fragment --><p> If you need access to the terrain data you can also do this directly via the following code fragment. </p><div class="fragment"><div class="line">scene::CDynamicMeshBuffer* buffer = <span class="keyword">new</span> scene::CDynamicMeshBuffer(video::EVT_2TCOORDS, video::EIT_16BIT);</div><div class="line">terrain-&gt;getMeshBufferForLOD(*buffer, 0);</div><div class="line">video::S3DVertex2TCoords* data = (video::S3DVertex2TCoords*)buffer-&gt;getVertexBuffer().getData();</div><div class="line"><span class="comment">// Work on data or get the IndexBuffer with a similar call.</span></div><div class="line">(void)data; <span class="comment">// disable unused variable warnings</span></div><div class="line">buffer-&gt;drop(); <span class="comment">// When done drop the buffer again.</span></div></div><!-- fragment --><p> To make the user be able to switch between normal and wireframe mode, we create an instance of the event receiver from above and let Irrlicht know about it. In addition, we add the skybox which we already used in lots of Irrlicht examples and a skydome, which is shown mutually exclusive with the skybox by pressing 'S'. </p><div class="fragment"><div class="line"><span class="comment">// create skybox and skydome</span></div><div class="line">driver-&gt;setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, <span class="keyword">false</span>);</div><div class="line"></div><div class="line">scene::ISceneNode* skybox=smgr-&gt;addSkyBoxSceneNode(</div><div class="line">    driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;irrlicht2_up.jpg&quot;</span>),</div><div class="line">    driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;irrlicht2_dn.jpg&quot;</span>),</div><div class="line">    driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;irrlicht2_lf.jpg&quot;</span>),</div><div class="line">    driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;irrlicht2_rt.jpg&quot;</span>),</div><div class="line">    driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;irrlicht2_ft.jpg&quot;</span>),</div><div class="line">    driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;irrlicht2_bk.jpg&quot;</span>));</div><div class="line">scene::ISceneNode* skydome=smgr-&gt;addSkyDomeSceneNode(driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;skydome.jpg&quot;</span>),16,8,0.95f,2.0f);</div><div class="line"></div><div class="line">driver-&gt;setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, <span class="keyword">true</span>);</div><div class="line"></div><div class="line"><span class="comment">// create event receiver</span></div><div class="line">MyEventReceiver receiver(terrain, skybox, skydome);</div><div class="line">device-&gt;setEventReceiver(&amp;receiver);</div></div><!-- fragment --><p> That's it, draw everything. </p><div class="fragment"><div class="line">    <span class="keywordtype">int</span> lastFPS = -1;</div><div class="line"></div><div class="line">    <span class="keywordflow">while</span>(device-&gt;run())</div><div class="line">    <span class="keywordflow">if</span> (device-&gt;isWindowActive())</div><div class="line">    {</div><div class="line">        driver-&gt;beginScene(video::ECBF_COLOR | video::ECBF_DEPTH, video::SColor(0));</div><div class="line"></div><div class="line">        smgr-&gt;drawAll();</div><div class="line">        env-&gt;drawAll();</div><div class="line"></div><div class="line">        driver-&gt;endScene();</div><div class="line"></div><div class="line">        <span class="comment">// display frames per second in window title</span></div><div class="line">        <span class="keywordtype">int</span> fps = driver-&gt;getFPS();</div><div class="line">        <span class="keywordflow">if</span> (lastFPS != fps)</div><div class="line">        {</div><div class="line">            core::stringw str = L<span class="stringliteral">&quot;Terrain Renderer - Irrlicht Engine [&quot;</span>;</div><div class="line">            str += driver-&gt;getName();</div><div class="line">            str += <span class="stringliteral">&quot;] FPS:&quot;</span>;</div><div class="line">            str += fps;</div><div class="line">            <span class="comment">// Also print terrain height of current camera position</span></div><div class="line">            <span class="comment">// We can use camera position because terrain is located at coordinate origin</span></div><div class="line">            str += <span class="stringliteral">&quot; Height: &quot;</span>;</div><div class="line">            str += terrain-&gt;getHeight(camera-&gt;getAbsolutePosition().X,</div><div class="line">                    camera-&gt;getAbsolutePosition().Z);</div><div class="line"></div><div class="line">            device-&gt;setWindowCaption(str.c_str());</div><div class="line">            lastFPS = fps;</div><div class="line">        }</div><div class="line">    }</div><div class="line"></div><div class="line">    device-&gt;drop();</div><div class="line">    </div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">}</div></div><!-- fragment --><p> Now you know how to use terrain in Irrlicht. </p>
+</div></div><!-- contents -->
+<!-- HTML footer for doxygen 1.8.13-->
+<!-- start footer part -->
 <p>&nbsp;</p>
-      </body>
+</body>
 </html>

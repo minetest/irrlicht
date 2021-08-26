@@ -1,188 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Irrlicht Engine Tutorial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-</head>
-
-<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699" width="10"><b><a href="http://irrlicht.sourceforge.net" target="_blank"><img src="../../media/irrlichtlogo.jpg" width="88" height="31" border="0"></a></b></td>
-    <td bgcolor="#666699" width="100%">
-<div align="center">
-<div align="center"></div>
-        <div align="left"><b><font color="#FFFFFF">Tutorial 4.Movement</font></b></div>
-      </div>
-      </td>
-  </tr>
-  <tr bgcolor="#eeeeff"> 
-    <td height="90" colspan="2"> 
-      <div align="left"> 
-        <p>This Tutorial shows how to move and animate SceneNodes. The basic concept 
-          of SceneNodeAnimators is shown as well as manual movement of nodes using 
-          the keyboard.</p>
-        <p>The program which is described here will look like this:</p>
-        <p align="center"><img src="../../media/004shot.jpg" width="259" height="204"><br>
-        </p>
-      </div>
-    </td>
-  </tr>
-</table>
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699"> <div align="center"><b><font color="#FFFFFF"></font></b></div>
-      <b><font color="#FFFFFF">Lets start!</font></b></td>
-  </tr>
-  <tr> 
-    <td height="90" bgcolor="#eeeeff" valign="top"> <div align="left"> 
-        <p>As always, I include the header files, use the irr namespace, and tell 
-          the linker to link with the .lib file. </p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td> <pre>#include &lt;stdio.h&gt;<br>#include &lt;wchar.h&gt;<br>#include &lt;irrlicht.h&gt;</pre> 
-              <pre>using namespace irr;</pre>
-              <pre>#pragma comment(lib, &quot;Irrlicht.lib&quot;)</pre></td>
-          </tr>
-        </table>
-        <p>In this tutorial, one of our goals is to move a scene node using some 
-          keys on the keyboard. We store a pointer to the scene node we want to 
-          move with the keys here.<br>
-          The other pointer is a pointer to the Irrlicht Device, which we need 
-          int the EventReceiver to manipulate the scene node and to get the active 
-          camera.</p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td> <pre>scene::ISceneNode* node = 0;<br>IrrlichtDevice* device = 0; </pre></td>
-          </tr>
-        </table>
-        <p>To get events like mouse and keyboard input, or GUI events like &quot;the 
-          OK button has been clicked&quot;, we need an object wich is derived 
-          from the IEventReceiver object. There is only one method to override: 
-          OnEvent. This method will be called by the engine when an event happened. 
-          We will use this input to move the scene node with the keys W and S.</p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td> <pre>class MyEventReceiver : public IEventReceiver<br>{<br>public:<br>	virtual bool OnEvent(const SEvent&amp; event)<br>	{ </pre></td>
-          </tr>
-        </table>
-        <p>If the key 'W' or 'S' was left up, we get the position of the scene 
-          node, and modify the Y coordinate a little bit. So if you press 'W', 
-          the node moves up, and if you press 'S' it moves down.</p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td> <pre>if (node != 0 &amp;&amp; event.EventType == irr::EET_KEY_INPUT_EVENT&amp;&amp;<br>			!event.KeyInput.PressedDown)<br>{<br>		switch(event.KeyInput.Key)<br>		{<br>		case KEY_KEY_W:<br>		case KEY_KEY_S:<br>			{<br>				core::vector3df v = node-&gt;getPosition();<br>				v.Y += event.KeyInput.Key == KEY_KEY_W ? 2.0f : -2.0f;<br>				node-&gt;setPosition(v);<br>			}<br>			return true;<br>		}<br>} return false; <br> } <br> };</pre></td>
-          </tr>
-        </table>
-        
-      </div>
-      <p>The event receiver for moving a scene node is ready. So lets just create 
-        an Irrlicht Device and the scene node we want to move. We also create 
-        some other additional scene nodes, to show that there are also some different 
-        possibilities to move and animate scene nodes.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td><pre>int main()<br>{<br>   MyEventReceiver receiver;
-   
-  device = createDevice(video::EDT_OPENGL, core::dimension2d&lt;s32&gt;(640, 480),
-       16, false, false, false, &amp;receiver);</pre>
-            <pre>   video::IVideoDriver* driver = device-&gt;getVideoDriver();
-   scene::ISceneManager* smgr = device-&gt;getSceneManager();</pre>
-            </td>
-        </tr>
-      </table>
-      <p> Create the node for moving it with the 'W' and 'S' key. We create a 
-        sphere node, which is a built in geometric primitive scene node.
-        We place the node at (0,0,30) and assign a texture to it to let it look 
-        a little bit more interesting.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td><pre>node = smgr-&gt;addSphereSceneNode();
-node-&gt;setPosition(core::vector3df(0,0,30));
-node-&gt;setMaterialFlag(video::EMF_LIGHTING, false);
-node-&gt;setMaterialTexture(0, driver-&gt;getTexture(&quot;../../media/wall.bmp&quot;));</pre></td>
-        </tr>
-      </table>
-      <p>Now we create another node, moving using a scene node animator. Scene 
-        node animators modify scene nodes and can be attached to any scene node 
-        like<br>
-        mesh scene nodes, billboards, lights and even camera scene nodes. Scene 
-        node animators are not only able to modify the position of a scene node, 
-        they can<br>
-        also animate the textures of an object for example. We create a test scene 
-        node again an attach a 'fly circle' scene node to it, letting this node 
-        fly around our first test scene node.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td><pre>scene::ISceneNode* n = smgr-&gt;addCubeSceneNode();
-n-&gt;setMaterialTexture(0, driver-&gt;getTexture(&quot;../../media/t351sml.jpg&quot;));
-n-&gt;setMaterialFlag(video::EMF_LIGHTING, false);
-scene::ISceneNodeAnimator* anim = 
-	smgr-&gt;createFlyCircleAnimator(core::vector3df(0,0,30), 20.0f);
-n-&gt;addAnimator(anim);
-anim-&gt;drop();</pre></td>
-        </tr>
-      </table>
-      <p>The last scene node we add to show possibilities of scene node animators 
-        is a md2 model, which uses a 'fly straight' animator to run between to 
-        points.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>scene::IAnimatedMeshSceneNode* anms = smgr-&gt;addAnimatedMeshSceneNode(<br>		smgr-&gt;getMesh(&quot;../../media/sydney.md2&quot;));
-
-if (n)<br>	{<br>		anim = smgr-&gt;createFlyStraightAnimator(core::vector3df(100,0,60), <br>			core::vector3df(-100,0,60), 10000, true);<br>		anms-&gt;addAnimator(anim);<br>		anim-&gt;drop();</pre>
-            </td>
-        </tr>
-      </table>
-      <p>To make to model look right we set the frames between which 
-        the animation should loop, rotate the model around 180 degrees, and adjust 
-        the animation speed and the texture.<br>
-        To set the right animation (frames and speed), we would also be able to 
-        just call &quot;anms-&gt;setMD2Animation(scene::EMAT_RUN)&quot; for the 
-        'run' animation instead of &quot;setFrameLoop&quot; and &quot;setAnimationSpeed&quot;, 
-        but this only works with MD2 animations, and so you know how to start 
-        other animations.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>   anms-&gt;setMaterialFlag(video::EMF_LIGHTING, false);<br>   anms-&gt;setFrameLoop(320, 360);
-   anms-&gt;setAnimationSpeed(30);<br>   anms-&gt;setRotation(core::vector3df(0,180.0f,0));<br>   anms-&gt;setMaterialTexture(0, driver-&gt;getTexture(&quot;../../media/sydney.bmp&quot;));<br>}<br></pre></td>
-        </tr>
-      </table>
-      <p>To be able to look at and move around in this scene, we create a first 
-        person shooter style camera and make the mouse cursor invisible.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>smgr-&gt;addCameraSceneNodeFPS(0, 100.0f, 100.0f);<br>device-&gt;getCursorControl()-&gt;setVisible(false); </pre></td>
-        </tr>
-      </table>
-      <p>We have done everything, so lets draw it. We also write the current frames 
-        per second and the name of the driver to the caption of the window.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>int lastFPS = -1;</pre>
-            <pre>while(device-&gt;run())
-{
-     driver-&gt;beginScene(true, true, video::SColor(255,90,90,156));
-     smgr-&gt;drawAll();
-     driver-&gt;endScene();</pre>
-            <pre>     int fps = driver-&gt;getFPS();</pre>
-            <pre>     if (lastFPS != fps)
-     {
-        wchar_t tmp[1024];
-        swprintf(tmp, 1024, L&quot;Movement Example - Irrlicht Engine (%ls)(fps:%d)&quot;,<br>        driver-&gt;getName(), fps);</pre>
-            <pre>       device-&gt;setWindowCaption(tmp);
-       lastFPS = fps;
-     }
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Tutorial 4: Movement</title>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- Wanted to avoid copying .css to each folder, so copied default .css from doxyen in here, kicked out most stuff we don't need for examples and modified some a little bit. 
+     Target was having a single html in each example folder which is created from the main.cpp files and needs no files besides some images below media folder.
+     Feel free to improve :)
+	 -->
+<style>
+body, table, div, p, dl {
+	font: 400 14px/22px;
 }
-
-device-&gt;drop();<br>return 0;<br>}</pre></td>
-        </tr>
-      </table>
-      <p>That's it. Compile and play around with the program. </p>
-      <p>&nbsp;</p></td>
-  </tr>
-</table>
+body {
+	background-color: #F0F0F0;
+	color: black;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+p.reference, p.definition {
+	font: 400 14px/22px;
+}
+.title {
+	font: 400 14px/28px;
+	font-size: 150%;
+	font-weight: bold;
+	margin: 10px 2px;
+}
+h1, h2, h3, h4, h5, h6 {
+	-webkit-transition: text-shadow 0.5s linear;
+	-moz-transition: text-shadow 0.5s linear;
+	-ms-transition: text-shadow 0.5s linear;
+	-o-transition: text-shadow 0.5s linear;
+	transition: text-shadow 0.5s linear;
+	margin-right: 15px;
+}
+caption {
+	font-weight: bold;
+}
+h3.version {
+	font-size: 90%;
+	text-align: center;
+}
+a {
+	color: #3D578C;
+	font-weight: normal;
+	text-decoration: none;
+}
+.contents a:visited {
+	color: #4665A2;
+}
+a:hover {
+	text-decoration: underline;
+}
+a.el {
+	font-weight: bold;
+}
+a.code, a.code:visited, a.line, a.line:visited {
+	color: #4665A2; 
+}
+a.codeRef, a.codeRef:visited, a.lineRef, a.lineRef:visited {
+	color: #4665A2; 
+}
+pre.fragment {
+	border: 1px solid #C4CFE5;
+	background-color: #FBFCFD;
+	padding: 4px 6px;
+	margin: 4px 8px 4px 2px;
+	overflow: auto;
+	word-wrap: break-word;
+	font-size:  9pt;
+	line-height: 125%;
+	font-family: monospace, fixed;
+	font-size: 105%;
+}
+div.fragment {
+	padding: 0px;
+	margin: 4px 8px 4px 2px;
+	background-color: #FBFCFD;
+	border: 1px solid #C4CFE5;
+}
+div.line {
+	font-family: monospace, fixed;
+	font-size: 13px;
+	min-height: 13px;
+	line-height: 1.0;
+	text-wrap: unrestricted;
+	white-space: -moz-pre-wrap; /* Moz */
+	white-space: -pre-wrap;     /* Opera 4-6 */
+	white-space: -o-pre-wrap;   /* Opera 7 */
+	white-space: pre-wrap;      /* CSS3  */
+	word-wrap: break-word;      /* IE 5.5+ */
+	text-indent: -53px;
+	padding-left: 53px;
+	padding-bottom: 0px;
+	margin: 0px;
+	-webkit-transition-property: background-color, box-shadow;
+	-webkit-transition-duration: 0.5s;
+	-moz-transition-property: background-color, box-shadow;
+	-moz-transition-duration: 0.5s;
+	-ms-transition-property: background-color, box-shadow;
+	-ms-transition-duration: 0.5s;
+	-o-transition-property: background-color, box-shadow;
+	-o-transition-duration: 0.5s;
+	transition-property: background-color, box-shadow;
+	transition-duration: 0.5s;
+}
+div.contents {
+	margin-top: 10px;
+	margin-left: 12px;
+	margin-right: 8px;
+}
+div.center {
+	text-align: center;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding: 0px;
+}
+div.center img {
+	border: 0px;
+}
+span.keyword {
+	color: #008000
+}
+span.keywordtype {
+	color: #604020
+}
+span.keywordflow {
+	color: #e08000
+}
+span.comment {
+	color: #800000
+}
+span.preprocessor {
+	color: #806020
+}
+span.stringliteral {
+	color: #002080
+}
+span.charliteral {
+	color: #008080
+}
+blockquote {
+	background-color: #F7F8FB;
+	border-left: 2px solid #9CAFD4;
+	margin: 0 24px 0 4px;
+	padding: 0 12px 0 16px;
+}
+hr {
+	height: 0px;
+	border: none;
+	border-top: 1px solid #4A6AAA;
+}
+address {
+	font-style: normal;
+	color: #2A3D61;
+}
+div.header {
+	background-image:url('nav_h.png');
+	background-repeat:repeat-x;
+	background-color: #F9FAFC;
+	margin:  0px;
+	border-bottom: 1px solid #C4CFE5;
+}
+div.headertitle {
+	padding: 5px 5px 5px 10px;
+}
+.image {
+	text-align: center;
+}
+.caption {
+	font-weight: bold;
+}
+div.zoom {
+	border: 1px solid #90A5CE;
+}
+tr.heading h2 {
+	margin-top: 12px;
+	margin-bottom: 4px;
+}
+</style>
+</head>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!--END TITLEAREA-->
+<!-- end header part -->
+<!-- Generated by Doxygen 1.8.13 -->
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">Tutorial 4: Movement </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><div class="image">
+<img src="../../media/example_screenshots/004shot.jpg" alt="004shot.jpg"/>
+</div>
+ <p>This tutorial shows how to move and animate SceneNodes. The basic concept of SceneNodeAnimators is shown as well as manual movement of nodes using the keyboard. We'll demonstrate framerate independent movement, which means moving by an amount dependent on the duration of the last run of the Irrlicht loop.</p>
+<p>Example 19.MouseAndJoystick shows how to handle other input than keyboard.</p>
+<p>As always, include the header files, use the irr namespace, and tell the linker to link with the .lib file. </p><div class="fragment"><div class="line"><span class="preprocessor">#ifdef _MSC_VER</span></div><div class="line"><span class="preprocessor">#pragma comment(lib, &quot;Irrlicht.lib&quot;)</span></div><div class="line"><span class="preprocessor">#endif</span></div><div class="line"></div><div class="line"><span class="preprocessor">#include &lt;irrlicht.h&gt;</span></div><div class="line"><span class="preprocessor">#include &quot;driverChoice.h&quot;</span></div><div class="line"><span class="preprocessor">#include &quot;exampleHelper.h&quot;</span></div><div class="line"></div><div class="line"><span class="keyword">using namespace </span>irr;</div></div><!-- fragment --><p> To receive events like mouse and keyboard input, or GUI events like "button has been clicked", we need an object which is derived from the irr::IEventReceiver object. There is only one method to override: irr::IEventReceiver::OnEvent(). This method will be called by the engine once when an event happens. What we really want to know is whether a key is being held down, and so we will remember the current state of each key. </p><div class="fragment"><div class="line"><span class="keyword">class </span>MyEventReceiver : <span class="keyword">public</span> IEventReceiver</div><div class="line">{</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="comment">// This is the one method that we have to implement</span></div><div class="line">    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> OnEvent(<span class="keyword">const</span> SEvent&amp; event)</div><div class="line">    {</div><div class="line">        <span class="comment">// Remember whether each key is down or up</span></div><div class="line">        <span class="keywordflow">if</span> (event.EventType == irr::EET_KEY_INPUT_EVENT)</div><div class="line">            KeyIsDown[<span class="keyword">event</span>.KeyInput.Key] = <span class="keyword">event</span>.KeyInput.PressedDown;</div></div><!-- fragment --><p> Always return false by default. If you return true you tell the engine that you handled this event completely and the Irrlicht should not process it any further. So for example if you return true for all EET_KEY_INPUT_EVENT events then Irrlicht would not pass on key-events to it's GUI system. </p><div class="fragment"><div class="line">        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// This is used to check whether a key is being held down</span></div><div class="line">    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> IsKeyDown(EKEY_CODE keyCode)<span class="keyword"> const</span></div><div class="line"><span class="keyword">    </span>{</div><div class="line">        <span class="keywordflow">return</span> KeyIsDown[keyCode];</div><div class="line">    }</div><div class="line">    </div><div class="line">    MyEventReceiver()</div><div class="line">    {</div><div class="line">        <span class="keywordflow">for</span> (u32 i=0; i&lt;KEY_KEY_CODES_COUNT; ++i)</div><div class="line">            KeyIsDown[i] = <span class="keyword">false</span>;</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">    <span class="comment">// We use this array to store the current state of each key</span></div><div class="line">    <span class="keywordtype">bool</span> KeyIsDown[KEY_KEY_CODES_COUNT];</div><div class="line">};</div></div><!-- fragment --><p> The event receiver for keeping the pressed keys is ready, the actual responses will be made inside the render loop, right before drawing the scene. So lets create an irr::IrrlichtDevice and the scene node we want to move. We also create some additional scene nodes to show different possibilities to move and animate scene nodes. </p><div class="fragment"><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div><div class="line">    <span class="comment">// ask user for driver</span></div><div class="line">    video::E_DRIVER_TYPE driverType=driverChoiceConsole();</div><div class="line">    <span class="keywordflow">if</span> (driverType==video::EDT_COUNT)</div><div class="line">        <span class="keywordflow">return</span> 1;</div></div><!-- fragment --><p> Create the event receiver. Take care that the pointer to it has to stay valid as long as the IrrlichtDevice uses it. Event receivers are not reference counted. </p><div class="fragment"><div class="line">MyEventReceiver receiver;</div><div class="line"></div><div class="line"><span class="comment">// create device</span></div><div class="line">IrrlichtDevice* device = createDevice(driverType,</div><div class="line">        core::dimension2d&lt;u32&gt;(640, 480), 16, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, &amp;receiver);</div><div class="line"></div><div class="line"><span class="keywordflow">if</span> (device == 0)</div><div class="line">    <span class="keywordflow">return</span> 1; <span class="comment">// could not create selected driver.</span></div><div class="line"></div><div class="line">video::IVideoDriver* driver = device-&gt;getVideoDriver();</div><div class="line">scene::ISceneManager* smgr = device-&gt;getSceneManager();</div><div class="line"></div><div class="line"><span class="keyword">const</span> io::path mediaPath = getExampleMediaPath();</div></div><!-- fragment --><p> Create the node which will be moved with the WSAD keys. We create a sphere node, which is a built-in geometry primitive. We place the node at (0,0,30) and assign a texture to it to let it look a little bit more interesting. Because we have no dynamic lights in this scene we disable lighting for each model (otherwise the models would be black). </p><div class="fragment"><div class="line">scene::ISceneNode * sphereNode = smgr-&gt;addSphereSceneNode();</div><div class="line"><span class="keywordflow">if</span> (sphereNode)</div><div class="line">{</div><div class="line">    sphereNode-&gt;setPosition(core::vector3df(0,0,30));</div><div class="line">    sphereNode-&gt;setMaterialTexture(0, driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;wall.bmp&quot;</span>));</div><div class="line">    sphereNode-&gt;setMaterialFlag(video::EMF_LIGHTING, <span class="keyword">false</span>);</div><div class="line">}</div></div><!-- fragment --><p> Now we create another node, movable using a scene node animator. Scene node animators modify scene nodes and can be attached to any scene node like mesh scene nodes, billboards, lights and even camera scene nodes. Scene node animators are not only able to modify the position of a scene node, they can also animate the textures of an object for example. We create a cube scene node and attach a 'fly circle' scene node animator to it, letting this node fly around our sphere scene node. </p><div class="fragment"><div class="line">scene::ISceneNode* cubeNode = smgr-&gt;addCubeSceneNode();</div><div class="line"><span class="keywordflow">if</span> (cubeNode)</div><div class="line">{</div><div class="line">    cubeNode-&gt;setMaterialTexture(0, driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;t351sml.jpg&quot;</span>));</div><div class="line">    cubeNode-&gt;setMaterialFlag(video::EMF_LIGHTING, <span class="keyword">false</span>);</div><div class="line">    scene::ISceneNodeAnimator* anim =</div><div class="line">        smgr-&gt;createFlyCircleAnimator(core::vector3df(0,0,30), 20.0f);</div><div class="line">    <span class="keywordflow">if</span> (anim)</div><div class="line">    {</div><div class="line">        cubeNode-&gt;addAnimator(anim);</div><div class="line">        anim-&gt;drop();</div><div class="line">    }</div><div class="line">}</div></div><!-- fragment --><p> The last scene node we add is a b3d model of a walking ninja. Is shows the use of a 'fly straight' animator to move the node between two points. </p><div class="fragment"><div class="line">scene::IAnimatedMeshSceneNode* ninjaNode =</div><div class="line">    smgr-&gt;addAnimatedMeshSceneNode(smgr-&gt;getMesh(mediaPath + <span class="stringliteral">&quot;ninja.b3d&quot;</span>));</div><div class="line"></div><div class="line"><span class="keywordflow">if</span> (ninjaNode)</div><div class="line">{</div><div class="line">    scene::ISceneNodeAnimator* anim =</div><div class="line">        smgr-&gt;createFlyStraightAnimator(core::vector3df(100,0,60),</div><div class="line">        core::vector3df(-100,0,60), 3500, <span class="keyword">true</span>);</div><div class="line">    <span class="keywordflow">if</span> (anim)</div><div class="line">    {</div><div class="line">        ninjaNode-&gt;addAnimator(anim);</div><div class="line">        anim-&gt;drop();</div><div class="line">    }</div></div><!-- fragment --><p> To make the model look right we disable lighting, set the frames between which the animation should loop, rotate the model around 180 degrees, and adjust the animation speed and the texture. To set the correct animation (frames and speed), we would also be able to just call "ninjaNode-&gt;setMD2Animation(scene::EMAT_RUN)" for the 'run' animation instead of "setFrameLoop" and "setAnimationSpeed", But that only works with MD2 animations, while this can be used to start other animations. For MD2 it's usually good advice not to use hardcoded frame-numbers... </p><div class="fragment"><div class="line">        ninjaNode-&gt;setMaterialFlag(video::EMF_LIGHTING, <span class="keyword">false</span>);</div><div class="line"></div><div class="line">        ninjaNode-&gt;setFrameLoop(0, 13);</div><div class="line">        ninjaNode-&gt;setAnimationSpeed(15);</div><div class="line"><span class="comment">//      ninjaNode-&gt;setMD2Animation(scene::EMAT_RUN);</span></div><div class="line"></div><div class="line">        ninjaNode-&gt;setScale(core::vector3df(2.f,2.f,2.f));</div><div class="line">        ninjaNode-&gt;setRotation(core::vector3df(0,-90,0));</div><div class="line"><span class="comment">//      ninjaNode-&gt;setMaterialTexture(0, driver-&gt;getTexture(mediaPath + &quot;sydney.bmp&quot;));</span></div><div class="line"></div><div class="line">    }</div></div><!-- fragment --><p> To be able to look at and move around in this scene, we create a first person shooter style camera and make the mouse cursor invisible. </p><div class="fragment"><div class="line">smgr-&gt;addCameraSceneNodeFPS();</div><div class="line">device-&gt;getCursorControl()-&gt;setVisible(<span class="keyword">false</span>);</div></div><!-- fragment --><p> Add a colorful irrlicht logo </p><div class="fragment"><div class="line">device-&gt;getGUIEnvironment()-&gt;addImage(</div><div class="line">    driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;irrlichtlogoalpha2.tga&quot;</span>),</div><div class="line">    core::position2d&lt;s32&gt;(10,20));</div></div><!-- fragment --><p> Lets draw the scene and also write the current frames per second and the name of the driver to the caption of the window. </p><div class="fragment"><div class="line"><span class="keywordtype">int</span> lastFPS = -1;</div><div class="line"></div><div class="line"><span class="comment">// In order to do framerate independent movement, we have to know</span></div><div class="line"><span class="comment">// how long it was since the last frame</span></div><div class="line">u32 then = device-&gt;getTimer()-&gt;getTime();</div><div class="line"></div><div class="line"><span class="comment">// This is the movement speed in units per second.</span></div><div class="line"><span class="keyword">const</span> f32 MOVEMENT_SPEED = 5.f;</div><div class="line"></div><div class="line"><span class="keywordflow">while</span>(device-&gt;run())</div><div class="line">{</div><div class="line">    <span class="comment">// Work out a frame delta time.</span></div><div class="line">    <span class="keyword">const</span> u32 now = device-&gt;getTimer()-&gt;getTime();</div><div class="line">    <span class="keyword">const</span> f32 frameDeltaTime = (f32)(now - then) / 1000.f; <span class="comment">// Time in seconds</span></div><div class="line">    then = now;</div></div><!-- fragment --><p> Check if keys W, S, A or D are being held down, and move the sphere node around respectively.</p><div class="fragment"><div class="line">    core::vector3df nodePosition = sphereNode-&gt;getPosition();</div><div class="line"></div><div class="line">    <span class="keywordflow">if</span>(receiver.IsKeyDown(irr::KEY_KEY_W))</div><div class="line">        nodePosition.Y += MOVEMENT_SPEED * frameDeltaTime;</div><div class="line">    <span class="keywordflow">else</span> <span class="keywordflow">if</span>(receiver.IsKeyDown(irr::KEY_KEY_S))</div><div class="line">        nodePosition.Y -= MOVEMENT_SPEED * frameDeltaTime;</div><div class="line"></div><div class="line">    <span class="keywordflow">if</span>(receiver.IsKeyDown(irr::KEY_KEY_A))</div><div class="line">        nodePosition.X -= MOVEMENT_SPEED * frameDeltaTime;</div><div class="line">    <span class="keywordflow">else</span> <span class="keywordflow">if</span>(receiver.IsKeyDown(irr::KEY_KEY_D))</div><div class="line">        nodePosition.X += MOVEMENT_SPEED * frameDeltaTime;</div><div class="line"></div><div class="line">    sphereNode-&gt;setPosition(nodePosition);</div><div class="line"></div><div class="line">    driver-&gt;beginScene(video::ECBF_COLOR | video::ECBF_DEPTH, video::SColor(255,113,113,133));</div><div class="line"></div><div class="line">    smgr-&gt;drawAll(); <span class="comment">// draw the 3d scene</span></div><div class="line">    device-&gt;getGUIEnvironment()-&gt;drawAll(); <span class="comment">// draw the gui environment (the logo)</span></div><div class="line"></div><div class="line">    driver-&gt;endScene();</div><div class="line"></div><div class="line">    <span class="keywordtype">int</span> fps = driver-&gt;getFPS();</div><div class="line"></div><div class="line">    <span class="keywordflow">if</span> (lastFPS != fps)</div><div class="line">    {</div><div class="line">        core::stringw tmp(L<span class="stringliteral">&quot;Movement Example - Irrlicht Engine [&quot;</span>);</div><div class="line">        tmp += driver-&gt;getName();</div><div class="line">        tmp += L<span class="stringliteral">&quot;] fps: &quot;</span>;</div><div class="line">        tmp += fps;</div><div class="line"></div><div class="line">        device-&gt;setWindowCaption(tmp.c_str());</div><div class="line">        lastFPS = fps;</div><div class="line">    }</div><div class="line">}</div></div><!-- fragment --><p> In the end, delete the Irrlicht device. </p><div class="fragment"><div class="line">    device-&gt;drop();</div><div class="line">    </div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">}</div></div><!-- fragment --><p> That's it. Compile and play around with the program. </p>
+</div></div><!-- contents -->
+<!-- HTML footer for doxygen 1.8.13-->
+<!-- start footer part -->
 <p>&nbsp;</p>
-      </body>
+</body>
 </html>

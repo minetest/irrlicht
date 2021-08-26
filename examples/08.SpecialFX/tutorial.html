@@ -1,278 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Irrlicht Engine Tutorial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-</head>
-
-<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699" width="10"><b><a href="http://irrlicht.sourceforge.net" target="_blank"><img src="../../media/irrlichtlogo.jpg" width="88" height="31" border="0"></a></b></td>
-    <td bgcolor="#666699" width="100%">
-<div align="center">
-<div align="left"><b><font color="#FFFFFF">Tutorial 8. Special Effects</font></b></div>
-      </div>
-      </td>
-  </tr>
-  <tr bgcolor="#eeeeff"> 
-    <td height="90" colspan="2"> 
-      <div align="left"> 
-        <p>This tutorials describes how to do special effects. It shows how to 
-          use stencil buffer shadows, the particle system, billboards, dynamic 
-          light and the water surface scene node. </p>
-        <p>The program which is described here will look like this:</p>
-        <p align="center"><img src="../../media/008shot.jpg" width="259" height="204"><br>
-        </p>
-      </div>
-    </td>
-  </tr>
-</table>
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699"> <b><font color="#FFFFFF">Lets start!</font></b></td>
-  </tr>
-  <tr> 
-    <td height="90" bgcolor="#eeeeff" valign="top"> <div align="left"> 
-        <div align="left"> 
-          <p>We start like in some tutorials before. Please note that this time, 
-            the 'shadows' flag in createDevice() is set to true, for we want to 
-            have a dynamic shadow casted from an animated character. If your this 
-            example runs to slow, set it to false. The Irrlicht Engine checks 
-            if your hardware doesn't support the stencil buffer, and disables 
-            shadows by itself, but just in case the demo runs slow on your hardware.</p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre><font color="#008000" size="2">#include &lt;irrlicht.h&gt;
-#include &lt;iostream&gt;<br>
-</font><font size="2"><b>using namespace </b>irr;
-
-<font color="#008000">#pragma comment(lib, &quot;Irrlicht.lib&quot;)
-
-</font><b>int </b>main()
-{
-  // ask user for driver<br>  video::E_DRIVER_TYPE driverType;<br>  
-  printf(&quot;Please select the driver you want for this example:\n&quot;\<br>    &quot; (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n&quot;\<br>    &quot; (d) Software Renderer\n (e) Apfelbaum Software Renderer\n&quot;\<br>    &quot; (f) NullDevice\n (otherKey) exit\n\n&quot;);<br><br>  char i;<br>  std::cin &gt;&gt; i;<br><br>  switch(i)<br>  {<br>    case 'a': driverType = video::EDT_DIRECT3D9;break;<br>    case 'b': driverType = video::EDT_DIRECT3D8;break;<br>    case 'c': driverType = video::EDT_OPENGL;   break;<br>    case 'd': driverType = video::EDT_SOFTWARE; break;<br>    case 'e': driverType = video::EDT_BURNINGSVIDEO;break;<br>    case 'f': driverType = video::EDT_NULL;     break;<br>    default: return 1;<br>  }	
-
-  // create device and exit if creation failed<br>  IrrlichtDevice *device = createDevice(driverType,
-    core::dimension2d&lt;s32&gt;(640, 480), 16, false, true);
-
-  if (device == 0)
-    return 1;
-
- video::IVideoDriver* driver = device-&gt;getVideoDriver();
- scene::ISceneManager* smgr = device-&gt;getSceneManager();<font face="Courier New">
-</font></font></pre> 
-              </td>
-            </tr>
-          </table>
-          <p> For our environment, we load a .3ds file. It is a small room I modelled 
-            with Anim8or and exported it into the 3ds format because the Irrlicht 
-            Engine did not support the .an8 format when I wrote this tutorial. 
-            I am a very bad 3d graphic artist, and so the texture mapping is not 
-            very nice in this model. Luckily I am a better programmer than artist, 
-            and so the Irrlicht Engine is able to create a cool texture mapping 
-            for me: Just use the mesh manipulator and create a planar texture 
-            mapping for the mesh. If you want to see the mapping I made with Anim8or, 
-            uncomment this line. I also did not figure out how to<br>
-            set the material right in Anim8or, it has a specular light color 
-            which I don't really<br>
-            like. I'll switch it off too with this code.</p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre><font  size=2>	scene::IAnimatedMesh* mesh = smgr-&gt;getMesh(
-		<font color="#FF0000">&quot;../../media/room.3ds&quot;</font>);
-
-	smgr-&gt;getMeshManipulator()-&gt;makePlanarTextureMapping(
-		mesh-&gt;getMesh(<font color="#800080">0</font>), <font color="#800080">0.008f</font>);
-
-	scene::ISceneNode* node = <font color="#800080">0</font>;
-
-	node = smgr-&gt;addAnimatedMeshSceneNode(mesh);
-	node-&gt;setMaterialTexture(<font color="#800080">0</font>,	driver-&gt;getTexture(<font color="#FF0000">&quot;../../media/wall.jpg&quot;</font>));
-	node-&gt;getMaterial(0).SpecularColor.set(0,0,0,0);</font></pre></td>
-            </tr>
-          </table>
-          <p> Now, for the first special effect: Animated water. It works like 
-            this: The WaterSurfaceSceneNode takes a mesh as input and makes it 
-            wave like a water surface. And if we let this scene node use a nice 
-            material like the MT_REFLECTION_2_LAYER, it looks really cool. We 
-            are doing this with the next few lines of code. As input mesh, we 
-            create a hill plane mesh, without hills. But any other mesh could 
-            be used for this, you could even use the room.3ds (which would look 
-            really strange) if you wanted to. </p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>	mesh = smgr-&gt;addHillPlaneMesh(<font color="#FF0000">&quot;myHill&quot;</font>,
-		core::dimension2d&lt;f32&gt;(<font color="#800080">20</font>,<font color="#800080">20</font>),
-		core::dimension2d&lt;s32&gt;(<font color="#800080">40</font>,<font color="#800080">40</font>), <font color="#800080">0</font>, <font color="#800080">0</font>,
-		core::dimension2d&lt;f32&gt;(<font color="#800080">0</font>,<font color="#800080">0</font>),
-		core::dimension2d&lt;f32&gt;(<font color="#800080">10</font>,<font color="#800080">10</font>));
-
-	node = smgr-&gt;addWaterSurfaceSceneNode(mesh-&gt;getMesh(<font color="#800080">0</font>), <font color="#800080">3.0f</font>, <font color="#800080">300.0f</font>, <font color="#800080">30.0f</font>);
-	node-&gt;setPosition(core::vector3df(<font color="#800080">0</font>,<font color="#800080">7</font>,<font color="#800080">0</font>));
-
-	node-&gt;setMaterialTexture(<font color="#800080">0</font>,	driver-&gt;getTexture(<font color="#FF0000">&quot;../../media/stones.jpg&quot;</font>));
-	node-&gt;setMaterialTexture(<font color="#800080">1</font>,	driver-&gt;getTexture(<font color="#FF0000">&quot;../../media/water.jpg&quot;</font>));
-
-	node-&gt;setMaterialType(video::EMT_REFLECTION_2_LAYER<font  size=3 face="Courier New">);
-</font></pre></td>
-            </tr>
-          </table>
-          <p> The second special effect is very basic, I bet you saw it already 
-            in some Irrlicht Engine demos: A transparent billboard combined with 
-            a dynamic light. We simply create a light scene node, let it fly around, 
-            an to make it look more cool, we attach a billboard scene node to 
-            it.</p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre><font  size=2>	<font color="#0A246A"><i>// create light
-
-</i></font>	node = smgr-&gt;addLightSceneNode(<font color="#800080">0</font>, core::vector3df(<font color="#800080">0</font>,<font color="#800080">0</font>,<font color="#800080">0</font>), 
-		video::SColorf(<font color="#800080">1.0f</font>, <font color="#800080">0.6f</font>, <font color="#800080">0.7f</font>, <font color="#800080">1.0f</font>), <font color="#800080">600.0f</font>);
-	scene::ISceneNodeAnimator* anim = <font color="#800080">0</font>;
-	anim = smgr-&gt;createFlyCircleAnimator (core::vector3df(<font color="#800080">0</font>,<font color="#800080">150</font>,<font color="#800080">0</font>),<font color="#800080">250.0f</font>);
-	node-&gt;addAnimator(anim);
-	anim-&gt;drop();
-
-	<font color="#0A246A"><i>// attach billboard to light
-
-</i></font>	node = smgr-&gt;addBillboardSceneNode(node, core::dimension2d&lt;f32&gt;(<font color="#800080">50</font>, <font color="#800080">50</font>));
-	node-&gt;setMaterialFlag(video::EMF_LIGHTING, <b>false</b>);
-	node-&gt;setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
-	node-&gt;setMaterialTexture(<font color="#800080">0</font>,	driver-&gt;getTexture(<font color="#FF0000">&quot;../../media/particlewhite.bmp&quot;</font>));
-
-</font></pre></td>
-            </tr>
-          </table>
-          <p> The next special effect is a lot more interesting: A particle system. 
-            The particle system in the Irrlicht Engine is quit modular and extensible 
-            and yet easy to use. There is a particle system scene node into which 
-            you can put particle emitters, which make particles come out of nothing. 
-            These emitters are quite flexible and usually have lots of parameters 
-            like direction, amount and color of the particles they should create.<br>
-            There are different emitters, for example a point emitter which lets 
-            particles pop out at a fixed point. If the particle emitters available 
-            in the engine are not enough for you, you can easily create your own 
-            ones, you'll simply have to create a class derived from the IParticleEmitter 
-            interface and attach it to the particle system using setEmitter().<br>
-            In this example we create a box particle emitter, which creates particles 
-            randomly inside a box. The parameters define the box, direction of 
-            the particles, minimal and maximal new particles per second, color 
-            and minimal and maximal livetime of the particles.</p>
-          <p> Because only with emitters particle system would be a little bit 
-            boring, there are particle affectors, which modify particles during 
-            they fly around. They can be added to the particle system, simulating 
-            additional effects like gravity or wind. The particle affector we 
-            use in this example is an affector, which modifies the color of the 
-            particles: It lets them fade out. Like the particle emitters, additional 
-            particle affectors can also be implemented by you, simply derive a 
-            class from IParticleAffector and add it with addAffector(). After 
-            we set a nice material to the particle system, we have a cool looking 
-            camp fire. By adjusting material, texture, particle emitter and affector 
-            parameters, it is also easily possible to create smoke, rain, explosions, 
-            snow, and so on.<br>
-          </p>
-          </div>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td> <pre><font size="2">	scene::IParticleSystemSceneNode* ps = <font color="#800080">0</font>;
-	ps = smgr-&gt;addParticleSystemSceneNode(<b>false</b>);
-	ps-&gt;setPosition(core::vector3df(-<font color="#800080">70</font>,<font color="#800080">60</font>,<font color="#800080">40</font>));
-	ps-&gt;setScale(core::vector3df(<font color="#800080">2</font>,<font color="#800080">2</font>,<font color="#800080">2</font>));
-
-	ps-&gt;setParticleSize(core::dimension2d&lt;f32&gt;(<font color="#800080">20.0f</font>, <font color="#800080">10.0f</font>));
-
-	scene::IParticleEmitter* em = ps-&gt;createBoxEmitter(
-		core::aabbox3d&lt;f32&gt;(-<font color="#800080">7</font>,<font color="#800080">0</font>,-<font color="#800080">7</font>,<font color="#800080">7</font>,<font color="#800080">1</font>,<font color="#800080">7</font>), 
-		core::vector3df(<font color="#800080">0.0f</font>,<font color="#800080">0.03f</font>,<font color="#800080">0.0f</font>),
-		<font color="#800080">80</font>,<font color="#800080">100</font>, 
-		video::SColor(<font color="#800080">0</font>,<font color="#800080">255</font>,<font color="#800080">255</font>,<font color="#800080">255</font>), video::SColor(<font color="#800080">0</font>,<font color="#800080">255</font>,<font color="#800080">255</font>,<font color="#800080">255</font>),
-		<font color="#800080">800</font>,<font color="#800080">2000</font>);
-
-	ps-&gt;setEmitter(em);
-	em-&gt;drop();
-
-	scene::IParticleAffector* paf = 
-		ps-&gt;createFadeOutParticleAffector();
-
-	ps-&gt;addAffector(paf);
-	paf-&gt;drop();
-
-	ps-&gt;setMaterialFlag(video::EMF_LIGHTING, <b>false</b>);
-	ps-&gt;setMaterialTexture(<font color="#800080">0</font>, driver-&gt;getTexture(<font color="#FF0000">&quot;../../media/particle.bmp&quot;</font>));
-	ps-&gt;setMaterialType(video::EMT_TRANSPARENT_VERTEX_ALPHA)<font size="2">;</font></font></pre></td>
-          </tr>
-        </table>
-        <p> As our last special effect, we want a dynamic shadow be casted from 
-          an animated character. For this we load a DirectX .x model and place 
-          it into our world. For creating the shadow, we simply need to call addShadowVolumeSceneNode(). 
-          The color of shadows is only adjustable globally for all shadows, by 
-          calling ISceneManager::setShadowColor(). Voila, here is our dynamic 
-          shadow.<br>
-          Because the character is a little bit too small for this scene, we make 
-          it bigger using setScale(). And because the character is lighted by 
-          a dynamic light, we need to normalize the normals to make the lighting 
-          on it correct. This is always necessary if the scale of a dynamic lighted 
-          model is not (1,1,1). Otherwise it would get too dark or too bright 
-          because the normals will be scaled too.</p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td><pre><font  size=2>	mesh = smgr-&gt;getMesh(<font color="#FF0000">&quot;../../media/dwarf.x&quot;</font>);
-	scene::IAnimatedMeshSceneNode* anode = <font color="#800080">0</font>;
-
-	anode = smgr-&gt;addAnimatedMeshSceneNode(mesh);
-	anode-&gt;setPosition(core::vector3df(-<font color="#800080">50</font>,<font color="#800080">20</font>,-<font color="#800080">60</font>));
-	anode-&gt;setAnimationSpeed(15);
-<font color="#0A246A">
-	// add shadow</font>
-	anode-&gt;addShadowVolumeSceneNode();	
-	smgr-&gt;setShadowColor(video::SColor(<font color="#800080">220</font>,<font color="#800080">0</font>,<font color="#800080">0</font>,<font color="#800080">0</font>));
-</font><font  size=2><font color="#0A246A">
-	// make the model a little bit bigger and normalize its normals <br>	// because of this for correct lighting</font><br>	anode-&gt;setScale(core::vector3df(2,2,2));<br>	anode-&gt;setMaterialFlag(video::EMF_NORMALIZE_NORMALS, true);</font><font  size=3 face="Courier New"><br></font></pre></td>
-          </tr>
-        </table>
-        <p> Finally we simply have to draw everything, that's all.</p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td><pre><font  size=2>	scene::ICameraSceneNode* camera = smgr-&gt;addCameraSceneNodeFPS();
-	camera-&gt;setPosition(core::vector3df(-<font color="#800080">50</font>,<font color="#800080">50</font>,-<font color="#800080">150</font>));
-
-
-	<b>int </b>lastFPS = -<font color="#800080">1</font>;
-
-	<b>while</b>(device-&gt;run())
-	{
-		driver-&gt;beginScene(<b>true</b>, <b>true</b>, <font color="#800080">0</font>);
-
-		smgr-&gt;drawAll();
-
-		driver-&gt;endScene();
-
-		<b>int </b>fps = driver-&gt;getFPS();
-
-		<b>if </b>(lastFPS != fps)
-		{
-		  core::stringw str = L&quot;Irrlicht Engine - SpecialFX example [&quot;;<br>		  str += driver-&gt;getName();<br>		  str += &quot;] FPS:&quot;;<br>		  str += fps;<br><br>		  device-&gt;setWindowCaption(str.c_str());<br>		  lastFPS = fps;<br>		}
-	}
-
-	device-&gt;drop();
-	
-	<b>return </b><font color="#800080">0</font>;
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Tutorial 8: SpecialFX</title>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- Wanted to avoid copying .css to each folder, so copied default .css from doxyen in here, kicked out most stuff we don't need for examples and modified some a little bit. 
+     Target was having a single html in each example folder which is created from the main.cpp files and needs no files besides some images below media folder.
+     Feel free to improve :)
+	 -->
+<style>
+body, table, div, p, dl {
+	font: 400 14px/22px;
 }
-
-</font>
-</pre></td>
-          </tr>
-        </table>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        </div>
-      </td>
-  </tr>
-</table>
+body {
+	background-color: #F0F0F0;
+	color: black;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+p.reference, p.definition {
+	font: 400 14px/22px;
+}
+.title {
+	font: 400 14px/28px;
+	font-size: 150%;
+	font-weight: bold;
+	margin: 10px 2px;
+}
+h1, h2, h3, h4, h5, h6 {
+	-webkit-transition: text-shadow 0.5s linear;
+	-moz-transition: text-shadow 0.5s linear;
+	-ms-transition: text-shadow 0.5s linear;
+	-o-transition: text-shadow 0.5s linear;
+	transition: text-shadow 0.5s linear;
+	margin-right: 15px;
+}
+caption {
+	font-weight: bold;
+}
+h3.version {
+	font-size: 90%;
+	text-align: center;
+}
+a {
+	color: #3D578C;
+	font-weight: normal;
+	text-decoration: none;
+}
+.contents a:visited {
+	color: #4665A2;
+}
+a:hover {
+	text-decoration: underline;
+}
+a.el {
+	font-weight: bold;
+}
+a.code, a.code:visited, a.line, a.line:visited {
+	color: #4665A2; 
+}
+a.codeRef, a.codeRef:visited, a.lineRef, a.lineRef:visited {
+	color: #4665A2; 
+}
+pre.fragment {
+	border: 1px solid #C4CFE5;
+	background-color: #FBFCFD;
+	padding: 4px 6px;
+	margin: 4px 8px 4px 2px;
+	overflow: auto;
+	word-wrap: break-word;
+	font-size:  9pt;
+	line-height: 125%;
+	font-family: monospace, fixed;
+	font-size: 105%;
+}
+div.fragment {
+	padding: 0px;
+	margin: 4px 8px 4px 2px;
+	background-color: #FBFCFD;
+	border: 1px solid #C4CFE5;
+}
+div.line {
+	font-family: monospace, fixed;
+	font-size: 13px;
+	min-height: 13px;
+	line-height: 1.0;
+	text-wrap: unrestricted;
+	white-space: -moz-pre-wrap; /* Moz */
+	white-space: -pre-wrap;     /* Opera 4-6 */
+	white-space: -o-pre-wrap;   /* Opera 7 */
+	white-space: pre-wrap;      /* CSS3  */
+	word-wrap: break-word;      /* IE 5.5+ */
+	text-indent: -53px;
+	padding-left: 53px;
+	padding-bottom: 0px;
+	margin: 0px;
+	-webkit-transition-property: background-color, box-shadow;
+	-webkit-transition-duration: 0.5s;
+	-moz-transition-property: background-color, box-shadow;
+	-moz-transition-duration: 0.5s;
+	-ms-transition-property: background-color, box-shadow;
+	-ms-transition-duration: 0.5s;
+	-o-transition-property: background-color, box-shadow;
+	-o-transition-duration: 0.5s;
+	transition-property: background-color, box-shadow;
+	transition-duration: 0.5s;
+}
+div.contents {
+	margin-top: 10px;
+	margin-left: 12px;
+	margin-right: 8px;
+}
+div.center {
+	text-align: center;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding: 0px;
+}
+div.center img {
+	border: 0px;
+}
+span.keyword {
+	color: #008000
+}
+span.keywordtype {
+	color: #604020
+}
+span.keywordflow {
+	color: #e08000
+}
+span.comment {
+	color: #800000
+}
+span.preprocessor {
+	color: #806020
+}
+span.stringliteral {
+	color: #002080
+}
+span.charliteral {
+	color: #008080
+}
+blockquote {
+	background-color: #F7F8FB;
+	border-left: 2px solid #9CAFD4;
+	margin: 0 24px 0 4px;
+	padding: 0 12px 0 16px;
+}
+hr {
+	height: 0px;
+	border: none;
+	border-top: 1px solid #4A6AAA;
+}
+address {
+	font-style: normal;
+	color: #2A3D61;
+}
+div.header {
+	background-image:url('nav_h.png');
+	background-repeat:repeat-x;
+	background-color: #F9FAFC;
+	margin:  0px;
+	border-bottom: 1px solid #C4CFE5;
+}
+div.headertitle {
+	padding: 5px 5px 5px 10px;
+}
+.image {
+	text-align: center;
+}
+.caption {
+	font-weight: bold;
+}
+div.zoom {
+	border: 1px solid #90A5CE;
+}
+tr.heading h2 {
+	margin-top: 12px;
+	margin-bottom: 4px;
+}
+</style>
+</head>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!--END TITLEAREA-->
+<!-- end header part -->
+<!-- Generated by Doxygen 1.8.13 -->
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">Tutorial 8: SpecialFX </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><div class="image">
+<img src="../../media/example_screenshots/008shot.jpg" alt="008shot.jpg"/>
+</div>
+ <p>This tutorial describes how to do special effects. It shows how to use stencil buffer shadows, the particle system, billboards, dynamic light, and the water surface scene node.</p>
+<p>We start like in some tutorials before. Please note that this time, the 'shadows' flag in createDevice() is set to true, for we want to have a dynamic shadow cast from an animated character. If this example runs too slow, set it to false. The Irrlicht Engine also checks if your hardware doesn't support the stencil buffer, and then disables shadows by itself. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;irrlicht.h&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div><div class="line"><span class="preprocessor">#include &quot;driverChoice.h&quot;</span></div><div class="line"><span class="preprocessor">#include &quot;exampleHelper.h&quot;</span></div><div class="line"></div><div class="line"><span class="keyword">using namespace </span>irr;</div><div class="line"></div><div class="line"><span class="preprocessor">#ifdef _MSC_VER</span></div><div class="line"><span class="preprocessor">#pragma comment(lib, &quot;Irrlicht.lib&quot;)</span></div><div class="line"><span class="preprocessor">#endif</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div><div class="line">    <span class="comment">// ask if user would like shadows</span></div><div class="line">    <span class="keywordtype">char</span> i = <span class="charliteral">&#39;y&#39;</span>;</div><div class="line">    printf(<span class="stringliteral">&quot;Please press &#39;y&#39; if you want to use realtime shadows.\n&quot;</span>);</div><div class="line"></div><div class="line">    std::cin &gt;&gt; i;</div><div class="line"></div><div class="line">    <span class="keyword">const</span> <span class="keywordtype">bool</span> shadows = (i == <span class="charliteral">&#39;y&#39;</span>);</div><div class="line"></div><div class="line">    <span class="comment">// ask user for driver</span></div><div class="line">    video::E_DRIVER_TYPE driverType=driverChoiceConsole();</div><div class="line">    <span class="keywordflow">if</span> (driverType==video::EDT_COUNT)</div><div class="line">        <span class="keywordflow">return</span> 1;</div></div><!-- fragment --><p> Create device and exit if creation failed. We make the stencil flag optional to avoid slow screen modes for runs without shadows. </p><div class="fragment"><div class="line">IrrlichtDevice *device =</div><div class="line">    createDevice(driverType, core::dimension2d&lt;u32&gt;(640, 480),</div><div class="line">    16, <span class="keyword">false</span>, shadows);</div><div class="line"></div><div class="line"><span class="keywordflow">if</span> (device == 0)</div><div class="line">    <span class="keywordflow">return</span> 1; <span class="comment">// could not create selected driver.</span></div><div class="line"></div><div class="line">video::IVideoDriver* driver = device-&gt;getVideoDriver();</div><div class="line">scene::ISceneManager* smgr = device-&gt;getSceneManager();</div><div class="line"></div><div class="line"><span class="keyword">const</span> io::path mediaPath = getExampleMediaPath();</div></div><!-- fragment --><p> For our environment, we load a .3ds file. It is a small room I modeled with Anim8or and exported into the 3ds format because the Irrlicht Engine does not support the .an8 format. I am a very bad 3d graphic artist, and so the texture mapping is not very nice in this model. Luckily I am a better programmer than artist, and so the Irrlicht Engine is able to create a cool texture mapping for me: Just use the mesh manipulator and create a planar texture mapping for the mesh. If you want to see the mapping I made with Anim8or, uncomment this line. I also did not figure out how to set the material right in Anim8or, it has a specular light color which I don't really like. I'll switch it off too with this code. </p><div class="fragment"><div class="line">scene::IAnimatedMesh* mesh = smgr-&gt;getMesh(mediaPath + <span class="stringliteral">&quot;room.3ds&quot;</span>);</div><div class="line"></div><div class="line">smgr-&gt;getMeshManipulator()-&gt;makePlanarTextureMapping(mesh-&gt;getMesh(0), 0.004f);</div><div class="line"></div><div class="line">scene::ISceneNode* node = 0;</div><div class="line"></div><div class="line">node = smgr-&gt;addAnimatedMeshSceneNode(mesh);</div><div class="line">node-&gt;setMaterialTexture(0, driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;wall.jpg&quot;</span>));</div><div class="line">node-&gt;getMaterial(0).SpecularColor.set(0,0,0,0);</div></div><!-- fragment --><p> Now, for the first special effect: Animated water. It works like this: The WaterSurfaceSceneNode takes a mesh as input and makes it wave like a water surface. And if we let this scene node use a nice material like the EMT_REFLECTION_2_LAYER, it looks really cool. We are doing this with the next few lines of code. As input mesh, we create a hill plane mesh, without hills. But any other mesh could be used for this, you could even use the room.3ds (which would look really strange) if you want to. </p><div class="fragment"><div class="line">mesh = smgr-&gt;addHillPlaneMesh( <span class="stringliteral">&quot;myHill&quot;</span>,</div><div class="line">    core::dimension2d&lt;f32&gt;(20,20),</div><div class="line">    core::dimension2d&lt;u32&gt;(40,40), 0, 0,</div><div class="line">    core::dimension2d&lt;f32&gt;(0,0),</div><div class="line">    core::dimension2d&lt;f32&gt;(10,10));</div><div class="line"></div><div class="line">node = smgr-&gt;addWaterSurfaceSceneNode(mesh-&gt;getMesh(0), 3.0f, 300.0f, 30.0f);</div><div class="line">node-&gt;setPosition(core::vector3df(0,7,0));</div><div class="line"></div><div class="line">node-&gt;setMaterialTexture(0, driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;stones.jpg&quot;</span>));</div><div class="line">node-&gt;setMaterialTexture(1, driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;water.jpg&quot;</span>));</div><div class="line"></div><div class="line">node-&gt;setMaterialType(video::EMT_REFLECTION_2_LAYER);</div></div><!-- fragment --><p> The second special effect is very basic, I bet you saw it already in some Irrlicht Engine demos: A transparent billboard combined with a dynamic light. We simply create a light scene node, let it fly around, and to make it look more cool, we attach a billboard scene node to it. </p><div class="fragment"><div class="line"><span class="comment">// create light</span></div><div class="line">scene::ILightSceneNode * lightNode  = smgr-&gt;addLightSceneNode(0, core::vector3df(0,0,0),</div><div class="line">    video::SColorf(1.0f, 0.6f, 0.7f, 1.0f), 800.0f);</div><div class="line">scene::ISceneNodeAnimator* anim = 0;</div><div class="line">anim = smgr-&gt;createFlyCircleAnimator (core::vector3df(0,150,0),250.0f, 0.0005f);</div><div class="line">lightNode -&gt;addAnimator(anim);</div><div class="line">anim-&gt;drop();</div><div class="line"></div><div class="line"><span class="comment">// attach billboard to light</span></div><div class="line"></div><div class="line">node = smgr-&gt;addBillboardSceneNode(lightNode, core::dimension2d&lt;f32&gt;(50, 50));</div><div class="line">node-&gt;setMaterialFlag(video::EMF_LIGHTING, <span class="keyword">false</span>);</div><div class="line">node-&gt;setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);</div><div class="line">node-&gt;setMaterialTexture(0, driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;particlewhite.bmp&quot;</span>));</div></div><!-- fragment --><p> The next special effect is a lot more interesting: A particle system. The particle system in the Irrlicht Engine is quite modular and extensible, but yet easy to use. There is a particle system scene node into which you can put a particle emitter, which makes particles come out of nothing. These emitters are quite flexible and usually have lots of parameters like direction, amount, and color of the particles they create.</p>
+<p>There are different emitters, for example a point emitter which lets particles pop out at a fixed point. If the particle emitters available in the engine are not enough for you, you can easily create your own ones, you'll simply have to create a class derived from the IParticleEmitter interface and attach it to the particle system using setEmitter(). In this example we create a box particle emitter, which creates particles randomly inside a box. The parameters define the box, direction of the particles, minimal and maximal new particles per second, color, and minimal and maximal lifetime of the particles.</p>
+<p>Because only with emitters particle system would be a little bit boring, there are particle affectors which modify particles while they fly around. Affectors can be added to a particle system for simulating additional effects like gravity or wind. The particle affector we use in this example is an affector which modifies the color of the particles: It lets them fade out. Like the particle emitters, additional particle affectors can also be implemented by you, simply derive a class from IParticleAffector and add it with addAffector().</p>
+<p>After we set a nice material to the particle system, we have a cool looking camp fire. By adjusting material, texture, particle emitter, and affector parameters, it is also easily possible to create smoke, rain, explosions, snow, and so on. </p><div class="fragment"><div class="line"><span class="comment">// create a particle system</span></div><div class="line"></div><div class="line">scene::IParticleSystemSceneNode* ps =</div><div class="line">    smgr-&gt;addParticleSystemSceneNode(<span class="keyword">false</span>);</div><div class="line"></div><div class="line"><span class="keywordflow">if</span> (ps)</div><div class="line">{</div><div class="line">    scene::IParticleEmitter* em = ps-&gt;createBoxEmitter(</div><div class="line">        core::aabbox3d&lt;f32&gt;(-7,0,-7,7,1,7), <span class="comment">// emitter size</span></div><div class="line">        core::vector3df(0.0f,0.06f,0.0f),   <span class="comment">// initial direction</span></div><div class="line">        80,100,                             <span class="comment">// emit rate</span></div><div class="line">        video::SColor(0,255,255,255),       <span class="comment">// darkest color</span></div><div class="line">        video::SColor(0,255,255,255),       <span class="comment">// brightest color</span></div><div class="line">        800,2000,0,                         <span class="comment">// min and max age, angle</span></div><div class="line">        core::dimension2df(10.f,10.f),         <span class="comment">// min size</span></div><div class="line">        core::dimension2df(20.f,20.f));        <span class="comment">// max size</span></div><div class="line"></div><div class="line">    ps-&gt;setEmitter(em); <span class="comment">// this grabs the emitter</span></div><div class="line">    em-&gt;drop(); <span class="comment">// so we can drop it here without deleting it</span></div><div class="line"></div><div class="line">    scene::IParticleAffector* paf = ps-&gt;createFadeOutParticleAffector();</div><div class="line"></div><div class="line">    ps-&gt;addAffector(paf); <span class="comment">// same goes for the affector</span></div><div class="line">    paf-&gt;drop();</div><div class="line"></div><div class="line">    ps-&gt;setPosition(core::vector3df(-70,60,40));</div><div class="line">    ps-&gt;setScale(core::vector3df(2,2,2));</div><div class="line">    ps-&gt;setMaterialFlag(video::EMF_LIGHTING, <span class="keyword">false</span>);</div><div class="line">    ps-&gt;setMaterialFlag(video::EMF_ZWRITE_ENABLE, <span class="keyword">false</span>);</div><div class="line">    ps-&gt;setMaterialTexture(0, driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;fire.bmp&quot;</span>));</div><div class="line">    ps-&gt;setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);</div><div class="line">}</div></div><!-- fragment --><p> Next we add a volumetric light node, which adds a glowing fake area light to the scene. Like with the billboards and particle systems we also assign a texture for the desired effect, though this time we'll use a texture animator to create the illusion of a magical glowing area effect. </p><div class="fragment"><div class="line">scene::IVolumeLightSceneNode * n = smgr-&gt;addVolumeLightSceneNode(0, -1,</div><div class="line">            32,                              <span class="comment">// Subdivisions on U axis</span></div><div class="line">            32,                              <span class="comment">// Subdivisions on V axis</span></div><div class="line">            video::SColor(0, 255, 255, 255), <span class="comment">// foot color</span></div><div class="line">            video::SColor(0, 0, 0, 0));      <span class="comment">// tail color</span></div><div class="line"></div><div class="line"><span class="keywordflow">if</span> (n)</div><div class="line">{</div><div class="line">    n-&gt;setScale(core::vector3df(56.0f, 56.0f, 56.0f));</div><div class="line">    n-&gt;setPosition(core::vector3df(-120,50,40));</div><div class="line"></div><div class="line">    <span class="comment">// load textures for animation</span></div><div class="line">    core::array&lt;video::ITexture*&gt; textures;</div><div class="line">    <span class="keywordflow">for</span> (s32 g=7; g &gt; 0; --g)</div><div class="line">    {</div><div class="line">        core::stringc tmp(mediaPath);</div><div class="line">        tmp += <span class="stringliteral">&quot;portal&quot;</span>;</div><div class="line">        tmp += g;</div><div class="line">        tmp += <span class="stringliteral">&quot;.bmp&quot;</span>;</div><div class="line">        video::ITexture* t = driver-&gt;getTexture( tmp.c_str() );</div><div class="line">        textures.push_back(t);</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// create texture animator</span></div><div class="line">    scene::ISceneNodeAnimator* glow = smgr-&gt;createTextureAnimator(textures, 150);</div><div class="line"></div><div class="line">    <span class="comment">// add the animator</span></div><div class="line">    n-&gt;addAnimator(glow);</div><div class="line"></div><div class="line">    <span class="comment">// drop the animator because it was created with a create() function</span></div><div class="line">    glow-&gt;drop();</div><div class="line">}</div></div><!-- fragment --><p> As our last special effect, we want a dynamic shadow be cast from an animated character. For this we load a DirectX .x model and place it into our world. For creating the shadow, we simply need to call addShadowVolumeSceneNode(). The color of shadows is only adjustable globally for all shadows, by calling ISceneManager::setShadowColor(). Voila, here is our dynamic shadow.</p>
+<p>Because the character is a little bit too small for this scene, we make it bigger using setScale(). And because the character is lighted by a dynamic light, we need to normalize the normals to make the lighting on it correct. This is always necessary if the scale of a dynamic lighted model is not (1,1,1). Otherwise it would get too dark or too bright because the normals will be scaled too. </p><div class="fragment"><div class="line"><span class="comment">// add animated character</span></div><div class="line"></div><div class="line">mesh = smgr-&gt;getMesh(mediaPath + <span class="stringliteral">&quot;dwarf.x&quot;</span>);</div><div class="line">scene::IAnimatedMeshSceneNode* anode = 0;</div><div class="line"></div><div class="line">anode = smgr-&gt;addAnimatedMeshSceneNode(mesh);</div><div class="line">anode-&gt;setPosition(core::vector3df(-50,20,-60));</div><div class="line">anode-&gt;setAnimationSpeed(15);</div></div><!-- fragment --><p> Shadows still have to be drawn even then the node causing them is not visible itself. We have to disable culling if the node is animated or it's transformations change as otherwise the shadow is not updated correctly. If you have many objects and this becomes a speed problem you will have to figure out some manual culling (for exampling hiding all objects beyond a certain distance). </p><div class="fragment"><div class="line">anode-&gt;setAutomaticCulling(scene::EAC_OFF);</div><div class="line"></div><div class="line"><span class="comment">// add shadow</span></div><div class="line">anode-&gt;addShadowVolumeSceneNode();</div><div class="line">smgr-&gt;setShadowColor(video::SColor(150,0,0,0));</div><div class="line"></div><div class="line"><span class="comment">// make the model a bit bigger </span></div><div class="line">anode-&gt;setScale(core::vector3df(2,2,2));</div><div class="line"><span class="comment">// because of the scaling we have to normalize its normals for correct lighting</span></div><div class="line">anode-&gt;setMaterialFlag(video::EMF_NORMALIZE_NORMALS, <span class="keyword">true</span>);</div><div class="line"></div><div class="line"><span class="comment">// let the dwarf slowly rotate around it&#39;s y axis</span></div><div class="line">scene::ISceneNodeAnimator* ra = smgr-&gt;createRotationAnimator(irr::core::vector3df(0, 0.1f, 0));</div><div class="line">anode-&gt;addAnimator(ra);</div><div class="line">ra-&gt;drop();</div></div><!-- fragment --><p> Finally we simply have to draw everything, that's all. </p><div class="fragment"><div class="line">    scene::ICameraSceneNode* camera = smgr-&gt;addCameraSceneNodeFPS();</div><div class="line">    camera-&gt;setPosition(core::vector3df(-50,50,-150));</div><div class="line">    camera-&gt;setFarValue(10000.0f); <span class="comment">// this increase a shadow visible range.</span></div><div class="line"></div><div class="line">    <span class="comment">// disable mouse cursor</span></div><div class="line">    device-&gt;getCursorControl()-&gt;setVisible(<span class="keyword">false</span>);</div><div class="line"></div><div class="line">    s32 lastFPS = -1;</div><div class="line"></div><div class="line">    <span class="keywordflow">while</span>(device-&gt;run())</div><div class="line">    <span class="keywordflow">if</span> (device-&gt;isWindowActive())</div><div class="line">    {</div><div class="line">        driver-&gt;beginScene(video::ECBF_COLOR | video::ECBF_DEPTH, video::SColor(0));</div><div class="line"></div><div class="line">        smgr-&gt;drawAll();</div><div class="line"></div><div class="line">        driver-&gt;endScene();</div><div class="line"></div><div class="line">        <span class="keyword">const</span> s32 fps = driver-&gt;getFPS();</div><div class="line"></div><div class="line">        <span class="keywordflow">if</span> (lastFPS != fps)</div><div class="line">        {</div><div class="line">            core::stringw str = L<span class="stringliteral">&quot;Irrlicht Engine - SpecialFX example [&quot;</span>;</div><div class="line">            str += driver-&gt;getName();</div><div class="line">            str += <span class="stringliteral">&quot;] FPS:&quot;</span>;</div><div class="line">            str += fps;</div><div class="line"></div><div class="line">            device-&gt;setWindowCaption(str.c_str());</div><div class="line">            lastFPS = fps;</div><div class="line">        }</div><div class="line">    }</div><div class="line"></div><div class="line">    device-&gt;drop();</div><div class="line"></div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">}</div></div><!-- fragment --> </div></div><!-- contents -->
+<!-- HTML footer for doxygen 1.8.13-->
+<!-- start footer part -->
 <p>&nbsp;</p>
-      </body>
+</body>
 </html>

@@ -190,7 +190,7 @@ CNullDriver::CNullDriver(io::IFileSystem* io, const core::dimension2d<u32>& scre
 
 
 	// set ExposedData to 0
-	memset(&ExposedData, 0, sizeof(ExposedData));
+	memset((void*)&ExposedData, 0, sizeof(ExposedData));
 	for (u32 i=0; i<video::EVDF_COUNT; ++i)
 		FeatureEnabled[i]=true;
 
@@ -867,8 +867,8 @@ void CNullDriver::draw2DImage(const video::ITexture* texture, const core::positi
 
 	draw2DImage(texture,destPos, core::rect<s32>(core::position2d<s32>(0,0),
 												core::dimension2di(texture->getOriginalSize())),
-												0, 
-												SColor(255,255,255,255), 
+												0,
+												SColor(255,255,255,255),
 												useAlphaChannelOfTexture
 												);
 }
@@ -1603,7 +1603,9 @@ core::array<IImage*> CNullDriver::createImagesFromFile(io::IReadFile* file, E_TE
 		{
 			// dito
 			file->seek(0);
-			if (SurfaceLoader[i]->isALoadableFileFormat(file))
+			if (SurfaceLoader[i]->isALoadableFileFormat(file)
+				&& !SurfaceLoader[i]->isALoadableFileExtension(file->getFileName())	// extension was tried above already
+				)
 			{
 				file->seek(0);
 				imageArray = SurfaceLoader[i]->loadImages(file, type);
@@ -2763,9 +2765,9 @@ bool CNullDriver::needsTransparentRenderPass(const irr::video::SMaterial& materi
 	//      zwrite disabled and getWriteZBuffer calls this function.
 
 	video::IMaterialRenderer* rnd = getMaterialRenderer(material.MaterialType);
-	// TODO: I suspect IMaterialRenderer::isTransparent also often could use SMaterial as parameter 
+	// TODO: I suspect IMaterialRenderer::isTransparent also often could use SMaterial as parameter
 	//       We could for example then get rid of IsTransparent function in SMaterial and move that to the software material renderer.
-	if (rnd && rnd->isTransparent())	
+	if (rnd && rnd->isTransparent())
 		return true;
 
 	return false;

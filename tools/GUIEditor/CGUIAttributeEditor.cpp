@@ -6,7 +6,6 @@
 #include "IAttributes.h"
 #include "IGUIFont.h"
 #include "IGUIScrollBar.h"
-#include "CGUIEditWorkspace.h"
 #include "CGUIAttribute.h"
 #include "CGUIStringAttribute.h"
 

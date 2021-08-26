@@ -95,7 +95,7 @@ namespace irr
 		//! Get the device type
 		virtual E_DEVICE_TYPE getType() const _IRR_OVERRIDE_
 		{
-				return EIDT_CONSOLE;
+			return EIDT_CONSOLE;
 		}
 
 		void addPostPresentText(s16 X, s16 Y, const wchar_t *text);

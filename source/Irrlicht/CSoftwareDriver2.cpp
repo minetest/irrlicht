@@ -173,7 +173,7 @@ static inline float powf_limit(const float a, const float b)
 }
 
 //! clamp(value,0,1)
-static inline const float clampf01(const float v)
+static inline float clampf01(const float v)
 {
 	return v < 0.f ? 0.f : v > 1.f ? 1.f : v;
 }
@@ -748,9 +748,11 @@ bool CBurningVideoDriver::setRenderTargetEx(IRenderTarget* target, u16 clearFlag
 	return true;
 }
 
+/*
 static inline f32 map_value(f32 x, f32 in_min, f32 in_max, f32 out_min, f32 out_max) {
 	return (x - in_min) * (out_max - out_min) / (f32)(in_max - in_min) + out_min;
 }
+*/
 
 //! sets a render target
 void CBurningVideoDriver::setRenderTargetImage2(video::IImage* color, video::IImage* depth, video::IImage* stencil)
@@ -802,7 +804,7 @@ void CBurningVideoDriver::setRenderTargetImage2(video::IImage* color, video::IIm
 
 // used to scale <-1,-1><1,1> to viewport [center,scale]
 // controls subtexel and fill convention.
-// Don't tweak SOFTWARE_DRIVER_2_SUBTEXEL (-0.5f in m[1]) anymore to control texture blur effect, it's used for viewport scaling. 
+// Don't tweak SOFTWARE_DRIVER_2_SUBTEXEL (-0.5f in m[1]) anymore to control texture blur effect, it's used for viewport scaling.
 // naming is misleading. it will write outside memory location..
 
 void buildNDCToDCMatrix(f32* m, const core::rect<s32>& viewport, f32 tx)
@@ -1603,7 +1605,7 @@ void CBurningVideoDriver::VertexCache_fill(const u32 sourceIndex, const u32 dest
 	}
 
 	// Texture Coo Transform
-	// Always set all internal uv (v1.9 SOFTWARE_DRIVER_2_TEXTURE_TRANSFORM always on) 
+	// Always set all internal uv (v1.9 SOFTWARE_DRIVER_2_TEXTURE_TRANSFORM always on)
 	for (size_t t = 0; t < BURNING_MATERIAL_MAX_TEXTURES; ++t)
 	{
 		sVec4 r;
@@ -2166,8 +2168,8 @@ void CBurningVideoDriver::drawVertexPrimitiveList(const void* vertices, u32 vert
 		{
 			// if primitive fully outside or outside on same side
 			continue;
-			vOut = 0;
-			vertex_from_clipper = 0;
+			//vOut = 0;
+			//vertex_from_clipper = 0;
 		}
 		else if (clipMask_o == VERTEX4D_INSIDE)
 		{
@@ -2256,14 +2258,14 @@ void CBurningVideoDriver::drawVertexPrimitiveList(const void* vertices, u32 vert
 				}
 				lod_bias *= tex->get_lod_bias();
 				//lod_bias += Material.org.TextureLayer[m].LODBias * 0.125f;
-	
+
 				s32 lodFactor = lodFactor_inside(face, m, dc_area, lod_bias);
 
 				CurrentShader->setTextureParam(m, tex, lodFactor);
 				//currently shader receives texture coordinate as Pixelcoo of 1 Texture
 				select_polygon_mipmap_inside(face, m, tex->getTexBound());
 			}
-			
+
 			CurrentShader->drawWireFrameTriangle(face[0] + s4DVertex_proj(0), face[1] + s4DVertex_proj(0), face[2] + s4DVertex_proj(0));
 			vertex_from_clipper = 1;
 		}
@@ -3364,7 +3366,7 @@ void CBurningVideoDriver::draw3DLine(const core::vector3df& start,
 		v[s4DVertex_proj(has_vertex_run)].flag = v[s4DVertex_ofs(has_vertex_run)].flag;
 	}
 
-	
+
 	size_t vOut;
 
 	// vertices count per line

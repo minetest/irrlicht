@@ -13,9 +13,9 @@ namespace scene
 //! constructor
 CSceneNodeAnimatorFollowSpline::CSceneNodeAnimatorFollowSpline(u32 time,
 	const core::array<core::vector3df>& points, f32 speed,
-	f32 tightness, bool loop, bool pingpong)
+	f32 tightness, bool loop, bool pingpong, bool steer)
 : ISceneNodeAnimatorFinishing(0), Points(points), Speed(speed), Tightness(tightness)
-, Loop(loop), PingPong(pingpong)
+, Loop(loop), PingPong(pingpong), Steer(steer)
 {
 	#ifdef _DEBUG
 	setDebugName("CSceneNodeAnimatorFollowSpline");
@@ -86,7 +86,17 @@ void CSceneNodeAnimatorFollowSpline::animateNode(ISceneNode* node, u32 timeMs)
 	const core::vector3df t2 = ( p3 - p1 ) * Tightness;
 
 	// interpolated point
-	node->setPosition(p1 * h1 + p2 * h2 + t1 * h3 + t2 * h4);
+	const core::vector3df lastPos(node->getPosition());
+	const core::vector3df pos(p1 * h1 + p2 * h2 + t1 * h3 + t2 * h4);
+	node->setPosition(pos);
+
+	// steering (rotate in direction of movement)
+	if (Steer && !pos.equals(lastPos)) // equality check fixes glitches due to very high frame rates
+	{
+		const core::vector3df toTarget(pos - lastPos);
+		const core::vector3df requiredRotation = toTarget.getHorizontalAngle();
+		node->setRotation(requiredRotation);
+	}
 }
 
 
@@ -99,6 +109,7 @@ void CSceneNodeAnimatorFollowSpline::serializeAttributes(io::IAttributes* out, i
 	out->addFloat("Tightness", Tightness);
 	out->addBool("Loop", Loop);
 	out->addBool("PingPong", PingPong);
+	out->addBool("Steer", Steer);
 
 	u32 count = Points.size();
 
@@ -124,10 +135,11 @@ void CSceneNodeAnimatorFollowSpline::deserializeAttributes(io::IAttributes* in, 
 {
 	ISceneNodeAnimatorFinishing::deserializeAttributes(in, options);
 
-	Speed = in->getAttributeAsFloat("Speed");
-	Tightness = in->getAttributeAsFloat("Tightness");
-	Loop = in->getAttributeAsBool("Loop");
-	PingPong = in->getAttributeAsBool("PingPong");
+	Speed = in->getAttributeAsFloat("Speed", Speed);
+	Tightness = in->getAttributeAsFloat("Tightness", Tightness);
+	Loop = in->getAttributeAsBool("Loop", Loop);
+	PingPong = in->getAttributeAsBool("PingPong", PingPong);
+	Steer = in->getAttributeAsBool("Steer", Steer);
 	Points.clear();
 
 	for(u32 i=1; true; ++i)

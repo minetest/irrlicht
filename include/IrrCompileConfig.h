@@ -368,7 +368,7 @@ for Windows based systems. You also have to set #define UNICODE for this to comp
 #undef _IRR_WCHAR_FILESYSTEM
 #endif
 
-//! Define _IRR_COMPILE_WITH_JPEGLIB_ to enable compiling the engine using libjpeg.
+//! Define _IRR_COMPILE_WITH_LIBJPEG_ to enable compiling the engine using libjpeg.
 /** This enables the engine to read jpeg images. If you comment this out,
 the engine will no longer read .jpeg images. */
 #define _IRR_COMPILE_WITH_LIBJPEG_

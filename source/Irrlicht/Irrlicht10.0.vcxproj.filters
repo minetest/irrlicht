@@ -1390,7 +1390,7 @@
     <ClInclude Include="..\..\include\IOctreeSceneNode.h">
       <Filter>include\scene</Filter>
     </ClInclude>
-	<ClInclude Include="burning_shader_color_fraq.h">
+    <ClInclude Include="burning_shader_color_fraq.h">
       <Filter>Irrlicht\video\Burning Video</Filter>
     </ClInclude>
     <ClInclude Include="burning_shader_compile_fragment_default.h">
@@ -1410,6 +1410,15 @@
     </ClInclude>
     <ClInclude Include="burning_shader_compile_verify.h">
       <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\fast_atof.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ILightManager.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SVertexManipulator.h">
+      <Filter>include\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2378,7 +2387,7 @@
     <ClCompile Include="CWGLManager.cpp">
       <Filter>Irrlicht\video\OpenGL Context</Filter>
     </ClCompile>
-	<ClCompile Include="burning_shader_color.cpp">
+    <ClCompile Include="burning_shader_color.cpp">
       <Filter>Irrlicht\video\Burning Video</Filter>
     </ClCompile>
     <ClCompile Include="CTR_transparent_reflection_2_layer.cpp">

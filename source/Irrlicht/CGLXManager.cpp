@@ -280,7 +280,7 @@ bool CGLXManager::initialize(const SIrrlichtCreationParameters& params, const SE
 
 void CGLXManager::terminate()
 {
-	memset(&CurrentContext, 0, sizeof(CurrentContext));
+	memset((void*)&CurrentContext, 0, sizeof(CurrentContext));
 }
 
 bool CGLXManager::generateSurface()

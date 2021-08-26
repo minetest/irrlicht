@@ -30,7 +30,7 @@ namespace irr
 			Bits(32),
 			ZBufferBits(24),
 			Fullscreen(false),
-			WindowResizable(false),
+			WindowResizable(2),
 			Stencilbuffer(true),
 			Vsync(false),
 			AntiAlias(0),
@@ -131,8 +131,9 @@ namespace irr
 
 		//! Should a non-fullscreen window be resizable.
 		/** Might not be supported by all devices. Ignored when Fullscreen is true.
-		Default: false */
-		bool WindowResizable;
+		Values: 0 = not resizable, 1 = resizable, 2 = system decides default itself
+		Default: 2*/
+		u8 WindowResizable;
 
 		//! Specifies if the stencil buffer should be enabled.
 		/** Set this to true, if you want the engine be able to draw

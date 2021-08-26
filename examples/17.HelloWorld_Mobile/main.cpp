@@ -1,8 +1,9 @@
-/** Deprecated. This was Example 017 Helloworld mobile for WinCE 6.
-	But WinCE6 support has been removed for Irrlicht 1.9. 
+/** Example 017 Helloworld mobile for WinCE 6. DEPRECATED
+	This was Example 017 Helloworld mobile for WinCE 6.
+	But WinCE6 support has been removed for Irrlicht 1.9.
 	If you still need that please use Irrlicht 1.8 or svn revision 5045 which was the last one to include it.
 
-	Sources still kept for now as it compiles on other platform too. And we might use this example again 
+	Sources still kept for now as it compiles on other platform too. And we might use this example again
 	once we support Windows RT.
 */
 
@@ -101,7 +102,7 @@ public:
 	virtual SMaterial& getMaterial(u32 i)
 	{
 		return Material;
-	}	
+	}
 };
 
 /*!
@@ -186,7 +187,7 @@ int example_customscenenode()
 	// create engine and camera
 	EventReceiver_basic receiver(device);
 	device->setEventReceiver(&receiver);
-	
+
 	IVideoDriver* driver = device->getVideoDriver();
 	ISceneManager* smgr = device->getSceneManager();
 	IGUIEnvironment* guienv = device->getGUIEnvironment();
@@ -194,10 +195,10 @@ int example_customscenenode()
 
 	smgr->addCameraSceneNode(0, vector3df(0,-40,0), vector3df(0,0,0));
 
-	CSampleSceneNode *myNode = 
+	CSampleSceneNode *myNode =
 		new CSampleSceneNode(smgr->getRootSceneNode(), smgr, 666);
 
-	ISceneNodeAnimator* anim = 
+	ISceneNodeAnimator* anim =
 		smgr->createRotationAnimator(vector3df(0.8f, 0, 0.8f));
 
 	if(anim)
@@ -293,7 +294,7 @@ int example_terrain()
 	IrrlichtDevice *device = startup();
 	if (device == 0)
 		return 1; // could not create selected driver.
-	
+
 	/*
 	First, we add standard stuff to the scene: A nice irrlicht engine
 	logo, a small help text, a user controlled camera, and we disable
@@ -363,7 +364,7 @@ int example_terrain()
 				driver->getTexture("../../media/terrain-texture.jpg"));
 		terrain->setMaterialTexture(1,
 				driver->getTexture("../../media/detailmap3.jpg"));
-		
+
 		terrain->setMaterialType(video::EMT_DETAIL_MAP);
 
 		terrain->scaleTexture(1.0f, 20.0f);
@@ -378,7 +379,7 @@ int example_terrain()
 		through the terrain.
 		*/
 
-		// create triangle selector for the terrain	
+		// create triangle selector for the terrain
 		scene::ITriangleSelector* selector
 			= smgr->createTerrainTriangleSelector(terrain, 0);
 		terrain->setTriangleSelector(selector);

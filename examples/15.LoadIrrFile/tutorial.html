@@ -1,129 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Irrlicht Engine Tutorial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-</head>
-
-<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699" width="10"><b><a href="http://irrlicht.sourceforge.net" target="_blank"><img src="../../media/irrlichtlogo.jpg" width="88" height="31" border="0"></a></b></td>
-    <td bgcolor="#666699" width="100%"> <div align="center"><b><font color="#FFFFFF"></font></b></div>
-      <b><font color="#FFFFFF">Tutorial 15. Load .irr File</font></b></td>
-  </tr>
-  <tr bgcolor="#eeeeff"> 
-    <td height="90" colspan="2"> <div align="left"> 
-        <p>Since version 1.1, Irrlicht is able to save and load the full scene 
-          graph into an .irr file, an xml based format. There is also an editor 
-          available to edit those files, named irrEdit on <a href="http://www.ambiera.com/irredit" target="_blank">http://www.ambiera.com/irredit</a>, 
-          which can also be used as world and particle editor. This tutorial shows 
-          how to use .irr files.</p>
-        <p align="center"><img src="../../media/015shot.jpg" width="256" height="200"><br>
-        </p>
-      </div></td>
-  </tr>
-</table>
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699"> <div align="center"><b><font color="#000000"></font></b></div>
-      <font color="#FFFFFF"><b>Lets start!</b></font></td>
-  </tr>
-  <tr> 
-    <td height="90" bgcolor="#eeeeff" valign="top"> <div align="left"> 
-        <p>Lets start: Create an Irrlicht device and setup the window.</p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td> <pre>#include <irrlicht.h>
-#include <iostream>
-using namespace irr;
-
-#pragma comment(lib, "Irrlicht.lib")
-
-int main()
-{
-	// ask user for driver
-
-	video::E_DRIVER_TYPE driverType;
-
-	printf("Please select the driver you want for this example:\n"\
-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
-		" (d) Software Renderer\n (e) Apfelbaum Software Renderer\n"\
-		" (f) NullDevice\n (otherKey) exit\n\n");
-
-	char i;
-	std::cin >> i;
-
-	switch(i)
-	{
-		case 'a': driverType = video::EDT_DIRECT3D9;break;
-		case 'b': driverType = video::EDT_DIRECT3D8;break;
-		case 'c': driverType = video::EDT_OPENGL;   break;
-		case 'd': driverType = video::EDT_SOFTWARE; break;
-		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
-		case 'f': driverType = video::EDT_NULL;     break;
-		default: return 1;
-	}	
-
-	// create device and exit if creation failed
-
-	IrrlichtDevice* device =
-		createDevice(driverType, core::dimension2d<s32>(640, 480));
-
-	if (device == 0)
-		return 1; // could not create selected driver.
-
-	device->setWindowCaption(L"Load .irr file example");
-
-	video::IVideoDriver* driver = device->getVideoDriver();
-	scene::ISceneManager* smgr = device->getSceneManager();
-</pre></td>
-          </tr>
-        </table>
-        <p>Now load our .irr file. .irr files can store the whole scene graph 
-          including animators, materials and particle systems. And there is also 
-          the possibility to store arbitrary user data for every scene node in 
-          that file. To keep this example simple, we are simply loading the scene 
-          here. See the documentation at ISceneManager::loadScene and ISceneManager::saveScene 
-          for more information. So to load and display a complicated huge scene, 
-          we only need a single call to loadScene().</p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td><pre>// load the scene<br>smgr-&gt;loadScene(&quot;../../media/example.irr&quot;); </pre></td>
-          </tr>
-        </table>
-        <p>That was it already. Now add a camera and draw the scene.</p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td> <pre>	// add a user controlled camera
-
-	smgr->addCameraSceneNodeFPS();
-
-	// and draw everything.
-	
-	while(device->run())
-	if (device->isWindowActive())
-	{
-		driver->beginScene(true, true, video::SColor(0,200,200,200));
-		smgr->drawAll();
-		driver->endScene();
-	}
-
-	device->drop();
-	
-	return 0;
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Tutorial 15: Loading Scenes from .irr Files</title>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- Wanted to avoid copying .css to each folder, so copied default .css from doxyen in here, kicked out most stuff we don't need for examples and modified some a little bit. 
+     Target was having a single html in each example folder which is created from the main.cpp files and needs no files besides some images below media folder.
+     Feel free to improve :)
+	 -->
+<style>
+body, table, div, p, dl {
+	font: 400 14px/22px;
 }
-</pre> </td>
-          </tr>
-        </table>
-        
-      </div>
-      <p>&nbsp;</p>
-      </td>
-  </tr>
-</table>
-<p>&nbsp;</p>
+body {
+	background-color: #F0F0F0;
+	color: black;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+p.reference, p.definition {
+	font: 400 14px/22px;
+}
+.title {
+	font: 400 14px/28px;
+	font-size: 150%;
+	font-weight: bold;
+	margin: 10px 2px;
+}
+h1, h2, h3, h4, h5, h6 {
+	-webkit-transition: text-shadow 0.5s linear;
+	-moz-transition: text-shadow 0.5s linear;
+	-ms-transition: text-shadow 0.5s linear;
+	-o-transition: text-shadow 0.5s linear;
+	transition: text-shadow 0.5s linear;
+	margin-right: 15px;
+}
+caption {
+	font-weight: bold;
+}
+h3.version {
+	font-size: 90%;
+	text-align: center;
+}
+a {
+	color: #3D578C;
+	font-weight: normal;
+	text-decoration: none;
+}
+.contents a:visited {
+	color: #4665A2;
+}
+a:hover {
+	text-decoration: underline;
+}
+a.el {
+	font-weight: bold;
+}
+a.code, a.code:visited, a.line, a.line:visited {
+	color: #4665A2; 
+}
+a.codeRef, a.codeRef:visited, a.lineRef, a.lineRef:visited {
+	color: #4665A2; 
+}
+pre.fragment {
+	border: 1px solid #C4CFE5;
+	background-color: #FBFCFD;
+	padding: 4px 6px;
+	margin: 4px 8px 4px 2px;
+	overflow: auto;
+	word-wrap: break-word;
+	font-size:  9pt;
+	line-height: 125%;
+	font-family: monospace, fixed;
+	font-size: 105%;
+}
+div.fragment {
+	padding: 0px;
+	margin: 4px 8px 4px 2px;
+	background-color: #FBFCFD;
+	border: 1px solid #C4CFE5;
+}
+div.line {
+	font-family: monospace, fixed;
+	font-size: 13px;
+	min-height: 13px;
+	line-height: 1.0;
+	text-wrap: unrestricted;
+	white-space: -moz-pre-wrap; /* Moz */
+	white-space: -pre-wrap;     /* Opera 4-6 */
+	white-space: -o-pre-wrap;   /* Opera 7 */
+	white-space: pre-wrap;      /* CSS3  */
+	word-wrap: break-word;      /* IE 5.5+ */
+	text-indent: -53px;
+	padding-left: 53px;
+	padding-bottom: 0px;
+	margin: 0px;
+	-webkit-transition-property: background-color, box-shadow;
+	-webkit-transition-duration: 0.5s;
+	-moz-transition-property: background-color, box-shadow;
+	-moz-transition-duration: 0.5s;
+	-ms-transition-property: background-color, box-shadow;
+	-ms-transition-duration: 0.5s;
+	-o-transition-property: background-color, box-shadow;
+	-o-transition-duration: 0.5s;
+	transition-property: background-color, box-shadow;
+	transition-duration: 0.5s;
+}
+div.contents {
+	margin-top: 10px;
+	margin-left: 12px;
+	margin-right: 8px;
+}
+div.center {
+	text-align: center;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding: 0px;
+}
+div.center img {
+	border: 0px;
+}
+span.keyword {
+	color: #008000
+}
+span.keywordtype {
+	color: #604020
+}
+span.keywordflow {
+	color: #e08000
+}
+span.comment {
+	color: #800000
+}
+span.preprocessor {
+	color: #806020
+}
+span.stringliteral {
+	color: #002080
+}
+span.charliteral {
+	color: #008080
+}
+blockquote {
+	background-color: #F7F8FB;
+	border-left: 2px solid #9CAFD4;
+	margin: 0 24px 0 4px;
+	padding: 0 12px 0 16px;
+}
+hr {
+	height: 0px;
+	border: none;
+	border-top: 1px solid #4A6AAA;
+}
+address {
+	font-style: normal;
+	color: #2A3D61;
+}
+div.header {
+	background-image:url('nav_h.png');
+	background-repeat:repeat-x;
+	background-color: #F9FAFC;
+	margin:  0px;
+	border-bottom: 1px solid #C4CFE5;
+}
+div.headertitle {
+	padding: 5px 5px 5px 10px;
+}
+.image {
+	text-align: center;
+}
+.caption {
+	font-weight: bold;
+}
+div.zoom {
+	border: 1px solid #90A5CE;
+}
+tr.heading h2 {
+	margin-top: 12px;
+	margin-bottom: 4px;
+}
+</style>
+</head>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!--END TITLEAREA-->
+<!-- end header part -->
+<!-- Generated by Doxygen 1.8.13 -->
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">Tutorial 15: Loading Scenes from .irr Files </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><div class="image">
+<img src="../../media/example_screenshots/015shot.jpg" alt="015shot.jpg"/>
+</div>
+ <p>Since version 1.1, Irrlicht is able to save and load the full scene graph into an .irr file, an xml based format. There is an editor available to edit those files, named irrEdit (<a href="http://www.ambiera.com/irredit">http://www.ambiera.com/irredit</a>) which can also be used as world and particle editor. This tutorial shows how to use .irr files.</p>
+<p>Lets start: Create an Irrlicht device and setup the window. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;irrlicht.h&gt;</span></div><div class="line"><span class="preprocessor">#include &quot;driverChoice.h&quot;</span></div><div class="line"><span class="preprocessor">#include &quot;exampleHelper.h&quot;</span></div><div class="line"></div><div class="line"><span class="keyword">using namespace </span>irr;</div><div class="line"></div><div class="line"><span class="preprocessor">#ifdef _MSC_VER</span></div><div class="line"><span class="preprocessor">#pragma comment(lib, &quot;Irrlicht.lib&quot;)</span></div><div class="line"><span class="preprocessor">#endif</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv)</div><div class="line">{</div><div class="line">    <span class="comment">// ask user for driver</span></div><div class="line">    video::E_DRIVER_TYPE driverType=driverChoiceConsole();</div><div class="line">    <span class="keywordflow">if</span> (driverType==video::EDT_COUNT)</div><div class="line">        <span class="keywordflow">return</span> 1;</div><div class="line"></div><div class="line">    <span class="comment">// create device and exit if creation failed</span></div><div class="line"></div><div class="line">    IrrlichtDevice* device =</div><div class="line">        createDevice(driverType, core::dimension2d&lt;u32&gt;(640, 480));</div><div class="line"></div><div class="line">    <span class="keywordflow">if</span> (device == 0)</div><div class="line">        <span class="keywordflow">return</span> 1; <span class="comment">// could not create selected driver.</span></div><div class="line"></div><div class="line">    device-&gt;setWindowCaption(L<span class="stringliteral">&quot;Load .irr file example&quot;</span>);</div><div class="line"></div><div class="line">    video::IVideoDriver* driver = device-&gt;getVideoDriver();</div><div class="line">    scene::ISceneManager* smgr = device-&gt;getSceneManager();</div></div><!-- fragment --><p> Now load our .irr file. .irr files can store the whole scene graph including animators, materials and particle systems. And there is also the possibility to store arbitrary user data for every scene node in that file. To keep this example simple, we are simply loading the scene here. See the documentation at ISceneManager::loadScene and ISceneManager::saveScene for more information. So to load and display a complicated huge scene, we only need a single call to loadScene(). </p><div class="fragment"><div class="line"><span class="comment">// load the scene</span></div></div><!-- fragment --><p> You might have to work around some minor problems in current .irr loader:</p><ul>
+<li>It can't load meshes relative to the .irr file, but only relative to the working directory. So you might have to change your working directory to the path where the .irr file is in.</li>
+<li>When passing a custom parent node to loadScene then irr_scene attributes will be passed to that. Usually not a problem, but for example AmbientLight will not change that way unless you create a custom SceneNode type which can interpret those attributes. <div class="fragment"><div class="line"><span class="keywordflow">if</span> (argc&gt;1)</div><div class="line">    smgr-&gt;loadScene(argv[1]);</div><div class="line"><span class="keywordflow">else</span></div><div class="line">    smgr-&gt;loadScene(getExampleMediaPath() + <span class="stringliteral">&quot;example.irr&quot;</span>);</div></div><!-- fragment --> Now we'll create a camera, and give it a collision response animator that's built from the mesh nodes in the scene we just loaded. <div class="fragment"><div class="line">scene::ICameraSceneNode * camera = smgr-&gt;addCameraSceneNodeFPS(0, 50.f, 0.1f);</div><div class="line"></div><div class="line"><span class="comment">// Create a meta triangle selector to hold several triangle selectors.</span></div><div class="line">scene::IMetaTriangleSelector * meta = smgr-&gt;createMetaTriangleSelector();</div></div><!-- fragment --> Now we will find all the nodes in the scene and create triangle selectors for all suitable nodes. Typically, you would want to make a more informed decision about which nodes to performs collision checks on; you could capture that information in the node name or Id. <div class="fragment"><div class="line">core::array&lt;scene::ISceneNode *&gt; nodes;</div><div class="line">smgr-&gt;getSceneNodesFromType(scene::ESNT_ANY, nodes); <span class="comment">// Find all nodes</span></div><div class="line"></div><div class="line"><span class="keywordflow">for</span> (u32 i=0; i &lt; nodes.size(); ++i)</div><div class="line">{</div><div class="line">    scene::ISceneNode * node = nodes[i];</div><div class="line">    scene::ITriangleSelector * selector = 0;</div><div class="line"></div><div class="line">    <span class="keywordflow">switch</span>(node-&gt;getType())</div><div class="line">    {</div><div class="line">    <span class="keywordflow">case</span> scene::ESNT_CUBE:</div><div class="line">    <span class="keywordflow">case</span> scene::ESNT_ANIMATED_MESH:</div><div class="line">        <span class="comment">// Because the selector won&#39;t animate with the mesh,</span></div><div class="line">        <span class="comment">// and is only being used for camera collision, we&#39;ll just use an approximate</span></div><div class="line">        <span class="comment">// bounding box instead of ((scene::IAnimatedMeshSceneNode*)node)-&gt;getMesh(0)</span></div><div class="line">        selector = smgr-&gt;createTriangleSelectorFromBoundingBox(node);</div><div class="line">    <span class="keywordflow">break</span>;</div><div class="line"></div><div class="line">    <span class="keywordflow">case</span> scene::ESNT_MESH:</div><div class="line">    <span class="keywordflow">case</span> scene::ESNT_SPHERE: <span class="comment">// Derived from IMeshSceneNode</span></div><div class="line">        selector = smgr-&gt;createTriangleSelector(((scene::IMeshSceneNode*)node)-&gt;getMesh(), node);</div><div class="line">        <span class="keywordflow">break</span>;</div><div class="line"></div><div class="line">    <span class="keywordflow">case</span> scene::ESNT_TERRAIN:</div><div class="line">        selector = smgr-&gt;createTerrainTriangleSelector((scene::ITerrainSceneNode*)node);</div><div class="line">        <span class="keywordflow">break</span>;</div><div class="line"></div><div class="line">    <span class="keywordflow">case</span> scene::ESNT_OCTREE:</div><div class="line">        selector = smgr-&gt;createOctreeTriangleSelector(((scene::IMeshSceneNode*)node)-&gt;getMesh(), node);</div><div class="line">        <span class="keywordflow">break</span>;</div><div class="line"></div><div class="line">    <span class="keywordflow">default</span>:</div><div class="line">        <span class="comment">// Don&#39;t create a selector for this node type</span></div><div class="line">        <span class="keywordflow">break</span>;</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="keywordflow">if</span>(selector)</div><div class="line">    {</div><div class="line">        <span class="comment">// Add it to the meta selector, which will take a reference to it</span></div><div class="line">        meta-&gt;addTriangleSelector(selector);</div><div class="line">        <span class="comment">// And drop my reference to it, so that the meta selector owns it.</span></div><div class="line">        selector-&gt;drop();</div><div class="line">    }</div><div class="line">}</div></div><!-- fragment --> Now that the mesh scene nodes have had triangle selectors created and added to the meta selector, create a collision response animator from that meta selector. <div class="fragment"><div class="line">scene::ISceneNodeAnimator* anim = smgr-&gt;createCollisionResponseAnimator(</div><div class="line">    meta, camera, core::vector3df(5,5,5),</div><div class="line">    core::vector3df(0,0,0));</div><div class="line">meta-&gt;drop(); <span class="comment">// I&#39;m done with the meta selector now</span></div><div class="line"></div><div class="line">camera-&gt;addAnimator(anim);</div><div class="line">anim-&gt;drop(); <span class="comment">// I&#39;m done with the animator now</span></div><div class="line"></div><div class="line"><span class="comment">// And set the camera position so that it doesn&#39;t start off stuck in the geometry</span></div><div class="line">camera-&gt;setPosition(core::vector3df(0.f, 20.f, 0.f));</div><div class="line"></div><div class="line"><span class="comment">// Point the camera at the cube node, by finding the first node of type ESNT_CUBE</span></div><div class="line">scene::ISceneNode * cube = smgr-&gt;getSceneNodeFromType(scene::ESNT_CUBE);</div><div class="line"><span class="keywordflow">if</span>(cube)</div><div class="line">    camera-&gt;setTarget(cube-&gt;getAbsolutePosition());</div></div><!-- fragment --> That's it. Draw everything and finish as usual. <div class="fragment"><div class="line">    <span class="keywordtype">int</span> lastFPS = -1;</div><div class="line"></div><div class="line">    <span class="keywordflow">while</span>(device-&gt;run())</div><div class="line">    <span class="keywordflow">if</span> (device-&gt;isWindowActive())</div><div class="line">    {</div><div class="line">        driver-&gt;beginScene(video::ECBF_COLOR | video::ECBF_DEPTH, video::SColor(0,200,200,200));</div><div class="line">        smgr-&gt;drawAll();</div><div class="line">        driver-&gt;endScene();</div><div class="line"></div><div class="line">        <span class="keywordtype">int</span> fps = driver-&gt;getFPS();</div><div class="line"></div><div class="line">        <span class="keywordflow">if</span> (lastFPS != fps)</div><div class="line">        {</div><div class="line">            core::stringw str = L<span class="stringliteral">&quot;Load Irrlicht File example - Irrlicht Engine [&quot;</span>;</div><div class="line">            str += driver-&gt;getName();</div><div class="line">            str += <span class="stringliteral">&quot;] FPS:&quot;</span>;</div><div class="line">            str += fps;</div><div class="line"></div><div class="line">            device-&gt;setWindowCaption(str.c_str());</div><div class="line">            lastFPS = fps;</div><div class="line">        }</div><div class="line"></div><div class="line">    }</div><div class="line"></div><div class="line">    device-&gt;drop();</div><div class="line"></div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">}</div></div><!-- fragment --> </li>
+</ul>
+</div></div><!-- contents -->
+<!-- HTML footer for doxygen 1.8.13-->
+<!-- start footer part -->
 <p>&nbsp;</p>
 </body>
 </html>

@@ -64,9 +64,6 @@ namespace video
 		//! sets a viewport
 		virtual void setViewPort(const core::rect<s32>& area) _IRR_OVERRIDE_;
 
-		//! gets the area of the current viewport
-		virtual const core::rect<s32>& getViewPort() const _IRR_OVERRIDE_;
-
 		struct SHWBufferLink_d3d9 : public SHWBufferLink
 		{
 			SHWBufferLink_d3d9(const scene::IMeshBuffer *_MeshBuffer):

@@ -1,502 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Irrlicht Engine Tutorial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-</head>
-
-<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699" width="10"><b><a href="http://irrlicht.sourceforge.net" target="_blank"><img src="../../media/irrlichtlogo.jpg" width="88" height="31" border="0"></a></b></td>
-    <td bgcolor="#666699" width="100%">
-<div align="center">
-        <div align="left"><b><font color="#FFFFFF">Tutorial 11. Per pixel lighting</font></b></div>
-      </div>
-      </td>
-  </tr>
-  <tr bgcolor="#eeeeff"> 
-    <td height="90" colspan="2"> 
-      <div align="left"> 
-        <p> This tutorial shows how to use one of the built in more complex materials 
-          in irrlicht: Per pixel lighted surfaces using normal maps and parallax 
-          mapping. It will also show how to use fog and moving particle systems. 
-          And don't panic: You dont need any experience with shaders to use these 
-          materials in Irrlicht.</p>
-        <p>The program which is described here will look like this:</p>
-        <p align="center"><img src="../../media/011shot.jpg" width="258" height="202"><br>
-        </p>
-      </div>
-    </td>
-  </tr>
-</table>
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699"> <b><font color="#FFFFFF">Lets start!</font></b></td>
-  </tr>
-  <tr> 
-    <td height="90" bgcolor="#eeeeff" valign="top"> <div align="left"> 
-        <div align="left"> 
-          <p>At first, we need to include all headers and do the stuff we always 
-            do, like in nearly all other tutorials.</p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>#include &lt;irrlicht.h&gt;<br>#include &lt;iostream&gt;<br><br>using namespace irr;<br><br>#pragma comment(lib, &quot;Irrlicht.lib&quot;)<br></pre></td>
-            </tr>
-          </table>
-          <p>For this example, we need an event receiver, to make it possible 
-            for the user to switch between the three available material types. 
-            In addition, the event receiver will create some small GUI window 
-            which displays what material is currently being used. There is nothing 
-            special done in this class, so maybe you want to skip reading it.</p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td><pre>class MyEventReceiver : public IEventReceiver
-{
-public:
-
-	MyEventReceiver(scene::ISceneNode* room, 
-		gui::IGUIEnvironment* env, video::IVideoDriver* driver)
-	{
-		// store pointer to room so we can change its drawing mode
-		Room = room;
-		Driver = driver;
-
-		// set a nicer font
-		gui::IGUISkin* skin = env->getSkin();
-		gui::IGUIFont* font = env->getFont("../../media/fonthaettenschweiler.bmp");
-		if (font)
-			skin->setFont(font);
-
-		// add window and listbox
-		gui::IGUIWindow* window = env->addWindow(
-			core::rect<s32>(490,390,630,470), false, L"Use 'E' + 'R' to change");
-
-		ListBox = env->addListBox(
-			core::rect<s32>(2,22,135,78), window);
-
-		ListBox->addItem(L"Diffuse");
-		ListBox->addItem(L"Bump mapping");
-		ListBox->addItem(L"Parallax mapping");
-		ListBox->setSelected(1);
-
-		// create problem text
-		ProblemText = env->addStaticText(
-			L"Your hardware or this renderer is not able to use the "\
-			L"needed shaders for this material. Using fall back materials.",
-			core::rect<s32>(150,20,470,60));
-
-		ProblemText->setOverrideColor(video::SColor(100,255,255,255));
-
-		// set start material (prefer parallax mapping if available)
-		video::IMaterialRenderer* renderer = 
-			Driver->getMaterialRenderer(video::EMT_PARALLAX_MAP_SOLID);
-		if (renderer && renderer->getRenderCapability() == 0)
-			ListBox->setSelected(2);
-
-		// set the material which is selected in the listbox
-		setMaterial();
-	}
-
-	bool OnEvent(const SEvent& event)
-	{
-		// check if user presses the key 'E' or 'R'
-		if (event.EventType == irr::EET_KEY_INPUT_EVENT &&
-			!event.KeyInput.PressedDown && Room && ListBox)
-		{
-			// change selected item in listbox 
-
-			int sel = ListBox->getSelected();
-			if (event.KeyInput.Key == irr::KEY_KEY_R)
-				++sel;
-			else
-			if (event.KeyInput.Key == irr::KEY_KEY_E)
-				--sel;
-			else 
-				return false;
-
-			if (sel > 2) sel = 0;
-			if (sel < 0) sel = 2;
-			ListBox->setSelected(sel);
-			
-			// set the material which is selected in the listbox
-			setMaterial();
-		}
-
-		return false;
-	}
-
-private:
-
-	// sets the material of the room mesh the the one set in the 
-	// list box.
-	void setMaterial()
-	{
-		video::E_MATERIAL_TYPE type = video::EMT_SOLID;
-
-		// change material setting
-		switch(ListBox->getSelected())
-		{
-		case 0: type = video::EMT_SOLID;
-			break;
-		case 1: type = video::EMT_NORMAL_MAP_SOLID;
-			break;
-		case 2: type = video::EMT_PARALLAX_MAP_SOLID;
-			break;
-		}
-
-		Room->setMaterialType(type);</pre>
-                </td>
-            </tr>
-          </table>
-          <p>We need to add a warning if the materials will not be able to be 
-            displayed 100% correctly. This is no problem, they will be renderered 
-            using fall back materials, but at least the user should know that 
-            it would look better on better hardware. We simply check if the material 
-            renderer is able to draw at full quality on the current hardware. 
-            The IMaterialRenderer::getRenderCapability() returns 0 if this is 
-            the case.<br>
-          </p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>video::IMaterialRenderer* renderer = Driver->getMaterialRenderer(type);
-
-		// display some problem text when problem
-		if (!renderer || renderer->getRenderCapability() != 0)
-			ProblemText->setVisible(true);
-		else
-			ProblemText->setVisible(false);
-	}
-
-private:
-
-	gui::IGUIStaticText* ProblemText;
-	gui::IGUIListBox* ListBox;
-
-	scene::ISceneNode* Room;	
-	video::IVideoDriver* Driver;
-};</pre></td>
-            </tr>
-          </table>
-          <p><br>
-            Now for the real fun. We create an Irrlicht Device and start to setup 
-            the scene.<br>
-          </p>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>int main()
-{
-	// let user select driver type
-
-	video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
-<br>	printf(&quot;Please select the driver you want for this example:\n&quot;\<br>		&quot; (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n&quot;\<br>		&quot; (d) Software Renderer\n (e) Apfelbaum Software Renderer\n&quot;\<br>		&quot; (f) NullDevice\n (otherKey) exit\n\n&quot;);<br>
-	char i;
-	std::cin >> i;
-
-	switch(i)<br>	{<br>		case 'a': driverType = video::EDT_DIRECT3D9;break;<br>		case 'b': driverType = video::EDT_DIRECT3D8;break;<br>		case 'c': driverType = video::EDT_OPENGL;   break;<br>		case 'd': driverType = video::EDT_SOFTWARE; break;<br>		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;<br>		case 'f': driverType = video::EDT_NULL;     break;<br>		default: return 0;<br>	}	
-
-	// create device
-
-	IrrlichtDevice* device = createDevice(driverType, core::dimension2d<s32>(640, 480));
-
-	if (device == 0)
-		return 1; // could not create selected driver.
-</pre></td>
-            </tr>
-          </table>
-          <br>
-          Before we start with the interesting stuff, we do some simple things: 
-          Store pointers to the most important parts of the engine (video driver,<br>
-          scene manager, gui environment) to safe us from typing too much, add 
-          an irrlicht engine logo to the window and a user controlled first person 
-          shooter style camera. Also, we let the engine now that it should store 
-          all textures in 32 bit. This necessary because for parallax mapping, 
-          we need 32 bit textures.<br>
-          <br>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>
-	video::IVideoDriver* driver = device->getVideoDriver();
-	scene::ISceneManager* smgr = device->getSceneManager();
-	gui::IGUIEnvironment* env = device->getGUIEnvironment();
-
-	driver->setTextureCreationFlag(video::ETCF_ALWAYS_32_BIT, true);
-
-	// add irrlicht logo
-	env->addImage(driver->getTexture("../../media/irrlichtlogoalpha.tga"),
-		core::position2d<s32>(10,10));
-		
-	// add camera
-	scene::ICameraSceneNode* camera = 
-		smgr->addCameraSceneNodeFPS(0,100.0f,300.0f);
-	camera->setPosition(core::vector3df(-200,200,-200));
-
-	// disable mouse cursor
-	device->getCursorControl()->setVisible(false);</pre></td>
-            </tr>
-          </table>
-          <br>
-          Because we want the whole scene to look a little bit scarier, we add 
-          some fog to it. This is done by a call to IVideoDriver::setFog(). There 
-          you can set<br>
-          various fog settings. In this example, we use pixel fog, because it 
-          will work well with the materials we'll use in this example. Please 
-          note that you will have to set the material flag EMF_FOG_ENABLE to 'true' 
-          in every scene node which should be affected by this fog.<br>
-          <br>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>driver-&gt;setFog(video::SColor(0,138,125,81), true, 250, 1000, 0, true);<br></pre></td>
-            </tr>
-          </table>
-          <br>
-          To be able to display something interesting, we load a mesh from a .3ds 
-          file which is a room I modeled with anim8or. It is the same room as 
-          <br>
-          from the specialFX example. Maybe you remember from that tutorial, I 
-          am no good modeler at all and so I totally messed up the texture mapping 
-          in this model, but we can simply repair it with the IMeshManipulator::makePlanarTextureMapping() 
-          method.<br>
-          <br>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>	scene::IAnimatedMesh* roomMesh = smgr->getMesh(
-		"../../media/room.3ds");
-	scene::ISceneNode* room = 0;
-
-	if (roomMesh)
-	{
-		smgr->getMeshManipulator()->makePlanarTextureMapping(
-				roomMesh->getMesh(0), 0.003f);</pre></td>
-            </tr>
-          </table>
-          <br>
-          Now for the first exciting thing: If we successfully loaded the mesh 
-          we need to apply textures to it. Because we want this room to be displayed 
-          with a very cool material, we have to do a little bit more than just 
-          set the textures. Instead of only loading a color map as usual, we also 
-          load a height map which is simply a grayscale texture. From this height 
-          map, we create a normal map which we will set as second texture of the 
-          room. If you already have a normal map, you could directly set it, but 
-          I simply didn&acute;t find a nice normal map for this texture. The normal 
-          map texture is being generated by the makeNormalMapTexture method<br>
-          of the VideoDriver. The second parameter specifies the height of the 
-          heightmap. If you set it to a bigger value, the map will look more rocky.<br>
-          <br>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>		video::ITexture* colorMap = driver->getTexture("../../media/rockwall.bmp");
-		video::ITexture* normalMap = driver->getTexture("../../media/rockwall_height.bmp");
-		
-		driver->makeNormalMapTexture(normalMap, 9.0f);</pre></td>
-            </tr>
-          </table>
-          <br>
-          But just setting color and normal map is not everything. The material 
-          we want to use needs some additional informations per vertex like tangents 
-          and binormals.<br>
-          Because we are too lazy to calculate that information now, we let Irrlicht 
-          do this for us. That's why we call IMeshManipulator::createMeshWithTangents(). 
-          It<br>
-          creates a mesh copy with tangents and binormals from any other mesh. 
-          After we've done that, we simply create a standard mesh scene node with 
-          this<br>
-          mesh copy, set color and normal map and adjust some other material settings. 
-          Note that we set EMF_FOG_ENABLE to true to enable fog in the room.<br>
-          <br>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>scene::IMesh* tangentMesh = smgr-&gt;getMeshManipulator()-&gt;createMeshWithTangents(<br>			roomMesh-&gt;getMesh(0));<br>			<br>		room = smgr-&gt;addMeshSceneNode(tangentMesh);<br>		room-&gt;setMaterialTexture(0,	colorMap);<br>		room-&gt;setMaterialTexture(1,	normalMap);<br>		room-&gt;getMaterial(0).SpecularColor.set(0,0,0,0);<br>		room-&gt;setMaterialFlag(video::EMF_FOG_ENABLE, true);<br>		room-&gt;setMaterialType(video::EMT_PARALLAX_MAP_SOLID); <br>		room-&gt;getMaterial(0).MaterialTypeParam = 0.02f; // adjust height for parallax effect<br>		// drop mesh because we created it with a create.. call.<br>		tangentMesh-&gt;drop();<br>	}<br></pre></td>
-            </tr>
-          </table>
-          <br>
-          After we've created a room shaded by per pixel lighting, we add a sphere 
-          into it with the same material, but we'll make it transparent. In addition,<br>
-          because the sphere looks somehow like a familiar planet, we make it 
-          rotate. The procedure is similar as before. The difference is that we 
-          are loading <br>
-          the mesh from an .x file which already contains a color map so we do 
-          not need to load it manually. But the sphere is a little bit too small 
-          for our needs, so we scale it by the factor 50.<br>
-          <br>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>// add earth sphere
-
-	scene::IAnimatedMesh* earthMesh = smgr->getMesh("../../media/earth.x");
-	if (earthMesh)
-	{
-		// create mesh copy with tangent informations from original earth.x mesh
-		scene::IMesh* tangentSphereMesh = 
-			smgr->getMeshManipulator()->createMeshWithTangents(earthMesh->getMesh(0));
-
-		// set the alpha value of all vertices to 200
-		smgr->getMeshManipulator()->setVertexColorAlpha(tangentSphereMesh, 200);
-		
-		// scale the mesh by factor 50
-		smgr->getMeshManipulator()->scaleMesh(
-			tangentSphereMesh, core::vector3df(50,50,50));
-
-		// create mesh scene node
-		scene::ISceneNode* sphere = smgr->addMeshSceneNode(tangentSphereMesh);
-		sphere->setPosition(core::vector3df(-70,130,45));
-
-		// load heightmap, create normal map from it and set it
-		video::ITexture* earthNormalMap = driver->getTexture("../../media/earthbump.bmp");
-		driver->makeNormalMapTexture(earthNormalMap, 20.0f);
-		sphere->setMaterialTexture(1, earthNormalMap);
-
-		// adjust material settings
-		sphere->setMaterialFlag(video::EMF_FOG_ENABLE, true);
-		sphere->setMaterialType(video::EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA); 
-
-		// add rotation animator
-		scene::ISceneNodeAnimator* anim =
-			smgr->createRotationAnimator(core::vector3df(0,0.1f,0));	
-		sphere->addAnimator(anim);
-		anim->drop();
-
-		// drop mesh because we created it with a create.. call.
-		tangentSphereMesh->drop();
-	}</pre></td>
-            </tr>
-          </table>
-          <br>
-          Per pixel lighted materials only look cool when there are moving lights. 
-          So we add some. And because moving lights alone are so boring, we add 
-          billboards <br>
-          to them, and a whole particle system to one of them. We start with the 
-          first light which is red and has only the billboard attached.<br>
-          <br>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>// add light 1 (nearly red)
-	scene::ILightSceneNode* light1 = 
-		smgr->addLightSceneNode(0, core::vector3df(0,0,0), 
-		video::SColorf(0.5f, 1.0f, 0.5f, 0.0f), 200.0f);
-
-	// add fly circle animator to light 1
-	scene::ISceneNodeAnimator* anim = 
-		smgr->createFlyCircleAnimator (core::vector3df(50,300,0),190.0f, -0.003f);
-	light1->addAnimator(anim);
-	anim->drop();
-
-	// attach billboard to the light
-	scene::ISceneNode* bill = 
-		smgr->addBillboardSceneNode(light1, core::dimension2d<f32>(60, 60));
-
-	bill->setMaterialFlag(video::EMF_LIGHTING, false);
-	bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
-	bill->setMaterialTexture(0, driver->getTexture("../../media/particlered.bmp"));</pre></td>
-            </tr>
-          </table>
-          <br>
-          Now the same again, with the second light. The difference is that we 
-          add a particle system to it too. And because the light moves, the particles 
-          of the particlesystem will follow. If you want to know more about how 
-          particle systems are created in Irrlicht, take a look at the specialFx 
-          example.<br>
-          Maybe you will have noticed that we only add 2 lights, this has a simple 
-          reason: The low end version of this material was written in ps1.1 and 
-          vs1.1, which doesn't allow more lights. You could add a third light 
-          to the scene, but it won't be used to shade the walls. But of course, 
-          this will change in future versions of Irrlicht were higher versions 
-          of pixel/vertex shaders will be implemented too.<br>
-          <br>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>// add light 2 (gray)
-	scene::ISceneNode* light2 = 
-		smgr->addLightSceneNode(0, core::vector3df(0,0,0), 
-		video::SColorf(1.0f, 0.2f, 0.2f, 0.0f), 200.0f);
-
-	// add fly circle animator to light 2
-	anim = smgr->createFlyCircleAnimator (core::vector3df(0,150,0),200.0f); 
-	light2->addAnimator(anim);
-	anim->drop();
-
-	// attach billboard to light
-	bill = smgr->addBillboardSceneNode(light2, core::dimension2d<f32>(120, 120));
-	bill->setMaterialFlag(video::EMF_LIGHTING, false);
-	bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
-	bill->setMaterialTexture(0, driver->getTexture("../../media/particlewhite.bmp"));
-
-	// add particle system
-	scene::IParticleSystemSceneNode* ps = 
-		smgr->addParticleSystemSceneNode(false, light2);
-
-	ps->setParticleSize(core::dimension2d<f32>(30.0f, 40.0f));
-
-	// create and set emitter
-	scene::IParticleEmitter* em = ps->createBoxEmitter(
-		core::aabbox3d<f32>(-3,0,-3,3,1,3), 
-		core::vector3df(0.0f,0.03f,0.0f),
-		80,100, 
-		video::SColor(0,255,255,255), video::SColor(0,255,255,255),
-		400,1100);
-	ps->setEmitter(em);
-	em->drop();
-
-	// create and set affector
-	scene::IParticleAffector* paf = ps->createFadeOutParticleAffector();
-	ps->addAffector(paf);
-	paf->drop();
-
-	// adjust some material settings
-	ps->setMaterialFlag(video::EMF_LIGHTING, false);
-	ps->setMaterialTexture(0, driver->getTexture("../../media/fireball.bmp"));
-	ps->setMaterialType(video::EMT_TRANSPARENT_VERTEX_ALPHA);
-
-
-	MyEventReceiver receiver(room, env, driver);
-	device->setEventReceiver(&receiver);</pre></td>
-            </tr>
-          </table>
-          <br>
-          Finally, draw everything. That's it.<br>
-          <br>
-          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-            <tr> 
-              <td> <pre>int lastFPS = -1;
-
-	while(device->run())
-	if (device->isWindowActive())
-	{
-		driver->beginScene(true, true, 0);
-
-		smgr->drawAll();
-		env->drawAll();
-
-		driver->endScene();
-
-		int fps = driver->getFPS();
-
-		if (lastFPS != fps)
-		{
-		  core::stringw str = L"Per pixel lighting example - Irrlicht Engine [";
-		  str += driver->getName();
-		  str += "] FPS:";
-		  str += fps;
-
-		  device->setWindowCaption(str.c_str());
-		  lastFPS = fps;
-		}
-	}
-
-	device->drop();
-	
-	return 0;
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Tutorial 11: Per-Pixel Lighting</title>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- Wanted to avoid copying .css to each folder, so copied default .css from doxyen in here, kicked out most stuff we don't need for examples and modified some a little bit. 
+     Target was having a single html in each example folder which is created from the main.cpp files and needs no files besides some images below media folder.
+     Feel free to improve :)
+	 -->
+<style>
+body, table, div, p, dl {
+	font: 400 14px/22px;
 }
-</pre></td>
-            </tr>
-          </table>
-          <br>
-        </div>
-      </div>
-      </td>
-  </tr>
-</table>
+body {
+	background-color: #F0F0F0;
+	color: black;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+p.reference, p.definition {
+	font: 400 14px/22px;
+}
+.title {
+	font: 400 14px/28px;
+	font-size: 150%;
+	font-weight: bold;
+	margin: 10px 2px;
+}
+h1, h2, h3, h4, h5, h6 {
+	-webkit-transition: text-shadow 0.5s linear;
+	-moz-transition: text-shadow 0.5s linear;
+	-ms-transition: text-shadow 0.5s linear;
+	-o-transition: text-shadow 0.5s linear;
+	transition: text-shadow 0.5s linear;
+	margin-right: 15px;
+}
+caption {
+	font-weight: bold;
+}
+h3.version {
+	font-size: 90%;
+	text-align: center;
+}
+a {
+	color: #3D578C;
+	font-weight: normal;
+	text-decoration: none;
+}
+.contents a:visited {
+	color: #4665A2;
+}
+a:hover {
+	text-decoration: underline;
+}
+a.el {
+	font-weight: bold;
+}
+a.code, a.code:visited, a.line, a.line:visited {
+	color: #4665A2; 
+}
+a.codeRef, a.codeRef:visited, a.lineRef, a.lineRef:visited {
+	color: #4665A2; 
+}
+pre.fragment {
+	border: 1px solid #C4CFE5;
+	background-color: #FBFCFD;
+	padding: 4px 6px;
+	margin: 4px 8px 4px 2px;
+	overflow: auto;
+	word-wrap: break-word;
+	font-size:  9pt;
+	line-height: 125%;
+	font-family: monospace, fixed;
+	font-size: 105%;
+}
+div.fragment {
+	padding: 0px;
+	margin: 4px 8px 4px 2px;
+	background-color: #FBFCFD;
+	border: 1px solid #C4CFE5;
+}
+div.line {
+	font-family: monospace, fixed;
+	font-size: 13px;
+	min-height: 13px;
+	line-height: 1.0;
+	text-wrap: unrestricted;
+	white-space: -moz-pre-wrap; /* Moz */
+	white-space: -pre-wrap;     /* Opera 4-6 */
+	white-space: -o-pre-wrap;   /* Opera 7 */
+	white-space: pre-wrap;      /* CSS3  */
+	word-wrap: break-word;      /* IE 5.5+ */
+	text-indent: -53px;
+	padding-left: 53px;
+	padding-bottom: 0px;
+	margin: 0px;
+	-webkit-transition-property: background-color, box-shadow;
+	-webkit-transition-duration: 0.5s;
+	-moz-transition-property: background-color, box-shadow;
+	-moz-transition-duration: 0.5s;
+	-ms-transition-property: background-color, box-shadow;
+	-ms-transition-duration: 0.5s;
+	-o-transition-property: background-color, box-shadow;
+	-o-transition-duration: 0.5s;
+	transition-property: background-color, box-shadow;
+	transition-duration: 0.5s;
+}
+div.contents {
+	margin-top: 10px;
+	margin-left: 12px;
+	margin-right: 8px;
+}
+div.center {
+	text-align: center;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding: 0px;
+}
+div.center img {
+	border: 0px;
+}
+span.keyword {
+	color: #008000
+}
+span.keywordtype {
+	color: #604020
+}
+span.keywordflow {
+	color: #e08000
+}
+span.comment {
+	color: #800000
+}
+span.preprocessor {
+	color: #806020
+}
+span.stringliteral {
+	color: #002080
+}
+span.charliteral {
+	color: #008080
+}
+blockquote {
+	background-color: #F7F8FB;
+	border-left: 2px solid #9CAFD4;
+	margin: 0 24px 0 4px;
+	padding: 0 12px 0 16px;
+}
+hr {
+	height: 0px;
+	border: none;
+	border-top: 1px solid #4A6AAA;
+}
+address {
+	font-style: normal;
+	color: #2A3D61;
+}
+div.header {
+	background-image:url('nav_h.png');
+	background-repeat:repeat-x;
+	background-color: #F9FAFC;
+	margin:  0px;
+	border-bottom: 1px solid #C4CFE5;
+}
+div.headertitle {
+	padding: 5px 5px 5px 10px;
+}
+.image {
+	text-align: center;
+}
+.caption {
+	font-weight: bold;
+}
+div.zoom {
+	border: 1px solid #90A5CE;
+}
+tr.heading h2 {
+	margin-top: 12px;
+	margin-bottom: 4px;
+}
+</style>
+</head>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!--END TITLEAREA-->
+<!-- end header part -->
+<!-- Generated by Doxygen 1.8.13 -->
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">Tutorial 11: Per-Pixel Lighting </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><div class="image">
+<img src="../../media/example_screenshots/011shot.jpg" alt="011shot.jpg"/>
+</div>
+ <p>This tutorial shows how to use one of the built in more complex materials in irrlicht: Per pixel lighted surfaces using normal maps and parallax mapping. It will also show how to use fog and moving particle systems. And don't panic: You do not need any experience with shaders to use these materials in Irrlicht.</p>
+<p>At first, we need to include all headers and do the stuff we always do, like in nearly all other tutorials. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;irrlicht.h&gt;</span></div><div class="line"><span class="preprocessor">#include &quot;driverChoice.h&quot;</span></div><div class="line"><span class="preprocessor">#include &quot;exampleHelper.h&quot;</span></div><div class="line"></div><div class="line"><span class="keyword">using namespace </span>irr;</div><div class="line"></div><div class="line"><span class="preprocessor">#ifdef _MSC_VER</span></div><div class="line"><span class="preprocessor">#pragma comment(lib, &quot;Irrlicht.lib&quot;)</span></div><div class="line"><span class="preprocessor">#endif</span></div></div><!-- fragment --><p> For this example, we need an event receiver, to make it possible for the user to switch between the three available material types. In addition, the event receiver will create some small GUI window which displays what material is currently being used. There is nothing special done in this class, so maybe you want to skip reading it. </p><div class="fragment"><div class="line"><span class="keyword">class </span>MyEventReceiver : <span class="keyword">public</span> IEventReceiver</div><div class="line">{</div><div class="line"><span class="keyword">public</span>:</div><div class="line"></div><div class="line">    MyEventReceiver(scene::ISceneNode* room,scene::ISceneNode* earth,</div><div class="line">        gui::IGUIEnvironment* env, video::IVideoDriver* driver)</div><div class="line">    {</div><div class="line">        <span class="comment">// store pointer to room so we can change its drawing mode</span></div><div class="line">        Room = room;</div><div class="line">        Earth = earth;</div><div class="line">        Driver = driver;</div><div class="line"></div><div class="line">        <span class="comment">// set a nicer font</span></div><div class="line">        gui::IGUISkin* skin = env-&gt;getSkin();</div><div class="line">        gui::IGUIFont* font = env-&gt;getFont(getExampleMediaPath() + <span class="stringliteral">&quot;fonthaettenschweiler.bmp&quot;</span>);</div><div class="line">        <span class="keywordflow">if</span> (font)</div><div class="line">            skin-&gt;setFont(font);</div><div class="line"></div><div class="line">        <span class="comment">// add window and listbox</span></div><div class="line">        gui::IGUIWindow* window = env-&gt;addWindow(</div><div class="line">            core::rect&lt;s32&gt;(460,375,630,470), <span class="keyword">false</span>, L<span class="stringliteral">&quot;Use &#39;E&#39; + &#39;R&#39; to change&quot;</span>);</div><div class="line"></div><div class="line">        ListBox = env-&gt;addListBox(</div><div class="line">            core::rect&lt;s32&gt;(2,22,165,88), window);</div><div class="line"></div><div class="line">        ListBox-&gt;addItem(L<span class="stringliteral">&quot;Diffuse&quot;</span>);</div><div class="line">        ListBox-&gt;addItem(L<span class="stringliteral">&quot;Bump mapping&quot;</span>);</div><div class="line">        ListBox-&gt;addItem(L<span class="stringliteral">&quot;Parallax mapping&quot;</span>);</div><div class="line">        ListBox-&gt;setSelected(1);</div><div class="line"></div><div class="line">        <span class="comment">// create problem text</span></div><div class="line">        ProblemText = env-&gt;addStaticText(</div><div class="line">            L<span class="stringliteral">&quot;Your hardware or this renderer is not able to use the &quot;</span>\</div><div class="line">            L<span class="stringliteral">&quot;needed shaders for this material. Using fall back materials.&quot;</span>,</div><div class="line">            core::rect&lt;s32&gt;(150,20,470,80));</div><div class="line"></div><div class="line">        ProblemText-&gt;setOverrideColor(video::SColor(100,255,255,255));</div><div class="line"></div><div class="line">        <span class="comment">// set start material (prefer parallax mapping if available)</span></div><div class="line">        video::IMaterialRenderer* renderer =</div><div class="line">            Driver-&gt;getMaterialRenderer(video::EMT_PARALLAX_MAP_SOLID);</div><div class="line">        <span class="keywordflow">if</span> (renderer &amp;&amp; renderer-&gt;getRenderCapability() == 0)</div><div class="line">            ListBox-&gt;setSelected(2);</div><div class="line"></div><div class="line">        <span class="comment">// set the material which is selected in the listbox</span></div><div class="line">        setMaterial();</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="keywordtype">bool</span> OnEvent(<span class="keyword">const</span> SEvent&amp; event)</div><div class="line">    {</div><div class="line">        <span class="comment">// check if user presses the key &#39;E&#39; or &#39;R&#39;</span></div><div class="line">        <span class="keywordflow">if</span> (event.EventType == irr::EET_KEY_INPUT_EVENT &amp;&amp;</div><div class="line">            !event.KeyInput.PressedDown &amp;&amp; Room &amp;&amp; ListBox)</div><div class="line">        {</div><div class="line">            <span class="comment">// change selected item in listbox</span></div><div class="line"></div><div class="line">            <span class="keywordtype">int</span> sel = ListBox-&gt;getSelected();</div><div class="line">            <span class="keywordflow">if</span> (event.KeyInput.Key == irr::KEY_KEY_R)</div><div class="line">                ++sel;</div><div class="line">            <span class="keywordflow">else</span></div><div class="line">            <span class="keywordflow">if</span> (event.KeyInput.Key == irr::KEY_KEY_E)</div><div class="line">                --sel;</div><div class="line">            <span class="keywordflow">else</span></div><div class="line">                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div><div class="line"></div><div class="line">            <span class="keywordflow">if</span> (sel &gt; 2) sel = 0;</div><div class="line">            <span class="keywordflow">if</span> (sel &lt; 0) sel = 2;</div><div class="line">            ListBox-&gt;setSelected(sel);</div><div class="line"></div><div class="line">            <span class="comment">// set the material which is selected in the listbox</span></div><div class="line">            setMaterial();</div><div class="line">        }</div><div class="line"></div><div class="line">        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line"></div><div class="line">    <span class="comment">// sets the material of the room mesh the the one set in the</span></div><div class="line">    <span class="comment">// list box.</span></div><div class="line">    <span class="keywordtype">void</span> setMaterial()</div><div class="line">    {</div><div class="line">        video::E_MATERIAL_TYPE type = video::EMT_SOLID;</div><div class="line"></div><div class="line">        <span class="comment">// change material setting</span></div><div class="line">        <span class="keywordflow">switch</span>(ListBox-&gt;getSelected())</div><div class="line">        {</div><div class="line">        <span class="keywordflow">case</span> 0: type = video::EMT_SOLID;</div><div class="line">            <span class="keywordflow">break</span>;</div><div class="line">        <span class="keywordflow">case</span> 1: type = video::EMT_NORMAL_MAP_SOLID;</div><div class="line">            <span class="keywordflow">break</span>;</div><div class="line">        <span class="keywordflow">case</span> 2: type = video::EMT_PARALLAX_MAP_SOLID;</div><div class="line">            <span class="keywordflow">break</span>;</div><div class="line">        }</div><div class="line"></div><div class="line">        Room-&gt;setMaterialType(type);</div><div class="line"></div><div class="line">        <span class="comment">// change material setting</span></div><div class="line">        <span class="keywordflow">switch</span>(ListBox-&gt;getSelected())</div><div class="line">        {</div><div class="line">        <span class="keywordflow">case</span> 0: type = video::EMT_TRANSPARENT_VERTEX_ALPHA;</div><div class="line">            <span class="keywordflow">break</span>;</div><div class="line">        <span class="keywordflow">case</span> 1: type = video::EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA;</div><div class="line">            <span class="keywordflow">break</span>;</div><div class="line">        <span class="keywordflow">case</span> 2: type = video::EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA;</div><div class="line">            <span class="keywordflow">break</span>;</div><div class="line">        }</div><div class="line"></div><div class="line">        Earth-&gt;setMaterialType(type);</div></div><!-- fragment --><p> We need to add a warning if the materials will not be able to be displayed 100% correctly. This is no problem, they will be rendered using fall back materials, but at least the user should know that it would look better on better hardware. We simply check if the material renderer is able to draw at full quality on the current hardware. The IMaterialRenderer::getRenderCapability() returns 0 if this is the case. </p><div class="fragment"><div class="line">        video::IMaterialRenderer* renderer = Driver-&gt;getMaterialRenderer(type);</div><div class="line"></div><div class="line">        <span class="comment">// display some problem text when problem</span></div><div class="line">        <span class="keywordflow">if</span> (!renderer || renderer-&gt;getRenderCapability() != 0)</div><div class="line">            ProblemText-&gt;setVisible(<span class="keyword">true</span>);</div><div class="line">        <span class="keywordflow">else</span></div><div class="line">            ProblemText-&gt;setVisible(<span class="keyword">false</span>);</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line"></div><div class="line">    gui::IGUIStaticText* ProblemText;</div><div class="line">    gui::IGUIListBox* ListBox;</div><div class="line"></div><div class="line">    scene::ISceneNode* Room;</div><div class="line">    scene::ISceneNode* Earth;</div><div class="line">    video::IVideoDriver* Driver;</div><div class="line">};</div></div><!-- fragment --><p> Now for the real fun. We create an Irrlicht Device and start to setup the scene. </p><div class="fragment"><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div><div class="line">    <span class="comment">// ask user for driver</span></div><div class="line">    video::E_DRIVER_TYPE driverType=driverChoiceConsole();</div><div class="line">    <span class="keywordflow">if</span> (driverType==video::EDT_COUNT)</div><div class="line">        <span class="keywordflow">return</span> 1;</div><div class="line"></div><div class="line">    <span class="comment">// create device</span></div><div class="line"></div><div class="line">    IrrlichtDevice* device = createDevice(driverType,</div><div class="line">            core::dimension2d&lt;u32&gt;(640, 480));</div><div class="line"></div><div class="line">    <span class="keywordflow">if</span> (device == 0)</div><div class="line">        <span class="keywordflow">return</span> 1; <span class="comment">// could not create selected driver.</span></div></div><!-- fragment --><p> Before we start with the interesting stuff, we do some simple things: Store pointers to the most important parts of the engine (video driver, scene manager, gui environment) to safe us from typing too much, add an irrlicht engine logo to the window and a user controlled first person shooter style camera. Also, we let the engine know that it should store all textures in 32 bit. This necessary because for parallax mapping, we need 32 bit textures. </p><div class="fragment"><div class="line">video::IVideoDriver* driver = device-&gt;getVideoDriver();</div><div class="line">scene::ISceneManager* smgr = device-&gt;getSceneManager();</div><div class="line">gui::IGUIEnvironment* env = device-&gt;getGUIEnvironment();</div><div class="line"></div><div class="line">driver-&gt;setTextureCreationFlag(video::ETCF_ALWAYS_32_BIT, <span class="keyword">true</span>);</div><div class="line"></div><div class="line"><span class="keyword">const</span> io::path mediaPath = getExampleMediaPath();</div><div class="line"></div><div class="line"><span class="comment">// add irrlicht logo</span></div><div class="line">env-&gt;addImage(driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;irrlichtlogo3.png&quot;</span>),</div><div class="line">    core::position2d&lt;s32&gt;(10,10));</div><div class="line"></div><div class="line"><span class="comment">// add camera</span></div><div class="line">scene::ICameraSceneNode* camera = smgr-&gt;addCameraSceneNodeFPS();</div><div class="line">camera-&gt;setPosition(core::vector3df(-200,200,-200));</div><div class="line"></div><div class="line"><span class="comment">// disable mouse cursor</span></div><div class="line">device-&gt;getCursorControl()-&gt;setVisible(<span class="keyword">false</span>);</div></div><!-- fragment --><p> Because we want the whole scene to look a little bit scarier, we add some fog to it. This is done by a call to IVideoDriver::setFog(). There you can set various fog settings. In this example, we use pixel fog, because it will work well with the materials we'll use in this example. Please note that you will have to set the material flag EMF_FOG_ENABLE to 'true' in every scene node which should be affected by this fog. </p><div class="fragment"><div class="line">driver-&gt;setFog(video::SColor(0,138,125,81), video::EFT_FOG_LINEAR, 250, 1000, .003f, <span class="keyword">true</span>, <span class="keyword">false</span>);</div></div><!-- fragment --><p> To be able to display something interesting, we load a mesh from a .3ds file which is a room I modeled with anim8or. It is the same room as from the specialFX example. Maybe you remember from that tutorial, I am no good modeler at all and so I totally messed up the texture mapping in this model, but we can simply repair it with the IMeshManipulator::makePlanarTextureMapping() method. </p><div class="fragment"><div class="line">scene::IAnimatedMesh* roomMesh = smgr-&gt;getMesh(mediaPath + <span class="stringliteral">&quot;room.3ds&quot;</span>);</div><div class="line">scene::ISceneNode* room = 0;</div><div class="line">scene::ISceneNode* earth = 0;</div><div class="line"></div><div class="line"><span class="keywordflow">if</span> (roomMesh)</div><div class="line">{</div><div class="line">    <span class="comment">// The room mesh doesn&#39;t have proper texture mapping on the</span></div><div class="line">    <span class="comment">// floor, so we can recreate the mapping on runtime.</span></div><div class="line">    smgr-&gt;getMeshManipulator()-&gt;makePlanarTextureMapping(</div><div class="line">            roomMesh-&gt;getMesh(0), 0.003f);</div></div><!-- fragment --><p> Now for the first exciting thing: If we successfully loaded the mesh we need to apply textures to it. Because we want this room to be displayed with a very cool material, we have to do a little bit more than just set the textures. Instead of only loading a color map as usual, we also load a height map which is simply a grayscale texture. From this height map, we create a normal map which we will set as second texture of the room. If you already have a normal map, you could directly set it, but I simply didn't find a nice normal map for this texture. The normal map texture is being generated by the makeNormalMapTexture method of the VideoDriver. The second parameter specifies the height of the heightmap. If you set it to a bigger value, the map will look more rocky. </p><div class="fragment"><div class="line">video::ITexture* normalMap =</div><div class="line">    driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;rockwall_height.bmp&quot;</span>);</div><div class="line"></div><div class="line"><span class="keywordflow">if</span> (normalMap)</div><div class="line">    driver-&gt;makeNormalMapTexture(normalMap, 9.0f);</div></div><!-- fragment --><p> But just setting color and normal map is not everything. The material we want to use needs some additional information per vertex like tangents and binormals. Because we are too lazy to calculate that information now, we let Irrlicht do this for us. That's why we call IMeshManipulator::createMeshWithTangents(). It creates a mesh copy with tangents and binormals from another mesh. After we've done that, we simply create a standard mesh scene node with this mesh copy, set color and normal map and adjust some other material settings. Note that we set EMF_FOG_ENABLE to true to enable fog in the room. </p><div class="fragment"><div class="line">    scene::IMesh* tangentMesh = smgr-&gt;getMeshManipulator()-&gt;</div><div class="line">            createMeshWithTangents(roomMesh-&gt;getMesh(0));</div><div class="line"></div><div class="line">    room = smgr-&gt;addMeshSceneNode(tangentMesh);</div><div class="line">    room-&gt;setMaterialTexture(0,</div><div class="line">            driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;rockwall.jpg&quot;</span>));</div><div class="line">    room-&gt;setMaterialTexture(1, normalMap);</div><div class="line"></div><div class="line">    <span class="comment">// Stones don&#39;t glitter.. (but specular highlight for EMT_SOLID)</span></div><div class="line">    <span class="comment">//room-&gt;getMaterial(0).SpecularColor.set(0,0,0,0);</span></div><div class="line">    <span class="comment">//room-&gt;getMaterial(0).Shininess = 0.f;</span></div><div class="line"></div><div class="line">    room-&gt;setMaterialFlag(video::EMF_FOG_ENABLE, <span class="keyword">true</span>);</div><div class="line">    room-&gt;setMaterialType(video::EMT_PARALLAX_MAP_SOLID);</div><div class="line">    <span class="comment">// adjust height for parallax effect</span></div><div class="line">    room-&gt;getMaterial(0).MaterialTypeParam = 1.f / 64.f;</div><div class="line"></div><div class="line">    <span class="comment">// drop mesh because we created it with a create.. call.</span></div><div class="line">    tangentMesh-&gt;drop();</div><div class="line">}</div></div><!-- fragment --><p> After we've created a room shaded by per pixel lighting, we add a sphere into it with the same material, but we'll make it transparent. In addition, because the sphere looks somehow like a familiar planet, we make it rotate. The procedure is similar as before. The difference is that we are loading the mesh from an .x file which already contains a color map so we do not need to load it manually. But the sphere is a little bit too small for our needs, so we scale it by the factor 50. </p><div class="fragment"><div class="line"><span class="comment">// add earth sphere</span></div><div class="line"></div><div class="line">scene::IAnimatedMesh* earthMesh = smgr-&gt;getMesh(mediaPath + <span class="stringliteral">&quot;earth.x&quot;</span>);</div><div class="line"><span class="keywordflow">if</span> (earthMesh)</div><div class="line">{</div><div class="line">    <span class="comment">//perform various tasks with the mesh manipulator</span></div><div class="line">    scene::IMeshManipulator *manipulator = smgr-&gt;getMeshManipulator();</div><div class="line"></div><div class="line">    <span class="comment">// create mesh copy with tangent information from original earth.x mesh</span></div><div class="line">    scene::IMesh* tangentSphereMesh =</div><div class="line">        manipulator-&gt;createMeshWithTangents(earthMesh-&gt;getMesh(0));</div><div class="line"></div><div class="line">    <span class="comment">// set the alpha value of all vertices to 200</span></div><div class="line">    manipulator-&gt;setVertexColorAlpha(tangentSphereMesh, 200);</div><div class="line"></div><div class="line">    <span class="comment">// scale the mesh by factor 50</span></div><div class="line">    core::matrix4 m;</div><div class="line">    m.setScale ( core::vector3df(50,50,50) );</div><div class="line">    manipulator-&gt;transform( tangentSphereMesh, m );</div><div class="line"></div><div class="line">    earth = smgr-&gt;addMeshSceneNode(tangentSphereMesh);</div><div class="line"></div><div class="line">    earth-&gt;setPosition(core::vector3df(-70,130,45));</div><div class="line"></div><div class="line">    <span class="comment">// load heightmap, create normal map from it and set it</span></div><div class="line">    video::ITexture* earthNormalMap = driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;earthbump.jpg&quot;</span>);</div><div class="line">    <span class="keywordflow">if</span> (earthNormalMap)</div><div class="line">    {</div><div class="line">        driver-&gt;makeNormalMapTexture(earthNormalMap, 20.0f);</div><div class="line">        earth-&gt;setMaterialTexture(1, earthNormalMap);</div><div class="line">        earth-&gt;setMaterialType(video::EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA);</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// adjust material settings</span></div><div class="line">    earth-&gt;setMaterialFlag(video::EMF_FOG_ENABLE, <span class="keyword">true</span>);</div><div class="line"></div><div class="line">    <span class="comment">// add rotation animator</span></div><div class="line">    scene::ISceneNodeAnimator* anim =</div><div class="line">        smgr-&gt;createRotationAnimator(core::vector3df(0,0.1f,0));</div><div class="line">    earth-&gt;addAnimator(anim);</div><div class="line">    anim-&gt;drop();</div><div class="line"></div><div class="line">    <span class="comment">// drop mesh because we created it with a create.. call.</span></div><div class="line">    tangentSphereMesh-&gt;drop();</div><div class="line">}</div></div><!-- fragment --><p> Per pixel lighted materials only look cool when there are moving lights. So we add some. And because moving lights alone are so boring, we add billboards to them, and a whole particle system to one of them. We start with the first light which is red and has only the billboard attached. </p><div class="fragment"><div class="line"><span class="comment">// add light 1 (more green)</span></div><div class="line">scene::ILightSceneNode* light1 =</div><div class="line">    smgr-&gt;addLightSceneNode(0, core::vector3df(0,0,0),</div><div class="line">    video::SColorf(0.5f, 1.0f, 0.5f, 0.0f), 400.0f);</div><div class="line"></div><div class="line"><span class="comment">// add fly circle animator to light 1</span></div><div class="line">scene::ISceneNodeAnimator* anim =</div><div class="line">    smgr-&gt;createFlyCircleAnimator (core::vector3df(50,300,0),190.0f, -0.003f);</div><div class="line">light1-&gt;addAnimator(anim);</div><div class="line">anim-&gt;drop();</div><div class="line"></div><div class="line"><span class="comment">// attach billboard to the light</span></div><div class="line">scene::IBillboardSceneNode* bill =</div><div class="line">    smgr-&gt;addBillboardSceneNode(light1, core::dimension2d&lt;f32&gt;(60, 60));</div><div class="line"></div><div class="line">bill-&gt;setMaterialFlag(video::EMF_LIGHTING, <span class="keyword">false</span>);</div><div class="line">bill-&gt;setMaterialFlag(video::EMF_ZWRITE_ENABLE, <span class="keyword">false</span>);</div><div class="line">bill-&gt;setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);</div><div class="line">bill-&gt;setMaterialTexture(0, driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;particlegreen.jpg&quot;</span>));</div></div><!-- fragment --><p> Now the same again, with the second light. The difference is that we add a particle system to it too. And because the light moves, the particles of the particle system will follow. If you want to know more about how particle systems are created in Irrlicht, take a look at the SpecialFX example. Maybe you will have noticed that we only add 2 lights, this has a simple reason: The low end version of this material was written in ps1.1 and vs1.1, which doesn't allow more lights. You could add a third light to the scene, but it won't be used to shade the walls. But of course, this will change in future versions of Irrlicht where higher versions of pixel/vertex shaders will be implemented too. </p><div class="fragment"><div class="line"><span class="comment">// add light 2 (red)</span></div><div class="line">scene::ISceneNode* light2 =</div><div class="line">    smgr-&gt;addLightSceneNode(0, core::vector3df(0,0,0),</div><div class="line">    video::SColorf(1.0f, 0.2f, 0.2f, 0.0f), 400.0f);</div><div class="line"></div><div class="line"><span class="comment">// add fly circle animator to light 2</span></div><div class="line">anim = smgr-&gt;createFlyCircleAnimator(core::vector3df(0,150,0), 200.0f,</div><div class="line">        0.001f, core::vector3df(0.2f, 0.9f, 0.f));</div><div class="line">light2-&gt;addAnimator(anim);</div><div class="line">anim-&gt;drop();</div><div class="line"></div><div class="line"><span class="comment">// attach billboard to light</span></div><div class="line">bill = smgr-&gt;addBillboardSceneNode(light2, core::dimension2d&lt;f32&gt;(120, 120));</div><div class="line">bill-&gt;setMaterialFlag(video::EMF_LIGHTING, <span class="keyword">false</span>);</div><div class="line">bill-&gt;setMaterialFlag(video::EMF_ZWRITE_ENABLE, <span class="keyword">false</span>);</div><div class="line">bill-&gt;setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);</div><div class="line">bill-&gt;setMaterialTexture(0, driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;particlered.bmp&quot;</span>));</div><div class="line"></div><div class="line"><span class="comment">// add particle system</span></div><div class="line">scene::IParticleSystemSceneNode* ps =</div><div class="line">    smgr-&gt;addParticleSystemSceneNode(<span class="keyword">false</span>, light2);</div><div class="line"></div><div class="line"><span class="comment">// create and set emitter</span></div><div class="line">scene::IParticleEmitter* em = ps-&gt;createBoxEmitter(</div><div class="line">    core::aabbox3d&lt;f32&gt;(-3,0,-3,3,1,3),</div><div class="line">    core::vector3df(0.0f,0.03f,0.0f),</div><div class="line">    80,100,</div><div class="line">    video::SColor(10,255,255,255), video::SColor(10,255,255,255),</div><div class="line">    400,1100);</div><div class="line">em-&gt;setMinStartSize(core::dimension2d&lt;f32&gt;(30.0f, 40.0f));</div><div class="line">em-&gt;setMaxStartSize(core::dimension2d&lt;f32&gt;(30.0f, 40.0f));</div><div class="line"></div><div class="line">ps-&gt;setEmitter(em);</div><div class="line">em-&gt;drop();</div><div class="line"></div><div class="line"><span class="comment">// create and set affector</span></div><div class="line">scene::IParticleAffector* paf = ps-&gt;createFadeOutParticleAffector();</div><div class="line">ps-&gt;addAffector(paf);</div><div class="line">paf-&gt;drop();</div><div class="line"></div><div class="line"><span class="comment">// adjust some material settings</span></div><div class="line">ps-&gt;setMaterialFlag(video::EMF_LIGHTING, <span class="keyword">false</span>);</div><div class="line">ps-&gt;setMaterialFlag(video::EMF_ZWRITE_ENABLE, <span class="keyword">false</span>);</div><div class="line">ps-&gt;setMaterialTexture(0, driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;fireball.bmp&quot;</span>));</div><div class="line">ps-&gt;setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);</div><div class="line"></div><div class="line">MyEventReceiver receiver(room, earth, env, driver);</div><div class="line">device-&gt;setEventReceiver(&amp;receiver);</div></div><!-- fragment --><p> Finally, draw everything. That's it. </p><div class="fragment"><div class="line">    <span class="keywordtype">int</span> lastFPS = -1;</div><div class="line"></div><div class="line">    <span class="keywordflow">while</span>(device-&gt;run())</div><div class="line">    <span class="keywordflow">if</span> (device-&gt;isWindowActive())</div><div class="line">    {</div><div class="line">        driver-&gt;beginScene(video::ECBF_COLOR | video::ECBF_DEPTH, video::SColor(0));</div><div class="line"></div><div class="line">        smgr-&gt;drawAll();</div><div class="line">        env-&gt;drawAll();</div><div class="line"></div><div class="line">        driver-&gt;endScene();</div><div class="line"></div><div class="line">        <span class="keywordtype">int</span> fps = driver-&gt;getFPS();</div><div class="line"></div><div class="line">        <span class="keywordflow">if</span> (lastFPS != fps)</div><div class="line">        {</div><div class="line">            core::stringw str = L<span class="stringliteral">&quot;Per pixel lighting example - Irrlicht Engine [&quot;</span>;</div><div class="line">            str += driver-&gt;getName();</div><div class="line">            str += <span class="stringliteral">&quot;] FPS:&quot;</span>;</div><div class="line">            str += fps;</div><div class="line"></div><div class="line">            device-&gt;setWindowCaption(str.c_str());</div><div class="line">            lastFPS = fps;</div><div class="line">        }</div><div class="line">    }</div><div class="line"></div><div class="line">    device-&gt;drop();</div><div class="line"></div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">}</div></div><!-- fragment --> </div></div><!-- contents -->
+<!-- HTML footer for doxygen 1.8.13-->
+<!-- start footer part -->
 <p>&nbsp;</p>
-      </body>
+</body>
 </html>

@@ -711,11 +711,11 @@ const c8* COBJMeshFileLoader::readColor(const c8* bufPtr, video::SColor& color, 
 	c8 colStr[COLOR_BUFFER_LENGTH];
 
 	bufPtr = goAndCopyNextWord(colStr, bufPtr, COLOR_BUFFER_LENGTH, bufEnd);
-	color.setRed((s32)(core::fast_atof(colStr) * 255.0f));
+	color.setRed((u32)core::round32(core::fast_atof(colStr)*255.f));
 	bufPtr = goAndCopyNextWord(colStr,   bufPtr, COLOR_BUFFER_LENGTH, bufEnd);
-	color.setGreen((s32)(core::fast_atof(colStr) * 255.0f));
+	color.setGreen((u32)core::round32(core::fast_atof(colStr)*255.f));
 	bufPtr = goAndCopyNextWord(colStr,   bufPtr, COLOR_BUFFER_LENGTH, bufEnd);
-	color.setBlue((s32)(core::fast_atof(colStr) * 255.0f));
+	color.setBlue((u32)core::round32(core::fast_atof(colStr)*255.f));
 	return bufPtr;
 }
 

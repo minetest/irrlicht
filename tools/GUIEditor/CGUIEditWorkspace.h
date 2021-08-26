@@ -46,6 +46,9 @@ namespace gui
 		//! Removes a child.
 		virtual void removeChild(IGUIElement* child);
 
+		//! Remove all gui elements from parent except this one
+		virtual void clearParentElements();
+
 		//! draws the element and its children
 		virtual void draw();
 

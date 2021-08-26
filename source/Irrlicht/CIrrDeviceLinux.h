@@ -28,6 +28,10 @@
 #endif
 #include <X11/keysym.h>
 
+#ifdef _IRR_LINUX_X11_XINPUT2_
+#include <X11/extensions/XInput2.h>
+#endif
+
 #else
 #define KeySym s32
 #endif
@@ -121,7 +125,7 @@ namespace irr
 		//! Get the device type
 		virtual E_DEVICE_TYPE getType() const _IRR_OVERRIDE_
 		{
-				return EIDT_X11;
+			return EIDT_X11;
 		}
 
 #ifdef _IRR_COMPILE_WITH_X11_
@@ -215,22 +219,54 @@ namespace irr
 				{
 					if (UseReferenceRect)
 					{
-						XWarpPointer(Device->XDisplay,
-							None,
-							Device->XWindow, 0, 0,
-							Device->Width,
-							Device->Height,
-							ReferenceRect.UpperLeftCorner.X + x,
-							ReferenceRect.UpperLeftCorner.Y + y);
-
+// NOTE: XIWarpPointer works when X11 has set a coordinate transformation matrix for the mouse unlike XWarpPointer
+// which runs into a bug mentioned here: https://gitlab.freedesktop.org/xorg/xserver/-/issues/600
+// So also workaround for Irrlicht bug #450
+#ifdef _IRR_LINUX_X11_XINPUT2_
+						if ( DeviceId != 0)
+						{
+							XIWarpPointer(Device->XDisplay,
+								DeviceId,
+								None,
+								Device->XWindow, 0, 0,
+								Device->Width,
+								Device->Height,
+								ReferenceRect.UpperLeftCorner.X + x,
+								ReferenceRect.UpperLeftCorner.Y + y);
+						}
+						else
+#endif
+						{
+							XWarpPointer(Device->XDisplay,
+								None,
+								Device->XWindow, 0, 0,
+								Device->Width,
+								Device->Height,
+								ReferenceRect.UpperLeftCorner.X + x,
+								ReferenceRect.UpperLeftCorner.Y + y);
+						}
 					}
 					else
 					{
-						XWarpPointer(Device->XDisplay,
-							None,
-							Device->XWindow, 0, 0,
-							Device->Width,
-							Device->Height, x, y);
+#ifdef _IRR_LINUX_X11_XINPUT2_
+						if ( DeviceId != 0)
+						{
+							XIWarpPointer(Device->XDisplay,
+								DeviceId,
+								None,
+								Device->XWindow, 0, 0,
+								Device->Width,
+								Device->Height, x, y);
+						}
+						else
+#endif
+						{
+							XWarpPointer(Device->XDisplay,
+								None,
+								Device->XWindow, 0, 0,
+								Device->Width,
+								Device->Height, x, y);
+						}
 					}
 					XFlush(Device->XDisplay);
 				}
@@ -343,6 +379,10 @@ namespace irr
 			gui::ECURSOR_PLATFORM_BEHAVIOR PlatformBehavior;
 			u32 LastQuery;
 			Cursor InvisCursor;
+
+#ifdef _IRR_LINUX_X11_XINPUT2_
+			int DeviceId;
+#endif
 
 			struct CursorFrameX11
 			{

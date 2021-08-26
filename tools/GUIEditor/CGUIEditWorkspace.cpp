@@ -598,9 +598,14 @@ bool CGUIEditWorkspace::OnEvent(const SEvent &e)
         }
 		// load a gui file
 		case EGET_FILE_SELECTED:
+		{
 			dialog = (IGUIFileOpenDialog*)e.GUIEvent.Caller;
-			Environment->loadGUI(core::stringc(dialog->getFileName()).c_str());
+			core::stringc guiFilename(core::stringc(dialog->getFileName()).c_str());
+			clearParentElements();
+			Environment->loadGUI(guiFilename, Parent);
+			EditorWindow->updateTree();
 			break;
+		}
 
 		case EGET_MENU_ITEM_SELECTED:
 		{
@@ -614,18 +619,7 @@ bool CGUIEditWorkspace::OnEvent(const SEvent &e)
 
 				//! file commands
 				case EGUIEDMC_FILE_NEW:
-					// clear all elements belonging to our parent
-					setSelectedElement(0);
-					MouseOverElement = 0;
-					el = Parent;
-					grab();
-					// remove all children
-					while(Children.end() != el->getChildren().begin())
-						el->removeChild(*(el->getChildren().begin()));
-					// attach to parent again
-					el->addChild(this);
-					drop();
-
+					clearParentElements();
 					break;
 				case EGUIEDMC_FILE_LOAD:
 					Environment->addFileOpenDialog(L"Please select a GUI file to open", false, this);
@@ -843,10 +837,31 @@ void CGUIEditWorkspace::removeChild(IGUIElement* child)
 {
 	IGUIElement::removeChild(child);
 
+	// TODO: Can anyone find out why the workspace removes itself when it has no more children
+	// and document it here?
 	if (Children.empty())
 		remove();
 }
 
+void CGUIEditWorkspace::clearParentElements()
+{
+	setSelectedElement(0);
+	MouseOverElement = 0;
+
+	IGUIElement * el = Parent;
+	grab();
+
+	if ( el->isMyChild(Environment->getFocus()) )
+		Environment->setFocus(0);
+
+	while (!el->getChildren().empty())
+	{
+		el->removeChild(*(el->getChildren().begin()));
+	}
+
+	el->addChild(this);
+	drop();
+}
 
 void CGUIEditWorkspace::updateAbsolutePosition()
 {

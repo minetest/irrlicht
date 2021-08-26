@@ -9,6 +9,26 @@ Changes in ogl-es (not yet released - will be merged with trunk at some point)
 
 --------------------------
 Changes in 1.9 (not yet released)
+- Add equals and set_data functions to core::array for easier working with blocks of data.
+- SIrrlichtCreationParameters::IgnoreInput set to false works again on X11. 
+  Thanks @ Victor Gaydov for report + patch + very good test cases! (bug #401)
+  This had been broken since Irrlicht 1.6
+- Add steer parameter to CSceneNodeAnimatorFollowSpline which allows rotating node toward direction of movement. 
+  Thanks @ Bate for the patch (patch #175)
+- Add a workaround for XWarpPointer bug that causes mouse to jump when users have set a Coordinate Transformation Matrix for their mouse on X11.
+  This was mentioned in bug #450 by vikaig.
+  The fix needs compiling with _IRR_LINUX_X11_XINPUT2_ enabled (so far disabled by default)
+- Add IGeometryCreator::createTorusMesh to create donuts.
+- Don't try loading broken image files twice with same loader anymore.
+- Make CImageLoaderJPG thread safe. Thanks @ Edoardo Lolletti for report and patch (patch #324)
+- Add ETCF_SUPPORT_VERTEXT_TEXTURE flag which can be used to enable vertex texture sampling support in Direct3D 9.
+  Note that this was enabled for a long time in 1.9 svn, but is now disabled by default.
+- CGUIListBox now serializes the state of "Selected". Feature wish by chronologicaldot (http://irrlicht.sourceforge.net/forum/viewtopic.php?f=2&t=52719)
+- Bugfix: Changing focus with tab-keys now also work when elements are inside a modal screen.
+- COBJMeshFileLoader using a bit more exact color conversion for 0-1 to 0-255 range (same now as SColorf::toSColor uses).
+- Speedup for COBJMeshWriter
+- Add blinkMode parameter to IGUIEnvironment::addModalScreen, so blinking can be suppressed
+- Speedup: Avoid string copy in CXMLReaderImpl::getAttributeByName
 - Fix bug in rect::clipAgainst that had caused rects completely outside to the left-top of the rect to be clipped against ending up with both corners outside.
   It still worked for UI in most cases as the resulting rectangle still had an area of 0.
 - Add getAlign functions to IGUIElement
@@ -84,7 +104,7 @@ Changes in 1.9 (not yet released)
 - Drivers can now try to create textures from images in more exotic color formats (like floating point formats).  It depends on the driver how much that works (so far mainly OpenGL can handle it somewhat).
 - Fix OpenGL to no longer switch colors red and blue in 24-bit RGB format. But warnings added to documentation to avoid 24-bit textures as they are generally just trouble.
 - No longer try to convert ECF_R5G6B5 to ECF_A1R5G5B5 on OpenGL (just made texture-loading seem to fail).
-- Add flag SIrrlichtCreationParameters.WindowResizable. Mainly to work around troubles with SDL+OpenGL on some platforms where resizing later can be tricky/impossible.
+- Add parameter SIrrlichtCreationParameters.WindowResizable. Mainly to work around troubles with SDL+OpenGL on some platforms where resizing later can be tricky/impossible.
 - Add operator[]  to vector2d and vector3d
 - Bugfix: IrrlichtDevice::isWindowMinimized no longer returns true when it's maximized on Windows.
 - Ignore degenerated faces in obj file loader when they would generate triangles where 2 vertices use identical indices.
@@ -318,6 +338,7 @@ Changes in 1.9 (not yet released)
 
 --------------------------
 Changes in 1.8.5
+ - Update script to generate tutorial.html's in example folders. Add missing ones. Update existing ones. Thanks @Guillian J for noticing those were outdated.
  - Update libpng to 1.6.37 (from 1.6.23)
  - Fix CIrrDeviceSDL::getVideoModeList which didn't return video modes before. Thx @kas1e for report and patch.
  - CIrrDeviceMacOSX now sets the SEvent.MouseInput Shift and Control values on mouse events like the other devices. Thanks @ Zero King  for patch (#321)

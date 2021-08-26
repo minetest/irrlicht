@@ -1,394 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Irrlicht Engine Tutorial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Tutorial 1: HelloWorld</title>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- Wanted to avoid copying .css to each folder, so copied default .css from doxyen in here, kicked out most stuff we don't need for examples and modified some a little bit. 
+     Target was having a single html in each example folder which is created from the main.cpp files and needs no files besides some images below media folder.
+     Feel free to improve :)
+	 -->
+<style>
+body, table, div, p, dl {
+	font: 400 14px/22px;
+}
+body {
+	background-color: #F0F0F0;
+	color: black;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+p.reference, p.definition {
+	font: 400 14px/22px;
+}
+.title {
+	font: 400 14px/28px;
+	font-size: 150%;
+	font-weight: bold;
+	margin: 10px 2px;
+}
+h1, h2, h3, h4, h5, h6 {
+	-webkit-transition: text-shadow 0.5s linear;
+	-moz-transition: text-shadow 0.5s linear;
+	-ms-transition: text-shadow 0.5s linear;
+	-o-transition: text-shadow 0.5s linear;
+	transition: text-shadow 0.5s linear;
+	margin-right: 15px;
+}
+caption {
+	font-weight: bold;
+}
+h3.version {
+	font-size: 90%;
+	text-align: center;
+}
+a {
+	color: #3D578C;
+	font-weight: normal;
+	text-decoration: none;
+}
+.contents a:visited {
+	color: #4665A2;
+}
+a:hover {
+	text-decoration: underline;
+}
+a.el {
+	font-weight: bold;
+}
+a.code, a.code:visited, a.line, a.line:visited {
+	color: #4665A2; 
+}
+a.codeRef, a.codeRef:visited, a.lineRef, a.lineRef:visited {
+	color: #4665A2; 
+}
+pre.fragment {
+	border: 1px solid #C4CFE5;
+	background-color: #FBFCFD;
+	padding: 4px 6px;
+	margin: 4px 8px 4px 2px;
+	overflow: auto;
+	word-wrap: break-word;
+	font-size:  9pt;
+	line-height: 125%;
+	font-family: monospace, fixed;
+	font-size: 105%;
+}
+div.fragment {
+	padding: 0px;
+	margin: 4px 8px 4px 2px;
+	background-color: #FBFCFD;
+	border: 1px solid #C4CFE5;
+}
+div.line {
+	font-family: monospace, fixed;
+	font-size: 13px;
+	min-height: 13px;
+	line-height: 1.0;
+	text-wrap: unrestricted;
+	white-space: -moz-pre-wrap; /* Moz */
+	white-space: -pre-wrap;     /* Opera 4-6 */
+	white-space: -o-pre-wrap;   /* Opera 7 */
+	white-space: pre-wrap;      /* CSS3  */
+	word-wrap: break-word;      /* IE 5.5+ */
+	text-indent: -53px;
+	padding-left: 53px;
+	padding-bottom: 0px;
+	margin: 0px;
+	-webkit-transition-property: background-color, box-shadow;
+	-webkit-transition-duration: 0.5s;
+	-moz-transition-property: background-color, box-shadow;
+	-moz-transition-duration: 0.5s;
+	-ms-transition-property: background-color, box-shadow;
+	-ms-transition-duration: 0.5s;
+	-o-transition-property: background-color, box-shadow;
+	-o-transition-duration: 0.5s;
+	transition-property: background-color, box-shadow;
+	transition-duration: 0.5s;
+}
+div.contents {
+	margin-top: 10px;
+	margin-left: 12px;
+	margin-right: 8px;
+}
+div.center {
+	text-align: center;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding: 0px;
+}
+div.center img {
+	border: 0px;
+}
+span.keyword {
+	color: #008000
+}
+span.keywordtype {
+	color: #604020
+}
+span.keywordflow {
+	color: #e08000
+}
+span.comment {
+	color: #800000
+}
+span.preprocessor {
+	color: #806020
+}
+span.stringliteral {
+	color: #002080
+}
+span.charliteral {
+	color: #008080
+}
+blockquote {
+	background-color: #F7F8FB;
+	border-left: 2px solid #9CAFD4;
+	margin: 0 24px 0 4px;
+	padding: 0 12px 0 16px;
+}
+hr {
+	height: 0px;
+	border: none;
+	border-top: 1px solid #4A6AAA;
+}
+address {
+	font-style: normal;
+	color: #2A3D61;
+}
+div.header {
+	background-image:url('nav_h.png');
+	background-repeat:repeat-x;
+	background-color: #F9FAFC;
+	margin:  0px;
+	border-bottom: 1px solid #C4CFE5;
+}
+div.headertitle {
+	padding: 5px 5px 5px 10px;
+}
+.image {
+	text-align: center;
+}
+.caption {
+	font-weight: bold;
+}
+div.zoom {
+	border: 1px solid #90A5CE;
+}
+tr.heading h2 {
+	margin-top: 12px;
+	margin-bottom: 4px;
+}
+</style>
 </head>
-
-<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<br>
-<table width="90%" border="0" cellspacing="0" cellpadding="2" align="center">
-              <tr> 
-                <td bgcolor="#666699"> <b><font color="#FFFFFF">Tutorial 1.HelloWorld</font></b></td>
-
-              </tr>
-              <tr> 
-                <td height="90" bgcolor="#F7F3F7"> <div align="left"> 
-                    <p>This Tutorial shows how to set up the IDE for using the 
-                      Irrlicht Engine and how to write a simple HelloWorld program 
-                      with it. The program will show how to use the basics of 
-                      the VideoDriver, the GUIEnvironment and the SceneManager.<br>
-                      The result of this example will look like this:</p>
-                    <p align="center"><img src="../../media/001shot.jpg" width="259" height="204"><br>
-                    </p>
-                  </div></td>
-
-              </tr>
-            </table>
-            <br> <table width="90%" border="0" cellspacing="0" cellpadding="2" align="center">
-              <tr> <a name="settingup"></a>
-                <td bgcolor="#666699"> <b><font color="#FFFFFF">Setting up the 
-                  IDE</font></b></td>
-              </tr>
-              <tr> 
-                <td height="90" bgcolor="#F7F3F7"> <div align="left"> 
-                    <div align="left"> 
-                      <p align="left">To use the engine, we will have to include 
-                        the header file &lt;irrlicht.h&gt;, which can be found 
-                        in the Irrlicht Engine SDK directory \include. To let 
-                        the compiler find this header file, the directory where 
-                        it is located should be specified somewhere. This is different 
-                        for every IDE and compiler. I will explain how to do this 
-                        in Microsoft Visual Studio C++ 6.0 and .NET:</p>
-
-                    </div>
-                    <ul>
-                      <li> 
-                        <div align="left">If you use Version 6.0, select the Menu 
-                          Extras -&gt; Options. Select the directories tab, and 
-                          select the 'Include' Item in the combo box. Add the 
-                          \include directory of the Irrlicht Engine folder to 
-                          the list of directories. Now the compiler will find 
-                          the Irrlicht.h header file. We also need the location 
-                          of irrlicht.lib to be listed, so select the 'Libraries' 
-                          tab and add the \lib\VisualStudio directory.<br>
-                          <br>
-                          <img src="../../media/vc6optionsdir.jpg" width="231" height="172" align="middle">&nbsp;&nbsp;<img src="../../media/vc6include.jpg" width="231" height="159" align="middle"><br>
-                          &nbsp; <br>
-
-                        </div>
-                      </li>
-                      <li>If your IDE is Visual Studio .NET, select Tools -&gt; 
-                        Options. Select the Projects entry and then select VC++ 
-                        directories. Select 'show directories for include files' 
-                        in the combo box, and add the \include directory of the 
-                        Irrlicht Engine folder to the list of directories so the 
-                        compiler will find the Irrlicht.h header file. We also 
-                        need the irrlicht.lib to be found, so select 'show directories 
-                        for Library files' and add the \lib\VisualStudio directory.<br>
-                        <br>
-                        <img src="../../media/vcnetinclude.jpg" width="256" height="160"> 
-                        <br>
-                      </li>
-                    </ul>
-
-                    <p>&nbsp;</p>
-                  </div></td>
-              </tr>
-            </table>
-            <br> <table width="90%" border="0" cellspacing="0" cellpadding="2" align="center">
-              <tr> 
-                <td bgcolor="#666699"> <font color="#FFFFFF"><b>Lets start!</b></font></td>
-              </tr>
-
-              <tr> 
-                <td height="90" bgcolor="#F7F3F7" valign="top"> <div align="left"> 
-                    <div align="left"> 
-                      <div align="left"> 
-                        <div align="left"> 
-                          <p>After we have set up the IDE, the compiler will know 
-                            where to find the Irrlicht Engine header files so 
-                            we can include it now into our code.</p>
-                          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-                            <tr> 
-                              <td> <pre>#include &lt;irrlicht.h&gt;</pre> </td>
-
-                            </tr>
-                          </table>
-                          <p>In the Irrlicht Engine, everything can be found in 
-                            the namespace 'irr'. So if you want to use a class 
-                            of the engine, you'll have to type an irr:: before 
-                            the name of the class. For example, to use the IrrlichtDevice, 
-                            write: irr::IrrlichtDevice. To avoid having to put 
-                            irr:: before of the name of every class, we tell the 
-                            compiler that we use that namespace.</p>
-                          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-                            <tr> 
-                              <td> <pre>using namespace irr;</pre> </td>
-                            </tr>
-
-                          </table>
-                          <p>There are 5 sub-namespaces in the Irrlicht Engine. 
-                            Take a look at them: you can read a detailed description 
-                            of them in the documentation by clicking on the top 
-                            menu item '<a href="http://irrlicht.sourceforge.net/docu/namespaces.html">Namespace 
-                            List</a>'. To keep this example simple, we don't want 
-                            to have to specify the name spaces, Hence:</p>
-                          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-                            <tr> 
-                              <td> <pre>using namespace core;<br>using namespace scene;<br>using namespace video;<br>using namespace io;<br>using namespace gui;</pre> </td>
-
-                            </tr>
-                          </table>
-                          <p>To be able to use the Irrlicht.DLL file, we need 
-                            to link with the Irrlicht.lib. We could set this option 
-                            in the project settings, but to make it easy we use 
-                            a pragma comment:</p>
-                          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-                            <tr> 
-                              <td> <pre>#pragma comment(lib, &quot;Irrlicht.lib&quot;)</pre> </td>
-
-                            </tr>
-                          </table>
-                          <p>Now the main method: to keep this example simple 
-                            we use int main(), which can be used on any platform. 
-                            However, on Windows platforms, we could also use the 
-                            WinMain method if we would want to get rid of the 
-                            console window which pops up when starting a program 
-                            with main().</p>
-                          <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-                            <tr> 
-                              <td> <pre>int main()<br>{</pre> </td>
-                            </tr>
-
-                          </table>
-                          <p>The most important function of the engine is the 
-                            'createDevice' function. The Irrlicht Device, which 
-                            is the root object for doing everything with the engine, 
-                            can be created with it. createDevice() has 7 parameters:</p>
-                        </div>
-                        <ul>
-                          <li> 
-                            
-                <div align="left"> deviceType: Type of the device. This can currently 
-                  be the Null device, the Software device, Direct3D8, Direct3D9, 
-                  or OpenGL. In this example we use EDT_SOFTWARE, but, to try 
-                  them out, you might want to change it to EDT_NULL, EDT_DIRECT3D8, 
-                  EDT_DIRECT3D9 or EDT_OPENGL. </div>
-                          </li>
-                          <li> 
-                            <div align="left">windowSize: Size of the window or 
-                              full screen mode to be created. In this example 
-                              we use 512x384.</div>
-
-                          </li>
-                          <li> 
-                            <div align="left">bits: Number of bits per pixel when 
-                              in full screen mode. This should be 16 or 32. This 
-                              parameter is ignored when running in windowed mode.</div>
-                          </li>
-                          <li> 
-                            <div align="left">fullscreen: Specifies if we want 
-                              the device to run in full screen mode or not.</div>
-                          </li>
-                          <li>stencilbuffer: Specifies if we want to use the stencil 
-                            buffer for drawing shadows.</li>
-
-                          <li>vsync: Specifies if we want to have vsync enabled. 
-                            This is only useful in full screen mode.</li>
-                          <li> 
-                            <div align="left">eventReceiver: An object to receive 
-                              events. We do not want to use this parameter here, 
-                              and set it to 0.</div>
-                          </li>
-                        </ul>
-                        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-                          <tr> 
-                            <td> <pre>IrrlichtDevice *device =<br>		createDevice(EDT_SOFTWARE, dimension2d&lt;s32&gt;(512, 384), 16,<br>			false, false, false, 0);</pre> </td>
-
-                          </tr>
-                        </table>
-                        <p>Now we set the caption of the window to some nice text. 
-                          Note that there is a 'L' in front of the string: the 
-                          Irrlicht Engine uses wide character strings when displaying 
-                          text.</p>
-                        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-                          <tr> 
-                            <td> <pre>device-&gt;setWindowCaption(L&quot;Hello World! - Irrlicht Engine Demo&quot;);</pre> </td>
-
-                          </tr>
-                        </table>
-                        <p>Now we store a pointer to the video driver, the SceneManager, 
-                          and the graphical user interface environment so that 
-                          we do not always have to write device-&gt;getVideoDriver(), 
-                          device-&gt;getSceneManager(), and device-&gt;getGUIEnvironment().</p>
-                        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-                          <tr> 
-                            <td> <pre>IVideoDriver* driver = device-&gt;getVideoDriver();<br>ISceneManager* smgr = device-&gt;getSceneManager();<br>IGUIEnvironment* guienv = device-&gt;getGUIEnvironment();</pre> </td>
-
-                          </tr>
-                        </table>
-                        <p> We add a hello world label to the window using the 
-                          GUI environment. The text is placed at the position 
-                          (10,10) as top left corner and (200,22) as lower right 
-                          corner.</p>
-                        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-                          <tr> 
-                            <td> <pre>guienv-&gt;addStaticText(L&quot;Hello World! This is the Irrlicht Software engine!&quot;,<br>	 rect&lt;s32&gt;(10,10,200,22), true);</pre> </td>
-
-                          </tr>
-                        </table>
-                        <p>To display something interesting, we load a Quake 2 
-                          model and display it. We only have to get the Mesh from 
-                          the Scene Manager with getMesh() and add a SceneNode 
-                          to display the mesh with addAnimatedMeshSceneNode(). 
-                          Instead of loading a Quake2 file (.md2), it is also 
-                          possible to load a Maya object file (.obj), a complete 
-                          Quake3 map (.bsp), or a Milshape file (.ms3d).<br>
-                          By the way, that cool Quake 2 model called sydney.md2 
-                          was modelled by Brian Collins.</p>
-                        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-                          <tr> 
-                            <td> <pre>IAnimatedMesh* mesh = smgr-&gt;getMesh(&quot;../../media/sydney.md2&quot;);<br>IAnimatedMeshSceneNode* node = smgr-&gt;addAnimatedMeshSceneNode( mesh );</pre> </td>
-
-                          </tr>
-                        </table>
-                        <p>To make the mesh look a little bit nicer, we change 
-                          its material a little bit: we disable lighting because 
-                          we do not have a dynamic light in here and the mesh 
-                          would be totally black. Then we set the frame loop so 
-                          that the animation is looped between the frames 0 and 
-                          310. Then, at last, we apply a texture to the mesh. 
-                          Without it the mesh would be drawn using only a solid 
-                          color.</p>
-                        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-                          <tr> 
-                            <td> <pre>if (node)<br>{<br>	node-&gt;setMaterialFlag(EMF_LIGHTING, false);<br>	node-&gt;setFrameLoop(0, 310);	<br>	node-&gt;setMaterialTexture( 0, driver-&gt;getTexture(&quot;../../media/sydney.bmp&quot;) );<br>}</pre> 
-                            </td>
-
-                          </tr>
-                        </table>
-                        <p>To look at the mesh, we place a camera into 3d space 
-                          at the position (0, 10, -40). The camera looks from 
-                          there to (0,5,0).</p>
-                        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-                          <tr> 
-                            <td> <pre>smgr-&gt;addCameraSceneNode(0, vector3df(0,30,-40), vector3df(0,5,0));</pre> </td>
-                          </tr>
-
-                        </table>
-                        <p>Ok. Now that we have set up the scene, let's draw everything: 
-                          we run the device in a while() loop until the device 
-                          does not want to run any more. This would be when the 
-                          user closes the window or presses ALT+F4 in Windows.</p>
-                        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-                          <tr> 
-                            <td> <pre>while(device-&gt;run())<br>{</pre> </td>
-                          </tr>
-
-                        </table>
-                        <p> Everything must be drawn between a beginScene() and 
-                          an endScene() call. The beginScene clears the screen 
-                          with a color and also the depth buffer, if desired. 
-                          Then we let the Scene Manager and the GUI environment 
-                          draw their content. With the endScene() call, everything 
-                          is presented on the screen.</p>
-                        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-                          <tr> 
-                            
-                <td> <pre>	driver-&gt;beginScene(true, true, SColor(255,100,101,140));<br>
-	smgr-&gt;drawAll();
-	guienv-&gt;drawAll();</pre> 
-                  <pre>	driver-&gt;endScene();
-}</pre> </td>
-
-                          </tr>
-                        </table>
-                        <p>After we are finished, we have to delete the Irrlicht 
-                          Device created earlier with createDevice(). With the 
-                          Irrlicht Engine, you should delete all objects you created 
-                          with a method or function that starts with 'create'. 
-                          The object is deleted simply by calling -&gt;drop(). 
-                          See the <a href="http://irrlicht.sourceforge.net/docu/classirr_1_1IUnknown.html#a3" target="_blank">documentation</a> 
-                          for more information.</p>
-                        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-                          <tr> 
-                            <td> <pre>	device-&gt;drop();<br> return 0;
-}</pre> </td>
-
-                          </tr>
-                        </table>
-                        <p>That's it. Compile and run. </p>
-                        <p>&nbsp;</p>
-                      </div>
-                    </div>
-                  </div></td>
-              </tr>
-
-            </table>
-            <br>
-            <table width="90%" border="0" cellspacing="0" cellpadding="2" align="center">
-              <tr> 
-                <td bgcolor="#666699"> <b><font color="#FFFFFF">Possible Errors 
-                  or Problems</font></b></td>
-              </tr>
-              <tr> 
-                <td height="90" bgcolor="#F7F3F7"> <div align="left"> 
-                    <div align="left"> 
-                      <div align="left"> 
-                        <p><strong>Visual Studio</strong><br>
-
-                          While trying to compile the tutorial, if you get the 
-                          error: </p>
-                        <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
-                          <tr> 
-                            <td bgcolor="#CCCCCC"><font face="Courier New, Courier, mono">fatal 
-                              error C1083: Cannot open include file: 'irrlicht.h': 
-                              No such file or directory</font></td>
-                          </tr>
-                        </table>
-                        <p>Solution: You may have set the include directory improperly 
-                          in the Visual Studio options. See <a href="#settingup">above</a> 
-                          for information on setting it. </p>
-
-                        <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
-                          <tr> 
-                            <td bgcolor="#CCCCCC"><font face="Courier New, Courier, mono">LINK 
-                              : LNK6004: HelloWorld.exe not found or not built 
-                              by the last incremental link; performing full link<br>
-                              LINK : fatal error LNK1104: cannot open file "Irrlicht.lib"<br>
-                              Error executing link.exe</font></td>
-                          </tr>
-                        </table>
-                        <p> Solution: You may have set the library directory improperly. 
-                          See <a href="#settingup">above</a> for information on 
-                          setting it. <br>
-
-                          <br>
-                        </p>
-                        <p><strong>Compiler independent problems<br>
-                          </strong>If the tutorial compiles successfully but gives 
-                          the error: </p>
-                        <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
-                          <tr> 
-                            <td bgcolor="#CCCCCC"><font face="Courier New, Courier, mono">This 
-                              application has failed to start because Irrlicht.dll 
-                              was not found. Re-installing the application may 
-                              fix this problem</font></td>
-                          </tr>
-
-                        </table>
-                        <p>Solution: You may have forgotten to copy the Irrlicht.dll 
-                          file from Irrlicht\bin\VisualStudio to the directory 
-                          the tutorial's project file is in. </p>
-                        If the tutorial compiles and runs successfully but produces 
-                        errors in the console like:<br>
-                        <br>
-                        <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
-                          <tr> 
-                            <td bgcolor="#CCCCCC"><font face="Courier New, Courier, mono">Could 
-                              not load mesh, because file could not be opened.: 
-                              ../media/sydney.md2</font></td>
-                          </tr>
-
-                        </table>
-                        <p> Or:</p>
-                        <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
-                          <tr> 
-                            <td bgcolor="#CCCCCC"><em><font face="Courier New, Courier, mono">Could 
-                              not open file of texture: stones.jpg</font></em><font face="Courier New, Courier, mono"><b><br>
-                              </b><em>Could not load texture: stones.jpg </em></font></td>
-                          </tr>
-
-                        </table>
-                        <p>Solution: The file listed in the error message cannot 
-                          be found. Ensure that the directory specified in the 
-                          main.cpp exists and is where the file is located. <br>
-                        </p>
-                      </div>
-                    </div>
-                  </div></td>
-              </tr>
-            </table> 
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!--END TITLEAREA-->
+<!-- end header part -->
+<!-- Generated by Doxygen 1.8.13 -->
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">Tutorial 1: HelloWorld </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><div class="image">
+<img src="../../media/example_screenshots/001shot.jpg" alt="001shot.jpg"/>
+</div>
+ <p>This tutorial shows how to set up the IDE for using the Irrlicht Engine and how to write a simple HelloWorld program with it. The program will show how to use the basics of the VideoDriver, the GUIEnvironment, and the SceneManager. Microsoft Visual Studio is used as an IDE, but you will also be able to understand everything if you are using a different one or even another operating system than Windows.</p>
+<p>You have to include the header file &lt;irrlicht.h&gt; in order to use the engine. The header file can be found in the Irrlicht Engine SDK directory <code>include</code>. To let the compiler find this header file, the directory where it is located has to be added in your project as include path. This is different for every IDE and compiler you use. Let's explain shortly how to do this in Visual Studio 2010:</p>
+<ul>
+<li>In Visual Studio 2010 select the Menu Project -&gt; Properties. Select the "C/C++" - "General" option, and select the "Additional Include Directories". Add the <code>include</code> directory of the Irrlicht engine folder to the list of directories. Now the compiler will find the irrlicht.h header file. We also need the irrlicht.lib to be found, so select "Linker" - "General" and add the <code>lib/Win64-visualStudio</code> or <code>lib/Win32-visualStudio</code> directory to "Additional Library Directories". Which of the 2 Irrlicht versions you chose depends on the target platform for your application (win32 or x64). In your project properties you can see what your active solution platform is, you can use the same one for Irrlicht.</li>
+</ul>
+<p>To be able to use the Irrlicht.DLL file, we need to link with the Irrlicht.lib. In most IDE's you have to add irrlicht.lib (or irrlicht.a or irrlicht.so on Linux) to your Linker input files.</p>
+<p>For VisualStudio we can be lazy and use the pragma comment lib. We also want to get rid of the console window, which pops up when starting a program with main() (instead of WinMain). This is done by the second pragma. We could also use the WinMain method, though losing platform independence then. </p><div class="fragment"><div class="line"><span class="preprocessor">#ifdef _MSC_VER</span></div><div class="line"><span class="preprocessor">#pragma comment(lib, &quot;Irrlicht.lib&quot;)</span></div><div class="line"><span class="preprocessor">#pragma comment(linker, &quot;/subsystem:windows /ENTRY:mainCRTStartup&quot;)</span></div><div class="line"><span class="preprocessor">#endif</span></div></div><!-- fragment --><p> That's it. With your IDE set up like this, you will now be able to develop applications with the Irrlicht Engine.</p>
+<p>Lets start!</p>
+<p>After we have set up the IDE, the compiler will know where to find the Irrlicht Engine header files so we can include it now in our code. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;irrlicht.h&gt;</span></div></div><!-- fragment --><p> That header just adds the getExampleMediaPath tool-functions to help locating the media we need. More about that later below. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;exampleHelper.h&quot;</span></div></div><!-- fragment --><p> In the Irrlicht Engine, everything can be found in the namespace 'irr'. So if you want to use a class of the engine, you have to write irr:: before the name of the class. For example to use the IrrlichtDevice write: irr::IrrlichtDevice. To get rid of the irr:: in front of the name of every class, we tell the compiler that we use that namespace from now on, and we will not have to write irr:: anymore. Note that you never should do that in headers - otherwise you will pollute the namespace of every file including such a header. So in headers always write out the full names including all namespaces. </p><div class="fragment"><div class="line"><span class="keyword">using namespace </span>irr;</div></div><!-- fragment --><p> There are 5 sub namespaces in the Irrlicht Engine. Take a look at them, you can read a detailed description of them in the documentation by clicking on the top menu item 'Namespace List' or by using this link: <a href="http://irrlicht.sourceforge.net/docu/namespaces.html">http://irrlicht.sourceforge.net/docu/namespaces.html</a> Like the irr namespace, we do not want these 5 sub namespaces now, to keep this example simple. Hence, we tell the compiler again that we do not want always to write their names. </p><div class="fragment"><div class="line"><span class="keyword">using namespace </span>core;</div><div class="line"><span class="keyword">using namespace </span>scene;</div><div class="line"><span class="keyword">using namespace </span>video;</div><div class="line"><span class="keyword">using namespace </span>io;</div><div class="line"><span class="keyword">using namespace </span>gui;</div></div><!-- fragment --><p> This is the main method. We can now use main() on every platform. </p><div class="fragment"><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div></div><!-- fragment --><p> The most important function of the engine is the createDevice() function. The IrrlichtDevice is created by it, which is the root object for doing anything with the engine. createDevice() has the following parameters:</p>
+<ul>
+<li>driverType: Type of the video driver. This can currently be the Null-device, one of the two software renderers, D3D9, or OpenGL. In this example we use EDT_BURNINGSVIDEO, but to try out, you might want to change it to EDT_SOFTWARE, EDT_NULL, EDT_DIRECT3D9, or EDT_OPENGL. Generally you will want to use OpenGL or Direct3D as they are using your graphic card for calculations instead of the CPU and are way faster (and usually better looking). We just use one of the software renderers here as it even works when your graphic card driver isn't set up for 3d support.</li>
+<li>windowSize: Size of the Window or screen in FullScreenMode to be created. In this example we use 640x480.</li>
+<li>bits: Amount of color bits per pixel. This should be 16 or 32. The parameter is often ignored when running in windowed mode. More commonly you would chose 32 bit, again we're just playing it safe.</li>
+<li>fullscreen: Specifies if we want the device to run in fullscreen mode or windowed.</li>
+<li>stencilbuffer: Specifies if we want to use the stencil buffer (you need it for drawing shadows).</li>
+<li>vsync: Specifies if we want to have vsync enabled, this is only useful in fullscreen mode.</li>
+<li>eventReceiver: An object to receive events. We do not want to use this parameter here, and set it to 0.</li>
+</ul>
+<p>Always check the return value to cope with unsupported drivers, dimensions, etc. </p><div class="fragment"><div class="line">IrrlichtDevice *device =</div><div class="line">    createDevice( video::EDT_BURNINGSVIDEO, dimension2d&lt;u32&gt;(640, 480), 16,</div><div class="line">        <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, 0);</div><div class="line"></div><div class="line"><span class="keywordflow">if</span> (!device)</div><div class="line">    <span class="keywordflow">return</span> 1;</div></div><!-- fragment --><p> Set the caption of the window to some nice text. Note that there is an 'L' in front of the string. The Irrlicht Engine uses wide character strings when displaying text. </p><div class="fragment"><div class="line">device-&gt;setWindowCaption(L<span class="stringliteral">&quot;Hello World! - Irrlicht Engine Demo&quot;</span>);</div></div><!-- fragment --><p> Get a pointer to the VideoDriver, the SceneManager and the graphical user interface environment, so that we do not always have to write device-&gt;getVideoDriver(), device-&gt;getSceneManager(), or device-&gt;getGUIEnvironment(). </p><div class="fragment"><div class="line">IVideoDriver* driver = device-&gt;getVideoDriver();</div><div class="line">ISceneManager* smgr = device-&gt;getSceneManager();</div><div class="line">IGUIEnvironment* guienv = device-&gt;getGUIEnvironment();</div></div><!-- fragment --><p> We add a hello world label to the window, using the GUI environment. The text is placed at the position (10,10) as top left corner and (260,22) as lower right corner. </p><div class="fragment"><div class="line">guienv-&gt;addStaticText(L<span class="stringliteral">&quot;Hello World! This is Irrlicht with the burnings software renderer!&quot;</span>,</div><div class="line">    rect&lt;s32&gt;(10,10,260,22), <span class="keyword">true</span>);</div></div><!-- fragment --><p> Get a media path dedicated for your platform. Finding media files for your applications can be tricky. First you have 2 options - working with relative paths or working with absolute paths.</p>
+<p>On Windows a common solution is that your installer will write a key into the registry with the absolute path of wherever the user installed the media. And in your application you read out that key from the registry. On Linux a common solution is to use config file which is placed in some fixed location (for example in a . file/folder in the user home).</p>
+<p>But you can also work with relative paths - which is what we do here. There is a slight complication with relative paths as they are relative to your current working directory. And that depends on the way your application is started and it might change inside your application. But mostly it will be set to your executable on start so you can ignore that problem while developing.</p>
+<p>When inside VisualStudio the current working directory is set to your project files location unless you overwrite Project properties - Debugging</p><ul>
+<li>Working Directory. In Irrlicht examples the media folder is on most platforms ../../media which works for the examples as it's relative to our project files as well as to the binary (.exe) files.</li>
+</ul>
+<p>Whatever you chose to find your base-folder for media - wrap it with some function and then you can improve the code to locate the media later on. </p><div class="fragment"><div class="line"><span class="keyword">const</span> io::path mediaPath = getExampleMediaPath();</div></div><!-- fragment --><p> To show something interesting, we load a Quake 2 model and display it. We get the Mesh from the Scene Manager with getMesh() and add a SceneNode to display the mesh with addAnimatedMeshSceneNode(). Check the return value of getMesh() to become aware of loading problems and other errors.</p>
+<p>Instead of writing the filename sydney.md2, it would also be possible to load a Maya object file (.obj), a complete Quake3 map (.bsp) or any other supported file format. By the way, that cool Quake 2 model called sydney was modeled by Brian Collins. </p><div class="fragment"><div class="line">IAnimatedMesh* mesh = smgr-&gt;getMesh(mediaPath + <span class="stringliteral">&quot;sydney.md2&quot;</span>);</div><div class="line"><span class="keywordflow">if</span> (!mesh)</div><div class="line">{</div><div class="line">    device-&gt;drop();</div><div class="line">    <span class="keywordflow">return</span> 1;</div><div class="line">}</div><div class="line">IAnimatedMeshSceneNode* node = smgr-&gt;addAnimatedMeshSceneNode( mesh );</div></div><!-- fragment --><p> To let the mesh look a little bit nicer, we change its material. We disable lighting because we do not have a dynamic light in here, and the mesh would be totally black otherwise. Then we set the frame loop, such that the predefined STAND animation is used. And last, we apply a texture to the mesh. Without it the mesh would be drawn using only a color. </p><div class="fragment"><div class="line"><span class="keywordflow">if</span> (node)</div><div class="line">{</div><div class="line">    node-&gt;setMaterialFlag(EMF_LIGHTING, <span class="keyword">false</span>);</div><div class="line">    node-&gt;setMD2Animation(scene::EMAT_STAND);</div><div class="line">    node-&gt;setMaterialTexture( 0, driver-&gt;getTexture(mediaPath + <span class="stringliteral">&quot;sydney.bmp&quot;</span>) );</div><div class="line">}</div></div><!-- fragment --><p> To look at the mesh, we place a camera into 3d space at the position (0, 30, -40). The camera looks from there to (0,5,0), which is approximately the place where our md2 model is. </p><div class="fragment"><div class="line">smgr-&gt;addCameraSceneNode(0, vector3df(0,30,-40), vector3df(0,5,0));</div></div><!-- fragment --><p> OK, now we have set up the scene, lets draw everything: We run the device in a while() loop, until the device does not want to run any more. This would be when the user closes the window or presses ALT+F4 (or whatever keycode closes a window on your OS). </p><div class="fragment"><div class="line"><span class="keywordflow">while</span>(device-&gt;run())</div><div class="line">{</div></div><!-- fragment --><p> Anything can be drawn between a beginScene() and an endScene() call. The beginScene() call clears the screen with a color and the depth buffer, if desired. Then we let the Scene Manager and the GUI Environment draw their content. With the endScene() call everything is presented on the screen. </p><div class="fragment"><div class="line">    driver-&gt;beginScene(ECBF_COLOR | ECBF_DEPTH, SColor(255,100,101,140));</div><div class="line"></div><div class="line">    smgr-&gt;drawAll();</div><div class="line">    guienv-&gt;drawAll();</div><div class="line"></div><div class="line">    driver-&gt;endScene();</div><div class="line">}</div></div><!-- fragment --><p> After we are done with the render loop, we have to delete the Irrlicht Device created before with createDevice(). In the Irrlicht Engine, you have to delete all objects you created with a method or function which starts with 'create'. The object is simply deleted by calling -&gt;drop(). See the documentation at irr::IReferenceCounted::drop() for more information. </p><div class="fragment"><div class="line">    device-&gt;drop();</div><div class="line"></div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">}</div></div><!-- fragment --><p> That's it. Compile and run. </p>
+</div></div><!-- contents -->
+<!-- HTML footer for doxygen 1.8.13-->
+<!-- start footer part -->
 <p>&nbsp;</p>
 </body>
 </html>

@@ -231,6 +231,40 @@ public:
 		free_when_destroyed=_free_when_destroyed;
 	}
 
+	//! Set (copy) data from given memory block
+	/** \param newData data to set, must have newSize elements
+	\param newSize Amount of elements in newData
+	\param canShrink When true we reallocate the array even it can shrink. 
+	May reduce memory usage, but call is more whenever size changes.
+	\param newDataIsSorted Info if you pass sorted/unsorted data
+	*/
+	void set_data(const T* newData, u32 newSize, bool newDataIsSorted=false, bool canShrink=false)
+	{
+		reallocate(newSize, canShrink);
+		set_used(newSize);
+		for ( u32 i=0; i<newSize; ++i)
+		{
+			data[i] = newData[i];
+		}
+		is_sorted = newDataIsSorted;
+	}
+
+	//! Compare if given data block is identical to the data in our array
+	/** Like operator ==, but without the need to create the array
+	\param otherData Address to data against which we compare, must contain size elements
+	\param size Amount of elements in otherData	*/
+	bool equals(const T* otherData, u32 size) const
+	{
+		if (used != size)
+			return false;
+
+		for (u32 i=0; i<size; ++i)
+			if (data[i] != otherData[i])
+				return false;
+		return true;
+	}
+
+
 
 	//! Sets if the array should delete the memory it uses upon destruction.
 	/** Also clear and set_pointer will only delete the (original) memory
@@ -257,7 +291,6 @@ public:
 
 		used = usedNow;
 	}
-
 
 	//! Assignment operator
 	const array<T, TAlloc>& operator=(const array<T, TAlloc>& other)
@@ -290,13 +323,7 @@ public:
 	//! Equality operator
 	bool operator == (const array<T, TAlloc>& other) const
 	{
-		if (used != other.used)
-			return false;
-
-		for (u32 i=0; i<other.used; ++i)
-			if (data[i] != other[i])
-				return false;
-		return true;
+		return equals(other.const_pointer(), other.size());
 	}
 
 

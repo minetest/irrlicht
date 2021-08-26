@@ -52,11 +52,27 @@ namespace gui
 		//! Reads attributes of the element
 		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
 
+		//! Set when to blink. 
+		//! Bitset of following values (can be combined)
+		//! 0 = never
+		//! 1 = focus changes
+		//! 2 = Left mouse button pressed down
+		void setBlinkMode(u32 blink)
+		{
+			BlinkMode = blink;
+		}
+
+		u32 getBlinkMode() const
+		{
+			return BlinkMode;
+		}
+
 	protected:
 		virtual bool canTakeFocus(IGUIElement* target) const;
 
 	private:
 
+		u32 BlinkMode;
 		u32 MouseDownTime;
 	};
 

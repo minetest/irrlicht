@@ -1,181 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Irrlicht Engine Tutorial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Tutorial 2: Quake3Map</title>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- Wanted to avoid copying .css to each folder, so copied default .css from doxyen in here, kicked out most stuff we don't need for examples and modified some a little bit. 
+     Target was having a single html in each example folder which is created from the main.cpp files and needs no files besides some images below media folder.
+     Feel free to improve :)
+	 -->
+<style>
+body, table, div, p, dl {
+	font: 400 14px/22px;
+}
+body {
+	background-color: #F0F0F0;
+	color: black;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+p.reference, p.definition {
+	font: 400 14px/22px;
+}
+.title {
+	font: 400 14px/28px;
+	font-size: 150%;
+	font-weight: bold;
+	margin: 10px 2px;
+}
+h1, h2, h3, h4, h5, h6 {
+	-webkit-transition: text-shadow 0.5s linear;
+	-moz-transition: text-shadow 0.5s linear;
+	-ms-transition: text-shadow 0.5s linear;
+	-o-transition: text-shadow 0.5s linear;
+	transition: text-shadow 0.5s linear;
+	margin-right: 15px;
+}
+caption {
+	font-weight: bold;
+}
+h3.version {
+	font-size: 90%;
+	text-align: center;
+}
+a {
+	color: #3D578C;
+	font-weight: normal;
+	text-decoration: none;
+}
+.contents a:visited {
+	color: #4665A2;
+}
+a:hover {
+	text-decoration: underline;
+}
+a.el {
+	font-weight: bold;
+}
+a.code, a.code:visited, a.line, a.line:visited {
+	color: #4665A2; 
+}
+a.codeRef, a.codeRef:visited, a.lineRef, a.lineRef:visited {
+	color: #4665A2; 
+}
+pre.fragment {
+	border: 1px solid #C4CFE5;
+	background-color: #FBFCFD;
+	padding: 4px 6px;
+	margin: 4px 8px 4px 2px;
+	overflow: auto;
+	word-wrap: break-word;
+	font-size:  9pt;
+	line-height: 125%;
+	font-family: monospace, fixed;
+	font-size: 105%;
+}
+div.fragment {
+	padding: 0px;
+	margin: 4px 8px 4px 2px;
+	background-color: #FBFCFD;
+	border: 1px solid #C4CFE5;
+}
+div.line {
+	font-family: monospace, fixed;
+	font-size: 13px;
+	min-height: 13px;
+	line-height: 1.0;
+	text-wrap: unrestricted;
+	white-space: -moz-pre-wrap; /* Moz */
+	white-space: -pre-wrap;     /* Opera 4-6 */
+	white-space: -o-pre-wrap;   /* Opera 7 */
+	white-space: pre-wrap;      /* CSS3  */
+	word-wrap: break-word;      /* IE 5.5+ */
+	text-indent: -53px;
+	padding-left: 53px;
+	padding-bottom: 0px;
+	margin: 0px;
+	-webkit-transition-property: background-color, box-shadow;
+	-webkit-transition-duration: 0.5s;
+	-moz-transition-property: background-color, box-shadow;
+	-moz-transition-duration: 0.5s;
+	-ms-transition-property: background-color, box-shadow;
+	-ms-transition-duration: 0.5s;
+	-o-transition-property: background-color, box-shadow;
+	-o-transition-duration: 0.5s;
+	transition-property: background-color, box-shadow;
+	transition-duration: 0.5s;
+}
+div.contents {
+	margin-top: 10px;
+	margin-left: 12px;
+	margin-right: 8px;
+}
+div.center {
+	text-align: center;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding: 0px;
+}
+div.center img {
+	border: 0px;
+}
+span.keyword {
+	color: #008000
+}
+span.keywordtype {
+	color: #604020
+}
+span.keywordflow {
+	color: #e08000
+}
+span.comment {
+	color: #800000
+}
+span.preprocessor {
+	color: #806020
+}
+span.stringliteral {
+	color: #002080
+}
+span.charliteral {
+	color: #008080
+}
+blockquote {
+	background-color: #F7F8FB;
+	border-left: 2px solid #9CAFD4;
+	margin: 0 24px 0 4px;
+	padding: 0 12px 0 16px;
+}
+hr {
+	height: 0px;
+	border: none;
+	border-top: 1px solid #4A6AAA;
+}
+address {
+	font-style: normal;
+	color: #2A3D61;
+}
+div.header {
+	background-image:url('nav_h.png');
+	background-repeat:repeat-x;
+	background-color: #F9FAFC;
+	margin:  0px;
+	border-bottom: 1px solid #C4CFE5;
+}
+div.headertitle {
+	padding: 5px 5px 5px 10px;
+}
+.image {
+	text-align: center;
+}
+.caption {
+	font-weight: bold;
+}
+div.zoom {
+	border: 1px solid #90A5CE;
+}
+tr.heading h2 {
+	margin-top: 12px;
+	margin-bottom: 4px;
+}
+</style>
 </head>
-
-<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699" width="10"><b><a href="http://irrlicht.sourceforge.net" target="_blank"><img src="../../media/irrlichtlogo.jpg" width="88" height="31" border="0"></a></b></td>
-    <td bgcolor="#666699" width="100%"> <div align="center"><b><font color="#FFFFFF"></font></b></div>
-      <b><font color="#FFFFFF">Tutorial 2.Quake3Map</font></b></td>
-  </tr>
-  <tr bgcolor="#eeeeff"> 
-    <td height="90" colspan="2"> <div align="left"> 
-        <p>This Tutorial shows how to load a Quake 3 map into the engine, create 
-          a SceneNode for optimizing the speed of rendering and how to create 
-          a user controlled camera. Please note that you should know the basics 
-          of the engine before starting this tutorial, just take a short look 
-          at the first tutorial, 1.HelloWorld, if you haven't done this yet.<br>
-          The result of this example will look like this:</p>
-        <p align="center"><img src="../../media/002shot.jpg" width="259" height="202"><br>
-        </p>
-      </div></td>
-  </tr>
-</table>
-<br>
-<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center">
-  <tr> 
-    <td bgcolor="#666699"> <div align="center"><b><font color="#000000"></font></b></div>
-      <font color="#FFFFFF"><b>Lets start!</b></font></td>
-  </tr>
-  <tr> 
-    <td height="90" bgcolor="#eeeeff" valign="top"> <div align="left"> 
-        <p>Lets start like the HelloWorld example: We include the irrlicht header 
-          files and an additional file to be able<br>
-          to ask the user for a driver type using the console.</p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td> <pre>#include &lt;irrlicht.h&gt;<br>#include &lt;iostream&gt;<br></pre></td>
-          </tr>
-        </table>
-        <p>As already written in the HelloWorld example, in the Irrlicht Engine, 
-          everything can be found in the namespace 'irr'. To get rid of the irr:: 
-          in front of the name of every class, we tell the compiler that we use 
-          that namespace from now on, and we will not have to write that 'irr::'.<br>
-          There are 5 other sub namespaces 'core', 'scene', 'video', 'io' and 
-          'gui'. Unlike in the HelloWorld example, we do not a 'using namespace' 
-          for these 5 other namespaces because in this way you will see what can 
-          be found in which namespace. But if you like, you can also include the 
-          namespaces like in the previous example. Code just like you want to.</p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td> <pre>using namespace irr;</pre> </td>
-          </tr>
-        </table>
-        <p>Again, to be able to use the Irrlicht.DLL file, we need to link with 
-          the Irrlicht.lib. We could set this option in the project settings, 
-          but to make it easy, we use a pragma comment lib:</p>
-        <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-          <tr> 
-            <td> <pre>#pragma comment(lib, &quot;Irrlicht.lib&quot;)</pre> </td>
-          </tr>
-        </table>
-        
-      </div>
-      <p>Ok, lets start. Again, we use the main() method as start, not the WinMain(), 
-        because its shorter to write.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>int main()<br>{</pre> </td>
-        </tr>
-      </table>
-      <p> Like in the HelloWorld example, we create an IrrlichtDevice with createDevice(). 
-        The difference now is that we ask the user to select which hardware accelerated 
-        driver to use. The Software device would be too slow to draw a huge Quake 
-        3 map, but just for the fun of it, we make this decision possible too.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>// ask user for driver<br><br>video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;<br><br>printf(&quot;Please select the driver you want for this example:\n&quot;\<br>      &quot; (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n&quot;\<br>      &quot; (d) Software Renderer\n (e) Apfelbaum Software Renderer\n&quot;\<br>      &quot; (f) NullDevice\n (otherKey) exit\n\n&quot;);<br>
-char i;<br>std::cin &gt;&gt; i;<br><br>switch(i)<br>{<br>   case 'a': driverType = video::EDT_DIRECT3D9;break;<br>   case 'b': driverType = video::EDT_DIRECT3D8;break;<br>   case 'c': driverType = video::EDT_OPENGL;   break;<br>   case 'd': driverType = video::EDT_SOFTWARE; break;<br>   case 'e': driverType = video::EDT_BURNINGSVIDEO;break;<br>   case 'f': driverType = video::EDT_NULL;     break;<br>   default: return 1;<br>}	<br><br>// create device and exit if creation failed<br><br>IrrlichtDevice *device =<br>    createDevice(driverType, core::dimension2d&lt;s32&gt;(640, 480));<br><br>if (device == 0)<br>   return 1;</pre></td>
-        </tr>
-      </table>
-      <p>Get a pointer to the video driver and the SceneManager so that we do 
-        not always have to write device-&gt;getVideoDriver() and device-&gt;getSceneManager().</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>video::IVideoDriver* driver = device-&gt;getVideoDriver();
-scene::ISceneManager* smgr = device-&gt;getSceneManager();</pre> </td>
-        </tr>
-      </table>
-      <p>To display the Quake 3 map, we first need to load it. Quake 3 maps are 
-        packed into .pk3 files wich are nothing other than .zip files. So we add 
-        the .pk3 file to our FileSystem. After it was added, we are able to read 
-        from the files in that archive as they would directly be stored on disk.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>device-&gt;getFileSystem()-&gt;addZipFileArchive(&quot;../../media/map-20kdm2.pk3&quot;);</pre> </td>
-        </tr>
-      </table>
-      <p>Now we can load the mesh by calling getMesh(). We get a pointer returned 
-        to a IAnimatedMesh. As you know, Quake 3 maps are not really animated, 
-        they are only a huge chunk of static geometry with some materials attached. 
-        Hence the IAnimated mesh consists of only one frame,<br>
-        so we get the &quot;first frame&quot; of the &quot;animation&quot;, which 
-        is our quake level and create an OctTree scene node with it, using addOctTreeSceneNode(). 
-        The OctTree optimizes the scene a little bit, trying to draw only geometry 
-        which is currently visible. An alternative to the OctTree would be a AnimatedMeshSceneNode, 
-        which would draw always the complete geometry of the mesh, without optimization. 
-        Try it out: Write addAnimatedMeshSceneNode instead of addOctTreeSceneNode 
-        and compare the primitives drawed by the video driver. (There is a getPrimitiveCountDrawed() 
-        method in the IVideoDriver class). Note that this optimization with the 
-        Octree is only useful when drawing huge meshes consiting of lots of geometry.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>scene::IAnimatedMesh* mesh = smgr-&gt;getMesh(&quot;20kdm2.bsp&quot;);<br>scene::ISceneNode* node = 0;
-
-if (mesh)<br>    node = smgr-&gt;addOctTreeSceneNode(mesh-&gt;getMesh(0));</pre> </td>
-        </tr>
-      </table>
-      <p>Because the level was modelled not around the origin (0,0,0), we translate 
-        the whole level a little bit.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>if (node)<br>    node-&gt;setPosition(core::vector3df(-1300,-144,-1249));</pre> </td>
-        </tr>
-      </table>
-      <p>Now we only need a Camera to look at the Quake 3 map. And we want to 
-        create a user controlled camera. There are some different cameras available 
-        in the Irrlicht engine. For example the Maya Camera which can be controlled 
-        compareable to the camera in Maya: Rotate with left mouse button pressed, 
-        Zoom with both buttons pressed,<br>
-        translate with right mouse button pressed. This could be created with 
-        addCameraSceneNodeMaya(). But for this example, we want to create a camera 
-        which behaves like the ones in first person shooter games (FPS):</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>smgr-&gt;addCameraSceneNodeFPS();</pre> </td>
-        </tr>
-      </table>
-      <p>The mouse cursor needs not to be visible, so we make it invisible. </p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>device-&gt;getCursorControl()-&gt;setVisible(false);</pre> </td>
-        </tr>
-      </table>
-      <p>We have done everything, so lets draw it. We also write the current frames 
-        per second and the drawn primitives to the caption of the window. The 
-        'if (device-&gt;isWindowActive())' line is optional, but prevents the 
-        engine render to set the position of the mouse cursor after task switching 
-        when other program are active.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>int lastFPS = -1;</pre> 
-            <pre>while(device-&gt;run())
-{
-  driver-&gt;beginScene(true, true, video::SColor(0,200,200,200));
-  smgr-&gt;drawAll();
-  driver-&gt;endScene();</pre>
-            <pre>  int fps = driver-&gt;getFPS();</pre>
-            <pre>  if (lastFPS != fps)
-  {
-     core::stringw str = L&quot;Irrlicht Engine - Quake 3 Map example [&quot;;<br>     str += driver-&gt;getName();<br>     str += &quot;] FPS:&quot;;<br>     str += fps;<br>     device-&gt;setWindowCaption(str.c_str());<br>     lastFPS = fps;
-  }
-}</pre> </td>
-        </tr>
-      </table>
-      <p>In the end, delete the Irrlicht device.</p>
-      <table width="95%" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC" align="center">
-        <tr> 
-          <td> <pre>  device-&gt;drop();<br>  return 0;<br>}</pre> </td>
-        </tr>
-      </table>
-      <p>That's it. Compile and play around with the program. </p></td>
-  </tr>
-</table>
-<p>&nbsp;</p>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!--END TITLEAREA-->
+<!-- end header part -->
+<!-- Generated by Doxygen 1.8.13 -->
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">Tutorial 2: Quake3Map </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><div class="image">
+<img src="../../media/example_screenshots/002shot.jpg" alt="002shot.jpg"/>
+</div>
+ <p>This tutorial shows how to load a Quake 3 map into the engine, create a SceneNode for optimizing the speed of rendering, and how to create a user controlled camera.</p>
+<p>Please note that you should know the basics of the engine before starting this tutorial. Just take a short look at the first tutorial, if you haven't done this yet: <a href="http://irrlicht.sourceforge.net/docu/example001.html">http://irrlicht.sourceforge.net/docu/example001.html</a></p>
+<p>Lets start like the HelloWorld example: We include the irrlicht header files and an additional file to be able to ask the user for a driver type using the console. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;irrlicht.h&gt;</span></div><div class="line"><span class="preprocessor">#include &quot;driverChoice.h&quot;</span></div><div class="line"><span class="preprocessor">#include &quot;exampleHelper.h&quot;</span></div></div><!-- fragment --><p> As already written in the HelloWorld example, in the Irrlicht Engine everything can be found in the namespace 'irr'. To get rid of the irr:: in front of the name of every class, we tell the compiler that we use that namespace from now on, and we will not have to write that 'irr::'. There are 5 other sub namespaces 'core', 'scene', 'video', 'io' and 'gui'. Unlike in the HelloWorld example, we do not call 'using namespace' for these 5 other namespaces, because in this way you will see what can be found in which namespace. But if you like, you can also include the namespaces like in the previous example. </p><div class="fragment"><div class="line"><span class="keyword">using namespace </span>irr;</div></div><!-- fragment --><p> Again, to be able to use the Irrlicht.DLL file, we need to link with the Irrlicht.lib. We could set this option in the project settings, but to make it easy, we use a pragma comment lib: </p><div class="fragment"><div class="line"><span class="preprocessor">#ifdef _MSC_VER</span></div><div class="line"><span class="preprocessor">#pragma comment(lib, &quot;Irrlicht.lib&quot;)</span></div><div class="line"><span class="preprocessor">#endif</span></div></div><!-- fragment --><p> OK, lets start. Again, we use the main() method as start, not the WinMain(). </p><div class="fragment"><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div></div><!-- fragment --><p> Like in the HelloWorld example, we create an IrrlichtDevice with createDevice(). The difference now is that we ask the user to select which video driver to use. The Software device might be too slow to draw a huge Quake 3 map, but just for the fun of it, we make this decision possible, too. </p><div class="fragment"><div class="line"><span class="comment">// ask user for driver</span></div><div class="line">video::E_DRIVER_TYPE driverType=driverChoiceConsole(<span class="keyword">true</span>);</div><div class="line"><span class="keywordflow">if</span> (driverType==video::EDT_COUNT)</div><div class="line">    <span class="keywordflow">return</span> 1;</div><div class="line"></div><div class="line"><span class="comment">// create device and exit if creation failed</span></div><div class="line"></div><div class="line">IrrlichtDevice *device =</div><div class="line">    createDevice(driverType, core::dimension2d&lt;u32&gt;(640, 480));</div><div class="line"></div><div class="line"><span class="keywordflow">if</span> (device == 0)</div><div class="line">    <span class="keywordflow">return</span> 1; <span class="comment">// could not create selected driver.</span></div></div><!-- fragment --><p> Get a pointer to the video driver and the SceneManager so that we do not always have to call irr::IrrlichtDevice::getVideoDriver() and irr::IrrlichtDevice::getSceneManager(). </p><div class="fragment"><div class="line">video::IVideoDriver* driver = device-&gt;getVideoDriver();</div><div class="line">scene::ISceneManager* smgr = device-&gt;getSceneManager();</div></div><!-- fragment --><p> To display the Quake 3 map, we first need to load it. Quake 3 maps are packed into .pk3 files which are nothing else than .zip files. So we add the .pk3 file to our irr::io::IFileSystem. After it was added, we can read from the files in that archive as if they were stored on disk. </p><div class="fragment"><div class="line">device-&gt;getFileSystem()-&gt;addFileArchive(getExampleMediaPath() + <span class="stringliteral">&quot;map-20kdm2.pk3&quot;</span>);</div></div><!-- fragment --><p> Now we can load the mesh by calling irr::scene::ISceneManager::getMesh(). We get a pointer returned to an irr::scene::IAnimatedMesh. Quake 3 maps are not really animated, they are only a chunk of static geometry with some materials attached. Hence the IAnimatedMesh consists of only one frame, so we get the "first frame" of the "animation", which is our quake level and create an Octree scene node with it, using irr::scene::ISceneManager::addOctreeSceneNode(). The Octree optimizes the scene a little bit, trying to draw only geometry which is currently visible. An alternative to the Octree would be a irr::scene::IMeshSceneNode, which would always draw the complete geometry of the mesh, without optimization. Try it: Use irr::scene::ISceneManager::addMeshSceneNode() instead of addOctreeSceneNode() and compare the primitives drawn by the video driver. (There is a irr::video::IVideoDriver::getPrimitiveCountDrawn() method in the irr::video::IVideoDriver class). Note that this optimization with the Octree is only useful when drawing huge meshes consisting of lots of geometry and if users can't see the whole scene at once. </p><div class="fragment"><div class="line">    scene::IAnimatedMesh* mesh = smgr-&gt;getMesh(<span class="stringliteral">&quot;20kdm2.bsp&quot;</span>);</div><div class="line">    scene::ISceneNode* node = 0;</div><div class="line"></div><div class="line">    <span class="keywordflow">if</span> (mesh)</div><div class="line">        node = smgr-&gt;addOctreeSceneNode(mesh-&gt;getMesh(0), 0, -1, 1024);</div><div class="line"><span class="comment">//      node = smgr-&gt;addMeshSceneNode(mesh-&gt;getMesh(0));</span></div></div><!-- fragment --><p> Because the level was not modeled around the origin (0,0,0), we translate the whole level a little bit. This is done on irr::scene::ISceneNode level using the methods irr::scene::ISceneNode::setPosition() (in this case), irr::scene::ISceneNode::setRotation(), and irr::scene::ISceneNode::setScale(). </p><div class="fragment"><div class="line"><span class="keywordflow">if</span> (node)</div><div class="line">    node-&gt;setPosition(core::vector3df(-1300,-144,-1249));</div></div><!-- fragment --><p> Now we need a camera to look at the Quake 3 map. We want to create a user controlled camera. There are some cameras available in the Irrlicht engine. For example the MayaCamera which can be controlled like the camera in Maya: Rotate with left mouse button pressed, Zoom with both buttons pressed, translate with right mouse button pressed. This could be created with irr::scene::ISceneManager::addCameraSceneNodeMaya(). But for this example, we want to create a camera which behaves like the ones in first person shooter games (FPS) and hence use irr::scene::ISceneManager::addCameraSceneNodeFPS(). </p><div class="fragment"><div class="line">smgr-&gt;addCameraSceneNodeFPS();</div></div><!-- fragment --><p> The mouse cursor needs not be visible, so we hide it via the irr::IrrlichtDevice::ICursorControl. </p><div class="fragment"><div class="line">device-&gt;getCursorControl()-&gt;setVisible(<span class="keyword">false</span>);</div></div><!-- fragment --><p> Everything is set up, so lets draw it. We also write the current frames per second and the primitives drawn into the caption of the window. The test for irr::IrrlichtDevice::isWindowActive() is optional, but prevents the engine to grab the mouse cursor after task switching when other programs are active. The call to irr::IrrlichtDevice::yield() will avoid the busy loop to eat up all CPU cycles when the window is not active. </p><div class="fragment"><div class="line"><span class="keywordtype">int</span> lastFPS = -1;</div><div class="line"></div><div class="line"><span class="keywordflow">while</span>(device-&gt;run())</div><div class="line">{</div><div class="line">    <span class="keywordflow">if</span> (device-&gt;isWindowActive())</div><div class="line">    {</div><div class="line">        driver-&gt;beginScene(video::ECBF_COLOR | video::ECBF_DEPTH, video::SColor(255,200,200,200));</div><div class="line">        smgr-&gt;drawAll();</div><div class="line">        driver-&gt;endScene();</div><div class="line"></div><div class="line">        <span class="keywordtype">int</span> fps = driver-&gt;getFPS();</div><div class="line"></div><div class="line">        <span class="keywordflow">if</span> (lastFPS != fps)</div><div class="line">        {</div><div class="line">            core::stringw str = L<span class="stringliteral">&quot;Irrlicht Engine - Quake 3 Map example [&quot;</span>;</div><div class="line">            str += driver-&gt;getName();</div><div class="line">            str += <span class="stringliteral">&quot;] FPS:&quot;</span>;</div><div class="line">            str += fps;</div><div class="line"></div><div class="line">            device-&gt;setWindowCaption(str.c_str());</div><div class="line">            lastFPS = fps;</div><div class="line">        }</div><div class="line">    }</div><div class="line">    <span class="keywordflow">else</span></div><div class="line">        device-&gt;yield();</div><div class="line">}</div></div><!-- fragment --><p> In the end, delete the Irrlicht device. </p><div class="fragment"><div class="line">    device-&gt;drop();</div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">}</div></div><!-- fragment --><p> That's it. Compile and play around with the program. </p>
+</div></div><!-- contents -->
+<!-- HTML footer for doxygen 1.8.13-->
+<!-- start footer part -->
 <p>&nbsp;</p>
 </body>
 </html>

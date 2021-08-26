@@ -22,7 +22,7 @@ namespace scene
 		//! constructor
 		CSceneNodeAnimatorFollowSpline(u32 startTime,
 			const core::array< core::vector3df >& points,
-			f32 speed = 1.0f, f32 tightness = 0.5f, bool loop=true, bool pingpong=false);
+			f32 speed = 1.0f, f32 tightness = 0.5f, bool loop=true, bool pingpong=false, bool steer=false);
 
 		//! animates a scene node
 		virtual void animateNode(ISceneNode* node, u32 timeMs) _IRR_OVERRIDE_;
@@ -52,6 +52,7 @@ namespace scene
 		f32 Tightness;
 		bool Loop;
 		bool PingPong;
+		bool Steer;	// rotate depending on current movement
 	};
 
 

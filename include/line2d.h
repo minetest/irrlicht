@@ -297,7 +297,8 @@ class line2d
 		}
 
 		//! Get the closest point on this line to a point
-		/** \param checkOnlySegments: Default (true) is to return a point on the line-segment (between begin and end) of the line.
+		/** \param point: Starting search at this point
+		\param checkOnlySegments: Default (true) is to return a point on the line-segment (between begin and end) of the line.
 		When set to false the function will check for the first the closest point on the the line even when outside the segment. */
 		vector2d<T> getClosestPoint(const vector2d<T>& point, bool checkOnlySegments=true) const
 		{

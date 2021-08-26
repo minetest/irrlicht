@@ -166,7 +166,7 @@ public:
 	CSoftwareRenderTarget2(CBurningVideoDriver* driver);
 	virtual ~CSoftwareRenderTarget2();
 
-	virtual void setTexture(const core::array<ITexture*>& texture, ITexture* depthStencil, const core::array<E_CUBE_SURFACE>& cubeSurfaces) _IRR_OVERRIDE_;
+	virtual void setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces, u32 numCubeSurfaces) _IRR_OVERRIDE_;
 
 #if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
 	E_DRIVER_TYPE DriverType;

@@ -698,12 +698,6 @@ bool CD3D9Driver::setActiveTexture(u32 stage, const video::ITexture* texture)
 	if (CurrentTexture[stage] == texture)
 		return true;
 
-	if (texture && texture->getDriverType() != EDT_DIRECT3D9)
-	{
-		os::Printer::log("Fatal Error: Tried to set a texture not owned by this driver.", ELL_ERROR);
-		return false;
-	}
-
 	CurrentTexture[stage] = texture;
 
 	if (!texture)
@@ -711,13 +705,20 @@ bool CD3D9Driver::setActiveTexture(u32 stage, const video::ITexture* texture)
 		pID3DDevice->SetTexture(stage, 0);
 		pID3DDevice->SetTextureStageState( stage, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE );
 	}
-	else
+	else if (texture->getDriverType() == EDT_DIRECT3D9)
 	{
 		pID3DDevice->SetTexture(stage, ((const CD3D9Texture*)texture)->getDX9BaseTexture());
 
-		if (stage <= 4)
+		if (((const CD3D9Texture*)texture)->HasVertexTextureSupport() && stage < 4 )
             pID3DDevice->SetTexture(D3DVERTEXTEXTURESAMPLER0 + stage, ((const CD3D9Texture*)texture)->getDX9BaseTexture());
 	}
+	else
+	{
+		os::Printer::log("Fatal Error: Tried to set a texture not owned by this driver.", ELL_ERROR);
+		setActiveTexture(stage, 0);
+		return false;
+	}
+
 	return true;
 }
 
@@ -906,13 +907,6 @@ void CD3D9Driver::setViewPort(const core::rect<s32>& area)
 		else
 			ViewPort = vp;
 	}
-}
-
-
-//! gets the area of the current viewport
-const core::rect<s32>& CD3D9Driver::getViewPort() const
-{
-	return ViewPort;
 }
 
 

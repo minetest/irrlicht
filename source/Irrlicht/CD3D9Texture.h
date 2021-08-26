@@ -42,6 +42,11 @@ public:
 	IDirect3DTexture9* getDX9Texture() const;
 	IDirect3DCubeTexture9* getDX9CubeTexture() const;
 
+	inline bool HasVertexTextureSupport() const 
+	{
+		return VertexTextureSupport;
+	}
+
 private:
 	friend class CD3D9Driver;
 
@@ -77,6 +82,7 @@ private:
 	u32 MipLevelLocked;
 
 	bool HardwareMipMaps;
+	bool VertexTextureSupport;
 
 	IDirect3DDevice9* Device;
 	IDirect3DTexture9* Texture;

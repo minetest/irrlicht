@@ -146,7 +146,8 @@ CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 		// create the window, only if we do not use the null device
 		if (!createWindow())
 			return;
-		setResizable(param.WindowResizable);
+		if (param.WindowResizable < 2 )
+			setResizable(param.WindowResizable == 1 ? true : false);
 	}
 
 	// create cursor control
@@ -521,12 +522,25 @@ bool CIrrDeviceLinux::createWindow()
 		XWindow = (Window)CreationParams.WindowId;
 		if (!CreationParams.IgnoreInput)
 		{
-			XCreateWindow(XDisplay,
+			// Note: This might be further improved by using a InputOnly window instead of InputOutput.
+			// I think then it should be possible to render into the given parent window instead of
+			// creating a child-window.
+			// That could also be a third option for IgnoreInput in the CreationParams.
+			// But we need another window variable then and have to split input/output in
+			// the rest of the device code.
+			// Also... this does possibly leak.
+			Window child_window = XCreateWindow(XDisplay,
 					XWindow,
 					0, 0, Width, Height, 0, VisualInfo->depth,
 					InputOutput, VisualInfo->visual,
 					CWBorderPixel | CWColormap | CWEventMask,
 					&WndAttributes);
+
+			// do not forget to map new window
+			XMapWindow(XDisplay, child_window);
+
+			// overwrite device window id
+			XWindow = child_window;
 		}
 		XWindowAttributes wa;
 		XGetWindowAttributes(XDisplay, XWindow, &wa);
@@ -2201,6 +2215,9 @@ CIrrDeviceLinux::CCursorControl::CCursorControl(CIrrDeviceLinux* dev, bool null)
 	: Device(dev)
 #ifdef _IRR_COMPILE_WITH_X11_
 	, PlatformBehavior(gui::ECPB_NONE), LastQuery(0)
+#ifdef _IRR_LINUX_X11_XINPUT2_
+	, DeviceId(0)
+#endif
 #endif
 	, IsVisible(true), Null(null), UseReferenceRect(false)
 	, ActiveIcon(gui::ECI_NORMAL), ActiveIconStartTime(0)
@@ -2208,6 +2225,10 @@ CIrrDeviceLinux::CCursorControl::CCursorControl(CIrrDeviceLinux* dev, bool null)
 #ifdef _IRR_COMPILE_WITH_X11_
 	if (!Null)
 	{
+#ifdef _IRR_LINUX_X11_XINPUT2_
+		XIGetClientPointer(Device->XDisplay, Device->XWindow, &DeviceId);
+#endif
+
 		XGCValues values;
 		unsigned long valuemask = 0;
 
