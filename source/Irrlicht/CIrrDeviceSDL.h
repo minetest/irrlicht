@@ -100,7 +100,7 @@ namespace irr
 		//! Get the device type
 		virtual E_DEVICE_TYPE getType() const _IRR_OVERRIDE_
 		{
-				return EIDT_SDL;
+			return EIDT_SDL;
 		}
 
 		//! Implementation of the linux cursor control

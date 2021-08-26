@@ -5,6 +5,8 @@
 #ifndef __E_GUI_ALIGNMENT_H_INCLUDED__
 #define __E_GUI_ALIGNMENT_H_INCLUDED__
 
+#include "irrTypes.h"
+
 namespace irr
 {
 namespace gui
@@ -35,4 +37,3 @@ const c8* const GUIAlignmentNames[] =
 } // namespace irr
 
 #endif // __E_GUI_ALIGNMENT_H_INCLUDED__
-

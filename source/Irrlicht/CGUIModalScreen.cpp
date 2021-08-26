@@ -18,6 +18,7 @@ namespace gui
 //! constructor
 CGUIModalScreen::CGUIModalScreen(IGUIEnvironment* environment, IGUIElement* parent, s32 id)
 : IGUIElement(EGUIET_MODAL_SCREEN, environment, parent, id, core::recti(0, 0, parent->getAbsolutePosition().getWidth(), parent->getAbsolutePosition().getHeight()) ),
+	BlinkMode(3),
 	MouseDownTime(0)
 {
 	#ifdef _DEBUG
@@ -90,7 +91,8 @@ bool CGUIModalScreen::OnEvent(const SEvent& event)
 			{
 				Environment->removeFocus(0);	// can't setFocus otherwise at it still has focus here
 				Environment->setFocus(event.GUIEvent.Element);
-				MouseDownTime = os::Timer::getTime();
+				if ( BlinkMode&1 )
+					MouseDownTime = os::Timer::getTime();
 				return true;
 			}
 			if ( !canTakeFocus(event.GUIEvent.Caller))
@@ -112,7 +114,7 @@ bool CGUIModalScreen::OnEvent(const SEvent& event)
 					else
 						Environment->setFocus(this);
 				}
-				else
+				else if ( BlinkMode&1 )
 				{
 					MouseDownTime = os::Timer::getTime();
 				}
@@ -130,10 +132,24 @@ bool CGUIModalScreen::OnEvent(const SEvent& event)
 		}
 		break;
 	case EET_MOUSE_INPUT_EVENT:
-		if (event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN)
+		if (event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN && (BlinkMode & 2))
 		{
 			MouseDownTime = os::Timer::getTime();
         }
+        break;
+	case EET_KEY_INPUT_EVENT:
+		// CAREFUL when changing - there's an identical check in CGUIEnvironment::postEventFromUser
+		if (Environment->getFocusBehavior() & EFF_SET_ON_TAB &&
+			event.KeyInput.PressedDown &&
+			event.KeyInput.Key == KEY_TAB)
+		{
+			IGUIElement* next = Environment->getNextElement(event.KeyInput.Shift, event.KeyInput.Control);
+			if ( next && isMyChild(next) )
+			{
+				// Pass on the TAB-key, otherwise focus-tabbing inside modal screens breaks
+				return false;
+			}
+		}
 	default:
 		break;
 	}
@@ -153,7 +169,7 @@ void CGUIModalScreen::draw()
 		return;
 
 	u32 now = os::Timer::getTime();
-	if (now - MouseDownTime < 300 && (now / 70)%2)
+	if (BlinkMode && now - MouseDownTime < 300 && (now / 70)%2)
 	{
 		core::list<IGUIElement*>::Iterator it = Children.begin();
 		core::rect<s32> r;
@@ -219,12 +235,16 @@ void CGUIModalScreen::updateAbsolutePosition()
 void CGUIModalScreen::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const
 {
 	IGUIElement::serializeAttributes(out,options);
+
+	out->addInt("BlinkMode", BlinkMode );
 }
 
 //! Reads attributes of the element
 void CGUIModalScreen::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)
 {
 	IGUIElement::deserializeAttributes(in, options);
+
+	BlinkMode = in->getAttributeAsInt("BlinkMode", BlinkMode);
 }
 
 

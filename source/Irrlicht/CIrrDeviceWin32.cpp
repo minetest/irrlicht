@@ -840,7 +840,7 @@ CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params)
 		clientSize.right = CreationParams.WindowSize.Width;
 		clientSize.bottom = CreationParams.WindowSize.Height;
 
-		DWORD style = getWindowStyle(CreationParams.Fullscreen, CreationParams.WindowResizable);
+		DWORD style = getWindowStyle(CreationParams.Fullscreen, CreationParams.WindowResizable > 0 ? true : false);
 		AdjustWindowRect(&clientSize, style, FALSE);
 
 		const s32 realWidth = clientSize.right - clientSize.left;

@@ -282,7 +282,7 @@ void CGLXManager::terminate()
 {
 	if (libHandle)
 		dlclose(libHandle);
-	memset(&CurrentContext, 0, sizeof(CurrentContext));
+	memset((void*)&CurrentContext, 0, sizeof(CurrentContext));
 }
 
 bool CGLXManager::generateSurface()

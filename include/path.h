@@ -13,7 +13,9 @@ namespace io
 {
 
 //! Type used for all file system related strings.
-/** This type will transparently handle different file system encodings. */
+/** This type will transparently handle different file system encodings. 
+    NOTE: For historical reasons the tool-functions using io::path are all in coreutil.h
+*/
 typedef core::string<fschar_t> path;
 
 //! Used in places where we identify objects by a filename, but don't actually work with the real filename

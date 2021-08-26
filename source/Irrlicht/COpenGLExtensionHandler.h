@@ -1052,6 +1052,9 @@ class COpenGLExtensionHandler
 
 	bool OcclusionQuerySupport;
 
+	// Info needed for workarounds.
+	bool IsAtiRadeonX;
+
 	//! Workaround until direct state access with framebuffers is stable enough in drivers
 	// https://devtalk.nvidia.com/default/topic/1030494/opengl/bug-amp-amp-spec-violation-checknamedframebufferstatus-returns-gl_framebuffer_incomplete_dimensions_ext-under-gl-4-5-core/
 	// https://stackoverflow.com/questions/51304706/problems-with-attaching-textures-of-different-sizes-to-fbo

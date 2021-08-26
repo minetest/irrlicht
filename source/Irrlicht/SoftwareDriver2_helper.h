@@ -164,7 +164,7 @@ typedef union {
 	unsigned int u;
 	struct { unsigned int frac:23; unsigned exp:8; unsigned int sign:1; } fields;
 	struct { unsigned int frac_exp:31; } abs;
-} ieee754 PACK_STRUCT;
+} PACK_STRUCT ieee754;
 
 // Default alignment
 #include "irrunpack.h"
