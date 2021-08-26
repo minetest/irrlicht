@@ -129,15 +129,15 @@ CSoftwareRenderTarget::~CSoftwareRenderTarget()
 		Textures[0]->drop();
 }
 
-void CSoftwareRenderTarget::setTexture(const core::array<ITexture*>& textures, ITexture* depthStencil, const core::array<E_CUBE_SURFACE>& cubeSurfaces)
+void CSoftwareRenderTarget::setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces, u32 numCubeSurfaces)
 {
-	if (Textures != textures)
+	if (!Textures.equals(textures, numTextures))
 	{
 		ITexture* prevTexture = Textures[0];
 
 		bool textureDetected = false;
 
-		for (u32 i = 0; i < textures.size(); ++i)
+		for (u32 i = 0; i < numTextures; ++i)
 		{
 			if (textures[i] && textures[i]->getDriverType() == EDT_SOFTWARE)
 			{

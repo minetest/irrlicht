@@ -48,6 +48,12 @@ namespace video
 			return DepthStencil;
 		}
 
+		//! Returns an array of active surface for cube textures
+		const core::array<E_CUBE_SURFACE>& getCubeSurfaces() const
+		{
+			return CubeSurfaces;
+		}
+
 		//! Set multiple textures.
 		/** Set multiple textures for the render target.
 		\param texture Array of texture objects. These textures are used for a color outputs.
@@ -55,27 +61,35 @@ namespace video
 		or depth-stencil buffer. 
 		\param cubeSurfaces When rendering to cube textures, set the surface to be used for each texture. Can be empty otherwise.
 		*/
-		virtual void setTexture(const core::array<ITexture*>& texture, ITexture* depthStencil, const core::array<E_CUBE_SURFACE>& cubeSurfaces = core::array<E_CUBE_SURFACE>()) = 0;
+		void setTexture(const core::array<ITexture*>& texture, ITexture* depthStencil, const core::array<E_CUBE_SURFACE>& cubeSurfaces = core::array<E_CUBE_SURFACE>())
+		{
+			setTextures(texture.const_pointer(), texture.size(), depthStencil, cubeSurfaces.const_pointer(), cubeSurfaces.size());
+		}
 
-		//! Set one texture.
+		//! Set one texture
 		void setTexture(ITexture* texture, ITexture* depthStencil)
 		{
-			core::array<ITexture*> textureArray(1);
-			textureArray.push_back(texture);
-
-			setTexture(textureArray, depthStencil);
+			if ( texture )
+			{
+				setTextures(&texture, 1, depthStencil);
+			}
+			else
+			{
+				setTextures(0, 0, depthStencil);
+			}
 		}
 
 		//! Set one cube surface texture.
 		void setTexture(ITexture* texture, ITexture* depthStencil, E_CUBE_SURFACE cubeSurface)
 		{
-			core::array<ITexture*> textureArray(1);
-			textureArray.push_back(texture);
-
-			core::array<E_CUBE_SURFACE> cubeSurfaces(1);
-			cubeSurfaces.push_back(cubeSurface);
-
-			setTexture(textureArray, depthStencil, cubeSurfaces);
+			if ( texture )
+			{
+				setTextures(&texture, 1, depthStencil, &cubeSurface, 1);
+			}
+			else
+			{
+				setTextures(0, 0, depthStencil, &cubeSurface, 1);
+			}
 		}
 
 		//! Get driver type of render target.
@@ -85,6 +99,10 @@ namespace video
 		}
 
 	protected:
+
+		//! Set multiple textures.
+		// NOTE: working with pointers instead of arrays to avoid unnecessary memory allocations for the single textures case
+		virtual void setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces=0, u32 numCubeSurfaces=0) = 0;
 
 		//! Textures assigned to render target.
 		core::array<ITexture*> Textures;

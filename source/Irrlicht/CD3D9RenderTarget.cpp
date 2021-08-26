@@ -49,17 +49,17 @@ namespace irr
 				DepthStencil->drop();
 		}
 
-		void CD3D9RenderTarget::setTexture(const core::array<ITexture*>& textures, ITexture* depthStencil, const core::array<E_CUBE_SURFACE>& cubeSurfaces)
+		void CD3D9RenderTarget::setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces, u32 numCubeSurfaces)
 		{
 			bool needSizeUpdate = false;
 
 			// Set color attachments.
-			if ((Textures != textures) || (CubeSurfaces != cubeSurfaces))
+			if (!Textures.equals(textures, numTextures) || !CubeSurfaces.equals(cubeSurfaces, numCubeSurfaces))
 			{
 				needSizeUpdate = true;
-				CubeSurfaces = cubeSurfaces;	// TODO: we can probably avoid some memory allocating/de-allocating if _only_ CubeSurfaces change.
+				CubeSurfaces.set_data(cubeSurfaces, numCubeSurfaces);	// TODO: we can probably avoid some memory allocating/de-allocating if _only_ CubeSurfaces change.
 
-				if (textures.size() > Driver->ActiveRenderTarget.size())
+				if (numTextures > Driver->ActiveRenderTarget.size())
 				{
 					core::stringc message = "This GPU supports up to ";
 					message += Driver->ActiveRenderTarget.size();
@@ -68,7 +68,7 @@ namespace irr
 					os::Printer::log(message.c_str(), ELL_WARNING);
 				}
 
-				const u32 size = core::min_(textures.size(), static_cast<u32>(Driver->ActiveRenderTarget.size()));
+				const u32 size = core::min_(numTextures, static_cast<u32>(Driver->ActiveRenderTarget.size()));
 
 				for (u32 i = 0; i < Surfaces.size(); ++i)
 				{

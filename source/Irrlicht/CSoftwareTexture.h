@@ -57,7 +57,7 @@ public:
 	CSoftwareRenderTarget(CSoftwareDriver* driver);
 	virtual ~CSoftwareRenderTarget();
 
-	virtual void setTexture(const core::array<ITexture*>& texture, ITexture* depthStencil, const core::array<E_CUBE_SURFACE>& cubeSurfaces) _IRR_OVERRIDE_;
+	virtual void setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces, u32 numCubeSurfaces) _IRR_OVERRIDE_;
 
 	ITexture* getTexture() const;
 

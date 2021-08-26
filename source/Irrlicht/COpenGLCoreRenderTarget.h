@@ -58,18 +58,18 @@ public:
 			DepthStencil->drop();
 	}
 
-	virtual void setTexture(const core::array<ITexture*>& textures, ITexture* depthStencil, const core::array<E_CUBE_SURFACE>& cubeSurfaces) _IRR_OVERRIDE_
+	virtual void setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces, u32 numCubeSurfaces) _IRR_OVERRIDE_
 	{
 		bool needSizeUpdate = false;
 
 		// Set color attachments.
-		if ((Textures != textures) || (CubeSurfaces != cubeSurfaces))
+		if (!Textures.equals(textures, numTextures) || !CubeSurfaces.equals(cubeSurfaces, numCubeSurfaces))
 		{
 			needSizeUpdate = true;
 
 			core::array<ITexture*> prevTextures(Textures);
 
-			if (textures.size() > static_cast<u32>(ColorAttachment))
+			if (numTextures > static_cast<u32>(ColorAttachment))
 			{
 				core::stringc message = "This GPU supports up to ";
 				message += static_cast<u32>(ColorAttachment);
@@ -78,7 +78,7 @@ public:
 				os::Printer::log(message.c_str(), ELL_WARNING);
 			}
 
-			Textures.set_used(core::min_(textures.size(), static_cast<u32>(ColorAttachment)));
+			Textures.set_used(core::min_(numTextures, static_cast<u32>(ColorAttachment)));
 
 			for (u32 i = 0; i < Textures.size(); ++i)
 			{
@@ -111,9 +111,9 @@ public:
 			RequestTextureUpdate = true;
 		}
 
-		if (CubeSurfaces != cubeSurfaces)
+		if (!CubeSurfaces.equals(cubeSurfaces, numCubeSurfaces))
 		{
-			CubeSurfaces = cubeSurfaces;
+			CubeSurfaces.set_data(cubeSurfaces, numCubeSurfaces);
 			RequestTextureUpdate = true;
 		}
 
