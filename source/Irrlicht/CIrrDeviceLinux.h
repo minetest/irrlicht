@@ -134,7 +134,7 @@ namespace irr
 		//! Get the device type
 		virtual E_DEVICE_TYPE getType() const _IRR_OVERRIDE_
 		{
-				return EIDT_X11;
+			return EIDT_X11;
 		}
 
 #ifdef _IRR_COMPILE_WITH_X11_

@@ -107,7 +107,7 @@ namespace irr
 		//! Get the device type
 		virtual E_DEVICE_TYPE getType() const _IRR_OVERRIDE_
 		{
-				return EIDT_WIN32;
+			return EIDT_WIN32;
 		}
 
 		//! Compares to the last call of this function to return double and triple clicks.
