@@ -58,7 +58,7 @@ namespace video
 		/** Set multiple textures for the render target.
 		\param texture Array of texture objects. These textures are used for a color outputs.
 		\param depthStencil Depth or packed depth-stencil texture. This texture is used as depth
-		or depth-stencil buffer. 
+		or depth-stencil buffer. You can pass getDepthStencil() if you don't want to change it.
 		\param cubeSurfaces When rendering to cube textures, set the surface to be used for each texture. Can be empty otherwise.
 		*/
 		void setTexture(const core::array<ITexture*>& texture, ITexture* depthStencil, const core::array<E_CUBE_SURFACE>& cubeSurfaces = core::array<E_CUBE_SURFACE>())
@@ -66,7 +66,8 @@ namespace video
 			setTextures(texture.const_pointer(), texture.size(), depthStencil, cubeSurfaces.const_pointer(), cubeSurfaces.size());
 		}
 
-		//! Set one texture
+		//! Sets one texture + depthStencil
+		//! You can pass getDepthStencil() for depthStencil if you don't want to change that one
 		void setTexture(ITexture* texture, ITexture* depthStencil)
 		{
 			if ( texture )
