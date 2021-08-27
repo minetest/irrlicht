@@ -16,8 +16,8 @@
 #define _IRR_DEBUG_BREAK_IF IRR_DEBUG_BREAK_IF
 #define _IRR_TEXT IRR_TEXT
 
-// Defines which changed in Irrlicht 1.9 as they were reserved identifiers in c++,
-// but can't be set here as there are only checks _if_ they are defined.
+// Defines which are used in Irrlicht 1.9 and changed their name as they were reserved identifiers in c++
+// Those can't be set here as it's defines _users_ can set.
 // If you have any of those in your code, you will have to change them there.
 // _IRR_DONT_DO_MEMORY_DEBUGGING_HERE -> IRR_DONT_DO_MEMORY_DEBUGGING_HERE
 

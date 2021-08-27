@@ -129,9 +129,15 @@
     <ClInclude Include="..\..\include\irrlicht.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\leakHunter.h">
+      <Filter>include</Filter>
+    </ClInclude>	
     <ClInclude Include="..\..\include\IrrlichtDevice.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\irrTypes.h">
+      <Filter>include</Filter>
+    </ClInclude>	
     <ClInclude Include="..\..\include\ITimer.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -1363,6 +1369,9 @@
     <ClInclude Include="burning_shader_compile_verify.h">
       <Filter>Irrlicht\video\Burning Video</Filter>
     </ClInclude>
+    <ClInclude Include="CBlit.h">
+      <Filter>Irrlicht\video\Null</Filter>
+    </ClInclude>		
     <ClInclude Include="..\..\include\fast_atof.h">
       <Filter>include\core</Filter>
     </ClInclude>
@@ -1383,9 +1392,6 @@
     </ClInclude>
     <ClInclude Include="ISceneNodeAnimatorFinishing.h">
       <Filter>Irrlicht\scene\animators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\irrTypes.h">
-      <Filter>include\core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\SVertexIndex.h">
       <Filter>include\video</Filter>
