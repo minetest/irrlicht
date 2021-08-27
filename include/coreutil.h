@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_CORE_UTIL_H_INCLUDED__
-#define __IRR_CORE_UTIL_H_INCLUDED__
+#ifndef IRR_CORE_UTIL_H_INCLUDED
+#define IRR_CORE_UTIL_H_INCLUDED
 
 #include "irrString.h"
 #include "path.h"

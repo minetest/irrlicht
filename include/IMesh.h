@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_MESH_H_INCLUDED__
-#define __I_MESH_H_INCLUDED__
+#ifndef IRR_I_MESH_H_INCLUDED
+#define IRR_I_MESH_H_INCLUDED
 
 #include "IReferenceCounted.h"
 #include "SMaterial.h"
@@ -120,7 +120,7 @@ namespace scene
 		if getMeshType() returns EAMT_MD2 it's safe to cast the
 		IMesh to IAnimatedMeshMD2.
 		Note: It's no longer just about animated meshes, that name has just historical reasons.
-		\returns Type of the mesh  */
+		\return Type of the mesh  */
 		virtual E_ANIMATED_MESH_TYPE getMeshType() const
 		{
 			return EAMT_STATIC;
@@ -131,4 +131,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

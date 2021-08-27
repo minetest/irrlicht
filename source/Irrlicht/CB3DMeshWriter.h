@@ -4,8 +4,8 @@
 
 // Modified version with rigging/skinning support
 
-#ifndef __IRR_B3D_MESH_WRITER_H_INCLUDED__
-#define __IRR_B3D_MESH_WRITER_H_INCLUDED__
+#ifndef IRR_B3D_MESH_WRITER_H_INCLUDED
+#define IRR_B3D_MESH_WRITER_H_INCLUDED
 
 #include "IMeshWriter.h"
 #include "IWriteFile.h"

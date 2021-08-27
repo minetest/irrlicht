@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine" and the "irrXML" project.
 // For conditions of distribution and use, see copyright notice in irrlicht.h and/or irrXML.h
 
-#ifndef __ICXML_READER_IMPL_H_INCLUDED__
-#define __ICXML_READER_IMPL_H_INCLUDED__
+#ifndef IRR_ICXML_READER_IMPL_H_INCLUDED
+#define IRR_ICXML_READER_IMPL_H_INCLUDED
 
 #include "irrXML.h"
 #include "irrString.h"

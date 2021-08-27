@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_INDEX_BUFFER_H_INCLUDED__
-#define __I_INDEX_BUFFER_H_INCLUDED__
+#ifndef IRR_I_INDEX_BUFFER_H_INCLUDED
+#define IRR_I_INDEX_BUFFER_H_INCLUDED
 
 #include "IReferenceCounted.h"
 #include "irrArray.h"
@@ -12,11 +12,6 @@
 
 namespace irr
 {
-
-namespace video
-{
-
-}
 
 namespace scene
 {
@@ -62,4 +57,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

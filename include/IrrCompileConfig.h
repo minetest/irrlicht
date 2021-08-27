@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_COMPILE_CONFIG_H_INCLUDED__
-#define __IRR_COMPILE_CONFIG_H_INCLUDED__
+#ifndef IRR_COMPILE_CONFIG_H_INCLUDED
+#define IRR_COMPILE_CONFIG_H_INCLUDED
 
 //! Irrlicht SDK Version
 #define IRRLICHT_VERSION_MAJOR 1
@@ -862,5 +862,4 @@ precision will be lower but speed higher. currently X86 only
 	#endif
 #endif
 
-#endif // __IRR_COMPILE_CONFIG_H_INCLUDED__
-
+#endif // IRR_COMPILE_CONFIG_H_INCLUDED

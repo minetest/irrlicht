@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __E_TERRAIN_ELEMENTS_H__
-#define __E_TERRAIN_ELEMENTS_H__
+#ifndef IRR_E_TERRAIN_ELEMENTS_H
+#define IRR_E_TERRAIN_ELEMENTS_H
 
 namespace irr
 {
@@ -33,4 +33,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_SCENE_NODE_ANIMATOR_H_INCLUDED__
-#define __I_SCENE_NODE_ANIMATOR_H_INCLUDED__
+#ifndef IRR_I_SCENE_NODE_ANIMATOR_H_INCLUDED
+#define IRR_I_SCENE_NODE_ANIMATOR_H_INCLUDED
 
 #include "IReferenceCounted.h"
 #include "vector3d.h"
@@ -79,7 +79,7 @@ namespace scene
 			This value is ignored by animators which don't work with a starttime.
 			Known problems: CSceneNodeAnimatorRotation currently overwrites this value constantly (might be changed in the future).
 			\param time Commonly you will use irr::ITimer::getTime().
-			\param resetPauseTime Reset internal pause time for enabling/diabling animators as well
+			\param resetPauseTime Reset internal pause time for enabling/disabling animators as well
 		*/
 		virtual void setStartTime(u32 time, bool resetPauseTime=true)
 		{
@@ -167,4 +167,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

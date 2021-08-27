@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine" and the "irrXML" project.
 // For conditions of distribution and use, see copyright notice in irrlicht.h and irrXML.h
 
-#ifndef __FAST_ATOF_H_INCLUDED__
-#define __FAST_ATOF_H_INCLUDED__
+#ifndef IRR_FAST_ATOF_H_INCLUDED
+#define IRR_FAST_ATOF_H_INCLUDED
 
 #include "irrMath.h"
 #include "irrString.h"
@@ -378,4 +378,3 @@ inline float fast_atof(const char* floatAsString, const char** out=0)
 } // end namespace irr
 
 #endif
-

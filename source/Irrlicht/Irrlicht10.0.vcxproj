@@ -841,14 +841,23 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\EDriverFeatures.h" />
     <ClInclude Include="..\..\include\EMaterialFlags.h" />
+    <ClInclude Include="..\..\include\EReadFileType.h" />
+    <ClInclude Include="..\..\include\EShaderTypes.h" />
     <ClInclude Include="..\..\include\fast_atof.h" />
     <ClInclude Include="..\..\include\IAnimatedMeshMD3.h" />
+    <ClInclude Include="..\..\include\IBillboardTextSceneNode.h" />
     <ClInclude Include="..\..\include\IBoneSceneNode.h" />
+    <ClInclude Include="..\..\include\IColladaMeshWriter.h" />
     <ClInclude Include="..\..\include\IDynamicMeshBuffer.h" />
     <ClInclude Include="..\..\include\IEventReceiver.h" />
+    <ClInclude Include="..\..\include\IFileArchive.h" />
     <ClInclude Include="..\..\include\IGUIFontBitmap.h" />
+    <ClInclude Include="..\..\include\IGUITable.h" />
+    <ClInclude Include="..\..\include\IImageWriter.h" />
+    <ClInclude Include="..\..\include\IIndexBuffer.h" />
     <ClInclude Include="..\..\include\ILightManager.h" />
     <ClInclude Include="..\..\include\ILogger.h" />
+    <ClInclude Include="..\..\include\IMemoryReadFile.h" />
     <ClInclude Include="..\..\include\IOctreeSceneNode.h" />
     <ClInclude Include="..\..\include\IOSOperator.h" />
     <ClInclude Include="..\..\include\IProfiler.h" />
@@ -859,7 +868,9 @@
     <ClInclude Include="..\..\include\irrlicht.h" />
     <ClInclude Include="..\..\include\IrrlichtDevice.h" />
     <ClInclude Include="..\..\include\irrTypes.h" />
+    <ClInclude Include="..\..\include\ISceneUserDataSerializer.h" />
     <ClInclude Include="..\..\include\ITimer.h" />
+    <ClInclude Include="..\..\include\IVertexBuffer.h" />
     <ClInclude Include="..\..\include\Keycodes.h" />
     <ClInclude Include="..\..\include\SIrrCreationParameters.h" />
     <ClInclude Include="..\..\include\SKeyMap.h" />
@@ -900,6 +911,7 @@
     <ClInclude Include="..\..\include\rect.h" />
     <ClInclude Include="..\..\include\SOverrideMaterial.h" />
     <ClInclude Include="..\..\include\SSharedMeshBuffer.h" />
+    <ClInclude Include="..\..\include\SVertexIndex.h" />
     <ClInclude Include="..\..\include\SVertexManipulator.h" />
     <ClInclude Include="..\..\include\triangle3d.h" />
     <ClInclude Include="..\..\include\vector2d.h" />

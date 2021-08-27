@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine" and the "irrXML" project.
 // For conditions of distribution and use, see copyright notice in irrlicht.h and/or irrXML.h
 
-#ifndef __IRR_XML_H_INCLUDED__
-#define __IRR_XML_H_INCLUDED__
+#ifndef IRR_XML_H_INCLUDED
+#define IRR_XML_H_INCLUDED
 
 #include <stdio.h>
 #include "IrrCompileConfig.h"
@@ -641,5 +641,4 @@ namespace io
 } // end namespace io
 } // end namespace irr
 
-#endif // __IRR_XML_H_INCLUDED__
-
+#endif // IRR_XML_H_INCLUDED

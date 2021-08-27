@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_GUI_IN_OUT_FADER_H_INCLUDED__
-#define __I_GUI_IN_OUT_FADER_H_INCLUDED__
+#ifndef IRR_I_GUI_IN_OUT_FADER_H_INCLUDED
+#define IRR_I_GUI_IN_OUT_FADER_H_INCLUDED
 
 #include "IGUIElement.h"
 #include "SColor.h"
@@ -42,7 +42,7 @@ namespace gui
 
 		//! Starts the fade in process.
 		/** In the beginning the whole rect is drawn by the set color
-		(black by default) and at the end of the overgiven time the
+		(black by default) and at the end of the given time the
 		color has faded out.
 		\param time: Time specifying how long it should need to fade in,
 		in milliseconds. */
@@ -64,4 +64,3 @@ namespace gui
 } // end namespace irr
 
 #endif
-

@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_EVENT_RECEIVER_H_INCLUDED__
-#define __I_EVENT_RECEIVER_H_INCLUDED__
+#ifndef IRR_I_EVENT_RECEIVER_H_INCLUDED
+#define IRR_I_EVENT_RECEIVER_H_INCLUDED
 
 #include "ILogger.h"
 #include "Keycodes.h"
@@ -524,4 +524,3 @@ struct SJoystickInfo
 } // end namespace irr
 
 #endif
-

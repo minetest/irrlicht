@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __S_SHARED_MESH_BUFFER_H_INCLUDED__
-#define __S_SHARED_MESH_BUFFER_H_INCLUDED__
+#ifndef S_SHARED_MESH_BUFFER_H_INCLUDED
+#define S_SHARED_MESH_BUFFER_H_INCLUDED
 
 #include "irrArray.h"
 #include "IMeshBuffer.h"
@@ -257,4 +257,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

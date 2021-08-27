@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __S_MATERIAL_LAYER_H_INCLUDED__
-#define __S_MATERIAL_LAYER_H_INCLUDED__
+#ifndef S_MATERIAL_LAYER_H_INCLUDED
+#define S_MATERIAL_LAYER_H_INCLUDED
 
 #include "matrix4.h"
 #include "irrAllocator.h"
@@ -227,4 +227,4 @@ namespace video
 } // end namespace video
 } // end namespace irr
 
-#endif // __S_MATERIAL_LAYER_H_INCLUDED__
+#endif // S_MATERIAL_LAYER_H_INCLUDED

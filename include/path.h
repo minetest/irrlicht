@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine" and the "irrXML" project.
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_PATH_H_INCLUDED__
-#define __IRR_PATH_H_INCLUDED__
+#ifndef IRR_PATH_H_INCLUDED
+#define IRR_PATH_H_INCLUDED
 
 #include "irrString.h"
 
@@ -87,4 +87,4 @@ private:
 } // io
 } // irr
 
-#endif // __IRR_PATH_H_INCLUDED__
+#endif // IRR_PATH_H_INCLUDED

@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_MATERIAL_RENDERER_SERVICES_H_INCLUDED__
-#define __I_MATERIAL_RENDERER_SERVICES_H_INCLUDED__
+#ifndef IRR_I_MATERIAL_RENDERER_SERVICES_H_INCLUDED
+#define IRR_I_MATERIAL_RENDERER_SERVICES_H_INCLUDED
 
 #include "SMaterial.h"
 #include "S3DVertex.h"
@@ -28,7 +28,7 @@ public:
 	/** Sets all basic renderstates if needed.
 	Basic render states are diffuse, ambient, specular, and emissive color,
 	specular power, bilinear and trilinear filtering, wireframe mode,
-	grouraudshading, lighting, zbuffer, zwriteenable, backfaceculling and
+	gouraudshading, lighting, zbuffer, zwriteenable, backfaceculling and
 	fog enabling.
 	\param material The new material to be used.
 	\param lastMaterial The material used until now.
@@ -144,4 +144,3 @@ public:
 } // end namespace irr
 
 #endif
-

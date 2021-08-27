@@ -1,8 +1,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef E_FOCUS_FLAGS_H_INCLUDED__
-#define E_FOCUS_FLAGS_H_INCLUDED__
+#ifndef IRR_E_FOCUS_FLAGS_H_INCLUDED
+#define IRR_E_FOCUS_FLAGS_H_INCLUDED
 
 namespace irr
 {
@@ -35,4 +35,3 @@ enum EFOCUS_FLAG
 } // namespace irr
 
 #endif
-

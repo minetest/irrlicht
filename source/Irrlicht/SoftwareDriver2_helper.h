@@ -7,8 +7,8 @@
 	- changed behavior for log2 textures ( replaced multiplies by shift )
 */
 
-#ifndef __S_VIDEO_2_SOFTWARE_HELPER_H_INCLUDED__
-#define __S_VIDEO_2_SOFTWARE_HELPER_H_INCLUDED__
+#ifndef S_VIDEO_2_SOFTWARE_HELPER_H_INCLUDED
+#define S_VIDEO_2_SOFTWARE_HELPER_H_INCLUDED
 
 #include "SoftwareDriver2_compile_config.h"
 #include "irrMath.h"
@@ -1241,4 +1241,3 @@ static inline int tiny_isequal(const char *s1, const char *s2, size_t n)
 } // end namespace irr
 
 #endif
-

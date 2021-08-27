@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_LINE_3D_H_INCLUDED__
-#define __IRR_LINE_3D_H_INCLUDED__
+#ifndef IRR_LINE_3D_H_INCLUDED
+#define IRR_LINE_3D_H_INCLUDED
 
 #include "irrTypes.h"
 #include "vector3d.h"
