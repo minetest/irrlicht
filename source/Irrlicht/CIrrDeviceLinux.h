@@ -425,6 +425,10 @@ namespace irr
 		};
 		core::array<JoystickInfo> ActiveJoysticks;
 #endif
+
+#if defined(_IRR_LINUX_X11_XINPUT2_)
+		int currentTouchedCount;
+#endif
 	};
 
 
