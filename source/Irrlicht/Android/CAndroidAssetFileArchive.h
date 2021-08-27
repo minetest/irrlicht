@@ -48,13 +48,13 @@ namespace io
 		//! get the archive type
 		virtual E_FILE_ARCHIVE_TYPE getType() const;
 
-		//! Add a directory to read files from. Since the Android 
+		//! Add a directory to read files from. Since the Android
 		//! API does not return names of directories, they need to
 		//! be added manually.
 		virtual void addDirectoryToFileList(const io::path &filename);
 
 		//! return the name (id) of the file Archive
-		virtual const io::path& getArchiveName() const _IRR_OVERRIDE_ {return Path;}
+		virtual const io::path& getArchiveName() const IRR_OVERRIDE {return Path;}
 
 	protected:
 		//! Android's asset manager
