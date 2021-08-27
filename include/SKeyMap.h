@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __S_KEY_MAP_H_INCLUDED__
-#define __S_KEY_MAP_H_INCLUDED__
+#ifndef S_KEY_MAP_H_INCLUDED
+#define S_KEY_MAP_H_INCLUDED
 
 #include "Keycodes.h"
 
@@ -40,4 +40,3 @@ namespace irr
 } // end namespace irr
 
 #endif
-

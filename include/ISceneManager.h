@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_SCENE_MANAGER_H_INCLUDED__
-#define __I_SCENE_MANAGER_H_INCLUDED__
+#ifndef IRR_I_SCENE_MANAGER_H_INCLUDED
+#define IRR_I_SCENE_MANAGER_H_INCLUDED
 
 #include "IReferenceCounted.h"
 #include "irrArray.h"
@@ -1370,7 +1370,7 @@ namespace scene
 
 		//! //! Creates a Triangle Selector, optimized by an octree.
 		/** \deprecated Use createOctreeTriangleSelector instead. This method may be removed by Irrlicht 1.9. */
-		_IRR_DEPRECATED_ ITriangleSelector* createOctTreeTriangleSelector(IMesh* mesh,
+		IRR_DEPRECATED ITriangleSelector* createOctTreeTriangleSelector(IMesh* mesh,
 			ISceneNode* node, s32 minimalPolysPerNode=32)
 		{
 			return createOctreeTriangleSelector(mesh, node, minimalPolysPerNode);
@@ -1693,4 +1693,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

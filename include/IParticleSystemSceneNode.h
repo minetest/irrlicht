@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_PARTICLE_SYSTEM_SCENE_NODE_H_INCLUDED__
-#define __I_PARTICLE_SYSTEM_SCENE_NODE_H_INCLUDED__
+#ifndef IRR_I_PARTICLE_SYSTEM_SCENE_NODE_H_INCLUDED
+#define IRR_I_PARTICLE_SYSTEM_SCENE_NODE_H_INCLUDED
 
 #include "ISceneNode.h"
 #include "IParticleAnimatedMeshSceneNodeEmitter.h"
@@ -551,13 +551,13 @@ public:
 		const core::vector3df& pivotPoint = core::vector3df(0.0f,0.0f,0.0f) ) = 0;
 
 	//! Writes attributes of the scene node.
-	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_
+	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const IRR_OVERRIDE
 	{
 		out->addInt("ParticleBehavior", ParticleBehavior);
 	}
 
 	//! Reads attributes of the scene node.
-	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_
+	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) IRR_OVERRIDE
 	{
 		ParticleBehavior = in->getAttributeAsInt("ParticleBehavior", ParticleBehavior);
 	}

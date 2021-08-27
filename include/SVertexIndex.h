@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __S_VERTEX_INDEX_H_INCLUDED__
-#define __S_VERTEX_INDEX_H_INCLUDED__
+#ifndef S_VERTEX_INDEX_H_INCLUDED
+#define S_VERTEX_INDEX_H_INCLUDED
 
 #include "irrTypes.h"
 
@@ -76,4 +76,3 @@ typedef u32 SVertexIndex;
 } // end namespace irr
 
 #endif
-

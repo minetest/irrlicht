@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_BONE_SCENE_NODE_H_INCLUDED__
-#define __I_BONE_SCENE_NODE_H_INCLUDED__
+#ifndef IRR_I_BONE_SCENE_NODE_H_INCLUDED
+#define IRR_I_BONE_SCENE_NODE_H_INCLUDED
 
 #include "ISceneNode.h"
 
@@ -61,7 +61,7 @@ namespace scene
 
 		//! Get the name of the bone
 		/** \deprecated Use getName instead. This method may be removed by Irrlicht 1.9 */
-		_IRR_DEPRECATED_ virtual const c8* getBoneName() const { return getName(); }
+		IRR_DEPRECATED virtual const c8* getBoneName() const { return getName(); }
 
 		//! Get the index of the bone
 		virtual u32 getBoneIndex() const = 0;
@@ -74,17 +74,17 @@ namespace scene
 		virtual E_BONE_ANIMATION_MODE getAnimationMode() const = 0;
 
 		//! Get the axis aligned bounding box of this node
-		virtual const core::aabbox3d<f32>& getBoundingBox() const _IRR_OVERRIDE_ = 0;
+		virtual const core::aabbox3d<f32>& getBoundingBox() const IRR_OVERRIDE = 0;
 
 		//! Returns the relative transformation of the scene node.
 		//virtual core::matrix4 getRelativeTransformation() const = 0;
 
 		//! The animation method.
-		virtual void OnAnimate(u32 timeMs) _IRR_OVERRIDE_ =0;
+		virtual void OnAnimate(u32 timeMs) IRR_OVERRIDE =0;
 
 		//! The render method.
 		/** Does nothing as bones are not visible. */
-		virtual void render() _IRR_OVERRIDE_ { }
+		virtual void render() IRR_OVERRIDE { }
 
 		//! How the relative transformation of the bone is used
 		virtual void setSkinningSpace( E_BONE_SKINNING_SPACE space ) =0;
@@ -105,4 +105,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

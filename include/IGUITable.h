@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_GUI_TABLE_H_INCLUDED__
-#define __I_GUI_TABLE_H_INCLUDED__
+#ifndef IRR_I_GUI_TABLE_H_INCLUDED
+#define IRR_I_GUI_TABLE_H_INCLUDED
 
 #include "IGUIElement.h"
 #include "SColor.h"
@@ -232,4 +232,3 @@ namespace gui
 } // end namespace irr
 
 #endif
-

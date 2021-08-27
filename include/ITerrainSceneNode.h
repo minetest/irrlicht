@@ -7,8 +7,8 @@
 // code available for Irrlicht and allowed it to be distributed under this
 // licence. I only modified some parts. A lot of thanks go to them.
 
-#ifndef __I_TERRAIN_SCENE_NODE_H__
-#define __I_TERRAIN_SCENE_NODE_H__
+#ifndef IRR_I_TERRAIN_SCENE_NODE_H
+#define IRR_I_TERRAIN_SCENE_NODE_H
 
 #include "ETerrainElements.h"
 #include "ISceneNode.h"
@@ -186,5 +186,4 @@ namespace scene
 } // end namespace irr
 
 
-#endif // __I_TERRAIN_SCENE_NODE_H__
-
+#endif // IRR_I_TERRAIN_SCENE_NODE_H

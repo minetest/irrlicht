@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_PARTICLE_ANIMATED_MESH_SCENE_NODE_EMITTER_H_INCLUDED__
-#define __I_PARTICLE_ANIMATED_MESH_SCENE_NODE_EMITTER_H_INCLUDED__
+#ifndef IRR_I_PARTICLE_ANIMATED_MESH_SCENE_NODE_EMITTER_H_INCLUDED
+#define IRR_I_PARTICLE_ANIMATED_MESH_SCENE_NODE_EMITTER_H_INCLUDED
 
 #include "IParticleEmitter.h"
 #include "IAnimatedMeshSceneNode.h"
@@ -43,12 +43,10 @@ public:
 	virtual bool getEveryMeshVertex() const = 0;
 
 	//! Get emitter type
-	virtual E_PARTICLE_EMITTER_TYPE getType() const _IRR_OVERRIDE_ { return EPET_ANIMATED_MESH; }
+	virtual E_PARTICLE_EMITTER_TYPE getType() const IRR_OVERRIDE { return EPET_ANIMATED_MESH; }
 };
 
 } // end namespace scene
 } // end namespace irr
 
-
-#endif // __I_PARTICLE_ANIMATED_MESH_SCENE_NODE_EMITTER_H_INCLUDED__
-
+#endif // IRR_I_PARTICLE_ANIMATED_MESH_SCENE_NODE_EMITTER_H_INCLUDED

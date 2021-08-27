@@ -2,8 +2,8 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 // Written by Michael Zeilfelder
 
-#ifndef __I_PROFILER_H_INCLUDED__
-#define __I_PROFILER_H_INCLUDED__
+#ifndef IRR_I_PROFILER_H_INCLUDED
+#define IRR_I_PROFILER_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #include "irrString.h"
@@ -477,4 +477,4 @@ void IProfiler::resetAll()
 
 } // namespace irr
 
-#endif // __I_PROFILER_H_INCLUDED__
+#endif // IRR_I_PROFILER_H_INCLUDED

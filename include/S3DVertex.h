@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __S_3D_VERTEX_H_INCLUDED__
-#define __S_3D_VERTEX_H_INCLUDED__
+#ifndef S_3D_VERTEX_H_INCLUDED
+#define S_3D_VERTEX_H_INCLUDED
 
 #include "vector3d.h"
 #include "vector2d.h"
@@ -278,4 +278,3 @@ inline u32 getVertexPitchFromType(E_VERTEX_TYPE vertexType)
 } // end namespace irr
 
 #endif
-

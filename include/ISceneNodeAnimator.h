@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_SCENE_NODE_ANIMATOR_H_INCLUDED__
-#define __I_SCENE_NODE_ANIMATOR_H_INCLUDED__
+#ifndef IRR_I_SCENE_NODE_ANIMATOR_H_INCLUDED
+#define IRR_I_SCENE_NODE_ANIMATOR_H_INCLUDED
 
 #include "IReferenceCounted.h"
 #include "vector3d.h"
@@ -55,7 +55,7 @@ namespace scene
 		}
 
 		//! Event receiver, override this function for camera controlling animators
-		virtual bool OnEvent(const SEvent& event) _IRR_OVERRIDE_
+		virtual bool OnEvent(const SEvent& event) IRR_OVERRIDE
 		{
 			return false;
 		}
@@ -79,7 +79,7 @@ namespace scene
 			This value is ignored by animators which don't work with a starttime.
 			Known problems: CSceneNodeAnimatorRotation currently overwrites this value constantly (might be changed in the future).
 			\param time Commonly you will use irr::ITimer::getTime().
-			\param resetPauseTime Reset internal pause time for enabling/diabling animators as well
+			\param resetPauseTime Reset internal pause time for enabling/disabling animators as well
 		*/
 		virtual void setStartTime(u32 time, bool resetPauseTime=true)
 		{
@@ -129,14 +129,14 @@ namespace scene
 		}
 
 		//! Writes attributes of the scene node animator.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_
+		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const IRR_OVERRIDE
 		{
 			out->addBool("IsEnabled", IsEnabled);
 			// timers not serialized as they usually depend on system-time which is different on each application start.
 		}
 
 		//! Reads attributes of the scene node animator.
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_
+		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) IRR_OVERRIDE
 		{
 			IsEnabled = in->getAttributeAsBool("IsEnabled", IsEnabled);
 			PauseTimeSum = 0;
@@ -167,4 +167,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

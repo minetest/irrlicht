@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_MESH_CACHE_H_INCLUDED__
-#define __I_MESH_CACHE_H_INCLUDED__
+#ifndef IRR_I_MESH_CACHE_H_INCLUDED
+#define IRR_I_MESH_CACHE_H_INCLUDED
 
 #include "IReferenceCounted.h"
 #include "path.h"
@@ -81,7 +81,7 @@ namespace scene
 		//! Returns a mesh based on its name (often a filename).
 		/** \deprecated Use getMeshByName() instead. This method may be removed by
 		Irrlicht 1.9 */
-		_IRR_DEPRECATED_ IAnimatedMesh* getMeshByFilename(const io::path& filename)
+		IRR_DEPRECATED IAnimatedMesh* getMeshByFilename(const io::path& filename)
 		{
 			return getMeshByName(filename);
 		}
@@ -89,7 +89,7 @@ namespace scene
 		//! Get the name of a loaded mesh, based on its index. (Name is often identical to the filename).
 		/** \deprecated Use getMeshName() instead. This method may be removed by
 		Irrlicht 1.9 */
-		_IRR_DEPRECATED_ const io::path& getMeshFilename(u32 index) const
+		IRR_DEPRECATED const io::path& getMeshFilename(u32 index) const
 		{
 			return getMeshName(index).getInternalName();
 		}
@@ -97,7 +97,7 @@ namespace scene
 		//! Get the name of a loaded mesh, if there is any. (Name is often identical to the filename).
 		/** \deprecated Use getMeshName() instead. This method may be removed by
 		Irrlicht 1.9 */
-		_IRR_DEPRECATED_ const io::path& getMeshFilename(const IMesh* const mesh) const
+		IRR_DEPRECATED const io::path& getMeshFilename(const IMesh* const mesh) const
 		{
 			return getMeshName(mesh).getInternalName();
 		}
@@ -105,7 +105,7 @@ namespace scene
 		//! Renames a loaded mesh.
 		/** \deprecated Use renameMesh() instead. This method may be removed by
 		Irrlicht 1.9 */
-		_IRR_DEPRECATED_ bool setMeshFilename(u32 index, const io::path& filename)
+		IRR_DEPRECATED bool setMeshFilename(u32 index, const io::path& filename)
 		{
 			return renameMesh(index, filename);
 		}
@@ -113,7 +113,7 @@ namespace scene
 		//! Renames a loaded mesh.
 		/** \deprecated Use renameMesh() instead. This method may be removed by
 		Irrlicht 1.9 */
-		_IRR_DEPRECATED_ bool setMeshFilename(const IMesh* const mesh, const io::path& filename)
+		IRR_DEPRECATED bool setMeshFilename(const IMesh* const mesh, const io::path& filename)
 		{
 			return renameMesh(mesh, filename);
 		}
@@ -174,4 +174,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

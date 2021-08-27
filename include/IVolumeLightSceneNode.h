@@ -4,8 +4,8 @@
 //
 // created by Dean Wadsworth aka Varmint Dec 31 2007
 
-#ifndef __I_VOLUME_LIGHT_SCENE_NODE_H_INCLUDED__
-#define __I_VOLUME_LIGHT_SCENE_NODE_H_INCLUDED__
+#ifndef IRR_I_VOLUME_LIGHT_SCENE_NODE_H_INCLUDED
+#define IRR_I_VOLUME_LIGHT_SCENE_NODE_H_INCLUDED
 
 #include "ISceneNode.h"
 
@@ -27,7 +27,7 @@ namespace scene
 			: ISceneNode(parent, mgr, id, position, rotation, scale) {};
 
 		//! Returns type of the scene node
-		virtual ESCENE_NODE_TYPE getType() const _IRR_OVERRIDE_ { return ESNT_VOLUME_LIGHT; }
+		virtual ESCENE_NODE_TYPE getType() const IRR_OVERRIDE { return ESNT_VOLUME_LIGHT; }
 
 		//! Sets the number of segments across the U axis
 		virtual void setSubDivideU(const u32 inU) =0;

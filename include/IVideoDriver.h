@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_I_VIDEO_DRIVER_H_INCLUDED__
-#define __IRR_I_VIDEO_DRIVER_H_INCLUDED__
+#ifndef IRR_I_VIDEO_DRIVER_H_INCLUDED
+#define IRR_I_VIDEO_DRIVER_H_INCLUDED
 
 #include "rect.h"
 #include "SColor.h"
@@ -330,7 +330,7 @@ namespace video
 		\return Pointer to the newly created texture. This pointer
 		should not be dropped. See IReferenceCounted::drop() for more
 		information. */
-		_IRR_DEPRECATED_ ITexture* addTexture(const io::path& name, IImage* image, void* mipmapData)
+		IRR_DEPRECATED ITexture* addTexture(const io::path& name, IImage* image, void* mipmapData)
 		{
 			if (image)
 				image->setMipMapsData(mipmapData, false, true);
@@ -1260,7 +1260,7 @@ namespace video
 		\return The created image.
 		If you no longer need the image, you should call IImage::drop().
 		See IReferenceCounted::drop() for more information. */
-		_IRR_DEPRECATED_ virtual IImage* createImage(ECOLOR_FORMAT format, IImage *imageToCopy) =0;
+		IRR_DEPRECATED virtual IImage* createImage(ECOLOR_FORMAT format, IImage *imageToCopy) =0;
 
 		//! Creates a software image from a part of another image.
 		/** \deprecated Create an empty image and use copyTo(). This method may be removed by Irrlicht 1.9.
@@ -1270,7 +1270,7 @@ namespace video
 		\return The created image.
 		If you no longer need the image, you should call IImage::drop().
 		See IReferenceCounted::drop() for more information. */
-		_IRR_DEPRECATED_ virtual IImage* createImage(IImage* imageToCopy,
+		IRR_DEPRECATED virtual IImage* createImage(IImage* imageToCopy,
 				const core::position2d<s32>& pos,
 				const core::dimension2d<u32>& size) =0;
 
@@ -1400,7 +1400,7 @@ namespace video
 		virtual void clearBuffers(u16 flag, SColor color = SColor(255,0,0,0), f32 depth = 1.f, u8 stencil = 0) = 0;
 
 		//! Clear the color, depth and/or stencil buffers.
-		_IRR_DEPRECATED_ void clearBuffers(bool backBuffer, bool depthBuffer, bool stencilBuffer, SColor color)
+		IRR_DEPRECATED void clearBuffers(bool backBuffer, bool depthBuffer, bool stencilBuffer, SColor color)
 		{
 			u16 flag = 0;
 
@@ -1423,7 +1423,7 @@ namespace video
 		you have to render some special things, you can clear the
 		zbuffer during the rendering process with this method any time.
 		*/
-		_IRR_DEPRECATED_ void clearZBuffer()
+		IRR_DEPRECATED void clearZBuffer()
 		{
 			clearBuffers(ECBF_DEPTH, SColor(255,0,0,0), 1.f, 0);
 		}

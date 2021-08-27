@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __COLOR_H_INCLUDED__
-#define __COLOR_H_INCLUDED__
+#ifndef IRR_S_COLOR_H_INCLUDED
+#define IRR_S_COLOR_H_INCLUDED
 
 #include "irrTypes.h"
 #include "irrMath.h"

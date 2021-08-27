@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_SCENE_NODE_H_INCLUDED__
-#define __I_SCENE_NODE_H_INCLUDED__
+#ifndef IRR_I_SCENE_NODE_H_INCLUDED
+#define IRR_I_SCENE_NODE_H_INCLUDED
 
 #include "IAttributeExchangingObject.h"
 #include "ESceneNodeTypes.h"
@@ -697,7 +697,7 @@ namespace scene
 		\param out The attribute container to write into.
 		\param options Additional options which might influence the
 		serialization. */
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_
+		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const IRR_OVERRIDE
 		{
 			if (!out)
 				return;
@@ -722,7 +722,7 @@ namespace scene
 		\param in The attribute container to read from.
 		\param options Additional options which might influence the
 		deserialization. */
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_
+		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) IRR_OVERRIDE
 		{
 			if (!in)
 				return;
@@ -871,4 +871,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

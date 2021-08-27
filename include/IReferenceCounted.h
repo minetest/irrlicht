@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_IREFERENCE_COUNTED_H_INCLUDED__
-#define __I_IREFERENCE_COUNTED_H_INCLUDED__
+#ifndef IRR_I_IREFERENCE_COUNTED_H_INCLUDED
+#define IRR_I_IREFERENCE_COUNTED_H_INCLUDED
 
 #include "irrTypes.h"
 
@@ -126,7 +126,7 @@ namespace irr
 		bool drop() const
 		{
 			// someone is doing bad reference counting.
-			_IRR_DEBUG_BREAK_IF(ReferenceCounter <= 0)
+			IRR_DEBUG_BREAK_IF(ReferenceCounter <= 0)
 
 			--ReferenceCounter;
 			if (!ReferenceCounter)
@@ -177,4 +177,3 @@ namespace irr
 } // end namespace irr
 
 #endif
-

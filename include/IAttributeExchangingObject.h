@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_ATTRIBUTE_EXCHANGING_OBJECT_H_INCLUDED__
-#define __I_ATTRIBUTE_EXCHANGING_OBJECT_H_INCLUDED__
+#ifndef IRR_I_ATTRIBUTE_EXCHANGING_OBJECT_H_INCLUDED
+#define IRR_I_ATTRIBUTE_EXCHANGING_OBJECT_H_INCLUDED
 
 #include "IReferenceCounted.h"
 
@@ -19,10 +19,10 @@ class IAttributes;
 //! Enumeration flags passed through SAttributeReadWriteOptions to the IAttributeExchangingObject object
 enum E_ATTRIBUTE_READ_WRITE_FLAGS
 {
-	//! Serialization/Deserializion is done for an xml file
+	//! Serialization/deserialization is done for an xml file
 	EARWF_FOR_FILE = 0x00000001,
 
-	//! Serialization/Deserializion is done for an editor property box
+	//! Serialization/deserialization is done for an editor property box
 	EARWF_FOR_EDITOR = 0x00000002,
 
 	//! When writing filenames, relative paths should be used
@@ -68,4 +68,3 @@ public:
 } // end namespace irr
 
 #endif
-

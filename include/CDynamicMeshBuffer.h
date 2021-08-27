@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_DYNAMIC_MESHBUFFER_H_INCLUDED__
-#define __C_DYNAMIC_MESHBUFFER_H_INCLUDED__
+#ifndef IRR_C_DYNAMIC_MESHBUFFER_H_INCLUDED
+#define IRR_C_DYNAMIC_MESHBUFFER_H_INCLUDED
 
 #include "IDynamicMeshBuffer.h"
 
@@ -35,17 +35,17 @@ namespace scene
 				IndexBuffer->drop();
 		}
 
-		virtual IVertexBuffer& getVertexBuffer() const _IRR_OVERRIDE_
+		virtual IVertexBuffer& getVertexBuffer() const IRR_OVERRIDE
 		{
 			return *VertexBuffer;
 		}
 
-		virtual IIndexBuffer& getIndexBuffer() const _IRR_OVERRIDE_
+		virtual IIndexBuffer& getIndexBuffer() const IRR_OVERRIDE
 		{
 			return *IndexBuffer;
 		}
 
-		virtual void setVertexBuffer(IVertexBuffer *newVertexBuffer) _IRR_OVERRIDE_
+		virtual void setVertexBuffer(IVertexBuffer *newVertexBuffer) IRR_OVERRIDE
 		{
 			if (newVertexBuffer)
 				newVertexBuffer->grab();
@@ -55,7 +55,7 @@ namespace scene
 			VertexBuffer=newVertexBuffer;
 		}
 
-		virtual void setIndexBuffer(IIndexBuffer *newIndexBuffer) _IRR_OVERRIDE_
+		virtual void setIndexBuffer(IIndexBuffer *newIndexBuffer) IRR_OVERRIDE
 		{
 			if (newIndexBuffer)
 				newIndexBuffer->grab();
@@ -66,31 +66,31 @@ namespace scene
 		}
 
 		//! Get Material of this buffer.
-		virtual const video::SMaterial& getMaterial() const _IRR_OVERRIDE_
+		virtual const video::SMaterial& getMaterial() const IRR_OVERRIDE
 		{
 			return Material;
 		}
 
 		//! Get Material of this buffer.
-		virtual video::SMaterial& getMaterial() _IRR_OVERRIDE_
+		virtual video::SMaterial& getMaterial() IRR_OVERRIDE
 		{
 			return Material;
 		}
 
 		//! Get bounding box
-		virtual const core::aabbox3d<f32>& getBoundingBox() const _IRR_OVERRIDE_
+		virtual const core::aabbox3d<f32>& getBoundingBox() const IRR_OVERRIDE
 		{
 			return BoundingBox;
 		}
 
 		//! Set bounding box
-		virtual void setBoundingBox( const core::aabbox3df& box) _IRR_OVERRIDE_
+		virtual void setBoundingBox( const core::aabbox3df& box) IRR_OVERRIDE
 		{
 			BoundingBox = box;
 		}
 
 		//! Recalculate bounding box
-		virtual void recalculateBoundingBox() _IRR_OVERRIDE_
+		virtual void recalculateBoundingBox() IRR_OVERRIDE
 		{
 			if (!getVertexBuffer().size())
 				BoundingBox.reset(0,0,0);
@@ -103,13 +103,13 @@ namespace scene
 		}
 
 		//! Describe what kind of primitive geometry is used by the meshbuffer
-		virtual void setPrimitiveType(E_PRIMITIVE_TYPE type) _IRR_OVERRIDE_
+		virtual void setPrimitiveType(E_PRIMITIVE_TYPE type) IRR_OVERRIDE
 		{
 			PrimitiveType = type;
 		}
 
 		//! Get the kind of primitive geometry which is used by the meshbuffer
-		virtual E_PRIMITIVE_TYPE getPrimitiveType() const _IRR_OVERRIDE_
+		virtual E_PRIMITIVE_TYPE getPrimitiveType() const IRR_OVERRIDE
 		{
 			return PrimitiveType;
 		}
@@ -130,4 +130,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

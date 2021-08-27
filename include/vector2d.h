@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_POINT_2D_H_INCLUDED__
-#define __IRR_POINT_2D_H_INCLUDED__
+#ifndef IRR_POINT_2D_H_INCLUDED
+#define IRR_POINT_2D_H_INCLUDED
 
 #include "irrMath.h"
 #include "dimension2d.h"
@@ -66,14 +66,14 @@ public:
 
 	T& operator [](u32 index)
 	{
-		_IRR_DEBUG_BREAK_IF(index>1) // access violation
+		IRR_DEBUG_BREAK_IF(index>1) // access violation
 
 		return *(&X+index);
 	}
 
 	const T& operator [](u32 index) const
 	{
-		_IRR_DEBUG_BREAK_IF(index>1) // access violation
+		IRR_DEBUG_BREAK_IF(index>1) // access violation
 
 		return *(&X+index);
 	}
@@ -419,4 +419,3 @@ public:
 } // end namespace irr
 
 #endif
-

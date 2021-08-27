@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_PARTICLE_AFFECTOR_H_INCLUDED__
-#define __I_PARTICLE_AFFECTOR_H_INCLUDED__
+#ifndef IRR_I_PARTICLE_AFFECTOR_H_INCLUDED
+#define IRR_I_PARTICLE_AFFECTOR_H_INCLUDED
 
 #include "IAttributeExchangingObject.h"
 #include "SParticle.h"
@@ -67,6 +67,4 @@ protected:
 } // end namespace scene
 } // end namespace irr
 
-
 #endif
-

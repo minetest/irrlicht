@@ -9,6 +9,11 @@ Changes in ogl-es (not yet released - will be merged with trunk at some point)
 
 --------------------------
 Changes in 1.9 (not yet released)
+- Many defines changed because they were using names which are reserved identifiers in c++.
+  Mostly it's about replacing __IRRxxx or _IRRxxx identifiers by versions without underscores
+  Sometimes underscores at end also got removed.
+  There is a header file irrLegacyDefines.h which can be included to allow having the old defines back.
+  Thanks @Markus Elfring  for reporting this (bug #427)
 - Add equals and set_data functions to core::array for easier working with blocks of data.
 - SIrrlichtCreationParameters::IgnoreInput set to false works again on X11. 
   Thanks @ Victor Gaydov for report + patch + very good test cases! (bug #401)
@@ -3930,7 +3935,7 @@ Changes in version 0.12.0 (24 August 2005)
 
 - Changed the names the driver return (now "OpenGL 1.5", "Direct3D 9.0" and "Direct3D 8.1")
 
-- Added a new macro _IRR_DEBUG_BREAK_IF which is now used instead of the _asm int 3 break points in
+- Added a new macro IRR_DEBUG_BREAK_IF which is now used instead of the _asm int 3 break points in
   debug mode.
 
 - Fixed a bug were the software renderer didn't clip 2d rectangles. This effect was visible for

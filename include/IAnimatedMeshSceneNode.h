@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_ANIMATED_MESH_SCENE_NODE_H_INCLUDED__
-#define __I_ANIMATED_MESH_SCENE_NODE_H_INCLUDED__
+#ifndef IRR_I_ANIMATED_MESH_SCENE_NODE_H_INCLUDED
+#define IRR_I_ANIMATED_MESH_SCENE_NODE_H_INCLUDED
 
 #include "ISceneNode.h"
 #include "IBoneSceneNode.h"
@@ -230,4 +230,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

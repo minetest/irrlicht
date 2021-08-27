@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __S_LIGHT_H_INCLUDED__
-#define __S_LIGHT_H_INCLUDED__
+#ifndef S_LIGHT_H_INCLUDED
+#define S_LIGHT_H_INCLUDED
 
 #include "SColor.h"
 #include "vector3d.h"

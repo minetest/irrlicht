@@ -26,8 +26,8 @@
   in the jpeglib, the zlib and libPng for further information.
 */
 
-#ifndef __IRRLICHT_H_INCLUDED__
-#define __IRRLICHT_H_INCLUDED__
+#ifndef IRRLICHT_H_INCLUDED
+#define IRRLICHT_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #include "aabbox3d.h"
@@ -396,4 +396,3 @@ namespace irr
 */
 
 #endif
-

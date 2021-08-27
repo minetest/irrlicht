@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_PARTICLE_FADE_OUT_AFFECTOR_H_INCLUDED__
-#define __I_PARTICLE_FADE_OUT_AFFECTOR_H_INCLUDED__
+#ifndef IRR_I_PARTICLE_FADE_OUT_AFFECTOR_H_INCLUDED
+#define IRR_I_PARTICLE_FADE_OUT_AFFECTOR_H_INCLUDED
 
 #include "IParticleAffector.h"
 
@@ -30,12 +30,10 @@ public:
 	virtual u32 getFadeOutTime() const = 0;
 
 	//! Get emitter type
-	virtual E_PARTICLE_AFFECTOR_TYPE getType() const _IRR_OVERRIDE_ { return EPAT_FADE_OUT; }
+	virtual E_PARTICLE_AFFECTOR_TYPE getType() const IRR_OVERRIDE { return EPAT_FADE_OUT; }
 };
 
 } // end namespace scene
 } // end namespace irr
 
-
 #endif // __I_PARTICLE_FADE_OUT_AFFECTOR_H_INCLUDED__
-

@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_IMAGE_H_INCLUDED__
-#define __I_IMAGE_H_INCLUDED__
+#ifndef IRR_I_IMAGE_H_INCLUDED
+#define IRR_I_IMAGE_H_INCLUDED
 
 #include "IReferenceCounted.h"
 #include "position2d.h"
@@ -190,7 +190,7 @@ public:
 	depends on the color format of the image. For example if the color
 	format is ECF_A8R8G8B8, it is of u32. Be sure to call unlock() after
 	you don't need the pointer any more. */
-	_IRR_DEPRECATED_ void* lock()
+	IRR_DEPRECATED void* lock()
 	{
 		return getData();
 	}
@@ -198,7 +198,7 @@ public:
 	//! Unlock function.
 	/** Should be called after the pointer received by lock() is not
 	needed anymore. */
-	_IRR_DEPRECATED_ void unlock()
+	IRR_DEPRECATED void unlock()
 	{
 	}
 
@@ -363,14 +363,14 @@ public:
 	virtual void fill(const SColor &color) =0;
 
 	//! Inform whether the image is compressed
-	_IRR_DEPRECATED_ bool isCompressed() const
+	IRR_DEPRECATED bool isCompressed() const
 	{
 		return IImage::isCompressedFormat(Format);
 	}
 
 	//! Check whether the image has MipMaps
 	/** \return True if image has MipMaps, else false. */
-	_IRR_DEPRECATED_ bool hasMipMaps() const
+	IRR_DEPRECATED bool hasMipMaps() const
 	{
 		return (getMipMapsData() != 0);
 	}
@@ -589,4 +589,3 @@ protected:
 } // end namespace irr
 
 #endif
-

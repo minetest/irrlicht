@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_CORE_UTIL_H_INCLUDED__
-#define __IRR_CORE_UTIL_H_INCLUDED__
+#ifndef IRR_CORE_UTIL_H_INCLUDED
+#define IRR_CORE_UTIL_H_INCLUDED
 
 #include "irrString.h"
 #include "path.h"
@@ -177,15 +177,15 @@ static inline io::path mergeFilename(const io::path& path, const io::path& filen
 	if ( !result.empty() )
 	{
 		fschar_t last = result.lastChar();
-		if ( last != _IRR_TEXT('/') && last != _IRR_TEXT('\\') )
-			result += _IRR_TEXT('/');
+		if ( last != IRR_TEXT('/') && last != IRR_TEXT('\\') )
+			result += IRR_TEXT('/');
 	}
 	if ( !filename.empty() )
 		result += filename;
 	if ( !extension.empty() )
 	{
-		if ( !result.empty() && extension[0] != _IRR_TEXT('.') )
-			result += _IRR_TEXT('.');
+		if ( !result.empty() && extension[0] != IRR_TEXT('.') )
+			result += IRR_TEXT('.');
 		result += extension;
 	}
 

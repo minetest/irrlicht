@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __E_READ_FILE_TYPES_H_INCLUDED__
-#define __E_READ_FILE_TYPES_H_INCLUDED__
+#ifndef IRR_E_READ_FILE_TYPES_H_INCLUDED
+#define IRR_E_READ_FILE_TYPES_H_INCLUDED
 
 #include "irrTypes.h"
 
@@ -29,6 +29,5 @@ namespace io
 	};
 } // end namespace io
 } // end namespace irr
-
 
 #endif

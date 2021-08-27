@@ -1,5 +1,5 @@
-#ifndef __IRR_FONT_TOOL_INCLUDED__
-#define __IRR_FONT_TOOL_INCLUDED__
+#ifndef IRR_FONT_TOOL_INCLUDED
+#define IRR_FONT_TOOL_INCLUDED
 
 
 #include "irrlicht.h"
@@ -75,4 +75,4 @@ namespace irr {
 
 	};
 }
-#endif // __IRR_FONT_TOOL_INCLUDED__
+#endif // IRR_FONT_TOOL_INCLUDED

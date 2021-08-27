@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine" and the "irrXML" project.
 // For conditions of distribution and use, see copyright notice in irrlicht.h and irrXML.h
 
-#ifndef __IRR_ALLOCATOR_H_INCLUDED__
-#define __IRR_ALLOCATOR_H_INCLUDED__
+#ifndef IRR_ALLOCATOR_H_INCLUDED
+#define IRR_ALLOCATOR_H_INCLUDED
 
 #include "irrTypes.h"
 #include <new>
