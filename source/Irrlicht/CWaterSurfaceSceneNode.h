@@ -27,22 +27,22 @@ namespace scene
 		virtual ~CWaterSurfaceSceneNode();
 
 		//! frame registration
-		virtual void OnRegisterSceneNode() _IRR_OVERRIDE_;
+		virtual void OnRegisterSceneNode() IRR_OVERRIDE;
 
 		//! animated update
-		virtual void OnAnimate(u32 timeMs) _IRR_OVERRIDE_;
+		virtual void OnAnimate(u32 timeMs) IRR_OVERRIDE;
 
 		//! Update mesh
-		virtual void setMesh(IMesh* mesh) _IRR_OVERRIDE_;
+		virtual void setMesh(IMesh* mesh) IRR_OVERRIDE;
 
 		//! Returns type of the scene node
-		virtual ESCENE_NODE_TYPE getType() const _IRR_OVERRIDE_ { return ESNT_WATER_SURFACE; }
+		virtual ESCENE_NODE_TYPE getType() const IRR_OVERRIDE { return ESNT_WATER_SURFACE; }
 
 		//! Writes attributes of the scene node.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
+		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const IRR_OVERRIDE;
 
 		//! Reads attributes of the scene node.
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
+		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) IRR_OVERRIDE;
 
 	private:
 

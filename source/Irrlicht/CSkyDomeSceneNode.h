@@ -21,16 +21,16 @@ class CSkyDomeSceneNode : public ISceneNode
 			f32 texturePercentage, f32 spherePercentage, f32 radius,
 			ISceneNode* parent, ISceneManager* smgr, s32 id);
 		virtual ~CSkyDomeSceneNode();
-		virtual void OnRegisterSceneNode() _IRR_OVERRIDE_;
-		virtual void render() _IRR_OVERRIDE_;
-		virtual const core::aabbox3d<f32>& getBoundingBox() const _IRR_OVERRIDE_;
-		virtual video::SMaterial& getMaterial(u32 i) _IRR_OVERRIDE_;
-		virtual u32 getMaterialCount() const _IRR_OVERRIDE_;
-		virtual ESCENE_NODE_TYPE getType() const _IRR_OVERRIDE_ { return ESNT_SKY_DOME; }
+		virtual void OnRegisterSceneNode() IRR_OVERRIDE;
+		virtual void render() IRR_OVERRIDE;
+		virtual const core::aabbox3d<f32>& getBoundingBox() const IRR_OVERRIDE;
+		virtual video::SMaterial& getMaterial(u32 i) IRR_OVERRIDE;
+		virtual u32 getMaterialCount() const IRR_OVERRIDE;
+		virtual ESCENE_NODE_TYPE getType() const IRR_OVERRIDE { return ESNT_SKY_DOME; }
 
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
-		virtual ISceneNode* clone(ISceneNode* newParent=0, ISceneManager* newManager=0) _IRR_OVERRIDE_;
+		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const IRR_OVERRIDE;
+		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) IRR_OVERRIDE;
+		virtual ISceneNode* clone(ISceneNode* newParent=0, ISceneManager* newManager=0) IRR_OVERRIDE;
 
 	private:
 

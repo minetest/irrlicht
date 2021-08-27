@@ -31,10 +31,10 @@ public:
 	CSMFMeshFileLoader(irr::io::IFileSystem* fs, video::IVideoDriver* driver);
 
 	//! Returns true if the file might be loaded by this class.
-	virtual bool isALoadableFileExtension(const io::path& filename) const _IRR_OVERRIDE_;
+	virtual bool isALoadableFileExtension(const io::path& filename) const IRR_OVERRIDE;
 
 	//! Creates/loads an animated mesh from the file.
-	virtual IAnimatedMesh* createMesh(io::IReadFile* file) _IRR_OVERRIDE_;
+	virtual IAnimatedMesh* createMesh(io::IReadFile* file) IRR_OVERRIDE;
 private:
 
 	void loadLimb(io::IReadFile* file, scene::SMesh* mesh, const core::matrix4 &parentTransformation);

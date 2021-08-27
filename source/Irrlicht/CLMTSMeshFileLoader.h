@@ -40,9 +40,9 @@ public:
 
 	virtual ~CLMTSMeshFileLoader();
 
-	virtual bool isALoadableFileExtension(const io::path& filename) const _IRR_OVERRIDE_;
+	virtual bool isALoadableFileExtension(const io::path& filename) const IRR_OVERRIDE;
 
-	virtual IAnimatedMesh* createMesh(io::IReadFile* file) _IRR_OVERRIDE_;
+	virtual IAnimatedMesh* createMesh(io::IReadFile* file) IRR_OVERRIDE;
 
 private:
 	void constructMesh(SMesh* mesh);

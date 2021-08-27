@@ -1267,13 +1267,13 @@ irr::core::stringc CColladaMeshWriter::pathToURI(const irr::io::path& path) cons
 
 	// is this a relative path?
 	if ( path.size() > 1
-		&& path[0] != _IRR_TEXT('/')
-		&& path[0] != _IRR_TEXT('\\')
-		&& path[1] != _IRR_TEXT(':') )
+		&& path[0] != IRR_TEXT('/')
+		&& path[0] != IRR_TEXT('\\')
+		&& path[1] != IRR_TEXT(':') )
 	{
 		// not already starting with "./" ?
-		if (	path[0] != _IRR_TEXT('.')
-			||	path[1] != _IRR_TEXT('/') )
+		if (	path[0] != IRR_TEXT('.')
+			||	path[1] != IRR_TEXT('/') )
 		{
 			result.append("./");
 		}

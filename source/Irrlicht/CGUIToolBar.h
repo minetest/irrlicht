@@ -24,18 +24,18 @@ namespace gui
 		CGUIToolBar(IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle);
 
 		//! called if an event happened.
-		virtual bool OnEvent(const SEvent& event) _IRR_OVERRIDE_;
+		virtual bool OnEvent(const SEvent& event) IRR_OVERRIDE;
 
 		//! draws the element and its children
-		virtual void draw() _IRR_OVERRIDE_;
+		virtual void draw() IRR_OVERRIDE;
 
 		//! Updates the absolute position.
-		virtual void updateAbsolutePosition() _IRR_OVERRIDE_;
+		virtual void updateAbsolutePosition() IRR_OVERRIDE;
 
 		//! Adds a button to the tool bar
 		virtual IGUIButton* addButton(s32 id=-1, const wchar_t* text=0,const wchar_t* tooltiptext=0,
 			video::ITexture* img=0, video::ITexture* pressed=0,
-			bool isPushButton=false, bool useAlphaChannel=false) _IRR_OVERRIDE_;
+			bool isPushButton=false, bool useAlphaChannel=false) IRR_OVERRIDE;
 
 	private:
 

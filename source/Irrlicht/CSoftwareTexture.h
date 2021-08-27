@@ -30,10 +30,10 @@ public:
 	virtual ~CSoftwareTexture();
 
 	//! lock function
-	virtual void* lock(E_TEXTURE_LOCK_MODE mode = ETLM_READ_WRITE, u32 mipmapLevel=0, u32 layer = 0, E_TEXTURE_LOCK_FLAGS lockFlags = ETLF_FLIP_Y_UP_RTT) _IRR_OVERRIDE_;
+	virtual void* lock(E_TEXTURE_LOCK_MODE mode = ETLM_READ_WRITE, u32 mipmapLevel=0, u32 layer = 0, E_TEXTURE_LOCK_FLAGS lockFlags = ETLF_FLIP_Y_UP_RTT) IRR_OVERRIDE;
 
 	//! unlock function
-	virtual void unlock() _IRR_OVERRIDE_;
+	virtual void unlock() IRR_OVERRIDE;
 
 	//! returns unoptimized surface
 	virtual CImage* getImage();
@@ -41,7 +41,7 @@ public:
 	//! returns texture surface
 	virtual CImage* getTexture();
 
-	virtual void regenerateMipMapLevels(void* data = 0, u32 layer = 0) _IRR_OVERRIDE_;
+	virtual void regenerateMipMapLevels(void* data = 0, u32 layer = 0) IRR_OVERRIDE;
 
 private:
 	CImage* Image;
@@ -57,7 +57,7 @@ public:
 	CSoftwareRenderTarget(CSoftwareDriver* driver);
 	virtual ~CSoftwareRenderTarget();
 
-	virtual void setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces, u32 numCubeSurfaces) _IRR_OVERRIDE_;
+	virtual void setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces, u32 numCubeSurfaces) IRR_OVERRIDE;
 
 	ITexture* getTexture() const;
 

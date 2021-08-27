@@ -29,7 +29,7 @@ namespace irr
 			CD3D9RenderTarget(CD3D9Driver* driver);
 			virtual ~CD3D9RenderTarget();
 
-			virtual void setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces, u32 numCubeSurfaces) _IRR_OVERRIDE_;
+			virtual void setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces, u32 numCubeSurfaces) IRR_OVERRIDE;
 
 			const core::dimension2d<u32>& getSize() const;
 

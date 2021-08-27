@@ -27,34 +27,34 @@ namespace scene
 		//! Sets the mesh from which the shadow volume should be generated.
 		/** To optimize shadow rendering, use a simpler mesh for shadows.
 		*/
-		virtual void setShadowMesh(const IMesh* mesh) _IRR_OVERRIDE_;
+		virtual void setShadowMesh(const IMesh* mesh) IRR_OVERRIDE;
 
 		//! Updates the shadow volumes for current light positions.
 		/** Called each render cycle from Animated Mesh SceneNode render method. */
-		virtual void updateShadowVolumes() _IRR_OVERRIDE_;
+		virtual void updateShadowVolumes() IRR_OVERRIDE;
 
 		//! Set optimization used to create shadow volumes
 		/** Default is ESV_SILHOUETTE_BY_POS. If the shadow 
 		looks bad then give ESV_NONE a try (which will be slower). */
-		virtual void setOptimization(ESHADOWVOLUME_OPTIMIZATION optimization) _IRR_OVERRIDE_;
+		virtual void setOptimization(ESHADOWVOLUME_OPTIMIZATION optimization) IRR_OVERRIDE;
 
 		//! Get currently active optimization used to create shadow volumes
-		virtual ESHADOWVOLUME_OPTIMIZATION getOptimization() const _IRR_OVERRIDE_
+		virtual ESHADOWVOLUME_OPTIMIZATION getOptimization() const IRR_OVERRIDE
 		{
 			return Optimization;
 		}
 
 		//! pre render method
-		virtual void OnRegisterSceneNode() _IRR_OVERRIDE_;
+		virtual void OnRegisterSceneNode() IRR_OVERRIDE;
 
 		//! renders the node.
-		virtual void render() _IRR_OVERRIDE_;
+		virtual void render() IRR_OVERRIDE;
 
 		//! returns the axis aligned bounding box of this node
-		virtual const core::aabbox3d<f32>& getBoundingBox() const _IRR_OVERRIDE_;
+		virtual const core::aabbox3d<f32>& getBoundingBox() const IRR_OVERRIDE;
 
 		//! Returns type of the scene node
-		virtual ESCENE_NODE_TYPE getType() const _IRR_OVERRIDE_ { return ESNT_SHADOW_VOLUME; }
+		virtual ESCENE_NODE_TYPE getType() const IRR_OVERRIDE { return ESNT_SHADOW_VOLUME; }
 
 	private:
 

@@ -6,43 +6,43 @@ using namespace core;
 bool testMergeFilename()
 {
 	// path mergeFilename(const path& path, const path& filename, const path& extension = "");
-	if ( mergeFilename(_IRR_TEXT(""), _IRR_TEXT(""), _IRR_TEXT("") ) != io::path(_IRR_TEXT("")) )
+	if ( mergeFilename(IRR_TEXT(""), IRR_TEXT(""), IRR_TEXT("") ) != io::path(IRR_TEXT("")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT("folder"), _IRR_TEXT(""), _IRR_TEXT("") ) != io::path(_IRR_TEXT("folder/")) )
+	if ( mergeFilename(IRR_TEXT("folder"), IRR_TEXT(""), IRR_TEXT("") ) != io::path(IRR_TEXT("folder/")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT("folder/"), _IRR_TEXT(""), _IRR_TEXT("") ) != io::path(_IRR_TEXT("folder/")) )
+	if ( mergeFilename(IRR_TEXT("folder/"), IRR_TEXT(""), IRR_TEXT("") ) != io::path(IRR_TEXT("folder/")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT("folder"), _IRR_TEXT("file"), _IRR_TEXT("") ) != io::path(_IRR_TEXT("folder/file")) )
+	if ( mergeFilename(IRR_TEXT("folder"), IRR_TEXT("file"), IRR_TEXT("") ) != io::path(IRR_TEXT("folder/file")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT("folder/"), _IRR_TEXT("file"), _IRR_TEXT("") ) != io::path(_IRR_TEXT("folder/file")) )
+	if ( mergeFilename(IRR_TEXT("folder/"), IRR_TEXT("file"), IRR_TEXT("") ) != io::path(IRR_TEXT("folder/file")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT("folder\\"), _IRR_TEXT("file"), _IRR_TEXT("") ) != io::path(_IRR_TEXT("folder\\file")) )
+	if ( mergeFilename(IRR_TEXT("folder\\"), IRR_TEXT("file"), IRR_TEXT("") ) != io::path(IRR_TEXT("folder\\file")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT(""), _IRR_TEXT("file"), _IRR_TEXT("") ) != io::path(_IRR_TEXT("file")) )
+	if ( mergeFilename(IRR_TEXT(""), IRR_TEXT("file"), IRR_TEXT("") ) != io::path(IRR_TEXT("file")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT("."), _IRR_TEXT("file"), _IRR_TEXT("") ) != io::path(_IRR_TEXT("./file")) )
+	if ( mergeFilename(IRR_TEXT("."), IRR_TEXT("file"), IRR_TEXT("") ) != io::path(IRR_TEXT("./file")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT("folder"), _IRR_TEXT(""), _IRR_TEXT(".bmp") ) != io::path(_IRR_TEXT("folder/.bmp")) )
+	if ( mergeFilename(IRR_TEXT("folder"), IRR_TEXT(""), IRR_TEXT(".bmp") ) != io::path(IRR_TEXT("folder/.bmp")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT("folder/"), _IRR_TEXT(""), _IRR_TEXT(".bmp") ) != io::path(_IRR_TEXT("folder/.bmp")) )
+	if ( mergeFilename(IRR_TEXT("folder/"), IRR_TEXT(""), IRR_TEXT(".bmp") ) != io::path(IRR_TEXT("folder/.bmp")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT("folder"), _IRR_TEXT(""), _IRR_TEXT("bmp") ) != io::path(_IRR_TEXT("folder/.bmp")) )
+	if ( mergeFilename(IRR_TEXT("folder"), IRR_TEXT(""), IRR_TEXT("bmp") ) != io::path(IRR_TEXT("folder/.bmp")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT("."), _IRR_TEXT(""), _IRR_TEXT("bmp") ) != io::path(_IRR_TEXT("./.bmp")) )
+	if ( mergeFilename(IRR_TEXT("."), IRR_TEXT(""), IRR_TEXT("bmp") ) != io::path(IRR_TEXT("./.bmp")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT("folder"), _IRR_TEXT("file"), _IRR_TEXT("bmp") ) != io::path(_IRR_TEXT("folder/file.bmp")) )
+	if ( mergeFilename(IRR_TEXT("folder"), IRR_TEXT("file"), IRR_TEXT("bmp") ) != io::path(IRR_TEXT("folder/file.bmp")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT("folder/"), _IRR_TEXT("file"), _IRR_TEXT("bmp") ) != io::path(_IRR_TEXT("folder/file.bmp")) )
+	if ( mergeFilename(IRR_TEXT("folder/"), IRR_TEXT("file"), IRR_TEXT("bmp") ) != io::path(IRR_TEXT("folder/file.bmp")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT("folder/"), _IRR_TEXT("file"), _IRR_TEXT(".bmp") ) != io::path(_IRR_TEXT("folder/file.bmp")) )
+	if ( mergeFilename(IRR_TEXT("folder/"), IRR_TEXT("file"), IRR_TEXT(".bmp") ) != io::path(IRR_TEXT("folder/file.bmp")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT("folder"), _IRR_TEXT("file.bmp"), _IRR_TEXT("") ) != io::path(_IRR_TEXT("folder/file.bmp")) )
+	if ( mergeFilename(IRR_TEXT("folder"), IRR_TEXT("file.bmp"), IRR_TEXT("") ) != io::path(IRR_TEXT("folder/file.bmp")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT(""), _IRR_TEXT("file"), _IRR_TEXT("bmp") ) != io::path(_IRR_TEXT("file.bmp")) )
+	if ( mergeFilename(IRR_TEXT(""), IRR_TEXT("file"), IRR_TEXT("bmp") ) != io::path(IRR_TEXT("file.bmp")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT(""), _IRR_TEXT("file"), _IRR_TEXT(".bmp") ) != io::path(_IRR_TEXT("file.bmp")) )
+	if ( mergeFilename(IRR_TEXT(""), IRR_TEXT("file"), IRR_TEXT(".bmp") ) != io::path(IRR_TEXT("file.bmp")) )
 		return false;
-	if ( mergeFilename(_IRR_TEXT("c:"), _IRR_TEXT("file"), _IRR_TEXT(".bmp") ) != io::path(_IRR_TEXT("c:/file.bmp")) ) // TODO: is this actually correct on windows?
+	if ( mergeFilename(IRR_TEXT("c:"), IRR_TEXT("file"), IRR_TEXT(".bmp") ) != io::path(IRR_TEXT("c:/file.bmp")) ) // TODO: is this actually correct on windows?
 		return false; 
 	
 	return true;

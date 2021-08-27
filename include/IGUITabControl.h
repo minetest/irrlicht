@@ -131,7 +131,7 @@ namespace gui
 
 		//! Returns zero based index of tab if in tabcontrol.
 		/** \deprecated Deprecated in 1.9, use IGUITabControl::getTabIndex instead*/
-		_IRR_DEPRECATED_ virtual s32 getNumber() const
+		IRR_DEPRECATED virtual s32 getNumber() const
 		{
 			if (Parent && Parent->getType() == EGUIET_TAB_CONTROL)
 				return static_cast<IGUITabControl*>(Parent)->getTabIndex(this);

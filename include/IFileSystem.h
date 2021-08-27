@@ -225,7 +225,7 @@ public:
 	\param ignorePaths: If set to true, files in the added archive can be accessed
 	without its complete path.
 	\return True if the archive was added successfully, false if not. */
-	_IRR_DEPRECATED_ virtual bool addZipFileArchive(const c8* filename, bool ignoreCase=true, bool ignorePaths=true)
+	IRR_DEPRECATED virtual bool addZipFileArchive(const c8* filename, bool ignoreCase=true, bool ignorePaths=true)
 	{
 		return addFileArchive(filename, ignoreCase, ignorePaths, EFAT_ZIP);
 	}
@@ -241,7 +241,7 @@ public:
 	\param ignorePaths: If set to true, files in the added archive can be accessed
 	without its complete path.
 	\return True if the archive was added successful, false if not. */
-	_IRR_DEPRECATED_ virtual bool addFolderFileArchive(const c8* filename, bool ignoreCase=true, bool ignorePaths=true)
+	IRR_DEPRECATED virtual bool addFolderFileArchive(const c8* filename, bool ignoreCase=true, bool ignorePaths=true)
 	{
 		return addFileArchive(filename, ignoreCase, ignorePaths, EFAT_FOLDER);
 	}
@@ -259,7 +259,7 @@ public:
 	\param ignorePaths: If set to true, files in the added archive can be accessed
 	without its complete path.(should not use with Quake2 paks
 	\return True if the archive was added successful, false if not. */
-	_IRR_DEPRECATED_ virtual bool addPakFileArchive(const c8* filename, bool ignoreCase=true, bool ignorePaths=true)
+	IRR_DEPRECATED virtual bool addPakFileArchive(const c8* filename, bool ignoreCase=true, bool ignorePaths=true)
 	{
 		return addFileArchive(filename, ignoreCase, ignorePaths, EFAT_PAK);
 	}

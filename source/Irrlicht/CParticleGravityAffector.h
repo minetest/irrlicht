@@ -26,33 +26,33 @@ public:
 		u32 timeForceLost = 1000);
 
 	//! Affects a particle.
-	virtual void affect(u32 now, SParticle* particlearray, u32 count) _IRR_OVERRIDE_;
+	virtual void affect(u32 now, SParticle* particlearray, u32 count) IRR_OVERRIDE;
 
 	//! Set the time in milliseconds when the gravity force is totally
 	//! lost and the particle does not move any more.
-	virtual void setTimeForceLost( f32 timeForceLost ) _IRR_OVERRIDE_ { TimeForceLost = timeForceLost; }
+	virtual void setTimeForceLost( f32 timeForceLost ) IRR_OVERRIDE { TimeForceLost = timeForceLost; }
 
 	//! Set the direction and force of gravity.
-	virtual void setGravity( const core::vector3df& gravity ) _IRR_OVERRIDE_ { Gravity = gravity; }
+	virtual void setGravity( const core::vector3df& gravity ) IRR_OVERRIDE { Gravity = gravity; }
 
 	//! Set the time in milliseconds when the gravity force is totally
 	//! lost and the particle does not move any more.
-	virtual f32 getTimeForceLost() const _IRR_OVERRIDE_ { return TimeForceLost; }
+	virtual f32 getTimeForceLost() const IRR_OVERRIDE { return TimeForceLost; }
 
 	//! Set the direction and force of gravity.
-	virtual const core::vector3df& getGravity() const _IRR_OVERRIDE_ { return Gravity; }
+	virtual const core::vector3df& getGravity() const IRR_OVERRIDE { return Gravity; }
 
 	//! Writes attributes of the object.
 	//! Implement this to expose the attributes of your scene node animator for
 	//! scripting languages, editors, debuggers or xml serialization purposes.
-	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
+	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const IRR_OVERRIDE;
 
 	//! Reads attributes of the object.
 	//! Implement this to set the attributes of your scene node animator for
 	//! scripting languages, editors, debuggers or xml deserialization purposes.
 	//! \param startIndex: start index where to start reading attributes.
 	//! \return: returns last index of an attribute read by this affector
-	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
+	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) IRR_OVERRIDE;
 
 private:
 	f32 TimeForceLost;

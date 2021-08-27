@@ -429,7 +429,7 @@ public:
 	//! Direct access operator
 	T& operator [](const u32 index)
 	{
-		_IRR_DEBUG_BREAK_IF(index>=used) // bad index
+		IRR_DEBUG_BREAK_IF(index>=used) // bad index
 		return array[index];
 	}
 
@@ -437,7 +437,7 @@ public:
 	//! Direct access operator
 	const T& operator [](const u32 index) const
 	{
-		_IRR_DEBUG_BREAK_IF(index>=used) // bad index
+		IRR_DEBUG_BREAK_IF(index>=used) // bad index
 		return array[index];
 	}
 
@@ -1325,7 +1325,7 @@ public:
 	\param index: Index of element to be erased. */
 	string<T,TAlloc>& erase(u32 index)
 	{
-		_IRR_DEBUG_BREAK_IF(index>=used) // access violation
+		IRR_DEBUG_BREAK_IF(index>=used) // access violation
 
 		for (u32 i=index+1; i<used; ++i)
 			array[i-1] = array[i];

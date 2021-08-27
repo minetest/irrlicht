@@ -27,31 +27,31 @@ namespace scene
 		/** \param type: Type of the scene node to add.
 		\param parent: Parent scene node of the new node, can be null to add the scene node to the root.
 		\return Returns pointer to the new scene node or null if not successful. */
-		virtual ISceneNode* addSceneNode(ESCENE_NODE_TYPE type, ISceneNode* parent=0) _IRR_OVERRIDE_;
+		virtual ISceneNode* addSceneNode(ESCENE_NODE_TYPE type, ISceneNode* parent=0) IRR_OVERRIDE;
 
 		//! adds a scene node to the scene graph based on its type name
 		/** \param typeName: Type name of the scene node to add.
 		\param parent: Parent scene node of the new node, can be null to add the scene node to the root.
 		\return Returns pointer to the new scene node or null if not successful. */
-		virtual ISceneNode* addSceneNode(const c8* typeName, ISceneNode* parent=0) _IRR_OVERRIDE_;
+		virtual ISceneNode* addSceneNode(const c8* typeName, ISceneNode* parent=0) IRR_OVERRIDE;
 
 		//! returns amount of scene node types this factory is able to create
-		virtual u32 getCreatableSceneNodeTypeCount() const _IRR_OVERRIDE_;
+		virtual u32 getCreatableSceneNodeTypeCount() const IRR_OVERRIDE;
 
 		//! returns type name of a creatable scene node type by index
 		/** \param idx: Index of scene node type in this factory. Must be a value between 0 and
 		uetCreatableSceneNodeTypeCount() */
-		virtual const c8* getCreateableSceneNodeTypeName(u32 idx) const _IRR_OVERRIDE_;
+		virtual const c8* getCreateableSceneNodeTypeName(u32 idx) const IRR_OVERRIDE;
 
 		//! returns type of a creatable scene node type
 		/** \param idx: Index of scene node type in this factory. Must be a value between 0 and
 		getCreatableSceneNodeTypeCount() */
-		virtual ESCENE_NODE_TYPE getCreateableSceneNodeType(u32 idx) const _IRR_OVERRIDE_;
+		virtual ESCENE_NODE_TYPE getCreateableSceneNodeType(u32 idx) const IRR_OVERRIDE;
 
 		//! returns type name of a creatable scene node type
 		/** \param idx: Type of scene node.
 		\return: Returns name of scene node type if this factory can create the type, otherwise 0. */
-		virtual const c8* getCreateableSceneNodeTypeName(ESCENE_NODE_TYPE type) const _IRR_OVERRIDE_;
+		virtual const c8* getCreateableSceneNodeTypeName(ESCENE_NODE_TYPE type) const IRR_OVERRIDE;
 
 	private:
 

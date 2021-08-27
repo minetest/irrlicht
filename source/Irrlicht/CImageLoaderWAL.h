@@ -37,9 +37,9 @@ namespace video
 class CImageLoaderLMP : public irr::video::IImageLoader
 {
 public:
-	virtual bool isALoadableFileExtension(const io::path& filename) const _IRR_OVERRIDE_;
-	virtual bool isALoadableFileFormat(irr::io::IReadFile* file) const _IRR_OVERRIDE_;
-	virtual irr::video::IImage* loadImage(irr::io::IReadFile* file) const _IRR_OVERRIDE_;
+	virtual bool isALoadableFileExtension(const io::path& filename) const IRR_OVERRIDE;
+	virtual bool isALoadableFileFormat(irr::io::IReadFile* file) const IRR_OVERRIDE;
+	virtual irr::video::IImage* loadImage(irr::io::IReadFile* file) const IRR_OVERRIDE;
 };
 
 #endif
@@ -50,18 +50,18 @@ public:
 class CImageLoaderWAL : public irr::video::IImageLoader
 {
 public:
-	virtual bool isALoadableFileExtension(const io::path& filename) const _IRR_OVERRIDE_;
-	virtual bool isALoadableFileFormat(irr::io::IReadFile* file) const _IRR_OVERRIDE_;
-	virtual irr::video::IImage* loadImage(irr::io::IReadFile* file) const _IRR_OVERRIDE_;
+	virtual bool isALoadableFileExtension(const io::path& filename) const IRR_OVERRIDE;
+	virtual bool isALoadableFileFormat(irr::io::IReadFile* file) const IRR_OVERRIDE;
+	virtual irr::video::IImage* loadImage(irr::io::IReadFile* file) const IRR_OVERRIDE;
 };
 
 //! An Irrlicht image loader for Halflife 1 engine textures
 class CImageLoaderWAL2 : public irr::video::IImageLoader
 {
 public:
-	virtual bool isALoadableFileExtension(const io::path& filename) const _IRR_OVERRIDE_;
-	virtual bool isALoadableFileFormat(irr::io::IReadFile* file) const _IRR_OVERRIDE_;
-	virtual irr::video::IImage* loadImage(irr::io::IReadFile* file) const _IRR_OVERRIDE_;
+	virtual bool isALoadableFileExtension(const io::path& filename) const IRR_OVERRIDE;
+	virtual bool isALoadableFileFormat(irr::io::IReadFile* file) const IRR_OVERRIDE;
+	virtual irr::video::IImage* loadImage(irr::io::IReadFile* file) const IRR_OVERRIDE;
 };
 
 // byte-align structures

@@ -126,7 +126,7 @@ namespace irr
 		bool drop() const
 		{
 			// someone is doing bad reference counting.
-			_IRR_DEBUG_BREAK_IF(ReferenceCounter <= 0)
+			IRR_DEBUG_BREAK_IF(ReferenceCounter <= 0)
 
 			--ReferenceCounter;
 			if (!ReferenceCounter)

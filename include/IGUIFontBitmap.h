@@ -19,7 +19,7 @@ class IGUIFontBitmap : public IGUIFont
 public:
 
 	//! Returns the type of this font
-	virtual EGUI_FONT_TYPE getType() const _IRR_OVERRIDE_ { return EGFT_BITMAP; }
+	virtual EGUI_FONT_TYPE getType() const IRR_OVERRIDE { return EGFT_BITMAP; }
 
 	//! returns the parsed Symbol Information
 	virtual IGUISpriteBank* getSpriteBank() const = 0;
@@ -36,7 +36,7 @@ public:
 	kerning value. For example, EGFT_BITMAP will add the right kerning value of previousLetter to the
 	left side kerning value of thisLetter, then add the global value.
 	*/
-	virtual s32 getKerningWidth(const wchar_t* thisLetter=0, const wchar_t* previousLetter=0) const _IRR_OVERRIDE_ = 0;
+	virtual s32 getKerningWidth(const wchar_t* thisLetter=0, const wchar_t* previousLetter=0) const IRR_OVERRIDE = 0;
 };
 
 } // end namespace gui

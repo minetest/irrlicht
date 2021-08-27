@@ -80,7 +80,7 @@ namespace gui
 		//! removes all children (recursive) from this node
 		/** \deprecated Deprecated in 1.8, use clearChildren() instead.
 		This method may be removed by Irrlicht 1.9 */
-		_IRR_DEPRECATED_ void clearChilds()
+		IRR_DEPRECATED void clearChilds()
 		{
 			return clearChildren();
 		}
@@ -91,7 +91,7 @@ namespace gui
 		//! returns true if this node has child nodes
 		/** \deprecated Deprecated in 1.8, use hasChildren() instead.
 		This method may be removed by Irrlicht 1.9 */
-		_IRR_DEPRECATED_ bool hasChilds() const
+		IRR_DEPRECATED bool hasChilds() const
 		{
 			return hasChildren();
 		}

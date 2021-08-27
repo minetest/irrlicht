@@ -33,7 +33,7 @@ void IBurningShader::constructor_IBurningShader(CBurningVideoDriver* driver)
 	if (((unsigned long long)&scan & 15) || ((unsigned long long)&line & 15))
 	{
 		os::Printer::log("BurningVideo Shader not 16 byte aligned", ELL_ERROR);
-		_IRR_DEBUG_BREAK_IF(1);
+		IRR_DEBUG_BREAK_IF(1);
 	}
 #endif
 

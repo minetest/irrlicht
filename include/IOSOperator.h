@@ -20,7 +20,7 @@ public:
 
 	//! Get the current operation system version as string.
 	/** \deprecated Use getOperatingSystemVersion instead. This method will be removed in Irrlicht 1.9. */
-	_IRR_DEPRECATED_ const wchar_t* getOperationSystemVersion() const
+	IRR_DEPRECATED const wchar_t* getOperationSystemVersion() const
 	{
 		return core::stringw(getOperatingSystemVersion()).c_str();
 	}

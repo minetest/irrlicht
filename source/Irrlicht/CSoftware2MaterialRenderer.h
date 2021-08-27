@@ -27,7 +27,7 @@ public:
 	}
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
 		if (Driver)
 			Driver->setFallback_Material(material.MaterialType);
@@ -46,7 +46,7 @@ public:
 		:CSoftware2MaterialRenderer ( driver ) {}
 
 	//! Returns if the material is transparent.
-	virtual bool isTransparent() const _IRR_OVERRIDE_
+	virtual bool isTransparent() const IRR_OVERRIDE
 	{
 		return false;
 	}
@@ -63,7 +63,7 @@ public:
 
 
 	//! Returns if the material is transparent.
-	virtual bool isTransparent() const _IRR_OVERRIDE_
+	virtual bool isTransparent() const IRR_OVERRIDE
 	{
 		return true;
 	}
@@ -77,7 +77,7 @@ public:
 	CSoftware2MaterialRenderer_UNSUPPORTED ( video::CBurningVideoDriver* driver )
 		: CSoftware2MaterialRenderer ( driver ) {}
 
-	virtual s32 getRenderCapability() const _IRR_OVERRIDE_ { return 1; }
+	virtual s32 getRenderCapability() const IRR_OVERRIDE { return 1; }
 
 };
 

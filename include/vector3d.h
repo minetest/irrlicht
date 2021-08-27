@@ -59,14 +59,14 @@ namespace core
 
 		T& operator [](u32 index)
 		{
-			_IRR_DEBUG_BREAK_IF(index>2) // access violation
+			IRR_DEBUG_BREAK_IF(index>2) // access violation
 
 			return *(&X+index);
 		}
 
 		const T& operator [](u32 index) const
 		{
-			_IRR_DEBUG_BREAK_IF(index>2) // access violation
+			IRR_DEBUG_BREAK_IF(index>2) // access violation
 
 			return *(&X+index);
 		}

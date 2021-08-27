@@ -2,7 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#define _IRR_DONT_DO_MEMORY_DEBUGGING_HERE
+#define IRR_DONT_DO_MEMORY_DEBUGGING_HERE
 #include "CD3D9Driver.h"
 
 #ifdef _IRR_COMPILE_WITH_DIRECT3D_9_

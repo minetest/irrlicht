@@ -65,7 +65,7 @@ public:
 #if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
 	virtual void* lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel)
 #else
-	virtual void* lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel, u32 layer, E_TEXTURE_LOCK_FLAGS lockFlags = ETLF_FLIP_Y_UP_RTT) _IRR_OVERRIDE_
+	virtual void* lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel, u32 layer, E_TEXTURE_LOCK_FLAGS lockFlags = ETLF_FLIP_Y_UP_RTT) IRR_OVERRIDE
 #endif
 	{
 		if (Flags & GEN_MIPMAP)
@@ -80,7 +80,7 @@ public:
 	}
 
 	//! unlock function
-	virtual void unlock() _IRR_OVERRIDE_
+	virtual void unlock() IRR_OVERRIDE
 	{
 	}
 /*
@@ -117,7 +117,7 @@ public:
 	}
 
 #if !defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
-	virtual void regenerateMipMapLevels(void* data = 0, u32 layer = 0) _IRR_OVERRIDE_;
+	virtual void regenerateMipMapLevels(void* data = 0, u32 layer = 0) IRR_OVERRIDE;
 #else
 	virtual void regenerateMipMapLevels(void* data = 0);
 #endif
@@ -166,7 +166,7 @@ public:
 	CSoftwareRenderTarget2(CBurningVideoDriver* driver);
 	virtual ~CSoftwareRenderTarget2();
 
-	virtual void setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces, u32 numCubeSurfaces) _IRR_OVERRIDE_;
+	virtual void setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces, u32 numCubeSurfaces) IRR_OVERRIDE;
 
 #if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
 	E_DRIVER_TYPE DriverType;

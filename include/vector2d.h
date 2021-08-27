@@ -66,14 +66,14 @@ public:
 
 	T& operator [](u32 index)
 	{
-		_IRR_DEBUG_BREAK_IF(index>1) // access violation
+		IRR_DEBUG_BREAK_IF(index>1) // access violation
 
 		return *(&X+index);
 	}
 
 	const T& operator [](u32 index) const
 	{
-		_IRR_DEBUG_BREAK_IF(index>1) // access violation
+		IRR_DEBUG_BREAK_IF(index>1) // access violation
 
 		return *(&X+index);
 	}

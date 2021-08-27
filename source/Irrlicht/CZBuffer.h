@@ -23,19 +23,19 @@ namespace video
 		virtual ~CZBuffer();
 
 		//! clears the zbuffer
-		virtual void clear() _IRR_OVERRIDE_;
+		virtual void clear() IRR_OVERRIDE;
 
 		//! sets the new size of the zbuffer
-		virtual void setSize(const core::dimension2d<u32>& size) _IRR_OVERRIDE_;
+		virtual void setSize(const core::dimension2d<u32>& size) IRR_OVERRIDE;
 
 		//! returns the size of the zbuffer
-		virtual const core::dimension2d<u32>& getSize() const _IRR_OVERRIDE_;
+		virtual const core::dimension2d<u32>& getSize() const IRR_OVERRIDE;
 
 		//! locks the zbuffer
-		virtual TZBufferType* lock() _IRR_OVERRIDE_;
+		virtual TZBufferType* lock() IRR_OVERRIDE;
 
 		//! unlocks the zbuffer
-		virtual void unlock() _IRR_OVERRIDE_;
+		virtual void unlock() IRR_OVERRIDE;
 
 	private:
 

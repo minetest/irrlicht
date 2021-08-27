@@ -30,13 +30,13 @@ public:
 	//! Gets all triangles which lie within a specific bounding box.
 	virtual void getTriangles(core::triangle3df* triangles, s32 arraySize, s32& outTriangleCount,
 		const core::aabbox3d<f32>& box, const core::matrix4* transform, bool useNodeTransform, 
-		irr::core::array<SCollisionTriangleRange>* outTriangleInfo) const _IRR_OVERRIDE_;
+		irr::core::array<SCollisionTriangleRange>* outTriangleInfo) const IRR_OVERRIDE;
 
 	//! Gets all triangles which have or may have contact with a 3d line.
 	virtual void getTriangles(core::triangle3df* triangles, s32 arraySize,
 		s32& outTriangleCount, const core::line3d<f32>& line,
 		const core::matrix4* transform, bool useNodeTransform, 
-		irr::core::array<SCollisionTriangleRange>* outTriangleInfo) const _IRR_OVERRIDE_;
+		irr::core::array<SCollisionTriangleRange>* outTriangleInfo) const IRR_OVERRIDE;
 
 private:
 

@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_TYPES_H_INCLUDED__
-#define __IRR_TYPES_H_INCLUDED__
+#ifndef IRR_TYPES_H_INCLUDED
+#define IRR_TYPES_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 
@@ -130,6 +130,7 @@ typedef double				f64;
 #endif
 
 // define the wchar_t type if not already built in.
+// It's usually set when VS compiler sets /Zc:wchar_t
 #ifdef _MSC_VER
 #ifndef _WCHAR_T_DEFINED
 //! A 16 bit wide character type.
@@ -152,18 +153,18 @@ typedef unsigned short wchar_t;
 namespace irr
 {
 
-//! Type name for character type used by the file system.
-/** Should the wide character version of the FileSystem be used it is a
-16 bit character variable. Used for Unicode Filesystem and Unicode strings.
-Else it is a 8 bit character variable. Used for ansi Filesystem and non-unicode
+//! Type name for character type used by the filesystem.
+/** Should the wide character version of the filesystem be used it is a
+16 bit character variable. Used for Unicode filesystem and Unicode strings.
+Else it is a 8 bit character variable. Used for ansi filesystem and non-unicode
 strings
 */
 #if defined(_IRR_WCHAR_FILESYSTEM)
 	typedef wchar_t fschar_t;
-	#define _IRR_TEXT(X) L##X
+	#define IRR_TEXT(X) L##X
 #else
 	typedef char fschar_t;
-	#define _IRR_TEXT(X) X
+	#define IRR_TEXT(X) X
 #endif
 
 } // end namespace irr
@@ -173,52 +174,52 @@ strings
 #if defined(_IRR_WINDOWS_API_) && defined(_MSC_VER) && !defined (_WIN32_WCE)
 #if defined(WIN64) || defined(_WIN64) // using portable common solution for x64 configuration
 	#include <crtdbg.h>
-	#define _IRR_DEBUG_BREAK_IF( _CONDITION_ ) if (_CONDITION_) {_CrtDbgBreak();}
+	#define IRR_DEBUG_BREAK_IF( _CONDITION_ ) if (_CONDITION_) {_CrtDbgBreak();}
 #else
-	#define _IRR_DEBUG_BREAK_IF( _CONDITION_ ) if (_CONDITION_) {_asm int 3}
+	#define IRR_DEBUG_BREAK_IF( _CONDITION_ ) if (_CONDITION_) {_asm int 3}
 #endif
 #else
 	#include "assert.h"
-	#define _IRR_DEBUG_BREAK_IF( _CONDITION_ ) assert( !(_CONDITION_) );
+	#define IRR_DEBUG_BREAK_IF( _CONDITION_ ) assert( !(_CONDITION_) );
 #endif
 #else
-	#define _IRR_DEBUG_BREAK_IF( _CONDITION_ )
+	#define IRR_DEBUG_BREAK_IF( _CONDITION_ )
 #endif
 
 //! Defines a deprecated macro which generates a warning at compile time
 /** The usage is simple
-For typedef:		typedef _IRR_DEPRECATED_ int test1;
-For classes/structs:	class _IRR_DEPRECATED_ test2 { ... };
-For methods:		class test3 { _IRR_DEPRECATED_ virtual void foo() {} };
-For functions:		template<class T> _IRR_DEPRECATED_ void test4(void) {}
+For typedef:		typedef IRR_DEPRECATED int test1;
+For classes/structs:	class IRR_DEPRECATED test2 { ... };
+For methods:		class test3 { IRR_DEPRECATED virtual void foo() {} };
+For functions:		template<class T> IRR_DEPRECATED void test4(void) {}
 **/
 #if defined(IGNORE_DEPRECATED_WARNING)
-#define _IRR_DEPRECATED_
+#define IRR_DEPRECATED
 #elif _MSC_VER >= 1310 //vs 2003 or higher
-#define _IRR_DEPRECATED_ __declspec(deprecated)
+#define IRR_DEPRECATED __declspec(deprecated)
 #elif (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1)) // all versions above 3.0 should support this feature
-#define _IRR_DEPRECATED_  __attribute__ ((deprecated))
+#define IRR_DEPRECATED  __attribute__ ((deprecated))
 #else
-#define _IRR_DEPRECATED_
+#define IRR_DEPRECATED
 #endif
 
 //! Defines an override macro, to protect virtual functions from typos and other mismatches
 /** Usage in a derived class:
-virtual void somefunc() _IRR_OVERRIDE_;
+virtual void somefunc() IRR_OVERRIDE;
 */
 #if ( ((__GNUC__ > 4 ) || ((__GNUC__ == 4 ) && (__GNUC_MINOR__ >= 7))) && (defined(__GXX_EXPERIMENTAL_CXX0X) || __cplusplus >= 201103L) )
-#define _IRR_OVERRIDE_ override
+#define IRR_OVERRIDE override
 #elif (_MSC_VER >= 1600 ) /* supported since MSVC 2010 */
-#define _IRR_OVERRIDE_ override
+#define IRR_OVERRIDE override
 #elif (__clang_major__ >= 3 && __has_feature(cxx_override_control))
-#define _IRR_OVERRIDE_ override
+#define IRR_OVERRIDE override
 #else
-#define _IRR_OVERRIDE_
+#define IRR_OVERRIDE
 #endif
 
 // memory debugging
 #if defined(_DEBUG) && defined(IRRLICHT_EXPORTS) && defined(_MSC_VER) && \
-	(_MSC_VER > 1299) && !defined(_IRR_DONT_DO_MEMORY_DEBUGGING_HERE) && !defined(_WIN32_WCE)
+	(_MSC_VER > 1299) && !defined(IRR_DONT_DO_MEMORY_DEBUGGING_HERE) && !defined(_WIN32_WCE)
 
 	#define CRTDBG_MAP_ALLOC
 	#define _CRTDBG_MAP_ALLOC
@@ -244,4 +245,4 @@ code like 'code', but some generate warnings so we use this macro here */
 		((irr::u32)(irr::u8)(c0) | ((irr::u32)(irr::u8)(c1) << 8) | \
 		((irr::u32)(irr::u8)(c2) << 16) | ((irr::u32)(irr::u8)(c3) << 24 ))
 
-#endif // __IRR_TYPES_H_INCLUDED__
+#endif // IRR_TYPES_H_INCLUDED

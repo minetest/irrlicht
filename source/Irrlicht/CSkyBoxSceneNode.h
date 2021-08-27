@@ -23,29 +23,29 @@ namespace scene
 			video::ITexture* right, video::ITexture* front, video::ITexture* back,
 			ISceneNode* parent, ISceneManager* mgr, s32 id);
 
-		virtual void OnRegisterSceneNode() _IRR_OVERRIDE_;
+		virtual void OnRegisterSceneNode() IRR_OVERRIDE;
 
 		//! renders the node.
-		virtual void render() _IRR_OVERRIDE_;
+		virtual void render() IRR_OVERRIDE;
 
 		//! returns the axis aligned bounding box of this node
-		virtual const core::aabbox3d<f32>& getBoundingBox() const _IRR_OVERRIDE_;
+		virtual const core::aabbox3d<f32>& getBoundingBox() const IRR_OVERRIDE;
 
 		//! returns the material based on the zero based index i. To get the amount
 		//! of materials used by this scene node, use getMaterialCount().
 		//! This function is needed for inserting the node into the scene hierarchy on a
 		//! optimal position for minimizing renderstate changes, but can also be used
 		//! to directly modify the material of a scene node.
-		virtual video::SMaterial& getMaterial(u32 i) _IRR_OVERRIDE_;
+		virtual video::SMaterial& getMaterial(u32 i) IRR_OVERRIDE;
 
 		//! returns amount of materials used by this scene node.
-		virtual u32 getMaterialCount() const _IRR_OVERRIDE_;
+		virtual u32 getMaterialCount() const IRR_OVERRIDE;
 
 		//! Returns type of the scene node
-		virtual ESCENE_NODE_TYPE getType() const _IRR_OVERRIDE_ { return ESNT_SKY_BOX; }
+		virtual ESCENE_NODE_TYPE getType() const IRR_OVERRIDE { return ESNT_SKY_BOX; }
 
 		//! Creates a clone of this scene node and its children.
-		virtual ISceneNode* clone(ISceneNode* newParent=0, ISceneManager* newManager=0) _IRR_OVERRIDE_;
+		virtual ISceneNode* clone(ISceneNode* newParent=0, ISceneManager* newManager=0) IRR_OVERRIDE;
 
 	private:
 

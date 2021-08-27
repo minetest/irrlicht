@@ -61,7 +61,7 @@ namespace scene
 		if getMeshType() returns EAMT_MD2 it's safe to cast the
 		IAnimatedMesh to IAnimatedMeshMD2.
 		\returns Type of the mesh. */
-		virtual E_ANIMATED_MESH_TYPE getMeshType() const _IRR_OVERRIDE_
+		virtual E_ANIMATED_MESH_TYPE getMeshType() const IRR_OVERRIDE
 		{
 			return EAMT_UNKNOWN;
 		}

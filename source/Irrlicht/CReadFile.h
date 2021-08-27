@@ -27,13 +27,13 @@ namespace io
 		virtual ~CReadFile();
 
 		//! returns how much was read
-		virtual size_t read(void* buffer, size_t sizeToRead) _IRR_OVERRIDE_;
+		virtual size_t read(void* buffer, size_t sizeToRead) IRR_OVERRIDE;
 
 		//! changes position in file, returns true if successful
-		virtual bool seek(long finalPos, bool relativeMovement = false) _IRR_OVERRIDE_;
+		virtual bool seek(long finalPos, bool relativeMovement = false) IRR_OVERRIDE;
 
 		//! returns size of file
-		virtual long getSize() const _IRR_OVERRIDE_;
+		virtual long getSize() const IRR_OVERRIDE;
 
 		//! returns if file is open
 		bool isOpen() const
@@ -42,13 +42,13 @@ namespace io
 		}
 
 		//! returns where in the file we are.
-		virtual long getPos() const _IRR_OVERRIDE_;
+		virtual long getPos() const IRR_OVERRIDE;
 
 		//! returns name of file
-		virtual const io::path& getFileName() const _IRR_OVERRIDE_;
+		virtual const io::path& getFileName() const IRR_OVERRIDE;
 
 		//! Get the type of the class implementing this interface
-		virtual EREAD_FILE_TYPE getType() const _IRR_OVERRIDE_
+		virtual EREAD_FILE_TYPE getType() const IRR_OVERRIDE
 		{
 			return ERFT_READ_FILE;
 		}

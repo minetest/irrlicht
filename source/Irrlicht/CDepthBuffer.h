@@ -23,22 +23,22 @@ namespace video
 		virtual ~CDepthBuffer();
 
 		//! clears the zbuffer
-		virtual void clear(f32 value, const interlaced_control interlaced) _IRR_OVERRIDE_;
+		virtual void clear(f32 value, const interlaced_control interlaced) IRR_OVERRIDE;
 
 		//! sets the new size of the zbuffer
-		virtual void setSize(const core::dimension2d<u32>& size) _IRR_OVERRIDE_;
+		virtual void setSize(const core::dimension2d<u32>& size) IRR_OVERRIDE;
 
 		//! returns the size of the zbuffer
-		virtual const core::dimension2d<u32>& getSize() const _IRR_OVERRIDE_;
+		virtual const core::dimension2d<u32>& getSize() const IRR_OVERRIDE;
 
 		//! locks the zbuffer
-		virtual void* lock() _IRR_OVERRIDE_ { return (void*) Buffer; }
+		virtual void* lock() IRR_OVERRIDE { return (void*) Buffer; }
 
 		//! unlocks the zbuffer
-		virtual void unlock() _IRR_OVERRIDE_ {}
+		virtual void unlock() IRR_OVERRIDE {}
 
 		//! returns pitch of depthbuffer (in bytes)
-		virtual u32 getPitch() const _IRR_OVERRIDE_ { return Pitch; }
+		virtual u32 getPitch() const IRR_OVERRIDE { return Pitch; }
 
 
 	private:
@@ -60,22 +60,22 @@ namespace video
 		virtual ~CStencilBuffer();
 
 		//! clears the zbuffer
-		virtual void clear(u32 value, const interlaced_control interlaced) _IRR_OVERRIDE_;
+		virtual void clear(u32 value, const interlaced_control interlaced) IRR_OVERRIDE;
 
 		//! sets the new size of the zbuffer
-		virtual void setSize(const core::dimension2d<u32>& size) _IRR_OVERRIDE_;
+		virtual void setSize(const core::dimension2d<u32>& size) IRR_OVERRIDE;
 
 		//! returns the size of the zbuffer
-		virtual const core::dimension2d<u32>& getSize() const _IRR_OVERRIDE_;
+		virtual const core::dimension2d<u32>& getSize() const IRR_OVERRIDE;
 
 		//! locks the zbuffer
-		virtual void* lock() _IRR_OVERRIDE_ { return (void*) Buffer; }
+		virtual void* lock() IRR_OVERRIDE { return (void*) Buffer; }
 
 		//! unlocks the zbuffer
-		virtual void unlock() _IRR_OVERRIDE_ {}
+		virtual void unlock() IRR_OVERRIDE {}
 
 		//! returns pitch of depthbuffer (in bytes)
-		virtual u32 getPitch() const _IRR_OVERRIDE_ { return Pitch; }
+		virtual u32 getPitch() const IRR_OVERRIDE { return Pitch; }
 
 
 	private:

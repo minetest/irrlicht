@@ -185,7 +185,7 @@ class map
 
 		Node& operator*()
 		{
-			_IRR_DEBUG_BREAK_IF(atEnd()) // access violation
+			IRR_DEBUG_BREAK_IF(atEnd()) // access violation
 
 			return *Cur;
 		}
@@ -333,7 +333,7 @@ class map
 
 		const Node& operator*()
 		{
-			_IRR_DEBUG_BREAK_IF(atEnd()) // access violation
+			IRR_DEBUG_BREAK_IF(atEnd()) // access violation
 
 			return *Cur;
 		}
@@ -472,7 +472,7 @@ class map
 
 	Node& operator* ()
 	{
-		_IRR_DEBUG_BREAK_IF(atEnd()) // access violation
+		IRR_DEBUG_BREAK_IF(atEnd()) // access violation
 
 		return *getNode();
 	}
@@ -571,7 +571,7 @@ class map
 
 		Node& operator* ()
 		{
-			_IRR_DEBUG_BREAK_IF(atEnd()) // access violation
+			IRR_DEBUG_BREAK_IF(atEnd()) // access violation
 
 			return *getNode();
 		}
@@ -639,7 +639,7 @@ class map
 			Node* node = Tree.find(Key);
 
 			// Not found
-			_IRR_DEBUG_BREAK_IF(node==0) // access violation
+			IRR_DEBUG_BREAK_IF(node==0) // access violation
 
 			return node->getValue();
 		}
@@ -881,7 +881,7 @@ class map
 	}
 
 	//! \deprecated Use empty() instead. This method may be removed by Irrlicht 1.9
-	_IRR_DEPRECATED_ bool isEmpty() const
+	IRR_DEPRECATED bool isEmpty() const
 	{
 		return empty();
 	}
