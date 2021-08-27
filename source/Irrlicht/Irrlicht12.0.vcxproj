@@ -841,7 +841,10 @@
     <ClInclude Include="..\..\include\EDriverFeatures.h" />
     <ClInclude Include="..\..\include\EMaterialFlags.h" />
     <ClInclude Include="..\..\include\IAnimatedMeshMD3.h" />
+	<ClInclude Include="..\..\include\IBoneSceneNode.h" />
+    <ClInclude Include="..\..\include\IDynamicMeshBuffer.h" />
     <ClInclude Include="..\..\include\IEventReceiver.h" />
+	<ClInclude Include="..\..\include\IGUIFontBitmap.h" />
     <ClInclude Include="..\..\include\IOctreeSceneNode.h" />
     <ClInclude Include="..\..\include\IProfiler.h" />
     <ClInclude Include="..\..\include\ILogger.h" />
@@ -1027,6 +1030,7 @@
     <ClInclude Include="COpenGLSLMaterialRenderer.h" />
     <ClInclude Include="CSceneManager.h" />
     <ClInclude Include="CWGLManager.h" />
+	<ClInclude Include="ISceneNodeAnimatorFinishing.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="CSMFMeshFileLoader.h" />
     <ClInclude Include="C3DSMeshFileLoader.h" />
