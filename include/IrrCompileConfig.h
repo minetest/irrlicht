@@ -132,6 +132,10 @@
 #endif
 #endif
 
+#if defined(__FreeBSD__) || defined(__OpenBSD__)
+#define NO_IRR_COMPILE_WITH_JOYSTICK_EVENTS_
+#endif
+
 #if !defined(_IRR_WINDOWS_API_) && !defined(_IRR_OSX_PLATFORM_) && !defined(_IRR_IOS_PLATFORM_) && !defined(_IRR_ANDROID_PLATFORM_) && !defined(_IRR_EMSCRIPTEN_PLATFORM_)
 #ifndef _IRR_SOLARIS_PLATFORM_
 #define _IRR_LINUX_PLATFORM_
