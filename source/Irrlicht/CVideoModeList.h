@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_C_VIDEO_MODE_LIST_H_INCLUDED__
-#define __IRR_C_VIDEO_MODE_LIST_H_INCLUDED__
+#ifndef IRR_C_VIDEO_MODE_LIST_H_INCLUDED
+#define IRR_C_VIDEO_MODE_LIST_H_INCLUDED
 
 #include "IVideoModeList.h"
 #include "dimension2d.h"
@@ -22,22 +22,22 @@ namespace video
 		CVideoModeList();
 
 		//! Gets amount of video modes in the list.
-		virtual s32 getVideoModeCount() const _IRR_OVERRIDE_;
+		virtual s32 getVideoModeCount() const IRR_OVERRIDE;
 
 		//! Returns the screen size of a video mode in pixels.
-		virtual core::dimension2d<u32> getVideoModeResolution(s32 modeNumber) const _IRR_OVERRIDE_;
+		virtual core::dimension2d<u32> getVideoModeResolution(s32 modeNumber) const IRR_OVERRIDE;
 
 		//! Returns the screen size of an optimal video mode in pixels.
-		virtual core::dimension2d<u32> getVideoModeResolution(const core::dimension2d<u32>& minSize, const core::dimension2d<u32>& maxSize) const _IRR_OVERRIDE_;
+		virtual core::dimension2d<u32> getVideoModeResolution(const core::dimension2d<u32>& minSize, const core::dimension2d<u32>& maxSize) const IRR_OVERRIDE;
 
 		//! Returns the pixel depth of a video mode in bits.
-		virtual s32 getVideoModeDepth(s32 modeNumber) const _IRR_OVERRIDE_;
+		virtual s32 getVideoModeDepth(s32 modeNumber) const IRR_OVERRIDE;
 
 		//! Returns current desktop screen resolution.
-		virtual const core::dimension2d<u32>& getDesktopResolution() const _IRR_OVERRIDE_;
+		virtual const core::dimension2d<u32>& getDesktopResolution() const IRR_OVERRIDE;
 
 		//! Returns the pixel depth of a video mode in bits.
-		virtual s32 getDesktopDepth() const _IRR_OVERRIDE_;
+		virtual s32 getDesktopDepth() const IRR_OVERRIDE;
 
 		//! adds a new mode to the list
 		void addMode(const core::dimension2d<u32>& size, s32 depth);
@@ -74,6 +74,4 @@ namespace video
 } // end namespace video
 } // end namespace irr
 
-
 #endif
-

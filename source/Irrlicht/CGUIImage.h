@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_GUI_IMAGE_H_INCLUDED__
-#define __C_GUI_IMAGE_H_INCLUDED__
+#ifndef IRR_C_GUI_IMAGE_H_INCLUDED
+#define IRR_C_GUI_IMAGE_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #ifdef _IRR_COMPILE_WITH_GUI_
@@ -26,61 +26,61 @@ namespace gui
 		virtual ~CGUIImage();
 
 		//! sets an image
-		virtual void setImage(video::ITexture* image) _IRR_OVERRIDE_;
+		virtual void setImage(video::ITexture* image) IRR_OVERRIDE;
 
 		//! Gets the image texture
-		virtual video::ITexture* getImage() const _IRR_OVERRIDE_;
+		virtual video::ITexture* getImage() const IRR_OVERRIDE;
 
 		//! sets the color of the image
-		virtual void setColor(video::SColor color) _IRR_OVERRIDE_;
+		virtual void setColor(video::SColor color) IRR_OVERRIDE;
 
 		//! sets if the image should scale to fit the element
-		virtual void setScaleImage(bool scale) _IRR_OVERRIDE_;
+		virtual void setScaleImage(bool scale) IRR_OVERRIDE;
 
 		//! draws the element and its children
-		virtual void draw() _IRR_OVERRIDE_;
+		virtual void draw() IRR_OVERRIDE;
 
 		//! sets if the image should use its alpha channel to draw itself
-		virtual void setUseAlphaChannel(bool use) _IRR_OVERRIDE_;
+		virtual void setUseAlphaChannel(bool use) IRR_OVERRIDE;
 
 		//! Gets the color of the image
-		virtual video::SColor getColor() const _IRR_OVERRIDE_;
+		virtual video::SColor getColor() const IRR_OVERRIDE;
 
 		//! Returns true if the image is scaled to fit, false if not
-		virtual bool isImageScaled() const _IRR_OVERRIDE_;
+		virtual bool isImageScaled() const IRR_OVERRIDE;
 
 		//! Returns true if the image is using the alpha channel, false if not
-		virtual bool isAlphaChannelUsed() const _IRR_OVERRIDE_;
+		virtual bool isAlphaChannelUsed() const IRR_OVERRIDE;
 
 		//! Sets the source rectangle of the image. By default the full image is used.
-		virtual void setSourceRect(const core::rect<s32>& sourceRect) _IRR_OVERRIDE_;
+		virtual void setSourceRect(const core::rect<s32>& sourceRect) IRR_OVERRIDE;
 
 		//! Returns the customized source rectangle of the image to be used.
-		virtual core::rect<s32> getSourceRect() const _IRR_OVERRIDE_;
+		virtual core::rect<s32> getSourceRect() const IRR_OVERRIDE;
 
 		//! Restrict drawing-area.
-		virtual void setDrawBounds(const core::rect<f32>& drawBoundUVs) _IRR_OVERRIDE_;
+		virtual void setDrawBounds(const core::rect<f32>& drawBoundUVs) IRR_OVERRIDE;
 
 		//! Get drawing-area restrictions.
-		virtual core::rect<f32> getDrawBounds() const _IRR_OVERRIDE_;
+		virtual core::rect<f32> getDrawBounds() const IRR_OVERRIDE;
 
 		//! Sets whether to draw a background color (EGDC_3D_DARK_SHADOW) when no texture is set
-		virtual void setDrawBackground(bool draw) _IRR_OVERRIDE_
+		virtual void setDrawBackground(bool draw) IRR_OVERRIDE
 		{
 			DrawBackground = draw;
 		}
 
 		//! Checks if a background is drawn when no texture is set
-		virtual bool isDrawBackgroundEnabled() const  _IRR_OVERRIDE_
+		virtual bool isDrawBackgroundEnabled() const  IRR_OVERRIDE
 		{
 			return DrawBackground;
 		}
 
 		//! Writes attributes of the element.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
+		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const IRR_OVERRIDE;
 
 		//! Reads attributes of the element
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
+		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) IRR_OVERRIDE;
 
 	protected:
 		void checkBounds(core::rect<s32>& rect)
@@ -110,4 +110,4 @@ namespace gui
 
 #endif // _IRR_COMPILE_WITH_GUI_
 
-#endif // __C_GUI_IMAGE_H_INCLUDED__
+#endif // IRR_C_GUI_IMAGE_H_INCLUDED

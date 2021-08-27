@@ -670,7 +670,7 @@ video::ITexture* CNullDriver::loadTextureFromFile(io::IReadFile* file, const io:
 			}
 			break;
 		default:
-			_IRR_DEBUG_BREAK_IF(true);
+			IRR_DEBUG_BREAK_IF(true);
 			break;
 		}
 
@@ -1141,7 +1141,7 @@ const SLight& CNullDriver::getDynamicLight(u32 idx) const
 		return Lights[idx];
 	else
 	{
-		_IRR_DEBUG_BREAK_IF(true)
+		IRR_DEBUG_BREAK_IF(true)
 		static const SLight dummy;
 		return dummy;
 	}

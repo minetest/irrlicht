@@ -117,6 +117,9 @@
     <ClInclude Include="..\..\include\IEventReceiver.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\IProfiler.h">
+      <Filter>include</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\ILogger.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -132,12 +135,15 @@
     <ClInclude Include="..\..\include\irrlicht.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\leakHunter.h">
+      <Filter>include</Filter>
+    </ClInclude>	
     <ClInclude Include="..\..\include\IrrlichtDevice.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\irrTypes.h">
       <Filter>include</Filter>
-    </ClInclude>
+    </ClInclude>	
     <ClInclude Include="..\..\include\ITimer.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -993,6 +999,9 @@
     <ClInclude Include="os.h">
       <Filter>Irrlicht\irr</Filter>
     </ClInclude>
+    <ClInclude Include="CProfiler.h">
+      <Filter>Irrlicht\irr</Filter>
+    </ClInclude>
     <ClInclude Include="EProfileIDs.h">
       <Filter>Irrlicht\irr</Filter>
     </ClInclude>
@@ -1282,12 +1291,6 @@
     <ClInclude Include="..\..\include\SSharedMeshBuffer.h">
       <Filter>include\scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\IProfiler.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="CProfiler.h">
-      <Filter>Irrlicht\irr</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\IRenderTarget.h">
       <Filter>include\video</Filter>
     </ClInclude>
@@ -1411,6 +1414,9 @@
     <ClInclude Include="burning_shader_compile_verify.h">
       <Filter>Irrlicht\video\Burning Video</Filter>
     </ClInclude>
+    <ClInclude Include="CBlit.h">
+      <Filter>Irrlicht\video\Null</Filter>
+    </ClInclude>		
     <ClInclude Include="..\..\include\fast_atof.h">
       <Filter>include\core</Filter>
     </ClInclude>
@@ -1419,6 +1425,63 @@
     </ClInclude>
     <ClInclude Include="..\..\include\SVertexManipulator.h">
       <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IBoneSceneNode.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IDynamicMeshBuffer.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IGUIFontBitmap.h">
+      <Filter>include\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="ISceneNodeAnimatorFinishing.h">
+      <Filter>Irrlicht\scene\animators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SVertexIndex.h">
+      <Filter>include\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IVertexBuffer.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ISceneUserDataSerializer.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IMemoryReadFile.h">
+      <Filter>include\io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IIndexBuffer.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IImageWriter.h">
+      <Filter>include\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IGUITable.h">
+      <Filter>include\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IFileArchive.h">
+      <Filter>include\io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IColladaMeshWriter.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IBillboardTextSceneNode.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EShaderTypes.h">
+      <Filter>include\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EReadFileType.h">
+      <Filter>include\io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EMaterialTypes.h">
+      <Filter>include\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EHardwareBufferFlags.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EDeviceTypes.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1898,6 +1961,9 @@
     <ClCompile Include="CProfiler.cpp">
       <Filter>Irrlicht\irr</Filter>
     </ClCompile>
+    <ClCompile Include="leakHunter.cpp">
+      <Filter>Irrlicht\irr</Filter>
+    </ClCompile>
     <ClCompile Include="lzma\LzmaDec.c">
       <Filter>Irrlicht\irr\extern</Filter>
     </ClCompile>
@@ -2320,9 +2386,6 @@
     </ClCompile>
     <ClCompile Include="CSMFMeshFileLoader.cpp">
       <Filter>Irrlicht\scene\loaders</Filter>
-    </ClCompile>
-    <ClCompile Include="leakHunter.cpp">
-      <Filter>Irrlicht\irr</Filter>
     </ClCompile>
     <ClCompile Include="CD3D9RenderTarget.cpp">
       <Filter>Irrlicht\video\Direct3D9</Filter>

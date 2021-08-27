@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_ANIMATED_MESH_MD3_H_INCLUDED__
-#define __C_ANIMATED_MESH_MD3_H_INCLUDED__
+#ifndef IRR_C_ANIMATED_MESH_MD3_H_INCLUDED
+#define IRR_C_ANIMATED_MESH_MD3_H_INCLUDED
 
 #include "IAnimatedMeshMD3.h"
 #include "IReadFile.h"
@@ -34,16 +34,16 @@ namespace scene
 				io::IFileSystem* fs, video::IVideoDriver* driver);
 
 		// IAnimatedMeshMD3
-		virtual void setInterpolationShift(u32 shift, u32 loopMode) _IRR_OVERRIDE_;
-		virtual SMD3Mesh* getOriginalMesh() _IRR_OVERRIDE_;
-		virtual SMD3QuaternionTagList* getTagList(s32 frame, s32 detailLevel, s32 startFrameLoop, s32 endFrameLoop) _IRR_OVERRIDE_;
+		virtual void setInterpolationShift(u32 shift, u32 loopMode) IRR_OVERRIDE;
+		virtual SMD3Mesh* getOriginalMesh() IRR_OVERRIDE;
+		virtual SMD3QuaternionTagList* getTagList(s32 frame, s32 detailLevel, s32 startFrameLoop, s32 endFrameLoop) IRR_OVERRIDE;
 
 		//IAnimatedMesh
-		virtual u32 getFrameCount() const _IRR_OVERRIDE_;
+		virtual u32 getFrameCount() const IRR_OVERRIDE;
 
 		//! Gets the default animation speed of the animated mesh.
 		/** \return Amount of frames per second. If the amount is 0, it is a static, non animated mesh. */
-		virtual f32 getAnimationSpeed() const _IRR_OVERRIDE_
+		virtual f32 getAnimationSpeed() const IRR_OVERRIDE
 		{
 			return FramesPerSecond;
 		}
@@ -51,35 +51,35 @@ namespace scene
 		//! Gets the frame count of the animated mesh.
 		/** \param fps Frames per second to play the animation with. If the amount is 0, it is not animated.
 		The actual speed is set in the scene node the mesh is instantiated in.*/
-		virtual void setAnimationSpeed(f32 fps) _IRR_OVERRIDE_
+		virtual void setAnimationSpeed(f32 fps) IRR_OVERRIDE
 		{
 			FramesPerSecond=fps;
 		}
 
 		virtual IMesh* getMesh(s32 frame, s32 detailLevel,
-				s32 startFrameLoop, s32 endFrameLoop) _IRR_OVERRIDE_;
-		virtual const core::aabbox3d<f32>& getBoundingBox() const _IRR_OVERRIDE_;
-		virtual E_ANIMATED_MESH_TYPE getMeshType() const _IRR_OVERRIDE_;
+				s32 startFrameLoop, s32 endFrameLoop) IRR_OVERRIDE;
+		virtual const core::aabbox3d<f32>& getBoundingBox() const IRR_OVERRIDE;
+		virtual E_ANIMATED_MESH_TYPE getMeshType() const IRR_OVERRIDE;
 
 		//! returns amount of mesh buffers.
-		virtual u32 getMeshBufferCount() const _IRR_OVERRIDE_;
+		virtual u32 getMeshBufferCount() const IRR_OVERRIDE;
 
 		//! returns pointer to a mesh buffer
-		virtual IMeshBuffer* getMeshBuffer(u32 nr) const _IRR_OVERRIDE_;
+		virtual IMeshBuffer* getMeshBuffer(u32 nr) const IRR_OVERRIDE;
 
 		//! Returns pointer to a mesh buffer which fits a material
-		virtual IMeshBuffer* getMeshBuffer(const video::SMaterial &material) const _IRR_OVERRIDE_;
+		virtual IMeshBuffer* getMeshBuffer(const video::SMaterial &material) const IRR_OVERRIDE;
 
-		virtual void setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue) _IRR_OVERRIDE_;
+		virtual void setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue) IRR_OVERRIDE;
 
 		//! set user axis aligned bounding box
-		virtual void setBoundingBox(const core::aabbox3df& box) _IRR_OVERRIDE_;
+		virtual void setBoundingBox(const core::aabbox3df& box) IRR_OVERRIDE;
 
 		//! set the hardware mapping hint, for driver
-		virtual void setHardwareMappingHint(E_HARDWARE_MAPPING newMappingHint, E_BUFFER_TYPE buffer=EBT_VERTEX_AND_INDEX) _IRR_OVERRIDE_;
+		virtual void setHardwareMappingHint(E_HARDWARE_MAPPING newMappingHint, E_BUFFER_TYPE buffer=EBT_VERTEX_AND_INDEX) IRR_OVERRIDE;
 
 		//! flags the meshbuffer as changed, reloads hardware buffers
-		virtual void setDirty(E_BUFFER_TYPE buffer=EBT_VERTEX_AND_INDEX) _IRR_OVERRIDE_;
+		virtual void setDirty(E_BUFFER_TYPE buffer=EBT_VERTEX_AND_INDEX) IRR_OVERRIDE;
 
 	private:
 		//! animates one frame
@@ -132,4 +132,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

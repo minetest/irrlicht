@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_IRR_DEVICE_STUB_H_INCLUDED__
-#define __C_IRR_DEVICE_STUB_H_INCLUDED__
+#ifndef IRR_C_IRR_DEVICE_STUB_H_INCLUDED
+#define IRR_C_IRR_DEVICE_STUB_H_INCLUDED
 
 #include "IrrlichtDevice.h"
 #include "IImagePresenter.h"
@@ -60,123 +60,123 @@ namespace irr
 		virtual ~CIrrDeviceStub();
 
 		//! returns the video driver
-		virtual video::IVideoDriver* getVideoDriver() _IRR_OVERRIDE_;
+		virtual video::IVideoDriver* getVideoDriver() IRR_OVERRIDE;
 
 		//! return file system
-		virtual io::IFileSystem* getFileSystem() _IRR_OVERRIDE_;
+		virtual io::IFileSystem* getFileSystem() IRR_OVERRIDE;
 
 		//! returns the gui environment
-		virtual gui::IGUIEnvironment* getGUIEnvironment() _IRR_OVERRIDE_;
+		virtual gui::IGUIEnvironment* getGUIEnvironment() IRR_OVERRIDE;
 
 		//! returns the scene manager
-		virtual scene::ISceneManager* getSceneManager() _IRR_OVERRIDE_;
+		virtual scene::ISceneManager* getSceneManager() IRR_OVERRIDE;
 
 		//! \return Returns a pointer to the mouse cursor control interface.
-		virtual gui::ICursorControl* getCursorControl() _IRR_OVERRIDE_;
+		virtual gui::ICursorControl* getCursorControl() IRR_OVERRIDE;
 
 		//! Returns a pointer to a list with all video modes supported by the gfx adapter.
-		virtual video::IVideoModeList* getVideoModeList() _IRR_OVERRIDE_;
+		virtual video::IVideoModeList* getVideoModeList() IRR_OVERRIDE;
 
 		//! return the context manager
-		virtual video::IContextManager* getContextManager() _IRR_OVERRIDE_;
+		virtual video::IContextManager* getContextManager() IRR_OVERRIDE;
 
 		//! Returns a pointer to the ITimer object. With it the current Time can be received.
-		virtual ITimer* getTimer() _IRR_OVERRIDE_;
+		virtual ITimer* getTimer() IRR_OVERRIDE;
 
 		//! Returns the version of the engine.
-		virtual const char* getVersion() const _IRR_OVERRIDE_;
+		virtual const char* getVersion() const IRR_OVERRIDE;
 
 		//! send the event to the right receiver
-		virtual bool postEventFromUser(const SEvent& event) _IRR_OVERRIDE_;
+		virtual bool postEventFromUser(const SEvent& event) IRR_OVERRIDE;
 
 		//! Sets a new event receiver to receive events
-		virtual void setEventReceiver(IEventReceiver* receiver) _IRR_OVERRIDE_;
+		virtual void setEventReceiver(IEventReceiver* receiver) IRR_OVERRIDE;
 
 		//! Returns pointer to the current event receiver. Returns 0 if there is none.
-		virtual IEventReceiver* getEventReceiver() _IRR_OVERRIDE_;
+		virtual IEventReceiver* getEventReceiver() IRR_OVERRIDE;
 
 		//! Sets the input receiving scene manager.
 		/** If set to null, the main scene manager (returned by GetSceneManager()) will receive the input */
-		virtual void setInputReceivingSceneManager(scene::ISceneManager* sceneManager) _IRR_OVERRIDE_;
+		virtual void setInputReceivingSceneManager(scene::ISceneManager* sceneManager) IRR_OVERRIDE;
 
 		//! Returns a pointer to the logger.
-		virtual ILogger* getLogger() _IRR_OVERRIDE_;
+		virtual ILogger* getLogger() IRR_OVERRIDE;
 
 		//! Provides access to the engine's currently set randomizer.
-		virtual IRandomizer* getRandomizer() const _IRR_OVERRIDE_;
+		virtual IRandomizer* getRandomizer() const IRR_OVERRIDE;
 
 		//! Sets a new randomizer.
-		virtual void setRandomizer(IRandomizer* r) _IRR_OVERRIDE_;
+		virtual void setRandomizer(IRandomizer* r) IRR_OVERRIDE;
 
 		//! Creates a new default randomizer.
-		virtual IRandomizer* createDefaultRandomizer() const _IRR_OVERRIDE_;
+		virtual IRandomizer* createDefaultRandomizer() const IRR_OVERRIDE;
 
 		//! Returns the operation system opertator object.
-		virtual IOSOperator* getOSOperator() _IRR_OVERRIDE_;
+		virtual IOSOperator* getOSOperator() IRR_OVERRIDE;
 
 		//! Checks if the window is running in fullscreen mode.
-		virtual bool isFullscreen() const _IRR_OVERRIDE_;
+		virtual bool isFullscreen() const IRR_OVERRIDE;
 
 		//! get color format of the current window
-		virtual video::ECOLOR_FORMAT getColorFormat() const _IRR_OVERRIDE_;
+		virtual video::ECOLOR_FORMAT getColorFormat() const IRR_OVERRIDE;
 
 		//! Activate any joysticks, and generate events for them.
-		virtual bool activateJoysticks(core::array<SJoystickInfo> & joystickInfo) _IRR_OVERRIDE_;
+		virtual bool activateJoysticks(core::array<SJoystickInfo> & joystickInfo) IRR_OVERRIDE;
 
         //! Activate accelerometer.
-        virtual bool activateAccelerometer(float updateInterval = 0.016666f) _IRR_OVERRIDE_;
-        
+        virtual bool activateAccelerometer(float updateInterval = 0.016666f) IRR_OVERRIDE;
+
         //! Deactivate accelerometer.
-        virtual bool deactivateAccelerometer() _IRR_OVERRIDE_;
-        
+        virtual bool deactivateAccelerometer() IRR_OVERRIDE;
+
         //! Is accelerometer active.
-        virtual bool isAccelerometerActive() _IRR_OVERRIDE_;
-        
+        virtual bool isAccelerometerActive() IRR_OVERRIDE;
+
         //! Is accelerometer available.
-        virtual bool isAccelerometerAvailable() _IRR_OVERRIDE_;
-        
+        virtual bool isAccelerometerAvailable() IRR_OVERRIDE;
+
         //! Activate gyroscope.
-        virtual bool activateGyroscope(float updateInterval = 0.016666f) _IRR_OVERRIDE_;
-        
+        virtual bool activateGyroscope(float updateInterval = 0.016666f) IRR_OVERRIDE;
+
         //! Deactivate gyroscope.
-        virtual bool deactivateGyroscope() _IRR_OVERRIDE_;
-        
+        virtual bool deactivateGyroscope() IRR_OVERRIDE;
+
         //! Is gyroscope active.
-        virtual bool isGyroscopeActive() _IRR_OVERRIDE_;
-        
+        virtual bool isGyroscopeActive() IRR_OVERRIDE;
+
         //! Is gyroscope available.
-        virtual bool isGyroscopeAvailable() _IRR_OVERRIDE_;
-        
+        virtual bool isGyroscopeAvailable() IRR_OVERRIDE;
+
         //! Activate device motion.
-        virtual bool activateDeviceMotion(float updateInterval = 0.016666f) _IRR_OVERRIDE_;
-        
+        virtual bool activateDeviceMotion(float updateInterval = 0.016666f) IRR_OVERRIDE;
+
         //! Deactivate device motion.
-        virtual bool deactivateDeviceMotion() _IRR_OVERRIDE_;
-        
+        virtual bool deactivateDeviceMotion() IRR_OVERRIDE;
+
         //! Is device motion active.
-        virtual bool isDeviceMotionActive() _IRR_OVERRIDE_;
-        
+        virtual bool isDeviceMotionActive() IRR_OVERRIDE;
+
         //! Is device motion available.
-        virtual bool isDeviceMotionAvailable() _IRR_OVERRIDE_;
+        virtual bool isDeviceMotionAvailable() IRR_OVERRIDE;
 
 		//! Set the current Gamma Value for the Display
-		virtual bool setGammaRamp( f32 red, f32 green, f32 blue, f32 brightness, f32 contrast ) _IRR_OVERRIDE_;
+		virtual bool setGammaRamp( f32 red, f32 green, f32 blue, f32 brightness, f32 contrast ) IRR_OVERRIDE;
 
 		//! Get the current Gamma Value for the Display
-		virtual bool getGammaRamp( f32 &red, f32 &green, f32 &blue, f32 &brightness, f32 &contrast ) _IRR_OVERRIDE_;
+		virtual bool getGammaRamp( f32 &red, f32 &green, f32 &blue, f32 &brightness, f32 &contrast ) IRR_OVERRIDE;
 
 		//! Set the maximal elapsed time between 2 clicks to generate doubleclicks for the mouse. It also affects tripleclick behavior.
 		//! When set to 0 no double- and tripleclicks will be generated.
-		virtual void setDoubleClickTime( u32 timeMs ) _IRR_OVERRIDE_;
+		virtual void setDoubleClickTime( u32 timeMs ) IRR_OVERRIDE;
 
 		//! Get the maximal elapsed time between 2 clicks to generate double- and tripleclicks for the mouse.
-		virtual u32 getDoubleClickTime() const _IRR_OVERRIDE_;
+		virtual u32 getDoubleClickTime() const IRR_OVERRIDE;
 
 		//! Remove all messages pending in the system message loop
-		virtual void clearSystemMessages() _IRR_OVERRIDE_;
+		virtual void clearSystemMessages() IRR_OVERRIDE;
 
 		//! Resize the render window.
-		virtual void setWindowSize(const irr::core::dimension2d<u32>& size) _IRR_OVERRIDE_ {}
+		virtual void setWindowSize(const irr::core::dimension2d<u32>& size) IRR_OVERRIDE {}
 
 	protected:
 
@@ -228,4 +228,3 @@ namespace irr
 } // end namespace irr
 
 #endif
-

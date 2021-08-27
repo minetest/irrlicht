@@ -2635,7 +2635,7 @@ COGLES2Driver::~COGLES2Driver()
 			return UserClipPlane[index].Plane;
 		else
 		{
-			_IRR_DEBUG_BREAK_IF(true)	// invalid index
+			IRR_DEBUG_BREAK_IF(true)	// invalid index
 			static const core::plane3df dummy;
 			return dummy;
 		}

@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_GUI_BUTTON_H_INCLUDED__
-#define __C_GUI_BUTTON_H_INCLUDED__
+#ifndef IRR_C_GUI_BUTTON_H_INCLUDED
+#define IRR_C_GUI_BUTTON_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #ifdef _IRR_COMPILE_WITH_GUI_
@@ -30,64 +30,64 @@ namespace gui
 		virtual ~CGUIButton();
 
 		//! called if an event happened.
-		virtual bool OnEvent(const SEvent& event) _IRR_OVERRIDE_;
+		virtual bool OnEvent(const SEvent& event) IRR_OVERRIDE;
 
 		//! draws the element and its children
-		virtual void draw() _IRR_OVERRIDE_;
+		virtual void draw() IRR_OVERRIDE;
 
 		//! sets another skin independent font. if this is set to zero, the button uses the font of the skin.
-		virtual void setOverrideFont(IGUIFont* font=0) _IRR_OVERRIDE_;
+		virtual void setOverrideFont(IGUIFont* font=0) IRR_OVERRIDE;
 
 		//! Gets the override font (if any)
-		virtual IGUIFont* getOverrideFont() const _IRR_OVERRIDE_;
+		virtual IGUIFont* getOverrideFont() const IRR_OVERRIDE;
 
 		//! Get the font which is used right now for drawing
-		virtual IGUIFont* getActiveFont() const _IRR_OVERRIDE_;
+		virtual IGUIFont* getActiveFont() const IRR_OVERRIDE;
 
 		//! Sets another color for the button text.
-		virtual void setOverrideColor(video::SColor color)  _IRR_OVERRIDE_;
+		virtual void setOverrideColor(video::SColor color)  IRR_OVERRIDE;
 
 		//! Gets the override color
-		virtual video::SColor getOverrideColor(void) const  _IRR_OVERRIDE_;
+		virtual video::SColor getOverrideColor(void) const  IRR_OVERRIDE;
 
 		//! Gets the currently used text color
-		virtual video::SColor getActiveColor() const _IRR_OVERRIDE_;
+		virtual video::SColor getActiveColor() const IRR_OVERRIDE;
 
 		//! Sets if the button text should use the override color or the color in the gui skin.
-		virtual void enableOverrideColor(bool enable)  _IRR_OVERRIDE_;
+		virtual void enableOverrideColor(bool enable)  IRR_OVERRIDE;
 
 		//! Checks if an override color is enabled
-		virtual bool isOverrideColorEnabled(void) const  _IRR_OVERRIDE_;
+		virtual bool isOverrideColorEnabled(void) const  IRR_OVERRIDE;
 
 		//! Sets an image which should be displayed on the button when it is in the given state.
-		virtual void setImage(EGUI_BUTTON_IMAGE_STATE state, video::ITexture* image=0, const core::rect<s32>& sourceRect=core::rect<s32>(0,0,0,0))  _IRR_OVERRIDE_;
+		virtual void setImage(EGUI_BUTTON_IMAGE_STATE state, video::ITexture* image=0, const core::rect<s32>& sourceRect=core::rect<s32>(0,0,0,0))  IRR_OVERRIDE;
 
 		//! Sets an image which should be displayed on the button when it is in normal state.
-		virtual void setImage(video::ITexture* image=0) _IRR_OVERRIDE_
+		virtual void setImage(video::ITexture* image=0) IRR_OVERRIDE
 		{
 			setImage(EGBIS_IMAGE_UP, image);
 		}
 
 		//! Sets an image which should be displayed on the button when it is in normal state.
-		virtual void setImage(video::ITexture* image, const core::rect<s32>& pos) _IRR_OVERRIDE_
+		virtual void setImage(video::ITexture* image, const core::rect<s32>& pos) IRR_OVERRIDE
 		{
 			setImage(EGBIS_IMAGE_UP, image, pos);
 		}
 
 		//! Sets an image which should be displayed on the button when it is in pressed state.
-		virtual void setPressedImage(video::ITexture* image=0) _IRR_OVERRIDE_
+		virtual void setPressedImage(video::ITexture* image=0) IRR_OVERRIDE
 		{
 			setImage(EGBIS_IMAGE_DOWN, image);
 		}
 
 		//! Sets an image which should be displayed on the button when it is in pressed state.
-		virtual void setPressedImage(video::ITexture* image, const core::rect<s32>& pos) _IRR_OVERRIDE_
+		virtual void setPressedImage(video::ITexture* image, const core::rect<s32>& pos) IRR_OVERRIDE
 		{
 			setImage(EGBIS_IMAGE_DOWN, image, pos);
 		}
 
 		//! Sets the sprite bank used by the button
-		virtual void setSpriteBank(IGUISpriteBank* bank=0) _IRR_OVERRIDE_;
+		virtual void setSpriteBank(IGUISpriteBank* bank=0) IRR_OVERRIDE;
 
 		//! Sets the animated sprite for a specific button state
 		/** \param index: Number of the sprite within the sprite bank, use -1 for no sprite
@@ -97,69 +97,69 @@ namespace gui
 		*/
 		virtual void setSprite(EGUI_BUTTON_STATE state, s32 index,
 				video::SColor color=video::SColor(255,255,255,255),
-				bool loop=false, bool scale=false) _IRR_OVERRIDE_;
+				bool loop=false, bool scale=false) IRR_OVERRIDE;
 
 		//! Get the sprite-index for the given state or -1 when no sprite is set
-		virtual s32 getSpriteIndex(EGUI_BUTTON_STATE state) const _IRR_OVERRIDE_;
+		virtual s32 getSpriteIndex(EGUI_BUTTON_STATE state) const IRR_OVERRIDE;
 
 		//! Get the sprite color for the given state. Color is only used when a sprite is set.
-		virtual video::SColor getSpriteColor(EGUI_BUTTON_STATE state) const _IRR_OVERRIDE_;
+		virtual video::SColor getSpriteColor(EGUI_BUTTON_STATE state) const IRR_OVERRIDE;
 
 		//! Returns if the sprite in the given state does loop
-		virtual bool getSpriteLoop(EGUI_BUTTON_STATE state) const _IRR_OVERRIDE_;
+		virtual bool getSpriteLoop(EGUI_BUTTON_STATE state) const IRR_OVERRIDE;
 
 		//! Returns if the sprite in the given state is scaled
-		virtual bool getSpriteScale(EGUI_BUTTON_STATE state) const _IRR_OVERRIDE_;
+		virtual bool getSpriteScale(EGUI_BUTTON_STATE state) const IRR_OVERRIDE;
 
 		//! Sets if the button should behave like a push button. Which means it
 		//! can be in two states: Normal or Pressed. With a click on the button,
 		//! the user can change the state of the button.
-		virtual void setIsPushButton(bool isPushButton=true) _IRR_OVERRIDE_;
+		virtual void setIsPushButton(bool isPushButton=true) IRR_OVERRIDE;
 
 		//! Checks whether the button is a push button
-		virtual bool isPushButton() const _IRR_OVERRIDE_;
+		virtual bool isPushButton() const IRR_OVERRIDE;
 
 		//! Sets the pressed state of the button if this is a pushbutton
-		virtual void setPressed(bool pressed=true) _IRR_OVERRIDE_;
+		virtual void setPressed(bool pressed=true) IRR_OVERRIDE;
 
 		//! Returns if the button is currently pressed
-		virtual bool isPressed() const _IRR_OVERRIDE_;
+		virtual bool isPressed() const IRR_OVERRIDE;
 
 		//! Sets if the button should use the skin to draw its border
-		virtual void setDrawBorder(bool border=true) _IRR_OVERRIDE_;
+		virtual void setDrawBorder(bool border=true) IRR_OVERRIDE;
 
 		//! Checks if the button face and border are being drawn
-		virtual bool isDrawingBorder() const _IRR_OVERRIDE_;
+		virtual bool isDrawingBorder() const IRR_OVERRIDE;
 
 		//! Sets if the alpha channel should be used for drawing images on the button (default is false)
-		virtual void setUseAlphaChannel(bool useAlphaChannel=true) _IRR_OVERRIDE_;
+		virtual void setUseAlphaChannel(bool useAlphaChannel=true) IRR_OVERRIDE;
 
 		//! Checks if the alpha channel should be used for drawing images on the button
-		virtual bool isAlphaChannelUsed() const _IRR_OVERRIDE_;
+		virtual bool isAlphaChannelUsed() const IRR_OVERRIDE;
 
 		//! Sets if the button should scale the button images to fit
-		virtual void setScaleImage(bool scaleImage=true) _IRR_OVERRIDE_;
+		virtual void setScaleImage(bool scaleImage=true) IRR_OVERRIDE;
 
 		//! Checks whether the button scales the used images
-		virtual bool isScalingImage() const _IRR_OVERRIDE_;
+		virtual bool isScalingImage() const IRR_OVERRIDE;
 
 		//! Get if the shift key was pressed in last EGET_BUTTON_CLICKED event
-		virtual bool getClickShiftState() const	_IRR_OVERRIDE_
+		virtual bool getClickShiftState() const	IRR_OVERRIDE
 		{
 			return ClickShiftState;
 		}
 
 		//! Get if the control key was pressed in last EGET_BUTTON_CLICKED event
-		virtual bool getClickControlState() const _IRR_OVERRIDE_
+		virtual bool getClickControlState() const IRR_OVERRIDE
 		{
 			return ClickControlState;
 		}
 
 		//! Writes attributes of the element.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
+		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const IRR_OVERRIDE;
 
 		//! Reads attributes of the element
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
+		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) IRR_OVERRIDE;
 
 	protected:
 		void drawSprite(EGUI_BUTTON_STATE state, u32 startTime, const core::position2di& center);
@@ -252,5 +252,4 @@ namespace gui
 
 #endif // _IRR_COMPILE_WITH_GUI_
 
-#endif // __C_GUI_BUTTON_H_INCLUDED__
-
+#endif // IRR_C_GUI_BUTTON_H_INCLUDED

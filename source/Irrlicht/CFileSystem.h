@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_FILE_SYSTEM_H_INCLUDED__
-#define __C_FILE_SYSTEM_H_INCLUDED__
+#ifndef IRR_C_FILE_SYSTEM_H_INCLUDED
+#define IRR_C_FILE_SYSTEM_H_INCLUDED
 
 #include "IFileSystem.h"
 #include "irrArray.h"
@@ -31,128 +31,128 @@ public:
 	virtual ~CFileSystem();
 
 	//! opens a file for read access
-	virtual IReadFile* createAndOpenFile(const io::path& filename) _IRR_OVERRIDE_;
+	virtual IReadFile* createAndOpenFile(const io::path& filename) IRR_OVERRIDE;
 
 	//! Creates an IReadFile interface for accessing memory like a file.
-	virtual IReadFile* createMemoryReadFile(const void* memory, s32 len, const io::path& fileName, bool deleteMemoryWhenDropped = false) _IRR_OVERRIDE_;
+	virtual IReadFile* createMemoryReadFile(const void* memory, s32 len, const io::path& fileName, bool deleteMemoryWhenDropped = false) IRR_OVERRIDE;
 
 	//! Creates an IReadFile interface for accessing files inside files
-	virtual IReadFile* createLimitReadFile(const io::path& fileName, IReadFile* alreadyOpenedFile, long pos, long areaSize) _IRR_OVERRIDE_;
+	virtual IReadFile* createLimitReadFile(const io::path& fileName, IReadFile* alreadyOpenedFile, long pos, long areaSize) IRR_OVERRIDE;
 
 	//! Creates an IWriteFile interface for accessing memory like a file.
-	virtual IWriteFile* createMemoryWriteFile(void* memory, s32 len, const io::path& fileName, bool deleteMemoryWhenDropped=false) _IRR_OVERRIDE_;
+	virtual IWriteFile* createMemoryWriteFile(void* memory, s32 len, const io::path& fileName, bool deleteMemoryWhenDropped=false) IRR_OVERRIDE;
 
 	//! Opens a file for write access.
-	virtual IWriteFile* createAndWriteFile(const io::path& filename, bool append=false) _IRR_OVERRIDE_;
+	virtual IWriteFile* createAndWriteFile(const io::path& filename, bool append=false) IRR_OVERRIDE;
 
 	//! Adds an archive to the file system.
 	virtual bool addFileArchive(const io::path& filename,
 			bool ignoreCase = true, bool ignorePaths = true,
 			E_FILE_ARCHIVE_TYPE archiveType = EFAT_UNKNOWN,
 			const core::stringc& password="",
-			IFileArchive** retArchive = 0) _IRR_OVERRIDE_;
+			IFileArchive** retArchive = 0) IRR_OVERRIDE;
 
 	//! Adds an archive to the file system.
 	virtual bool addFileArchive(IReadFile* file, bool ignoreCase=true,
 			bool ignorePaths=true,
 			E_FILE_ARCHIVE_TYPE archiveType=EFAT_UNKNOWN,
 			const core::stringc& password="",
-			IFileArchive** retArchive = 0) _IRR_OVERRIDE_;
+			IFileArchive** retArchive = 0) IRR_OVERRIDE;
 
 	//! Adds an archive to the file system.
-	virtual bool addFileArchive(IFileArchive* archive) _IRR_OVERRIDE_;
+	virtual bool addFileArchive(IFileArchive* archive) IRR_OVERRIDE;
 
 	//! move the hirarchy of the filesystem. moves sourceIndex relative up or down
-	virtual bool moveFileArchive(u32 sourceIndex, s32 relative) _IRR_OVERRIDE_;
+	virtual bool moveFileArchive(u32 sourceIndex, s32 relative) IRR_OVERRIDE;
 
 	//! Adds an external archive loader to the engine.
-	virtual void addArchiveLoader(IArchiveLoader* loader) _IRR_OVERRIDE_;
+	virtual void addArchiveLoader(IArchiveLoader* loader) IRR_OVERRIDE;
 
 	//! Returns the total number of archive loaders added.
-	virtual u32 getArchiveLoaderCount() const _IRR_OVERRIDE_;
+	virtual u32 getArchiveLoaderCount() const IRR_OVERRIDE;
 
 	//! Gets the archive loader by index.
-	virtual IArchiveLoader* getArchiveLoader(u32 index) const _IRR_OVERRIDE_;
+	virtual IArchiveLoader* getArchiveLoader(u32 index) const IRR_OVERRIDE;
 
 	//! gets the file archive count
-	virtual u32 getFileArchiveCount() const _IRR_OVERRIDE_;
+	virtual u32 getFileArchiveCount() const IRR_OVERRIDE;
 
 	//! gets an archive
-	virtual IFileArchive* getFileArchive(u32 index) _IRR_OVERRIDE_;
+	virtual IFileArchive* getFileArchive(u32 index) IRR_OVERRIDE;
 
 	//! removes an archive from the file system.
-	virtual bool removeFileArchive(u32 index) _IRR_OVERRIDE_;
+	virtual bool removeFileArchive(u32 index) IRR_OVERRIDE;
 
 	//! removes an archive from the file system.
-	virtual bool removeFileArchive(const io::path& filename) _IRR_OVERRIDE_;
+	virtual bool removeFileArchive(const io::path& filename) IRR_OVERRIDE;
 
 	//! Removes an archive from the file system.
-	virtual bool removeFileArchive(const IFileArchive* archive) _IRR_OVERRIDE_;
+	virtual bool removeFileArchive(const IFileArchive* archive) IRR_OVERRIDE;
 
 	//! Returns the string of the current working directory
-	virtual const io::path& getWorkingDirectory() _IRR_OVERRIDE_;
+	virtual const io::path& getWorkingDirectory() IRR_OVERRIDE;
 
 	//! Changes the current Working Directory to the string given.
 	//! The string is operating system dependent. Under Windows it will look
 	//! like this: "drive:\directory\sudirectory\"
-	virtual bool changeWorkingDirectoryTo(const io::path& newDirectory) _IRR_OVERRIDE_;
+	virtual bool changeWorkingDirectoryTo(const io::path& newDirectory) IRR_OVERRIDE;
 
 	//! Converts a relative path to an absolute (unique) path, resolving symbolic links
-	virtual io::path getAbsolutePath(const io::path& filename) const _IRR_OVERRIDE_;
+	virtual io::path getAbsolutePath(const io::path& filename) const IRR_OVERRIDE;
 
 	//! Returns the directory a file is located in.
 	/** \param filename: The file to get the directory from */
-	virtual io::path getFileDir(const io::path& filename) const _IRR_OVERRIDE_;
+	virtual io::path getFileDir(const io::path& filename) const IRR_OVERRIDE;
 
 	//! Returns the base part of a filename, i.e. the name without the directory
 	//! part. If no directory is prefixed, the full name is returned.
 	/** \param filename: The file to get the basename from */
-	virtual io::path getFileBasename(const io::path& filename, bool keepExtension=true) const _IRR_OVERRIDE_;
+	virtual io::path getFileBasename(const io::path& filename, bool keepExtension=true) const IRR_OVERRIDE;
 
 	//! flatten a path and file name for example: "/you/me/../." becomes "/you"
-	virtual io::path& flattenFilename( io::path& directory, const io::path& root = "/" ) const _IRR_OVERRIDE_;
+	virtual io::path& flattenFilename( io::path& directory, const io::path& root = "/" ) const IRR_OVERRIDE;
 
 	//! Get the relative filename, relative to the given directory
-	virtual path getRelativeFilename(const path& filename, const path& directory) const _IRR_OVERRIDE_;
+	virtual path getRelativeFilename(const path& filename, const path& directory) const IRR_OVERRIDE;
 
-	virtual EFileSystemType setFileListSystem(EFileSystemType listType) _IRR_OVERRIDE_;
+	virtual EFileSystemType setFileListSystem(EFileSystemType listType) IRR_OVERRIDE;
 
 	//! Creates a list of files and directories in the current working directory
 	//! and returns it.
-	virtual IFileList* createFileList() _IRR_OVERRIDE_;
+	virtual IFileList* createFileList() IRR_OVERRIDE;
 
 	//! Creates an empty filelist
-	virtual IFileList* createEmptyFileList(const io::path& path, bool ignoreCase, bool ignorePaths) _IRR_OVERRIDE_;
+	virtual IFileList* createEmptyFileList(const io::path& path, bool ignoreCase, bool ignorePaths) IRR_OVERRIDE;
 
 	//! determines if a file exists and would be able to be opened.
-	virtual bool existFile(const io::path& filename) const _IRR_OVERRIDE_;
+	virtual bool existFile(const io::path& filename) const IRR_OVERRIDE;
 
 	//! Creates a XML Reader from a file.
-	virtual IXMLReader* createXMLReader(const io::path& filename) _IRR_OVERRIDE_;
+	virtual IXMLReader* createXMLReader(const io::path& filename) IRR_OVERRIDE;
 
 	//! Creates a XML Reader from a file.
-	virtual IXMLReader* createXMLReader(IReadFile* file) _IRR_OVERRIDE_;
+	virtual IXMLReader* createXMLReader(IReadFile* file) IRR_OVERRIDE;
 
 	//! Creates a XML Reader from a file.
-	virtual IXMLReaderUTF8* createXMLReaderUTF8(const io::path& filename) _IRR_OVERRIDE_;
+	virtual IXMLReaderUTF8* createXMLReaderUTF8(const io::path& filename) IRR_OVERRIDE;
 
 	//! Creates a XML Reader from a file.
-	virtual IXMLReaderUTF8* createXMLReaderUTF8(IReadFile* file) _IRR_OVERRIDE_;
+	virtual IXMLReaderUTF8* createXMLReaderUTF8(IReadFile* file) IRR_OVERRIDE;
 
 	//! Creates a XML Writer from a file.
-	virtual IXMLWriter* createXMLWriter(const io::path& filename) _IRR_OVERRIDE_;
+	virtual IXMLWriter* createXMLWriter(const io::path& filename) IRR_OVERRIDE;
 
 	//! Creates a XML Writer from a file.
-	virtual IXMLWriter* createXMLWriter(IWriteFile* file) _IRR_OVERRIDE_;
+	virtual IXMLWriter* createXMLWriter(IWriteFile* file) IRR_OVERRIDE;
 
 	//! Creates a XML Writer from a file which will write ASCII/UTF-8 characters (char*).
-	virtual IXMLWriterUTF8* createXMLWriterUTF8(const path& filename) _IRR_OVERRIDE_;
+	virtual IXMLWriterUTF8* createXMLWriterUTF8(const path& filename) IRR_OVERRIDE;
 
 	//! Creates a XML Writer from a file which will write ASCII/UTF-8 characters (char*).
-	virtual IXMLWriterUTF8* createXMLWriterUTF8(IWriteFile* file) _IRR_OVERRIDE_;
+	virtual IXMLWriterUTF8* createXMLWriterUTF8(IWriteFile* file) IRR_OVERRIDE;
 
 	//! Creates a new empty collection of attributes, usable for serialization and more.
-	virtual IAttributes* createEmptyAttributes(video::IVideoDriver* driver) _IRR_OVERRIDE_;
+	virtual IAttributes* createEmptyAttributes(video::IVideoDriver* driver) IRR_OVERRIDE;
 
 private:
 
@@ -176,4 +176,3 @@ private:
 } // end namespace io
 
 #endif
-

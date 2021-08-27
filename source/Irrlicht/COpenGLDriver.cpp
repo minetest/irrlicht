@@ -866,7 +866,7 @@ void COpenGLDriver::drawVertexPrimitiveList(const void* vertices, u32 vertexCoun
 		else
 		{
 			// avoid passing broken pointer to OpenGL
-			_IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
+			IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
 			glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
 		}
 	}
@@ -1193,7 +1193,7 @@ void COpenGLDriver::draw2DVertexPrimitiveList(const void* vertices, u32 vertexCo
 		else
 		{
 			// avoid passing broken pointer to OpenGL
-			_IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
+			IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
 			glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
 		}
 	}
@@ -1351,7 +1351,7 @@ void COpenGLDriver::draw2DImage(const video::ITexture* texture, const core::posi
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(Quad2DVertices))[0].Color);
 	else
 	{
-		_IRR_DEBUG_BREAK_IF(ColorBuffer.size() == 0);
+		IRR_DEBUG_BREAK_IF(ColorBuffer.size() == 0);
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
 	}
 
@@ -1435,7 +1435,7 @@ void COpenGLDriver::draw2DImage(const video::ITexture* texture, const core::rect
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(Quad2DVertices))[0].Color);
 	else
 	{
-		_IRR_DEBUG_BREAK_IF(ColorBuffer.size() == 0);
+		IRR_DEBUG_BREAK_IF(ColorBuffer.size() == 0);
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
 	}
 
@@ -1599,7 +1599,7 @@ void COpenGLDriver::draw2DImageBatch(const video::ITexture* texture,
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(Quad2DVertices))[0].Color);
 	else
 	{
-		_IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
+		IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
 	}
 
@@ -1770,7 +1770,7 @@ void COpenGLDriver::draw2DImageBatch(const video::ITexture* texture,
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(Quad2DVertices))[0].Color);
 	else
 	{
-		_IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
+		IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
 	}
 
@@ -1875,7 +1875,7 @@ void COpenGLDriver::draw2DRectangle(const core::rect<s32>& position,
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(Quad2DVertices))[0].Color);
 	else
 	{
-		_IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
+		IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
 	}
 
@@ -1918,7 +1918,7 @@ void COpenGLDriver::draw2DLine(const core::position2d<s32>& start,
 			glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(Quad2DVertices))[0].Color);
 		else
 		{
-			_IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
+			IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
 			glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
 		}
 
@@ -1956,7 +1956,7 @@ void COpenGLDriver::drawPixel(u32 x, u32 y, const SColor &color)
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(Quad2DVertices))[0].Color);
 	else
 	{
-		_IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
+		IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
 	}
 
@@ -2083,7 +2083,7 @@ bool COpenGLDriver::testGLError(int code)
 		os::Printer::log("GL_INVALID_FRAMEBUFFER_OPERATION", core::stringc(code).c_str(), ELL_ERROR); break;
 #endif
 	};
-//	_IRR_DEBUG_BREAK_IF(true);
+//	IRR_DEBUG_BREAK_IF(true);
 	return true;
 #else
 	return false;
@@ -3450,7 +3450,7 @@ void COpenGLDriver::drawStencilShadow(bool clearStencilBuffer, video::SColor lef
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(Quad2DVertices))[0].Color);
 	else
 	{
-		_IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
+		IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
 	}
 
@@ -3561,7 +3561,7 @@ void COpenGLDriver::draw3DBox( const core::aabbox3d<f32>& box, SColor color )
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(v))[0].Color);
 	else
 	{
-		_IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
+		IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
 	}
 
@@ -3597,7 +3597,7 @@ void COpenGLDriver::draw3DLine(const core::vector3df& start,
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(Quad2DVertices))[0].Color);
 	else
 	{
-		_IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
+		IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
 		glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
 	}
 

@@ -838,13 +838,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\EDeviceTypes.h" />  
     <ClInclude Include="..\..\include\EDriverFeatures.h" />
+    <ClInclude Include="..\..\include\EHardwareBufferFlags.h" />	
     <ClInclude Include="..\..\include\EMaterialFlags.h" />
+    <ClInclude Include="..\..\include\EMaterialTypes.h" />
+    <ClInclude Include="..\..\include\EReadFileType.h" />
+    <ClInclude Include="..\..\include\EShaderTypes.h" />
+    <ClInclude Include="..\..\include\fast_atof.h" />	
     <ClInclude Include="..\..\include\IAnimatedMeshMD3.h" />
+    <ClInclude Include="..\..\include\IBillboardTextSceneNode.h" />	
+    <ClInclude Include="..\..\include\IBoneSceneNode.h" />
+    <ClInclude Include="..\..\include\IColladaMeshWriter.h" />	
+    <ClInclude Include="..\..\include\IDynamicMeshBuffer.h" />
     <ClInclude Include="..\..\include\IEventReceiver.h" />
+    <ClInclude Include="..\..\include\IFileArchive.h" />	
+    <ClInclude Include="..\..\include\IGUIFontBitmap.h" />
+    <ClInclude Include="..\..\include\IGUITable.h" />
+    <ClInclude Include="..\..\include\IImageWriter.h" />
+    <ClInclude Include="..\..\include\IIndexBuffer.h" />
+    <ClInclude Include="..\..\include\ILightManager.h" />	
     <ClInclude Include="..\..\include\IOctreeSceneNode.h" />
     <ClInclude Include="..\..\include\IProfiler.h" />
     <ClInclude Include="..\..\include\ILogger.h" />
+    <ClInclude Include="..\..\include\IMemoryReadFile.h" />	
     <ClInclude Include="..\..\include\IOSOperator.h" />
     <ClInclude Include="..\..\include\IRandomizer.h" />
     <ClInclude Include="..\..\include\IReferenceCounted.h" />
@@ -854,7 +871,9 @@
     <ClInclude Include="..\..\include\leakHunter.h" />
     <ClInclude Include="..\..\include\IrrlichtDevice.h" />
     <ClInclude Include="..\..\include\irrTypes.h" />
+    <ClInclude Include="..\..\include\ISceneUserDataSerializer.h" />	
     <ClInclude Include="..\..\include\ITimer.h" />
+    <ClInclude Include="..\..\include\IVertexBuffer.h" />	
     <ClInclude Include="..\..\include\Keycodes.h" />
     <ClInclude Include="..\..\include\SIrrCreationParameters.h" />
     <ClInclude Include="..\..\include\SKeyMap.h" />
@@ -894,6 +913,9 @@
     <ClInclude Include="..\..\include\quaternion.h" />
     <ClInclude Include="..\..\include\rect.h" />
     <ClInclude Include="..\..\include\SOverrideMaterial.h" />
+    <ClInclude Include="..\..\include\SSharedMeshBuffer.h" />
+    <ClInclude Include="..\..\include\SVertexIndex.h" />
+    <ClInclude Include="..\..\include\SVertexManipulator.h" />	
     <ClInclude Include="..\..\include\triangle3d.h" />
     <ClInclude Include="..\..\include\vector2d.h" />
     <ClInclude Include="..\..\include\vector3d.h" />
@@ -1004,7 +1026,15 @@
     <ClInclude Include="..\..\include\IGUIToolbar.h" />
     <ClInclude Include="..\..\include\IGUITreeView.h" />
     <ClInclude Include="..\..\include\IGUIWindow.h" />
+    <ClInclude Include="burning_shader_color_fraq.h" />
+    <ClInclude Include="burning_shader_compile_fragment_default.h" />
+    <ClInclude Include="burning_shader_compile_fragment_end.h" />
+    <ClInclude Include="burning_shader_compile_fragment_start.h" />
+    <ClInclude Include="burning_shader_compile_start.h" />
+    <ClInclude Include="burning_shader_compile_triangle.h" />
+    <ClInclude Include="burning_shader_compile_verify.h" />	
     <ClInclude Include="CB3DMeshWriter.h" />
+    <ClInclude Include="CBlit.h" />	
     <ClInclude Include="CD3D9RenderTarget.h" />
     <ClInclude Include="CDefaultSceneNodeAnimatorFactory.h" />
     <ClInclude Include="CDefaultSceneNodeFactory.h" />
@@ -1040,6 +1070,7 @@
     <ClInclude Include="COpenGLSLMaterialRenderer.h" />
     <ClInclude Include="CSceneManager.h" />
     <ClInclude Include="CWGLManager.h" />
+	<ClInclude Include="ISceneNodeAnimatorFinishing.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="CSMFMeshFileLoader.h" />
     <ClInclude Include="C3DSMeshFileLoader.h" />
@@ -1270,6 +1301,7 @@
     <None Include="..\..\readme.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="burning_shader_color.cpp" />  
     <ClCompile Include="CB3DMeshWriter.cpp" />
     <ClCompile Include="CD3D9RenderTarget.cpp" />
     <ClCompile Include="CDefaultSceneNodeAnimatorFactory.cpp" />

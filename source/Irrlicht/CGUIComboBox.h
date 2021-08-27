@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_GUI_COMBO_BOX_H_INCLUDED__
-#define __C_GUI_COMBO_BOX_H_INCLUDED__
+#ifndef IRR_C_GUI_COMBO_BOX_H_INCLUDED
+#define IRR_C_GUI_COMBO_BOX_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #ifdef _IRR_COMPILE_WITH_GUI_
@@ -30,55 +30,55 @@ namespace gui
 			s32 id, core::rect<s32> rectangle);
 
 		//! Returns amount of items in box
-		virtual u32 getItemCount() const _IRR_OVERRIDE_;
+		virtual u32 getItemCount() const IRR_OVERRIDE;
 
 		//! returns string of an item. the idx may be a value from 0 to itemCount-1
-		virtual const wchar_t* getItem(u32 idx) const _IRR_OVERRIDE_;
+		virtual const wchar_t* getItem(u32 idx) const IRR_OVERRIDE;
 
 		//! Returns item data of an item. the idx may be a value from 0 to itemCount-1
-		virtual u32 getItemData(u32 idx) const _IRR_OVERRIDE_;
+		virtual u32 getItemData(u32 idx) const IRR_OVERRIDE;
 
 		//! Returns index based on item data
-		virtual s32 getIndexForItemData( u32 data ) const _IRR_OVERRIDE_;
+		virtual s32 getIndexForItemData( u32 data ) const IRR_OVERRIDE;
 
 		//! adds an item and returns the index of it
-		virtual u32 addItem(const wchar_t* text, u32 data) _IRR_OVERRIDE_;
+		virtual u32 addItem(const wchar_t* text, u32 data) IRR_OVERRIDE;
 
 		//! Removes an item from the combo box.
-		virtual void removeItem(u32 id) _IRR_OVERRIDE_;
+		virtual void removeItem(u32 id) IRR_OVERRIDE;
 
 		//! deletes all items in the combo box
-		virtual void clear() _IRR_OVERRIDE_;
+		virtual void clear() IRR_OVERRIDE;
 
 		//! returns the text of the currently selected item
-		virtual const wchar_t* getText() const _IRR_OVERRIDE_;
+		virtual const wchar_t* getText() const IRR_OVERRIDE;
 
 		//! returns id of selected item. returns -1 if no item is selected.
-		virtual s32 getSelected() const _IRR_OVERRIDE_;
+		virtual s32 getSelected() const IRR_OVERRIDE;
 
 		//! sets the selected item. Set this to -1 if no item should be selected
-		virtual void setSelected(s32 idx) _IRR_OVERRIDE_;
+		virtual void setSelected(s32 idx) IRR_OVERRIDE;
 
 		//! sets the text alignment of the text part
-		virtual void setTextAlignment(EGUI_ALIGNMENT horizontal, EGUI_ALIGNMENT vertical) _IRR_OVERRIDE_;
+		virtual void setTextAlignment(EGUI_ALIGNMENT horizontal, EGUI_ALIGNMENT vertical) IRR_OVERRIDE;
 
 		//! Set the maximal number of rows for the selection listbox
-		virtual void setMaxSelectionRows(u32 max) _IRR_OVERRIDE_;
+		virtual void setMaxSelectionRows(u32 max) IRR_OVERRIDE;
 
 		//! Get the maximal number of rows for the selection listbox
-		virtual u32 getMaxSelectionRows() const _IRR_OVERRIDE_;
+		virtual u32 getMaxSelectionRows() const IRR_OVERRIDE;
 
 		//! called if an event happened.
-		virtual bool OnEvent(const SEvent& event) _IRR_OVERRIDE_;
+		virtual bool OnEvent(const SEvent& event) IRR_OVERRIDE;
 
 		//! draws the element and its children
-		virtual void draw() _IRR_OVERRIDE_;
+		virtual void draw() IRR_OVERRIDE;
 
 		//! Writes attributes of the element.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
+		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const IRR_OVERRIDE;
 
 		//! Reads attributes of the element
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
+		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) IRR_OVERRIDE;
 
 	private:
 
@@ -115,5 +115,4 @@ namespace gui
 
 #endif // _IRR_COMPILE_WITH_GUI_
 
-#endif // __C_GUI_COMBO_BOX_H_INCLUDED__
-
+#endif // IRR_C_GUI_COMBO_BOX_H_INCLUDED

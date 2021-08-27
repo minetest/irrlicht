@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_C_COLLADA_MESH_WRITER_H_INCLUDED__
-#define __IRR_C_COLLADA_MESH_WRITER_H_INCLUDED__
+#ifndef IRR_C_COLLADA_MESH_WRITER_H_INCLUDED
+#define IRR_C_COLLADA_MESH_WRITER_H_INCLUDED
 
 #include "IColladaMeshWriter.h"
 #include "S3DVertex.h"
@@ -26,46 +26,46 @@ namespace scene
 	{
 	public:
 		//! Which lighting model should be used in the technique (FX) section when exporting effects (materials)
-		virtual irr::scene::E_COLLADA_TECHNIQUE_FX getTechniqueFx(const irr::video::SMaterial& material) const _IRR_OVERRIDE_;
+		virtual irr::scene::E_COLLADA_TECHNIQUE_FX getTechniqueFx(const irr::video::SMaterial& material) const IRR_OVERRIDE;
 
 		//! Which texture index should be used when writing the texture of the given sampler color.
-		virtual irr::s32 getTextureIdx(const irr::video::SMaterial & material, irr::scene::E_COLLADA_COLOR_SAMPLER cs) const _IRR_OVERRIDE_;
+		virtual irr::s32 getTextureIdx(const irr::video::SMaterial & material, irr::scene::E_COLLADA_COLOR_SAMPLER cs) const IRR_OVERRIDE;
 
 		//! Return which color from Irrlicht should be used for the color requested by collada
-		virtual irr::scene::E_COLLADA_IRR_COLOR getColorMapping(const irr::video::SMaterial & material, irr::scene::E_COLLADA_COLOR_SAMPLER cs) const _IRR_OVERRIDE_;
+		virtual irr::scene::E_COLLADA_IRR_COLOR getColorMapping(const irr::video::SMaterial & material, irr::scene::E_COLLADA_COLOR_SAMPLER cs) const IRR_OVERRIDE;
 
 		//! Return custom colors for certain color types requested by collada.
-		virtual irr::video::SColor getCustomColor(const irr::video::SMaterial & material, irr::scene::E_COLLADA_COLOR_SAMPLER cs) const _IRR_OVERRIDE_;
+		virtual irr::video::SColor getCustomColor(const irr::video::SMaterial & material, irr::scene::E_COLLADA_COLOR_SAMPLER cs) const IRR_OVERRIDE;
 
 		//! Return the settings for transparence
-		virtual irr::scene::E_COLLADA_TRANSPARENT_FX getTransparentFx(const irr::video::SMaterial& material) const _IRR_OVERRIDE_;
+		virtual irr::scene::E_COLLADA_TRANSPARENT_FX getTransparentFx(const irr::video::SMaterial& material) const IRR_OVERRIDE;
 
 		//! Transparency value for that material.
-		virtual irr::f32 getTransparency(const irr::video::SMaterial& material) const _IRR_OVERRIDE_;
+		virtual irr::f32 getTransparency(const irr::video::SMaterial& material) const IRR_OVERRIDE;
 
 		//! Reflectivity value for that material
-		virtual irr::f32 getReflectivity(const irr::video::SMaterial& material) const _IRR_OVERRIDE_;
+		virtual irr::f32 getReflectivity(const irr::video::SMaterial& material) const IRR_OVERRIDE;
 
 		//! Return index of refraction for that material
-		virtual irr::f32 getIndexOfRefraction(const irr::video::SMaterial& material) const _IRR_OVERRIDE_;
+		virtual irr::f32 getIndexOfRefraction(const irr::video::SMaterial& material) const IRR_OVERRIDE;
 
 		//! Should node be used in scene export? By default all visible nodes are exported.
-		virtual bool isExportable(const irr::scene::ISceneNode * node) const _IRR_OVERRIDE_;
+		virtual bool isExportable(const irr::scene::ISceneNode * node) const IRR_OVERRIDE;
 
 		//! Return the mesh for the given nod. If it has no mesh or shouldn't export it's mesh return 0.
-		virtual irr::scene::IMesh* getMesh(irr::scene::ISceneNode * node) _IRR_OVERRIDE_;
+		virtual irr::scene::IMesh* getMesh(irr::scene::ISceneNode * node) IRR_OVERRIDE;
 
 		//! Return if the node has it's own material overwriting the mesh-materials
-		virtual bool useNodeMaterial(const scene::ISceneNode* node) const _IRR_OVERRIDE_;
+		virtual bool useNodeMaterial(const scene::ISceneNode* node) const IRR_OVERRIDE;
 	};
 
 	class CColladaMeshWriterNames  : public virtual IColladaMeshWriterNames
 	{
 	public:
 		CColladaMeshWriterNames(IColladaMeshWriter * writer);
-		virtual irr::core::stringc nameForMesh(const scene::IMesh* mesh, int instance) _IRR_OVERRIDE_;
-		virtual irr::core::stringc nameForNode(const scene::ISceneNode* node) _IRR_OVERRIDE_;
-		virtual irr::core::stringc nameForMaterial(const video::SMaterial & material, int materialId, const scene::IMesh* mesh, const scene::ISceneNode* node) _IRR_OVERRIDE_;
+		virtual irr::core::stringc nameForMesh(const scene::IMesh* mesh, int instance) IRR_OVERRIDE;
+		virtual irr::core::stringc nameForNode(const scene::ISceneNode* node) IRR_OVERRIDE;
+		virtual irr::core::stringc nameForMaterial(const video::SMaterial & material, int materialId, const scene::IMesh* mesh, const scene::ISceneNode* node) IRR_OVERRIDE;
 	protected:
 		irr::core::stringc nameForPtr(const void* ptr) const;
 	private:
@@ -85,19 +85,19 @@ public:
 	virtual ~CColladaMeshWriter();
 
 	//! Returns the type of the mesh writer
-	virtual EMESH_WRITER_TYPE getType() const _IRR_OVERRIDE_;
+	virtual EMESH_WRITER_TYPE getType() const IRR_OVERRIDE;
 
 	//! writes a scene starting with the given node
-	virtual bool writeScene(io::IWriteFile* file, scene::ISceneNode* root, int writeRoot) _IRR_OVERRIDE_;
+	virtual bool writeScene(io::IWriteFile* file, scene::ISceneNode* root, int writeRoot) IRR_OVERRIDE;
 
 	//! writes a mesh
-	virtual bool writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 flags=EMWF_NONE) _IRR_OVERRIDE_;
+	virtual bool writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 flags=EMWF_NONE) IRR_OVERRIDE;
 
 	// Restrict the characters of oldString a set of allowed characters in xs:NCName and add the prefix.
-	virtual irr::core::stringc toNCName(const irr::core::stringc& oldString, const irr::core::stringc& prefix=irr::core::stringc("_NC_")) const _IRR_OVERRIDE_;
+	virtual irr::core::stringc toNCName(const irr::core::stringc& oldString, const irr::core::stringc& prefix=irr::core::stringc("_NC_")) const IRR_OVERRIDE;
 
 	//! After export you can find out which name had been used for writing the geometry for this node.
-	virtual const irr::core::stringc* findGeometryNameForNode(ISceneNode* node) _IRR_OVERRIDE_;
+	virtual const irr::core::stringc* findGeometryNameForNode(ISceneNode* node) IRR_OVERRIDE;
 
 protected:
 

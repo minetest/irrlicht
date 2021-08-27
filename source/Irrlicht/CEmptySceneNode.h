@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_EMPTY_SCENE_NODE_H_INCLUDED__
-#define __C_EMPTY_SCENE_NODE_H_INCLUDED__
+#ifndef IRR_C_EMPTY_SCENE_NODE_H_INCLUDED
+#define IRR_C_EMPTY_SCENE_NODE_H_INCLUDED
 
 #include "ISceneNode.h"
 
@@ -20,19 +20,19 @@ namespace scene
 		CEmptySceneNode(ISceneNode* parent, ISceneManager* mgr, s32 id);
 
 		//! returns the axis aligned bounding box of this node
-		virtual const core::aabbox3d<f32>& getBoundingBox() const _IRR_OVERRIDE_;
+		virtual const core::aabbox3d<f32>& getBoundingBox() const IRR_OVERRIDE;
 
 		//! This method is called just before the rendering process of the whole scene.
-		virtual void OnRegisterSceneNode() _IRR_OVERRIDE_;
+		virtual void OnRegisterSceneNode() IRR_OVERRIDE;
 
 		//! does nothing.
-		virtual void render() _IRR_OVERRIDE_;
+		virtual void render() IRR_OVERRIDE;
 
 		//! Returns type of the scene node
-		virtual ESCENE_NODE_TYPE getType() const _IRR_OVERRIDE_ { return ESNT_EMPTY; }
+		virtual ESCENE_NODE_TYPE getType() const IRR_OVERRIDE { return ESNT_EMPTY; }
 
 		//! Creates a clone of this scene node and its children.
-		virtual ISceneNode* clone(ISceneNode* newParent=0, ISceneManager* newManager=0) _IRR_OVERRIDE_;
+		virtual ISceneNode* clone(ISceneNode* newParent=0, ISceneManager* newManager=0) IRR_OVERRIDE;
 
 	private:
 
@@ -43,4 +43,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

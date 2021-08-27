@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_OPENGL_SHADER_MATERIAL_RENDERER_H_INCLUDED__
-#define __C_OPENGL_SHADER_MATERIAL_RENDERER_H_INCLUDED__
+#ifndef IRR_C_OPENGL_SHADER_MATERIAL_RENDERER_H_INCLUDED
+#define IRR_C_OPENGL_SHADER_MATERIAL_RENDERER_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 
@@ -35,17 +35,17 @@ public:
 	virtual ~COpenGLShaderMaterialRenderer();
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_;
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE;
 
-	virtual bool OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype) _IRR_OVERRIDE_;
+	virtual bool OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype) IRR_OVERRIDE;
 
-	virtual void OnUnsetMaterial() _IRR_OVERRIDE_;
+	virtual void OnUnsetMaterial() IRR_OVERRIDE;
 
 	//! Returns if the material is transparent.
-	virtual bool isTransparent() const _IRR_OVERRIDE_;
+	virtual bool isTransparent() const IRR_OVERRIDE;
 
 	//! Access the callback provided by the users when creating shader materials
-	virtual IShaderConstantSetCallBack* getShaderConstantSetCallBack() const _IRR_OVERRIDE_
+	virtual IShaderConstantSetCallBack* getShaderConstantSetCallBack() const IRR_OVERRIDE
 	{ 
 		return CallBack;
 	}
@@ -94,4 +94,3 @@ protected:
 
 #endif
 #endif
-

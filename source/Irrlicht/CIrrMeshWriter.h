@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_IRR_MESH_WRITER_H_INCLUDED__
-#define __IRR_IRR_MESH_WRITER_H_INCLUDED__
+#ifndef IRR_IRR_MESH_WRITER_H_INCLUDED
+#define IRR_IRR_MESH_WRITER_H_INCLUDED
 
 #include "IMeshWriter.h"
 #include "S3DVertex.h"
@@ -30,10 +30,10 @@ namespace scene
 		virtual ~CIrrMeshWriter();
 
 		//! Returns the type of the mesh writer
-		virtual EMESH_WRITER_TYPE getType() const _IRR_OVERRIDE_;
+		virtual EMESH_WRITER_TYPE getType() const IRR_OVERRIDE;
 
 		//! writes a mesh
-		virtual bool writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 flags=EMWF_NONE) _IRR_OVERRIDE_;
+		virtual bool writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 flags=EMWF_NONE) IRR_OVERRIDE;
 
 	protected:
 
@@ -58,4 +58,3 @@ namespace scene
 } // end namespace
 
 #endif
-

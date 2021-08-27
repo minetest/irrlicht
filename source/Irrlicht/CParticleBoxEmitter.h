@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_PARTICLE_BOX_EMITTER_H_INCLUDED__
-#define __C_PARTICLE_BOX_EMITTER_H_INCLUDED__
+#ifndef IRR_C_PARTICLE_BOX_EMITTER_H_INCLUDED
+#define IRR_C_PARTICLE_BOX_EMITTER_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #ifdef _IRR_COMPILE_WITH_PARTICLES_
@@ -39,79 +39,79 @@ public:
 
 	//! Prepares an array with new particles to emitt into the system
 	//! and returns how much new particles there are.
-	virtual s32 emitt(u32 now, u32 timeSinceLastCall, SParticle*& outArray) _IRR_OVERRIDE_;
+	virtual s32 emitt(u32 now, u32 timeSinceLastCall, SParticle*& outArray) IRR_OVERRIDE;
 
 	//! Set direction the emitter emits particles.
-	virtual void setDirection( const core::vector3df& newDirection ) _IRR_OVERRIDE_ { Direction = newDirection; }
+	virtual void setDirection( const core::vector3df& newDirection ) IRR_OVERRIDE { Direction = newDirection; }
 
 	//! Set minimum number of particles emitted per second.
-	virtual void setMinParticlesPerSecond( u32 minPPS ) _IRR_OVERRIDE_ { MinParticlesPerSecond = minPPS; }
+	virtual void setMinParticlesPerSecond( u32 minPPS ) IRR_OVERRIDE { MinParticlesPerSecond = minPPS; }
 
 	//! Set maximum number of particles emitted per second.
-	virtual void setMaxParticlesPerSecond( u32 maxPPS ) _IRR_OVERRIDE_ { MaxParticlesPerSecond = maxPPS; }
+	virtual void setMaxParticlesPerSecond( u32 maxPPS ) IRR_OVERRIDE { MaxParticlesPerSecond = maxPPS; }
 
 	//! Set minimum start color.
-	virtual void setMinStartColor( const video::SColor& color ) _IRR_OVERRIDE_ { MinStartColor = color; }
+	virtual void setMinStartColor( const video::SColor& color ) IRR_OVERRIDE { MinStartColor = color; }
 
 	//! Set maximum start color.
-	virtual void setMaxStartColor( const video::SColor& color ) _IRR_OVERRIDE_ { MaxStartColor = color; }
+	virtual void setMaxStartColor( const video::SColor& color ) IRR_OVERRIDE { MaxStartColor = color; }
 
 	//! Set the maximum starting size for particles
-	virtual void setMaxStartSize( const core::dimension2df& size ) _IRR_OVERRIDE_ { MaxStartSize = size; }
+	virtual void setMaxStartSize( const core::dimension2df& size ) IRR_OVERRIDE { MaxStartSize = size; }
 
 	//! Set the minimum starting size for particles
-	virtual void setMinStartSize( const core::dimension2df& size ) _IRR_OVERRIDE_ { MinStartSize = size; }
+	virtual void setMinStartSize( const core::dimension2df& size ) IRR_OVERRIDE { MinStartSize = size; }
 
 	//! Set the minimum particle life-time in milliseconds
-	virtual void setMinLifeTime( u32 lifeTimeMin ) _IRR_OVERRIDE_ { MinLifeTime = lifeTimeMin; }
+	virtual void setMinLifeTime( u32 lifeTimeMin ) IRR_OVERRIDE { MinLifeTime = lifeTimeMin; }
 
 	//! Set the maximum particle life-time in milliseconds
-	virtual void setMaxLifeTime( u32 lifeTimeMax ) _IRR_OVERRIDE_ { MaxLifeTime = lifeTimeMax; }
+	virtual void setMaxLifeTime( u32 lifeTimeMax ) IRR_OVERRIDE { MaxLifeTime = lifeTimeMax; }
 
 	//!	Maximal random derivation from the direction
-	virtual void setMaxAngleDegrees( s32 maxAngleDegrees ) _IRR_OVERRIDE_ { MaxAngleDegrees = maxAngleDegrees; }
+	virtual void setMaxAngleDegrees( s32 maxAngleDegrees ) IRR_OVERRIDE { MaxAngleDegrees = maxAngleDegrees; }
 
 	//! Set box from which the particles are emitted.
-	virtual void setBox( const core::aabbox3df& box ) _IRR_OVERRIDE_ { Box = box; }
+	virtual void setBox( const core::aabbox3df& box ) IRR_OVERRIDE { Box = box; }
 
 	//! Gets direction the emitter emits particles.
-	virtual const core::vector3df& getDirection() const _IRR_OVERRIDE_ { return Direction; }
+	virtual const core::vector3df& getDirection() const IRR_OVERRIDE { return Direction; }
 
 	//! Gets minimum number of particles emitted per second.
-	virtual u32 getMinParticlesPerSecond() const _IRR_OVERRIDE_ { return MinParticlesPerSecond; }
+	virtual u32 getMinParticlesPerSecond() const IRR_OVERRIDE { return MinParticlesPerSecond; }
 
 	//! Gets maximum number of particles emitted per second.
-	virtual u32 getMaxParticlesPerSecond() const _IRR_OVERRIDE_ { return MaxParticlesPerSecond; }
+	virtual u32 getMaxParticlesPerSecond() const IRR_OVERRIDE { return MaxParticlesPerSecond; }
 
 	//! Gets minimum start color.
-	virtual const video::SColor& getMinStartColor() const _IRR_OVERRIDE_ { return MinStartColor; }
+	virtual const video::SColor& getMinStartColor() const IRR_OVERRIDE { return MinStartColor; }
 
 	//! Gets maximum start color.
-	virtual const video::SColor& getMaxStartColor() const _IRR_OVERRIDE_ { return MaxStartColor; }
+	virtual const video::SColor& getMaxStartColor() const IRR_OVERRIDE { return MaxStartColor; }
 
 	//! Gets the maximum starting size for particles
-	virtual const core::dimension2df& getMaxStartSize() const _IRR_OVERRIDE_ { return MaxStartSize; }
+	virtual const core::dimension2df& getMaxStartSize() const IRR_OVERRIDE { return MaxStartSize; }
 
 	//! Gets the minimum starting size for particles
-	virtual const core::dimension2df& getMinStartSize() const _IRR_OVERRIDE_ { return MinStartSize; }
+	virtual const core::dimension2df& getMinStartSize() const IRR_OVERRIDE { return MinStartSize; }
 
 	//! Get the minimum particle life-time in milliseconds
-	virtual u32 getMinLifeTime() const _IRR_OVERRIDE_ { return MinLifeTime; }
+	virtual u32 getMinLifeTime() const IRR_OVERRIDE { return MinLifeTime; }
 
 	//! Get the maximum particle life-time in milliseconds
-	virtual u32 getMaxLifeTime() const _IRR_OVERRIDE_ { return MaxLifeTime; }
+	virtual u32 getMaxLifeTime() const IRR_OVERRIDE { return MaxLifeTime; }
 
 	//!	Maximal random derivation from the direction
-	virtual s32 getMaxAngleDegrees() const _IRR_OVERRIDE_ { return MaxAngleDegrees; }
+	virtual s32 getMaxAngleDegrees() const IRR_OVERRIDE { return MaxAngleDegrees; }
 
 	//! Get box from which the particles are emitted.
-	virtual const core::aabbox3df& getBox() const _IRR_OVERRIDE_ { return Box; }
+	virtual const core::aabbox3df& getBox() const IRR_OVERRIDE { return Box; }
 
 	//! Writes attributes of the object.
-	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
+	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const IRR_OVERRIDE;
 
 	//! Reads attributes of the object.
-	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
+	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) IRR_OVERRIDE;
 
 private:
 
@@ -133,4 +133,3 @@ private:
 #endif // _IRR_COMPILE_WITH_PARTICLES_
 
 #endif
-

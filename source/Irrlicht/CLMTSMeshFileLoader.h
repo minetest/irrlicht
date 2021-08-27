@@ -18,8 +18,8 @@ Version 1.5 - 15 March 2005
 
 */
 
-#if !defined(__C_LMTS_MESH_FILE_LOADER_H_INCLUDED__)
-#define __C_LMTS_MESH_FILE_LOADER_H_INCLUDED__
+#ifndef IRR_C_LMTS_MESH_FILE_LOADER_H_INCLUDED
+#define IRR_C_LMTS_MESH_FILE_LOADER_H_INCLUDED
 
 #include "IMeshLoader.h"
 #include "SMesh.h"
@@ -40,9 +40,9 @@ public:
 
 	virtual ~CLMTSMeshFileLoader();
 
-	virtual bool isALoadableFileExtension(const io::path& filename) const _IRR_OVERRIDE_;
+	virtual bool isALoadableFileExtension(const io::path& filename) const IRR_OVERRIDE;
 
-	virtual IAnimatedMesh* createMesh(io::IReadFile* file) _IRR_OVERRIDE_;
+	virtual IAnimatedMesh* createMesh(io::IReadFile* file) IRR_OVERRIDE;
 
 private:
 	void constructMesh(SMesh* mesh);
@@ -106,4 +106,4 @@ private:
 } // end namespace scene
 } // end namespace irr
 
-#endif // !defined(__C_LMTS_MESH_FILE_LOADER_H_INCLUDED__)
+#endif // IRR_C_LMTS_MESH_FILE_LOADER_H_INCLUDED

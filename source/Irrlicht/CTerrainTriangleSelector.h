@@ -4,10 +4,10 @@
 
 // The code for the TerrainTriangleSelector is based on the GeoMipMapSelector
 // developed by Spintz. He made it available for Irrlicht and allowed it to be
-// distributed under this licence. I only modified some parts. A lot of thanks go to him.
+// distributed under this license. I only modified some parts. A lot of thanks go to him.
 
-#ifndef __C_TERRAIN_TRIANGLE_SELECTOR_H__
-#define __C_TERRAIN_TRIANGLE_SELECTOR_H__
+#ifndef IRR_C_TERRAIN_TRIANGLE_SELECTOR_H
+#define IRR_C_TERRAIN_TRIANGLE_SELECTOR_H
 
 #include "ITriangleSelector.h"
 #include "irrArray.h"
@@ -41,33 +41,33 @@ public:
 	//! Gets all triangles.
 	void getTriangles(core::triangle3df* triangles, s32 arraySize, s32& outTriangleCount,
 		const core::matrix4* transform, bool useNodeTransform, 
-		irr::core::array<SCollisionTriangleRange>* outTriangleInfo) const _IRR_OVERRIDE_;
+		irr::core::array<SCollisionTriangleRange>* outTriangleInfo) const IRR_OVERRIDE;
 
 	//! Gets all triangles which lie within a specific bounding box.
 	void getTriangles(core::triangle3df* triangles, s32 arraySize, s32& outTriangleCount,
 		const core::aabbox3d<f32>& box, const core::matrix4* transform, bool useNodeTransform, 
-		irr::core::array<SCollisionTriangleRange>* outTriangleInfo) const _IRR_OVERRIDE_;
+		irr::core::array<SCollisionTriangleRange>* outTriangleInfo) const IRR_OVERRIDE;
 
 	//! Gets all triangles which have or may have contact with a 3d line.
 	virtual void getTriangles(core::triangle3df* triangles, s32 arraySize,
 		s32& outTriangleCount, const core::line3d<f32>& line,
 		const core::matrix4* transform, bool useNodeTransform, 
-		irr::core::array<SCollisionTriangleRange>* outTriangleInfo) const _IRR_OVERRIDE_;
+		irr::core::array<SCollisionTriangleRange>* outTriangleInfo) const IRR_OVERRIDE;
 
 	//! Returns amount of all available triangles in this selector
-	virtual s32 getTriangleCount() const _IRR_OVERRIDE_;
+	virtual s32 getTriangleCount() const IRR_OVERRIDE;
 
 	//! Return the scene node associated with a given triangle.
-	virtual ISceneNode* getSceneNodeForTriangle(u32 triangleIndex) const _IRR_OVERRIDE_;
+	virtual ISceneNode* getSceneNodeForTriangle(u32 triangleIndex) const IRR_OVERRIDE;
 
 	// Get the number of TriangleSelectors that are part of this one
-	virtual u32 getSelectorCount() const _IRR_OVERRIDE_;
+	virtual u32 getSelectorCount() const IRR_OVERRIDE;
 
 	// Get the TriangleSelector based on index based on getSelectorCount
-	virtual ITriangleSelector* getSelector(u32 index) _IRR_OVERRIDE_;
+	virtual ITriangleSelector* getSelector(u32 index) IRR_OVERRIDE;
 
 	// Get the TriangleSelector based on index based on getSelectorCount
-	virtual const ITriangleSelector* getSelector(u32 index) const _IRR_OVERRIDE_;
+	virtual const ITriangleSelector* getSelector(u32 index) const IRR_OVERRIDE;
 
 private:
 
@@ -99,5 +99,4 @@ private:
 } // end namespace scene
 } // end namespace irr
 
-
-#endif // __C_TERRAIN_TRIANGLE_SELECTOR_H__
+#endif // IRR_C_TERRAIN_TRIANGLE_SELECTOR_H

@@ -8,8 +8,8 @@
  Nikolaus Gebhardt for the Irrlicht 3D engine
 */
 
-#ifndef __C_IMAGE_LOADER_WAL_H_INCLUDED__
-#define __C_IMAGE_LOADER_WAL_H_INCLUDED__
+#ifndef IRR_C_IMAGE_LOADER_WAL_H_INCLUDED
+#define IRR_C_IMAGE_LOADER_WAL_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #include "IImageLoader.h"
@@ -37,9 +37,9 @@ namespace video
 class CImageLoaderLMP : public irr::video::IImageLoader
 {
 public:
-	virtual bool isALoadableFileExtension(const io::path& filename) const _IRR_OVERRIDE_;
-	virtual bool isALoadableFileFormat(irr::io::IReadFile* file) const _IRR_OVERRIDE_;
-	virtual irr::video::IImage* loadImage(irr::io::IReadFile* file) const _IRR_OVERRIDE_;
+	virtual bool isALoadableFileExtension(const io::path& filename) const IRR_OVERRIDE;
+	virtual bool isALoadableFileFormat(irr::io::IReadFile* file) const IRR_OVERRIDE;
+	virtual irr::video::IImage* loadImage(irr::io::IReadFile* file) const IRR_OVERRIDE;
 };
 
 #endif
@@ -50,18 +50,18 @@ public:
 class CImageLoaderWAL : public irr::video::IImageLoader
 {
 public:
-	virtual bool isALoadableFileExtension(const io::path& filename) const _IRR_OVERRIDE_;
-	virtual bool isALoadableFileFormat(irr::io::IReadFile* file) const _IRR_OVERRIDE_;
-	virtual irr::video::IImage* loadImage(irr::io::IReadFile* file) const _IRR_OVERRIDE_;
+	virtual bool isALoadableFileExtension(const io::path& filename) const IRR_OVERRIDE;
+	virtual bool isALoadableFileFormat(irr::io::IReadFile* file) const IRR_OVERRIDE;
+	virtual irr::video::IImage* loadImage(irr::io::IReadFile* file) const IRR_OVERRIDE;
 };
 
 //! An Irrlicht image loader for Halflife 1 engine textures
 class CImageLoaderWAL2 : public irr::video::IImageLoader
 {
 public:
-	virtual bool isALoadableFileExtension(const io::path& filename) const _IRR_OVERRIDE_;
-	virtual bool isALoadableFileFormat(irr::io::IReadFile* file) const _IRR_OVERRIDE_;
-	virtual irr::video::IImage* loadImage(irr::io::IReadFile* file) const _IRR_OVERRIDE_;
+	virtual bool isALoadableFileExtension(const io::path& filename) const IRR_OVERRIDE;
+	virtual bool isALoadableFileFormat(irr::io::IReadFile* file) const IRR_OVERRIDE;
+	virtual irr::video::IImage* loadImage(irr::io::IReadFile* file) const IRR_OVERRIDE;
 };
 
 // byte-align structures
@@ -97,4 +97,3 @@ public:
 }
 
 #endif
-

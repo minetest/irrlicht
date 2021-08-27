@@ -297,22 +297,22 @@ namespace
 {
 	struct SDefaultRandomizer : public IRandomizer
 	{
-		virtual void reset(s32 value=0x0f0f0f0f) _IRR_OVERRIDE_
+		virtual void reset(s32 value=0x0f0f0f0f) IRR_OVERRIDE
 		{
 			os::Randomizer::reset(value);
 		}
 
-		virtual s32 rand() const _IRR_OVERRIDE_
+		virtual s32 rand() const IRR_OVERRIDE
 		{
 			return os::Randomizer::rand();
 		}
 
-		virtual f32 frand() const _IRR_OVERRIDE_
+		virtual f32 frand() const IRR_OVERRIDE
 		{
 			return os::Randomizer::frand();
 		}
 
-		virtual s32 randMax() const _IRR_OVERRIDE_
+		virtual s32 randMax() const IRR_OVERRIDE
 		{
 			return os::Randomizer::randMax();
 		}

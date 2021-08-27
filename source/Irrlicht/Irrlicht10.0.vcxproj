@@ -839,24 +839,42 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\EDeviceTypes.h" />
     <ClInclude Include="..\..\include\EDriverFeatures.h" />
+    <ClInclude Include="..\..\include\EHardwareBufferFlags.h" />
     <ClInclude Include="..\..\include\EMaterialFlags.h" />
+    <ClInclude Include="..\..\include\EMaterialTypes.h" />
+    <ClInclude Include="..\..\include\EReadFileType.h" />
+    <ClInclude Include="..\..\include\EShaderTypes.h" />
     <ClInclude Include="..\..\include\fast_atof.h" />
     <ClInclude Include="..\..\include\IAnimatedMeshMD3.h" />
+    <ClInclude Include="..\..\include\IBillboardTextSceneNode.h" />
+    <ClInclude Include="..\..\include\IBoneSceneNode.h" />
+    <ClInclude Include="..\..\include\IColladaMeshWriter.h" />
+    <ClInclude Include="..\..\include\IDynamicMeshBuffer.h" />
     <ClInclude Include="..\..\include\IEventReceiver.h" />
+    <ClInclude Include="..\..\include\IFileArchive.h" />
+    <ClInclude Include="..\..\include\IGUIFontBitmap.h" />
+    <ClInclude Include="..\..\include\IGUITable.h" />
+    <ClInclude Include="..\..\include\IImageWriter.h" />
+    <ClInclude Include="..\..\include\IIndexBuffer.h" />
     <ClInclude Include="..\..\include\ILightManager.h" />
+    <ClInclude Include="..\..\include\IOctreeSceneNode.h" />	
+    <ClInclude Include="..\..\include\IProfiler.h" />	
     <ClInclude Include="..\..\include\ILogger.h" />
-    <ClInclude Include="..\..\include\IOctreeSceneNode.h" />
+    <ClInclude Include="..\..\include\IMemoryReadFile.h" />
     <ClInclude Include="..\..\include\IOSOperator.h" />
-    <ClInclude Include="..\..\include\IProfiler.h" />
     <ClInclude Include="..\..\include\IRandomizer.h" />
     <ClInclude Include="..\..\include\IReferenceCounted.h" />
     <ClInclude Include="..\..\include\IRenderTarget.h" />
     <ClInclude Include="..\..\include\IrrCompileConfig.h" />
     <ClInclude Include="..\..\include\irrlicht.h" />
+    <ClInclude Include="..\..\include\leakHunter.h" />	
     <ClInclude Include="..\..\include\IrrlichtDevice.h" />
     <ClInclude Include="..\..\include\irrTypes.h" />
+    <ClInclude Include="..\..\include\ISceneUserDataSerializer.h" />
     <ClInclude Include="..\..\include\ITimer.h" />
+    <ClInclude Include="..\..\include\IVertexBuffer.h" />
     <ClInclude Include="..\..\include\Keycodes.h" />
     <ClInclude Include="..\..\include\SIrrCreationParameters.h" />
     <ClInclude Include="..\..\include\SKeyMap.h" />
@@ -897,6 +915,7 @@
     <ClInclude Include="..\..\include\rect.h" />
     <ClInclude Include="..\..\include\SOverrideMaterial.h" />
     <ClInclude Include="..\..\include\SSharedMeshBuffer.h" />
+    <ClInclude Include="..\..\include\SVertexIndex.h" />
     <ClInclude Include="..\..\include\SVertexManipulator.h" />
     <ClInclude Include="..\..\include\triangle3d.h" />
     <ClInclude Include="..\..\include\vector2d.h" />
@@ -1016,6 +1035,7 @@
     <ClInclude Include="burning_shader_compile_triangle.h" />
     <ClInclude Include="burning_shader_compile_verify.h" />
     <ClInclude Include="CB3DMeshWriter.h" />
+    <ClInclude Include="CBlit.h" />	
     <ClInclude Include="CD3D9RenderTarget.h" />
     <ClInclude Include="CDefaultSceneNodeAnimatorFactory.h" />
     <ClInclude Include="CDefaultSceneNodeFactory.h" />
@@ -1049,9 +1069,9 @@
     <ClInclude Include="COpenGLParallaxMapRenderer.h" />
     <ClInclude Include="COpenGLShaderMaterialRenderer.h" />
     <ClInclude Include="COpenGLSLMaterialRenderer.h" />
-    <ClInclude Include="CProfiler.h" />
     <ClInclude Include="CSceneManager.h" />
     <ClInclude Include="CWGLManager.h" />
+    <ClInclude Include="ISceneNodeAnimatorFinishing.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="CSMFMeshFileLoader.h" />
     <ClInclude Include="C3DSMeshFileLoader.h" />
@@ -1187,6 +1207,7 @@
     <ClInclude Include="COSOperator.h" />
     <ClInclude Include="CTimer.h" />
     <ClInclude Include="os.h" />
+    <ClInclude Include="CProfiler.h" />	
     <ClInclude Include="EProfileIDs.h" />
     <ClInclude Include="lzma\LzmaDec.h" />
     <ClInclude Include="lzma\Types.h" />
@@ -1460,10 +1481,10 @@
     <ClCompile Include="CLogger.cpp" />
     <ClCompile Include="COSOperator.cpp" />
     <ClCompile Include="Irrlicht.cpp" />
-    <ClCompile Include="leakHunter.cpp" />
     <ClCompile Include="os.cpp" />
     <ClCompile Include="utf8.cpp" />
     <ClCompile Include="CProfiler.cpp" />
+    <ClCompile Include="leakHunter.cpp" />	
     <ClCompile Include="lzma\LzmaDec.c" />
     <ClCompile Include="zlib\adler32.c" />
     <ClCompile Include="zlib\compress.c" />

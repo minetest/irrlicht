@@ -1351,20 +1351,20 @@ void CBurningVideoDriver::VertexCache_map_source_format()
 	if (s0 != sizeof_s4DVertex || ((sizeof_s4DVertex * sizeof_s4DVertexPairRel) & 31))
 	{
 		os::Printer::log("BurningVideo vertex format compile problem", ELL_ERROR);
-		_IRR_DEBUG_BREAK_IF(1);
+		IRR_DEBUG_BREAK_IF(1);
 	}
 
 #if defined(ENV64BIT)
 	if (sizeof(void*) != 8)
 	{
 		os::Printer::log("BurningVideo pointer should be 8 bytes", ELL_ERROR);
-		_IRR_DEBUG_BREAK_IF(1);
+		IRR_DEBUG_BREAK_IF(1);
 	}
 
 	if (((unsigned long long)Transformation&15) || ((unsigned long long)TransformationFlag & 15))
 	{
 		os::Printer::log("BurningVideo Matrix Stack not 16 byte aligned", ELL_ERROR);
-		_IRR_DEBUG_BREAK_IF(1);
+		IRR_DEBUG_BREAK_IF(1);
 	}
 #endif
 

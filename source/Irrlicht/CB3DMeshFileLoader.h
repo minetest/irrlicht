@@ -8,8 +8,8 @@
 
 #include "IrrCompileConfig.h"
 
-#ifndef __C_B3D_MESH_LOADER_H_INCLUDED__
-#define __C_B3D_MESH_LOADER_H_INCLUDED__
+#ifndef IRR_C_B3D_MESH_LOADER_H_INCLUDED
+#define IRR_C_B3D_MESH_LOADER_H_INCLUDED
 
 #include "IMeshLoader.h"
 #include "ISceneManager.h"
@@ -33,13 +33,13 @@ public:
 
 	//! returns true if the file maybe is able to be loaded by this class
 	//! based on the file extension (e.g. ".bsp")
-	virtual bool isALoadableFileExtension(const io::path& filename) const _IRR_OVERRIDE_;
+	virtual bool isALoadableFileExtension(const io::path& filename) const IRR_OVERRIDE;
 
 	//! creates/loads an animated mesh from the file.
 	//! \return Pointer to the created mesh. Returns 0 if loading failed.
 	//! If you no longer need the mesh, you should call IAnimatedMesh::drop().
 	//! See IReferenceCounted::drop() for more information.
-	virtual IAnimatedMesh* createMesh(io::IReadFile* file) _IRR_OVERRIDE_;
+	virtual IAnimatedMesh* createMesh(io::IReadFile* file) IRR_OVERRIDE;
 
 private:
 
@@ -87,5 +87,4 @@ private:
 } // end namespace scene
 } // end namespace irr
 
-#endif // __C_B3D_MESH_LOADER_H_INCLUDED__
-
+#endif // IRR_C_B3D_MESH_LOADER_H_INCLUDED

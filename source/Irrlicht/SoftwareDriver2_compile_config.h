@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __S_VIDEO_2_SOFTWARE_COMPILE_CONFIG_H_INCLUDED__
-#define __S_VIDEO_2_SOFTWARE_COMPILE_CONFIG_H_INCLUDED__
+#ifndef S_VIDEO_2_SOFTWARE_COMPILE_CONFIG_H_INCLUDED
+#define S_VIDEO_2_SOFTWARE_COMPILE_CONFIG_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 
@@ -320,4 +320,4 @@ namespace irr {
 #define ALIGN(x)
 #endif
 
-#endif // __S_VIDEO_2_SOFTWARE_COMPILE_CONFIG_H_INCLUDED__
+#endif // S_VIDEO_2_SOFTWARE_COMPILE_CONFIG_H_INCLUDED

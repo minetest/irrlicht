@@ -1224,7 +1224,7 @@ void CSceneManager::render()
 //! returns the axis aligned bounding box of this node
 const core::aabbox3d<f32>& CSceneManager::getBoundingBox() const
 {
-	_IRR_DEBUG_BREAK_IF(true) // Bounding Box of Scene Manager should never be used.
+	IRR_DEBUG_BREAK_IF(true) // Bounding Box of Scene Manager should never be used.
 
 	static const core::aabbox3d<f32> dummy;
 	return dummy;

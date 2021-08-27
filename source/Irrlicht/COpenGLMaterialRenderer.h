@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_OPENGL_MATERIAL_RENDERER_H_INCLUDED__
-#define __C_OPENGL_MATERIAL_RENDERER_H_INCLUDED__
+#ifndef IRR_C_OPENGL_MATERIAL_RENDERER_H_INCLUDED
+#define IRR_C_OPENGL_MATERIAL_RENDERER_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #ifdef _IRR_COMPILE_WITH_OPENGL_
@@ -26,7 +26,7 @@ public:
 	COpenGLMaterialRenderer_SOLID(video::COpenGLDriver* d) : Driver(d) {}
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
 		if (Driver->getFixedPipelineState() == COpenGLDriver::EOFPS_DISABLE)
 			Driver->setFixedPipelineState(COpenGLDriver::EOFPS_DISABLE_TO_ENABLE);
@@ -51,7 +51,7 @@ public:
 	COpenGLMaterialRenderer_ONETEXTURE_BLEND(video::COpenGLDriver* d) : Driver(d) {}
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
 		if (Driver->getFixedPipelineState() == COpenGLDriver::EOFPS_DISABLE)
 			Driver->setFixedPipelineState(COpenGLDriver::EOFPS_DISABLE_TO_ENABLE);
@@ -137,7 +137,7 @@ public:
 		}
 	}
 
-	virtual void OnUnsetMaterial() _IRR_OVERRIDE_
+	virtual void OnUnsetMaterial() IRR_OVERRIDE
 	{
 		Driver->getCacheHandler()->setActiveTexture(GL_TEXTURE0_ARB);
 
@@ -158,7 +158,7 @@ public:
 
 	//! Returns if the material is transparent.
 	/** Is not always transparent, but mostly. */
-	virtual bool isTransparent() const _IRR_OVERRIDE_
+	virtual bool isTransparent() const IRR_OVERRIDE
 	{
 		return true;
 	}
@@ -177,7 +177,7 @@ public:
 	COpenGLMaterialRenderer_SOLID_2_LAYER(video::COpenGLDriver* d) : Driver(d) {}
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
 		if (Driver->getFixedPipelineState() == COpenGLDriver::EOFPS_DISABLE)
 			Driver->setFixedPipelineState(COpenGLDriver::EOFPS_DISABLE_TO_ENABLE);
@@ -215,7 +215,7 @@ public:
 		}
 	}
 
-	virtual void OnUnsetMaterial() _IRR_OVERRIDE_
+	virtual void OnUnsetMaterial() IRR_OVERRIDE
 	{
 		if (Driver->queryFeature(EVDF_MULTITEXTURE))
 		{
@@ -245,7 +245,7 @@ public:
 	COpenGLMaterialRenderer_TRANSPARENT_ADD_COLOR(video::COpenGLDriver* d) : Driver(d) {}
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
 		if (Driver->getFixedPipelineState() == COpenGLDriver::EOFPS_DISABLE)
 			Driver->setFixedPipelineState(COpenGLDriver::EOFPS_DISABLE_TO_ENABLE);
@@ -259,13 +259,13 @@ public:
 		Driver->getCacheHandler()->setBlend(true);
 	}
 
-	virtual void OnUnsetMaterial() _IRR_OVERRIDE_
+	virtual void OnUnsetMaterial() IRR_OVERRIDE
 	{
 		Driver->getCacheHandler()->setBlend(false);
 	}
 
 	//! Returns if the material is transparent.
-	virtual bool isTransparent() const _IRR_OVERRIDE_
+	virtual bool isTransparent() const IRR_OVERRIDE
 	{
 		return true;
 	}
@@ -284,7 +284,7 @@ public:
 	COpenGLMaterialRenderer_TRANSPARENT_VERTEX_ALPHA(video::COpenGLDriver* d) : Driver(d) {}
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
 		if (Driver->getFixedPipelineState() == COpenGLDriver::EOFPS_DISABLE)
 			Driver->setFixedPipelineState(COpenGLDriver::EOFPS_DISABLE_TO_ENABLE);
@@ -319,7 +319,7 @@ public:
 		}
 	}
 
-	virtual void OnUnsetMaterial() _IRR_OVERRIDE_
+	virtual void OnUnsetMaterial() IRR_OVERRIDE
 	{
 		Driver->getCacheHandler()->setActiveTexture(GL_TEXTURE0_ARB);
 
@@ -336,7 +336,7 @@ public:
 	}
 
 	//! Returns if the material is transparent.
-	virtual bool isTransparent() const _IRR_OVERRIDE_
+	virtual bool isTransparent() const IRR_OVERRIDE
 	{
 		return true;
 	}
@@ -355,7 +355,7 @@ public:
 	COpenGLMaterialRenderer_TRANSPARENT_ALPHA_CHANNEL(video::COpenGLDriver* d) : Driver(d) {}
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
 		if (Driver->getFixedPipelineState() == COpenGLDriver::EOFPS_DISABLE)
 			Driver->setFixedPipelineState(COpenGLDriver::EOFPS_DISABLE_TO_ENABLE);
@@ -392,7 +392,7 @@ public:
 		}
 	}
 
-	virtual void OnUnsetMaterial() _IRR_OVERRIDE_
+	virtual void OnUnsetMaterial() IRR_OVERRIDE
 	{
 		Driver->getCacheHandler()->setActiveTexture(GL_TEXTURE0_ARB);
 
@@ -407,7 +407,7 @@ public:
 	}
 
 	//! Returns if the material is transparent.
-	virtual bool isTransparent() const _IRR_OVERRIDE_
+	virtual bool isTransparent() const IRR_OVERRIDE
 	{
 		return true;
 	}
@@ -426,7 +426,7 @@ public:
 	COpenGLMaterialRenderer_TRANSPARENT_ALPHA_CHANNEL_REF(video::COpenGLDriver* d) : Driver(d) {}
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
 		if (Driver->getFixedPipelineState() == COpenGLDriver::EOFPS_DISABLE)
 			Driver->setFixedPipelineState(COpenGLDriver::EOFPS_DISABLE_TO_ENABLE);
@@ -443,13 +443,13 @@ public:
 		}
 	}
 
-	virtual void OnUnsetMaterial() _IRR_OVERRIDE_
+	virtual void OnUnsetMaterial() IRR_OVERRIDE
 	{
 		Driver->getCacheHandler()->setAlphaTest(false);
 	}
 
 	//! Returns if the material is transparent.
-	virtual bool isTransparent() const _IRR_OVERRIDE_
+	virtual bool isTransparent() const IRR_OVERRIDE
 	{
 		return false;  // this material is not really transparent because it does no blending.
 	}
@@ -468,7 +468,7 @@ public:
 	COpenGLMaterialRenderer_LIGHTMAP(video::COpenGLDriver* d) : Driver(d) {}
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
 		if (Driver->getFixedPipelineState() == COpenGLDriver::EOFPS_DISABLE)
 			Driver->setFixedPipelineState(COpenGLDriver::EOFPS_DISABLE_TO_ENABLE);
@@ -562,7 +562,7 @@ public:
 		}
 	}
 
-	virtual void OnUnsetMaterial() _IRR_OVERRIDE_
+	virtual void OnUnsetMaterial() IRR_OVERRIDE
 	{
 		if (Driver->queryFeature(EVDF_MULTITEXTURE))
 		{
@@ -595,7 +595,7 @@ public:
 	COpenGLMaterialRenderer_DETAIL_MAP(video::COpenGLDriver* d) : Driver(d) {}
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
 		if (Driver->getFixedPipelineState() == COpenGLDriver::EOFPS_DISABLE)
 			Driver->setFixedPipelineState(COpenGLDriver::EOFPS_DISABLE_TO_ENABLE);
@@ -627,7 +627,7 @@ public:
 		}
 	}
 
-	virtual void OnUnsetMaterial() _IRR_OVERRIDE_
+	virtual void OnUnsetMaterial() IRR_OVERRIDE
 	{
 		if (Driver->queryFeature(EVDF_MULTITEXTURE))
 		{
@@ -651,7 +651,7 @@ public:
 	COpenGLMaterialRenderer_SPHERE_MAP(video::COpenGLDriver* d) : Driver(d) {}
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
 		if (Driver->getFixedPipelineState() == COpenGLDriver::EOFPS_DISABLE)
 			Driver->setFixedPipelineState(COpenGLDriver::EOFPS_DISABLE_TO_ENABLE);
@@ -677,7 +677,7 @@ public:
 		}
 	}
 
-	virtual void OnUnsetMaterial() _IRR_OVERRIDE_
+	virtual void OnUnsetMaterial() IRR_OVERRIDE
 	{
 		Driver->getCacheHandler()->setActiveTexture(GL_TEXTURE0_ARB);
 
@@ -699,7 +699,7 @@ public:
 	COpenGLMaterialRenderer_REFLECTION_2_LAYER(video::COpenGLDriver* d) : Driver(d) {}
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
 		if (Driver->getFixedPipelineState() == COpenGLDriver::EOFPS_DISABLE)
 			Driver->setFixedPipelineState(COpenGLDriver::EOFPS_DISABLE_TO_ENABLE);
@@ -735,7 +735,7 @@ public:
 		}
 	}
 
-	virtual void OnUnsetMaterial() _IRR_OVERRIDE_
+	virtual void OnUnsetMaterial() IRR_OVERRIDE
 	{
 		if (Driver->queryFeature(EVDF_MULTITEXTURE))
 		{
@@ -761,7 +761,7 @@ public:
 	COpenGLMaterialRenderer_TRANSPARENT_REFLECTION_2_LAYER(video::COpenGLDriver* d) : Driver(d) {}
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
 		if (Driver->getFixedPipelineState() == COpenGLDriver::EOFPS_DISABLE)
 			Driver->setFixedPipelineState(COpenGLDriver::EOFPS_DISABLE_TO_ENABLE);
@@ -820,7 +820,7 @@ public:
 		}
 	}
 
-	virtual void OnUnsetMaterial() _IRR_OVERRIDE_
+	virtual void OnUnsetMaterial() IRR_OVERRIDE
 	{
 		if (Driver->queryFeature(EVDF_MULTITEXTURE))
 		{
@@ -840,7 +840,7 @@ public:
 	}
 
 	//! Returns if the material is transparent.
-	virtual bool isTransparent() const _IRR_OVERRIDE_
+	virtual bool isTransparent() const IRR_OVERRIDE
 	{
 		return true;
 	}
@@ -855,4 +855,3 @@ protected:
 
 #endif
 #endif
-

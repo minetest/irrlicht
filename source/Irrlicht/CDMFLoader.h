@@ -27,8 +27,8 @@
   credits to others for parts of this code.
 */
 
-#ifndef __C_DMF_LOADER_H_INCLUDED__
-#define __C_DMF_LOADER_H_INCLUDED__
+#ifndef IRR_C_DMF_LOADER_H_INCLUDED
+#define IRR_C_DMF_LOADER_H_INCLUDED
 
 #include "IMeshLoader.h"
 #include "IReadFile.h"
@@ -52,13 +52,13 @@ namespace scene
 
 		//! returns true if the file maybe is able to be loaded by this class
 		//! based on the file extension (e.g. ".cob")
-		virtual bool isALoadableFileExtension(const io::path& filename) const _IRR_OVERRIDE_;
+		virtual bool isALoadableFileExtension(const io::path& filename) const IRR_OVERRIDE;
 
 		/** creates/loads an animated mesh from the file.
 		\return Pointer to the created mesh. Returns 0 if loading failed.
 		If you no longer need the mesh, you should call IAnimatedMesh::drop().
 		See IReferenceCounted::drop() for more information.*/
-		virtual IAnimatedMesh* createMesh(io::IReadFile* file) _IRR_OVERRIDE_;
+		virtual IAnimatedMesh* createMesh(io::IReadFile* file) IRR_OVERRIDE;
 
 		/** loads dynamic lights present in this scene.
 		Note that loaded lights from DeleD must have the suffix \b dynamic_ and must be \b pointlight.
@@ -88,4 +88,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

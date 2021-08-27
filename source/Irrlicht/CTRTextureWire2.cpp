@@ -84,11 +84,11 @@ public:
 	CTRTextureWire2(CBurningVideoDriver* driver);
 
 	//! draws an indexed triangle list
-	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) _IRR_OVERRIDE_;
-	virtual void drawLine ( const s4DVertex *a,const s4DVertex *b) _IRR_OVERRIDE_;
-	virtual void drawPoint( const s4DVertex *a) _IRR_OVERRIDE_;
-	virtual bool canWireFrame () _IRR_OVERRIDE_  { return true; }
-	virtual bool canPointCloud() _IRR_OVERRIDE_  { return true; }
+	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) IRR_OVERRIDE;
+	virtual void drawLine ( const s4DVertex *a,const s4DVertex *b) IRR_OVERRIDE;
+	virtual void drawPoint( const s4DVertex *a) IRR_OVERRIDE;
+	virtual bool canWireFrame () IRR_OVERRIDE  { return true; }
+	virtual bool canPointCloud() IRR_OVERRIDE  { return true; }
 
 protected:
 	virtual void fragmentShader();

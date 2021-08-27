@@ -1288,6 +1288,9 @@
     <ClInclude Include="..\..\include\EMaterialFlags.h">
       <Filter>include\video</Filter>
     </ClInclude>
+	<ClInclude Include="..\..\include\SSharedMeshBuffer.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\IRenderTarget.h">
       <Filter>include\video</Filter>
     </ClInclude>
@@ -1390,6 +1393,96 @@
     <ClInclude Include="..\..\include\IOctreeSceneNode.h">
       <Filter>include\scene</Filter>
     </ClInclude>
+	<ClInclude Include="burning_shader_color_fraq.h">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClInclude>
+    <ClInclude Include="burning_shader_compile_fragment_default.h">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClInclude>
+    <ClInclude Include="burning_shader_compile_fragment_end.h">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClInclude>
+    <ClInclude Include="burning_shader_compile_fragment_start.h">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClInclude>
+    <ClInclude Include="burning_shader_compile_start.h">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClInclude>
+    <ClInclude Include="burning_shader_compile_triangle.h">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClInclude>
+    <ClInclude Include="burning_shader_compile_verify.h">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClInclude>
+    <ClInclude Include="CBlit.h">
+      <Filter>Irrlicht\video\Null</Filter>
+    </ClInclude>	
+	<ClInclude Include="..\..\include\fast_atof.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ILightManager.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SVertexManipulator.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IBoneSceneNode.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IDynamicMeshBuffer.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IGUIFontBitmap.h">
+      <Filter>include\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="ISceneNodeAnimatorFinishing.h">
+      <Filter>Irrlicht\scene\animators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SVertexIndex.h">
+      <Filter>include\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IVertexBuffer.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ISceneUserDataSerializer.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IMemoryReadFile.h">
+      <Filter>include\io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IIndexBuffer.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IImageWriter.h">
+      <Filter>include\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IGUITable.h">
+      <Filter>include\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IFileArchive.h">
+      <Filter>include\io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IColladaMeshWriter.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IBillboardTextSceneNode.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EShaderTypes.h">
+      <Filter>include\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EReadFileType.h">
+      <Filter>include\io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EMaterialTypes.h">
+      <Filter>include\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EHardwareBufferFlags.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EDeviceTypes.h">
+      <Filter>include</Filter>
+    </ClInclude>	
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\changes.txt">
@@ -2357,6 +2450,9 @@
     <ClCompile Include="CWGLManager.cpp">
       <Filter>Irrlicht\video\OpenGL Context</Filter>
     </ClCompile>
+    <ClCompile Include="burning_shader_color.cpp">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClCompile>	
     <ClCompile Include="CTR_transparent_reflection_2_layer.cpp">
       <Filter>Irrlicht\video\Burning Video</Filter>
     </ClCompile>

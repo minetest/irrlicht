@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_DIRECTX9_TEXTURE_H_INCLUDED__
-#define __C_DIRECTX9_TEXTURE_H_INCLUDED__
+#ifndef IRR_C_DIRECTX9_TEXTURE_H_INCLUDED
+#define IRR_C_DIRECTX9_TEXTURE_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
@@ -32,11 +32,11 @@ public:
 
 	virtual ~CD3D9Texture();
 
-	virtual void* lock(E_TEXTURE_LOCK_MODE mode = ETLM_READ_WRITE, u32 mipmapLevel=0, u32 layer = 0, E_TEXTURE_LOCK_FLAGS lockFlags = ETLF_FLIP_Y_UP_RTT) _IRR_OVERRIDE_;
+	virtual void* lock(E_TEXTURE_LOCK_MODE mode = ETLM_READ_WRITE, u32 mipmapLevel=0, u32 layer = 0, E_TEXTURE_LOCK_FLAGS lockFlags = ETLF_FLIP_Y_UP_RTT) IRR_OVERRIDE;
 
-	virtual void unlock() _IRR_OVERRIDE_;
+	virtual void unlock() IRR_OVERRIDE;
 
-	virtual void regenerateMipMapLevels(void* data = 0, u32 layer = 0) _IRR_OVERRIDE_;
+	virtual void regenerateMipMapLevels(void* data = 0, u32 layer = 0) IRR_OVERRIDE;
 
 	IDirect3DBaseTexture9* getDX9BaseTexture() const;
 	IDirect3DTexture9* getDX9Texture() const;

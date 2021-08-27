@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_IMAGE_LOADER_PCX_H_INCLUDED__
-#define __C_IMAGE_LOADER_PCX_H_INCLUDED__
+#ifndef IRR_C_IMAGE_LOADER_PCX_H_INCLUDED
+#define IRR_C_IMAGE_LOADER_PCX_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 
@@ -63,13 +63,13 @@ public:
 
 	//! returns true if the file maybe is able to be loaded by this class
 	//! based on the file extension (e.g. ".tga")
-	virtual bool isALoadableFileExtension(const io::path& filename) const _IRR_OVERRIDE_;
+	virtual bool isALoadableFileExtension(const io::path& filename) const IRR_OVERRIDE;
 
 	//! returns true if the file maybe is able to be loaded by this class
-	virtual bool isALoadableFileFormat(io::IReadFile* file) const _IRR_OVERRIDE_;
+	virtual bool isALoadableFileFormat(io::IReadFile* file) const IRR_OVERRIDE;
 
 	//! creates a surface from the file
-	virtual IImage* loadImage(io::IReadFile* file) const _IRR_OVERRIDE_;
+	virtual IImage* loadImage(io::IReadFile* file) const IRR_OVERRIDE;
 
 };
 
@@ -79,4 +79,3 @@ public:
 } // end namespace irr
 
 #endif
-

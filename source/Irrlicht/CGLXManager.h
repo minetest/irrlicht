@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in Irrlicht.h
 
-#ifndef __C_GLX_MANAGER_H_INCLUDED__
-#define __C_GLX_MANAGER_H_INCLUDED__
+#ifndef IRR_C_GLX_MANAGER_H_INCLUDED
+#define IRR_C_GLX_MANAGER_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 
@@ -34,31 +34,31 @@ namespace video
         ~CGLXManager();
 
         // Initialize
-        virtual bool initialize(const SIrrlichtCreationParameters& params, const SExposedVideoData& data) _IRR_OVERRIDE_;
+        virtual bool initialize(const SIrrlichtCreationParameters& params, const SExposedVideoData& data) IRR_OVERRIDE;
 
         // Terminate
-        virtual void terminate() _IRR_OVERRIDE_;
+        virtual void terminate() IRR_OVERRIDE;
 
         // Create surface.
-        virtual bool generateSurface() _IRR_OVERRIDE_;
+        virtual bool generateSurface() IRR_OVERRIDE;
 
         // Destroy surface.
-        virtual void destroySurface() _IRR_OVERRIDE_;
+        virtual void destroySurface() IRR_OVERRIDE;
 
         // Create context.
-        virtual bool generateContext() _IRR_OVERRIDE_;
+        virtual bool generateContext() IRR_OVERRIDE;
 
         // Destroy context.
-        virtual void destroyContext() _IRR_OVERRIDE_;
+        virtual void destroyContext() IRR_OVERRIDE;
 
         //! Get current context
-        virtual const SExposedVideoData& getContext() const _IRR_OVERRIDE_;
+        virtual const SExposedVideoData& getContext() const IRR_OVERRIDE;
 
         //! Change render context, disable old and activate new defined by videoData
-        virtual bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero) _IRR_OVERRIDE_;
+        virtual bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero) IRR_OVERRIDE;
 
         // Swap buffers.
-        virtual bool swapBuffers() _IRR_OVERRIDE_;
+        virtual bool swapBuffers() IRR_OVERRIDE;
 
         XVisualInfo* getVisual() const {return VisualInfo;} // return XVisualInfo
 
@@ -76,4 +76,3 @@ namespace video
 #endif
 
 #endif
-

@@ -2,9 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-
-#ifndef __S_4D_VERTEX_H_INCLUDED__
-#define __S_4D_VERTEX_H_INCLUDED__
+#ifndef S_4D_VERTEX_H_INCLUDED
+#define S_4D_VERTEX_H_INCLUDED
 
 #include "SoftwareDriver2_compile_config.h"
 #include "SoftwareDriver2_helper.h"
@@ -769,7 +768,7 @@ struct sScanConvertData
 
 #if BURNING_MATERIAL_MAX_LIGHT_TANGENT > 0
 	sVec3Pack_unpack l[BURNING_MATERIAL_MAX_LIGHT_TANGENT][2];		// Light Tangent
-	sVec3Pack_unpack slopeL[BURNING_MATERIAL_MAX_LIGHT_TANGENT][2];	// tanget slope along edges
+	sVec3Pack_unpack slopeL[BURNING_MATERIAL_MAX_LIGHT_TANGENT][2];	// tangent slope along edges
 #endif
 };
 
@@ -872,4 +871,3 @@ REALINLINE void vec4_to_fix(tFixPoint &a,tFixPoint &r, tFixPoint &g, tFixPoint &
 }
 
 #endif
-

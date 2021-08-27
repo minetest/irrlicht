@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_PARTICLE_ROTATION_AFFECTOR_H_INCLUDED__
-#define __C_PARTICLE_ROTATION_AFFECTOR_H_INCLUDED__
+#ifndef IRR_C_PARTICLE_ROTATION_AFFECTOR_H_INCLUDED
+#define IRR_C_PARTICLE_ROTATION_AFFECTOR_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #ifdef _IRR_COMPILE_WITH_PARTICLES_
@@ -24,25 +24,25 @@ public:
 		const core::vector3df& point = core::vector3df() );
 
 	//! Affects a particle.
-	virtual void affect(u32 now, SParticle* particlearray, u32 count) _IRR_OVERRIDE_;
+	virtual void affect(u32 now, SParticle* particlearray, u32 count) IRR_OVERRIDE;
 
 	//! Set the point that particles will attract to
-	virtual void setPivotPoint( const core::vector3df& point ) _IRR_OVERRIDE_ { PivotPoint = point; }
+	virtual void setPivotPoint( const core::vector3df& point ) IRR_OVERRIDE { PivotPoint = point; }
 
 	//! Set the speed in degrees per second
-	virtual void setSpeed( const core::vector3df& speed ) _IRR_OVERRIDE_ { Speed = speed; }
+	virtual void setSpeed( const core::vector3df& speed ) IRR_OVERRIDE { Speed = speed; }
 
 	//! Get the point that particles are attracted to
-	virtual const core::vector3df& getPivotPoint() const _IRR_OVERRIDE_ { return PivotPoint; }
+	virtual const core::vector3df& getPivotPoint() const IRR_OVERRIDE { return PivotPoint; }
 
 	//! Get the speed in degrees per second
-	virtual const core::vector3df& getSpeed() const _IRR_OVERRIDE_ { return Speed; }
+	virtual const core::vector3df& getSpeed() const IRR_OVERRIDE { return Speed; }
 
 	//! Writes attributes of the object.
-	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
+	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const IRR_OVERRIDE;
 
 	//! Reads attributes of the object.
-	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
+	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) IRR_OVERRIDE;
 
 private:
 
@@ -56,4 +56,4 @@ private:
 
 #endif // _IRR_COMPILE_WITH_PARTICLES_
 
-#endif // __C_PARTICLE_ROTATION_AFFECTOR_H_INCLUDED__
+#endif // IRR_C_PARTICLE_ROTATION_AFFECTOR_H_INCLUDED

@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_SCENE_NODE_ANIMATOR_FINISHING_H_INCLUDED__
-#define __I_SCENE_NODE_ANIMATOR_FINISHING_H_INCLUDED__
+#ifndef IRR_I_SCENE_NODE_ANIMATOR_FINISHING_H_INCLUDED
+#define IRR_I_SCENE_NODE_ANIMATOR_FINISHING_H_INCLUDED
 
 #include "ISceneNode.h"
 
@@ -20,7 +20,7 @@ namespace scene
 		ISceneNodeAnimatorFinishing(u32 finishTime)
 			: FinishTime(finishTime), HasFinished(false) { }
 
-		virtual bool hasFinished(void) const _IRR_OVERRIDE_ { return HasFinished; }
+		virtual bool hasFinished(void) const IRR_OVERRIDE { return HasFinished; }
 
 	protected:
 
@@ -33,4 +33,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_XML_WRITER_H_INCLUDED__
-#define __C_XML_WRITER_H_INCLUDED__
+#ifndef IRR_C_XML_WRITER_H_INCLUDED
+#define IRR_C_XML_WRITER_H_INCLUDED
 
 #include "IXMLWriter.h"
 
@@ -70,7 +70,7 @@ namespace io
 		virtual ~CXMLWriter() {}
 
 		//! Writes a xml 1.0 header like <?xml version="1.0"?>
-		virtual void writeXMLHeader() _IRR_OVERRIDE_;
+		virtual void writeXMLHeader() IRR_OVERRIDE;
 
 		//! Writes an xml element with maximal 5 attributes
 		virtual void writeElement(const wchar_t* name, bool empty=false,
@@ -78,24 +78,24 @@ namespace io
 			const wchar_t* attr2Name = 0, const wchar_t* attr2Value = 0,
 			const wchar_t* attr3Name = 0, const wchar_t* attr3Value = 0,
 			const wchar_t* attr4Name = 0, const wchar_t* attr4Value = 0,
-			const wchar_t* attr5Name = 0, const wchar_t* attr5Value = 0) _IRR_OVERRIDE_;
+			const wchar_t* attr5Name = 0, const wchar_t* attr5Value = 0) IRR_OVERRIDE;
 
 		//! Writes an xml element with any number of attributes
 		virtual void writeElement(const wchar_t* name, bool empty,
-				core::array<core::stringw> &names, core::array<core::stringw> &values) _IRR_OVERRIDE_;
+				core::array<core::stringw> &names, core::array<core::stringw> &values) IRR_OVERRIDE;
 
 		//! Writes a comment into the xml file
-		virtual void writeComment(const wchar_t* comment) _IRR_OVERRIDE_;
+		virtual void writeComment(const wchar_t* comment) IRR_OVERRIDE;
 
 		//! Writes the closing tag for an element. Like </foo>
-		virtual void writeClosingTag(const wchar_t* name) _IRR_OVERRIDE_;
+		virtual void writeClosingTag(const wchar_t* name) IRR_OVERRIDE;
 
 		//! Writes a text into the file. All occurrences of special characters like
 		//! & (&amp;), < (&lt;), > (&gt;), and " (&quot;) are automatically replaced.
-		virtual void writeText(const wchar_t* text) _IRR_OVERRIDE_;
+		virtual void writeText(const wchar_t* text) IRR_OVERRIDE;
 
 		//! Writes a line break
-		virtual void writeLineBreak() _IRR_OVERRIDE_;
+		virtual void writeLineBreak() IRR_OVERRIDE;
 
 	private:
 
@@ -114,7 +114,7 @@ namespace io
 		virtual ~CXMLWriterUTF8() {}
 
 		//! Writes a xml 1.0 header like <?xml version="1.0"?>
-		virtual void writeXMLHeader() _IRR_OVERRIDE_;
+		virtual void writeXMLHeader() IRR_OVERRIDE;
 
 		//! Writes an xml element with maximal 5 attributes
 		virtual void writeElement(const c8* name, bool empty=false,
@@ -122,24 +122,24 @@ namespace io
 			const c8* attr2Name = 0, const c8* attr2Value = 0,
 			const c8* attr3Name = 0, const c8* attr3Value = 0,
 			const c8* attr4Name = 0, const c8* attr4Value = 0,
-			const c8* attr5Name = 0, const c8* attr5Value = 0) _IRR_OVERRIDE_;
+			const c8* attr5Name = 0, const c8* attr5Value = 0) IRR_OVERRIDE;
 
 		//! Writes an xml element with any number of attributes
 		virtual void writeElement(const c8* name, bool empty,
-				core::array<core::stringc> &names, core::array<core::stringc> &values) _IRR_OVERRIDE_;
+				core::array<core::stringc> &names, core::array<core::stringc> &values) IRR_OVERRIDE;
 
 		//! Writes a comment into the xml file
-		virtual void writeComment(const c8* comment) _IRR_OVERRIDE_;
+		virtual void writeComment(const c8* comment) IRR_OVERRIDE;
 
 		//! Writes the closing tag for an element. Like </foo>
-		virtual void writeClosingTag(const c8* name) _IRR_OVERRIDE_;
+		virtual void writeClosingTag(const c8* name) IRR_OVERRIDE;
 
 		//! Writes a text into the file. All occurrences of special characters like
 		//! & (&amp;), < (&lt;), > (&gt;), and " (&quot;) are automatically replaced.
-		virtual void writeText(const c8* text) _IRR_OVERRIDE_;
+		virtual void writeText(const c8* text) IRR_OVERRIDE;
 
 		//! Writes a line break
-		virtual void writeLineBreak() _IRR_OVERRIDE_;
+		virtual void writeLineBreak() IRR_OVERRIDE;
 
 	private:
 
@@ -153,4 +153,3 @@ namespace io
 #endif // _IRR_COMPILE_WITH_XML_
 
 #endif
-

@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_PARTICLE_SYSTEM_SCENE_NODE_H_INCLUDED__
-#define __C_PARTICLE_SYSTEM_SCENE_NODE_H_INCLUDED__
+#ifndef IRR_C_PARTICLE_SYSTEM_SCENE_NODE_H_INCLUDED
+#define IRR_C_PARTICLE_SYSTEM_SCENE_NODE_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #ifdef _IRR_COMPILE_WITH_PARTICLES_
@@ -37,34 +37,34 @@ public:
 	virtual ~CParticleSystemSceneNode();
 
 	//! Gets the particle emitter, which creates the particles.
-	virtual IParticleEmitter* getEmitter() _IRR_OVERRIDE_;
+	virtual IParticleEmitter* getEmitter() IRR_OVERRIDE;
 
 	//! Sets the particle emitter, which creates the particles.
-	virtual void setEmitter(IParticleEmitter* emitter) _IRR_OVERRIDE_;
+	virtual void setEmitter(IParticleEmitter* emitter) IRR_OVERRIDE;
 
 	//! Adds new particle affector to the particle system.
-	virtual void addAffector(IParticleAffector* affector) _IRR_OVERRIDE_;
+	virtual void addAffector(IParticleAffector* affector) IRR_OVERRIDE;
 
 	//! Get a list of all particle affectors.
-	virtual const core::list<IParticleAffector*>& getAffectors() const _IRR_OVERRIDE_;
+	virtual const core::list<IParticleAffector*>& getAffectors() const IRR_OVERRIDE;
 
 	//! Removes all particle affectors in the particle system.
-	virtual void removeAllAffectors() _IRR_OVERRIDE_;
+	virtual void removeAllAffectors() IRR_OVERRIDE;
 
 	//! Returns the material based on the zero based index i.
-	virtual video::SMaterial& getMaterial(u32 i) _IRR_OVERRIDE_;
+	virtual video::SMaterial& getMaterial(u32 i) IRR_OVERRIDE;
 
 	//! Returns amount of materials used by this scene node.
-	virtual u32 getMaterialCount() const _IRR_OVERRIDE_;
+	virtual u32 getMaterialCount() const IRR_OVERRIDE;
 
 	//! pre render event
-	virtual void OnRegisterSceneNode() _IRR_OVERRIDE_;
+	virtual void OnRegisterSceneNode() IRR_OVERRIDE;
 
 	//! render
-	virtual void render() _IRR_OVERRIDE_;
+	virtual void render() IRR_OVERRIDE;
 
 	//! returns the axis aligned bounding box of this node
-	virtual const core::aabbox3d<f32>& getBoundingBox() const _IRR_OVERRIDE_;
+	virtual const core::aabbox3d<f32>& getBoundingBox() const IRR_OVERRIDE;
 
 	//! Creates a particle emitter for an animated mesh scene node
 	virtual IParticleAnimatedMeshSceneNodeEmitter* createAnimatedMeshSceneNodeEmitter(
@@ -78,7 +78,7 @@ public:
 		u32 lifeTimeMin = 2000, u32 lifeTimeMax = 4000,
 		s32 maxAngleDegrees = 0,
 		const core::dimension2df& minStartSize = core::dimension2df(5.0f,5.0f),
-		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f) ) _IRR_OVERRIDE_;
+		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f) ) IRR_OVERRIDE;
 
 	//! Creates a box particle emitter.
 	virtual IParticleBoxEmitter* createBoxEmitter(
@@ -91,7 +91,7 @@ public:
 		u32 lifeTimeMin=2000, u32 lifeTimeMax=4000,
 		s32 maxAngleDegrees=0,
 		const core::dimension2df& minStartSize = core::dimension2df(5.0f,5.0f),
-		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f) ) _IRR_OVERRIDE_;
+		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f) ) IRR_OVERRIDE;
 
 	//! Creates a particle emitter for emitting from a cylinder
 	virtual IParticleCylinderEmitter* createCylinderEmitter(
@@ -104,7 +104,7 @@ public:
 		u32 lifeTimeMin = 2000, u32 lifeTimeMax = 4000,
 		s32 maxAngleDegrees = 0,
 		const core::dimension2df& minStartSize = core::dimension2df(5.0f,5.0f),
-		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f) ) _IRR_OVERRIDE_;
+		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f) ) IRR_OVERRIDE;
 
 	//! Creates a mesh particle emitter.
 	virtual IParticleMeshEmitter* createMeshEmitter(
@@ -119,7 +119,7 @@ public:
 		u32 lifeTimeMin = 2000, u32 lifeTimeMax = 4000,
 		s32 maxAngleDegrees = 0,
 		const core::dimension2df& minStartSize = core::dimension2df(5.0f,5.0f),
-		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f) ) _IRR_OVERRIDE_;
+		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f) ) IRR_OVERRIDE;
 
 	//! Creates a point particle emitter.
 	virtual IParticlePointEmitter* createPointEmitter(
@@ -131,7 +131,7 @@ public:
 		u32 lifeTimeMin=2000, u32 lifeTimeMax=4000,
 		s32 maxAngleDegrees=0,
 		const core::dimension2df& minStartSize = core::dimension2df(5.0f,5.0f),
-		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f) ) _IRR_OVERRIDE_;
+		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f) ) IRR_OVERRIDE;
 
 	//! Creates a ring particle emitter.
 	virtual IParticleRingEmitter* createRingEmitter(
@@ -144,7 +144,7 @@ public:
 		u32 lifeTimeMin=2000, u32 lifeTimeMax=4000,
 		s32 maxAngleDegrees=0,
 		const core::dimension2df& minStartSize = core::dimension2df(5.0f,5.0f),
-		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f) ) _IRR_OVERRIDE_;
+		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f) ) IRR_OVERRIDE;
 
 	//! Creates a sphere particle emitter.
 	virtual IParticleSphereEmitter* createSphereEmitter(
@@ -157,62 +157,62 @@ public:
 		u32 lifeTimeMin=2000, u32 lifeTimeMax=4000,
 		s32 maxAngleDegrees=0,
 		const core::dimension2df& minStartSize = core::dimension2df(5.0f,5.0f),
-		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f) ) _IRR_OVERRIDE_;
+		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f) ) IRR_OVERRIDE;
 
 	//! Creates a point attraction affector. This affector modifies the positions of the
 	//! particles and attracts them to a specified point at a specified speed per second.
 	virtual IParticleAttractionAffector* createAttractionAffector(
 		const core::vector3df& point, f32 speed = 1.0f, bool attract = true,
-		bool affectX = true, bool affectY = true, bool affectZ = true) _IRR_OVERRIDE_;
+		bool affectX = true, bool affectY = true, bool affectZ = true) IRR_OVERRIDE;
 
 	//! Creates a scale particle affector.
 	virtual IParticleAffector* createScaleParticleAffector(
-		const core::dimension2df& scaleTo = core::dimension2df(1.0f, 1.0f)) _IRR_OVERRIDE_;
+		const core::dimension2df& scaleTo = core::dimension2df(1.0f, 1.0f)) IRR_OVERRIDE;
 
 	//! Creates a fade out particle affector.
 	virtual IParticleFadeOutAffector* createFadeOutParticleAffector(
 		const video::SColor& targetColor = video::SColor(0,0,0,0),
-		u32 timeNeededToFadeOut = 1000) _IRR_OVERRIDE_;
+		u32 timeNeededToFadeOut = 1000) IRR_OVERRIDE;
 
 	//! Creates a gravity affector.
 	virtual IParticleGravityAffector* createGravityAffector(
 		const core::vector3df& gravity = core::vector3df(0.0f,-0.03f,0.0f),
-		u32 timeForceLost = 1000) _IRR_OVERRIDE_;
+		u32 timeForceLost = 1000) IRR_OVERRIDE;
 
 	//! Creates a rotation affector. This affector rotates the particles
 	//! around a specified pivot point. The speed is in Degrees per second.
 	virtual IParticleRotationAffector* createRotationAffector(
 		const core::vector3df& speed = core::vector3df(5.0f,5.0f,5.0f),
-		const core::vector3df& pivotPoint = core::vector3df(0.0f,0.0f,0.0f) ) _IRR_OVERRIDE_;
+		const core::vector3df& pivotPoint = core::vector3df(0.0f,0.0f,0.0f) ) IRR_OVERRIDE;
 
 	//! Sets the size of all particles.
 	virtual void setParticleSize(
-		const core::dimension2d<f32> &size = core::dimension2d<f32>(5.0f, 5.0f)) _IRR_OVERRIDE_;
+		const core::dimension2d<f32> &size = core::dimension2d<f32>(5.0f, 5.0f)) IRR_OVERRIDE;
 
 	//! Sets if the particles should be global. If they are, the particles are affected by
 	//! the movement of the particle system scene node too, otherwise they completely
 	//! ignore it. Default is true.
-	virtual void setParticlesAreGlobal(bool global=true) _IRR_OVERRIDE_;
+	virtual void setParticlesAreGlobal(bool global=true) IRR_OVERRIDE;
 
 	//! Remove all currently visible particles
-	virtual void clearParticles() _IRR_OVERRIDE_;
+	virtual void clearParticles() IRR_OVERRIDE;
 
 	//! Sets if the node should be visible or not.
-	virtual void setVisible(bool isVisible) _IRR_OVERRIDE_;
+	virtual void setVisible(bool isVisible) IRR_OVERRIDE;
 
 	//! Do manually update the particles.
 	//! This should only be called when you want to render the node outside the scenegraph,
 	//! as the node will care about this otherwise automatically.
-	virtual void doParticleSystem(u32 time) _IRR_OVERRIDE_;
+	virtual void doParticleSystem(u32 time) IRR_OVERRIDE;
 
 	//! Writes attributes of the scene node.
-	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_;
+	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const IRR_OVERRIDE;
 
 	//! Reads attributes of the scene node.
-	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_;
+	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) IRR_OVERRIDE;
 
 	//! Returns type of the scene node
-	virtual ESCENE_NODE_TYPE getType() const _IRR_OVERRIDE_ { return ESNT_PARTICLE_SYSTEM; }
+	virtual ESCENE_NODE_TYPE getType() const IRR_OVERRIDE { return ESNT_PARTICLE_SYSTEM; }
 
 private:
 
@@ -246,4 +246,3 @@ private:
 #endif // _IRR_COMPILE_WITH_PARTICLES_
 
 #endif
-

@@ -82,8 +82,8 @@ public:
 	CTR_transparent_reflection_2_layer(CBurningVideoDriver* driver);
 
 	//! draws an indexed triangle list
-	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) _IRR_OVERRIDE_;
-	virtual void OnSetMaterial(const SBurningShaderMaterial& material) _IRR_OVERRIDE_;
+	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) IRR_OVERRIDE;
+	virtual void OnSetMaterial(const SBurningShaderMaterial& material) IRR_OVERRIDE;
 
 private:
 	void fragmentShader();

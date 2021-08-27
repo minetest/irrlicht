@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_WRITE_FILE_H_INCLUDED__
-#define __C_WRITE_FILE_H_INCLUDED__
+#ifndef IRR_C_WRITE_FILE_H_INCLUDED
+#define IRR_C_WRITE_FILE_H_INCLUDED
 
 #include <stdio.h>
 #include "IWriteFile.h"
@@ -27,19 +27,19 @@ namespace io
 		virtual ~CWriteFile();
 
 		//! Reads an amount of bytes from the file.
-		virtual size_t write(const void* buffer, size_t sizeToWrite) _IRR_OVERRIDE_;
+		virtual size_t write(const void* buffer, size_t sizeToWrite) IRR_OVERRIDE;
 
 		//! Changes position in file, returns true if successful.
-		virtual bool seek(long finalPos, bool relativeMovement = false) _IRR_OVERRIDE_;
+		virtual bool seek(long finalPos, bool relativeMovement = false) IRR_OVERRIDE;
 
 		//! Returns the current position in the file.
-		virtual long getPos() const _IRR_OVERRIDE_;
+		virtual long getPos() const IRR_OVERRIDE;
 
 		//! Returns name of file.
-		virtual const io::path& getFileName() const _IRR_OVERRIDE_;
+		virtual const io::path& getFileName() const IRR_OVERRIDE;
 
 		//! Flush the content of the buffer in the file
-		virtual bool flush() _IRR_OVERRIDE_;
+		virtual bool flush() IRR_OVERRIDE;
 
 		//! returns if file is open
 		bool isOpen() const;
@@ -61,4 +61,3 @@ namespace io
 } // end namespace irr
 
 #endif
-

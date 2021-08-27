@@ -1458,7 +1458,7 @@ bool COGLES1Driver::testGLError(int code)
 	case GL_OUT_OF_MEMORY:
 		os::Printer::log("GL_OUT_OF_MEMORY", core::stringc(code).c_str(), ELL_ERROR); break;
 	};
-//	_IRR_DEBUG_BREAK_IF(true);
+//	IRR_DEBUG_BREAK_IF(true);
 	return true;
 #else
 	return false;

@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_OS_H_INCLUDED__
-#define __IRR_OS_H_INCLUDED__
+#ifndef IRR_OS_H_INCLUDED
+#define IRR_OS_H_INCLUDED
 
 #include "IrrCompileConfig.h" // for endian check
 #include "irrTypes.h"
@@ -129,6 +129,4 @@ namespace os
 } // end namespace os
 } // end namespace irr
 
-
 #endif
-

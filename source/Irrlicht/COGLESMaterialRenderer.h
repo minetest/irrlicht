@@ -450,7 +450,7 @@ public:
 	}
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
 		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
@@ -464,7 +464,7 @@ public:
 		}
 	}
 
-	virtual void OnUnsetMaterial() _IRR_OVERRIDE_
+	virtual void OnUnsetMaterial() IRR_OVERRIDE
 	{
 		Driver->getCacheHandler()->setActiveTexture(GL_TEXTURE1);
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);

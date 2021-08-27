@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __S_K_2D_VERTEX_H_INCLUDED__
-#define __S_K_2D_VERTEX_H_INCLUDED__
+#ifndef S_K_2D_VERTEX_H_INCLUDED
+#define S_K_2D_VERTEX_H_INCLUDED
 
 #include "vector2d.h"
 
@@ -27,4 +27,3 @@ namespace video
 } // end namespace irr
 
 #endif
-

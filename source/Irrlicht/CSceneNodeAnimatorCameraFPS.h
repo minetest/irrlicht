@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_SCENE_NODE_ANIMATOR_CAMERA_FPS_H_INCLUDED__
-#define __C_SCENE_NODE_ANIMATOR_CAMERA_FPS_H_INCLUDED__
+#ifndef IRR_C_SCENE_NODE_ANIMATOR_CAMERA_FPS_H_INCLUDED
+#define IRR_C_SCENE_NODE_ANIMATOR_CAMERA_FPS_H_INCLUDED
 
 #include "ISceneNodeAnimatorCameraFPS.h"
 #include "vector2d.h"
@@ -36,31 +36,31 @@ namespace scene
 		virtual ~CSceneNodeAnimatorCameraFPS();
 
 		//! Animates the scene node, currently only works on cameras
-		virtual void animateNode(ISceneNode* node, u32 timeMs) _IRR_OVERRIDE_;
+		virtual void animateNode(ISceneNode* node, u32 timeMs) IRR_OVERRIDE;
 
 		//! Event receiver
-		virtual bool OnEvent(const SEvent& event) _IRR_OVERRIDE_;
+		virtual bool OnEvent(const SEvent& event) IRR_OVERRIDE;
 
 		//! Returns the speed of movement in units per second
-		virtual f32 getMoveSpeed() const _IRR_OVERRIDE_;
+		virtual f32 getMoveSpeed() const IRR_OVERRIDE;
 
 		//! Sets the speed of movement in units per second
-		virtual void setMoveSpeed(f32 moveSpeed) _IRR_OVERRIDE_;
+		virtual void setMoveSpeed(f32 moveSpeed) IRR_OVERRIDE;
 
 		//! Returns the rotation speed when moving mouse
-		virtual f32 getRotateSpeed() const _IRR_OVERRIDE_;
+		virtual f32 getRotateSpeed() const IRR_OVERRIDE;
 
 		//! Set the rotation speed when moving mouse
-		virtual void setRotateSpeed(f32 rotateSpeed) _IRR_OVERRIDE_;
+		virtual void setRotateSpeed(f32 rotateSpeed) IRR_OVERRIDE;
 
 		//! Returns the rotation speed when using keyboard
-		virtual f32 getRotateSpeedKeyboard() const _IRR_OVERRIDE_
+		virtual f32 getRotateSpeedKeyboard() const IRR_OVERRIDE
 		{
 			return RotateSpeedKeyboard;
 		}
 
 		//! Set the rotation speed when using keyboard
-		virtual void setRotateSpeedKeyboard(f32 rotateSpeed) _IRR_OVERRIDE_
+		virtual void setRotateSpeedKeyboard(f32 rotateSpeed) IRR_OVERRIDE
 		{
 			RotateSpeedKeyboard = rotateSpeed;
 		}
@@ -68,31 +68,31 @@ namespace scene
 		//! Sets the keyboard mapping for this animator (old style)
 		//! \param keymap: an array of keyboard mappings, see SKeyMap
 		//! \param count: the size of the keyboard map array
-		virtual void setKeyMap(SKeyMap *map, u32 count) _IRR_OVERRIDE_;
+		virtual void setKeyMap(SKeyMap *map, u32 count) IRR_OVERRIDE;
 
 		//! Sets the keyboard mapping for this animator
 		//!	\param keymap The new keymap array
-		virtual void setKeyMap(const core::array<SKeyMap>& keymap) _IRR_OVERRIDE_;
+		virtual void setKeyMap(const core::array<SKeyMap>& keymap) IRR_OVERRIDE;
 
 		//! Gets the keyboard mapping for this animator
-		virtual const core::array<SKeyMap>& getKeyMap() const _IRR_OVERRIDE_;
+		virtual const core::array<SKeyMap>& getKeyMap() const IRR_OVERRIDE;
 
 		//! Sets whether vertical movement should be allowed.
-		virtual void setVerticalMovement(bool allow) _IRR_OVERRIDE_;
+		virtual void setVerticalMovement(bool allow) IRR_OVERRIDE;
 
 		//! Sets whether the Y axis of the mouse should be inverted.
 		/** If enabled then moving the mouse down will cause
 		the camera to look up. It is disabled by default. */
-		virtual void setInvertMouse(bool invert) _IRR_OVERRIDE_;
+		virtual void setInvertMouse(bool invert) IRR_OVERRIDE;
 
 		//! This animator will receive events when attached to the active camera
-		virtual bool isEventReceiverEnabled() const _IRR_OVERRIDE_
+		virtual bool isEventReceiverEnabled() const IRR_OVERRIDE
 		{
 			return true;
 		}
 
 		//! Returns the type of this animator
-		virtual ESCENE_NODE_ANIMATOR_TYPE getType() const _IRR_OVERRIDE_
+		virtual ESCENE_NODE_ANIMATOR_TYPE getType() const IRR_OVERRIDE
 		{
 			return ESNAT_CAMERA_FPS;
 		}
@@ -101,13 +101,13 @@ namespace scene
 		/** Please note that you will have to drop
 		(IReferenceCounted::drop()) the returned pointer once you're
 		done with it. */
-		virtual ISceneNodeAnimator* createClone(ISceneNode* node, ISceneManager* newManager=0) _IRR_OVERRIDE_;
+		virtual ISceneNodeAnimator* createClone(ISceneNode* node, ISceneManager* newManager=0) IRR_OVERRIDE;
 
 		//! Writes attributes of the scene node animator.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_;
+		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const IRR_OVERRIDE;
 
 		//! Reads attributes of the scene node animator.
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_;
+		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) IRR_OVERRIDE;
 
 	private:
 
@@ -141,5 +141,4 @@ namespace scene
 } // end namespace scene
 } // end namespace irr
 
-#endif // __C_SCENE_NODE_ANIMATOR_CAMERA_FPS_H_INCLUDED__
-
+#endif // IRR_C_SCENE_NODE_ANIMATOR_CAMERA_FPS_H_INCLUDED

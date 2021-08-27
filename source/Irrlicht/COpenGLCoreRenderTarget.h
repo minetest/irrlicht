@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_OGLCORE_RENDER_TARGET_H_INCLUDED__
-#define __C_OGLCORE_RENDER_TARGET_H_INCLUDED__
+#ifndef IRR_C_OGLCORE_RENDER_TARGET_H_INCLUDED
+#define IRR_C_OGLCORE_RENDER_TARGET_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 
@@ -58,7 +58,7 @@ public:
 			DepthStencil->drop();
 	}
 
-	virtual void setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces, u32 numCubeSurfaces) _IRR_OVERRIDE_
+	virtual void setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces, u32 numCubeSurfaces) IRR_OVERRIDE
 	{
 		bool needSizeUpdate = false;
 

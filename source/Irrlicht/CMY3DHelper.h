@@ -15,8 +15,8 @@
 //                      some useful functions
 //**********************************************************************
 
-#ifndef __C_MY3D_HELPER_H_INCLUDED__
-#define __C_MY3D_HELPER_H_INCLUDED__
+#ifndef IRR_C_MY3D_HELPER_H_INCLUDED
+#define IRR_C_MY3D_HELPER_H_INCLUDED
 
 #include "irrTypes.h"
 
@@ -441,5 +441,4 @@ int rle_decode (
 } //end namespace irr
 
 
-#endif // __C_MY3D_HELPER_H_INCLUDED__
-
+#endif // IRR_C_MY3D_HELPER_H_INCLUDED
