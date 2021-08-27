@@ -1423,6 +1423,15 @@
     <ClInclude Include="..\..\include\EReadFileType.h">
       <Filter>include\io</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\EMaterialTypes.h">
+      <Filter>include\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EHardwareBufferFlags.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EDeviceTypes.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\changes.txt">

@@ -3,8 +3,8 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 // originally written by Christian Stehno, modified by Nikolaus Gebhardt
 
-#ifndef __C_OGRE_MESH_FILE_LOADER_H_INCLUDED__
-#define __C_OGRE_MESH_FILE_LOADER_H_INCLUDED__
+#ifndef IRR_C_OGRE_MESH_FILE_LOADER_H_INCLUDED
+#define IRR_C_OGRE_MESH_FILE_LOADER_H_INCLUDED
 
 #include "IMeshLoader.h"
 #include "IFileSystem.h"
@@ -266,4 +266,3 @@ private:
 } // end namespace irr
 
 #endif
-

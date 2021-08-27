@@ -3,8 +3,8 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 // Code for this scene node has been contributed by Anders la Cour-Harbo (alc)
 
-#ifndef __C_SKY_DOME_SCENE_NODE_H_INCLUDED__
-#define __C_SKY_DOME_SCENE_NODE_H_INCLUDED__
+#ifndef IRR_C_SKY_DOME_SCENE_NODE_H_INCLUDED
+#define IRR_C_SKY_DOME_SCENE_NODE_H_INCLUDED
 
 #include "ISceneNode.h"
 #include "SMeshBuffer.h"
@@ -47,4 +47,3 @@ class CSkyDomeSceneNode : public ISceneNode
 }
 
 #endif
-

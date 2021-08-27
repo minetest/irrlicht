@@ -4,6 +4,7 @@ Changes in 1.9 (not yet released)
   Mostly it's about replacing __IRRxxx or _IRRxxx identifiers by versions without underscores
   Sometimes underscores at end also got removed.
   There is a header file irrLegacyDefines.h which can be included to allow having the old defines back.
+  Thanks @Markus Elfring  for reporting this (bug #427)
 - Add equals and set_data functions to core::array for easier working with blocks of data.
 - SIrrlichtCreationParameters::IgnoreInput set to false works again on X11. 
   Thanks @ Victor Gaydov for report + patch + very good test cases! (bug #401)

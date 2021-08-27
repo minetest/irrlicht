@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_ANIMATED_MESH_MD2_H_INCLUDED__
-#define __C_ANIMATED_MESH_MD2_H_INCLUDED__
+#ifndef IRR_C_ANIMATED_MESH_MD2_H_INCLUDED
+#define IRR_C_ANIMATED_MESH_MD2_H_INCLUDED
 
 #include "IAnimatedMeshMD2.h"
 #include "IMesh.h"
@@ -155,4 +155,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

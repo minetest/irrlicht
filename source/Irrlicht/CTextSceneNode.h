@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_TEXT_SCENE_NODE_H_INCLUDED__
-#define __C_TEXT_SCENE_NODE_H_INCLUDED__
+#ifndef IRR_C_TEXT_SCENE_NODE_H_INCLUDED
+#define IRR_C_TEXT_SCENE_NODE_H_INCLUDED
 
 #include "ITextSceneNode.h"
 #include "IBillboardTextSceneNode.h"
@@ -177,4 +177,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_IRR_DEVICE_CONSOLE_H_INCLUDED__
-#define __C_IRR_DEVICE_CONSOLE_H_INCLUDED__
+#ifndef IRR_C_IRR_DEVICE_CONSOLE_H_INCLUDED
+#define IRR_C_IRR_DEVICE_CONSOLE_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #ifdef _IRR_COMPILE_WITH_CONSOLE_DEVICE_
@@ -332,5 +332,4 @@ namespace gui
 } // end namespace irr
 
 #endif // _IRR_COMPILE_WITH_CONSOLE_DEVICE_
-#endif // __C_IRR_DEVICE_CONSOLE_H_INCLUDED__
-
+#endif // IRR_C_IRR_DEVICE_CONSOLE_H_INCLUDED

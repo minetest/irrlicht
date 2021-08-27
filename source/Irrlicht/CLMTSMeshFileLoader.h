@@ -18,8 +18,8 @@ Version 1.5 - 15 March 2005
 
 */
 
-#if !defined(__C_LMTS_MESH_FILE_LOADER_H_INCLUDED__)
-#define __C_LMTS_MESH_FILE_LOADER_H_INCLUDED__
+#ifndef IRR_C_LMTS_MESH_FILE_LOADER_H_INCLUDED
+#define IRR_C_LMTS_MESH_FILE_LOADER_H_INCLUDED
 
 #include "IMeshLoader.h"
 #include "SMesh.h"
@@ -106,4 +106,4 @@ private:
 } // end namespace scene
 } // end namespace irr
 
-#endif // !defined(__C_LMTS_MESH_FILE_LOADER_H_INCLUDED__)
+#endif // IRR_C_LMTS_MESH_FILE_LOADER_H_INCLUDED

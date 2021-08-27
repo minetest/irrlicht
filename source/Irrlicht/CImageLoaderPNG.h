@@ -6,8 +6,8 @@
 // i wanted to be able to read in PNG images with irrlicht :)
 // why?  lossless compression with 8-bit alpha channel!
 
-#ifndef __C_IMAGE_LOADER_PNG_H_INCLUDED__
-#define __C_IMAGE_LOADER_PNG_H_INCLUDED__
+#ifndef IRR_C_IMAGE_LOADER_PNG_H_INCLUDED
+#define IRR_C_IMAGE_LOADER_PNG_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 
@@ -42,4 +42,3 @@ public:
 
 #endif
 #endif
-

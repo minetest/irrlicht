@@ -40,8 +40,8 @@
 //  4. You may not use this software to directly or indirectly cause harm to others.
 
 
-#ifndef __C_OCT_LOADER_H_INCLUDED__
-#define __C_OCT_LOADER_H_INCLUDED__
+#ifndef IRR_C_OCT_LOADER_H_INCLUDED
+#define IRR_C_OCT_LOADER_H_INCLUDED
 
 #include "IMeshLoader.h"
 #include "IReadFile.h"
@@ -138,4 +138,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_GUI_MENU_H_INCLUDED__
-#define __C_GUI_MENU_H_INCLUDED__
+#ifndef IRR_C_GUI_MENU_H_INCLUDED
+#define IRR_C_GUI_MENU_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #ifdef _IRR_COMPILE_WITH_GUI_
@@ -46,7 +46,5 @@ namespace gui
 } // end namespace gui
 } // end namespace irr
 
-
-#endif //  __C_GUI_MENU_H_INCLUDED__
 #endif // _IRR_COMPILE_WITH_GUI_
-
+#endif //  IRR_C_GUI_MENU_H_INCLUDED

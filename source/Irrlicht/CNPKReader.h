@@ -3,8 +3,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_NPK_READER_H_INCLUDED__
-#define __C_NPK_READER_H_INCLUDED__
+#ifndef IRR_C_NPK_READER_H_INCLUDED
+#define IRR_C_NPK_READER_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 
@@ -121,5 +121,4 @@ namespace io
 
 #endif // __IRR_COMPILE_WITH_NPK_ARCHIVE_LOADER_
 
-#endif // __C_NPK_READER_H_INCLUDED__
-
+#endif // IRR_C_NPK_READER_H_INCLUDED

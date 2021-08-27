@@ -1,8 +1,8 @@
 // This file is part of the "Irrlicht Engine".
 // written by Reinhard Ostermeier, reinhard@nospam.r-ostermeier.de
 
-#ifndef __C_GUI_TREE_VIEW_H_INCLUDED__
-#define __C_GUI_TREE_VIEW_H_INCLUDED__
+#ifndef IRR_C_GUI_TREE_VIEW_H_INCLUDED
+#define IRR_C_GUI_TREE_VIEW_H_INCLUDED
 
 #include "IGUITreeView.h"
 #include "irrList.h"
@@ -352,4 +352,3 @@ namespace gui
 } // end namespace irr
 
 #endif
-

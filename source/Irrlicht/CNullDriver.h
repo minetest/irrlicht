@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_VIDEO_NULL_H_INCLUDED__
-#define __C_VIDEO_NULL_H_INCLUDED__
+#ifndef IRR_C_VIDEO_NULL_H_INCLUDED
+#define IRR_C_VIDEO_NULL_H_INCLUDED
 
 #include "IVideoDriver.h"
 #include "IFileSystem.h"
@@ -899,6 +899,5 @@ namespace video
 
 } // end namespace video
 } // end namespace irr
-
 
 #endif

@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_LIGHT_SCENE_NODE_H_INCLUDED__
-#define __C_LIGHT_SCENE_NODE_H_INCLUDED__
+#ifndef IRR_C_LIGHT_SCENE_NODE_H_INCLUDED
+#define IRR_C_LIGHT_SCENE_NODE_H_INCLUDED
 
 #include "ILightSceneNode.h"
 
@@ -106,4 +106,3 @@ private:
 } // end namespace irr
 
 #endif
-

@@ -4,8 +4,8 @@
 // This device code is based on the original SDL device implementation
 // contributed by Shane Parker (sirshane).
 
-#ifndef __C_IRR_DEVICE_SDL_H_INCLUDED__
-#define __C_IRR_DEVICE_SDL_H_INCLUDED__
+#ifndef IRR_C_IRR_DEVICE_SDL_H_INCLUDED
+#define IRR_C_IRR_DEVICE_SDL_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 
@@ -235,5 +235,4 @@ namespace irr
 } // end namespace irr
 
 #endif // _IRR_COMPILE_WITH_SDL_DEVICE_
-#endif // __C_IRR_DEVICE_SDL_H_INCLUDED__
-
+#endif // IRR_C_IRR_DEVICE_SDL_H_INCLUDED

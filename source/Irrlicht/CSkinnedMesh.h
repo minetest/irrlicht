@@ -4,8 +4,8 @@
 
 //New skinned mesh
 
-#ifndef __C_SKINNED_MESH_H_INCLUDED__
-#define __C_SKINNED_MESH_H_INCLUDED__
+#ifndef IRR_C_SKINNED_MESH_H_INCLUDED
+#define IRR_C_SKINNED_MESH_H_INCLUDED
 
 #include "ISkinnedMesh.h"
 #include "SMeshBuffer.h"
@@ -212,4 +212,3 @@ private:
 } // end namespace irr
 
 #endif
-

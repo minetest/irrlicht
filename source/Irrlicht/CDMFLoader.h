@@ -27,8 +27,8 @@
   credits to others for parts of this code.
 */
 
-#ifndef __C_DMF_LOADER_H_INCLUDED__
-#define __C_DMF_LOADER_H_INCLUDED__
+#ifndef IRR_C_DMF_LOADER_H_INCLUDED
+#define IRR_C_DMF_LOADER_H_INCLUDED
 
 #include "IMeshLoader.h"
 #include "IReadFile.h"
@@ -88,4 +88,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

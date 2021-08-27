@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in Irrlicht.h
 
-#ifndef __C_GLX_MANAGER_H_INCLUDED__
-#define __C_GLX_MANAGER_H_INCLUDED__
+#ifndef IRR_C_GLX_MANAGER_H_INCLUDED
+#define IRR_C_GLX_MANAGER_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 
@@ -76,4 +76,3 @@ namespace video
 #endif
 
 #endif
-

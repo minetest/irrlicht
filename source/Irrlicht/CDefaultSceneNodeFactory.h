@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_DEFAULT_SCENE_NODE_FACTORY_H_INCLUDED__
-#define __C_DEFAULT_SCENE_NODE_FACTORY_H_INCLUDED__
+#ifndef IRR_C_DEFAULT_SCENE_NODE_FACTORY_H_INCLUDED
+#define IRR_C_DEFAULT_SCENE_NODE_FACTORY_H_INCLUDED
 
 #include "ISceneNodeFactory.h"
 #include "irrArray.h"
@@ -16,7 +16,7 @@ namespace scene
 	class ISceneNode;
 	class ISceneManager;
 
-	//! Interface making it possible to dynamicly create scene nodes and animators
+	//! Interface making it possible to dynamically create scene nodes and animators
 	class CDefaultSceneNodeFactory : public ISceneNodeFactory
 	{
 	public:
@@ -77,4 +77,3 @@ namespace scene
 } // end namespace irr
 
 #endif
-

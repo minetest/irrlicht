@@ -2,8 +2,8 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 // Written by Michael Zeilfelder
 
-#ifndef __C_PROFILER_H_INCLUDED__
-#define __C_PROFILER_H_INCLUDED__
+#ifndef IRR_C_PROFILER_H_INCLUDED
+#define IRR_C_PROFILER_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #include "IProfiler.h"
@@ -29,4 +29,4 @@ protected:
 };
 } // namespace irr
 
-#endif // __C_PROFILER_H_INCLUDED__
+#endif // IRR_C_PROFILER_H_INCLUDED

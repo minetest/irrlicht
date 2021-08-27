@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_WAD_READER_H_INCLUDED__
-#define __C_WAD_READER_H_INCLUDED__
+#ifndef IRR_C_WAD_READER_H_INCLUDED
+#define IRR_C_WAD_READER_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #ifdef __IRR_COMPILE_WITH_WAD_ARCHIVE_LOADER_
@@ -169,8 +169,6 @@ namespace io
 } // end namespace io
 } // end namespace irr
 
-#endif
+#endif	// #ifdef __IRR_COMPILE_WITH_WAD_ARCHIVE_LOADER_
 
-
-#endif // #ifdef __IRR_COMPILE_WITH_WAD_ARCHIVE_LOADER_
-
+#endif 

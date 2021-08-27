@@ -8,8 +8,8 @@
  Nikolaus Gebhardt for the Irrlicht 3D engine
 */
 
-#ifndef __C_IMAGE_LOADER_WAL_H_INCLUDED__
-#define __C_IMAGE_LOADER_WAL_H_INCLUDED__
+#ifndef IRR_C_IMAGE_LOADER_WAL_H_INCLUDED
+#define IRR_C_IMAGE_LOADER_WAL_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 #include "IImageLoader.h"
@@ -97,4 +97,3 @@ public:
 }
 
 #endif
-

@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_IMAGE_LOADER_DDS_H_INCLUDED__
-#define __C_IMAGE_LOADER_DDS_H_INCLUDED__
+#ifndef IRR_C_IMAGE_LOADER_DDS_H_INCLUDED
+#define IRR_C_IMAGE_LOADER_DDS_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 
@@ -212,4 +212,3 @@ public:
 
 #endif // compiled with DDS loader
 #endif
-

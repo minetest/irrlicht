@@ -2,8 +2,8 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in Irrlicht.h
 
-#ifndef __C_OPEN_GL_FEATURE_MAP_H_INCLUDED__
-#define __C_OPEN_GL_FEATURE_MAP_H_INCLUDED__
+#ifndef IRR_C_OPEN_GL_FEATURE_MAP_H_INCLUDED
+#define IRR_C_OPEN_GL_FEATURE_MAP_H_INCLUDED
 
 #include "IrrCompileConfig.h"
 
@@ -3439,4 +3439,3 @@ inline void COpenGLExtensionHandler::extGlSwapInterval(int interval)
 #endif
 
 #endif
-

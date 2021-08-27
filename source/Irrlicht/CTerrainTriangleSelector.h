@@ -4,10 +4,10 @@
 
 // The code for the TerrainTriangleSelector is based on the GeoMipMapSelector
 // developed by Spintz. He made it available for Irrlicht and allowed it to be
-// distributed under this licence. I only modified some parts. A lot of thanks go to him.
+// distributed under this license. I only modified some parts. A lot of thanks go to him.
 
-#ifndef __C_TERRAIN_TRIANGLE_SELECTOR_H__
-#define __C_TERRAIN_TRIANGLE_SELECTOR_H__
+#ifndef IRR_C_TERRAIN_TRIANGLE_SELECTOR_H
+#define IRR_C_TERRAIN_TRIANGLE_SELECTOR_H
 
 #include "ITriangleSelector.h"
 #include "irrArray.h"
@@ -99,5 +99,4 @@ private:
 } // end namespace scene
 } // end namespace irr
 
-
-#endif // __C_TERRAIN_TRIANGLE_SELECTOR_H__
+#endif // IRR_C_TERRAIN_TRIANGLE_SELECTOR_H

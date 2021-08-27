@@ -4,10 +4,10 @@
 
 // The code for the TerrainSceneNode is based on the GeoMipMapSceneNode
 // developed by Spintz. He made it available for Irrlicht and allowed it to be
-// distributed under this licence. I only modified some parts. A lot of thanks go to him.
+// distributed under this license. I only modified some parts. A lot of thanks go to him.
 
-#ifndef __C_TERRAIN_SCENE_NODE_H__
-#define __C_TERRAIN_SCENE_NODE_H__
+#ifndef IRR_C_TERRAIN_SCENE_NODE_H
+#define IRR_C_TERRAIN_SCENE_NODE_H
 
 #include "ITerrainSceneNode.h"
 #include "IDynamicMeshBuffer.h"
@@ -331,6 +331,4 @@ namespace scene
 } // end namespace scene
 } // end namespace irr
 
-#endif // __C_TERRAIN_SCENE_NODE_H__
-
-
+#endif // IRR_C_TERRAIN_SCENE_NODE_H

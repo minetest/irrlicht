@@ -8,8 +8,8 @@
 
 #include "IrrCompileConfig.h"
 
-#ifndef __C_B3D_MESH_LOADER_H_INCLUDED__
-#define __C_B3D_MESH_LOADER_H_INCLUDED__
+#ifndef IRR_C_B3D_MESH_LOADER_H_INCLUDED
+#define IRR_C_B3D_MESH_LOADER_H_INCLUDED
 
 #include "IMeshLoader.h"
 #include "ISceneManager.h"
@@ -87,5 +87,4 @@ private:
 } // end namespace scene
 } // end namespace irr
 
-#endif // __C_B3D_MESH_LOADER_H_INCLUDED__
-
+#endif // IRR_C_B3D_MESH_LOADER_H_INCLUDED
