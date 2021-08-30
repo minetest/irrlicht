@@ -27,10 +27,11 @@ public:
 	virtual const core::stringc& getOperatingSystemVersion() const _IRR_OVERRIDE_;
 
 	//! copies text to the clipboard
-	virtual void copyToClipboard(const c8* text) const _IRR_OVERRIDE_;
+	//! \param text: text in utf-8
+	virtual void copyToClipboard(const c8 *text) const _IRR_OVERRIDE_;
 
 	//! gets text from the clipboard
-	//! \return Returns 0 if no string is in there.
+	//! \return Returns 0 if no string is in there, otherwise an utf-8 string.
 	virtual const c8* getTextFromClipboard() const _IRR_OVERRIDE_;
 
 	//! gets the total and available system RAM in kB
