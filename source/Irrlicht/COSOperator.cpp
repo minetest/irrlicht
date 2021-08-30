@@ -70,16 +70,20 @@ void COSOperator::copyToClipboard(const c8 *text) const
 
 	EmptyClipboard();
 
+	core::stringw tempbuffer;
+	core::multibyteToWString(tempbuffer, text);
+	const u32 size = (tempbuffer.size() + 1) * sizeof(wchar_t);
+
 	HGLOBAL clipbuffer;
-	char * buffer;
+	void * buffer;
 
-	clipbuffer = GlobalAlloc(GMEM_DDESHARE, strlen(text)+1);
-	buffer = (char*)GlobalLock(clipbuffer);
+	clipbuffer = GlobalAlloc(GMEM_MOVEABLE, size);
+	buffer = GlobalLock(clipbuffer);
 
-	strcpy(buffer, text);
+	memcpy(buffer, tempbuffer.c_str(), size);
 
 	GlobalUnlock(clipbuffer);
-	SetClipboardData(CF_TEXT, clipbuffer);
+	SetClipboardData(CF_UNICODETEXT, clipbuffer);
 	CloseClipboard();
 
 #elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
@@ -113,13 +117,17 @@ const c8* COSOperator::getTextFromClipboard() const
 	if (!OpenClipboard(NULL))
 		return 0;
 
-	char * buffer = 0;
+	wchar_t * buffer = 0;
 
-	HANDLE hData = GetClipboardData( CF_TEXT );
-	buffer = (char*)GlobalLock( hData );
+	HANDLE hData = GetClipboardData( CF_UNICODETEXT );
+	buffer = (wchar_t*) GlobalLock( hData );
+
+	core::wStringToMultibyte(ClipboardBuf, buffer);
+
 	GlobalUnlock( hData );
 	CloseClipboard();
-	return buffer;
+
+	return ClipboardBuf.c_str();
 
 #elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
     NSString* str = nil;

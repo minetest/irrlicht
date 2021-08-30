@@ -48,6 +48,10 @@ private:
 	CIrrDeviceLinux * IrrDeviceLinux;
 #endif
 
+#ifdef  _IRR_WINDOWS_API_
+	mutable core::stringc ClipboardBuf;
+#endif
+
 };
 
 } // end namespace
