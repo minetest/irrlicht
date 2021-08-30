@@ -12,17 +12,6 @@ namespace irr
 {
 namespace core
 {
-	//! Selection of characters which count as decimal point in fast_atof
-	//! By default Irrlicht considers "." as the decimal point in numbers.
-	//! But sometimes you might run into situations where floats were written in 
-	//! a local format with another decimal point like ",".
-	//! Best solution is usually to fix those cases by converting the input.
-	//! But if you don't have that choice you can set this to ".,".
-	//! WARNING: This is not thread-safe, so don't change while there's a chance 
-	//! of another thread using fast_atof functions at the same time.
-	// TODO: This should probably also be used in irr::core::string, but
-	// the float-to-string code used there has to be rewritten first.
-	IRRLICHT_API extern irr::core::stringc LOCALE_DECIMAL_POINTS;
 
 #define IRR_ATOF_TABLE_SIZE 17
 // we write [IRR_ATOF_TABLE_SIZE] here instead of [] to work around a swig bug
@@ -328,7 +317,7 @@ inline const char* fast_atof_move(const char* in, f32& result)
 
 	f32 value = strtof10(in, &in);
 
-	if ( LOCALE_DECIMAL_POINTS.findFirst(*in) >= 0 )
+	if ( *in == '.' )
 	{
 		const char* afterDecimal = ++in;
 		const f32 decimal = strtof10(in, &afterDecimal);

@@ -207,7 +207,6 @@ add_library(IRROTHEROBJ OBJECT
 	os.cpp
 	leakHunter.cpp
 	CProfiler.cpp
-	utf8.cpp
 )
 
 if(ANDROID)

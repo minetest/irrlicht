@@ -50,8 +50,6 @@
 
 #include "CSceneCollisionManager.h"
 
-#include <locale.h>
-
 namespace irr
 {
 namespace scene

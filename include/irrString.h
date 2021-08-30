@@ -38,29 +38,11 @@ template <typename T, typename TAlloc = irrAllocator<T> >
 class string;
 static size_t multibyteToWString(string<wchar_t>& destination, const char* source, u32 sourceSize);
 static size_t wStringToMultibyte(string<c8>& destination, const wchar_t* source, u32 sourceSize);
-inline s32 isdigit(s32 c);
-
-enum eLocaleID
-{
-	IRR_LOCALE_ANSI = 0,
-	IRR_LOCALE_GERMAN = 1
-};
-
-static eLocaleID locale_current = IRR_LOCALE_ANSI;
-static inline void locale_set ( eLocaleID id )
-{
-	locale_current = id;
-}
+inline bool isdigit(s32 c);
 
 //! Returns a character converted to lower case
 static inline u32 locale_lower ( u32 x )
 {
-	switch ( locale_current )
-	{
-		case IRR_LOCALE_GERMAN:
-		case IRR_LOCALE_ANSI:
-			break;
-	}
 	// ansi
 	return x >= 'A' && x <= 'Z' ? x + 0x20 : x;
 }
@@ -68,28 +50,9 @@ static inline u32 locale_lower ( u32 x )
 //! Returns a character converted to upper case
 static inline u32 locale_upper ( u32 x )
 {
-	switch ( locale_current )
-	{
-		case IRR_LOCALE_GERMAN:
-		case IRR_LOCALE_ANSI:
-			break;
-	}
-
 	// ansi
 	return x >= 'a' && x <= 'z' ? x + ( 'A' - 'a' ) : x;
 }
-
-//! Convert this utf-8-encoded string to the platform's wchar.
-/** The resulting string is always NULL-terminated and well-formed.
-\param len The size of the output buffer in bytes.
-*/
-IRRLICHT_API void utf8ToWchar(const char *in, wchar_t *out, const u64 len);
-
-//! Convert this wchar string to utf-8.
-/** The resulting string is always NULL-terminated and well-formed.
-\param len The size of the output buffer in bytes.
-*/
-IRRLICHT_API void wcharToUtf8(const wchar_t *in, char *out, const u64 len);
 
 
 template <typename T, typename TAlloc>

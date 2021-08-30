@@ -194,9 +194,9 @@ static inline io::path mergeFilename(const io::path& path, const io::path& filen
 
 
 //! some standard function ( to remove dependencies )
-inline s32 isdigit(s32 c) { return c >= '0' && c <= '9'; }
-inline s32 isspace(s32 c) { return c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t' || c == '\v'; }
-inline s32 isupper(s32 c) { return c >= 'A' && c <= 'Z'; }
+inline bool isdigit(s32 c) { return c >= '0' && c <= '9'; }
+inline bool isspace(s32 c) { return c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t' || c == '\v'; }
+inline bool isupper(s32 c) { return c >= 'A' && c <= 'Z'; }
 
 
 } // end namespace core
