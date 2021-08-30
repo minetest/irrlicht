@@ -515,15 +515,9 @@ const io::path& CFileSystem::getWorkingDirectory()
 	{
 		#if defined(_IRR_WINDOWS_API_)
 			fschar_t tmp[_MAX_PATH];
-			#if defined(_IRR_WCHAR_FILESYSTEM )
-				_wgetcwd(tmp, _MAX_PATH);
-				WorkingDirectory[FILESYSTEM_NATIVE] = tmp;
-				WorkingDirectory[FILESYSTEM_NATIVE].replace(L'\\', L'/');
-			#else
 				_getcwd(tmp, _MAX_PATH);
 				WorkingDirectory[FILESYSTEM_NATIVE] = tmp;
 				WorkingDirectory[FILESYSTEM_NATIVE].replace('\\', '/');
-			#endif
 		#endif
 
 		#if (defined(_IRR_POSIX_API_) || defined(_IRR_OSX_PLATFORM_))
@@ -532,21 +526,6 @@ const io::path& CFileSystem::getWorkingDirectory()
 			// so try it until the call was successful
 			// Note that neither the first nor the second parameter may be 0 according to POSIX
 
-			#if defined(_IRR_WCHAR_FILESYSTEM )
-				u32 pathSize=256;
-				wchar_t *tmpPath = new wchar_t[pathSize];
-				while ((pathSize < (1<<16)) && !(wgetcwd(tmpPath,pathSize)))
-				{
-					delete [] tmpPath;
-					pathSize *= 2;
-					tmpPath = new char[pathSize];
-				}
-				if (tmpPath)
-				{
-					WorkingDirectory[FILESYSTEM_NATIVE] = tmpPath;
-					delete [] tmpPath;
-				}
-			#else
 				u32 pathSize=256;
 				char *tmpPath = new char[pathSize];
 				while ((pathSize < (1<<16)) && !(getcwd(tmpPath,pathSize)))
@@ -560,7 +539,6 @@ const io::path& CFileSystem::getWorkingDirectory()
 					WorkingDirectory[FILESYSTEM_NATIVE] = tmpPath;
 					delete [] tmpPath;
 				}
-			#endif
 		#endif
 
 		WorkingDirectory[type].validate();
@@ -587,17 +565,9 @@ bool CFileSystem::changeWorkingDirectoryTo(const io::path& newDirectory)
 		WorkingDirectory[FILESYSTEM_NATIVE] = newDirectory;
 
 #if defined(_MSC_VER)
-	#if defined(_IRR_WCHAR_FILESYSTEM)
-		success = (_wchdir(newDirectory.c_str()) == 0);
-	#else
 		success = (_chdir(newDirectory.c_str()) == 0);
-	#endif
 #else
-	#if defined(_IRR_WCHAR_FILESYSTEM)
-		success = (_wchdir(newDirectory.c_str()) == 0);
-	#else
 		success = (chdir(newDirectory.c_str()) == 0);
-	#endif
 #endif
 	}
 
@@ -612,15 +582,9 @@ io::path CFileSystem::getAbsolutePath(const io::path& filename) const
 #if defined(_IRR_WINDOWS_API_)
 	fschar_t *p=0;
 	fschar_t fpath[_MAX_PATH];
-	#if defined(_IRR_WCHAR_FILESYSTEM )
-		p = _wfullpath(fpath, filename.c_str(), _MAX_PATH);
-		core::stringw tmp(p);
-		tmp.replace(L'\\', L'/');
-	#else
 		p = _fullpath(fpath, filename.c_str(), _MAX_PATH);
 		core::stringc tmp(p);
 		tmp.replace('\\', '/');
-	#endif
 	return tmp;
 #elif (defined(_IRR_POSIX_API_) || defined(_IRR_OSX_PLATFORM_))
 	c8* p=0;
@@ -958,17 +922,9 @@ bool CFileSystem::existFile(const io::path& filename) const
 			return true;
 
 #if defined(_MSC_VER)
-	#if defined(_IRR_WCHAR_FILESYSTEM)
-		return (_waccess(filename.c_str(), 0) != -1);
-	#else
 		return (_access(filename.c_str(), 0) != -1);
-	#endif
 #elif defined(F_OK)
-	#if defined(_IRR_WCHAR_FILESYSTEM)
-		return (_waccess(filename.c_str(), F_OK) != -1);
-	#else
 		return (access(filename.c_str(), F_OK) != -1);
-	#endif
 #else
 	return (access(filename.c_str(), 0) != -1);
 #endif

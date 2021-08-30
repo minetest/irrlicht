@@ -81,11 +81,7 @@ void CWriteFile::openFile(bool append)
 		return;
 	}
 
-#if defined(_IRR_WCHAR_FILESYSTEM)
-	File = _wfopen(Filename.c_str(), append ? L"ab" : L"wb");
-#else
 	File = fopen(Filename.c_str(), append ? "ab" : "wb");
-#endif
 
 	if (File)
 	{

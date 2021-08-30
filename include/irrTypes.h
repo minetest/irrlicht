@@ -73,22 +73,6 @@ typedef double				f64;
 #define swprintf_irr _snwprintf
 #define snprintf_irr _snprintf
 #endif
-
-// define the wchar_t type if not already built in.
-#ifdef _MSC_VER
-#ifndef _WCHAR_T_DEFINED
-//! A 16 bit wide character type.
-/**
-	Defines the wchar_t-type.
-	In VS6, its not possible to tell
-	the standard compiler to treat wchar_t as a built-in type, and
-	sometimes we just don't want to include the huge stdlib.h or wchar.h,
-	so we'll use this.
-*/
-typedef unsigned short wchar_t;
-#define _WCHAR_T_DEFINED
-#endif // wchar is not defined
-#endif // microsoft compiler
 #else
 #define swprintf_irr swprintf
 #define snprintf_irr snprintf
@@ -98,18 +82,8 @@ namespace irr
 {
 
 //! Type name for character type used by the file system.
-/** Should the wide character version of the FileSystem be used it is a
-16 bit character variable. Used for Unicode Filesystem and Unicode strings.
-Else it is a 8 bit character variable. Used for ansi Filesystem and non-unicode
-strings
-*/
-#if defined(_IRR_WCHAR_FILESYSTEM)
-	typedef wchar_t fschar_t;
-	#define _IRR_TEXT(X) L##X
-#else
 	typedef char fschar_t;
 	#define _IRR_TEXT(X) X
-#endif
 
 } // end namespace irr
 

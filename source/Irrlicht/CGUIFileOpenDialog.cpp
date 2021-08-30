@@ -5,8 +5,6 @@
 #include "CGUIFileOpenDialog.h"
 #ifdef _IRR_COMPILE_WITH_GUI_
 
-#include <locale.h>
-
 #include "IGUISkin.h"
 #include "IGUIEnvironment.h"
 #include "IVideoDriver.h"
@@ -382,14 +380,7 @@ void CGUIFileOpenDialog::deserializeAttributes(io::IAttributes* in, io::SAttribu
 
 void CGUIFileOpenDialog::pathToStringW(irr::core::stringw& result, const irr::io::path& p)
 {
-#ifndef _IRR_WCHAR_FILESYSTEM
-	char* oldLocale = setlocale(LC_CTYPE, NULL);
-	setlocale(LC_CTYPE,"");	// multibyteToWString is affected by LC_CTYPE. Filenames seem to need the system-locale.
 	core::multibyteToWString(result, p);
-	setlocale(LC_CTYPE, oldLocale);
-#else
-	result = p.c_str();
-#endif
 }
 
 //! fills the listbox with files.

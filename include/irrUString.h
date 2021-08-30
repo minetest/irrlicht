@@ -3015,11 +3015,7 @@ public:
 	//! \return An io::path string containing the properly encoded string.
 	io::path toPATH_s(const unicode::EUTF_ENDIAN endian = unicode::EUTFEE_NATIVE, const bool addBOM = false) const
 	{
-#if defined(_IRR_WCHAR_FILESYSTEM)
-		return toWCHAR_s(endian, addBOM);
-#else
 		return toUTF8_s(addBOM);
-#endif
 	}
 
 	//! Loads an unknown stream of data.

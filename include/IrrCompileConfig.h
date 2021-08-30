@@ -332,16 +332,6 @@ you will not be able to use anything provided by the GUI Environment, including 
 #undef _IRR_COMPILE_WITH_GUI_
 #endif
 
-//! Define _IRR_WCHAR_FILESYSTEM to enable unicode filesystem support for the engine.
-/** This enables the engine to read/write from unicode filesystem. If you
-disable this feature, the engine behave as before (ansi). This is currently only supported
-for Windows based systems. You also have to set #define UNICODE for this to compile.
-*/
-//#define _IRR_WCHAR_FILESYSTEM
-#ifdef NO_IRR_WCHAR_FILESYSTEM
-#undef _IRR_WCHAR_FILESYSTEM
-#endif
-
 //! Define _IRR_COMPILE_WITH_LIBJPEG_ to enable compiling the engine using libjpeg.
 /** This enables the engine to read jpeg images. If you comment this out,
 the engine will no longer read .jpeg images. */
@@ -528,10 +518,6 @@ ones. */
 #define IRRCALLCONV
 
 #endif // _IRR_WINDOWS_API_
-
-#ifndef _IRR_WINDOWS_API_
-	#undef _IRR_WCHAR_FILESYSTEM
-#endif
 
 #if defined(_IRR_SOLARIS_PLATFORM_)
 	#undef _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
