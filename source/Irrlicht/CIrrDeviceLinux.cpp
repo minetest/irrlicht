@@ -1854,14 +1854,12 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 
 	// wait for event via a blocking call
 	XEvent event_ret;
-	std::pair<Window, Atom> property_arg = std::make_pair(XWindow, X_ATOM_UTF8_STRING);
 	XIfEvent(XDisplay, &event_ret, [](Display *_display, XEvent *event, XPointer arg) {
-		auto window_pair_target = (std::pair<Window, Atom> *)arg;
 		return (Bool) (event->type == SelectionNotify &&
-				event->xselection.requestor == window_pair_target->first &&
+				event->xselection.requestor == *(Window *)arg &&
 				event->xselection.selection == X_ATOM_CLIPBOARD &&
-				event->xselection.target == window_pair_target->second);
-	}, (XPointer)&property_arg);
+				event->xselection.target == X_ATOM_UTF8_STRING);
+	}, (XPointer)&XWindow);
 
 	_IRR_DEBUG_BREAK_IF(!(event_ret.type == SelectionNotify &&
 			event_ret.xselection.requestor == XWindow &&
