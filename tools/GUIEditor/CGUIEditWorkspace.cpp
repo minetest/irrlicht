@@ -879,7 +879,7 @@ void CGUIEditWorkspace::CopySelectedElementXML()
 	u32 i = memWrite->getData().size()/sizeof(wchar_t);
 	if (wXMLText.size() > i)
 		wXMLText[i] = L'\0';
-	core::wStringToMultibyte(XMLText, wXMLText);
+	XMLText = wXMLText.c_str();
 	memWrite->drop();
 	xml->drop();
 	Environment->getOSOperator()->copyToClipboard(XMLText.c_str());
@@ -888,7 +888,7 @@ void CGUIEditWorkspace::CopySelectedElementXML()
 void CGUIEditWorkspace::PasteXMLToSelectedElement()
 {
 	// get clipboard data
-	const char *p = Environment->getOSOperator()->getTextFromClipboard();
+	const char * p = Environment->getOSOperator()->getTextFromClipboard();
 	irr::core::stringw wXMLText;
 	core::multibyteToWString(wXMLText, p);
 
