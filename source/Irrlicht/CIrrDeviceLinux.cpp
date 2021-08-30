@@ -6,7 +6,6 @@
 
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 
-#include <cassert>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/utsname.h>
@@ -1864,10 +1863,10 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 				event->xselection.target == window_pair_target->second);
 	}, (XPointer)&property_arg);
 
-	assert(event_ret.type == SelectionNotify &&
+	_IRR_DEBUG_BREAK_IF(!(event_ret.type == SelectionNotify &&
 			event_ret.xselection.requestor == XWindow &&
 			event_ret.xselection.selection == X_ATOM_CLIPBOARD &&
-			event_ret.xselection.target == X_ATOM_UTF8_STRING);
+			event_ret.xselection.target == X_ATOM_UTF8_STRING));
 
 	Atom property_set = event_ret.xselection.property;
 	if (event_ret.xselection.property == None) {
