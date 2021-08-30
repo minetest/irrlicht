@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <wchar.h>
 
 namespace irr
 {
@@ -1528,7 +1529,7 @@ static inline size_t wStringToMultibyte(string<c8>& destination, const core::str
 //! Same as multibyteToWString, but the other way around
 static inline size_t wStringToMultibyte(string<c8>& destination, const wchar_t* source)
 {
-	const u32 s = source ? (u32)strlen((const char*)source) : 0;
+	const u32 s = source ? (u32)wcslen(source) : 0;
 	return wStringToMultibyte(destination, source, s);
 }
 
