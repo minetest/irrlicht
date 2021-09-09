@@ -416,11 +416,6 @@ B3D, MS3D or X meshes */
 #ifdef NO_IRR_COMPILE_WITH_PNG_WRITER_
 #undef _IRR_COMPILE_WITH_PNG_WRITER_
 #endif
-//! Define _IRR_COMPILE_WITH_TGA_WRITER_ if you want to write .tga files
-#define _IRR_COMPILE_WITH_TGA_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_TGA_WRITER_
-#undef _IRR_COMPILE_WITH_TGA_WRITER_
-#endif
 
 //! Define __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_ if you want to open ZIP and GZIP archives
 /** ZIP reading has several more options below to configure. */
