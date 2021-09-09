@@ -171,8 +171,10 @@ set(IRRIMAGEOBJ
 	CImageLoaderBMP.cpp
 	CImageLoaderJPG.cpp
 	CImageLoaderPNG.cpp
+	CImageLoaderTGA.cpp
 	CImageWriterJPG.cpp
 	CImageWriterPNG.cpp
+	CImageWriterTGA.cpp
 )
 
 add_library(IRRVIDEOOBJ OBJECT
