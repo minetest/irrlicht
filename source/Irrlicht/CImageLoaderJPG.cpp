@@ -221,11 +221,15 @@ IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
 	cinfo.output_gamma=2.2;
 	cinfo.do_fancy_upsampling=FALSE;
 
+	// reject unreasonable sizes (4 * 32000 * 32000 is just under U32_MAX)
+	if (cinfo.image_width > 32000 || cinfo.image_height > 32000)
+		longjmp(jerr.setjmp_buffer, 1);
+
 	// Start decompressor
 	jpeg_start_decompress(&cinfo);
 
 	// Get image data
-	u16 rowspan = cinfo.image_width * cinfo.out_color_components;
+	u32 rowspan = cinfo.image_width * cinfo.out_color_components;
 	u32 width = cinfo.image_width;
 	u32 height = cinfo.image_height;
 
