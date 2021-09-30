@@ -13,6 +13,13 @@ namespace irr
 namespace video
 {
 
+//! check sanity of image dimensions to prevent issues later, for use by CImageLoaders
+inline bool checkImageDimensions(u32 width, u32 height)
+{
+	// 4 * 23000 * 23000 is just under S32_MAX
+	return width <= 23000 && height <= 23000;
+}
+
 //! IImage implementation with a lot of special image operations for
 //! 16 bit A1R5G5B5/32 Bit A8R8G8B8 images, which are used by the SoftwareDevice.
 class CImage : public IImage

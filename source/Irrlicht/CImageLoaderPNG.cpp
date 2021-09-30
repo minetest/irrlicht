@@ -154,6 +154,9 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 		Height=h;
 	}
 
+	if (!checkImageDimensions(Width, Height))
+		png_cpexcept_error(png_ptr, "Unreasonable size");
+
 	// Convert palette color to true color
 	if (ColorType==PNG_COLOR_TYPE_PALETTE)
 		png_set_palette_to_rgb(png_ptr);

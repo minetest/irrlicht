@@ -252,6 +252,12 @@ IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
 		return 0;
 	}
 
+	if (header.BPP > 32 || !checkImageDimensions(header.Width, header.Height))
+	{
+		os::Printer::log("Rejecting BMP with unreasonable size or BPP.", ELL_ERROR);
+		return 0;
+	}
+
 	// adjust bitmap data size to dword boundary
 	header.BitmapDataSize += (4-(header.BitmapDataSize%4))%4;
 
