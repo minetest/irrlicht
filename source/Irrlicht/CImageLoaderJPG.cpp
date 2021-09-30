@@ -221,8 +221,8 @@ IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
 	cinfo.output_gamma=2.2;
 	cinfo.do_fancy_upsampling=FALSE;
 
-	// reject unreasonable sizes (4 * 32000 * 32000 is just under U32_MAX)
-	if (cinfo.image_width > 32000 || cinfo.image_height > 32000)
+	// reject unreasonable sizes
+	if (!checkImageDimensions(cinfo.image_width, cinfo.image_height))
 		longjmp(jerr.setjmp_buffer, 1);
 
 	// Start decompressor

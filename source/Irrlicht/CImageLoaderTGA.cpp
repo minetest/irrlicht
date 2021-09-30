@@ -106,6 +106,12 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 	header.ImageHeight = os::Byteswap::byteswap(header.ImageHeight);
 #endif
 
+	if (!checkImageDimensions(header.ImageWidth, header.ImageHeight))
+	{
+		os::Printer::log("Rejecting TGA with unreasonable size.", ELL_ERROR);
+		return 0;
+	}
+
 	// skip image identification field
 	if (header.IdLength)
 		file->seek(header.IdLength, true);
