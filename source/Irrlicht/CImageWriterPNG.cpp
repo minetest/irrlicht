@@ -75,6 +75,10 @@ bool CImageWriterPNG::writeImage(io::IWriteFile* file, IImage* image,u32 param) 
 	if (!file || !image)
 		return false;
 
+	// The least bit of param defines if Adam7 interlacing is enabled;
+	// the other bits are currently unused.
+	int interlace_type = param & 1 ? PNG_INTERLACE_ADAM7 : PNG_INTERLACE_NONE;
+
 	// Allocate the png write struct
 	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING,
 		NULL, (png_error_ptr)png_cpexcept_error, (png_error_ptr)png_cpexcept_warning);
@@ -109,13 +113,13 @@ bool CImageWriterPNG::writeImage(io::IWriteFile* file, IImage* image,u32 param) 
 		case ECF_A1R5G5B5:
 			png_set_IHDR(png_ptr, info_ptr,
 				image->getDimension().Width, image->getDimension().Height,
-				8, PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE,
+				8, PNG_COLOR_TYPE_RGB_ALPHA, interlace_type,
 				PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 		break;
 		default:
 			png_set_IHDR(png_ptr, info_ptr,
 				image->getDimension().Width, image->getDimension().Height,
-				8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE,
+				8, PNG_COLOR_TYPE_RGB, interlace_type,
 				PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 	}
 
