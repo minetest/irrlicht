@@ -1423,7 +1423,7 @@ namespace video
 		you have to render some special things, you can clear the
 		zbuffer during the rendering process with this method any time.
 		*/
-		IRR_DEPRECATED void clearZBuffer()
+		void clearZBuffer()
 		{
 			clearBuffers(ECBF_DEPTH, SColor(255,0,0,0), 1.f, 0);
 		}
