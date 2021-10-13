@@ -107,7 +107,7 @@ jobs:
     env:
       VCPKG_VERSION: 0bf3923f9fab4001c00f0f429682a0853b5749e0
 #                    2020.11
-      vcpkg_packages: zlib libpng libjpeg-turbo
+      vcpkg_packages: zlib libpng libjpeg-turbo opengl-registry
     strategy:
       fail-fast: false
       matrix:
