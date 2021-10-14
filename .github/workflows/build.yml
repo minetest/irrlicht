@@ -150,7 +150,7 @@ jobs:
           mkdir artifact/lib/
 
       - name: Move dlls into artifact folder
-        run: move lib\Win32-gcc\Release\* artifact\lib\
+        run: move bin\Win32-VisualStudio\Release\* artifact\lib\
 
       - name: Move includes into artifact folder
         run: move include artifact/
