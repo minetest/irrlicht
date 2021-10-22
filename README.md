@@ -32,9 +32,13 @@ This will put an IrrlichtMtTargets.cmake file into the cmake directory in the cu
 
 Testing
 ---------
-Tests can be run by executing ctest from the build directory. The following options for unit tests are available:
+Tests can be run by executing ctest from the build directory. For example:
+ - `ctest --verbose --parallel`
+The following options for unit tests are available:
 * `BUILD_TESTING` (default: `ON`) - Build unit tests
 * `UNITTEST_FLAGS` (default: "") - Extra compiler flags for unit tests.
+
+Log files from ctest can be found in the Testing directory under the build dir.
 
 Platforms
 ---------
