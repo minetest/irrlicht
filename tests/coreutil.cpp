@@ -57,3 +57,8 @@ bool testCoreutil(void)
 	
 	return ok;
 }
+
+int main()
+{
+	return runTest(testCoreutil, "testCoreutil");
+}

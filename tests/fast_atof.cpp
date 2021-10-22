@@ -195,6 +195,8 @@ bool test_fast_atof(void)
 		logTestString("The fast method is slower than atof()\n");
 		return false;
 	}
+	// Getting rid of unused variable warnings.
+	value = value;
 #endif // #ifndef _DEBUG
 
 	return true;
@@ -276,6 +278,8 @@ bool test_strtol(void)
 		logTestString("The fast method is slower than strtol()\n");
 		return false;
 	}
+	// Getting rid of unused variable warnings.
+	value = value;
 #endif // #ifndef _DEBUG
 
 	return true;
@@ -287,4 +291,9 @@ bool fast_atof(void)
 	ok &= test_fast_atof() ;
 	ok &= test_strtol();
 	return ok;
+}
+
+int main()
+{
+	return runTest(fast_atof, "testFastAtof");
 }

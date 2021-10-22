@@ -64,3 +64,8 @@ bool testTimer(void)
 
 	return success;
 }
+
+int main()
+{
+	return runTest(testTimer, "testTimer");
+}

@@ -95,3 +95,7 @@ bool loadTextures()
 	return result;
 }
 
+int main()
+{
+	return runTest(loadTextures, "testLoadTextures");
+}

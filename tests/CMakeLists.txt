@@ -1,9 +1,13 @@
 set(UNITTEST_FLAGS "" CACHE STRING "Additional compile flags for unit tests.")
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
 # Registers a test case TEST_NAME. Source files are taken up by ARGN variable.
 # testUtils.cpp is linked by default.
 macro(REGISTER_TEST TEST_NAME)
 	add_executable(${TEST_NAME} testUtils.cpp testUtils.h ${ARGN})
+
 	# Based on Makefile as used in original Irrlicht.
 	target_compile_options(${TEST_NAME}
 		PRIVATE
@@ -51,8 +55,20 @@ register_test(testVectorPositionDimension2D vectorPositionDimension2d.cpp)
 
 # File system checks.
 register_test(testFilesystem filesystem.cpp)
-register_test(testArchiveReader archiveReader.cpp)
+#register_test(testArchiveReader archiveReader.cpp)
 register_test(testSerializeAttributes serializeAttributes.cpp)
+
+# Null driver tests.
+register_test(testFastAtof fast_atof.cpp)
+# Yay, "Fast" Atof is only faster in Release mode, thank you for the confusion.
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+	target_compile_definitions(testFastAtof PRIVATE _DEBUG)
+endif()
+register_test(testLoadTextures loadTextures.cpp)
+register_test(testEnumerateImageManipulators enumerateImageManipulators.cpp)
+register_test(testMeshLoaders meshLoaders.cpp)
+register_test(testTimer timer.cpp)
+register_test(testCoreutil coreutil.cpp)
 
 #[[
 add_executable(tests
@@ -61,8 +77,6 @@ add_executable(tests
 	b3dAnimation.cpp
 	billboards.cpp
 	burningsVideo.cpp
-	collisionResponseAnimator.cpp
-	coreutil.cpp
 	createImage.cpp
 	cursorSetVisible.cpp
 	disambiguateTextures.cpp
@@ -70,27 +84,20 @@ add_executable(tests
 	drawPixel.cpp
 	drawRectOutline.cpp
 	drawVertexPrimitive.cpp
-	enumerateImageManipulators.cpp
-	fast_atof.cpp
 	flyCircleAnimator.cpp
 	guiDisabledMenu.cpp
 	ioScene.cpp
 	lightMaps.cpp
 	lights.cpp
-	loadTextures.cpp
 	makeColorKeyTexture.cpp
 	material.cpp
 	md2Animation.cpp
-	meshLoaders.cpp
 	meshTransform.cpp
 	mrt.cpp
 	orthoCam.cpp
 	planeMatrix.cpp
 	projectionMatrix.cpp
-	removeCustomAnimator.cpp
 	renderTargetTexture.cpp
-	sceneCollisionManager.cpp
-	sceneNodeAnimator.cpp
 	screenshot.cpp
 	skinnedMesh.cpp
 	softwareDevice.cpp
@@ -99,7 +106,6 @@ add_executable(tests
 	testGeometryCreator.cpp
 	textureFeatures.cpp
 	textureRenderStates.cpp
-	timer.cpp
 	transparentMaterials.cpp
 	triangleSelector.cpp
 	userClipPlane.cpp

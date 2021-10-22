@@ -9,34 +9,21 @@ using namespace video;
 
 bool enumerateImageManipulators(void)
 {
-    IrrlichtDevice *device = createDevice(video::EDT_NULL);
-    if (!device)
-        return false;
+	IrrlichtDevice *device = createDevice(video::EDT_NULL);
+	if (!device)
+		return false;
 
-    IVideoDriver* driver = device->getVideoDriver();
+	IVideoDriver* driver = device->getVideoDriver();
 
 	const char* filenames[] =
 	{
-		"foo.bmp",
 		"foo.jpg",
-		"foo.pcx",
 		"foo.png",
-		"foo.ppm",
-		"foo.psd",
+		// The following don't have writers.
 		"foo.tga",
-		// the following have no writers
-		"foo.wal",
-		"foo.pgm",
-		"foo.pbm",
-		"foo.rgb",
-		"foo.rgba",
-		"foo.sgi",
-		"foo.int",
-		"foo.inta",
-		"foo.bw"
 	};
 	// how many formats have loaders?
-	const u32 writersUntil = 7;
+	const u32 writersUntil = 2;
 
 	const u32 numberOfFilenames = sizeof(filenames) / sizeof(filenames[0]);
 	bool loaderForFilename[numberOfFilenames] = { false }; // and the rest get 0 == false
@@ -127,7 +114,13 @@ bool enumerateImageManipulators(void)
 
 	device->closeDevice();
 	device->run();
-    device->drop();
+	device->drop();
 
-    return result;
+	return result;
+}
+
+int main()
+{
+	return runTest(
+		enumerateImageManipulators, "testEnumerateImageManipulators");
 }

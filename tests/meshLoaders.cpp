@@ -35,3 +35,8 @@ bool meshLoaders(void)
 
 	return result;
 }
+
+int main()
+{
+	return runTest(meshLoaders, "testMeshLoaders");
+}
