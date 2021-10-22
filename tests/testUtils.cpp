@@ -371,7 +371,7 @@ int runTest(bool (*testFunction)(), const std::string &testName)
 		logTestString("\n******** Test failure ********\n"\
 			"Test '%s' failed\n"\
 			"******** Test failure ********\n",
-			testName);
+			testName.c_str());
 		return 1;
 	}
 	return 0;
