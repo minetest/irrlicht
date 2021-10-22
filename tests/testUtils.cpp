@@ -363,7 +363,7 @@ void logTestString(const char * format, ...)
 
 int runTest(bool (*testFunction)(), const std::string &testName)
 {
-	logTestString("\nStarting test '%s'\n", testName);
+	logTestString("\nStarting test '%s'\n", testName.c_str());
 
 	bool testPassed = testFunction();
 	if (!testPassed)
