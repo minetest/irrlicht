@@ -70,29 +70,25 @@ register_test(testMeshLoaders meshLoaders.cpp)
 register_test(testTimer timer.cpp)
 register_test(testCoreutil coreutil.cpp)
 
+
+# Software driver tests.
+register_test(testCreateImage createImage.cpp)
+#register_test(testCursorSetVisible cursorSetVisible.cpp)
+
 #[[
 add_executable(tests
 	2dmaterial.cpp
 	anti-aliasing.cpp
-	b3dAnimation.cpp
-	billboards.cpp
-	burningsVideo.cpp
-	createImage.cpp
-	cursorSetVisible.cpp
 	disambiguateTextures.cpp
 	draw2DImage.cpp
 	drawPixel.cpp
 	drawRectOutline.cpp
 	drawVertexPrimitive.cpp
-	flyCircleAnimator.cpp
-	guiDisabledMenu.cpp
 	ioScene.cpp
 	lightMaps.cpp
 	lights.cpp
 	makeColorKeyTexture.cpp
 	material.cpp
-	md2Animation.cpp
-	meshTransform.cpp
 	mrt.cpp
 	orthoCam.cpp
 	planeMatrix.cpp
@@ -100,10 +96,8 @@ add_executable(tests
 	renderTargetTexture.cpp
 	screenshot.cpp
 	skinnedMesh.cpp
-	softwareDevice.cpp
 	stencilshadow.cpp
 	terrainSceneNode.cpp
-	testGeometryCreator.cpp
 	textureFeatures.cpp
 	textureRenderStates.cpp
 	transparentMaterials.cpp
