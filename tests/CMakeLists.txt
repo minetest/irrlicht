@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 # Registers a test case TEST_NAME. Source files are taken up by ARGN variable.
-# testUtils.cpp is linked by default.
+# testUtils.cpp is added to sources by default.
 macro(REGISTER_TEST TEST_NAME)
 	add_executable(${TEST_NAME} testUtils.cpp testUtils.h ${ARGN})
 
@@ -70,11 +70,9 @@ register_test(testMeshLoaders meshLoaders.cpp)
 register_test(testTimer timer.cpp)
 register_test(testCoreutil coreutil.cpp)
 
-
 # Software driver tests.
 register_test(testCreateImage createImage.cpp)
 #register_test(testCursorSetVisible cursorSetVisible.cpp)
-
 
 # All driver checks.
 register_test(testVideoDriver videoDriver.cpp)
@@ -82,14 +80,3 @@ register_test(testDrawRectOutline drawRectOutline.cpp)
 register_test(testDrawVertexPrimitive drawVertexPrimitive.cpp)
 register_test(testDraw2DImage draw2DImage.cpp)
 register_test(testProjectionMatrix projectionMatrix.cpp)
-#[[
-add_executable(tests
-	lightMaps.cpp
-	orthoCam.cpp
-	planeMatrix.cpp
-	skinnedMesh.cpp
-	stencilshadow.cpp
-	triangleSelector.cpp
-	videoDriverpp
-)
-#]]
