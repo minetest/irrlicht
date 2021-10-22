@@ -4,6 +4,7 @@
 #include "testUtils.h"
 #include <memory.h>
 #include <stdio.h>
+#include <string>
 #include <assert.h>
 #include <stdarg.h>
 
@@ -360,3 +361,18 @@ void logTestString(const char * format, ...)
 #endif // #if defined(TESTING_ON_WINDOWS)
 }
 
+int runTest(bool (*testFunction)(), const std::string &testName)
+{
+	logTestString("\nStarting test '%s'\n", testName);
+
+	bool testPassed = testFunction();
+	if (!testPassed)
+	{
+		logTestString("\n******** Test failure ********\n"\
+			"Test '%s' failed\n"\
+			"******** Test failure ********\n",
+			testName);
+		return 1;
+	}
+	return 0;
+}

@@ -1,4 +1,34 @@
+# Registers a test case TEST_NAME. Source files are taken up by ARGN variable.
+# testUtils.cpp is linked by default.
+macro(REGISTER_TEST TEST_NAME)
+	add_executable(${TEST_NAME} testUtils.cpp testUtils.h ${ARGN})
+	# Based on Makefile as used in original Irrlicht.
+	target_compile_options(${TEST_NAME}
+		PRIVATE
+			-pipe
+			-Wall
+			-ansi
+			-pedantic
+			-fno-exceptions
+	)
+	target_link_libraries(${TEST_NAME}
+		PRIVATE
+			IrrlichtMt
+	)
+	add_test(
+		NAME ${TEST_NAME}
+		COMMAND ${TEST_NAME}
+		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/tests"
+	)
+endmacro()
+
+message(STATUS "Generating unit tests.")
+
+# Validates working directory.
+register_test(testDisambiguateTextures disambiguateTextures.cpp)
+
 # Do not GLOB because otherwise new tests will not trigger rebuilding!
+#[[
 add_executable(tests
 	main.cpp
 	testUtils.cpp
@@ -23,10 +53,15 @@ add_executable(tests
 	color.cpp
 	triangle3d.cpp
 	vectorPositionDimension2d.cpp
+	# File system checks.
+	#[[
+	filesystem.cpp
+	archiveReader.cpp
+	serializeAttributes.cpp
+	]]#
 #[[
 	2dmaterial.cpp
 	anti-aliasing.cpp
-	archiveReader.cpp
 	b3dAnimation.cpp
 	billboards.cpp
 	burningsVideo.cpp
@@ -41,7 +76,6 @@ add_executable(tests
 	drawVertexPrimitive.cpp
 	enumerateImageManipulators.cpp
 	fast_atof.cpp
-	filesystem.cpp
 	flyCircleAnimator.cpp
 	guiDisabledMenu.cpp
 	ioScene.cpp
@@ -62,13 +96,11 @@ add_executable(tests
 	sceneCollisionManager.cpp
 	sceneNodeAnimator.cpp
 	screenshot.cpp
-	serializeAttributes.cpp
 	skinnedMesh.cpp
 	softwareDevice.cpp
 	stencilshadow.cpp
 	terrainSceneNode.cpp
 	testGeometryCreator.cpp
-	testXML.cpp
 	textureFeatures.cpp
 	textureRenderStates.cpp
 	timer.cpp
@@ -78,26 +110,5 @@ add_executable(tests
 	videoDriver.cpp
 	viewPort.cpp
 	writeImageToFile.cpp
+)
 #]]
-)
-
-# Based on Makefile as used in original Irrlicht.
-target_compile_options(tests
-	PRIVATE
-		-pipe
-		-Wall
-		-ansi
-		-pedantic
-		-fno-exceptions
-)
-
-target_link_libraries(tests
-	PRIVATE
-		IrrlichtMt
-)
-
-add_test(
-	NAME IrrlichtMtTests
-	COMMAND tests
-	WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/tests"
-)

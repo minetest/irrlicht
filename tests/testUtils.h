@@ -5,6 +5,8 @@
 #include "irrlicht.h"
 #include <assert.h>
 
+#include <string>
+
 // Small hack. Some newer X11 systems can't handle switching drivers too fast (causing BadWindow errors in X_ChangeWindowAttributes).
 // Could be they don't like when Windows with different Visuals are created very quickly (it always happened after creating a new Window with different Visual to previous one).
 // timeMs value set by try&error
@@ -100,4 +102,10 @@ extern void logTestString(const char * format, ...);
 //! Return a drivername for the driver which is useable in filenames
 extern irr::core::stringc shortDriverName(irr::video::IVideoDriver * driver);
 
+
+//! Run one unit test.
+/** \param testFunction The test function to run.
+	\param testName Name of the test as logged to terminal.
+	\return 0 for success, 1 for failure */
+int runTest(bool (*testFunction)(), const std::string &testName);
 #endif // _TEST_UTILS_H_

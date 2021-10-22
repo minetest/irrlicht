@@ -82,3 +82,7 @@ bool disambiguateTextures(void)
 	return (changed && tex1 == tex2 && tex1 == tex3 && tex1 != tex4) ? true : false;
 }
 
+int main()
+{
+	return runTest(disambiguateTextures, "testDisambiguateTextures");
+}
