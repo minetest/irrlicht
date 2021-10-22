@@ -1,3 +1,5 @@
+set(UNITTEST_FLAGS "" CACHE STRING "Additional compile flags for unit tests.")
+
 # Registers a test case TEST_NAME. Source files are taken up by ARGN variable.
 # testUtils.cpp is linked by default.
 macro(REGISTER_TEST TEST_NAME)
@@ -10,6 +12,7 @@ macro(REGISTER_TEST TEST_NAME)
 			-ansi
 			-pedantic
 			-fno-exceptions
+			${UNITTEST_FLAGS}
 	)
 	target_link_libraries(${TEST_NAME}
 		PRIVATE
