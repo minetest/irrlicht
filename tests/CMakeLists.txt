@@ -75,36 +75,21 @@ register_test(testCoreutil coreutil.cpp)
 register_test(testCreateImage createImage.cpp)
 #register_test(testCursorSetVisible cursorSetVisible.cpp)
 
+
+# All driver checks.
+register_test(testVideoDriver videoDriver.cpp)
+register_test(testDrawRectOutline drawRectOutline.cpp)
+register_test(testDrawVertexPrimitive drawVertexPrimitive.cpp)
+register_test(testDraw2DImage draw2DImage.cpp)
+register_test(testProjectionMatrix projectionMatrix.cpp)
 #[[
 add_executable(tests
-	2dmaterial.cpp
-	anti-aliasing.cpp
-	disambiguateTextures.cpp
-	draw2DImage.cpp
-	drawPixel.cpp
-	drawRectOutline.cpp
-	drawVertexPrimitive.cpp
-	ioScene.cpp
 	lightMaps.cpp
-	lights.cpp
-	makeColorKeyTexture.cpp
-	material.cpp
-	mrt.cpp
 	orthoCam.cpp
 	planeMatrix.cpp
-	projectionMatrix.cpp
-	renderTargetTexture.cpp
-	screenshot.cpp
 	skinnedMesh.cpp
 	stencilshadow.cpp
-	terrainSceneNode.cpp
-	textureFeatures.cpp
-	textureRenderStates.cpp
-	transparentMaterials.cpp
 	triangleSelector.cpp
-	userClipPlane.cpp
-	videoDriver.cpp
-	viewPort.cpp
-	writeImageToFile.cpp
+	videoDriverpp
 )
 #]]
