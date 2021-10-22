@@ -19,6 +19,7 @@ The following libraries are required to be installed:
 Aside from standard search options (`ZLIB_INCLUDE_DIR`, `ZLIB_LIBRARY`, ...) the following options are available:
 * `BUILD_SHARED_LIBS` (default: `ON`) - Build IrrlichtMt as a shared library
 * `BUILD_EXAMPLES` (default: `OFF`) - Build example applications
+* `BUILD_TESTING` (default: `ON`) - Build unit tests
 
 e.g. on a Linux system you might want to build for local use like this:
 
@@ -28,6 +29,12 @@ e.g. on a Linux system you might want to build for local use like this:
 	make -j$(nproc)
 
 This will put an IrrlichtMtTargets.cmake file into the cmake directory in the current build directory, and it can then be imported from another project by pointing `find_package()` to the build directory, or by setting the `CMAKE_PREFIX_PATH` variable to that same path.
+
+Testing
+---------
+Tests can be run by executing ctest from the build directory. The following options for unit tests are available:
+* `BUILD_TESTING` (default: `ON`) - Build unit tests
+* `UNITTEST_FLAGS` (default: "") - Extra compiler flags for unit tests.
 
 Platforms
 ---------
