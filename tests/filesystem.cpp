@@ -181,3 +181,7 @@ bool filesystem(void)
 	return result;
 }
 
+int main()
+{
+	return runTest(filesystem, "testFilesystem");
+}

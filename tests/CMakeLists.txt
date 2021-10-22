@@ -26,6 +26,7 @@ message(STATUS "Generating unit tests.")
 
 # Validates working directory.
 register_test(testDisambiguateTextures disambiguateTextures.cpp)
+
 # Simple tests without device.
 register_test(testIrrArray irrArray.cpp)
 register_test(testIrrMap irrMap.cpp)
@@ -44,16 +45,14 @@ register_test(testaabbox testaabbox.cpp)
 register_test(testColor color.cpp)
 register_test(testTriangle3D triangle3d.cpp)
 register_test(testVectorPositionDimension2D vectorPositionDimension2d.cpp)
-# Do not GLOB because otherwise new tests will not trigger rebuilding!
+
+# File system checks.
+register_test(testFilesystem filesystem.cpp)
+register_test(testArchiveReader archiveReader.cpp)
+register_test(testSerializeAttributes serializeAttributes.cpp)
+
 #[[
 add_executable(tests
-	# File system checks.
-	#[[
-	filesystem.cpp
-	archiveReader.cpp
-	serializeAttributes.cpp
-	]]#
-#[[
 	2dmaterial.cpp
 	anti-aliasing.cpp
 	b3dAnimation.cpp

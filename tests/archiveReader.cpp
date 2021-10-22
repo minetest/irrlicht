@@ -444,19 +444,12 @@ bool archiveReader()
 	ret &= testArchive(fs, "media/file_with_path/");
 	logTestString("Testing zip files.\n");
 	ret &= testArchive(fs, "media/file_with_path.zip");
-	logTestString("Testing pak files.\n");
-	ret &= testArchive(fs, "media/sample_pakfile.pak");
-	logTestString("Testing npk files.\n");
-	ret &= testArchive(fs, "media/file_with_path.npk");
 	logTestString("Testing encrypted zip files.\n");
 	ret &= testEncryptedZip(fs);
 	logTestString("Testing special zip files.\n");
 	ret &= testSpecialZip(fs, "media/Monty.zip", "monty/license.txt", "Monty");
-	logTestString("Testing special zip files lzma.\n");
-	const u8 buf[] = {0xff, 0xfe, 0x3c, 0x00, 0x3f};
-	ret &= testSpecialZip(fs, "media/lzmadata.zip", "tahoma10_.xml", buf);
-//	logTestString("Testing complex mount file.\n");
-//	ret &= testMountFile(fs);
+	logTestString("Testing complex mount file.\n");
+	ret &= testMountFile(fs);
 	logTestString("Testing add/remove with filenames.\n");
 	ret &= testAddRemove(fs, "media/file_with_path.zip");
 
@@ -467,3 +460,7 @@ bool archiveReader()
 	return ret;
 }
 
+int main()
+{
+	return runTest(archiveReader, "testArchiveReader");
+}

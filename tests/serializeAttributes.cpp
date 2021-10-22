@@ -224,79 +224,6 @@ bool MemorySerialization(io::IFileSystem * fs )
 	return origMock == copyMock;
 }
 
-// Serialization to/from an xml-file
-bool XmlSerialization(io::IFileSystem * fs, video::IVideoDriver * driver )
-{
-	const io::path XML_FILENAME("results/attributeSerialization.xml");
-	SerializableMock origMock(false), copyMock;
-	origMock.set();
-	copyMock.reset();
-
-	// write to xml
-	io::IWriteFile* fileWrite = fs->createAndWriteFile(XML_FILENAME);
-	if (!fileWrite)
-	{
-		logTestString("Could not create xml in %s:%d\n", __FILE__, __LINE__ );
-		return false;
-	}
-	io::IXMLWriter* writer = fs->createXMLWriter(fileWrite);
-	if (!writer)
-	{
-		logTestString("Could not create xml-writer in %s:%d\n", __FILE__, __LINE__ );
-		return false;
-	}
-	writer->writeXMLHeader();
-	writer->writeLineBreak();
-	io::IAttributes* attrToXml = fs->createEmptyAttributes();
-	origMock.serializeAttributes(attrToXml, 0);
-	attrToXml->write(writer);
-	attrToXml->drop();
-	writer->writeLineBreak();
-	writer->drop();
-	fileWrite->drop();
-
-	// read from xml
-	io::IReadFile* fileRead = fs->createAndOpenFile(XML_FILENAME);
-	if (!fileRead)
-	{
-		logTestString("Could not open xml-file in %s:%d\n", __FILE__, __LINE__ );
-		return false;
-	}
-	io::IXMLReader* reader = fs->createXMLReader(fileRead);
-	if (!reader)
-	{
-		logTestString("createXMLReader failed in %s:%d\n", __FILE__, __LINE__ );
-		return false;
-	}
-	while(reader->read())
-	{
-		switch (reader->getNodeType())
-		{
-			case EXN_ELEMENT:
-			{
-				// read attributes
-				io::IAttributes* attr = fs->createEmptyAttributes(driver);
-				if ( attr->read(reader, true) )
-				{
-					copyMock.deserializeAttributes(attr, 0);
-				}
-				else
-				{
-					logTestString("attr->read failed in %s:%d\n", __FILE__, __LINE__ );
-				}
-				attr->drop();
-			}
-			break;
-			default:
-			break;
-		}
-	}
-	reader->drop();
-	fileRead->drop();
-
-	return origMock == copyMock;
-}
-
 // All attributes can also be read/written in string format
 bool stringSerialization(io::IFileSystem * fs)
 {
@@ -358,12 +285,6 @@ bool serializeAttributes()
 		logTestString("MemorySerialization failed in %s:%d\n", __FILE__, __LINE__ );
 	}
 
-	result &= XmlSerialization(fs, device->getVideoDriver());
-	if ( !result )
-	{
-		logTestString("XmlSerialization failed in %s:%d\n", __FILE__, __LINE__ );
-	}
-
 	result &= stringSerialization(fs);
 	if ( !result )
 	{
@@ -375,4 +296,10 @@ bool serializeAttributes()
 	device->drop();
 
 	return result;
+}
+
+
+int main()
+{
+	return runTest(serializeAttributes, "testSerializeAttributes");
 }
