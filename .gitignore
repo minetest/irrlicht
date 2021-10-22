@@ -16,3 +16,4 @@ scripts/gl2ext.h
 scripts/glcorearb.h
 scripts/glext.h
 tests.log
+Testing/*
