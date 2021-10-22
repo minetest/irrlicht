@@ -1,0 +1,105 @@
+# Do not GLOB because otherwise new tests will not trigger rebuilding!
+add_executable(tests
+	main.cpp
+	testUtils.cpp
+	testUtils.h
+	# Does workspace validation.
+	disambiguateTextures.cpp
+#[[
+	2dmaterial.cpp
+	anti-aliasing.cpp
+	archiveReader.cpp
+	b3dAnimation.cpp
+	billboards.cpp
+	burningsVideo.cpp
+	collisionResponseAnimator.cpp
+	color.cpp
+	coreutil.cpp
+	createImage.cpp
+	cursorSetVisible.cpp
+	disambiguateTextures.cpp
+	draw2DImage.cpp
+	drawPixel.cpp
+	drawRectOutline.cpp
+	drawVertexPrimitive.cpp
+	enumerateImageManipulators.cpp
+	exports.cpp
+	fast_atof.cpp
+	filesystem.cpp
+	flyCircleAnimator.cpp
+	guiDisabledMenu.cpp
+	ioScene.cpp
+	irrArray.cpp
+	irrCoreEquals.cpp
+	irrList.cpp
+	irrMap.cpp
+	irrString.cpp
+	lightMaps.cpp
+	lights.cpp
+	line2d.cpp
+	loadTextures.cpp
+	makeColorKeyTexture.cpp
+	material.cpp
+	matrixOps.cpp
+	md2Animation.cpp
+	meshLoaders.cpp
+	meshTransform.cpp
+	mrt.cpp
+	orthoCam.cpp
+	planeMatrix.cpp
+	projectionMatrix.cpp
+	removeCustomAnimator.cpp
+	renderTargetTexture.cpp
+	sceneCollisionManager.cpp
+	sceneNodeAnimator.cpp
+	screenshot.cpp
+	serializeAttributes.cpp
+	skinnedMesh.cpp
+	softwareDevice.cpp
+	stencilshadow.cpp
+	terrainSceneNode.cpp
+	testaabbox.cpp
+	testDimension2d.cpp
+	testGeometryCreator.cpp
+	testLine2d.cpp
+	testQuaternion.cpp
+	testS3DVertex.cpp
+	testUtils.cpp
+	testUtils.h
+	testVector2d.cpp
+	testVector3d.cpp
+	testXML.cpp
+	textureFeatures.cpp
+	textureRenderStates.cpp
+	timer.cpp
+	transparentMaterials.cpp
+	triangle3d.cpp
+	triangleSelector.cpp
+	userClipPlane.cpp
+	vectorPositionDimension2d.cpp
+	videoDriver.cpp
+	viewPort.cpp
+	writeImageToFile.cpp
+#]]
+)
+
+# Based on Makefile as used in original Irrlicht.
+target_compile_options(tests
+	PRIVATE
+		-pipe
+		-Wall
+		-ansi
+		-pedantic
+		-fno-exceptions
+)
+
+target_link_libraries(tests
+	PRIVATE
+		IrrlichtMt
+)
+
+add_test(
+	NAME IrrlichtMtTests
+	COMMAND tests
+	WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/tests"
+)

@@ -282,7 +282,8 @@ target_include_directories(IrrlichtMt
 		${link_includes}
 )
 
-target_link_libraries(IrrlichtMt PRIVATE ${link_libs})
+# DL Libs needed for unit tests. Minetest works without them. I am stumped.
+target_link_libraries(IrrlichtMt PRIVATE ${link_libs} ${CMAKE_DL_LIBS})
 
 # Propagate static library flag to lib users, only needed for Windows
 if(NOT BUILD_SHARED_LIBS)

@@ -43,6 +43,14 @@ if(BUILD_EXAMPLES)
 	add_subdirectory(examples)
 endif()
 
+# Adds a BUILD_TESTING option to toggle unit testing.
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+	include(CTest)
+	if(BUILD_TESTING)
+		add_subdirectory(tests)
+	endif()
+endif()
+
 # Export a file that describes the targets that IrrlichtMt creates.
 # The file is placed in the location FILE points to, where CMake can easily
 # locate it by pointing CMAKE_PREFIX_PATH to this project root.
