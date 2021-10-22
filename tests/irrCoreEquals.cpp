@@ -130,3 +130,7 @@ bool irrCoreEquals(void)
 	return true;
 }
 
+int main()
+{
+	return runTest(irrCoreEquals, "testIrrCoreEquals");
+}

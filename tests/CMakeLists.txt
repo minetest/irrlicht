@@ -26,33 +26,27 @@ message(STATUS "Generating unit tests.")
 
 # Validates working directory.
 register_test(testDisambiguateTextures disambiguateTextures.cpp)
-
+# Simple tests without device.
+register_test(testIrrArray irrArray.cpp)
+register_test(testIrrMap irrMap.cpp)
+register_test(testIrrList irrList.cpp)
+register_test(testExports exports.cpp)
+register_test(testIrrCoreEquals irrCoreEquals.cpp)
+register_test(testIrrString irrString.cpp)
+register_test(testLine2DSimple testLine2d.cpp)
+register_test(testMatrixOps matrixOps.cpp)
+register_test(testDimension2D testDimension2d.cpp)
+register_test(testVector2D testVector2d.cpp)
+register_test(testVector3D testVector3d.cpp)
+register_test(testQuaternion testQuaternion.cpp)
+register_test(testS3DVertex testS3DVertex.cpp)
+register_test(testaabbox testaabbox.cpp)
+register_test(testColor color.cpp)
+register_test(testTriangle3D triangle3d.cpp)
+register_test(testVectorPositionDimension2D vectorPositionDimension2d.cpp)
 # Do not GLOB because otherwise new tests will not trigger rebuilding!
 #[[
 add_executable(tests
-	main.cpp
-	testUtils.cpp
-	testUtils.h
-	# Does workspace validation.
-	disambiguateTextures.cpp
-	# Simple tests without device.
-	irrArray.cpp
-	irrMap.cpp
-	irrList.cpp
-	exports.cpp
-	irrCoreEquals.cpp
-	irrString.cpp
-	testLine2d.cpp
-	matrixOps.cpp
-	testDimension2d.cpp
-	testVector2d.cpp
-	testVector3d.cpp
-	testQuaternion.cpp
-	testS3DVertex.cpp
-	testaabbox.cpp
-	color.cpp
-	triangle3d.cpp
-	vectorPositionDimension2d.cpp
 	# File system checks.
 	#[[
 	filesystem.cpp

@@ -327,3 +327,8 @@ bool testQuaternion(void)
 
 	return result;
 }
+
+int main()
+{
+	return runTest(testQuaternion, "testQuaternion");
+}

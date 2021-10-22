@@ -463,3 +463,7 @@ bool matrixOps(void)
 	return result;
 }
 
+int main()
+{
+	return runTest(matrixOps, "testMatrixOps");
+}

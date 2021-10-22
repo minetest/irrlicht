@@ -279,3 +279,7 @@ bool testTriangle3d(void)
 	return allExpected;
 }
 
+int main()
+{
+	return runTest(testTriangle3d, "testTriangle3D");
+}

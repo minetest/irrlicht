@@ -45,3 +45,8 @@ bool testS3DVertex(void)
 	result &= testSorting();
 	return result;
 }
+
+int main()
+{
+	return runTest(testS3DVertex, "testS3DVertex");
+}

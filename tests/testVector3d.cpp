@@ -310,3 +310,7 @@ bool testVector3d(void)
 	return f32Success && f64Success && s32Success;
 }
 
+int main()
+{
+	return runTest(testVector3d, "testVector3D");
+}

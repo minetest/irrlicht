@@ -91,3 +91,8 @@ bool vectorPositionDimension2d(void)
 	return result;
 }
 
+int main()
+{
+	return runTest(
+		vectorPositionDimension2d, "testVectorPositionDimension2D");
+}

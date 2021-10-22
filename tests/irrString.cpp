@@ -413,3 +413,8 @@ bool testIrrString(void)
 
 	return allExpected;
 }
+
+int main()
+{
+	return runTest(testIrrString, "testIrrString");
+}

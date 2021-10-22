@@ -403,3 +403,8 @@ bool testaabbox3d(void)
 
 	return f32Success && f64Success && s32Success;
 }
+
+int main()
+{
+	return runTest(testaabbox3d, "testaabbox");
+}

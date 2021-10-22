@@ -299,3 +299,9 @@ bool testLine2d(void)
 
 	return allExpected;
 }
+
+
+int main()
+{
+	runTest(testLine2d, "testline2DSimple");
+}

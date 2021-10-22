@@ -62,3 +62,8 @@ bool testIrrMap(void)
 
 	return success;
 }
+
+int main()
+{
+	return runTest(testIrrMap, "testIrrMap");
+}

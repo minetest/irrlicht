@@ -182,3 +182,8 @@ bool testIrrArray(void)
 
 	return allExpected;
 }
+
+int main()
+{
+	return runTest(testIrrArray, "testIrrArray");
+}

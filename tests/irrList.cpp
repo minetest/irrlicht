@@ -74,3 +74,8 @@ bool testIrrList(void)
 
 	return success;
 }
+
+int main()
+{
+	return runTest(testIrrList, "testIrrList");
+}

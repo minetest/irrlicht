@@ -219,3 +219,7 @@ bool testVector2d(void)
 	return f32Success && f64Success && s32Success;
 }
 
+int main()
+{
+	return runTest(testVector2d, "testVector2D");
+}

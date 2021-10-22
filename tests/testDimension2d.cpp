@@ -34,3 +34,7 @@ bool testDimension2d(void)
 	return true;
 }
 
+int main()
+{
+	runTest(testDimension2d, "testDimension2D");
+}

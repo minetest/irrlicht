@@ -15,3 +15,8 @@ bool exports(void)
 	// If it built, we're done.
 	return true;
 }
+
+int main()
+{
+	return runTest(exports, "testExports");
+}
