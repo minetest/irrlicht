@@ -5,6 +5,24 @@ add_executable(tests
 	testUtils.h
 	# Does workspace validation.
 	disambiguateTextures.cpp
+	# Simple tests without device.
+	irrArray.cpp
+	irrMap.cpp
+	irrList.cpp
+	exports.cpp
+	irrCoreEquals.cpp
+	irrString.cpp
+	testLine2d.cpp
+	matrixOps.cpp
+	testDimension2d.cpp
+	testVector2d.cpp
+	testVector3d.cpp
+	testQuaternion.cpp
+	testS3DVertex.cpp
+	testaabbox.cpp
+	color.cpp
+	triangle3d.cpp
+	vectorPositionDimension2d.cpp
 #[[
 	2dmaterial.cpp
 	anti-aliasing.cpp
@@ -13,7 +31,6 @@ add_executable(tests
 	billboards.cpp
 	burningsVideo.cpp
 	collisionResponseAnimator.cpp
-	color.cpp
 	coreutil.cpp
 	createImage.cpp
 	cursorSetVisible.cpp
@@ -23,24 +40,16 @@ add_executable(tests
 	drawRectOutline.cpp
 	drawVertexPrimitive.cpp
 	enumerateImageManipulators.cpp
-	exports.cpp
 	fast_atof.cpp
 	filesystem.cpp
 	flyCircleAnimator.cpp
 	guiDisabledMenu.cpp
 	ioScene.cpp
-	irrArray.cpp
-	irrCoreEquals.cpp
-	irrList.cpp
-	irrMap.cpp
-	irrString.cpp
 	lightMaps.cpp
 	lights.cpp
-	line2d.cpp
 	loadTextures.cpp
 	makeColorKeyTexture.cpp
 	material.cpp
-	matrixOps.cpp
 	md2Animation.cpp
 	meshLoaders.cpp
 	meshTransform.cpp
@@ -58,25 +67,14 @@ add_executable(tests
 	softwareDevice.cpp
 	stencilshadow.cpp
 	terrainSceneNode.cpp
-	testaabbox.cpp
-	testDimension2d.cpp
 	testGeometryCreator.cpp
-	testLine2d.cpp
-	testQuaternion.cpp
-	testS3DVertex.cpp
-	testUtils.cpp
-	testUtils.h
-	testVector2d.cpp
-	testVector3d.cpp
 	testXML.cpp
 	textureFeatures.cpp
 	textureRenderStates.cpp
 	timer.cpp
 	transparentMaterials.cpp
-	triangle3d.cpp
 	triangleSelector.cpp
 	userClipPlane.cpp
-	vectorPositionDimension2d.cpp
 	videoDriver.cpp
 	viewPort.cpp
 	writeImageToFile.cpp

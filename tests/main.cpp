@@ -52,9 +52,9 @@ int main(int argumentCount, char * arguments[])
 	TEST(ioScene);
 #else
 
-	TEST(disambiguateTextures); // Normally you should run this first, since it validates the working directory.
+	// Should be run first, since it validates the working directory.
+	TEST(disambiguateTextures);
 	// Now the simple tests without device
-	/*
 	TEST(testIrrArray);
 	TEST(testIrrMap);
 	TEST(testIrrList);
@@ -72,7 +72,6 @@ int main(int argumentCount, char * arguments[])
 	TEST(color);
 	TEST(testTriangle3d);
 	TEST(vectorPositionDimension2d);
-	*/
 	/*
 	// file system checks (with null driver)
 	TEST(filesystem);
