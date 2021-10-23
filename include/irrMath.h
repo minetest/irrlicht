@@ -320,19 +320,17 @@ namespace core
 
 	inline s32 s32_min(s32 a, s32 b)
 	{
-		const s32 mask = (a - b) >> 31;
-		return (a & mask) | (b & ~mask);
+		return min_(a, b);
 	}
 
 	inline s32 s32_max(s32 a, s32 b)
 	{
-		const s32 mask = (a - b) >> 31;
-		return (b & mask) | (a & ~mask);
+		return max_(a, b);
 	}
 
 	inline s32 s32_clamp (s32 value, s32 low, s32 high)
 	{
-		return s32_min(s32_max(value,low), high);
+		return clamp(value, low, high);
 	}
 
 	/*
@@ -381,33 +379,6 @@ namespace core
 	#endif
 #endif
 
-	//! conditional set based on mask and arithmetic shift
-	REALINLINE u32 if_c_a_else_b ( const s32 condition, const u32 a, const u32 b )
-	{
-		return ( ( -condition >> 31 ) & ( a ^ b ) ) ^ b;
-	}
-
-	//! conditional set based on mask and arithmetic shift
-	REALINLINE u16 if_c_a_else_b ( const s16 condition, const u16 a, const u16 b )
-	{
-		return ( ( -condition >> 15 ) & ( a ^ b ) ) ^ b;
-	}
-
-	//! conditional set based on mask and arithmetic shift
-	REALINLINE u32 if_c_a_else_0 ( const s32 condition, const u32 a )
-	{
-		return ( -condition >> 31 ) & a;
-	}
-
-	/*
-		if (condition) state |= m; else state &= ~m;
-	*/
-	REALINLINE void setbit_cond ( u32 &state, s32 condition, u32 mask )
-	{
-		// 0, or any positive to mask
-		//s32 conmask = -condition >> 31;
-		state ^= ( ( -condition >> 31 ) ^ state ) & mask;
-	}
 
 	// NOTE: This is not as exact as the c99/c++11 round function, especially at high numbers starting with 8388609
 	//       (only low number which seems to go wrong is 0.49999997 which is rounded to 1)
