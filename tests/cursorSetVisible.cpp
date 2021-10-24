@@ -68,7 +68,3 @@ bool cursorSetVisible(void)
 	return result;
 }
 
-int main()
-{
-	return runTest(cursorSetVisible, "testCursorSetVisible");
-}

@@ -5,6 +5,7 @@
 #include "irrlicht.h"
 #include <assert.h>
 
+#include <iostream>
 #include <string>
 
 // Small hack. Some newer X11 systems can't handle switching drivers too fast (causing BadWindow errors in X_ChangeWindowAttributes).
@@ -43,64 +44,39 @@
 			result &= X(video::E_DRIVER_TYPE(i));\
 		}
 
-// replacement for assert which does log the lines instead
-#define assert_log(X) \
-do { \
-	if ( !(X) ) \
-	{ \
-		logTestString("ASSERT in %s:%d: %s\n", __FILE__, __LINE__, #X); \
-	} \
-} while (false)
+//! Replacement for assert which logs the line number.
+/** \param cmp Boolean value to check for truthiness.
+	\return Same as value of cmp. */
+inline bool assertLog(bool cmp)
+{
+	if (!cmp)
+		std::cerr << "ASSERT FAILURE: " << __FILE__
+		<< " line " << __LINE__ <<'\n';
+	return cmp;
+}
 
 //! Compare two files
 /** \param fileName1 The first file for comparison.
 	\param fileName2 The second file for comparison.
-	\return true if the files are identical, false on any error or difference. */
-extern bool binaryCompareFiles(const char * fileName1, const char * fileName2);
+	\return true if binaries match, false on any error or difference. */
+bool binaryCompareFiles(const char * fileName1, const char * fileName2);
 
 //! Compare two images, returning the degree to which they match.
 /** \param driver The Irrlicht video driver.
 	\param fileName1 The first image to compare.
 	\param fileName2 The second image to compare.
 	\return The match, from 0.f to 100.f */
-extern float fuzzyCompareImages(irr::video::IVideoDriver * driver,
+float fuzzyCompareImages(irr::video::IVideoDriver * driver,
 		const char * fileName1, const char * fileName2);
-
-//! Take a screenshot and compare it against a reference screenshot in the tests/media subdirectory
-/** \param driver The Irrlicht video driver.
-	\param fileName The unique filename suffix that will be appended to the name of the video driver.
-	\param requiredMatch The degree to which the screenshot needs to match the reference image
-	in order to be considered a match.
-	\return true if the screenshot was taken and is identical to the reference image of the same name
-	in the tests/media directory, false on any error or difference. */
-extern bool takeScreenshotAndCompareAgainstReference(irr::video::IVideoDriver * driver,
-													const char * fileName,
-													irr::f32 requiredMatch = 99.f);
 
 //! Stabilize the screen background eg. eliminate problems like an aero transparency effects etc.
 /** \param driver The Irrlicht video driver.
 	\return true if required color is the same as a window background color. */
-extern void stabilizeScreenBackground(irr::video::IVideoDriver * driver,
+void stabilizeScreenBackground(irr::video::IVideoDriver * driver,
 													irr::video::SColor color = irr::video::SColor(255, 255, 255, 255));
 
-
-//! Opens a test log file, deleting any existing contents.
-/** \param startNewLog true to create a new log file, false to append to an
-						existing one.
-	\param filename The filename to open
-	\return true if the test log file was opened, false on error. */
-extern bool openTestLog(bool startNewLog, const char * filename = "tests.log");
-
-//! Close the test log file opened with openTestLog()
-extern void closeTestLog();
-
-//! Log a string to the console and the test log file created by openTestLog().
-/** \param format The format string
-	\... optional parameters */
-extern void logTestString(const char * format, ...);
-
 //! Return a drivername for the driver which is useable in filenames
-extern irr::core::stringc shortDriverName(irr::video::IVideoDriver * driver);
+irr::core::stringc shortDriverName(irr::video::IVideoDriver * driver);
 
 
 //! Run one unit test.

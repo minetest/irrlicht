@@ -41,6 +41,7 @@ register_test(testIrrList irrList.cpp)
 register_test(testExports exports.cpp)
 register_test(testIrrCoreEquals irrCoreEquals.cpp)
 register_test(testIrrString irrString.cpp)
+#[[
 register_test(testLine2DSimple testLine2d.cpp)
 register_test(testMatrixOps matrixOps.cpp)
 register_test(testDimension2D testDimension2d.cpp)
@@ -59,11 +60,6 @@ register_test(testFilesystem filesystem.cpp)
 register_test(testSerializeAttributes serializeAttributes.cpp)
 
 # Null driver tests.
-register_test(testFastAtof fast_atof.cpp)
-# Yay, "Fast" Atof is only faster in Release mode, thank you for the confusion.
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-	target_compile_definitions(testFastAtof PRIVATE _DEBUG)
-endif()
 register_test(testLoadTextures loadTextures.cpp)
 register_test(testEnumerateImageManipulators enumerateImageManipulators.cpp)
 register_test(testMeshLoaders meshLoaders.cpp)
@@ -71,12 +67,8 @@ register_test(testTimer timer.cpp)
 register_test(testCoreutil coreutil.cpp)
 
 # Software driver tests.
-register_test(testCreateImage createImage.cpp)
 #register_test(testCursorSetVisible cursorSetVisible.cpp)
 
 # All driver checks.
 register_test(testVideoDriver videoDriver.cpp)
-register_test(testDrawRectOutline drawRectOutline.cpp)
-register_test(testDrawVertexPrimitive drawVertexPrimitive.cpp)
-register_test(testDraw2DImage draw2DImage.cpp)
-register_test(testProjectionMatrix projectionMatrix.cpp)
+#]]

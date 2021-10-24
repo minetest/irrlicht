@@ -29,7 +29,8 @@ bool binaryCompareFiles(const char * fileName1, const char * fileName2)
 	FILE * file1 = fopen(fileName1, "rb");
 	if (!file1)
 	{
-		logTestString("binaryCompareFiles: File '%s' cannot be opened\n", fileName1);
+		std::cerr << "binaryCompareFiles: File '"
+			<< fileName1 << "' cannot be opened\n";
 		assert(file1);
 		return false;
 	}
@@ -37,7 +38,8 @@ bool binaryCompareFiles(const char * fileName1, const char * fileName2)
 	FILE * file2 = fopen(fileName2, "rb");
 	if (!file2)
 	{
-		logTestString("binaryCompareFiles: File '%s' cannot be opened\n", fileName2);
+		std::cerr << "binaryCompareFiles: File '"
+			<< fileName2 << "' cannot be opened\n";
 		(void)fclose(file1);
 		assert(file2);
 		return false;
@@ -50,8 +52,8 @@ bool binaryCompareFiles(const char * fileName1, const char * fileName2)
 	const size_t file2Size = ftell(file2);
 	if (file1Size != file2Size)
 	{
-		logTestString("binaryCompareFiles: Files are different sizes: %d vs %d\n",
-			file1Size, file2Size);
+		std::cerr << "binaryCompareFiles: Files are different sizes: "
+			<< file1Size << " vs " << file2Size << '\n';
 		(void)fclose(file1);
 		(void)fclose(file2);
 		return false;
@@ -69,13 +71,14 @@ bool binaryCompareFiles(const char * fileName1, const char * fileName2)
 			||(fread(file1Buffer, sizeof(file1Buffer), 1, file1) !=
 			fread(file2Buffer, sizeof(file2Buffer), 1, file2)))
 		{
-			logTestString("binaryCompareFiles: Error during file reading\n");
+			std::cerr
+				<< "binaryCompareFiles: Error reading file\n";
 			break;
 		}
 
 		if (memcmp(file1Buffer, file2Buffer, sizeof(file1Buffer)))
 		{
-			logTestString("binaryCompareFiles: files are different\n");
+			std::cerr << "binaryCompareFiles: files differ\n";
 			break;
 		}
 	}
@@ -102,21 +105,23 @@ static float fuzzyCompareImages(irr::video::IImage * image1,
 
 	if (image1->getDimension() != image2->getDimension())
 	{
-		logTestString("fuzzyCompareImages: images are different sizes\n");
+		std::cerr << "fuzzyCompareImages: image sizes differ\n";
 		return 0.f;
 	}
 
 	video::ECOLOR_FORMAT format1 = image1->getColorFormat();
 	if (video::ECF_A8R8G8B8 != format1 && video::ECF_R8G8B8 != format1)
 	{
-		logTestString("fuzzyCompareImages: image 1 must be ECF_AR8G8B8 or ECF_R8G8B8\n");
+		std::cerr << "fuzzyCompareImages: image 1 must be "\
+			"ECF_AR8G8B8 or ECF_R8G8B8\n";
 		return 0.f;
 	}
 
 	video::ECOLOR_FORMAT format2 = image2->getColorFormat();
 	if (video::ECF_A8R8G8B8 != format2 && video::ECF_R8G8B8 != format2)
 	{
-		logTestString("fuzzyCompareImages: image 2 must be ECF_AR8G8B8 or ECF_R8G8B8\n");
+		std::cerr << "fuzzyCompareImages: image 2 must be "\
+			"ECF_AR8G8B8 or ECF_R8G8B8\n";
 		return 0.f;
 	}
 
@@ -163,7 +168,7 @@ float fuzzyCompareImages(irr::video::IVideoDriver * driver,
 		return 0;
 	irr::video::IImage * img2 = driver->createImageFromFile(fileName2);
 	const float result = fuzzyCompareImages(img1, img2);
-	logTestString("Image match: %f%%\n", result);
+	std::cerr << "Image match: " << result << '\n';
 	img1->drop();
 	if (img2)
 		img2->drop();
@@ -220,7 +225,7 @@ void stabilizeScreenBackground(irr::video::IVideoDriver * driver,
 		screenshot->drop();
 	}
 	
-	logTestString("stabilizeScreenBackground failed\n");
+	std::cerr << "stabilizeScreenBackground failed\n";
 }
 
 irr::core::stringc shortDriverName(irr::video::IVideoDriver * driver)
@@ -238,140 +243,16 @@ irr::core::stringc shortDriverName(irr::video::IVideoDriver * driver)
 	return driverName;
 }
 
-bool takeScreenshotAndCompareAgainstReference(irr::video::IVideoDriver * driver,
-					const char * fileName,
-					irr::f32 requiredMatch)
-{
-	irr::video::IImage * screenshot = driver->createScreenShot();
-	if (!screenshot)
-	{
-		logTestString("Failed to take screenshot\n");
-		assert(false);
-		return false;
-	}
-
-	const video::ECOLOR_FORMAT format = screenshot->getColorFormat();
-	if (format != video::ECF_R8G8B8)
-	{
-		irr::video::IImage * fixedScreenshot = driver->createImage(video::ECF_R8G8B8, screenshot->getDimension());
-		screenshot->copyTo(fixedScreenshot);
-		screenshot->drop();
-
-		if (!fixedScreenshot)
-		{
-			logTestString("Failed to convert screenshot to ECF_A8R8G8B8\n");
-			assert(false);
-			return false;
-		}
-
-		screenshot = fixedScreenshot;
-	}
-
-	irr::core::stringc driverName = shortDriverName(driver);
-
-	irr::core::stringc referenceFilename = "media/";
-	referenceFilename += driverName;
-	referenceFilename += fileName;
-	irr::video::IImage * reference = driver->createImageFromFile(referenceFilename.c_str());
-	if (!reference)
-	{
-		logTestString("\n*** Failed to load reference image '%s'\n*** Creating from screenshot - please check this image.\n\n",
-			referenceFilename.c_str());
-		(void)driver->writeImageToFile(screenshot, referenceFilename.c_str());
-		screenshot->drop();
-		return false;
-	}
-
-	const float match = fuzzyCompareImages(screenshot, reference);
-	logTestString("Image match: %f%%\n", match);
-
-	if (match < requiredMatch)
-	{
-		irr::core::stringc mismatchFilename = "results/";
-		mismatchFilename += driverName;
-		mismatchFilename += fileName;
-		logTestString("Writing mismatched image to '%s'\n", mismatchFilename.c_str());
-		(void)driver->writeImageToFile(screenshot, mismatchFilename.c_str());
-	}
-
-
-	screenshot->drop();
-	reference->drop();
-
-	return (match >= requiredMatch);
-}
-
-static FILE * logFile = 0;
-
-bool openTestLog(bool startNewLog, const char * filename)
-{
-	closeTestLog();
-
-	if (startNewLog)
-		logFile = fopen(filename, "w");
-	else
-		logFile = fopen(filename, "a");
-
-	assert(logFile);
-	if (!logFile)
-		logTestString("\nWARNING: unable to open the test log file %s\n", filename);
-
-	return (logFile != 0);
-}
-
-void closeTestLog(void)
-{
-	if (logFile)
-	{
-		(void)fclose(logFile);
-		logFile = 0;
-	}
-}
-
-
-void logTestString(const char * format, ...)
-{
-	char logString[1024];
-
-	va_list arguments;
-	va_start(arguments, format);
-	vsprintf(logString, format, arguments);
-	va_end(arguments);
-
-#if defined(_IRR_WINDOWS_API_)
-#if defined (_WIN32_WCE )
-	core::stringw tmp(logString);
-	tmp += L"\n";
-	OutputDebugStringW(tmp.c_str());
-#else
-	OutputDebugStringA(logString);
-	OutputDebugStringA("\n");
-#endif
-#endif
-
-	(void)printf(logString);
-	if (logFile)
-	{
-		(void)fprintf(logFile, logString);
-		(void)fflush(logFile);
-	}
-
-#if defined(TESTING_ON_WINDOWS)
-	OutputDebugStringA(logString);
-#endif // #if defined(TESTING_ON_WINDOWS)
-}
-
 int runTest(bool (*testFunction)(), const std::string &testName)
 {
-	logTestString("\nStarting test '%s'\n", testName.c_str());
+	std::cerr << "\nStarting test '%s'\n" << testName << '\n';
 
 	bool testPassed = testFunction();
 	if (!testPassed)
 	{
-		logTestString("\n******** Test failure ********\n"\
-			"Test '%s' failed\n"\
-			"******** Test failure ********\n",
-			testName.c_str());
+		std::cerr << "\n******** Test failure ********\n"\
+			"Test '" << testName << "' failed\n"\
+			"******** Test failure ********\n";
 		return 1;
 	}
 	return 0;

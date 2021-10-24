@@ -3,6 +3,7 @@
 
 #include "testUtils.h"
 #include <irrlicht.h>
+#include <iostream>
 
 using namespace irr;
 using namespace core;
@@ -51,9 +52,11 @@ static bool testErase()
 
 	for ( core::map<int,int>::Iterator it = countReferences.getIterator(); !it.atEnd(); it++ )
 	{
-		if ( it->getValue() != 0 )
+		if (!assertLog(it->getValue() == 0))
 		{
-			logTestString("testErase: wrong count for %d, it's: %d\n", it->getKey(), it->getValue());
+			std::cerr << "testErase: wrong count for "
+				<< it->getKey() << ", it's: " << it->getValue()
+				<< '\n';
 			return false;
 		}
 	}
@@ -108,7 +111,7 @@ static bool testSwap()
 	result &= (array1 == copy2);
 	result &= (array2 == copy1);
 
-	assert_log( result );
+	assertLog( result );
 
 	return result;
 }
@@ -168,17 +171,14 @@ bool testIrrArray(void)
 {
 	bool allExpected = true;
 
-	logTestString("crashTestFastAlloc\n");
+	std::cerr << "crashTestFastAlloc\n";
 	crashTestFastAlloc();
 	allExpected &= testSelfAssignment();
 	allExpected &= testSwap();
 	allExpected &= testErase();
 	allExpected &= testSort();
 
-	if(allExpected)
-		logTestString("\nAll tests passed\n");
-	else
-		logTestString("\nFAIL!\n");
+	assertLog(allExpected);
 
 	return allExpected;
 }

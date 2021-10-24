@@ -3,6 +3,7 @@
 
 #include "testUtils.h"
 #include <irrlicht.h>
+#include <iostream>
 
 using namespace irr;
 using namespace core;
@@ -16,7 +17,7 @@ static bool testSelfAssignment()
 
 static bool testSplit()
 {
-	logTestString("Test stringw::split()\n");
+	std::cerr << "Test stringw::split()\n";
 	core::stringw teststring(L"[b]this [/b] is a [color=0xff000000]test[/color].");
 	core::list<core::stringw> parts1;
 	teststring.split<core::list<core::stringw> >(parts1, L"[");
@@ -41,171 +42,144 @@ static bool testFastAlloc()
 
 static bool testReplace()
 {
+	bool passed = true;
 	// test string getting longer
 	core::stringw str = L"no";
 	str.replace(L"no", L"yes");
-	if ( str != L"yes" )
-		return false;
+	passed &= assertLog(str == L"yes");
+
 	str = L"nonono";
 	str.replace(L"no", L"yes");
-	if ( str != L"yesyesyes" )
-		return false;
+	passed &= assertLog(str == L"yesyesyes");
+	
 	str = L"nomaybenomaybeno";
 	str.replace(L"no", L"yes");
-	if ( str != L"yesmaybeyesmaybeyes" )
-		return false;
+	passed &= assertLog(str == L"yesmaybeyesmaybeyes");
 
 	// test string staying same length
 	str = L"one";
 	str.replace(L"one", L"two");
-	if ( str != L"two" )
-		return false;
+	passed &= assertLog(str == L"two");
+	
 	str = L"oneone";
 	str.replace(L"one", L"two");
-	if ( str != L"twotwo" )
-		return false;
+	passed &= assertLog(str == L"twotwo");
 
 	// test string getting shorter
 	str = L"yes";
 	str.replace(L"yes", L"no");
-	if ( str != L"no" )
-		return false;
+	passed &= assertLog(str == L"no");
 
 	str = L"yesyes";
 	str.replace(L"yes", L"no");
-	if ( str != L"nono" )
-		return false;
+	passed &= assertLog(str == L"nono");
 
 	// remove string-parts completely
 	str = L"killme";
 	str.replace(L"killme", L"");
-	if ( str != L"" )
-		return false;
+	passed &= assertLog(str == L"");
 
 	str = L"killmenow";
 	str.replace(L"killme", L"");
-	if ( str != L"now" )
-		return false;
+	passed &= assertLog(str == L"now");
 
 	str = L"nowkillme";
 	str.replace(L"killme", L"");
-	if ( str != L"now" )
-		return false;
+	passed &= assertLog(str == L"now");
 
 	// remove nothing
 	str = L"keepme";
 	str.replace(L"", L"whatever");
-	if ( str != L"keepme" )
-		return false;
+	passed &= assertLog(str == L"keepme");
 
 	str = L"keepme";
 	str.replace(L"", L"");
-	if ( str != L"keepme" )
-		return false;
+	passed&= assertLog(str == L"keepme");
 
-	return true;
+	return passed;
 }
 
 
 bool testAppendStringc()
 {
+	bool passed = true;
 	core::stringc str;
 	// Test with character
-	if (str != "")
-		return false;
+	passed &= assertLog(str == "");
 	str += 'W';
-	if (str != "W")
-		return false;
+	passed &= assertLog(str == "W");
 	str += 'i';
-	if (str != "Wi")
-		return false;
-	str="";
-	if (str != "")
-		return false;
+	passed &= assertLog(str == "Wi");
+	str = "";
+	passed &= assertLog(str == "");
 
 	// Test with C-style string
 	str += "Another Test";
-	if (str != "Another Test")
-		return false;
-	str="";
+	passed &= assertLog(str == "Another Test");
+	str = "";
 	str += 'A';
 	str += "nother Test";
-	if (str != "Another Test")
-		return false;
-	str="";
+	passed &= assertLog(str == "Another Test");
+	str = "";
 
 	// Test with int
 	str += 10;
-	if (str != "10")
-		return false;
+	passed &= assertLog(str == "10");
 	str += 0;
-	if (str != "100")
-		return false;
-	str="";
-	str += "-32";
-	if (str != "-32")
-		return false;
-	str="";
+	passed &= assertLog(str == "100");
+	str = "";
+	str += -32;
+	passed &= assertLog(str == "-32");
+	str = "";
 
 	// Test with unsigned int
 	str += 21u;
-	if (str != "21")
-		return false;
+	passed &= assertLog(str == "21");
 	str += 0u;
-	if (str != "210")
-		return false;
-	str="";
+	passed &= assertLog(str == "210");
+	str = "";
 
 	// Test with long int
 	str += 456l;
-	if (str != "456")
-		return false;
+	passed &= assertLog(str == "456");
 	str += 0l;
-	if (str != "4560")
-		return false;
-	str="";
+	passed &= assertLog(str == "4560");
+	str = "";
 	str += -456l;
-	if (str != "-456")
-		return false;
-	str="";
+	passed &= assertLog(str == "-456");
+	str = "";
 
 	// Test with unsigned long
 	str += 994ul;
-	if (str != "994")
-		return false;
+	passed &= assertLog(str == "994");
 	str += 0ul;
-	if (str != "9940")
-		return false;
-	str="";
-	return true;
+	passed &= assertLog(str == "9940");
+	str = "";
+	return passed;
 }
 
 bool testInsert()
 {
+	bool passed = true;
 	core::stringc str;
 
 	str.insert(0, "something", 4);
-	if (str != "some")
-		return false;
-
+	passed &= assertLog(str == "some");
 	str.insert(4, "thing", 5);
-	if (str != "something")
-		return false;
-
+	passed &= assertLog(str == "something");
 	str.insert(0, "is ", 3);
-	if (str != "is something")
-		return false;
-
+	passed &= assertLog(str == "is something");
 	str.insert(3, "there ", 6);
-	if (str != "is there something")
-		return false;
+	passed&= assertLog(str == "is there something");
 
-	return true;
+	return passed;
 }
 
 bool testLowerUpper()
 {
-	irr::core::array <irr::core::stringc> stringsOrig, targetLower, targetUpper;
+	bool passed = true;
+	irr::core::array<irr::core::stringc>
+		stringsOrig, targetLower, targetUpper;
 	stringsOrig.push_back("abc");
 	targetLower.push_back("abc");
 	targetUpper.push_back("ABC");
@@ -237,38 +211,22 @@ bool testLowerUpper()
 	{
 		irr::core::stringc c = stringsOrig[i];
 		c.make_lower();
-		if ( c != targetLower[i] )
-		{
-			logTestString("make_lower for stringc failed in test %d %s\n", i, stringsOrig[i].c_str());
-			return false;
-		}
+		passed &= assertLog(c == targetLower[i]);
 
 		c = stringsOrig[i];
 		c.make_upper();
-		if ( c != targetUpper[i] )
-		{
-			logTestString("make_upper for stringc failed in test %d %s %s\n", i, stringsOrig[i].c_str(), c.c_str());
-			return false;
-		}
+		passed &= assertLog(c == targetUpper[i]);
 
 		irr::core::stringw w = irr::core::stringw(stringsOrig[i]);
 		c.make_lower();
-		if ( c != irr::core::stringw(targetLower[i]) )
-		{
-			logTestString("make_lower for stringw failed in test %d %s\n", i, stringsOrig[i].c_str());
-			return false;
-		}
+		passed &= assertLog(c == irr::core::stringw(targetLower[i]));
 
 		c = irr::core::stringw(stringsOrig[i]);
 		c.make_upper();
-		if ( c != irr::core::stringw(targetUpper[i]) )
-		{
-			logTestString("make_upper for stringw failed in test %d %s\n", i, stringsOrig[i].c_str());
-			return false;
-		}
+		passed &= assertLog(c == irr::core::stringw(targetUpper[i]));
 	}
 
-	return true;
+	return passed;
 }
 
 bool testFindFunctions()
@@ -339,77 +297,74 @@ bool testIrrString(void)
 {
 	bool allExpected = true;
 
-	logTestString("Test stringc\n");
+	std::cerr << "Test string\n";
 	{
 		// Check empty string
 		core::stringc empty;
-		assert_log(empty.size()==0);
-		assert_log(empty[0]==0);
-		assert_log(empty.c_str()!=0);
-		assert_log(*(empty.c_str())==0);
+		assertLog(empty.size() == 0);
+		assertLog(empty[0] == 0);
+		assertLog(empty.c_str() != 0);
+		assertLog(*(empty.c_str()) == 0);
 		// Assign content
 		empty = "Test";
-		assert_log(empty.size()==4);
-		assert_log(empty[0]=='T');
-		assert_log(empty[3]=='t');
-		assert_log(*(empty.c_str())=='T');
+		assertLog(empty.size() == 4);
+		assertLog(empty[0] == 'T');
+		assertLog(empty[3] == 't');
+		assertLog(*(empty.c_str()) == 'T');
 		//Assign empty string, should be same as in the beginning
 		empty = "";
-		assert_log(empty.size()==0);
-		assert_log(empty[0]==0);
-		assert_log(*(empty.c_str())==0);
+		assertLog(empty.size() == 0);
+		assertLog(empty[0] == 0);
+		assertLog(*(empty.c_str()) == 0);
 	}
-	logTestString("Test stringw\n");
+	std::cerr << "Test stringw\n";
 	{
 		core::stringw empty;
-		assert_log(empty.size()==0);
-		assert_log(empty[0]==0);
-		assert_log(empty.c_str()!=0);
-		assert_log(*(empty.c_str())==0);
+		assertLog(empty.size() == 0);
+		assertLog(empty[0] == 0);
+		assertLog(empty.c_str() != 0);
+		assertLog(*(empty.c_str()) == 0);
 		empty = L"Test";
-		assert_log(empty.size()==4);
-		assert_log(empty[0]==L'T');
-		assert_log(empty[3]=='t');
-		assert_log(*(empty.c_str())==L'T');
+		assertLog(empty.size() == 4);
+		assertLog(empty[0] == L'T');
+		assertLog(empty[3] == 't');
+		assertLog(*(empty.c_str()) == L'T');
 		empty = L"";
-		assert_log(empty.size()==0);
-		assert_log(empty[0]==0);
-		assert_log(*(empty.c_str())==0);
-		assert_log(allExpected &= testSplit());
+		assertLog(empty.size() == 0);
+		assertLog(empty[0] == 0);
+		assertLog(*(empty.c_str()) == 0);
+		assertLog(allExpected &= testSplit());
 	}
 	allExpected &= testAppendStringc();
 
 	allExpected &= testInsert();
 
-	logTestString("Test io::path\n");
+	std::cout << "Test io::path\n";
 	{
 		// Only test that this type exists, it's one from above
 		io::path myPath;
 		myPath = "Some text"; // Only to avoid wrong optimizations
 	}
 
-	logTestString("Test self assignment\n");
+	std::cerr << "Test self assignment\n";
 	allExpected &= testSelfAssignment();
 
-	logTestString("test fast alloc\n");
+	std::cerr << "test fast alloc\n";
 	allExpected &= testFastAlloc();
 
-	logTestString("test replace\n");
+	std::cerr << "test replace\n";
 	allExpected &= testReplace();
 
-	logTestString("test make_lower and make_uppers\n");
+	std::cerr << "test make_lower and make_uppers\n";
 	allExpected &= testLowerUpper();
 
-	logTestString("test find functions\n");
+	std::cerr << "test find functions\n";
 	allExpected &= testFindFunctions();
 
-	logTestString("test erase functions\n");
+	std::cerr << "test erase functions\n";
 	allExpected &= testErase();
 
-	if(allExpected)
-		logTestString("\nAll tests passed\n");
-	else
-		logTestString("\nFAIL!\n");
+	assertLog(allExpected);
 
 	return allExpected;
 }

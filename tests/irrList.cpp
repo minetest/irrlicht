@@ -52,7 +52,7 @@ static bool testSwap()
 	result &= compareLists<int>(list1, copy2);
 	result &= compareLists<int>(list2, copy1);
 
-	assert_log( result );
+	assertLog( result );
 
 	return result;
 }
@@ -67,10 +67,7 @@ bool testIrrList(void)
 
 	success &= testSwap();
 
-	if(success)
-		logTestString("\nAll tests passed\n");
-	else
-		logTestString("\nFAIL!\n");
+	assertLog(success);
 
 	return success;
 }

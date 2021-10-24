@@ -43,7 +43,7 @@ static bool testSwap()
 	result &= compareMaps(map1, copy2);
 	result &= compareMaps(map2, copy1);
 
-	assert_log( result );
+	assertLog( result );
 
 	return result;
 }
@@ -55,10 +55,7 @@ bool testIrrMap(void)
 
 	success &= testSwap();
 
-	if(success)
-		logTestString("\nAll tests passed\n");
-	else
-		logTestString("\nFAIL!\n");
+	assertLog(success);
 
 	return success;
 }

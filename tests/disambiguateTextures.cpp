@@ -2,6 +2,7 @@
 // No rights reserved: this software is in the public domain.
 
 #include "testUtils.h"
+#include <iostream>
 
 using namespace irr;
 using namespace core;
@@ -17,9 +18,9 @@ bool disambiguateTextures(void)
 	IrrlichtDevice *device =
 		createDevice( video::EDT_NULL, dimension2d<u32>(640, 480));
 
-	if (!device)
+	if (!assertLog(device))
 	{
-		logTestString("Unable to create EDT_NULL device\n");
+		std::cerr << "Unable to create EDT_NULL device\n";
 		return false;
 	}
 
@@ -27,10 +28,12 @@ bool disambiguateTextures(void)
 	// a media directory under this apps' directory with tools.png in it.
 	stringc wd = device->getFileSystem()->getWorkingDirectory();
 
-	if(-1 == wd.find("/tests") && -1 == wd.find("\\tests"))
+	std::cout << wd.find("/tests") << wd.find("\\tests") << '\n';
+	if(!assertLog((wd.find("/tests") != -1) || (wd.find("\\tests")) != -1))
 	{
-		logTestString("The tests must be run from the /tests directory, regardless of where\n"\
-			"the test executable was built.\n");
+		std::cerr << "The tests must be run from the /tests "\
+			"directory, regardless of where\n"\
+			"the test executable was built.\n";
 		device->drop();
 		return false;
 	}
@@ -38,39 +41,36 @@ bool disambiguateTextures(void)
 	IVideoDriver * driver = device->getVideoDriver();
 
 	ITexture * tex1 = driver->getTexture("../media/tools.png");
-	assert_log(tex1);
-	if(!tex1)
-		logTestString("Unable to open ../media/tools.png\n");
+	if(!assertLog(tex1))
+		std::cerr << "Unable to open ../media/tools.png\n";
 
 	ITexture * tex2 = driver->getTexture("../media/tools.png");
-	assert_log(tex2);
-	if(!tex2)
-		logTestString("Unable to open ../media/tools.png\n");
+	if(!assertLog(tex2))
+		std::cerr << "Unable to open ../media/tools.png\n";
 
 	IReadFile * readFile = device->getFileSystem()->createAndOpenFile("../media/tools.png");
-	assert_log(readFile);
-	if(!readFile)
-		logTestString("Unable to open ../media/tools.png\n");
+	if(!assertLog(readFile))
+		std::cerr << "Unable to open ../media/tools.png\n";
 
 	ITexture * tex3 = driver->getTexture(readFile);
-	assert_log(tex3);
-	if(!readFile)
-		logTestString("Unable to create texture from ../media/tools.png\n");
+	assertLog(tex3);
+	if(!assertLog(readFile))
+		std::cerr << "Unable to create texture from "\
+			"../media/tools.png\n";
 
 	readFile->drop();
 
 	// All 3 of the above textures should be identical.
-	assert_log(tex1 == tex2);
-	assert_log(tex1 == tex3);
+	assertLog(tex1 == tex2);
+	assertLog(tex1 == tex3);
 
 	stringc newWd = wd + "/empty/empty";
 	bool changed = device->getFileSystem()->changeWorkingDirectoryTo(newWd.c_str());
-	assert_log(changed);
+	assertLog(changed);
 	ITexture * tex4 = driver->getTexture("../../media/tools.png");
-	assert_log(tex4);
-	if(!tex4)
-		logTestString("Unable to open ../../media/tools.png\n");
-	assert_log(tex1 != tex4);
+	if(!assertLog(tex4))
+		std::cerr << "Unable to open ../../media/tools.png\n";
+	assertLog(tex1 != tex4);
 
 	// The working directory must be restored for the other tests to work.
 	changed &= device->getFileSystem()->changeWorkingDirectoryTo(wd.c_str());
