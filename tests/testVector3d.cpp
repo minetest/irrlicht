@@ -2,6 +2,7 @@
 // No rights reserved: this software is in the public domain.
 
 #include "testUtils.h"
+#include <iostream>
 
 using namespace irr;
 using namespace core;
@@ -94,12 +95,16 @@ template<class S, class T>
 static bool equalVectors(const S& compare,
 			   const core::vector3d<T> & with)
 {
-	if (!compare(with))
+	if (!assertLog(compare(with)))
 	{
-		logTestString("\nERROR: vector3d %.16f, %.16f, %.16f %s vector3d %.16f, %.16f, %.16f\n",
-			(f64)compare.val.X, (f64)compare.val.Y, (f64)compare.val.Z, compare.getName(),
-			(f64)with.X, (f64)with.Y, (f64)with.Z);
-		assert_log(compare(with));
+		std::cerr << "\nERROR: vector3d "
+			<< compare.val.X << ' '
+			<< compare.val.Y << ' '
+			<< compare.val.Z << ' '
+			<< compare.getName() << " vector3d "
+			<< with.X << ' '
+			<< with.Y << ' '
+			<< with.Z << '\n';
 		return false;
 	}
 
@@ -206,60 +211,51 @@ static bool checkRotations()
 template <class T>
 static bool doTests()
 {
+	bool passed = true;
 	vector3d<T> vec(-5, 5, 0);
-	vector3d<T> otherVec((T)-5.1, 5, 0);
+	vector3d<T> otherVec(static_cast<T>(-5.1), 5, 0);
 
-	if(!vec.equals(otherVec, (T)0.1))
-	{
-		logTestString("vector3d::equals failed\n");
-		assert_log(0);
-		return false;
-	}
+	// Test vector equality
+	passed &= assertLog(vec.equals(otherVec, static_cast<T>(0.1)));
 
+	// Test vector3d::operator[]
 	otherVec = vector3d<T>(1,2,3);
 	otherVec[0] = vec[0];
 	otherVec[1] = vec[1];
 	otherVec[2] = vec[2];
-	if(!vec.equals(otherVec))
-	{
-		logTestString("vector3d::operator[] failed\n");
-		assert_log(0);
-		return false;
-	}
+	passed &= assertLog(vec.equals(otherVec));
 
+	// Test vector3d::getDistanceFrom()
 	vec.set(5, 5, 0);
 	otherVec.set(10, 20, 0);
-	if(!equals(vec.getDistanceFrom(otherVec), (T)15.8113883))
-	{
-		logTestString("vector3d::getDistanceFrom() failed\n");
-		assert_log(0);
-		return false;
-	}
+	T expectedDistance = static_cast<T>(15.8113883);
+	passed &= assertLog(
+		equals(vec.getDistanceFrom(otherVec), expectedDistance));
 
-	if (!checkRotations<T>())
+	passed &= assertLog(checkRotations<T>());
+	if (!passed)
 		return false;
 
-	if (!checkInterpolation<T>())
+	passed &= assertLog(checkInterpolation<T>());
+	if (!passed)
 		return false;
 
-	if (!checkAngleCalculations<T>())
+	passed &= assertLog(checkAngleCalculations<T>());
+	if (!passed)
 		return false;
 
 	vec.set(0,0,0);
 	vec.setLength(99);
-	if ( is_nan(vec) )
+	passed &= assertLog(!is_nan(vec));
+	if (!passed)
 		return false;
 
 	core::vector3d<T> zeroZero(0, 0, 0);
 	core::vector3d<T> oneOne(1, 1, 1);
-	// Check if comparing (0.0, 0.0, 0.0) with (1.0, 1.0, 1.0) returns false.
-	if(zeroZero == oneOne)
-	{
-		logTestString("\nERROR: vector3d %.16f, %.16f, %.16f == vector3d %.16f, %.16f, %.16f\n",
-			(f64)zeroZero.X, (f64)zeroZero.Y, (f64)zeroZero.Z,
-			(f64)oneOne.X, (f64)oneOne.Y, (f64)oneOne.Z);
+	// Check comparing (0.0, 0.0, 0.0) with (1.0, 1.0, 1.0) returns false.
+	passed &= assertLog(!(zeroZero == oneOne));
+	if (!passed)
 		return false;
-	}
 
 	vec.set(5, 5, 0);
 
@@ -291,21 +287,21 @@ bool testVector3d(void)
 {
 	const bool f32Success = doTests<f32>();
 	if (f32Success)
-		logTestString("vector3df tests passed\n\n");
+		std::cerr << "vector3df tests passed\n\n";
 	else
-		logTestString("\n*** vector3df tests failed ***\n\n");
+		std::cerr << "\n*** vector3df tests failed ***\n\n";
 
 	const bool f64Success = doTests<f64>();
 	if (f64Success)
-		logTestString("vector3d<f64> tests passed\n\n");
+		std::cerr << "vector3d<f64> tests passed\n\n";
 	else
-		logTestString("\n*** vector3d<f64> tests failed ***\n\n");
+		std::cerr << "\n*** vector3d<f64> tests failed ***\n\n";
 
 	const bool s32Success = doTests<s32>();
 	if (s32Success)
-		logTestString("vector3di tests passed\n\n");
+		std::cerr << "vector3di tests passed\n\n";
 	else
-		logTestString("\n*** vector3di tests failed ***\n\n");
+		std::cerr << "\n*** vector3di tests failed ***\n\n";
 
 	return f32Success && f64Success && s32Success;
 }

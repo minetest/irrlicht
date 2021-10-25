@@ -11,27 +11,17 @@ using namespace core;
 	operator!= (and thus implicitly operator==) */
 bool testDimension2d(void)
 {
+	bool passed = true;
 	dimension2df dimension(100.f, 100.f);
 	const dimension2df addDimension(200.f, -200.f);
 
 	(void)(dimension += addDimension);
-
-	if(dimension != dimension2df(300.f, -100.f))
-	{
-		logTestString("dimension2df != produced unexpected result.\n");
-		assert_log(false);
-		return false;
-	}
+	passed &= assertLog(dimension == dimension2df(300.f, -100.f));
 
 	(void)(dimension -= addDimension);
-	if(dimension != dimension2df(100.f, 100.f))
-	{
-		logTestString("dimension2df -= produced unexpected result.\n");
-		assert_log(false);
-		return false;
-	}
+	passed &= assertLog(dimension == dimension2df(100.f, 100.f));
 
-	return true;
+	return passed;
 }
 
 int main()

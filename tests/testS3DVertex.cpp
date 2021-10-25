@@ -41,9 +41,7 @@ bool testSorting()
 
 bool testS3DVertex(void)
 {
-	bool result = true;
-	result &= testSorting();
-	return result;
+	return testSorting();
 }
 
 int main()

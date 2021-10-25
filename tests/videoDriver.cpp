@@ -2,6 +2,7 @@
 // No rights reserved: this software is in the public domain.
 
 #include "testUtils.h"
+#include <iostream>
 
 using namespace irr;
 using namespace core;
@@ -16,19 +17,43 @@ bool testVideoDriver(video::E_DRIVER_TYPE driverType)
 		return true;
 
 	video::IVideoDriver* driver = device->getVideoDriver();
-	logTestString("Testing driver %ls\n", driver->getName());
-	logTestString("MaxTextures: %d\n", driver->getDriverAttributes().getAttributeAsInt("MaxTextures"));
-	logTestString("MaxSupportedTextures: %d\n", driver->getDriverAttributes().getAttributeAsInt("MaxSupportedTextures"));
-	logTestString("MaxLights: %d\n", driver->getDriverAttributes().getAttributeAsInt("MaxLights"));
-	logTestString("MaxAnisotropy: %d\n", driver->getDriverAttributes().getAttributeAsInt("MaxAnisotropy"));
-	logTestString("MaxUserClipPlanes: %d\n", driver->getDriverAttributes().getAttributeAsInt("MaxUserClipPlanes"));
-	logTestString("MaxAuxBuffers: %d\n", driver->getDriverAttributes().getAttributeAsInt("MaxAuxBuffers"));
-	logTestString("MaxMultipleRenderTargets: %d\n", driver->getDriverAttributes().getAttributeAsInt("MaxMultipleRenderTargets"));
-	logTestString("MaxIndices: %d\n", driver->getDriverAttributes().getAttributeAsInt("MaxIndices"));
-	logTestString("MaxTextureSize: %d\n", driver->getDriverAttributes().getAttributeAsInt("MaxTextureSize"));
-	logTestString("MaxGeometryVerticesOut: %d\n", driver->getDriverAttributes().getAttributeAsInt("MaxGeometryVerticesOut"));
-	logTestString("Version: %d\n", driver->getDriverAttributes().getAttributeAsInt("Version"));
-	logTestString("ShaderLanguageVersion: %d\n\n", driver->getDriverAttributes().getAttributeAsInt("ShaderLanguageVersion"));
+	std::cerr << "Testing driver " << driver->getName() << '\n'
+		<< "MaxTextures:"
+		<< driver->getDriverAttributes().getAttributeAsInt(
+			"MaxTextures") << '\n'
+		<< "MaxSupportedTextures: "
+		<< driver->getDriverAttributes().getAttributeAsInt(
+			"MaxSupportedTextures") << '\n'
+		<< "MaxLights: "
+		<< driver->getDriverAttributes().getAttributeAsInt(
+			"MaxLights") << '\n'
+		<< "MaxAnisotropy: "
+		<< driver->getDriverAttributes().getAttributeAsInt(
+			"MaxAnisotropy") << '\n'
+		<< "MaxUserClipPlanes: "
+		<< driver->getDriverAttributes().getAttributeAsInt(
+			"MaxUserClipPlanes") << '\n'
+		<< "MaxAuxBuffers: "
+		<< driver->getDriverAttributes().getAttributeAsInt(
+			"MaxAuxBuffers") << '\n'
+		<< "MaxMultipleRenderTargets: "
+		<< driver->getDriverAttributes().getAttributeAsInt(
+			"MaxMultipleRenderTargets") << '\n'
+		<< "MaxIndices: "
+		<< driver->getDriverAttributes().getAttributeAsInt(
+			"MaxIndices") << '\n'
+		<< "MaxTextureSize: "
+		<< driver->getDriverAttributes().getAttributeAsInt(
+			"MaxTextureSize") << '\n'
+		<< "MaxGeometryVerticesOut: "
+		<< driver->getDriverAttributes().getAttributeAsInt(
+			"MaxGeometryVerticesOut") << '\n'
+		<< "Version: "
+		<< driver->getDriverAttributes().getAttributeAsInt(
+			"Version") << '\n'
+		<< "ShaderLanguageVersion: "
+		<< driver->getDriverAttributes().getAttributeAsInt(
+			"ShaderLanguageVersion") << '\n';
 
 	device->closeDevice();
 	device->run();

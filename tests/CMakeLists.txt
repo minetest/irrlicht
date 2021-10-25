@@ -3,10 +3,13 @@ set(UNITTEST_FLAGS "" CACHE STRING "Additional compile flags for unit tests.")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-# Registers a test case TEST_NAME. Source files are taken up by ARGN variable.
-# testUtils.cpp is added to sources by default.
+# Yeah, not recompiling testUtils for every test is probably a good
+add_library(testUtils STATIC testUtils.cpp testUtils.h)
+target_link_libraries(testUtils PUBLIC IrrlichtMt)
+
+# Registers a test case TEST_NAME.
 macro(REGISTER_TEST TEST_NAME)
-	add_executable(${TEST_NAME} testUtils.cpp testUtils.h ${ARGN})
+	add_executable(${TEST_NAME} ${ARGN})
 
 	# Based on Makefile as used in original Irrlicht.
 	target_compile_options(${TEST_NAME}
@@ -20,7 +23,7 @@ macro(REGISTER_TEST TEST_NAME)
 	)
 	target_link_libraries(${TEST_NAME}
 		PRIVATE
-			IrrlichtMt
+			testUtils
 	)
 	add_test(
 		NAME ${TEST_NAME}
@@ -41,27 +44,25 @@ register_test(testIrrList irrList.cpp)
 register_test(testExports exports.cpp)
 register_test(testIrrCoreEquals irrCoreEquals.cpp)
 register_test(testIrrString irrString.cpp)
-#[[
-register_test(testLine2DSimple testLine2d.cpp)
+#register_test(testLine2DSimple testLine2d.cpp)
 register_test(testMatrixOps matrixOps.cpp)
 register_test(testDimension2D testDimension2d.cpp)
-register_test(testVector2D testVector2d.cpp)
+#register_test(testVector2D testVector2d.cpp)
 register_test(testVector3D testVector3d.cpp)
-register_test(testQuaternion testQuaternion.cpp)
+#register_test(testQuaternion testQuaternion.cpp)
 register_test(testS3DVertex testS3DVertex.cpp)
-register_test(testaabbox testaabbox.cpp)
+#register_test(testaabbox testaabbox.cpp)
 register_test(testColor color.cpp)
-register_test(testTriangle3D triangle3d.cpp)
-register_test(testVectorPositionDimension2D vectorPositionDimension2d.cpp)
+#register_test(testTriangle3D triangle3d.cpp)
+#register_test(testVectorPositionDimension2D vectorPositionDimension2d.cpp)
 
 # File system checks.
-register_test(testFilesystem filesystem.cpp)
+#register_test(testFilesystem filesystem.cpp)
 #register_test(testArchiveReader archiveReader.cpp)
-register_test(testSerializeAttributes serializeAttributes.cpp)
+#register_test(testSerializeAttributes serializeAttributes.cpp)
 
 # Null driver tests.
-register_test(testLoadTextures loadTextures.cpp)
-register_test(testEnumerateImageManipulators enumerateImageManipulators.cpp)
+#register_test(testLoadTextures loadTextures.cpp)
 register_test(testMeshLoaders meshLoaders.cpp)
 register_test(testTimer timer.cpp)
 register_test(testCoreutil coreutil.cpp)
@@ -71,4 +72,3 @@ register_test(testCoreutil coreutil.cpp)
 
 # All driver checks.
 register_test(testVideoDriver videoDriver.cpp)
-#]]

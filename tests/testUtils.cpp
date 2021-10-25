@@ -245,7 +245,7 @@ irr::core::stringc shortDriverName(irr::video::IVideoDriver * driver)
 
 int runTest(bool (*testFunction)(), const std::string &testName)
 {
-	std::cerr << "\nStarting test '%s'\n" << testName << '\n';
+	std::cerr << "\nStarting test " << testName << '\n';
 
 	bool testPassed = testFunction();
 	if (!testPassed)

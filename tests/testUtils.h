@@ -26,7 +26,7 @@
 #endif
 
 #define TestWithAllDrivers(X) \
-	logTestString("Running test " #X "\n"); \
+	std::cerr << "Running test " << #X << '\n'; \
 	for (u32 i=1; i<video::EDT_COUNT; ++i) \
 		if (video::E_DRIVER_TYPE(i) != video::DEPRECATED_EDT_DIRECT3D8_NO_LONGER_EXISTS && irr::IrrlichtDevice::isDriverSupported((irr::video::E_DRIVER_TYPE)i)) \
 		{\
@@ -36,7 +36,7 @@
 
 #define TestWithAllHWDrivers(X) \
 	SLOW_SWITCH; \
-	logTestString("Running test " #X "\n"); \
+	std::cerr << "Running test " << #X << '\n'; \
 	for (u32 i=video::EDT_DIRECT3D9; i<video::EDT_COUNT; ++i) \
 		if (irr::IrrlichtDevice::isDriverSupported((irr::video::E_DRIVER_TYPE)i)) \
 		{\
@@ -47,13 +47,16 @@
 //! Replacement for assert which logs the line number.
 /** \param cmp Boolean value to check for truthiness.
 	\return Same as value of cmp. */
-inline bool assertLog(bool cmp)
+inline bool assertLogLine(bool cmp, const char *file, int line)
 {
 	if (!cmp)
-		std::cerr << "ASSERT FAILURE: " << __FILE__
-		<< " line " << __LINE__ <<'\n';
+		std::cerr << "ASSERT FAILURE: " << file
+		<< " line " << line <<'\n';
 	return cmp;
 }
+
+// Macro to capture line numbers.
+#define assertLog(cmp) assertLogLine(cmp, __FILE__, __LINE__)
 
 //! Compare two files
 /** \param fileName1 The first file for comparison.
