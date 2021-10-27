@@ -3,7 +3,7 @@ set(UNITTEST_FLAGS "" CACHE STRING "Additional compile flags for unit tests.")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-# Yeah, not recompiling testUtils for every test is probably a good
+# Yeah, not recompiling testUtils for every test is probably a good idea.
 add_library(testUtils STATIC testUtils.cpp testUtils.h)
 target_link_libraries(testUtils PUBLIC IrrlichtMt)
 
