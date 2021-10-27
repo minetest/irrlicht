@@ -6,115 +6,81 @@
 using namespace irr;
 using namespace core;
 
-static bool testLines(line2df const & line1,
-					  line2df const & line2,
-					  bool expectedHit,
-					  const vector2df & expectedIntersection)
+static void logLine(const line2df &line)
 {
-	bool gotExpectedResult = true;
+	std::cerr << '(' << line.start.X << ',' << line.start.Y << ')'
+		<< " to " << '(' << line.end.X << ',' << line.end.Y << ")\n";
+}
 
-	logTestString("\nLine 1 = %.1f %.1f to %.1f %.1f \n",
-		line1.start.X, line1.start.Y,
-		line1.end.X, line1.end.Y);
-	logTestString("Line 2 = %.1f %.1f to %.1f %.1f\n",
-		line2.start.X, line2.start.Y,
-		line2.end.X, line2.end.Y);
+static bool testLineIntersection(line2df const &line1,
+		line2df const &line2,
+		bool expectedHit,
+		const vector2df &expectedIntersection)
+{
+	std::cerr << "\nLine 1 ";
+	logLine(line1);
+	std::cerr << "Line2 ";
+	logLine(line2);
+	std::cerr << '\n';
 
 	vector2df intersection;
-	logTestString("line1 with line2 = ");
-	if(line1.intersectWith(line2, intersection))
+	bool linesIntersect = line1.intersectWith(line2, intersection);
+	if (linesIntersect)
 	{
-		logTestString("hit at %.1f %.1f - ",
-			intersection.X, intersection.Y);
+		std::cerr << "Lines intersect at point ("
+			<< intersection.X << ',' << intersection.Y << ")\n";
+	};
 
-		if(!line1.isPointOnLine(intersection) || !line2.isPointOnLine(intersection))
+	if (expectedHit)
+	{
+		if(!assertLog(linesIntersect))
 		{
-			logTestString("ERROR! point is not on both lines - ");
-			gotExpectedResult = false;
+			std::cerr << "ERR: Lines do not intersect!\n";
+			return false;
 		}
 
-		if(expectedHit)
+		if (!assertLog(line1.isPointOnLine(intersection))
+			&& line2.isPointOnLine(intersection))
 		{
-			if(intersection == expectedIntersection)
-			{
-				logTestString("expected\n");
-			}
-			else
-			{
-				logTestString("unexpected intersection (expected %.1f %.1f)\n",
-					expectedIntersection.X, expectedIntersection.Y);
-				gotExpectedResult = false;
-			}
+			std::cerr << "ERR: Point is not on both lines!\n";
+			return false;
 		}
-		else
+
+		if (!assertLog(intersection == expectedIntersection))
 		{
-			logTestString("UNEXPECTED\n");
-			gotExpectedResult = false;
+			std::cerr << "ERR: Intersection at wrong point!\n"
+				<< "Expected ("
+				<< expectedIntersection.X << ','
+				<< expectedIntersection.Y << ")\n";
 		}
 	}
 	else
 	{
-		logTestString("miss - ");
-		if(!expectedHit)
+		if(!assertLog(!linesIntersect))
 		{
-			logTestString("expected\n");
-		}
-		else
-		{
-			logTestString("UNEXPECTED\n");
-			gotExpectedResult = false;
+			std::cerr << "ERR: Lines should not intersect!\n";
+			return false;
 		}
 	}
 
-	logTestString("line2 with line1 = ");
-	if(line2.intersectWith(line1, intersection))
-	{
-		logTestString("hit at %.1f %.1f - ",
-			intersection.X, intersection.Y);
-		if(!line1.isPointOnLine(intersection) || !line2.isPointOnLine(intersection))
-		{
-			logTestString("ERROR! point is not on both lines - ");
-			gotExpectedResult = false;
-		}
+	// If there were no failures.
+	return true;
+}
 
-		if(expectedHit)
-		{
-			if(intersection == expectedIntersection)
-			{
-				logTestString("expected\n");
-			}
-			else
-			{
-				logTestString("unexpected intersection (expected %.1f %.1f)\n",
-					expectedIntersection.X, expectedIntersection.Y);
-				gotExpectedResult = false;
-			}
-		}
-		else
-		{
-			logTestString("UNEXPECTED\n");
-			gotExpectedResult = false;
-		}
-	}
-	else
-	{
-		logTestString("miss - ");
-		if(!expectedHit)
-		{
-			logTestString("expected\n");
-		}
-		else
-		{
-			logTestString("UNEXPECTED\n");
-			gotExpectedResult = false;
-		}
-	}
-
-	return gotExpectedResult;
+static bool testLines(line2df const &line1,
+		line2df const &line2,
+		bool expectedHit,
+		const vector2df &expectedIntersection)
+{
+	// Test in both orders to make sure intersection is commutative.
+	return testLineIntersection(
+			line1, line2, expectedHit, expectedIntersection)
+		&& testLineIntersection(
+			line2, line1, expectedHit, expectedIntersection);
 }
 
 // Test the functionality of line2d>T>::intersectWith().
-/** Validation is done with assert_log() against expected results. */
+/** Validation is done with assertLog() against expected results. */
 bool line2dIntersectWith(void)
 {
 	bool allExpected = true;
@@ -123,149 +89,146 @@ bool line2dIntersectWith(void)
 	allExpected &= testLines(line2df(vector2df(1,1),vector2df(1,3)),
 							line2df(vector2df(0,2),vector2df(2,2)),
 							true, vector2df(1,2));
-	assert_log(allExpected);
+	assertLog(allExpected);
 
 	// Crossing lines, both diagonal
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(2,2)),
 							line2df(vector2df(0,2),vector2df(2,0)),
 							true, vector2df(1,1));
-	assert_log(allExpected);
+	assertLog(allExpected);
 
 	// Non-crossing lines, horizontal and vertical
 	allExpected &= testLines(line2df(vector2df(1,1),vector2df(1,3)),
 							line2df(vector2df(0,4),vector2df(2,4)),
 							false, vector2df());
-	assert_log(allExpected);
+	assertLog(allExpected);
 
 	// Non-crossing lines, both diagonal
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(2,2)),
 							line2df(vector2df(3,4),vector2df(4,3)),
 							false, vector2df());
-	assert_log(allExpected);
+	assertLog(allExpected);
 
 	// Meeting at a common point
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(1,0)),
 							line2df(vector2df(1,0),vector2df(2,0)),
 							true, vector2df(1,0));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(1,0)),
 							line2df(vector2df(1,0),vector2df(0,1)),
 							true, vector2df(1,0));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(1,0)),
 							line2df(vector2df(1,0),vector2df(0,-1)),
 							true, vector2df(1,0));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(0,1)),
 							line2df(vector2df(0,1),vector2df(1,1)),
 							true, vector2df(0,1));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(0,1)),
 							line2df(vector2df(0,1),vector2df(1,-1)),
 							true, vector2df(0,1));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(0,1)),
 							line2df(vector2df(0,1),vector2df(0,2)),
 							true, vector2df(0,1));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(1,0)),
 							line2df(vector2df(1,0),vector2df(2,0)),
 							true, vector2df(1,0));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(1,1)),
 							line2df(vector2df(1,1),vector2df(0,2)),
 							true, vector2df(1,1));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(1,1)),
 							line2df(vector2df(1,1),vector2df(2,0)),
 							true, vector2df(1,1));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(1,1)),
 							line2df(vector2df(1,1),vector2df(2,2)),
 							true, vector2df(1,1));
-	assert_log(allExpected);
+	assertLog(allExpected);
 
 
 	// Parallel lines, no intersection
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(1,0)),
 							line2df(vector2df(0,1),vector2df(1,1)),
 							false, vector2df());
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(0,1)),
 							line2df(vector2df(1,0),vector2df(1,1)),
 							false, vector2df());
-	assert_log(allExpected);
+	assertLog(allExpected);
 
 	// Non parallel lines, no intersection
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(1,0)),
 							line2df(vector2df(0,1),vector2df(0,2)),
 							false, vector2df());
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(0,1)),
 							line2df(vector2df(1,0),vector2df(2,0)),
 							false, vector2df());
-	assert_log(allExpected);
+	assertLog(allExpected);
 
 	// Coincident (and thus parallel) lines
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(1,0)),
 							line2df(vector2df(0,0),vector2df(1,0)),
 							true, vector2df(0,0));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(2,0),vector2df(0,2)),
 							line2df(vector2df(2,0),vector2df(0,2)),
 							true, vector2df(2,0));
-	assert_log(allExpected);
+	assertLog(allExpected);
 
 	// Two segments of the same unlimited line, but no intersection
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(1,1)),
 							line2df(vector2df(2,2),vector2df(3,3)),
 							false, vector2df());
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(1,0)),
 							line2df(vector2df(2,0),vector2df(3,0)),
 							false, vector2df());
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(0,1)),
 							line2df(vector2df(0,2),vector2df(0,3)),
 							false, vector2df());
-	assert_log(allExpected);
+	assertLog(allExpected);
 
 	// Overlapping parallel lines
 	allExpected &= testLines(line2df(vector2df(1,0),vector2df(2,0)),
 							line2df(vector2df(0,0),vector2df(3,0)),
 							true, vector2df(1.5f, 0));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,1),vector2df(0,2)),
 							line2df(vector2df(0,0),vector2df(0,3)),
 							true, vector2df(0, 1.5f));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(1,0),vector2df(2,0)),
 							line2df(vector2df(0,0),vector2df(3,0)),
 							true, vector2df(1.5f, 0));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,1),vector2df(0,2)),
 							line2df(vector2df(0,0),vector2df(0,3)),
 							true, vector2df(0, 1.5f));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(1,1),vector2df(2,2)),
 							line2df(vector2df(0,0),vector2df(3,3)),
 							true, vector2df(1.5f, 1.5f));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(1,2),vector2df(2,1)),
 							line2df(vector2df(0,3),vector2df(3,0)),
 							true, vector2df(1.5f, 1.5f));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(10,8)),
 							line2df(vector2df(2.5f,2.0f),vector2df(5.0f,4.0f)),
 							true, vector2df(3.75f, 3.0f));
-	assert_log(allExpected);
+	assertLog(allExpected);
 	allExpected &= testLines(line2df(vector2df(0,0),vector2df(2000,1000)),
 							line2df(vector2df(2,1),vector2df(2.2f,1.4f)),
 							true, vector2df(2.0f, 1.0f));
-	assert_log(allExpected);
-
-	if(!allExpected)
-		logTestString("\nline2dIntersectWith failed\n");
+	assertLog(allExpected);
 
 	return allExpected;
 }
@@ -276,13 +239,7 @@ bool getClosestPoint(void)
 	irr::core::line2di line(-283, -372, 374, 289);
 	irr::core::vector2di p1 = line.getClosestPoint( irr::core::vector2di(290,372) );
 	irr::core::vector2di p2 = line.getClosestPoint( irr::core::vector2di(135,372) );
-	if( p1 == p2 )
-	{
-		logTestString("getClosestPoint failed\n");
-		return false;
-	}
-
-	return true;
+	return assertLog(p1 == p2);
 }
 
 bool testLine2d(void)
@@ -291,11 +248,6 @@ bool testLine2d(void)
 
 	allExpected &= line2dIntersectWith();
 	allExpected &= getClosestPoint();
-
-	if(allExpected)
-		logTestString("\nAll tests passed\n");
-	else
-		logTestString("\nFAIL!\n");
 
 	return allExpected;
 }
