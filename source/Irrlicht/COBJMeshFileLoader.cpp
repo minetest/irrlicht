@@ -26,8 +26,6 @@ namespace scene
 #define _IRR_DEBUG_OBJ_LOADER_
 #endif
 
-static const u32 WORD_BUFFER_LENGTH = 512;
-
 //! Constructor
 COBJMeshFileLoader::COBJMeshFileLoader(scene::ISceneManager* smgr, io::IFileSystem* fs)
 : SceneManager(smgr), FileSystem(fs)
