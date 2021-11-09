@@ -44,6 +44,10 @@ public:
 	//! loads a font from a texture file
 	bool load(io::IReadFile* file);
 
+	//! loads a font from a TSV file
+	// \param directory Directory in which the bitmaps can be found
+	bool load(io::IReadFile* file, const io::path& directory);
+
 	//! draws an text and clips it to the specified rectangle if wanted
 	virtual void draw(const core::stringw& text, const core::rect<s32>& position,
 			video::SColor color, bool hcenter=false,

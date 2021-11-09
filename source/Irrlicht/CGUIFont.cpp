@@ -6,6 +6,7 @@
 #ifdef _IRR_COMPILE_WITH_GUI_
 
 #include "os.h"
+#include "fast_atof.h"
 #include "coreutil.h"
 #include "IGUIEnvironment.h"
 #include "IReadFile.h"
@@ -62,131 +63,117 @@ CGUIFont::~CGUIFont()
 }
 
 
-#if 0
-//! loads a font file from xml
-bool CGUIFont::load(io::IXMLReader* xml, const io::path& directory)
+//! loads a font file from tsv
+bool CGUIFont::load(io::IReadFile* file, const io::path& directory)
 {
 	if (!SpriteBank)
 		return false;
 
 	SpriteBank->clear();
 
-	while (xml->read())
+	const long size = file->getSize();
+	core::stringc Buffer;
+	Buffer.reserve(size + 1);
+	if (file->read(&Buffer[0], size) != static_cast<size_t>(size))
 	{
-		if (io::EXN_ELEMENT == xml->getNodeType())
+		os::Printer::log("Could not read from file", ELL_ERROR);
+		return false;
+	}
+	Buffer[size] = 0;
+	const c8 *P = &Buffer[0], *End = P + size;
+
+#define SkipSpace() \
+		while (P < End && (*P == ' ' || *P == '\t' || *P == '\v')) { P++; }
+#define SkipLine(rest) \
+		while (rest && P < End && *P != '\r' && *P != '\n') P++; \
+		while (P < End && (*P == '\r' || *P == '\n')) { P++; }
+
+	while (P < End)
+	{
+		if (!strncmp(P, "Texture:", 8))
 		{
-			if (core::stringw(L"Texture") == xml->getNodeName())
+			// add a texture
+			P += 8;
+			SkipSpace()
+			core::stringc fn;
+			for (; P < End && *P != '\r' && *P != '\n'; P++)
+				fn.append(*P);
+			SkipLine(0)
+
+			bool flags[3];
+			pushTextureCreationFlags(flags);
+
+			// load texture
+			io::path textureFullName = core::mergeFilename(directory, fn);
+			SpriteBank->setTexture(0, Driver->getTexture(textureFullName));
+
+			popTextureCreationFlags(flags);
+
+			if (!SpriteBank->getTexture(0))
 			{
-				// add a texture
-				core::stringc fn = xml->getAttributeValue(L"filename");
-				u32 i = (u32)xml->getAttributeValueAsInt(L"index");
-				core::stringw alpha = xml->getAttributeValue(L"hasAlpha");
-
-				while (i+1 > SpriteBank->getTextureCount())
-					SpriteBank->addTexture(0);
-
-				bool flags[3];
-				pushTextureCreationFlags(flags);
-
-				// load texture
-				io::path textureFullName = core::mergeFilename(directory, fn);
-				SpriteBank->setTexture(i, Driver->getTexture(textureFullName));
-
-				popTextureCreationFlags(flags);
-
-				// couldn't load texture, abort.
-				if (!SpriteBank->getTexture(i))
-				{
-					os::Printer::log("Unable to load all textures in the font, aborting", ELL_ERROR);
-					return false;
-				}
-				else
-				{
-					// colorkey texture rather than alpha channel?
-					if (alpha == core::stringw("false"))
-						Driver->makeColorKeyTexture(SpriteBank->getTexture(i), core::position2di(0,0));
-				}
-			}
-			else if (core::stringw(L"c") == xml->getNodeName())
-			{
-				// adding a character to this font
-				SFontArea a;
-				SGUISpriteFrame f;
-				SGUISprite s;
-				core::rect<s32> rectangle;
-
-				a.underhang		= xml->getAttributeValueAsInt(L"u");
-				a.overhang		= xml->getAttributeValueAsInt(L"o");
-				a.spriteno		= SpriteBank->getSprites().size();
-				s32 texno		= xml->getAttributeValueAsInt(L"i");
-
-				// parse rectangle
-				core::stringc rectstr	= xml->getAttributeValue(L"r");
-				wchar_t ch		= xml->getAttributeValue(L"c")[0];
-
-				const c8 *c = rectstr.c_str();
-				s32 val;
-				val = 0;
-				while (*c >= '0' && *c <= '9')
-				{
-					val *= 10;
-					val += *c - '0';
-					c++;
-				}
-				rectangle.UpperLeftCorner.X = val;
-				while (*c == L' ' || *c == L',') c++;
-
-				val = 0;
-				while (*c >= '0' && *c <= '9')
-				{
-					val *= 10;
-					val += *c - '0';
-					c++;
-				}
-				rectangle.UpperLeftCorner.Y = val;
-				while (*c == L' ' || *c == L',') c++;
-
-				val = 0;
-				while (*c >= '0' && *c <= '9')
-				{
-					val *= 10;
-					val += *c - '0';
-					c++;
-				}
-				rectangle.LowerRightCorner.X = val;
-				while (*c == L' ' || *c == L',') c++;
-
-				val = 0;
-				while (*c >= '0' && *c <= '9')
-				{
-					val *= 10;
-					val += *c - '0';
-					c++;
-				}
-				rectangle.LowerRightCorner.Y = val;
-
-				CharacterMap.insert(ch,Areas.size());
-
-				// make frame
-				f.rectNumber = SpriteBank->getPositions().size();
-				f.textureNumber = texno;
-
-				// add frame to sprite
-				s.Frames.push_back(f);
-				s.frameTime = 0;
-
-				// add rectangle to sprite bank
-				SpriteBank->getPositions().push_back(rectangle);
-				a.width = rectangle.getWidth();
-
-				// add sprite to sprite bank
-				SpriteBank->getSprites().push_back(s);
-
-				// add character to font
-				Areas.push_back(a);
+				os::Printer::log("Unable to load texture in the font, aborting", ELL_ERROR);
+				return false;
 			}
 		}
+		else
+		{
+			// adding a character to this font
+			SFontArea a;
+			SGUISpriteFrame f;
+			SGUISprite s;
+			core::rect<s32> rect;
+			wchar_t ch;
+
+			// Format of a line:
+			// <char (hex)> <X1> <Y1> <X2> <Y2> [u] [o]
+
+			ch = static_cast<wchar_t>(core::strtoul16(P, &P));
+			SkipSpace()
+
+			rect.UpperLeftCorner.X = core::strtol10(P, &P);
+			SkipSpace()
+			rect.UpperLeftCorner.Y = core::strtol10(P, &P);
+			SkipSpace()
+			rect.LowerRightCorner.X = core::strtol10(P, &P);
+			SkipSpace()
+			rect.LowerRightCorner.Y = core::strtol10(P, &P);
+			SkipSpace()
+
+			if (core::isdigit(*P))
+			{
+				a.underhang = core::strtol10(P, &P);
+				SkipSpace()
+				if (core::isdigit(*P))
+					a.overhang = core::strtol10(P, &P);
+			}
+
+			SkipLine(1)
+
+			CharacterMap.insert(ch, Areas.size());
+
+			// make frame
+			f.rectNumber = SpriteBank->getPositions().size();
+			f.textureNumber = 0;
+
+			// add frame to sprite
+			s.Frames.push_back(f);
+			s.frameTime = 0;
+
+			// add rectangle to sprite bank
+			SpriteBank->getPositions().push_back(rect);
+			a.width = rect.getWidth();
+			a.spriteno = SpriteBank->getSprites().size();
+
+			// add sprite to sprite bank
+			SpriteBank->getSprites().push_back(s);
+
+			// add character to font
+			Areas.push_back(a);
+		}
 	}
+
+#undef SkipSpace
+#undef SkipLine
 
 	// set bad character
 	WrongCharacter = getAreaFromCharacter(L' ');
@@ -195,7 +182,6 @@ bool CGUIFont::load(io::IXMLReader* xml, const io::path& directory)
 
 	return true;
 }
-#endif
 
 
 void CGUIFont::setMaxHeight()
