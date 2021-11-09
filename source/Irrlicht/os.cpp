@@ -338,12 +338,6 @@ namespace os
 		return seed-1;	// -1 because we want it to start at 0
 	}
 
-	//! generates a pseudo random number
-	f32 Randomizer::frand()
-	{
-		return rand()*(1.f/rMax);
-	}
-
 	s32 Randomizer::randMax()
 	{
 		return rMax;
