@@ -255,5 +255,5 @@ bool testLine2d(void)
 
 int main()
 {
-	runTest(testLine2d, "testline2DSimple");
+	return runTest(testLine2d, "testline2DSimple");
 }
