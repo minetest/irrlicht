@@ -102,7 +102,7 @@ namespace
 #if defined(_IRR_LINUX_X11_XINPUT2_)
 	int XI_EXTENSIONS_OPCODE;
 #endif
-};
+}
 
 namespace irr
 {

@@ -82,7 +82,7 @@ namespace
 	{
 		return a.rotation == b.rotation;
 	}
-};
+}
 
 namespace irr
 {
