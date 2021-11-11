@@ -1,122 +1,94 @@
 #include "testUtils.h"
+#include <iostream>
 
 using namespace irr;
 using namespace core;
 using namespace io;
 
-static bool testgetAbsoluteFilename(io::IFileSystem* fs)
+static bool testgetAbsoluteFilename(io::IFileSystem *fs)
 {
-	bool result=true;
+	bool result = true;
 	io::path apath = fs->getAbsolutePath("media");
 	io::path cwd = fs->getWorkingDirectory();
-	if (apath!=(cwd+"/media"))
+	if (!assertLog(apath == (cwd + "/media")))
 	{
-		logTestString("getAbsolutePath failed on existing dir %s\n", apath.c_str());
 		result = false;
+		std::cerr << "getAbsolutePath failed on existing dir "
+			<< apath.c_str() << '\n';
 	}
 
 	apath = fs->getAbsolutePath("../media/");
 	core::deletePathFromPath(cwd, 1);
-	if (apath!=(cwd+"media/"))
+	if (!assertLog(apath == (cwd + "media/")))
 	{
-		logTestString("getAbsolutePath failed on dir with postfix / %s\n", apath.c_str());
 		result = false;
+		std::cerr << "getAbsolutePath failed on dir with postfix / "
+			<< apath.c_str() << '\n';
 	}
 
-	apath = fs->getAbsolutePath ("../nothere.txt");   // file does not exist
-	if (apath!=(cwd+"nothere.txt"))
+	apath = fs->getAbsolutePath ("../nothere.txt"); // file does not exist
+	if (!assertLog(apath == (cwd + "nothere.txt")))
 	{
-		logTestString("getAbsolutePath failed on non-existing file %s\n", apath.c_str());
 		result = false;
+		std::cerr << "getAbsolutePath failed on non-existing file "
+			<< apath.c_str() << '\n';
 	}
 
 	return result;
 }
 
+struct FlattenFilenameCase
+{
+	io::path tmp;
+	io::path expected;
+};
+
+constexpr const char test[]{ "hello there" };
+FlattenFilenameCase flattenCases[]{
+	{"../tmp", "../tmp/"},
+	{"tmp/tmp/../", "tmp/"},
+	{"tmp/tmp/..", "tmp/"},
+	{"tmp/next/../third", "tmp/third/"},
+	{"this/tmp/next/../../my/fourth", "this/my/fourth/"},
+	{"this/is/../../../a/fifth/test", "../a/fifth/test/"},
+	{"this/../is/../../a/sixth/test/", "../a/sixth/test/"}
+};
+
 static bool testFlattenFilename(io::IFileSystem* fs)
 {
-	bool result=true;
-	io::path tmpString="../tmp";
-	io::path refString="../tmp/";
-	fs->flattenFilename(tmpString);
-	if (tmpString != refString)
+	for (FlattenFilenameCase &testCase : flattenCases)
 	{
-		logTestString("flattening destroys path.\n%s!=%s\n", tmpString.c_str(),refString.c_str());
-		result = false;
+		const io::path &expected = testCase.expected;
+		if (!assertLog(fs->flattenFilename(testCase.tmp) == expected))
+		{
+			std::cerr << "flattening destroys path.\n"
+				<< testCase.tmp.c_str() << "!="
+				<< expected.c_str() << '\n';
+			return false;
+		}
 	}
 
-	tmpString="tmp/tmp/../";
-	refString="tmp/";
-	fs->flattenFilename(tmpString);
-	if (tmpString != refString)
-	{
-		logTestString("flattening destroys path.\n%s!=%s\n", tmpString.c_str(),refString.c_str());
-		result = false;
-	}
-
-	tmpString="tmp/tmp/..";
-	fs->flattenFilename(tmpString);
-	if (tmpString != refString)
-	{
-		logTestString("flattening destroys path.\n%s!=%s\n", tmpString.c_str(),refString.c_str());
-		result = false;
-	}
-
-	tmpString="tmp/next/../third";
-	refString="tmp/third/";
-	fs->flattenFilename(tmpString);
-	if (tmpString != refString)
-	{
-		logTestString("flattening destroys path.\n%s!=%s\n", tmpString.c_str(),refString.c_str());
-		result = false;
-	}
-
-	tmpString="this/tmp/next/../../my/fourth";
-	refString="this/my/fourth/";
-	fs->flattenFilename(tmpString);
-	if (tmpString != refString)
-	{
-		logTestString("flattening destroys path.\n%s!=%s\n", tmpString.c_str(),refString.c_str());
-		result = false;
-	}
-
-	tmpString="this/is/../../../a/fifth/test/";
-	refString="../a/fifth/test/";
-	fs->flattenFilename(tmpString);
-	if (tmpString != refString)
-	{
-		logTestString("flattening destroys path.\n%s!=%s\n", tmpString.c_str(),refString.c_str());
-		result = false;
-	}
-
-	tmpString="this/../is/../../a/sixth/test/";
-	refString="../a/sixth/test/";
-	fs->flattenFilename(tmpString);
-	if (tmpString != refString)
-	{
-		logTestString("flattening destroys path.\n%s!=%s\n", tmpString.c_str(),refString.c_str());
-		result = false;
-	}
-
-	return result;
+	return true;
 }
 
 static bool testgetRelativeFilename(io::IFileSystem* fs)
 {
-	bool result=true;
+	bool result = true;
 	io::path apath = fs->getAbsolutePath("media");
 	io::path cwd = fs->getWorkingDirectory();
-	if (fs->getRelativeFilename(apath, cwd) != "media")
+	if (!assertLog(fs->getRelativeFilename(apath, cwd) == "media"))
 	{
-		logTestString("getRelativePath failed on %s\n", apath.c_str());
 		result = false;
+		std::cerr << "getRelativePath failed on "
+			<< apath.c_str() << '\n';
 	}
 
 	apath = fs->getAbsolutePath("../media/");
-	if (fs->getRelativeFilename(apath, cwd) != "../media/")
+	if (!assertLog(fs->getRelativeFilename(apath, cwd) == "../media/"))
 	{
-		logTestString("getRelativePath failed on %s\n", apath.c_str());
 		result = false;
+		std::cerr << "getRelativePath failed on "
+			<< apath.c_str() << '\n';
 	}
 
 	return result;
@@ -125,7 +97,7 @@ static bool testgetRelativeFilename(io::IFileSystem* fs)
 bool filesystem(void)
 {
 	IrrlichtDevice * device = irr::createDevice(video::EDT_NULL, dimension2d<u32>(1, 1));
-	assert_log(device);
+	assertLog(device);
 	if(!device)
 		return false;
 
@@ -138,33 +110,35 @@ bool filesystem(void)
 	io::path workingDir = device->getFileSystem()->getWorkingDirectory();
 
 	io::path empty;
-	if ( fs->existFile(empty) )
+	if (!assertLog(!fs->existFile(empty)))
 	{
-		logTestString("Empty filename should not exist.\n");
 		result = false;
+		std::cerr << "Empty filename should not exist.\n";
 	}
 
 	io::path newWd = workingDir + "/media";
 	bool changed = device->getFileSystem()->changeWorkingDirectoryTo(newWd);
-	assert_log(changed);
+	assertLog(changed);
 
-	if ( fs->existFile(empty) )
+	if (!assertLog(!fs->existFile(empty)))
 	{
-		logTestString("Empty filename should not exist even in another workingdirectory.\n");
 		result = false;
+		std::cerr << "Epmyt filename should not exist even in " \
+			"another working directory\n";
 	}
 
 	// The working directory must be restored for the other tests to work.
 	changed = device->getFileSystem()->changeWorkingDirectoryTo(workingDir.c_str());
-	assert_log(changed);
+	assertLog(changed);
 
 	// adding  a folder archive which just should not really change anything
 	device->getFileSystem()->addFileArchive( "./" );
 
-	if ( fs->existFile(empty) )
+	if (!assertLog(!fs->existFile(empty)))
 	{
-		logTestString("Empty filename should not exist in folder file archive.\n");
 		result = false;
+		std::cerr << "Empty filename should not exist in " \
+			"folder file archive\n";
 	}
 
 	// remove it again to not affect other tests

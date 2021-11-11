@@ -57,7 +57,7 @@ register_test(testColor color.cpp)
 #register_test(testVectorPositionDimension2D vectorPositionDimension2d.cpp)
 
 # File system checks.
-#register_test(testFilesystem filesystem.cpp)
+register_test(testFilesystem filesystem.cpp)
 #register_test(testArchiveReader archiveReader.cpp)
 #register_test(testSerializeAttributes serializeAttributes.cpp)
 
