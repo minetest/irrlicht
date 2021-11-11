@@ -607,6 +607,9 @@ u32 CSceneManager::registerNodeForRendering(ISceneNode* node, E_SCENE_NODE_RENDE
 			taken = 1;
 		}
 
+	// as of yet unused
+	case ESNRP_LIGHT:
+	case ESNRP_SHADOW:
 	case ESNRP_NONE: // ignore this one
 		break;
 	}
