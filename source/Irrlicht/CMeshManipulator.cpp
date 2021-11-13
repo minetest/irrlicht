@@ -151,8 +151,9 @@ void CMeshManipulator::recalculateNormals(scene::IMesh* mesh, bool smooth, bool 
 	for ( u32 b=0; b<bcount; ++b)
 		recalculateNormals(mesh->getMeshBuffer(b), smooth, angleWeighted);
 
-	if (mesh->getMeshType() == scene::E_ANIMATED_MESH_TYPE::EAMT_SKINNED) {
-		scene::ISkinnedMesh *smesh = reinterpret_cast<scene::ISkinnedMesh *>(mesh);
+	if (mesh->getMeshType() == EAMT_SKINNED)
+	{
+		ISkinnedMesh *smesh = (ISkinnedMesh *) mesh;
 		smesh->refreshJointCache();
 	}
 }
