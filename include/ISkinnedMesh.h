@@ -79,6 +79,9 @@ namespace scene
 		/* This feature is not implemented in Irrlicht yet */
 		virtual bool setHardwareSkinning(bool on) = 0;
 
+		//! Refreshes vertex data cached in joints such as positions and normals
+		virtual void refreshJointCache() = 0;
+
 		//! A vertex weight
 		struct SWeight
 		{
