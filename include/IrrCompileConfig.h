@@ -151,7 +151,7 @@
 
 
 //! Maximum number of texture an SMaterial can have, up to 8 are supported by Irrlicht.
-#define _IRR_MATERIAL_MAX_TEXTURES_ 8
+#define _IRR_MATERIAL_MAX_TEXTURES_ 4
 
 //! Add a leak-hunter to Irrlicht which helps finding unreleased reference counted objects.
 //! NOTE: This is slow and should only be used for debugging
