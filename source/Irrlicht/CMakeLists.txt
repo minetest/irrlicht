@@ -18,10 +18,28 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
 	set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 	add_compile_options(-Wall -pipe -fno-exceptions -fno-rtti)
+
+	# Enable SSE for floating point math on 32-bit x86 by default
+	# reasoning see minetest issue #11810 and https://gcc.gnu.org/wiki/FloatingPointMath
+	if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+		include(CheckCXXSourceCompiles)
+		check_cxx_source_compiles("#ifndef __i686__\n#error\n#endif\nint main(){}" IS_I686)
+		if(IS_I686)
+			message(STATUS "Detected Intel x86: using SSE instead of x87 FPU")
+			add_compile_options(-mfpmath=sse -msse)
+		endif()
+	endif()
+
 elseif(MSVC)
 	string(APPEND CMAKE_CXX_STANDARD_LIBRARIES " msvcrt.lib") # ???? fuck off
 
 	add_compile_options(/GR- /Zl)
+
+	# Enable SSE for floating point math on 32-bit x86 by default
+	# reasoning see minetest issue #11810 and https://gcc.gnu.org/wiki/FloatingPointMath
+	if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+		add_compile_options(/arch:SSE)
+	endif()
 endif()
 
 # Required libs
