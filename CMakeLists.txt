@@ -35,6 +35,11 @@ if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type: Debug or Release" FORCE)
 endif()
 
+# use SSE for floating-point operations to avoid issues with improper fp-rounding and loss of precision
+# when moving fp-data to incompatible or less-precise registers/storage locations
+# see https://gcc.gnu.org/wiki/FloatingPointMath and https://gcc.gnu.org/wiki/x87note
+add_compile_options(-mfpmath=sse -msse2)
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 add_subdirectory(source/Irrlicht)
 
