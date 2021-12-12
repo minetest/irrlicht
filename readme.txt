@@ -174,7 +174,8 @@ The Irrlicht Engine SDK version 1.9
   Yoran Bosman (Yoran)        Webserver administrator
   
   Former developers:
-  Christian Stehno (hybrid)   Founder
+  Nikolaus Gebhardt (niko)    Founder
+  Christian Stehno (hybrid)   Developer
   Patryk Nadrowski (Nadro)    Developer  
   Gareth Davidson (bitplane)  Developer/ Forum admin
   Luke P. Hoschke (luke)      Wrote the b3d loader, the new animation system, VBOs and other things
