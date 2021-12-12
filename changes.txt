@@ -334,6 +334,7 @@ Changes in 1.9 (not yet released)
 
 --------------------------
 Changes in 1.8.6 
+- Security: Fix buffer overflow caused by malformed md2 files. Thanks @procfs for reporting (https://irrlicht.sourceforge.io/forum/viewtopic.php?f=7&t=52785)
 - Makefile now only adds CFLAGS instead of overwriting them.
 - Several spelling fixes (Patch #455). Thanks @J. Puydt
 
