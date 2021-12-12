@@ -169,12 +169,15 @@ The Irrlicht Engine SDK version 1.9
   by other people. Especially: (There are probably more people, sorry if I forgot one.
   See http://irrlicht.sourceforge.net/author.html for more informations)
 
-  Christian Stehno (hybrid)   Contribution Coordinator/Developer
-  Michael Zeilfelder (cutealien) Developer
-  Patryk Nadrowski (Nadro)    Developer  
+  Michael Zeilfelder (cutealien) Developer/Maintainer
+  Thomas Alten (burningwater)  Wrote the burningsvideo software rasterizer  
   Yoran Bosman (Yoran)        Webserver administrator
+  
+  Former developers:
+  Nikolaus Gebhardt (niko)    Founder
+  Christian Stehno (hybrid)   Developer
+  Patryk Nadrowski (Nadro)    Developer  
   Gareth Davidson (bitplane)  Developer/ Forum admin
-  Thomas Alten (burningwater) Wrote the burningsvideo software rasterizer
   Luke P. Hoschke (luke)      Wrote the b3d loader, the new animation system, VBOs and other things
   Colin MacDonald (rogerborg) All hands person
   Ahmed Hilali (blindside)    The shader and advanced effects man

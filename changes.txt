@@ -342,7 +342,15 @@ Changes in 1.9 (not yet released)
 - burningvideo: mipmaplevel adjusted ( not that bad bokeh...(sometimes) )
 
 --------------------------
-Changes in 1.8.5
+Changes in 1.8.6 
+- Security: Fix buffer overflow caused by malformed md2 files. Thanks @procfs for reporting (https://irrlicht.sourceforge.io/forum/viewtopic.php?f=7&t=52785)
+- Makefile now only adds CFLAGS instead of overwriting them.
+- Several spelling fixes (Patch #455). Thanks @J. Puydt
+
+--------------------------
+Changes in 1.8.5 (1st November 2021, svn [r6263])
+ - Fix some aes compile warnings on gcc about fall-throughs.
+ - No longer include sys/sysctl.h on other platforms than OSX. Fixes compile errors in COSOperator on newer Linux systems.
  - Update script to generate tutorial.html's in example folders. Add missing ones. Update existing ones. Thanks @Guillian J for noticing those were outdated.
  - Update libpng to 1.6.37 (from 1.6.23)
  - Fix CIrrDeviceSDL::getVideoModeList which didn't return video modes before. Thx @kas1e for report and patch.

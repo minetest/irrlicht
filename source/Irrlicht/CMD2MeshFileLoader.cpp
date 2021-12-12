@@ -151,6 +151,13 @@ bool CMD2MeshFileLoader::loadFile(io::IReadFile* file, CAnimatedMeshMD2* mesh)
 		return false;
 	}
 
+	const int MAX_FRAME_SIZE = MD2_MAX_VERTS*4+128;
+	if ( header.frameSize > MAX_FRAME_SIZE )
+	{
+		os::Printer::log("MD2 Loader: Invalid large frame size in header", file->getFileName(), ELL_WARNING);
+		return false;
+	}
+
 	//
 	// prepare mesh and allocate memory
 	//
@@ -232,7 +239,7 @@ bool CMD2MeshFileLoader::loadFile(io::IReadFile* file, CAnimatedMeshMD2* mesh)
 
 	// read Vertices
 
-	u8 buffer[MD2_MAX_VERTS*4+128];
+	u8 buffer[MAX_FRAME_SIZE];
 	SMD2Frame* frame = (SMD2Frame*)buffer;
 
 	file->seek(header.offsetFrames);
