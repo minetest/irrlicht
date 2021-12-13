@@ -27,10 +27,12 @@ endif()
 # Enable SSE for floating point math on 32-bit x86 by default
 # reasoning see minetest issue #11810 and https://gcc.gnu.org/wiki/FloatingPointMath
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+	enable_language(C)
+	include(CheckCSourceCompiles)
 	check_c_source_compiles("#ifndef __i686__\n#error\n#endif\nint main(){}" IS_I686)
 	if(IS_I686)
 		message(STATUS "Detected Intel x86: using SSE instead of x87 FPU")
-		add_compile_flags(-mfpmath=sse -msse)
+		add_compile_options(-mfpmath=sse -msse)
 	endif()
 endif()
 
