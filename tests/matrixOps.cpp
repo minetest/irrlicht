@@ -227,7 +227,7 @@ bool testIsOrthogonal()
 
 	matrix4 translationMatrix;
 	translationMatrix.setTranslation(vector3df(0, 3, 0));
-	if (assertLog(translationMatrix.isOrthogonal()))
+	if (!assertLog(!translationMatrix.isOrthogonal()))
 	{
 		std::cerr <<"irr::core::matrix4::isOrthogonal() "\
 			"failed with translation.\n";
