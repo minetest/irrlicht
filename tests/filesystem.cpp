@@ -118,18 +118,18 @@ bool filesystem(void)
 
 	io::path newWd = workingDir + "/media";
 	bool changed = device->getFileSystem()->changeWorkingDirectoryTo(newWd);
-	assertLog(changed);
+	result &= assertLog(changed);
 
 	if (!assertLog(!fs->existFile(empty)))
 	{
 		result = false;
-		std::cerr << "Epmyt filename should not exist even in " \
+		std::cerr << "Empty filename should not exist even in " \
 			"another working directory\n";
 	}
 
 	// The working directory must be restored for the other tests to work.
 	changed = device->getFileSystem()->changeWorkingDirectoryTo(workingDir.c_str());
-	assertLog(changed);
+	result &= assertLog(changed);
 
 	// adding  a folder archive which just should not really change anything
 	device->getFileSystem()->addFileArchive( "./" );
