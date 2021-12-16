@@ -21,6 +21,10 @@ jobs:
           cmake .
           make VERBOSE=1 -j2
 
+      - name: Test
+        run: |
+          ctest --verbose --parallel
+
       - name: Package
         run: |
           make DESTDIR=$PWD/_install install
@@ -102,3 +106,7 @@ jobs:
         run: |
           cmake . -DCMAKE_FIND_FRAMEWORK=LAST
           make -j3
+
+      - name: Test
+        run: |
+          ctest --verbose --parallel
