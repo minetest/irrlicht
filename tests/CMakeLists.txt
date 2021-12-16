@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 # Yeah, not recompiling testUtils for every test is probably a good idea.
-add_library(testUtils STATIC testUtils.cpp testUtils.h)
+add_library(testUtils OBJECT testUtils.cpp testUtils.h)
 target_link_libraries(testUtils PUBLIC IrrlichtMt)
 
 # Registers a test case TEST_NAME.
@@ -47,28 +47,17 @@ register_test(testIrrString irrString.cpp)
 register_test(testLine2DSimple testLine2d.cpp)
 register_test(testMatrixOps matrixOps.cpp)
 register_test(testDimension2D testDimension2d.cpp)
-#register_test(testVector2D testVector2d.cpp)
 register_test(testVector3D testVector3d.cpp)
-#register_test(testQuaternion testQuaternion.cpp)
 register_test(testS3DVertex testS3DVertex.cpp)
-#register_test(testaabbox testaabbox.cpp)
 register_test(testColor color.cpp)
-#register_test(testTriangle3D triangle3d.cpp)
-#register_test(testVectorPositionDimension2D vectorPositionDimension2d.cpp)
 
 # File system checks.
 register_test(testFilesystem filesystem.cpp)
-#register_test(testArchiveReader archiveReader.cpp)
-#register_test(testSerializeAttributes serializeAttributes.cpp)
 
 # Null driver tests.
-#register_test(testLoadTextures loadTextures.cpp)
 register_test(testMeshLoaders meshLoaders.cpp)
 register_test(testTimer timer.cpp)
 register_test(testCoreutil coreutil.cpp)
-
-# Software driver tests.
-#register_test(testCursorSetVisible cursorSetVisible.cpp)
 
 # All driver checks.
 register_test(testVideoDriver videoDriver.cpp)
