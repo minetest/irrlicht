@@ -109,4 +109,4 @@ jobs:
 
       - name: Test
         run: |
-          ctest --verbose --parallel
+          ctest --verbose
