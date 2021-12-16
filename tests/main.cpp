@@ -257,4 +257,3 @@ int main(int argumentCount, char * arguments[])
 		return res?0:1;
 	}
 }
-

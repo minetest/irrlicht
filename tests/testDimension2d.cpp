@@ -26,5 +26,5 @@ bool testDimension2d(void)
 
 int main()
 {
-	runTest(testDimension2d, "testDimension2D");
+	return runTest(testDimension2d, "testDimension2D");
 }
