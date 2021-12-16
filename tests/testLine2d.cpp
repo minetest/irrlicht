@@ -239,7 +239,7 @@ bool getClosestPoint(void)
 	irr::core::line2di line(-283, -372, 374, 289);
 	irr::core::vector2di p1 = line.getClosestPoint( irr::core::vector2di(290,372) );
 	irr::core::vector2di p2 = line.getClosestPoint( irr::core::vector2di(135,372) );
-	return assertLog(p1 == p2);
+	return assertLog(p1 != p2);
 }
 
 bool testLine2d(void)
