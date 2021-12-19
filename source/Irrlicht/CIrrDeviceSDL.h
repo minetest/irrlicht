@@ -238,7 +238,7 @@ namespace irr
 		void createKeyMap();
 
 		void logAttributes();
-		SDL_Renderer* Renderer;
+		SDL_GLContext Context; 
 		SDL_Surface* surface;
 		int SDL_Flags;
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)

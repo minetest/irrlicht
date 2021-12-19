@@ -281,8 +281,9 @@ CIrrDeviceSDL::~CIrrDeviceSDL()
 #endif
 		if (Window)
 		{
+			SDL_GL_MakeCurrent(Window, NULL);
+			SDL_GL_DeleteContext(Context);
 			SDL_DestroyWindow(Window);
-			SDL_DestroyRenderer(Renderer);
 		}
 		SDL_Quit();
 
@@ -390,31 +391,36 @@ bool CIrrDeviceSDL::createWindow()
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, CreationParams.AntiAlias);
 		}
 		if (!Window)
-			SDL_CreateWindowAndRenderer(Width, Height, SDL_Flags, &Window, &Renderer);
+			Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
 		if (!Window && CreationParams.AntiAlias > 1) {
 			while (--CreationParams.AntiAlias > 1) {
 				SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, CreationParams.AntiAlias);
-				SDL_CreateWindowAndRenderer(Width, Height, SDL_Flags, &Window, &Renderer);
+				Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
 				if (Window)
 					break;
 			}
 			if (!Window) {
 				SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
 				SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
-				SDL_CreateWindowAndRenderer(Width, Height, SDL_Flags, &Window, &Renderer);
+				Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
 				if (Window)
 					os::Printer::log("AntiAliasing disabled due to lack of support!");
 			}
 		}
+
+		if (Window)
+		{
+			Context = SDL_GL_CreateContext(Window);
+		}
 	} else if (!Window)
-		SDL_CreateWindowAndRenderer(Width, Height, SDL_Flags, &Window, &Renderer);
+		Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
 
 	if ( !Window && CreationParams.Doublebuffer)
 	{
 		// Try single buffer
 		if (CreationParams.DriverType == video::EDT_OPENGL)
 			SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		SDL_CreateWindowAndRenderer(Width, Height, SDL_Flags, &Window, &Renderer);
+		Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
 	}
 	if ( !Window )
 	{
@@ -514,7 +520,7 @@ void CIrrDeviceSDL::createDriver()
 #ifdef _IRR_EMSCRIPTEN_PLATFORM_
 		SDL_CreateWindowAndRenderer(Width, Height, SDL_Flags, &Window, &Renderer);
 #else //_IRR_EMSCRIPTEN_PLATFORM_
-		SDL_CreateWindowAndRenderer(Width, Height, SDL_Flags, &Window, &Renderer);
+		Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
 #endif //_IRR_EMSCRIPTEN_PLATFOR
 		VideoDriver->OnResize(core::dimension2d<u32>(Width, Height));
 	}
@@ -673,7 +679,7 @@ bool CIrrDeviceSDL::run()
 				}
 #endif
 				irrevent.EventType = irr::EET_KEY_INPUT_EVENT;
-				//irrevent.KeyInput.Char = SDL_event.key.keysym.sym;
+				irrevent.KeyInput.Char = SDL_event.key.keysym.sym;
 				irrevent.KeyInput.Key = key;
 #ifdef _IRR_EMSCRIPTEN_PLATFORM_
 				// On emscripten SDL does not (yet?) return 0 for invalid keysym.unicode's.
@@ -709,9 +715,9 @@ bool CIrrDeviceSDL::run()
 					Width = SDL_event.window.data1;
 					Height = SDL_event.window.data2;
 #ifdef _IRR_EMSCRIPTEN_PLATFORM_
-					SDL_CreateWindowAndRenderer(0, 0, SDL_Flags, &Window, &Renderer); // 0,0 will use the canvas size
+					//SDL_CreateWindowAndRenderer(0, 0, SDL_Flags, &Window, &Renderer); // 0,0 will use the canvas size
 #else //_IRR_EMSCRIPTEN_PLATFORM_
- 					SDL_CreateWindowAndRenderer(Width, Height, SDL_Flags, &Window, &Renderer);
+ 					//Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
 #endif //_IRR_EMSCRIPTEN_PLATFOR
 					if (VideoDriver)
 						VideoDriver->OnResize(core::dimension2d<u32>(Width, Height));
@@ -966,7 +972,7 @@ bool CIrrDeviceSDL::present(video::IImage* surface, void* windowId, core::rect<s
 		}
 		else
 			SDL_BlitSurface(sdlSurface, NULL, scr, NULL);
-		SDL_RenderPresent(Renderer);
+		SDL_RenderPresent(SDL_GetRenderer(Window));
 	}
 
 	SDL_FreeSurface(sdlSurface);
@@ -993,8 +999,6 @@ video::IVideoModeList* CIrrDeviceSDL::getVideoModeList()
 	{
 		SDL_Surface *surface = SDL_CreateRGBSurface(0, 1, 1, 32, 0, 0, 0, 0);
 		// enumerate video modes.
-		SDL_RendererInfo *vi;
-		SDL_GetRendererInfo(Renderer, vi);
 
 		SDL_PixelFormat pixelFormat = *(surface->format);
 
@@ -1040,8 +1044,7 @@ void CIrrDeviceSDL::setResizable(bool resize)
 	os::Printer::log("Resizable not available on the web." , ELL_WARNING);
 	return;
 #else // !_IRR_EMSCRIPTEN_PLATFORM_
-	if (resize != Resizable)
-	{
+	if (resize != Resizable) { /*
 #if defined(_IRR_COMPILE_WITH_OPENGL_) && defined(_IRR_WINDOWS_)
 		if ( SDL_Flags & SDL_WINDOW_OPENGL )
 		{
@@ -1051,7 +1054,7 @@ void CIrrDeviceSDL::setResizable(bool resize)
 			return;
 		}
 #endif
-
+		*/
 		if (resize)
 			SDL_Flags |= SDL_WINDOW_RESIZABLE;
 		else
