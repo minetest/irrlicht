@@ -264,8 +264,10 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	// create driver
 	createDriver();
 
-	if (VideoDriver)
+	if (VideoDriver) {
 		createGUIAndScene();
+		VideoDriver->OnResize(core::dimension2d<u32>(Width, Height));
+	}
 }
 
 
@@ -553,9 +555,10 @@ bool CIrrDeviceSDL::run()
 			postEventFromUser(irrevent);
 			break;
 		case SDL_MOUSEWHEEL:
+			irrevent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 			irrevent.MouseInput.Event = irr::EMIE_MOUSE_WHEEL;
 			irrevent.MouseInput.Wheel = SDL_event.wheel.y > 0 ? 1.0f : -1.0f;
-			break;
+			postEventFromUser(irrevent);
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP:
@@ -1121,15 +1124,16 @@ bool CIrrDeviceSDL::isWindowActive() const
 			return false;
 	}
 #endif
-	const Uint8 appState = SDL_GetWindowFlags(Window);
-	return (appState&SDL_WINDOW_SHOWN && appState&SDL_WINDOW_INPUT_FOCUS) ? true : false;
+	const u32 appState = SDL_GetWindowFlags(Window);
+	return (appState & SDL_WINDOW_SHOWN && appState&SDL_WINDOW_INPUT_FOCUS) ? true : false;
 }
 
 
 //! returns if window has focus.
 bool CIrrDeviceSDL::isWindowFocused() const
 {
-	return (SDL_GetWindowFlags(Window) & SDL_WINDOW_INPUT_FOCUS) ? true : false;
+	const u32 appState = SDL_GetWindowFlags(Window);
+	return (appState & SDL_WINDOW_INPUT_FOCUS) ? true : false;
 }
 
 

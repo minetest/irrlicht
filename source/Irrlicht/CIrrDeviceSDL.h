@@ -152,7 +152,7 @@ namespace irr
 			//! Sets the new position of the cursor.
 			virtual void setPosition(s32 x, s32 y) _IRR_OVERRIDE_
 			{
-				SDL_WarpMouseGlobal( x, y );
+				SDL_WarpMouseInWindow(Device->Window, x, y);
 			}
 
 			//! Returns the current position of the mouse cursor.
@@ -238,8 +238,7 @@ namespace irr
 		void createKeyMap();
 
 		void logAttributes();
-		SDL_GLContext Context; 
-		SDL_Surface* surface;
+		SDL_GLContext Context;
 		int SDL_Flags;
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
 		core::array<SDL_Joystick*> Joysticks;
