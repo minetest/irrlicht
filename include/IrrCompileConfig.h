@@ -47,7 +47,7 @@
 //! Example: NO_IRR_COMPILE_WITH_X11_ would disable X11
 
 //! Uncomment this line to compile with the SDL device
-//#define _IRR_COMPILE_WITH_SDL_DEVICE_
+#define _IRR_COMPILE_WITH_SDL_DEVICE_
 #ifdef NO_IRR_COMPILE_WITH_SDL_DEVICE_
 #undef _IRR_COMPILE_WITH_SDL_DEVICE_
 #endif
@@ -64,7 +64,9 @@
 #if defined(_WIN32) || defined(_WIN64) || defined(WIN32) || defined(WIN64)
 #define _IRR_WINDOWS_
 #define _IRR_WINDOWS_API_
+#ifndef _IRR_COMPILE_WITH_SDL_DEVICE_
 #define _IRR_COMPILE_WITH_WINDOWS_DEVICE_
+#endif
 #endif
 
 #if defined(_MSC_VER) && (_MSC_VER < 1500)

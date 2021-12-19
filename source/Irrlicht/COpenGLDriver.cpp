@@ -23,7 +23,7 @@
 #include "mt_opengl.h"
 
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-#include <SDL/SDL.h>
+#include "CIrrDeviceSDL.h"
 #endif
 
 namespace irr
@@ -288,8 +288,7 @@ bool COpenGLDriver::beginScene(u16 clearFlag, SColor clearColor, f32 clearDepth,
 		ContextManager->activateContext(videoData, true);
 
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-	if ( DeviceType == EIDT_SDL )
-		glFrontFace(GL_CW);
+	glFrontFace(GL_CW);
 #endif
 
 	clearBuffers(clearFlag, clearColor, clearDepth, clearStencil);
@@ -309,11 +308,8 @@ bool COpenGLDriver::endScene()
 		status = ContextManager->swapBuffers();
 
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-	if ( DeviceType == EIDT_SDL )
-	{
-		SDL_GL_SwapBuffers();
-		status = true;
-	}
+	SDL_GL_SwapWindow((*SDLDevice).Window);
+	status = true;
 #endif
 
 	// todo: console device present

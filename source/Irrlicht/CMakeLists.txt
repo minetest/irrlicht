@@ -56,6 +56,7 @@ unset(OGLES1_ENABLED CACHE)
 unset(OGLES2_ENABLED CACHE)
 unset(OGL_ENABLED CACHE)
 unset(XINPUT2_ENABLED CACHE)
+unset(SDL_ENABLED CACHE)
 
 check_symbol_exists(_IRR_COMPILE_WITH_OGLES1_ "IrrCompileConfig.h" OGLES1_ENABLED)
 if(OGLES1_ENABLED)
@@ -77,6 +78,11 @@ endif()
 check_symbol_exists(_IRR_LINUX_X11_XINPUT2_ "IrrCompileConfig.h" XINPUT2_ENABLED)
 if(XINPUT2_ENABLED)
 	find_library(XINPUT_LIBRARY Xi REQUIRED)
+endif()
+
+check_symbol_exists(_IRR_COMPILE_WITH_SDL_DEVICE_ "IrrCompileConfig.h" SDL_ENABLED)
+if(SDL_ENABLED)
+	find_package(SDL2 CONFIG REQUIRED)
 endif()
 
 # Platform-specific libs
@@ -101,6 +107,7 @@ set(link_includes
 	"${ZLIB_INCLUDE_DIR}"
 	"${JPEG_INCLUDE_DIR}"
 	"${PNG_INCLUDE_DIR}"
+	"${SDL2_INCLUDE_DIR}"
 
 	${OPENGL_INCLUDE_DIR}
 	${OPENGLES2_INCLUDE_DIR}
@@ -114,6 +121,7 @@ set(link_libs
 	"${ZLIB_LIBRARY}"
 	"${JPEG_LIBRARY}"
 	"${PNG_LIBRARY}"
+	"${SDL2_LIBRARY}"
 
 	${OPENGL_LIBRARIES}
 	${OPENGLES_LIBRARY}
@@ -300,7 +308,7 @@ target_include_directories(IrrlichtMt
 		${link_includes}
 )
 
-target_link_libraries(IrrlichtMt PRIVATE ${link_libs})
+target_link_libraries(IrrlichtMt PRIVATE ${link_libs} SDL2::SDL2 SDL2::SDL2main)
 
 # Propagate static library flag to lib users, only needed for Windows
 if(NOT BUILD_SHARED_LIBS)
