@@ -81,8 +81,11 @@ if(XINPUT2_ENABLED)
 endif()
 
 check_symbol_exists(_IRR_COMPILE_WITH_SDL_DEVICE_ "IrrCompileConfig.h" SDL_ENABLED)
+
+unset(SDL_LIBRARIES CACHE)
 if(SDL_ENABLED)
 	find_package(SDL2 CONFIG REQUIRED)
+	set(SDL_LIBRARIES SDL2::SDL2 SDL2::SDL2main)
 endif()
 
 # Platform-specific libs
@@ -122,6 +125,7 @@ set(link_libs
 	"${JPEG_LIBRARY}"
 	"${PNG_LIBRARY}"
 	"${SDL2_LIBRARY}"
+	"${SDL_LIBRARIES}"
 
 	${OPENGL_LIBRARIES}
 	${OPENGLES_LIBRARY}
@@ -308,7 +312,7 @@ target_include_directories(IrrlichtMt
 		${link_includes}
 )
 
-target_link_libraries(IrrlichtMt PRIVATE ${link_libs} SDL2::SDL2 SDL2::SDL2main)
+target_link_libraries(IrrlichtMt PRIVATE ${link_libs})
 
 # Propagate static library flag to lib users, only needed for Windows
 if(NOT BUILD_SHARED_LIBS)

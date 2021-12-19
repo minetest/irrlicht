@@ -47,7 +47,7 @@
 //! Example: NO_IRR_COMPILE_WITH_X11_ would disable X11
 
 //! Uncomment this line to compile with the SDL device
-#define _IRR_COMPILE_WITH_SDL_DEVICE_
+//#define _IRR_COMPILE_WITH_SDL_DEVICE_
 #ifdef NO_IRR_COMPILE_WITH_SDL_DEVICE_
 #undef _IRR_COMPILE_WITH_SDL_DEVICE_
 #endif
@@ -100,10 +100,12 @@
 #define _IRR_COMPILE_WITH_IOS_BUILTIN_MAIN_
 #else
 #define _IRR_OSX_PLATFORM_
+#ifndef _IRR_COMPILE_WITH_SDL_DEVICE_
 #define _IRR_COMPILE_WITH_OSX_DEVICE_
 #define NO_IRR_COMPILE_WITH_OGLES1_
 #define NO_IRR_COMPILE_WITH_OGLES2_
 #define NO_IRR_COMPILE_WITH_WEBGL1_
+#endif
 #endif
 #endif
 
@@ -139,7 +141,9 @@
 #define _IRR_LINUX_PLATFORM_
 #endif
 #define _IRR_POSIX_API_
+#ifndef _IRR_COMPILE_WITH_SDL_DEVICE_
 #define _IRR_COMPILE_WITH_X11_DEVICE_
+#endif
 #endif
 
 
