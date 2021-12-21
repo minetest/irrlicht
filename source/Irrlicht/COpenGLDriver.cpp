@@ -309,7 +309,8 @@ bool COpenGLDriver::endScene()
 		status = ContextManager->swapBuffers();
 
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-	SDLDevice->SwapWindow();
+	if (SDLDevice)
+		SDLDevice->SwapWindow();
 	status = true;
 #endif
 
