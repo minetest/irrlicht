@@ -26,10 +26,6 @@
 #include <emscripten.h>
 #endif
 
-#ifdef _MSC_VER
-//#pragma comment(lib, "SDL2.lib")
-#endif // _MSC_VER
-
 static int SDLDeviceInstances = 0;
 
 namespace irr
@@ -209,17 +205,7 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 		{
 			os::Printer::log("SDL initialized", ELL_INFORMATION);
 		}
-
-#if defined(_IRR_WINDOWS_)
-		SDL_setenv("SDL_VIDEODRIVER","directx", 1);
-#elif defined(_IRR_OSX_PLATFORM_)
-		SDL_setenv("SDL_VIDEODRIVER", "Quartz", 1);
-#elif !defined(_IRR_EMSCRIPTEN_PLATFORM_)
-		SDL_setenv("SDL_VIDEODRIVER", "x11", 1);
-#endif
 	}
-
-//	SDL_putenv("SDL_WINDOWID=");
 
 	// create keymap
 	createKeyMap();
@@ -229,7 +215,11 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	else if ( Resizable )
 		SDL_Flags |= SDL_WINDOW_RESIZABLE;
 	if (CreationParams.DriverType == video::EDT_OPENGL)
+	{
 		SDL_Flags |= SDL_WINDOW_OPENGL;
+		if (!CreationParams.Doublebuffer)
+			SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
+	}
 #ifdef _IRR_EMSCRIPTEN_PLATFORM_
 	SDL_Flags |= SDL_WINDOW_OPENGL;
 #endif //_IRR_EMSCRIPTEN_PLATFORM_
@@ -557,7 +547,7 @@ bool CIrrDeviceSDL::run()
 		case SDL_MOUSEWHEEL:
 			irrevent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 			irrevent.MouseInput.Event = irr::EMIE_MOUSE_WHEEL;
-			irrevent.MouseInput.Wheel = SDL_event.wheel.y > 0 ? 1.0f : -1.0f;
+			irrevent.MouseInput.Wheel = static_cast<float>(SDL_event.wheel.y);
 			postEventFromUser(irrevent);
 			break;
 		case SDL_MOUSEBUTTONDOWN:
@@ -717,11 +707,6 @@ bool CIrrDeviceSDL::run()
 				{
 					Width = SDL_event.window.data1;
 					Height = SDL_event.window.data2;
-#ifdef _IRR_EMSCRIPTEN_PLATFORM_
-					//SDL_CreateWindowAndRenderer(0, 0, SDL_Flags, &Window, &Renderer); // 0,0 will use the canvas size
-#else //_IRR_EMSCRIPTEN_PLATFORM_
- 					//Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
-#endif //_IRR_EMSCRIPTEN_PLATFOR
 					if (VideoDriver)
 						VideoDriver->OnResize(core::dimension2d<u32>(Width, Height));
 				}
@@ -839,14 +824,13 @@ bool CIrrDeviceSDL::activateJoysticks(core::array<SJoystickInfo> & joystickInfo)
 	int joystick = 0;
 	for (; joystick<numJoysticks; ++joystick)
 	{
-		SDL_Joystick *opened_joystick = SDL_JoystickOpen(joystick);
-		Joysticks.push_back(opened_joystick);
+		Joysticks.push_back( SDL_JoystickOpen(joystick));
 		SJoystickInfo info;
 
 		info.Joystick = joystick;
 		info.Axes = SDL_JoystickNumAxes(Joysticks[joystick]);
 		info.Buttons = SDL_JoystickNumButtons(Joysticks[joystick]);
-		info.Name = SDL_JoystickName(opened_joystick);
+		info.Name = SDL_JoystickName(Joysticks[joystick]);
 		info.PovHat = (SDL_JoystickNumHats(Joysticks[joystick]) > 0)
 						? SJoystickInfo::POV_HAT_PRESENT : SJoystickInfo::POV_HAT_ABSENT;
 
@@ -867,6 +851,11 @@ bool CIrrDeviceSDL::activateJoysticks(core::array<SJoystickInfo> & joystickInfo)
 #endif // _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
 
 	return false;
+}
+
+void CIrrDeviceSDL::SwapWindow()
+{
+	SDL_GL_SwapWindow(Window);
 }
 
 
@@ -991,55 +980,6 @@ void CIrrDeviceSDL::closeDevice()
 }
 
 
-//! \return Pointer to a list with all video modes supported
-video::IVideoModeList* CIrrDeviceSDL::getVideoModeList()
-{
-#ifdef _IRR_EMSCRIPTEN_PLATFORM_
-	os::Printer::log("VideoModeList not available on the web." , ELL_WARNING);
-	return VideoModeList;
-#else // !_IRR_EMSCRIPTEN_PLATFORM_
-	if (!VideoModeList->getVideoModeCount())
-	{
-		SDL_Surface *surface = SDL_CreateRGBSurface(0, 1, 1, 32, 0, 0, 0, 0);
-		// enumerate video modes.
-
-		SDL_PixelFormat pixelFormat = *(surface->format);
-
-		SDL_FreeSurface(surface);
-
-		core::array<Uint8> checkBitsPerPixel;
-		checkBitsPerPixel.push_back(8);
-		checkBitsPerPixel.push_back(16);
-		checkBitsPerPixel.push_back(24);
-		checkBitsPerPixel.push_back(32);
-		if ( pixelFormat.BitsPerPixel > 32 )
-			checkBitsPerPixel.push_back(pixelFormat.BitsPerPixel);
-
-		for ( u32 i=0; i<checkBitsPerPixel.size(); ++i)
-		{
-			pixelFormat.BitsPerPixel = checkBitsPerPixel[i];
-			int display_modes = SDL_GetNumDisplayModes(0);
-			if (display_modes != 0) {
-				for (u32 i = 0; i < display_modes; ++i) {
-					SDL_DisplayMode *mode;
-					if (SDL_GetDisplayMode(0, i, mode) > 0) {
-
-						VideoModeList->addMode(core::dimension2d<u32>(mode->w, mode->h),
-								pixelFormat.BytesPerPixel);
-					}
-				}
-
-				core::stringc strLog("All modes available for bit-depth ");
-				strLog += core::stringc(pixelFormat.BitsPerPixel);
-				os::Printer::log(strLog.c_str());
-			}
-		}
-	}
-
-	return VideoModeList;
-#endif // !_IRR_EMSCRIPTEN_PLATFORM_
-}
-
 //! Sets if the window should be resizable in windowed mode.
 void CIrrDeviceSDL::setResizable(bool resize)
 {
@@ -1047,17 +987,7 @@ void CIrrDeviceSDL::setResizable(bool resize)
 	os::Printer::log("Resizable not available on the web." , ELL_WARNING);
 	return;
 #else // !_IRR_EMSCRIPTEN_PLATFORM_
-	if (resize != Resizable) { /*
-#if defined(_IRR_COMPILE_WITH_OPENGL_) && defined(_IRR_WINDOWS_)
-		if ( SDL_Flags & SDL_WINDOW_OPENGL )
-		{
-			// For unknown reasons the hack with sharing resources which was added in Irrlicht 1.8.5 for this no longer works in 1.9
-			// But at least we got a new WindowResizable flag since Irrlicht 1.9.
-			os::Printer::log("setResizable not supported with this device/driver combination. Use SIrrCreationParameters.WindowResizable instead.", ELL_WARNING);
-			return;
-		}
-#endif
-		*/
+	if (resize != Resizable) { 
 		if (resize)
 			SDL_Flags |= SDL_WINDOW_RESIZABLE;
 		else
@@ -1124,16 +1054,15 @@ bool CIrrDeviceSDL::isWindowActive() const
 			return false;
 	}
 #endif
-	const u32 appState = SDL_GetWindowFlags(Window);
-	return (appState & SDL_WINDOW_SHOWN && appState&SDL_WINDOW_INPUT_FOCUS) ? true : false;
+	const u32 windowFlags = SDL_GetWindowFlags(Window);
+	return windowFlags & SDL_WINDOW_SHOWN && windowFlags & SDL_WINDOW_INPUT_FOCUS;
 }
 
 
 //! returns if window has focus.
 bool CIrrDeviceSDL::isWindowFocused() const
 {
-	const u32 appState = SDL_GetWindowFlags(Window);
-	return (appState & SDL_WINDOW_INPUT_FOCUS) ? true : false;
+	return SDL_GetWindowFlags(Window) & SDL_WINDOW_INPUT_FOCUS;
 }
 
 

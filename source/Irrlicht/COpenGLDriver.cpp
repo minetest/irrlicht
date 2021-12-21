@@ -288,7 +288,8 @@ bool COpenGLDriver::beginScene(u16 clearFlag, SColor clearColor, f32 clearDepth,
 		ContextManager->activateContext(videoData, true);
 
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-	glFrontFace(GL_CW);
+	if (SDLDevice->getType() == EIDT_SDL)
+		glFrontFace(GL_CW);
 #endif
 
 	clearBuffers(clearFlag, clearColor, clearDepth, clearStencil);
@@ -308,7 +309,7 @@ bool COpenGLDriver::endScene()
 		status = ContextManager->swapBuffers();
 
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-	SDL_GL_SwapWindow((*SDLDevice).Window);
+	SDLDevice->SwapWindow();
 	status = true;
 #endif
 

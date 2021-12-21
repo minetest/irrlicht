@@ -66,9 +66,6 @@ namespace irr
 		//! notifies the device that it should close itself
 		virtual void closeDevice() _IRR_OVERRIDE_;
 
-		//! \return Returns a pointer to a list with all video modes supported
-		virtual video::IVideoModeList* getVideoModeList() _IRR_OVERRIDE_;
-
 		//! Sets if the window should be resizable in windowed mode.
 		virtual void setResizable(bool resize=false) _IRR_OVERRIDE_;
 
@@ -102,6 +99,8 @@ namespace irr
 		{
 			return EIDT_SDL;
 		}
+
+		void SwapWindow();
 
 		//! Implementation of the linux cursor control
 		class CCursorControl : public gui::ICursorControl
@@ -217,8 +216,6 @@ namespace irr
 			bool IsVisible;
 		};
 
-	SDL_Window* Window;
-
 	private:
 
 #ifdef _IRR_EMSCRIPTEN_PLATFORM_
@@ -239,6 +236,7 @@ namespace irr
 
 		void logAttributes();
 		SDL_GLContext Context;
+		SDL_Window *Window;
 		int SDL_Flags;
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
 		core::array<SDL_Joystick*> Joysticks;
