@@ -288,7 +288,7 @@ bool COpenGLDriver::beginScene(u16 clearFlag, SColor clearColor, f32 clearDepth,
 		ContextManager->activateContext(videoData, true);
 
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-	if (SDLDevice->getType() == EIDT_SDL)
+	if (SDLDevice)
 		glFrontFace(GL_CW);
 #endif
 
