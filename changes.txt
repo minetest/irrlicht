@@ -1,5 +1,8 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- obj file loader now allows using mtl files with spaces in the filename. 
+  Note that this means it no longer handles obj files which have multiple mtl files behind the mtllib command. 
+  But Irrlicht ignored all but the first name anyway and this way of handling mtllib commands seems to be more common.
 - Many defines changed because they were using names which are reserved identifiers in c++.
   Mostly it's about replacing __IRRxxx or _IRRxxx identifiers by versions without underscores
   Sometimes underscores at end also got removed.

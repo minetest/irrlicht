@@ -114,12 +114,18 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 		{
 			if (useMaterials)
 			{
-				c8 name[WORD_BUFFER_LENGTH];
-				bufPtr = goAndCopyNextWord(name, bufPtr, WORD_BUFFER_LENGTH, bufEnd);
+				// Bit fuzzy definition. Some doc (http://paulbourke.net) says there can be more then one file and they are separated by spaces
+				// Other doc (Wikipedia) says it's one file. Which does allow loading mtl files with spaces in the name.
+				// Other tools I tested seem to go with the Wikipedia definition
+				// Irrlicht did just use first word in Irrlicht 1.8, but with 1.9 we switch to allowing filenames with spaces
+				// If this turns out to cause troubles we can maybe try to catch those cases by looking for ".mtl " inside the string
+				const c8 * inBuf = goNextWord(bufPtr, bufEnd, false);
+				core::stringc name = copyLine(inBuf, bufEnd);
+
 #ifdef _IRR_DEBUG_OBJ_LOADER_
 				os::Printer::log("Reading material file",name);
 #endif
-				readMTL(name, relPath);
+				readMTL(name.c_str(), relPath);
 			}
 		}
 			break;
@@ -545,7 +551,7 @@ void COBJMeshFileLoader::readMTL(const c8* fileName, const io::path& relPath)
 	const long filesize = mtlReader->getSize();
 	if (!filesize)
 	{
-		os::Printer::log("Skipping empty material file", realFile, ELL_WARNING);
+		os::Printer::log("Skipping empty material file", realFile, ELL_INFORMATION);	// it's fine some tools export empty mtl files
 		mtlReader->drop();
 		return;
 	}
@@ -871,12 +877,11 @@ core::stringc COBJMeshFileLoader::copyLine(const c8* inBuf, const c8* bufEnd)
 	const c8* ptr = inBuf;
 	while (ptr<bufEnd)
 	{
-		if (*ptr=='\n' || *ptr=='\r')
+		if (*ptr=='\n' || *ptr=='\r')	// not copying the line end character
 			break;
 		++ptr;
 	}
-	// we must avoid the +1 in case the array is used up
-	return core::stringc(inBuf, (u32)(ptr-inBuf+((ptr < bufEnd) ? 1 : 0)));
+	return core::stringc(inBuf, (u32)(ptr-inBuf));
 }
 
 
