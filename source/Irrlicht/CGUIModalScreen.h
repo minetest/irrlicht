@@ -46,12 +46,6 @@ namespace gui
 		//! Modals are infinite so every point is inside
 		virtual bool isPointInside(const core::position2d<s32>& point) const _IRR_OVERRIDE_;
 
-		//! Writes attributes of the element.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
-
-		//! Reads attributes of the element
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
-
 		//! Set when to blink. 
 		//! Bitset of following values (can be combined)
 		//! 0 = never

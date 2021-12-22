@@ -43,12 +43,6 @@ namespace scene
 
 		virtual void updateAbsolutePositionOfAllChildren() _IRR_OVERRIDE_;
 
-		//! Writes attributes of the scene node.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_;
-
-		//! Reads attributes of the scene node.
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_;
-
 		//! How the relative transformation of the bone is used
 		virtual void setSkinningSpace(E_BONE_SKINNING_SPACE space) _IRR_OVERRIDE_
 		{

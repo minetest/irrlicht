@@ -230,24 +230,6 @@ void CGUIModalScreen::updateAbsolutePosition()
 	IGUIElement::updateAbsolutePosition();
 }
 
-
-//! Writes attributes of the element.
-void CGUIModalScreen::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const
-{
-	IGUIElement::serializeAttributes(out,options);
-
-	out->addInt("BlinkMode", BlinkMode );
-}
-
-//! Reads attributes of the element
-void CGUIModalScreen::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)
-{
-	IGUIElement::deserializeAttributes(in, options);
-
-	BlinkMode = in->getAttributeAsInt("BlinkMode", BlinkMode);
-}
-
-
 } // end namespace gui
 } // end namespace irr
 

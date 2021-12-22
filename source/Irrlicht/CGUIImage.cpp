@@ -174,44 +174,6 @@ core::rect<f32> CGUIImage::getDrawBounds() const
 	return DrawBounds;
 }
 
-//! Writes attributes of the element.
-void CGUIImage::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const
-{
-	IGUIImage::serializeAttributes(out,options);
-
-	out->addTexture	("Texture", Texture);
-	out->addBool	("UseAlphaChannel", UseAlphaChannel);
-	out->addColor	("Color", Color);
-	out->addBool	("ScaleImage", ScaleImage);
-	out->addRect 	("SourceRect", SourceRect);
-	out->addFloat   ("DrawBoundsX1", DrawBounds.UpperLeftCorner.X);
-	out->addFloat   ("DrawBoundsY1", DrawBounds.UpperLeftCorner.Y);
-	out->addFloat   ("DrawBoundsX2", DrawBounds.LowerRightCorner.X);
-	out->addFloat   ("DrawBoundsY2", DrawBounds.LowerRightCorner.Y);
-	out->addBool    ("DrawBackground", DrawBackground);
-}
-
-
-//! Reads attributes of the element
-void CGUIImage::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)
-{
-	IGUIImage::deserializeAttributes(in,options);
-
-	setImage(in->getAttributeAsTexture("Texture", Texture));
-	setUseAlphaChannel(in->getAttributeAsBool("UseAlphaChannel", UseAlphaChannel));
-	setColor(in->getAttributeAsColor("Color", Color));
-	setScaleImage(in->getAttributeAsBool("ScaleImage", ScaleImage));
-	setSourceRect(in->getAttributeAsRect("SourceRect", SourceRect));
-
-	DrawBounds.UpperLeftCorner.X = in->getAttributeAsFloat("DrawBoundsX1", DrawBounds.UpperLeftCorner.X);
-	DrawBounds.UpperLeftCorner.Y = in->getAttributeAsFloat("DrawBoundsY1", DrawBounds.UpperLeftCorner.Y);
-	DrawBounds.LowerRightCorner.X = in->getAttributeAsFloat("DrawBoundsX2", DrawBounds.LowerRightCorner.X);
-	DrawBounds.LowerRightCorner.Y = in->getAttributeAsFloat("DrawBoundsY2", DrawBounds.LowerRightCorner.Y);
-	setDrawBounds(DrawBounds);
-
-	setDrawBackground(in->getAttributeAsBool("DrawBackground", DrawBackground));
-}
-
 
 } // end namespace gui
 } // end namespace irr

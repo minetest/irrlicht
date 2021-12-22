@@ -571,67 +571,6 @@ namespace scene
 			return ESNT_UNKNOWN;
 		}
 
-
-		//! Writes attributes of the scene node.
-		/** Implement this to expose the attributes of your scene node
-		for scripting languages, editors, debuggers or xml
-		serialization purposes.
-		\param out The attribute container to write into.
-		\param options Additional options which might influence the
-		serialization. */
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_
-		{
-			if (!out)
-				return;
-			out->addString("Name", Name.c_str());
-			out->addInt("Id", ID );
-
-			out->addVector3d("Position", getPosition() );
-			out->addVector3d("Rotation", getRotation() );
-			out->addVector3d("Scale", getScale() );
-
-			out->addBool("Visible", IsVisible );
-			out->addInt("AutomaticCulling", AutomaticCullingState);
-			out->addInt("DebugDataVisible", DebugDataVisible );
-			out->addBool("IsDebugObject", IsDebugObject );
-		}
-
-
-		//! Reads attributes of the scene node.
-		/** Implement this to set the attributes of your scene node for
-		scripting languages, editors, debuggers or xml deserialization
-		purposes.
-		\param in The attribute container to read from.
-		\param options Additional options which might influence the
-		deserialization. */
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_
-		{
-			if (!in)
-				return;
-			Name = in->getAttributeAsString("Name", Name);
-			ID = in->getAttributeAsInt("Id", ID);
-
-			setPosition(in->getAttributeAsVector3d("Position", RelativeTranslation));
-			setRotation(in->getAttributeAsVector3d("Rotation", RelativeRotation));
-			setScale(in->getAttributeAsVector3d("Scale", RelativeScale));
-
-			IsVisible = in->getAttributeAsBool("Visible", IsVisible);
-			if (in->existsAttribute("AutomaticCulling"))
-			{
-				s32 tmpState = in->getAttributeAsEnumeration("AutomaticCulling",
-						scene::AutomaticCullingNames);
-				if (tmpState != -1)
-					AutomaticCullingState = (u32)tmpState;
-				else
-					AutomaticCullingState = in->getAttributeAsInt("AutomaticCulling");
-			}
-
-			DebugDataVisible = in->getAttributeAsInt("DebugDataVisible", DebugDataVisible);
-			IsDebugObject = in->getAttributeAsBool("IsDebugObject", IsDebugObject);
-
-			updateAbsolutePosition();
-		}
-
 		//! Creates a clone of this scene node and its children.
 		/** \param newParent An optional new parent.
 		\param newManager An optional new scene manager.

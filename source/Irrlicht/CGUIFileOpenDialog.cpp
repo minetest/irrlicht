@@ -348,36 +348,6 @@ void CGUIFileOpenDialog::draw()
 	IGUIElement::draw();
 }
 
-
-//! Writes attributes of the element.
-/* Not sure if this will really work out properly. Saving paths can be
-rather problematic. */
-void CGUIFileOpenDialog::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
-{
-	IGUIFileOpenDialog::serializeAttributes(out,options);
-
-	out->addString("StartDirectory", StartDirectory.c_str());
-	out->addBool("RestoreDirectory", (RestoreDirectory.size()!=0));
-}
-
-
-//! Reads attributes of the element
-/* Note that these paths changes will happen at arbitrary places upon
-load of the gui description. This may be undesired. */
-void CGUIFileOpenDialog::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
-{
-	StartDirectory = in->getAttributeAsString("StartDirectory");
-	const bool restore = in->getAttributeAsBool("RestoreDirectory");
-	if (restore)
-		RestoreDirectory = FileSystem->getWorkingDirectory();
-	else
-		RestoreDirectory = "";
-	if (StartDirectory.size())
-		FileSystem->changeWorkingDirectoryTo(StartDirectory);
-
-	IGUIFileOpenDialog::deserializeAttributes(in,options);
-}
-
 void CGUIFileOpenDialog::pathToStringW(irr::core::stringw& result, const irr::io::path& p)
 {
 	core::multibyteToWString(result, p);

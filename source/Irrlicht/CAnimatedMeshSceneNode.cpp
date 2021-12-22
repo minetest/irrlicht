@@ -652,54 +652,6 @@ bool CAnimatedMeshSceneNode::isReadOnlyMaterials() const
 }
 
 
-//! Writes attributes of the scene node.
-void CAnimatedMeshSceneNode::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
-{
-	IAnimatedMeshSceneNode::serializeAttributes(out, options);
-
-	if (options && (options->Flags&io::EARWF_USE_RELATIVE_PATHS) && options->Filename)
-	{
-		const io::path path = SceneManager->getFileSystem()->getRelativeFilename(
-				SceneManager->getFileSystem()->getAbsolutePath(SceneManager->getMeshCache()->getMeshName(Mesh).getPath()),
-				options->Filename);
-		out->addString("Mesh", path.c_str());
-	}
-	else
-		out->addString("Mesh", SceneManager->getMeshCache()->getMeshName(Mesh).getPath().c_str());
-	out->addBool("Looping", Looping);
-	out->addBool("ReadOnlyMaterials", ReadOnlyMaterials);
-	out->addFloat("FramesPerSecond", FramesPerSecond);
-	out->addInt("StartFrame", StartFrame);
-	out->addInt("EndFrame", EndFrame);
-}
-
-
-//! Reads attributes of the scene node.
-void CAnimatedMeshSceneNode::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
-{
-	IAnimatedMeshSceneNode::deserializeAttributes(in, options);
-
-	io::path oldMeshStr = SceneManager->getMeshCache()->getMeshName(Mesh);
-	io::path newMeshStr = in->getAttributeAsString("Mesh");
-
-	Looping = in->getAttributeAsBool("Looping");
-	ReadOnlyMaterials = in->getAttributeAsBool("ReadOnlyMaterials");
-	FramesPerSecond = in->getAttributeAsFloat("FramesPerSecond");
-	StartFrame = in->getAttributeAsInt("StartFrame");
-	EndFrame = in->getAttributeAsInt("EndFrame");
-
-	if (newMeshStr != "" && oldMeshStr != newMeshStr)
-	{
-		IAnimatedMesh* newAnimatedMesh = SceneManager->getMesh(newMeshStr.c_str());
-
-		if (newAnimatedMesh)
-			setMesh(newAnimatedMesh);
-	}
-
-	// TODO: read animation names instead of frame begin and ends
-}
-
-
 //! Sets a new mesh
 void CAnimatedMeshSceneNode::setMesh(IAnimatedMesh* mesh)
 {

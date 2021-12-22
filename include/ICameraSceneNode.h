@@ -172,27 +172,6 @@ namespace scene
 		/** @see bindTargetAndRotation() */
 		virtual bool getTargetAndRotationBinding(void) const =0;
 
-		//! Writes attributes of the camera node
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_
-		{
-			ISceneNode::serializeAttributes(out, options);
-
-			if (!out)
-				return;
-			out->addBool("IsOrthogonal", IsOrthogonal);
-		}
-
-		//! Reads attributes of the camera node
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_
-		{
-			ISceneNode::deserializeAttributes(in, options);
-			if (!in)
-				return;
-
-			if ( in->findAttribute("IsOrthogonal") )
-				IsOrthogonal = in->getAttributeAsBool("IsOrthogonal");
-		}
-
 	protected:
 
 		void cloneMembers(const ICameraSceneNode* toCopyFrom)

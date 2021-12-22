@@ -76,12 +76,6 @@ namespace gui
 			return DrawBackground;
 		}
 
-		//! Writes attributes of the element.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
-
-		//! Reads attributes of the element
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
-
 	protected:
 		void checkBounds(core::rect<s32>& rect)
 		{

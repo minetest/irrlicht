@@ -112,12 +112,6 @@ namespace gui
 		//! When an eventparent is set it receives events instead of the usual parent element
 		virtual void setEventParent(IGUIElement *parent) _IRR_OVERRIDE_;
 
-		//! Writes attributes of the element.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
-
-		//! Reads attributes of the element
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
-
 	protected:
 
 		void closeAllSubMenus();
