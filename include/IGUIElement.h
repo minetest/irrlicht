@@ -5,7 +5,7 @@
 #ifndef __I_GUI_ELEMENT_H_INCLUDED__
 #define __I_GUI_ELEMENT_H_INCLUDED__
 
-#include "IAttributeExchangingObject.h"
+#include "IReferenceCounted.h"
 #include "irrList.h"
 #include "rect.h"
 #include "irrString.h"
@@ -20,7 +20,7 @@ namespace irr
 namespace gui
 {
 //! Base class of all GUI elements.
-class IGUIElement : public virtual io::IAttributeExchangingObject, public IEventReceiver
+class IGUIElement : virtual public IReferenceCounted, public IEventReceiver
 {
 public:
 
@@ -210,25 +210,25 @@ public:
 	}
 
 	//! How left element border is aligned when parent is resized
-	EGUI_ALIGNMENT getAlignLeft() const 
+	EGUI_ALIGNMENT getAlignLeft() const
 	{
 		return AlignLeft;
 	}
 
 	//! How right element border is aligned when parent is resized
-	EGUI_ALIGNMENT getAlignRight() const 
+	EGUI_ALIGNMENT getAlignRight() const
 	{
 		return AlignRight;
 	}
 
 	//! How top element border is aligned when parent is resized
-	EGUI_ALIGNMENT getAlignTop() const 
+	EGUI_ALIGNMENT getAlignTop() const
 	{
 		return AlignTop;
 	}
 
 	//! How bottom element border is aligned when parent is resized
-	EGUI_ALIGNMENT getAlignBottom() const 
+	EGUI_ALIGNMENT getAlignBottom() const
 	{
 		return AlignBottom;
 	}

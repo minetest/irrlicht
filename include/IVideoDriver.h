@@ -25,7 +25,6 @@ namespace irr
 namespace io
 {
 	class IAttributes;
-	struct SAttributeReadWriteOptions;
 	class IReadFile;
 	class IWriteFile;
 } // end namespace io

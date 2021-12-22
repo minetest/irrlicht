@@ -14,7 +14,7 @@
 #include "IAnimatedMeshSceneNode.h"
 #include "CMeshManipulator.h"
 #include "CColorConverter.h"
-#include "IAttributeExchangingObject.h"
+#include "IReferenceCounted.h"
 #include "IRenderTarget.h"
 
 

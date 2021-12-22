@@ -5,7 +5,7 @@
 #ifndef __I_SCENE_NODE_H_INCLUDED__
 #define __I_SCENE_NODE_H_INCLUDED__
 
-#include "IAttributeExchangingObject.h"
+#include "IReferenceCounted.h"
 #include "ESceneNodeTypes.h"
 #include "ECullingTypes.h"
 #include "EDebugSceneTypes.h"
@@ -34,7 +34,7 @@ namespace scene
 	example easily possible to attach a light to a moving car, or to place
 	a walking character on a moving platform on a moving ship.
 	*/
-	class ISceneNode : virtual public io::IAttributeExchangingObject
+	class ISceneNode : virtual public IReferenceCounted
 	{
 	public:
 
