@@ -41,8 +41,12 @@
 		#define GL_GLEXT_PROTOTYPES 1
 		#define GLX_GLXEXT_PROTOTYPES 1
 	#endif
-	#include <SDL/SDL_video.h>
-	#include <SDL/SDL_opengl.h>
+	#include <SDL2/SDL_video.h>
+	#include <SDL2/SDL_opengl.h>
+	#include <GL/gl.h>
+      	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
+       		#include <GL/glext.h>
+		#endif
 #else
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		#define GL_GLEXT_LEGACY 1

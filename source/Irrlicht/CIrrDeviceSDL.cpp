@@ -106,6 +106,7 @@ EM_BOOL CIrrDeviceSDL::MouseLeaveCallback(int eventType, const EmscriptenMouseEv
 
 	return EM_FALSE;
 }
+#endif
 
 bool CIrrDeviceSDL::isNoUnicodeKey(EKEY_CODE key) const
 {
@@ -174,7 +175,6 @@ bool CIrrDeviceSDL::isNoUnicodeKey(EKEY_CODE key) const
 		return false;
 	}
 }
-#endif
 
 //! constructor
 CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
@@ -672,19 +672,27 @@ bool CIrrDeviceSDL::run()
 				}
 #endif
 				irrevent.EventType = irr::EET_KEY_INPUT_EVENT;
-				irrevent.KeyInput.Char = SDL_event.key.keysym.sym;
-				irrevent.KeyInput.Key = key;
-#ifdef _IRR_EMSCRIPTEN_PLATFORM_
-				// On emscripten SDL does not (yet?) return 0 for invalid keysym.unicode's.
-				// Instead it sets keysym.unicode to keysym.sym.
-				// But we need to distinguish control keys from characters here as that info
-				// is necessary in other places like the editbox.
-				if ( isNoUnicodeKey(key) )
+
+				if (isNoUnicodeKey(key))
 					irrevent.KeyInput.Char = 0;
-#endif
+				else
+					irrevent.KeyInput.Char = SDL_event.key.keysym.sym;
+
+				irrevent.KeyInput.Key = key;
 				irrevent.KeyInput.PressedDown = (SDL_event.type == SDL_KEYDOWN);
 				irrevent.KeyInput.Shift = (SDL_event.key.keysym.mod & KMOD_SHIFT) != 0;
 				irrevent.KeyInput.Control = (SDL_event.key.keysym.mod & KMOD_CTRL ) != 0;
+
+				//SDL2 no longer provides unicode character in the key event so we ensure the character is in the correct case
+				bool convertCharToUppercase =
+						(irrevent.KeyInput.Shift &&
+								!(SDL_event.key.keysym.mod & KMOD_CAPS)) ||
+						(!irrevent.KeyInput.Shift &&
+								(SDL_event.key.keysym.mod & KMOD_CAPS));
+
+				if(convertCharToUppercase)
+					irrevent.KeyInput.Char = irr::core::locale_upper(irrevent.KeyInput.Char);
+
 				postEventFromUser(irrevent);
 			}
 			break;
