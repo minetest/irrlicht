@@ -162,7 +162,6 @@ set(IRRDRVROBJ
 	CNullDriver.cpp
 	COpenGLCacheHandler.cpp
 	COpenGLDriver.cpp
-	COpenGLNormalMapRenderer.cpp
 	COpenGLShaderMaterialRenderer.cpp
 	COpenGLSLMaterialRenderer.cpp
 	COpenGLExtensionHandler.cpp
@@ -172,7 +171,6 @@ set(IRRDRVROBJ
 	COGLES2ExtensionHandler.cpp
 	COGLES2FixedPipelineRenderer.cpp
 	COGLES2MaterialRenderer.cpp
-	COGLES2NormalMapRenderer.cpp
 	COGLES2Renderer2D.cpp
 	CWebGL1Driver.cpp
 	CGLXManager.cpp

@@ -121,45 +121,6 @@ namespace video
 		texture which will not reflect can be set as second texture.*/
 		EMT_TRANSPARENT_REFLECTION_2_LAYER,
 
-		//! A solid normal map renderer.
-		/** First texture is the color map, the second should be the
-		normal map. Note that you should use this material only when
-		drawing geometry consisting of vertices of type
-		S3DVertexTangents (EVT_TANGENTS). You can convert any mesh into
-		this format using IMeshManipulator::createMeshWithTangents()
-		(See SpecialFX2 Tutorial). This shader runs on vertex shader
-		1.1 and pixel shader 1.1 capable hardware and falls back to a
-		fixed function lighted material if this hardware is not
-		available. Only two lights are supported by this shader, if
-		there are more, the nearest two are chosen. */
-		EMT_NORMAL_MAP_SOLID,
-
-		//! A transparent normal map renderer.
-		/** First texture is the color map, the second should be the
-		normal map. Note that you should use this material only when
-		drawing geometry consisting of vertices of type
-		S3DVertexTangents (EVT_TANGENTS). You can convert any mesh into
-		this format using IMeshManipulator::createMeshWithTangents()
-		(See SpecialFX2 Tutorial). This shader runs on vertex shader
-		1.1 and pixel shader 1.1 capable hardware and falls back to a
-		fixed function lighted material if this hardware is not
-		available. Only two lights are supported by this shader, if
-		there are more, the nearest two are chosen. */
-		EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR,
-
-		//! A transparent (based on the vertex alpha value) normal map renderer.
-		/** First texture is the color map, the second should be the
-		normal map. Note that you should use this material only when
-		drawing geometry consisting of vertices of type
-		S3DVertexTangents (EVT_TANGENTS). You can convert any mesh into
-		this format using IMeshManipulator::createMeshWithTangents()
-		(See SpecialFX2 Tutorial). This shader runs on vertex shader
-		1.1 and pixel shader 1.1 capable hardware and falls back to a
-		fixed function lighted material if this hardware is not
-		available.  Only two lights are supported by this shader, if
-		there are more, the nearest two are chosen. */
-		EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA,
-
 		//! BlendFunc = source * sourceFactor + dest * destFactor ( E_BLEND_FUNC )
 		/** Using only first texture. Generic blending method. 
 		The blend function is set to SMaterial::MaterialTypeParam with 
@@ -190,9 +151,6 @@ namespace video
 		"trans_alphach_ref",
 		"trans_vertex_alpha",
 		"trans_reflection_2layer",
-		"normalmap_solid",
-		"normalmap_trans_add",
-		"normalmap_trans_vertexalpha",
 		"onetexture_blend",
 		0
 	};

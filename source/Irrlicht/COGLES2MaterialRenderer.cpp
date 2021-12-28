@@ -40,11 +40,9 @@ COGLES2MaterialRenderer::COGLES2MaterialRenderer(COGLES2Driver* driver,
 	{
 	case EMT_TRANSPARENT_VERTEX_ALPHA:
 	case EMT_TRANSPARENT_ALPHA_CHANNEL:
-	case EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:
 		Alpha = true;
 		break;
 	case EMT_TRANSPARENT_ADD_COLOR:
-	case EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR:
 		FixedBlending = true;
 		break;
 	case EMT_ONETEXTURE_BLEND:
@@ -70,11 +68,9 @@ COGLES2MaterialRenderer::COGLES2MaterialRenderer(COGLES2Driver* driver,
 	{
 	case EMT_TRANSPARENT_VERTEX_ALPHA:
 	case EMT_TRANSPARENT_ALPHA_CHANNEL:
-	case EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:
 		Alpha = true;
 		break;
 	case EMT_TRANSPARENT_ADD_COLOR:
-	case EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR:
 		FixedBlending = true;
 		break;
 	case EMT_ONETEXTURE_BLEND:

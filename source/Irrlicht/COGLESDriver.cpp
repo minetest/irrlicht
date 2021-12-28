@@ -184,12 +184,6 @@ void COGLES1Driver::createMaterialRenderers()
 	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_TRANSPARENT_VERTEX_ALPHA(this));
 	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_TRANSPARENT_REFLECTION_2_LAYER(this));
 
-	// add normal map renderers
-// TODO ogl-es
-	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_SOLID(this));
-	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_SOLID(this));
-	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_SOLID(this));
-
 	// add basic 1 texture blending
 	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_ONETEXTURE_BLEND(this));
 }
