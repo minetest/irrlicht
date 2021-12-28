@@ -315,14 +315,6 @@ public:
 	/** \param filename is the string identifying the file which should be tested for existence.
 	\return True if file exists, and false if it does not exist or an error occurred. */
 	virtual bool existFile(const path& filename) const =0;
-
-	//! Creates a new empty collection of attributes, usable for serialization and more.
-	/** \param driver: Video driver to be used to load textures when specified as attribute values.
-	Can be null to prevent automatic texture loading by attributes.
-	\return Pointer to the created object.
-	If you no longer need the object, you should call IAttributes::drop().
-	See IReferenceCounted::drop() for more information. */
-	virtual IAttributes* createEmptyAttributes(video::IVideoDriver* driver=0) =0;
 };
 
 

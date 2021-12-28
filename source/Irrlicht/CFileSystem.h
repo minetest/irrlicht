@@ -127,9 +127,6 @@ public:
 	//! determines if a file exists and would be able to be opened.
 	virtual bool existFile(const io::path& filename) const _IRR_OVERRIDE_;
 
-	//! Creates a new empty collection of attributes, usable for serialization and more.
-	virtual IAttributes* createEmptyAttributes(video::IVideoDriver* driver) _IRR_OVERRIDE_;
-
 private:
 
 	// don't expose, needs refactoring
