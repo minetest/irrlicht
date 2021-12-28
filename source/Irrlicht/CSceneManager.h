@@ -137,15 +137,6 @@ namespace scene
 		//! Retrieve the given mesh loader
 		virtual IMeshLoader* getMeshLoader(u32 index) const _IRR_OVERRIDE_;
 
-		//! Adds an external scene loader.
-		virtual void addExternalSceneLoader(ISceneLoader* externalLoader) _IRR_OVERRIDE_;
-
-		//! Returns the number of scene loaders supported by Irrlicht at this time
-		virtual u32 getSceneLoaderCount() const _IRR_OVERRIDE_;
-
-		//! Retrieve the given scene loader
-		virtual ISceneLoader* getSceneLoader(u32 index) const _IRR_OVERRIDE_;
-
 		//! Returns a pointer to the scene collision manager.
 		virtual ISceneCollisionManager* getSceneCollisionManager() _IRR_OVERRIDE_;
 
@@ -208,18 +199,6 @@ namespace scene
 
 		//! Adds a scene node to the scene by name
 		virtual ISceneNode* addSceneNode(const char* sceneNodeTypeName, ISceneNode* parent=0) _IRR_OVERRIDE_;
-
-		//! Saves the current scene into a file.
-		virtual bool saveScene(const io::path& filename, ISceneUserDataSerializer* userDataSerializer=0, ISceneNode* node=0) _IRR_OVERRIDE_;
-
-		//! Saves the current scene into a file.
-		virtual bool saveScene(io::IWriteFile* file, ISceneUserDataSerializer* userDataSerializer=0, ISceneNode* node=0) _IRR_OVERRIDE_;
-
-		//! Loads a scene. Note that the current scene is not cleared before.
-		virtual bool loadScene(const io::path& filename, ISceneUserDataSerializer* userDataSerializer=0, ISceneNode* rootNode=0) _IRR_OVERRIDE_;
-
-		//! Loads a scene. Note that the current scene is not cleared before.
-		virtual bool loadScene(io::IReadFile* file, ISceneUserDataSerializer* userDataSerializer=0, ISceneNode* rootNode=0) _IRR_OVERRIDE_;
 
 		//! Returns a mesh writer implementation if available
 		virtual IMeshWriter* createMeshWriter(EMESH_WRITER_TYPE type) _IRR_OVERRIDE_;
@@ -338,7 +317,6 @@ namespace scene
 		core::array<ISceneNode*> GuiNodeList;
 
 		core::array<IMeshLoader*> MeshLoaderList;
-		core::array<ISceneLoader*> SceneLoaderList;
 		core::array<ISceneNode*> DeletionList;
 		core::array<ISceneNodeFactory*> SceneNodeFactoryList;
 

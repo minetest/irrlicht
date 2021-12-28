@@ -170,8 +170,8 @@ void CMeshSceneNode::render()
 		if (DebugDataVisible & scene::EDS_NORMALS)
 		{
 			// draw normals
-			const f32 debugNormalLength = SceneManager->getParameters()->getAttributeAsFloat(DEBUG_NORMAL_LENGTH);
-			const video::SColor debugNormalColor = SceneManager->getParameters()->getAttributeAsColor(DEBUG_NORMAL_COLOR);
+			const f32 debugNormalLength = 1.f;
+			const video::SColor debugNormalColor = video::SColor(255, 34, 221, 221);
 			const u32 count = Mesh->getMeshBufferCount();
 
 			for (u32 i=0; i != count; ++i)

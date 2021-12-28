@@ -15,7 +15,6 @@
 #include "ETerrainElements.h"
 #include "ESceneNodeTypes.h"
 #include "EMeshWriterEnums.h"
-#include "SceneParameters.h"
 #include "ISkinnedMesh.h"
 
 namespace irr
@@ -111,10 +110,8 @@ namespace scene
 	class IMeshManipulator;
 	class IMeshSceneNode;
 	class IMeshWriter;
-	class ISceneLoader;
 	class ISceneNode;
 	class ISceneNodeFactory;
-	class ISceneUserDataSerializer;
 
 	//! The Scene Manager manages scene nodes, mesh resources, cameras and all the other stuff.
 	/** All Scene nodes can be created only here.
@@ -561,24 +558,6 @@ namespace scene
 		\return A pointer to the specified loader, 0 if the index is incorrect. */
 		virtual IMeshLoader* getMeshLoader(u32 index) const = 0;
 
-		//! Adds an external scene loader for extending the engine with new file formats.
-		/** If you want the engine to be extended with
-		file formats it currently is not able to load (e.g. .vrml), just implement
-		the ISceneLoader interface in your loading class and add it with this method.
-		Using this method it is also possible to override the built-in scene loaders
-		with newer or updated versions without the need to recompile the engine.
-		\param externalLoader: Implementation of a new mesh loader. */
-		virtual void addExternalSceneLoader(ISceneLoader* externalLoader) = 0;
-
-		//! Returns the number of scene loaders supported by Irrlicht at this time
-		virtual u32 getSceneLoaderCount() const = 0;
-
-		//! Retrieve the given scene loader
-		/** \param index The index of the loader to retrieve. This parameter is an 0-based
-		array index.
-		\return A pointer to the specified loader, 0 if the index is incorrect. */
-		virtual ISceneLoader* getSceneLoader(u32 index) const = 0;
-
 		//! Get pointer to the scene collision manager.
 		/** \return Pointer to the collision manager
 		This pointer should not be dropped. See IReferenceCounted::drop() for more information. */
@@ -669,80 +648,6 @@ namespace scene
 		ISceneManager::drop().
 		See IReferenceCounted::drop() for more information. */
 		virtual ISceneManager* createNewSceneManager(bool cloneContent=false) = 0;
-
-		//! Saves the current scene into a file.
-		/** Scene nodes with the option isDebugObject set to true are
-		not being saved. The scene is usually written to an .irr file,
-		an xml based format. .irr files can Be edited with the Irrlicht
-		Engine Editor, irrEdit (http://www.ambiera.com/irredit/). To
-		load .irr files again, see ISceneManager::loadScene().
-		\param filename Name of the file.
-		\param userDataSerializer If you want to save some user data
-		for every scene node into the file, implement the
-		ISceneUserDataSerializer interface and provide it as parameter
-		here. Otherwise, simply specify 0 as this parameter.
-		\param node Node which is taken as the top node of the scene.
-		This node and all of its descendants are saved into the scene
-		file. Pass 0 or the scene manager to save the full scene (which
-		is also the default).
-		\return True if successful. */
-		virtual bool saveScene(const io::path& filename, ISceneUserDataSerializer* userDataSerializer=0, ISceneNode* node=0) = 0;
-
-		//! Saves the current scene into a file.
-		/** Scene nodes with the option isDebugObject set to true are
-		not being saved. The scene is usually written to an .irr file,
-		an xml based format. .irr files can Be edited with the Irrlicht
-		Engine Editor, irrEdit (http://www.ambiera.com/irredit/). To
-		load .irr files again, see ISceneManager::loadScene().
-		\param file File where the scene is saved into.
-		\param userDataSerializer If you want to save some user data
-		for every scene node into the file, implement the
-		ISceneUserDataSerializer interface and provide it as parameter
-		here. Otherwise, simply specify 0 as this parameter.
-		\param node Node which is taken as the top node of the scene.
-		This node and all of its descendants are saved into the scene
-		file. Pass 0 or the scene manager to save the full scene (which
-		is also the default).
-		\return True if successful. */
-		virtual bool saveScene(io::IWriteFile* file, ISceneUserDataSerializer* userDataSerializer=0, ISceneNode* node=0) = 0;
-
-		//! Loads a scene. Note that the current scene is not cleared before.
-		/** The scene is usually loaded from an .irr file, an xml based
-		format, but other scene formats can be added to the engine via
-		ISceneManager::addExternalSceneLoader. .irr files can Be edited
-		with the Irrlicht Engine Editor, irrEdit
-		(http://www.ambiera.com/irredit/) or saved directly by the engine
-		using ISceneManager::saveScene().
-		\param filename Name of the file to load from.
-		\param userDataSerializer If you want to load user data
-		possibily saved in that file for some scene nodes in the file,
-		implement the ISceneUserDataSerializer interface and provide it
-		as parameter here. Otherwise, simply specify 0 as this
-		parameter.
-		\param rootNode Node which is taken as the root node of the
-		scene. Pass 0 to add the scene directly to the scene manager
-		(which is also the default).
-		\return True if successful. */
-		virtual bool loadScene(const io::path& filename, ISceneUserDataSerializer* userDataSerializer=0, ISceneNode* rootNode=0) = 0;
-
-		//! Loads a scene. Note that the current scene is not cleared before.
-		/** The scene is usually loaded from an .irr file, an xml based
-		format, but other scene formats can be added to the engine via
-		ISceneManager::addExternalSceneLoader. .irr files can Be edited
-		with the Irrlicht Engine Editor, irrEdit
-		(http://www.ambiera.com/irredit/) or saved directly by the engine
-		using ISceneManager::saveScene().
-		\param file File where the scene is loaded from.
-		\param userDataSerializer If you want to load user data
-		saved in that file for some scene nodes in the file,
-		implement the ISceneUserDataSerializer interface and provide it
-		as parameter here. Otherwise, simply specify 0 as this
-		parameter.
-		\param rootNode Node which is taken as the root node of the
-		scene. Pass 0 to add the scene directly to the scene manager
-		(which is also the default).
-		\return True if successful. */
-		virtual bool loadScene(io::IReadFile* file, ISceneUserDataSerializer* userDataSerializer=0, ISceneNode* rootNode=0) = 0;
 
 		//! Get a mesh writer implementation if available
 		/** Note: You need to drop() the pointer after use again, see IReferenceCounted::drop()
