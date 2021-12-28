@@ -160,32 +160,6 @@ namespace video
 		there are more, the nearest two are chosen. */
 		EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA,
 
-		//! Just like EMT_NORMAL_MAP_SOLID, but uses parallax mapping.
-		/** Looks a lot more realistic. This only works when the
-		hardware supports at least vertex shader 1.1 and pixel shader
-		1.4. First texture is the color map, the second should be the
-		normal map. The normal map texture should contain the height
-		value in the alpha component. The
-		IVideoDriver::makeNormalMapTexture() method writes this value
-		automatically when creating normal maps from a heightmap when
-		using a 32 bit texture. The height scale of the material
-		(affecting the bumpiness) is being controlled by the
-		SMaterial::MaterialTypeParam member. If set to zero, the
-		default value (0.02f) will be applied. Otherwise the value set
-		in SMaterial::MaterialTypeParam is taken. This value depends on
-		with which scale the texture is mapped on the material. Too
-		high or low values of MaterialTypeParam can result in strange
-		artifacts. */
-		EMT_PARALLAX_MAP_SOLID,
-
-		//! A material like EMT_PARALLAX_MAP_SOLID, but transparent.
-		/** Using EMT_TRANSPARENT_ADD_COLOR as base material. */
-		EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR,
-
-		//! A material like EMT_PARALLAX_MAP_SOLID, but transparent.
-		/** Using EMT_TRANSPARENT_VERTEX_ALPHA as base material. */
-		EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA,
-
 		//! BlendFunc = source * sourceFactor + dest * destFactor ( E_BLEND_FUNC )
 		/** Using only first texture. Generic blending method. 
 		The blend function is set to SMaterial::MaterialTypeParam with 
@@ -219,9 +193,6 @@ namespace video
 		"normalmap_solid",
 		"normalmap_trans_add",
 		"normalmap_trans_vertexalpha",
-		"parallaxmap_solid",
-		"parallaxmap_trans_add",
-		"parallaxmap_trans_vertexalpha",
 		"onetexture_blend",
 		0
 	};

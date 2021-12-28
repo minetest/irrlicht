@@ -355,7 +355,7 @@ namespace video
 		f32 Shininess;
 
 		//! Free parameter, dependent on the material type.
-		/** Mostly ignored, used for example in EMT_PARALLAX_MAP_SOLID,
+		/** Mostly ignored, used for example in
 		EMT_TRANSPARENT_ALPHA_CHANNEL and EMT_ONETEXTURE_BLEND. */
 		f32 MaterialTypeParam;
 

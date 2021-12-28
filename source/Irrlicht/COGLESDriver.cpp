@@ -190,11 +190,6 @@ void COGLES1Driver::createMaterialRenderers()
 	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_SOLID(this));
 	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_SOLID(this));
 
-	// add parallax map renderers
-	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_SOLID(this));
-	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_SOLID(this));
-	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_SOLID(this));
-
 	// add basic 1 texture blending
 	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_ONETEXTURE_BLEND(this));
 }

@@ -16,7 +16,6 @@
 #include "COGLES2MaterialRenderer.h"
 #include "COGLES2FixedPipelineRenderer.h"
 #include "COGLES2NormalMapRenderer.h"
-#include "COGLES2ParallaxMapRenderer.h"
 #include "COGLES2Renderer2D.h"
 
 #include "EVertexAttributes.h"
@@ -251,9 +250,6 @@ COGLES2Driver::~COGLES2Driver()
 		COGLES2MaterialNormalMapCB* NormalMapCB = new COGLES2MaterialNormalMapCB();
 		COGLES2MaterialNormalMapCB* NormalMapAddColorCB = new COGLES2MaterialNormalMapCB();
 		COGLES2MaterialNormalMapCB* NormalMapVertexAlphaCB = new COGLES2MaterialNormalMapCB();
-		COGLES2MaterialParallaxMapCB* ParallaxMapCB = new COGLES2MaterialParallaxMapCB();
-		COGLES2MaterialParallaxMapCB* ParallaxMapAddColorCB = new COGLES2MaterialParallaxMapCB();
-		COGLES2MaterialParallaxMapCB* ParallaxMapVertexAlphaCB = new COGLES2MaterialParallaxMapCB();
 		COGLES2MaterialOneTextureBlendCB* OneTextureBlendCB = new COGLES2MaterialOneTextureBlendCB();
 
 		// Create built-in materials.
@@ -354,18 +350,6 @@ COGLES2Driver::~COGLES2Driver()
 		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
 			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, NormalMapVertexAlphaCB, EMT_TRANSPARENT_ALPHA_CHANNEL, 0);
 
-		VertexShader = OGLES2ShaderPath + "COGLES2ParallaxMap.vsh";
-		FragmentShader = OGLES2ShaderPath + "COGLES2ParallaxMap.fsh";
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, ParallaxMapCB, EMT_SOLID, 0);
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, ParallaxMapAddColorCB, EMT_TRANSPARENT_ADD_COLOR, 0);
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, ParallaxMapVertexAlphaCB, EMT_TRANSPARENT_ALPHA_CHANNEL, 0);
-
 		VertexShader = OGLES2ShaderPath + "COGLES2Solid.vsh";
 		FragmentShader = OGLES2ShaderPath + "COGLES2OneTextureBlend.fsh";
 
@@ -394,9 +378,6 @@ COGLES2Driver::~COGLES2Driver()
 		NormalMapCB->drop();
 		NormalMapAddColorCB->drop();
 		NormalMapVertexAlphaCB->drop();
-		ParallaxMapCB->drop();
-		ParallaxMapAddColorCB->drop();
-		ParallaxMapVertexAlphaCB->drop();
 		OneTextureBlendCB->drop();
 
 		// Create 2D material renderers

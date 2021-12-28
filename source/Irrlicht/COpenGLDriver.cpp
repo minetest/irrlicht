@@ -15,7 +15,6 @@
 #include "COpenGLShaderMaterialRenderer.h"
 #include "COpenGLSLMaterialRenderer.h"
 #include "COpenGLNormalMapRenderer.h"
-#include "COpenGLParallaxMapRenderer.h"
 
 #include "COpenGLCoreTexture.h"
 #include "COpenGLCoreRenderTarget.h"
@@ -266,14 +265,6 @@ void COpenGLDriver::createMaterialRenderers()
 	renderer = new COpenGLNormalMapRenderer(this, tmp, EMT_TRANSPARENT_ADD_COLOR);
 	renderer->drop();
 	renderer = new COpenGLNormalMapRenderer(this, tmp, EMT_TRANSPARENT_VERTEX_ALPHA);
-	renderer->drop();
-
-	// add parallax map renderers
-	renderer = new COpenGLParallaxMapRenderer(this, tmp, EMT_SOLID);
-	renderer->drop();
-	renderer = new COpenGLParallaxMapRenderer(this, tmp, EMT_TRANSPARENT_ADD_COLOR);
-	renderer->drop();
-	renderer = new COpenGLParallaxMapRenderer(this, tmp, EMT_TRANSPARENT_VERTEX_ALPHA);
 	renderer->drop();
 
 	// add basic 1 texture blending
