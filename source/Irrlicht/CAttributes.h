@@ -113,6 +113,30 @@ public:
 	//! Sets an attribute as float value
 	virtual void setAttribute(s32 index, f32 value) _IRR_OVERRIDE_;
 
+
+	/*
+		Bool Attribute
+	*/
+
+	//! Adds an attribute as bool
+	virtual void addBool(const c8* attributeName, bool value) _IRR_OVERRIDE_;
+
+	//! Sets an attribute as boolean value
+	virtual void setAttribute(const c8* attributeName, bool value) _IRR_OVERRIDE_;
+
+	//! Gets an attribute as boolean value
+	//! \param attributeName: Name of the attribute to get.
+	//! \param defaultNotFound Value returned when attributeName was not found
+	//! \return Returns value of the attribute previously set by setAttribute()
+	virtual bool getAttributeAsBool(const c8* attributeName, bool defaultNotFound=false) const _IRR_OVERRIDE_;
+
+	//! Gets an attribute as boolean value
+	//! \param index: Index value, must be between 0 and getAttributeCount()-1.
+	virtual bool getAttributeAsBool(s32 index) const _IRR_OVERRIDE_;
+
+	//! Sets an attribute as boolean value
+	virtual void setAttribute(s32 index, bool value) _IRR_OVERRIDE_;
+
 protected:
 
 	core::array<IAttribute*> Attributes;

@@ -90,8 +90,8 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 	const c8* bufPtr = buf;
 	core::stringc grpName, mtlName;
 	bool mtlChanged=false;
-	bool useGroups = true;
-	bool useMaterials = false;
+	bool useGroups = !SceneManager->getParameters()->getAttributeAsBool(OBJ_LOADER_IGNORE_GROUPS);
+	bool useMaterials = !SceneManager->getParameters()->getAttributeAsBool(OBJ_LOADER_IGNORE_MATERIAL_FILES);
 	irr::u32 lineNr = 1;	// only counts non-empty lines, still useful in debugging to locate errors
 	core::array<int> faceCorners;
 	faceCorners.reallocate(32); // should be large enough

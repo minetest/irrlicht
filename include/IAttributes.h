@@ -125,6 +125,30 @@ public:
 	//! Sets an attribute as float value
 	virtual void setAttribute(s32 index, f32 value) = 0;
 
+
+	/*
+		Bool Attribute
+	*/
+
+	//! Adds an attribute as bool
+	virtual void addBool(const c8* attributeName, bool value) = 0;
+
+	//! Sets an attribute as boolean value
+	virtual void setAttribute(const c8* attributeName, bool value) = 0;
+
+	//! Gets an attribute as boolean value
+	//! \param attributeName: Name of the attribute to get.
+	//! \param defaultNotFound Value returned when attributeName was not found
+	//! \return Returns value of the attribute previously set by setAttribute()
+	virtual bool getAttributeAsBool(const c8* attributeName, bool defaultNotFound=false) const = 0;
+
+	//! Gets an attribute as boolean value
+	//! \param index: Index value, must be between 0 and getAttributeCount()-1.
+	virtual bool getAttributeAsBool(s32 index) const = 0;
+
+	//! Sets an attribute as boolean value
+	virtual void setAttribute(s32 index, bool value) = 0;
+
 };
 
 } // end namespace io

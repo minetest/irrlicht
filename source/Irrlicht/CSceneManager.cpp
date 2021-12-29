@@ -658,7 +658,8 @@ void CSceneManager::drawAll()
 	Driver->setTransform ( video::ETS_WORLD, core::IdentityMatrix );
 	for (i=video::ETS_COUNT-1; i>=video::ETS_TEXTURE_0; --i)
 		Driver->setTransform ( (video::E_TRANSFORMATION_STATE)i, core::IdentityMatrix );
-	Driver->setAllowZWriteOnTransparent(true);
+	// TODO: This should not use an attribute here but a real parameter when necessary (too slow!)
+	Driver->setAllowZWriteOnTransparent(Parameters->getAttributeAsBool(ALLOW_ZWRITE_ON_TRANSPARENT));
 
 	// do animations and other stuff.
 	IRR_PROFILE(getProfiler().start(EPID_SM_ANIMATE));

@@ -143,6 +143,7 @@
 #include "rect.h"
 #include "S3DVertex.h"
 #include "SAnimatedMesh.h"
+#include "SceneParameters.h"
 #include "SColor.h"
 #include "SExposedVideoData.h"
 #include "SIrrCreationParameters.h"

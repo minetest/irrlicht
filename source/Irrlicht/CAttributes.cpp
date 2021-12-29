@@ -61,6 +61,31 @@ IAttribute* CAttributes::getAttributeP(const c8* attributeName) const
 	return 0;
 }
 
+//! Sets a attribute as boolean value
+void CAttributes::setAttribute(const c8* attributeName, bool value)
+{
+	IAttribute* att = getAttributeP(attributeName);
+	if (att)
+		att->setBool(value);
+	else
+	{
+		Attributes.push_back(new CBoolAttribute(attributeName, value));
+	}
+}
+
+//! Gets a attribute as boolean value
+//! \param attributeName: Name of the attribute to get.
+//! \return Returns value of the attribute previously set by setAttribute() as bool
+//! or 0 if attribute is not set.
+bool CAttributes::getAttributeAsBool(const c8* attributeName, bool defaultNotFound) const
+{
+	const IAttribute* att = getAttributeP(attributeName);
+	if (att)
+		return att->getBool();
+	else
+		return defaultNotFound;
+}
+
 //! Sets a attribute as integer value
 void CAttributes::setAttribute(const c8* attributeName, s32 value)
 {
@@ -187,6 +212,18 @@ f32 CAttributes::getAttributeAsFloat(s32 index) const
 		return 0.f;
 }
 
+//! Gets an attribute as boolean value
+//! \param index: Index value, must be between 0 and getAttributeCount()-1.
+bool CAttributes::getAttributeAsBool(s32 index) const
+{
+	bool ret = false;
+
+	if ((u32)index < Attributes.size())
+		ret = Attributes[index]->getBool();
+
+	return ret;
+}
+
 //! Adds an attribute as integer
 void CAttributes::addInt(const c8* attributeName, s32 value)
 {
@@ -199,10 +236,23 @@ void CAttributes::addFloat(const c8* attributeName, f32 value)
 	Attributes.push_back(new CFloatAttribute(attributeName, value));
 }
 
+//! Adds an attribute as bool
+void CAttributes::addBool(const c8* attributeName, bool value)
+{
+	Attributes.push_back(new CBoolAttribute(attributeName, value));
+}
+
 //! Returns if an attribute with a name exists
 bool CAttributes::existsAttribute(const c8* attributeName) const
 {
 	return getAttributeP(attributeName) != 0;
+}
+
+//! Sets an attribute as boolean value
+void CAttributes::setAttribute(s32 index, bool value)
+{
+	if ((u32)index < Attributes.size())
+		Attributes[index]->setBool(value);
 }
 
 //! Sets an attribute as integer value

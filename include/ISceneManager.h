@@ -15,6 +15,7 @@
 #include "ETerrainElements.h"
 #include "ESceneNodeTypes.h"
 #include "EMeshWriterEnums.h"
+#include "SceneParameters.h"
 #include "ISkinnedMesh.h"
 
 namespace irr

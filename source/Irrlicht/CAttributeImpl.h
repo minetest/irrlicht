@@ -16,6 +16,60 @@ namespace io
 	Basic types, check documentation in IAttribute.h to see how they generally work.
 */
 
+// Attribute implemented for boolean values
+class CBoolAttribute : public IAttribute
+{
+public:
+
+	CBoolAttribute(const char* name, bool value)
+	{
+		Name = name;
+		setBool(value);
+	}
+
+	virtual s32 getInt() const _IRR_OVERRIDE_
+	{
+		return BoolValue ? 1 : 0;
+	}
+
+	virtual f32 getFloat() const _IRR_OVERRIDE_
+	{
+		return BoolValue ? 1.0f : 0.0f;
+	}
+
+	virtual bool getBool() const _IRR_OVERRIDE_
+	{
+		return BoolValue;
+	}
+
+	virtual void setInt(s32 intValue) _IRR_OVERRIDE_
+	{
+		BoolValue = (intValue != 0);
+	}
+
+	virtual void setFloat(f32 floatValue) _IRR_OVERRIDE_
+	{
+		BoolValue = (floatValue != 0);
+	}
+
+	virtual void setBool(bool boolValue) _IRR_OVERRIDE_
+	{
+		BoolValue = boolValue;
+	}
+
+	virtual E_ATTRIBUTE_TYPE getType() const _IRR_OVERRIDE_
+	{
+		return EAT_BOOL;
+	}
+
+	virtual const wchar_t* getTypeString() const _IRR_OVERRIDE_
+	{
+		return L"bool";
+	}
+
+	bool BoolValue;
+};
+
 // Attribute implemented for integers
 class CIntAttribute : public IAttribute
 {

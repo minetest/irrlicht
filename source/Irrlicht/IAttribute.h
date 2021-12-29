@@ -48,9 +48,11 @@ public:
 
 	virtual s32 getInt() const				 { return 0; }
 	virtual f32 getFloat() const			 { return 0; }
+	virtual bool getBool() const			{ return false; }
 
 	virtual void setInt(s32 intValue)		{};
 	virtual void setFloat(f32 floatValue)		{};
+	virtual void setBool(bool boolValue)		{};
 
 	core::stringc Name;
 
