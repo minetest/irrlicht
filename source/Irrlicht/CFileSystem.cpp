@@ -12,7 +12,6 @@
 #include "CFileList.h"
 #include "stdio.h"
 #include "os.h"
-#include "CAttributes.h"
 #include "CReadFile.h"
 #include "CMemoryFile.h"
 #include "CLimitReadFile.h"
@@ -936,13 +935,6 @@ bool CFileSystem::existFile(const io::path& filename) const
 IFileSystem* createFileSystem()
 {
 	return new CFileSystem();
-}
-
-
-//! Creates a new empty collection of attributes, usable for serialization and more.
-IAttributes* CFileSystem::createEmptyAttributes(video::IVideoDriver* driver)
-{
-	return new CAttributes(driver);
 }
 
 

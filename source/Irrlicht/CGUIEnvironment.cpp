@@ -811,49 +811,6 @@ bool CGUIEnvironment::loadGUI(io::IReadFile* file, IGUIElement* parent)
 	return false;
 }
 
-
-//! Writes attributes of the environment
-void CGUIEnvironment::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
-{
-	IGUISkin* skin = getSkin();
-
-	if (skin)
-	{
-		out->addEnum("Skin", getSkin()->getType(), GUISkinTypeNames);
-		skin->serializeAttributes(out, options);
-	}
-}
-
-
-//! Reads attributes of the environment
-void CGUIEnvironment::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
-{
-	if (in->existsAttribute("Skin"))
-	{
-		IGUISkin *skin = getSkin();
-
-		EGUI_SKIN_TYPE t = (EGUI_SKIN_TYPE) in->getAttributeAsEnumeration("Skin",GUISkinTypeNames);
-		if ( !skin || t != skin->getType())
-		{
-			skin = createSkin(t);
-			setSkin(skin);
-			skin->drop();
-		}
-
-		skin = getSkin();
-
-		if (skin)
-		{
-			skin->deserializeAttributes(in, options);
-		}
-
-	}
-
-	RelativeRect = AbsoluteRect =
-			core::rect<s32>(Driver ? core::dimension2di(Driver->getScreenSize()) : core::dimension2d<s32>(0,0));
-}
-
-
 //! adds a button. The returned pointer must not be dropped.
 IGUIButton* CGUIEnvironment::addButton(const core::rect<s32>& rectangle, IGUIElement* parent, s32 id, const wchar_t* text, const wchar_t *tooltiptext)
 {

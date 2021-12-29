@@ -413,49 +413,6 @@ bool CGUIMessageBox::OnEvent(const SEvent& event)
 	return CGUIWindow::OnEvent(event);
 }
 
-
-//! Writes attributes of the element.
-void CGUIMessageBox::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const
-{
-	CGUIWindow::serializeAttributes(out,options);
-
-	out->addBool	("OkayButton",		(Flags & EMBF_OK)	!= 0 );
-	out->addBool	("CancelButton",	(Flags & EMBF_CANCEL)	!= 0 );
-	out->addBool	("YesButton",		(Flags & EMBF_YES)	!= 0 );
-	out->addBool	("NoButton",		(Flags & EMBF_NO)	!= 0 );
-	out->addTexture	("Texture",			IconTexture);
-
-	out->addString	("MessageText",		MessageText.c_str());
-}
-
-
-//! Reads attributes of the element
-void CGUIMessageBox::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)
-{
-	Flags = 0;
-
-	Flags  = in->getAttributeAsBool("OkayButton")  ? EMBF_OK     : 0;
-	Flags |= in->getAttributeAsBool("CancelButton")? EMBF_CANCEL : 0;
-	Flags |= in->getAttributeAsBool("YesButton")   ? EMBF_YES    : 0;
-	Flags |= in->getAttributeAsBool("NoButton")    ? EMBF_NO     : 0;
-
-	if ( IconTexture )
-	{
-		IconTexture->drop();
-		IconTexture = NULL;
-	}
-	IconTexture = in->getAttributeAsTexture("Texture");
-	if ( IconTexture )
-		IconTexture->grab();
-
-	MessageText = in->getAttributeAsStringW("MessageText").c_str();
-
-	CGUIWindow::deserializeAttributes(in,options);
-
-	refreshControls();
-}
-
-
 } // end namespace gui
 } // end namespace irr
 

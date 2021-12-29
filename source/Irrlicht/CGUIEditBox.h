@@ -142,13 +142,6 @@ namespace gui
 		//! Returns whether the element takes input from the IME
 		virtual bool acceptsIME() _IRR_OVERRIDE_;
 
-
-		//! Writes attributes of the element.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
-
-		//! Reads attributes of the element
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
-
 	protected:
 		//! Breaks the single text line.
 		void breakText();

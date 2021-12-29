@@ -49,12 +49,6 @@ namespace gui
 
 		virtual video::SColor getTextColor() const _IRR_OVERRIDE_;
 
-		//! Writes attributes of the element.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
-
-		//! Reads attributes of the element
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
-
 	private:
 
 		video::SColor BackColor;
@@ -127,13 +121,8 @@ namespace gui
 		//! Removes a child.
 		virtual void removeChild(IGUIElement* child) _IRR_OVERRIDE_;
 
-		//! Writes attributes of the element.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
 		//! Set the height of the tabs
 		virtual void setTabHeight( s32 height ) _IRR_OVERRIDE_;
-
-		//! Reads attributes of the element
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
 
 		//! Get the height of the tabs
 		virtual s32 getTabHeight() const _IRR_OVERRIDE_;

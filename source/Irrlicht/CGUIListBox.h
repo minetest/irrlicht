@@ -88,12 +88,6 @@ namespace gui
 		//! Update the position and size of the listbox, and update the scrollbar
 		virtual void updateAbsolutePosition() _IRR_OVERRIDE_;
 
-		//! Writes attributes of the element.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
-
-		//! Reads attributes of the element
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
-
 		//! set all item colors at given index to color
 		virtual void setItemOverrideColor(u32 index, video::SColor color) _IRR_OVERRIDE_;
 

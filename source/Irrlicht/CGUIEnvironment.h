@@ -248,12 +248,6 @@ public:
 	if not specified, the root element will be used */
 	virtual bool loadGUI(io::IReadFile* file, IGUIElement* parent=0) _IRR_OVERRIDE_;
 
-	//! Writes attributes of the environment
-	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_;
-
-	//! Reads attributes of the environment.
-	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_;
-
 	//! Find the next element which would be selected when pressing the tab-key
 	virtual IGUIElement* getNextElement(bool reverse=false, bool group=false) _IRR_OVERRIDE_;
 

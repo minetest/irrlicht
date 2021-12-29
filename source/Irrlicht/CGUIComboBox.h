@@ -74,12 +74,6 @@ namespace gui
 		//! draws the element and its children
 		virtual void draw() _IRR_OVERRIDE_;
 
-		//! Writes attributes of the element.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
-
-		//! Reads attributes of the element
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
-
 	private:
 
 		void openCloseMenu();

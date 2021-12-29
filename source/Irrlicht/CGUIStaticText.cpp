@@ -590,51 +590,6 @@ s32 CGUIStaticText::getTextWidth() const
 }
 
 
-//! Writes attributes of the element.
-//! Implement this to expose the attributes of your element for
-//! scripting languages, editors, debuggers or xml serialization purposes.
-void CGUIStaticText::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const
-{
-	IGUIStaticText::serializeAttributes(out,options);
-
-	out->addBool	("Border",              Border);
-	out->addBool	("OverrideColorEnabled",OverrideColorEnabled);
-	out->addBool	("OverrideBGColorEnabled",OverrideBGColorEnabled);
-	out->addBool	("WordWrap",			WordWrap);
-	out->addBool	("Background",          Background);
-	out->addBool	("RightToLeft",         RightToLeft);
-	out->addBool	("RestrainTextInside",  RestrainTextInside);
-	out->addColor	("OverrideColor",       OverrideColor);
-	out->addColor	("BGColor",       		BGColor);
-	out->addEnum	("HTextAlign",          HAlign, GUIAlignmentNames);
-	out->addEnum	("VTextAlign",          VAlign, GUIAlignmentNames);
-
-	// out->addFont ("OverrideFont",	OverrideFont);
-}
-
-
-//! Reads attributes of the element
-void CGUIStaticText::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)
-{
-	IGUIStaticText::deserializeAttributes(in,options);
-
-	Border = in->getAttributeAsBool("Border", Border);
-	enableOverrideColor(in->getAttributeAsBool("OverrideColorEnabled", OverrideColorEnabled));
-	OverrideBGColorEnabled = in->getAttributeAsBool("OverrideBGColorEnabled", OverrideBGColorEnabled);
-	setWordWrap(in->getAttributeAsBool("WordWrap", WordWrap));
-	Background = in->getAttributeAsBool("Background", Background);
-	RightToLeft = in->getAttributeAsBool("RightToLeft", RightToLeft);
-	RestrainTextInside = in->getAttributeAsBool("RestrainTextInside", RestrainTextInside);
-	OverrideColor = in->getAttributeAsColor("OverrideColor", OverrideColor);
-	BGColor = in->getAttributeAsColor("BGColor", BGColor);
-
-	setTextAlignment( (EGUI_ALIGNMENT) in->getAttributeAsEnumeration("HTextAlign", GUIAlignmentNames, (s32)HAlign),
-                      (EGUI_ALIGNMENT) in->getAttributeAsEnumeration("VTextAlign", GUIAlignmentNames, (s32)VAlign));
-
-	// OverrideFont = in->getAttributeAsFont("OverrideFont");
-}
-
-
 } // end namespace gui
 } // end namespace irr
 

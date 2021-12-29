@@ -5,7 +5,7 @@
 #ifndef __I_SCENE_NODE_H_INCLUDED__
 #define __I_SCENE_NODE_H_INCLUDED__
 
-#include "IAttributeExchangingObject.h"
+#include "IReferenceCounted.h"
 #include "ESceneNodeTypes.h"
 #include "ECullingTypes.h"
 #include "EDebugSceneTypes.h"
@@ -34,7 +34,7 @@ namespace scene
 	example easily possible to attach a light to a moving car, or to place
 	a walking character on a moving platform on a moving ship.
 	*/
-	class ISceneNode : virtual public io::IAttributeExchangingObject
+	class ISceneNode : virtual public IReferenceCounted
 	{
 	public:
 
@@ -569,67 +569,6 @@ namespace scene
 		virtual ESCENE_NODE_TYPE getType() const
 		{
 			return ESNT_UNKNOWN;
-		}
-
-
-		//! Writes attributes of the scene node.
-		/** Implement this to expose the attributes of your scene node
-		for scripting languages, editors, debuggers or xml
-		serialization purposes.
-		\param out The attribute container to write into.
-		\param options Additional options which might influence the
-		serialization. */
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_
-		{
-			if (!out)
-				return;
-			out->addString("Name", Name.c_str());
-			out->addInt("Id", ID );
-
-			out->addVector3d("Position", getPosition() );
-			out->addVector3d("Rotation", getRotation() );
-			out->addVector3d("Scale", getScale() );
-
-			out->addBool("Visible", IsVisible );
-			out->addInt("AutomaticCulling", AutomaticCullingState);
-			out->addInt("DebugDataVisible", DebugDataVisible );
-			out->addBool("IsDebugObject", IsDebugObject );
-		}
-
-
-		//! Reads attributes of the scene node.
-		/** Implement this to set the attributes of your scene node for
-		scripting languages, editors, debuggers or xml deserialization
-		purposes.
-		\param in The attribute container to read from.
-		\param options Additional options which might influence the
-		deserialization. */
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_
-		{
-			if (!in)
-				return;
-			Name = in->getAttributeAsString("Name", Name);
-			ID = in->getAttributeAsInt("Id", ID);
-
-			setPosition(in->getAttributeAsVector3d("Position", RelativeTranslation));
-			setRotation(in->getAttributeAsVector3d("Rotation", RelativeRotation));
-			setScale(in->getAttributeAsVector3d("Scale", RelativeScale));
-
-			IsVisible = in->getAttributeAsBool("Visible", IsVisible);
-			if (in->existsAttribute("AutomaticCulling"))
-			{
-				s32 tmpState = in->getAttributeAsEnumeration("AutomaticCulling",
-						scene::AutomaticCullingNames);
-				if (tmpState != -1)
-					AutomaticCullingState = (u32)tmpState;
-				else
-					AutomaticCullingState = in->getAttributeAsInt("AutomaticCulling");
-			}
-
-			DebugDataVisible = in->getAttributeAsInt("DebugDataVisible", DebugDataVisible);
-			IsDebugObject = in->getAttributeAsBool("IsDebugObject", IsDebugObject);
-
-			updateAbsolutePosition();
 		}
 
 		//! Creates a clone of this scene node and its children.

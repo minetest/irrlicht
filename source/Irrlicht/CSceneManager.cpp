@@ -8,12 +8,10 @@
 #include "IFileSystem.h"
 #include "SAnimatedMesh.h"
 #include "CMeshCache.h"
-#include "ISceneUserDataSerializer.h"
 #include "IGUIEnvironment.h"
 #include "IMaterialRenderer.h"
 #include "IReadFile.h"
 #include "IWriteFile.h"
-#include "ISceneLoader.h"
 #include "EProfileIDs.h"
 #include "IProfiler.h"
 
@@ -92,8 +90,6 @@ CSceneManager::CSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs,
 
 	// set scene parameters
 	Parameters = new io::CAttributes();
-	Parameters->setAttribute(DEBUG_NORMAL_LENGTH, 1.f);
-	Parameters->setAttribute(DEBUG_NORMAL_COLOR, video::SColor(255, 34, 221, 221));
 
 	// create collision manager
 	CollisionManager = new CSceneCollisionManager(this, Driver);
@@ -166,9 +162,6 @@ CSceneManager::~CSceneManager()
 	u32 i;
 	for (i=0; i<MeshLoaderList.size(); ++i)
 		MeshLoaderList[i]->drop();
-
-	for (i=0; i<SceneLoaderList.size(); ++i)
-		SceneLoaderList[i]->drop();
 
 	if (ActiveCamera)
 		ActiveCamera->drop();
@@ -700,7 +693,7 @@ void CSceneManager::drawAll()
 
 		CameraList.set_used(0);
 	}
-	
+
 	// render skyboxes
 	{
 		IRR_PROFILE(CProfileScope psSkyBox(EPID_SM_RENDER_SKYBOXES);)
@@ -712,7 +705,7 @@ void CSceneManager::drawAll()
 
 		SkyBoxList.set_used(0);
 	}
-	
+
 	// render default objects
 	{
 		IRR_PROFILE(CProfileScope psDefault(EPID_SM_RENDER_DEFAULT);)
@@ -808,33 +801,6 @@ IMeshLoader* CSceneManager::getMeshLoader(u32 index) const
 		return 0;
 }
 
-
-//! Adds an external scene loader.
-void CSceneManager::addExternalSceneLoader(ISceneLoader* externalLoader)
-{
-	if (!externalLoader)
-		return;
-
-	externalLoader->grab();
-	SceneLoaderList.push_back(externalLoader);
-}
-
-
-//! Returns the number of scene loaders
-u32 CSceneManager::getSceneLoaderCount() const
-{
-	return SceneLoaderList.size();
-}
-
-
-//! Retrieve the given scene loader
-ISceneLoader* CSceneManager::getSceneLoader(u32 index) const
-{
-	if (index < SceneLoaderList.size())
-		return SceneLoaderList[index];
-	else
-		return 0;
-}
 
 //! Returns a pointer to the scene collision manager.
 ISceneCollisionManager* CSceneManager::getSceneCollisionManager()
@@ -1066,72 +1032,6 @@ ISceneNodeFactory* CSceneManager::getSceneNodeFactory(u32 index)
 	return 0;
 }
 
-//! Saves the current scene into a file.
-//! \param filename: Name of the file .
-bool CSceneManager::saveScene(const io::path& filename, ISceneUserDataSerializer* userDataSerializer, ISceneNode* node)
-{
-	bool ret = false;
-	io::IWriteFile* file = FileSystem->createAndWriteFile(filename);
-	if (file)
-	{
-		ret = saveScene(file, userDataSerializer, node);
-		file->drop();
-	}
-	else
-		os::Printer::log("Unable to open file", filename, ELL_ERROR);
-
-	return ret;
-}
-
-
-//! Saves the current scene into a file.
-bool CSceneManager::saveScene(io::IWriteFile* file, ISceneUserDataSerializer* userDataSerializer, ISceneNode* node)
-{
-	return false;
-}
-
-
-//! Loads a scene.
-bool CSceneManager::loadScene(const io::path& filename, ISceneUserDataSerializer* userDataSerializer, ISceneNode* rootNode)
-{
-	io::IReadFile* file = FileSystem->createAndOpenFile(filename);
-	if (!file)
-	{
-		os::Printer::log("Unable to open scene file", filename.c_str(), ELL_ERROR);
-		return false;
-	}
-
-	const bool ret = loadScene(file, userDataSerializer, rootNode);
-	file->drop();
-
-	return ret;
-}
-
-
-//! Loads a scene. Note that the current scene is not cleared before.
-bool CSceneManager::loadScene(io::IReadFile* file, ISceneUserDataSerializer* userDataSerializer, ISceneNode* rootNode)
-{
-	if (!file)
-	{
-		os::Printer::log("Unable to open scene file", ELL_ERROR);
-		return false;
-	}
-
-	bool ret = false;
-
-	// try scene loaders in reverse order
-	s32 i = SceneLoaderList.size()-1;
-	for (; i >= 0 && !ret; --i)
-		if (SceneLoaderList[i]->isALoadableFileFormat(file))
-			ret = SceneLoaderList[i]->loadScene(file, userDataSerializer, rootNode);
-
-	if (!ret)
-		os::Printer::log("Could not load scene file, perhaps the format is unsupported: ", file->getFileName().c_str(), ELL_ERROR);
-
-	return ret;
-}
-
-
 //! Returns a typename from a scene node type or null if not found
 const c8* CSceneManager::getSceneNodeTypeName(ESCENE_NODE_TYPE type)
 {
@@ -1153,66 +1053,6 @@ ISceneNode* CSceneManager::addSceneNode(const char* sceneNodeTypeName, ISceneNod
 
 	return node;
 }
-
-//! Writes attributes of the scene node.
-void CSceneManager::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
-{
-	out->addString	("Name", Name.c_str());
-	out->addInt	("Id", ID );
-	out->addColorf	("AmbientLight", AmbientLight);
-
-	// fog attributes from video driver
-	video::SColor color;
-	video::E_FOG_TYPE fogType;
-	f32 start, end, density;
-	bool pixelFog, rangeFog;
-
-	Driver->getFog(color, fogType, start, end, density, pixelFog, rangeFog);
-
-	out->addEnum("FogType", fogType, video::FogTypeNames);
-	out->addColorf("FogColor", color);
-	out->addFloat("FogStart", start);
-	out->addFloat("FogEnd", end);
-	out->addFloat("FogDensity", density);
-	out->addBool("FogPixel", pixelFog);
-	out->addBool("FogRange", rangeFog);
-}
-
-//! Reads attributes of the scene node.
-void CSceneManager::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
-{
-	Name = in->getAttributeAsString("Name");
-	ID = in->getAttributeAsInt("Id");
-	AmbientLight = in->getAttributeAsColorf("AmbientLight");
-
-	// fog attributes
-	video::SColor color;
-	video::E_FOG_TYPE fogType;
-	f32 start, end, density;
-	bool pixelFog, rangeFog;
-	if (in->existsAttribute("FogType"))
-	{
-		fogType = (video::E_FOG_TYPE) in->getAttributeAsEnumeration("FogType", video::FogTypeNames);
-		color = in->getAttributeAsColorf("FogColor").toSColor();
-		start = in->getAttributeAsFloat("FogStart");
-		end = in->getAttributeAsFloat("FogEnd");
-		density = in->getAttributeAsFloat("FogDensity");
-		pixelFog = in->getAttributeAsBool("FogPixel");
-		rangeFog = in->getAttributeAsBool("FogRange");
-		Driver->setFog(color, fogType, start, end, density, pixelFog, rangeFog);
-	}
-
-	RelativeTranslation.set(0,0,0);
-	RelativeRotation.set(0,0,0);
-	RelativeScale.set(1,1,1);
-	IsVisible = true;
-	AutomaticCullingState = scene::EAC_BOX;
-	DebugDataVisible = scene::EDS_OFF;
-	IsDebugObject = false;
-
-	updateAbsolutePosition();
-}
-
 
 //! Sets ambient color of the scene
 void CSceneManager::setAmbientLight(const video::SColorf &ambientColor)
