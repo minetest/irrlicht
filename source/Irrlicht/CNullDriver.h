@@ -335,10 +335,6 @@ namespace video
 		virtual void makeColorKeyTexture(video::ITexture* texture, core::position2d<s32> colorKeyPixelPos,
 			bool zeroTexels) const _IRR_OVERRIDE_;
 
-		//! Creates a normal map from a height map texture.
-		//! \param amplitude: Constant value by which the height information is multiplied.
-		virtual void makeNormalMapTexture(video::ITexture* texture, f32 amplitude=1.0f) const _IRR_OVERRIDE_;
-
 		//! Returns the maximum amount of primitives (mostly vertices) which
 		//! the device is able to render with one drawIndexedTriangleList
 		//! call.
@@ -719,35 +715,6 @@ namespace video
 
 		// prints renderer version
 		void printVersion();
-
-		//! normal map lookup 32 bit version
-		inline f32 nml32(int x, int y, int pitch, int height, s32 *p) const
-		{
-			if (x < 0)
-				x = pitch-1;
-			if (x >= pitch)
-				x = 0;
-			if (y < 0)
-				y = height-1;
-			if (y >= height)
-				y = 0;
-			return (f32)(((p[(y * pitch) + x])>>16) & 0xff);
-		}
-
-		//! normal map lookup 16 bit version
-		inline f32 nml16(int x, int y, int pitch, int height, s16 *p) const
-		{
-			if (x < 0)
-				x = pitch-1;
-			if (x >= pitch)
-				x = 0;
-			if (y < 0)
-				y = height-1;
-			if (y >= height)
-				y = 0;
-
-			return (f32) getAverage ( p[(y * pitch) + x] );
-		}
 
 		inline bool getWriteZBuffer(const SMaterial& material) const
 		{

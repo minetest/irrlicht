@@ -37,8 +37,6 @@ namespace video
 {
 
 	class COGLES2FixedPipelineRenderer;
-	class COGLES2NormalMapRenderer;
-	class COGLES2ParallaxMapRenderer;
 	class COGLES2Renderer2D;
 
 	class COGLES2Driver : public CNullDriver, public IMaterialRendererServices, public COGLES2ExtensionHandler

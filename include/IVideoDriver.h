@@ -509,20 +509,6 @@ namespace video
 				core::position2d<s32> colorKeyPixelPos,
 				bool zeroTexels = false) const =0;
 
-		//! Creates a normal map from a height map texture.
-		/** As input is considered to be a height map the texture is read like:
-		- For a 32-bit texture only the red channel is regarded
-		- For a 16-bit texture the rgb-values are averaged.
-		Output channels red/green for X/Y and blue for up (Z).
-		For a 32-bit texture we store additionally the height value in the
-		alpha channel. This value is used by the video::EMT_PARALLAX_MAP_SOLID
-		material and similar materials.
-		On the borders the texture is considered to repeat.
-		\param texture Height map texture which is converted to a normal map.
-		\param amplitude Constant value by which the height
-		information is multiplied.*/
-		virtual void makeNormalMapTexture(video::ITexture* texture, f32 amplitude=1.0f) const =0;
-
 		//! Set a render target.
 		/** This will only work if the driver supports the
 		EVDF_RENDER_TO_TARGET feature, which can be queried with

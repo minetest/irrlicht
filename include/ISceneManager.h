@@ -12,7 +12,6 @@
 #include "vector3d.h"
 #include "dimension2d.h"
 #include "SColor.h"
-#include "ETerrainElements.h"
 #include "ESceneNodeTypes.h"
 #include "EMeshWriterEnums.h"
 #include "SceneParameters.h"
