@@ -113,9 +113,6 @@ namespace scene
 		//! (This feature is not implemented in irrlicht yet)
 		virtual bool setHardwareSkinning(bool on) _IRR_OVERRIDE_;
 
-		//! Refreshes vertex data cached in joints such as positions and normals
-		virtual void refreshJointCache() _IRR_OVERRIDE_;
-
 		//Interface for the mesh loaders (finalize should lock these functions, and they should have some prefix like loader_
 		//these functions will use the needed arrays, set values, etc to help the loaders
 

@@ -3,7 +3,6 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
 #include "CMeshManipulator.h"
-#include "ISkinnedMesh.h"
 #include "SMesh.h"
 #include "CMeshBuffer.h"
 #include "SAnimatedMesh.h"
@@ -150,12 +149,6 @@ void CMeshManipulator::recalculateNormals(scene::IMesh* mesh, bool smooth, bool 
 	const u32 bcount = mesh->getMeshBufferCount();
 	for ( u32 b=0; b<bcount; ++b)
 		recalculateNormals(mesh->getMeshBuffer(b), smooth, angleWeighted);
-
-	if (mesh->getMeshType() == EAMT_SKINNED)
-	{
-		ISkinnedMesh *smesh = (ISkinnedMesh *) mesh;
-		smesh->refreshJointCache();
-	}
 }
 
 
