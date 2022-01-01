@@ -320,7 +320,21 @@ bool CGLXManager::generateContext()
 		if (GlxWin)
 		{
 			// create glx context
-			context = glXCreateNewContext((Display*)CurrentContext.OpenGLLinux.X11Display, (GLXFBConfig)glxFBConfig, GLX_RGBA_TYPE, NULL, True);
+			typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
+			glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
+			glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)glXGetProcAddressARB((const GLubyte *) "glXCreateContextAttribsARB");
+			if (!glXCreateContextAttribsARB) {
+				os::Printer::log("Could not get glXCreateContextAttribsARB", ELL_WARNING);
+				return false;
+			}
+			int context_attribs[] =
+			{
+				GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+				GLX_CONTEXT_MINOR_VERSION_ARB, 0,
+				//GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+				None
+			};
+			context = glXCreateContextAttribsARB((Display*)CurrentContext.OpenGLLinux.X11Display, (GLXFBConfig)glxFBConfig, 0, True, context_attribs);
 			if (!context)
 			{
 				os::Printer::log("Could not create GLX rendering context.", ELL_WARNING);
