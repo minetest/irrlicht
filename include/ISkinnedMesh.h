@@ -82,6 +82,9 @@ namespace scene
 		//! Refreshes vertex data cached in joints such as positions and normals
 		virtual void refreshJointCache() = 0;
 
+		//! Moves the mesh into static position.
+		virtual void resetAnimation() = 0;
+
 		//! A vertex weight
 		struct SWeight
 		{

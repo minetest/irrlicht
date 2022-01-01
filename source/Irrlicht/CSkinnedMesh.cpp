@@ -829,6 +829,24 @@ void CSkinnedMesh::refreshJointCache()
 	}
 }
 
+void CSkinnedMesh::resetAnimation()
+{
+	//copy from the cache to the mesh...
+	for (u32 i=0; i<AllJoints.size(); ++i)
+	{
+		SJoint *joint=AllJoints[i];
+		for (u32 j=0; j<joint->Weights.size(); ++j)
+		{
+			const u16 buffer_id=joint->Weights[j].buffer_id;
+			const u32 vertex_id=joint->Weights[j].vertex_id;
+			LocalBuffers[buffer_id]->getVertex(vertex_id)->Pos = joint->Weights[j].StaticPos;
+			LocalBuffers[buffer_id]->getVertex(vertex_id)->Normal = joint->Weights[j].StaticNormal;
+		}
+	}
+	SkinnedLastFrame = false;
+	LastAnimatedFrame = -1;
+}
+
 void CSkinnedMesh::calculateGlobalMatrices(SJoint *joint,SJoint *parentJoint)
 {
 	if (!joint && parentJoint) // bit of protection from endless loops
