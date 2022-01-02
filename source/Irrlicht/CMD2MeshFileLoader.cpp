@@ -152,9 +152,9 @@ bool CMD2MeshFileLoader::loadFile(io::IReadFile* file, CAnimatedMeshMD2* mesh)
 	}
 
 	const int MAX_FRAME_SIZE = MD2_MAX_VERTS*4+128;
-	if ( header.frameSize > MAX_FRAME_SIZE )
+	if ( header.frameSize > MAX_FRAME_SIZE || header.frameSize < 0)
 	{
-		os::Printer::log("MD2 Loader: Invalid large frame size in header", file->getFileName(), ELL_WARNING);
+		os::Printer::log("MD2 Loader: Invalid frame size in header", file->getFileName(), ELL_WARNING);
 		return false;
 	}
 
