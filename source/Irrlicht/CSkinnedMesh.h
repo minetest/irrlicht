@@ -116,6 +116,9 @@ namespace scene
 		//! Refreshes vertex data cached in joints such as positions and normals
 		virtual void refreshJointCache() _IRR_OVERRIDE_;
 
+		//! Moves the mesh into static position.
+		virtual void resetAnimation() _IRR_OVERRIDE_;
+
 		//Interface for the mesh loaders (finalize should lock these functions, and they should have some prefix like loader_
 		//these functions will use the needed arrays, set values, etc to help the loaders
 
