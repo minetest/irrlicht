@@ -24,8 +24,6 @@ class line2d
 		line2d(T xa, T ya, T xb, T yb) : start(xa, ya), end(xb, yb) {}
 		//! Constructor for line between the two points given as vectors.
 		line2d(const vector2d<T>& start, const vector2d<T>& end) : start(start), end(end) {}
-		//! Copy constructor.
-		line2d(const line2d<T>& other) : start(other.start), end(other.end) {}
 
 		// operators
 
@@ -97,12 +95,12 @@ class line2d
 		/*! Check if 2 segments are incident (intersects in exactly 1 point).*/
 		bool incidentSegments( const line2d<T>& other) const
 		{
-			return 
+			return
 				start.checkOrientation( end, other.start) != start.checkOrientation( end, other.end)
 			&&  other.start.checkOrientation( other.end, start) != other.start.checkOrientation( other.end, end);
 		}
 
-		/*! Check if 2 lines/segments are parallel or nearly parallel.*/ 
+		/*! Check if 2 lines/segments are parallel or nearly parallel.*/
 		bool nearlyParallel( const line2d<T>& line, const T factor = relativeErrorFactor<T>()) const
 		{
 			const vector2d<T> a = getVector();
@@ -112,14 +110,14 @@ class line2d
 		}
 
 		/*! returns a intersection point of 2 lines (if lines are not parallel). Behaviour
-		undefined if lines are parallel or coincident. 
+		undefined if lines are parallel or coincident.
 		It's on optimized intersectWith with checkOnlySegments=false and ignoreCoincidentLines=true
 		*/
 		vector2d<T> fastLinesIntersection( const line2d<T>& l) const
 		{
 			const f32 commonDenominator = (f32)((l.end.Y - l.start.Y)*(end.X - start.X) -
 				(l.end.X - l.start.X)*(end.Y - start.Y));
-			
+
 			if ( commonDenominator != 0.f )
 			{
 				const f32 numeratorA = (f32)((l.end.X - l.start.X)*(start.Y - l.start.Y) -
@@ -129,7 +127,7 @@ class line2d
 
 				// Calculate the intersection point.
 				return vector2d<T> (
-					(T)(start.X + uA * (end.X - start.X)), 
+					(T)(start.X + uA * (end.X - start.X)),
 					(T)(start.Y + uA * (end.Y - start.Y))
 					);
 			}
@@ -293,7 +291,7 @@ class line2d
 		/** Assumes that the point is already somewhere on the line. */
 		bool isPointBetweenStartAndEnd(const vector2d<T>& point) const
 		{
-			return point.isBetweenPoints(start, end); 
+			return point.isBetweenPoints(start, end);
 		}
 
 		//! Get the closest point on this line to a point

@@ -639,12 +639,6 @@ namespace quake3
 			: ID ( 0 ), VarGroup ( 0 )  {}
 		virtual ~IShader () {}
 
-		void operator = (const IShader &other )
-		{
-			ID = other.ID;
-			VarGroup = other.VarGroup;
-			name = other.name;
-		}
 
 		bool operator == (const IShader &other ) const
 		{
