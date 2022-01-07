@@ -356,67 +356,6 @@ bool GetDMFMaterials(const StringList& RawFile,
 }
 
 
-/**This function extract an array of dmfMaterial from a DMF file considering 1st an 2nd layer for water plains.
-You must give in input a StringList representing a DMF file loaded with LoadFromFile.
-\return true if function succeed or false on fail.*/
-bool GetDMFWaterMaterials(const StringList& RawFile /**<StringList representing a DMF file.*/,
-		core::array<dmfMaterial>& materials/**<Materials returned.*/,
-		int num_material/**<Number of materials contained in DMF file.*/
-		)
-{
-	int offs=4;
-	StringList temp;
-	StringList temp1;
-	StringList temp2;
-	//Checking if this is a DeleD map File of version >= 0.91
-	temp=SubdivideString(RawFile[0],";");//file info
-
-	if ( temp[0] != "DeleD Map File" )
-		return false;//not a deled file
-
-	temp.clear();
-	temp=SubdivideString(RawFile[1]," ");//get version
-	temp1=SubdivideString(temp[1],";");
-
-	if (atof(temp1[0].c_str()) < 0.91)
-		return false;//not correct version
-
-	//end checking
-	temp.clear();
-	temp1.clear();
-
-	for(int i=0;i<num_material;i++)
-	{
-		temp = SubdivideString(RawFile[offs+i],";");
-		materials[i].materialID=i;
-
-		temp1 = SubdivideString(temp[5],",");
-		materials[i].textureFlag=atoi(temp1[0].c_str());
-		temp2 = SubdivideString(temp1[1],"\\");
-
-		materials[i].textureName=temp2.getLast();
-		temp1.clear();
-		temp2.clear();
-		int a=temp.size();
-		if(a==7)
-		{
-			temp1=SubdivideString(temp[6],",");
-			materials[i].lightmapFlag=atoi(temp1[0].c_str());
-			temp2=SubdivideString(temp1[1],"\\");
-			materials[i].lightmapName=temp2.getLast();
-		}
-		else
-		{
-			materials[i].lightmapFlag=1;
-			materials[i].lightmapName="FFFFFFFF";
-		}
-		temp1.clear();
-		temp2.clear();
-	}
-	return true;
-}
-
-
 /**This function extract an array of dmfVert and dmfFace from a DMF file.
 You must give in input a StringList representing a DMF file loaded with LoadFromFile and two arrays long enough.
 Please use GetDMFHeader() before this function to know number of vertices and faces.
@@ -501,6 +440,66 @@ bool GetDMFVerticesFaces(const StringList& RawFile/**<StringList representing a 
 	return true;
 }
 
+#if 0	// functions unused and compiler gives us warnings about it. Keeping them in case anyone ever wants to improve support for this.
+/**This function extract an array of dmfMaterial from a DMF file considering 1st an 2nd layer for water plains.
+You must give in input a StringList representing a DMF file loaded with LoadFromFile.
+\return true if function succeed or false on fail.*/
+bool GetDMFWaterMaterials(const StringList& RawFile /**<StringList representing a DMF file.*/,
+		core::array<dmfMaterial>& materials/**<Materials returned.*/,
+		int num_material/**<Number of materials contained in DMF file.*/
+		)
+{
+	int offs=4;
+	StringList temp;
+	StringList temp1;
+	StringList temp2;
+	//Checking if this is a DeleD map File of version >= 0.91
+	temp=SubdivideString(RawFile[0],";");//file info
+
+	if ( temp[0] != "DeleD Map File" )
+		return false;//not a deled file
+
+	temp.clear();
+	temp=SubdivideString(RawFile[1]," ");//get version
+	temp1=SubdivideString(temp[1],";");
+
+	if (atof(temp1[0].c_str()) < 0.91)
+		return false;//not correct version
+
+	//end checking
+	temp.clear();
+	temp1.clear();
+
+	for(int i=0;i<num_material;i++)
+	{
+		temp = SubdivideString(RawFile[offs+i],";");
+		materials[i].materialID=i;
+
+		temp1 = SubdivideString(temp[5],",");
+		materials[i].textureFlag=atoi(temp1[0].c_str());
+		temp2 = SubdivideString(temp1[1],"\\");
+
+		materials[i].textureName=temp2.getLast();
+		temp1.clear();
+		temp2.clear();
+		int a=temp.size();
+		if(a==7)
+		{
+			temp1=SubdivideString(temp[6],",");
+			materials[i].lightmapFlag=atoi(temp1[0].c_str());
+			temp2=SubdivideString(temp1[1],"\\");
+			materials[i].lightmapName=temp2.getLast();
+		}
+		else
+		{
+			materials[i].lightmapFlag=1;
+			materials[i].lightmapName="FFFFFFFF";
+		}
+		temp1.clear();
+		temp2.clear();
+	}
+	return true;
+}
 
 /**This function extract an array of dmfLights from a DMF file.
 You must give in input a StringList representing a DMF file loaded with
@@ -723,6 +722,7 @@ bool GetDMFWaterPlanes(const StringList& RawFile/**<StringList representing a DM
 
 	return true;
 }
+#endif
 
 } // end namespace
 } // end namespace scene
