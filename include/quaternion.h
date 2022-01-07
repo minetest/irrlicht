@@ -55,9 +55,6 @@ class quaternion
 		//! inequality operator
 		bool operator!=(const quaternion& other) const;
 
-		//! Assignment operator
-		inline quaternion& operator=(const quaternion& other);
-
 #ifndef IRR_TEST_BROKEN_QUATERNION_USE
 		//! Matrix assignment operator
 		inline quaternion& operator=(const matrix4& other);
@@ -240,15 +237,6 @@ inline bool quaternion::operator!=(const quaternion& other) const
 	return !(*this == other);
 }
 
-// assignment operator
-inline quaternion& quaternion::operator=(const quaternion& other)
-{
-	X = other.X;
-	Y = other.Y;
-	Z = other.Z;
-	W = other.W;
-	return *this;
-}
 
 #ifndef IRR_TEST_BROKEN_QUATERNION_USE
 // matrix assignment operator

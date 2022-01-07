@@ -453,13 +453,6 @@ class map
 		return Cur;
 	}
 
-	ParentFirstIterator& operator=(const ParentFirstIterator& src)
-	{
-		Root = src.Root;
-		Cur = src.Cur;
-		return (*this);
-	}
-
 	void operator++(int)
 	{
 		inc();
@@ -550,13 +543,6 @@ class map
 		Node* getNode()
 		{
 			return Cur;
-		}
-
-		ParentLastIterator& operator=(const ParentLastIterator& src)
-		{
-			Root = src.Root;
-			Cur = src.Cur;
-			return (*this);
 		}
 
 		void operator++(int)
