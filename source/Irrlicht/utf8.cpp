@@ -359,22 +359,21 @@ static void PHYSFS_utf8FromUcs2(const u16 *src, char *dst, u64 len)
 
 void utf8ToWchar(const char *in, wchar_t *out, const u64 len)
 {
-#ifdef _WIN32
-	PHYSFS_utf8ToUcs2(in, (u16 *) out, len);
-#else
-	PHYSFS_utf8ToUcs4(in, (u32 *) out, len);
-#endif
+	switch ( sizeof(wchar_t) )
+	{
+		case 2:	PHYSFS_utf8ToUcs2(in, (u16 *) out, len); break;
+		case 4: PHYSFS_utf8ToUcs4(in, (u32 *) out, len); break;
+	}
 }
 
 void wcharToUtf8(const wchar_t *in, char *out, const u64 len)
 {
-#ifdef _WIN32
-	PHYSFS_utf8FromUcs2((const u16 *) in, out, len);
-#else
-	PHYSFS_utf8FromUcs4((const u32 *) in, out, len);
-#endif
+	switch ( sizeof(wchar_t) )
+	{
+		case 2:	PHYSFS_utf8FromUcs2((const u16 *) in, out, len); break;
+		case 4: PHYSFS_utf8FromUcs4((const u32 *) in, out, len); break;
+	}
 }
 
 } // end namespace core
 } // end namespace irr
-
