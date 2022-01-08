@@ -1,5 +1,6 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- Avoid allocating more than 16k on stack in OCT loader. Also avoid potential heap overwrites in there.
 - obj file loader now allows using mtl files with spaces in the filename. 
   Note that this means it no longer handles obj files which have multiple mtl files behind the mtllib command. 
   But Irrlicht ignored all but the first name anyway and this way of handling mtllib commands seems to be more common.
