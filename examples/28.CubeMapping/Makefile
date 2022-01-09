@@ -5,7 +5,7 @@ Target = 28.CubeMapping
 Sources = main.cpp
 
 # general compiler settings
-CPPFLAGS = -I../../include -I/usr/X11R6/include
+CPPFLAGS = -I../../include
 CXXFLAGS = -O3 -ffast-math
 #CXXFLAGS = -g -Wall
 

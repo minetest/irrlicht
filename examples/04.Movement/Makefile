@@ -12,7 +12,7 @@ IrrlichtHome := ../..
 BinPath = ../../bin/$(SYSTEM)
 
 # general compiler settings (might need to be set when compiling the lib, too)
-CPPFLAGS += -I$(IrrlichtHome)/include -I/usr/X11R6/include
+CPPFLAGS += -I$(IrrlichtHome)/include
 ifndef NDEBUG
 CXXFLAGS += -g -Wall
 else
