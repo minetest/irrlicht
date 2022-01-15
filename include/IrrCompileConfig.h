@@ -73,18 +73,6 @@
 #  error "Only Microsoft Visual Studio 9.0 and later are supported."
 #endif
 
-// XBox is deprecated (as DX8 is removed). Use Irrlicht 1.8 if you still want to work on this.
-#if defined(_XBOX)
-	#undef _IRR_WINDOWS_
-	#define _IRR_XBOX_PLATFORM_	// deprecated
-	#define _IRR_WINDOWS_API_
-	//#define _IRR_COMPILE_WITH_WINDOWS_DEVICE_
-	#undef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
-	//#define _IRR_COMPILE_WITH_SDL_DEVICE_
-
-	#include <xtl.h>
-#endif
-
 #if defined(__APPLE__) || defined(MACOSX)
 #if !defined(MACOSX)
 #define MACOSX // legacy support
@@ -102,10 +90,10 @@
 #define _IRR_OSX_PLATFORM_
 #ifndef _IRR_COMPILE_WITH_SDL_DEVICE_
 #define _IRR_COMPILE_WITH_OSX_DEVICE_
+#endif
 #define NO_IRR_COMPILE_WITH_OGLES1_
 #define NO_IRR_COMPILE_WITH_OGLES2_
 #define NO_IRR_COMPILE_WITH_WEBGL1_
-#endif
 #endif
 #endif
 

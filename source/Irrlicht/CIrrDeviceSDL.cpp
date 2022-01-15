@@ -596,7 +596,7 @@ bool CIrrDeviceSDL::run()
 				else
 				{
 					irrevent.MouseInput.Event = irr::EMIE_LMOUSE_LEFT_UP;
-					MouseButtonStates &= !irr::EMBSM_LEFT;
+					MouseButtonStates &= ~irr::EMBSM_LEFT;
 				}
 				break;
 
@@ -609,7 +609,7 @@ bool CIrrDeviceSDL::run()
 				else
 				{
 					irrevent.MouseInput.Event = irr::EMIE_RMOUSE_LEFT_UP;
-					MouseButtonStates &= !irr::EMBSM_RIGHT;
+					MouseButtonStates &= ~irr::EMBSM_RIGHT;
 				}
 				break;
 
@@ -622,7 +622,7 @@ bool CIrrDeviceSDL::run()
 				else
 				{
 					irrevent.MouseInput.Event = irr::EMIE_MMOUSE_LEFT_UP;
-					MouseButtonStates &= !irr::EMBSM_MIDDLE;
+					MouseButtonStates &= ~irr::EMBSM_MIDDLE;
 				}
 				break;
 			}
@@ -683,14 +683,12 @@ bool CIrrDeviceSDL::run()
 				irrevent.KeyInput.Shift = (SDL_event.key.keysym.mod & KMOD_SHIFT) != 0;
 				irrevent.KeyInput.Control = (SDL_event.key.keysym.mod & KMOD_CTRL ) != 0;
 
-				//SDL2 no longer provides unicode character in the key event so we ensure the character is in the correct case
+				// SDL2 no longer provides unicode character in the key event so we ensure the character is in the correct case
+				// TODO: Unicode input doesn't work like this, should probably use SDL_TextInputEvent
 				bool convertCharToUppercase =
-						(irrevent.KeyInput.Shift &&
-								!(SDL_event.key.keysym.mod & KMOD_CAPS)) ||
-						(!irrevent.KeyInput.Shift &&
-								(SDL_event.key.keysym.mod & KMOD_CAPS));
+					irrevent.KeyInput.Shift != !!(SDL_event.key.keysym.mod & KMOD_CAPS);
 
-				if(convertCharToUppercase)
+				if (convertCharToUppercase)
 					irrevent.KeyInput.Char = irr::core::locale_upper(irrevent.KeyInput.Char);
 
 				postEventFromUser(irrevent);
@@ -892,7 +890,8 @@ void CIrrDeviceSDL::sleep(u32 timeMs, bool pauseTimer)
 //! sets the caption of the window
 void CIrrDeviceSDL::setWindowCaption(const wchar_t* text)
 {
-	core::stringc textc = text;
+	core::stringc textc;
+	core::wStringToMultibyte(textc, text);
 	SDL_SetWindowTitle(Window, textc.c_str());
 }
 

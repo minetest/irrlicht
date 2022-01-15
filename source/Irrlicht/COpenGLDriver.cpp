@@ -310,8 +310,10 @@ bool COpenGLDriver::endScene()
 
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
 	if (SDLDevice)
+	{
 		SDLDevice->SwapWindow();
-	status = true;
+		status = true;
+	}
 #endif
 
 	// todo: console device present

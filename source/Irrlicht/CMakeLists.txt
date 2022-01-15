@@ -81,11 +81,9 @@ if(XINPUT2_ENABLED)
 endif()
 
 check_symbol_exists(_IRR_COMPILE_WITH_SDL_DEVICE_ "IrrCompileConfig.h" SDL_ENABLED)
-
-set(SDL_LIBRARIES "")
 if(SDL_ENABLED)
 	find_package(SDL2 CONFIG REQUIRED)
-	set(SDL_LIBRARIES SDL2::SDL2 SDL2::SDL2main "${SDL2_LIBRARY}")
+	message(STATUS "Found SDL2: ${SDL2_LIBRARIES}")
 endif()
 
 # Platform-specific libs
@@ -110,7 +108,7 @@ set(link_includes
 	"${ZLIB_INCLUDE_DIR}"
 	"${JPEG_INCLUDE_DIR}"
 	"${PNG_INCLUDE_DIR}"
-	"${SDL2_INCLUDE_DIR}"
+	"${SDL2_INCLUDE_DIRS}"
 
 	${OPENGL_INCLUDE_DIR}
 	${OPENGLES2_INCLUDE_DIR}
@@ -124,7 +122,7 @@ set(link_libs
 	"${ZLIB_LIBRARY}"
 	"${JPEG_LIBRARY}"
 	"${PNG_LIBRARY}"
-	"${SDL_LIBRARIES}"
+	"${SDL2_LIBRARIES}"
 
 	${OPENGL_LIBRARIES}
 	${OPENGLES_LIBRARY}
