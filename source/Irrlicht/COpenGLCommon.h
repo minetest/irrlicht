@@ -36,13 +36,15 @@
 #elif defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && !defined(_IRR_COMPILE_WITH_X11_DEVICE_)
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		#define GL_GLEXT_LEGACY 1
-		#define GLX_GLXEXT_LEGACY 1
 	#else
 		#define GL_GLEXT_PROTOTYPES 1
-		#define GLX_GLXEXT_PROTOTYPES 1
 	#endif
-	#include <SDL/SDL_video.h>
-	#include <SDL/SDL_opengl.h>
+	#include <SDL2/SDL_video.h>
+	#include <SDL2/SDL_opengl.h>
+	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
+		// The SDL2 header doesn't cut it for extensions
+		#include <GL/glext.h>
+	#endif
 #else
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		#define GL_GLEXT_LEGACY 1
