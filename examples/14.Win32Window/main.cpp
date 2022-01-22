@@ -25,7 +25,6 @@ using namespace irr;
 #endif
 
 HWND hOKButton;
-HWND hWnd;
 
 static LRESULT CALLBACK CustomWndProc(HWND hWnd, UINT message,
 		WPARAM wParam, LPARAM lParam)
@@ -103,7 +102,7 @@ int main()
 	int windowWidth = 440;
 	int windowHeight = 380;
 
-	hWnd = CreateWindow( Win32ClassName, __TEXT("Irrlicht Win32 window example"),
+	HWND hWnd = CreateWindow( Win32ClassName, __TEXT("Irrlicht Win32 window example"),
 		style, 100, 100, windowWidth, windowHeight,
 		NULL, NULL, hInstance, NULL);
 

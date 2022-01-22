@@ -201,7 +201,7 @@ int main()
 	*/
 	int lastFPS = -1;
 
-	// In order to do framerate independent movement, we have to know
+	// In order to do frame rate independent movement, we have to know
 	// how long it was since the last frame
 	u32 then = device->getTimer()->getTime();
 
