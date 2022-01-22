@@ -215,21 +215,24 @@ int main()
 		const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
 		then = now;
 
-		/* Check if keys W, S, A or D are being held down, and move the
-		sphere node around respectively. */
-		core::vector3df nodePosition = sphereNode->getPosition();
+		if ( sphereNode )
+		{
+			/* Check if keys W, S, A or D are being held down, and move the
+			sphere node around respectively. */
+			core::vector3df nodePosition = sphereNode->getPosition();
 
-		if(receiver.IsKeyDown(irr::KEY_KEY_W))
-			nodePosition.Y += MOVEMENT_SPEED * frameDeltaTime;
-		else if(receiver.IsKeyDown(irr::KEY_KEY_S))
-			nodePosition.Y -= MOVEMENT_SPEED * frameDeltaTime;
+			if(receiver.IsKeyDown(irr::KEY_KEY_W))
+				nodePosition.Y += MOVEMENT_SPEED * frameDeltaTime;
+			else if(receiver.IsKeyDown(irr::KEY_KEY_S))
+				nodePosition.Y -= MOVEMENT_SPEED * frameDeltaTime;
 
-		if(receiver.IsKeyDown(irr::KEY_KEY_A))
-			nodePosition.X -= MOVEMENT_SPEED * frameDeltaTime;
-		else if(receiver.IsKeyDown(irr::KEY_KEY_D))
-			nodePosition.X += MOVEMENT_SPEED * frameDeltaTime;
+			if(receiver.IsKeyDown(irr::KEY_KEY_A))
+				nodePosition.X -= MOVEMENT_SPEED * frameDeltaTime;
+			else if(receiver.IsKeyDown(irr::KEY_KEY_D))
+				nodePosition.X += MOVEMENT_SPEED * frameDeltaTime;
 
-		sphereNode->setPosition(nodePosition);
+			sphereNode->setPosition(nodePosition);
+		}
 
 		driver->beginScene(video::ECBF_COLOR | video::ECBF_DEPTH, video::SColor(255,113,113,133));
 
