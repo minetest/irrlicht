@@ -553,7 +553,6 @@ CIrrDeviceMacOSX::CIrrDeviceMacOSX(const SIrrlichtCreationParameters& param)
 	IsActive(true), IsFullscreen(false), IsShiftDown(false), IsControlDown(false), IsResizable(false)
 {
 	struct utsname name;
-	NSString *path;
 
 #ifdef _DEBUG
 	setDebugName("CIrrDeviceMacOSX");
@@ -568,27 +567,31 @@ CIrrDeviceMacOSX::CIrrDeviceMacOSX(const SIrrlichtCreationParameters& param)
 			[[NSAutoreleasePool alloc] init];
 			[[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
 			[NSApp setDelegate:(id<NSApplicationDelegate>)[[[CIrrDelegateOSX alloc] initWithDevice:this] autorelease]];
-            
+
             // Create menu
-            
+
             NSString* bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-            
+            if (bundleName == nil)
+                bundleName = @"Irrlicht";
+
             NSMenu* mainMenu = [[[NSMenu alloc] initWithTitle:@"MainMenu"] autorelease];
             NSMenu* menu = [[[NSMenu alloc] initWithTitle:bundleName] autorelease];
             NSMenuItem* menuItem = [mainMenu addItemWithTitle:bundleName action:nil keyEquivalent:@""];
             [mainMenu setSubmenu:menu forItem:menuItem];
             menuItem = [menu addItemWithTitle:@"Quit" action:@selector(terminate:) keyEquivalent:@"q"];
             [menuItem setKeyEquivalentModifierMask:NSCommandKeyMask];
-            
+
             [NSApp setMainMenu:mainMenu];
 
             [NSApp finishLaunching];
 		}
 
-		path = [[NSBundle mainBundle] bundlePath];
-        path = [path stringByAppendingString:@"/Contents/Resources"];
-		chdir([path fileSystemRepresentation]);
-        [path release];
+		NSString *path = [[NSBundle mainBundle] bundlePath];
+		if (path != nil) {
+			path = [path stringByAppendingString:@"/Contents/Resources"];
+			chdir([path fileSystemRepresentation]);
+			[path release];
+		}
 	}
 
 	uname(&name);
