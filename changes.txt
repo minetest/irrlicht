@@ -1,5 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- vector3d scalar operator/ and operator/= no longer multiply by the inverse but use the expected division. 
+  Costs some speed, but fixes floating point troubles caused by this optimization (like x/x no longer being 1.0).
 - Bugfix: XML reader dropped last character in strings if there was a special character replacement for the second-last character.
 - Avoid allocating more than 16k on stack in OCT loader. Also avoid potential heap overwrites in there.
 - obj file loader now allows using mtl files with spaces in the filename. 
