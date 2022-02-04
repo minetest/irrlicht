@@ -58,36 +58,48 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest
 
   win32:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - name: Install deps
+      - name: Install compiler
         run: |
-          sudo apt-get update
-          sudo apt-get install cmake g++-mingw-w64-i686 -qyy
+          sudo apt-get update && sudo apt-get install cmake -qyy
+          wget http://minetest.kitsunemimi.pw/mingw-w64-i686_11.2.0_ubuntu20.04.tar.xz -O mingw.tar.xz
+          sudo tar -xaf mingw.tar.xz -C /usr
 
       - name: Build
         run: |
-          ./scripts/ci-build-mingw.sh
+          ./scripts/ci-build-mingw.sh package
         env:
           CC: i686-w64-mingw32-gcc
           CXX: i686-w64-mingw32-g++
 
+      - uses: actions/upload-artifact@v2
+        with:
+          name: irrlicht-win32
+          path: ./irrlicht-windows.zip
+
   win64:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - name: Install deps
+      - name: Install compiler
         run: |
-          sudo apt-get update
-          sudo apt-get install cmake g++-mingw-w64-x86-64 -qyy
+          sudo apt-get update && sudo apt-get install cmake -qyy
+          wget http://minetest.kitsunemimi.pw/mingw-w64-x86_64_11.2.0_ubuntu20.04.tar.xz -O mingw.tar.xz
+          sudo tar -xaf mingw.tar.xz -C /usr
 
       - name: Build
         run: |
-          ./scripts/ci-build-mingw.sh
+          ./scripts/ci-build-mingw.sh package
         env:
           CC: x86_64-w64-mingw32-gcc
           CXX: x86_64-w64-mingw32-g++
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: irrlicht-win64
+          path: ./irrlicht-windows.zip
 
   macos:
     runs-on: macos-10.15
