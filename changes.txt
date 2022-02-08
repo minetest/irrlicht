@@ -1,5 +1,6 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- IBillboardSceneNode got functions to access meshbuffers. So uv-coordinates can now be modified directly (previously only possible via texture matrix).
 - vector3d scalar operator/ and operator/= no longer multiply by the inverse but use the expected division. 
   Costs some speed, but fixes floating point troubles caused by this optimization (like x/x no longer being 1.0).
 - Bugfix: XML reader dropped last character in strings if there was a special character replacement for the second-last character.
