@@ -585,7 +585,7 @@ namespace video
 		bool writeImageToFile(IImage* image, io::IWriteFile * file, u32 param = 0) override;
 
 		//! Sets the name of a material renderer.
-		void setMaterialRendererName(s32 idx, const char* name) override;
+		void setMaterialRendererName(u32 idx, const char* name) override;
 
 		//! Swap the material renderers used for certain id's
 		void swapMaterialRenderers(u32 idx1, u32 idx2, bool swapNames) override;
