@@ -2093,10 +2093,10 @@ s32 CNullDriver::addMaterialRenderer(IMaterialRenderer* renderer, const char* na
 
 
 //! Sets the name of a material renderer.
-void CNullDriver::setMaterialRendererName(s32 idx, const char* name)
+void CNullDriver::setMaterialRendererName(u32 idx, const char* name)
 {
-	if (idx < s32(sizeof(sBuiltInMaterialTypeNames) / sizeof(char*))-1 ||
-		idx >= (s32)MaterialRenderers.size())
+	if (idx < (sizeof(sBuiltInMaterialTypeNames) / sizeof(char*))-1 ||
+		idx >= MaterialRenderers.size())
 		return;
 
 	MaterialRenderers[idx].Name = name;

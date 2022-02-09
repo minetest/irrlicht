@@ -1343,7 +1343,7 @@ namespace video
 		E_MATERIAL_TYPE enum or a value which was returned by
 		addMaterialRenderer().
 		\param name: New name of the material renderer. */
-		virtual void setMaterialRendererName(s32 idx, const c8* name) =0;
+		virtual void setMaterialRendererName(u32 idx, const c8* name) =0;
 
 		//! Swap the material renderers used for certain id's
 		/** Swap the IMaterialRenderers responsible for rendering specific
