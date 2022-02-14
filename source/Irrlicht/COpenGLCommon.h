@@ -39,8 +39,8 @@
 	#else
 		#define GL_GLEXT_PROTOTYPES 1
 	#endif
-	#include <SDL2/SDL_video.h>
-	#include <SDL2/SDL_opengl.h>
+	#include <SDL_video.h>
+	#include <SDL_opengl.h>
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		// The SDL2 header doesn't cut it for extensions
 		#include <GL/glext.h>
