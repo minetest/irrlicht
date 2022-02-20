@@ -319,12 +319,35 @@ bool CGLXManager::generateContext()
 	{
 		if (GlxWin)
 		{
-			// create glx context
-			context = glXCreateNewContext((Display*)CurrentContext.OpenGLLinux.X11Display, (GLXFBConfig)glxFBConfig, GLX_RGBA_TYPE, NULL, True);
-			if (!context)
+#if defined(GLX_ARB_create_context)
+
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+		PFNGLXCREATECONTEXTATTRIBSARBPROC glxCreateContextAttribsARB=(PFNGLXCREATECONTEXTATTRIBSARBPROC)glXGetProcAddress(reinterpret_cast<const GLubyte*>("glXCreateContextAttribsARB"));
+#else
+		PFNGLXCREATECONTEXTATTRIBSARBPROC glxCreateContextAttribsARB=glXCreateContextAttribsARB;
+#endif
+
+			if (glxCreateContextAttribsARB)
 			{
-				os::Printer::log("Could not create GLX rendering context.", ELL_WARNING);
-				return false;
+				int contextAttrBuffer[] = {
+					GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+					GLX_CONTEXT_MINOR_VERSION_ARB, 0,
+					// GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
+					None
+				};
+				context = glxCreateContextAttribsARB((Display*)CurrentContext.OpenGLLinux.X11Display, (GLXFBConfig)glxFBConfig, NULL, True, contextAttrBuffer);
+				// transparently fall back to legacy call
+			}
+			if (!context)
+#endif
+			{
+				// create glx context
+				context = glXCreateNewContext((Display*)CurrentContext.OpenGLLinux.X11Display, (GLXFBConfig)glxFBConfig, GLX_RGBA_TYPE, NULL, True);
+				if (!context)
+				{
+					os::Printer::log("Could not create GLX rendering context.", ELL_WARNING);
+					return false;
+				}
 			}
 		}
 		else
