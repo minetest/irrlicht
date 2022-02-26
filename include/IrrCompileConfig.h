@@ -61,7 +61,7 @@
 //! WIN32 for Windows32
 //! WIN64 for Windows64
 // The windows platform and API support SDL and WINDOW device
-#if defined(_WIN32) || defined(_WIN64) || defined(WIN32) || defined(WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 #define _IRR_WINDOWS_
 #define _IRR_WINDOWS_API_
 #ifndef _IRR_COMPILE_WITH_SDL_DEVICE_
@@ -69,14 +69,7 @@
 #endif
 #endif
 
-#if defined(_MSC_VER) && (_MSC_VER < 1500)
-#  error "Only Microsoft Visual Studio 9.0 and later are supported."
-#endif
-
-#if defined(__APPLE__) || defined(MACOSX)
-#if !defined(MACOSX)
-#define MACOSX // legacy support
-#endif
+#if defined(__APPLE__)
 #if defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__) || defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #define _IRR_IOS_PLATFORM_
 #define _IRR_COMPILE_WITH_IOS_DEVICE_
@@ -179,10 +172,6 @@ and this to the linker settings: -ld3dx9
 If not defined, Windows Multimedia library is used, which offers also broad support for joystick devices. */
 #define _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
 #ifdef NO_IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
-#undef _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
-#endif
-// can't get this to compile currently under borland, can be removed if someone has a better solution
-#if defined(__BORLANDC__)
 #undef _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
 #endif
 
@@ -460,7 +449,7 @@ ones. */
 #else // _IRR_WINDOWS_API_
 
 // Force symbol export in shared libraries built with gcc.
-#if (__GNUC__ >= 4) && !defined(_IRR_STATIC_LIB_) && defined(IRRLICHT_EXPORTS)
+#if defined(__GNUC__) && !defined(_IRR_STATIC_LIB_) && defined(IRRLICHT_EXPORTS)
 #define IRRLICHT_API __attribute__ ((visibility("default")))
 #else
 #define IRRLICHT_API
@@ -478,22 +467,6 @@ ones. */
 #define __IRR_HAS_S64
 #ifdef NO__IRR_HAS_S64
 #undef __IRR_HAS_S64
-#endif
-
-#if defined(__BORLANDC__)
-	#include <tchar.h>
-
-	// Borland 5.5.1
-	#if __BORLANDC__ == 0x551
-		#undef _tfinddata_t
-		#undef _tfindfirst
-		#undef _tfindnext
-
-		#define _tfinddata_t __tfinddata_t
-		#define _tfindfirst  __tfindfirst
-		#define _tfindnext   __tfindnext
-		typedef long intptr_t;
-	#endif
 #endif
 
 #ifndef __has_feature

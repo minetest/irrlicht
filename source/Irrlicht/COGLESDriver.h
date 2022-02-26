@@ -26,10 +26,6 @@
 #include <windows.h>
 #endif
 
-#ifdef _MSC_VER
-#pragma comment(lib, "libGLES_CM.lib")
-#endif
-
 namespace irr
 {
 namespace video

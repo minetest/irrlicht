@@ -23,11 +23,9 @@
 #endif
 
 #if defined (_IRR_WINDOWS_API_)
-	#if !defined ( _WIN32_WCE )
-		#include <direct.h> // for _chdir
-		#include <io.h> // for _access
-		#include <tchar.h>
-	#endif
+	#include <direct.h> // for _chdir
+	#include <io.h> // for _access
+	#include <tchar.h>
 #elif (defined(_IRR_POSIX_API_) || defined(_IRR_OSX_PLATFORM_) || defined(_IRR_IOS_PLATFORM_) || defined(_IRR_ANDROID_PLATFORM_))
 		#include <stdio.h>
 		#include <stdlib.h>
@@ -797,7 +795,6 @@ IFileList* CFileSystem::createFileList()
 		// --------------------------------------------
 		//! Windows version
 		#ifdef _IRR_WINDOWS_API_
-		#if !defined ( _WIN32_WCE )
 
 		r = new CFileList(Path, true, false);
 
@@ -819,12 +816,7 @@ IFileList* CFileSystem::createFileList()
 
 			_findclose( hFile );
 		}
-		#endif
 
-		//TODO add drives
-		//entry.Name = "E:\\";
-		//entry.isDirectory = true;
-		//Files.push_back(entry);
 		#endif
 
 		// --------------------------------------------

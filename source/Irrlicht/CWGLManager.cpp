@@ -11,10 +11,6 @@
 #include <GL/gl.h>
 #include <GL/wglext.h>
 
-#ifdef _MSC_VER
-	#pragma comment(lib, "OpenGL32.lib")
-#endif
-
 namespace irr
 {
 namespace video

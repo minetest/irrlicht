@@ -5,9 +5,7 @@
 #include "COSOperator.h"
 
 #ifdef _IRR_WINDOWS_API_
-#ifndef _IRR_XBOX_PLATFORM_
 #include <windows.h>
-#endif
 #else
 #include <string.h>
 #include <unistd.h>
@@ -63,8 +61,7 @@ void COSOperator::copyToClipboard(const c8 *text) const
 		return;
 
 // Windows version
-#if defined(_IRR_XBOX_PLATFORM_)
-#elif defined(_IRR_WINDOWS_API_)
+#if defined(_IRR_WINDOWS_API_)
 	if (!OpenClipboard(NULL) || text == 0)
 		return;
 
@@ -101,8 +98,6 @@ void COSOperator::copyToClipboard(const c8 *text) const
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
     if ( IrrDeviceLinux )
         IrrDeviceLinux->copyToClipboard(text);
-#else
-
 #endif
 }
 
@@ -111,9 +106,7 @@ void COSOperator::copyToClipboard(const c8 *text) const
 //! \return Returns 0 if no string is in there, otherwise an utf-8 string.
 const c8* COSOperator::getTextFromClipboard() const
 {
-#if defined(_IRR_XBOX_PLATFORM_)
-		return 0;
-#elif defined(_IRR_WINDOWS_API_)
+#if defined(_IRR_WINDOWS_API_)
 	if (!OpenClipboard(NULL))
 		return 0;
 
@@ -156,7 +149,7 @@ const c8* COSOperator::getTextFromClipboard() const
 
 bool COSOperator::getSystemMemory(u32* Total, u32* Avail) const
 {
-#if defined(_IRR_WINDOWS_API_) && !defined (_IRR_XBOX_PLATFORM_)
+#if defined(_IRR_WINDOWS_API_)
 
 	MEMORYSTATUSEX MemoryStatusEx;
  	MemoryStatusEx.dwLength = sizeof(MEMORYSTATUSEX);

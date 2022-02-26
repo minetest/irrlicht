@@ -22,10 +22,6 @@
 #include "SLight.h"
 #include "SExposedVideoData.h"
 
-#ifdef _MSC_VER
-#pragma warning( disable: 4996)
-#endif
-
 namespace irr
 {
 namespace io

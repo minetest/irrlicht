@@ -20,11 +20,6 @@
 		#include <GL/glext.h>
 	#endif
 	#include <GL/wglext.h>
-
-	#ifdef _MSC_VER
-		#pragma comment(lib, "OpenGL32.lib")
-	#endif
-
 #elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		#define GL_GLEXT_LEGACY 1

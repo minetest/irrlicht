@@ -10,9 +10,16 @@
 #ifndef __S_VIDEO_2_SOFTWARE_HELPER_H_INCLUDED__
 #define __S_VIDEO_2_SOFTWARE_HELPER_H_INCLUDED__
 
-#include "SoftwareDriver2_compile_config.h"
 #include "irrMath.h"
 #include "SMaterial.h"
+
+#ifndef REALINLINE
+#ifdef _MSC_VER
+#define REALINLINE __forceinline
+#else
+#define REALINLINE inline
+#endif
+#endif
 
 
 namespace irr

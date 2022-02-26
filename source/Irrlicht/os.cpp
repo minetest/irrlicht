@@ -12,14 +12,12 @@
 	#define bswap_16(X) SDL_Swap16(X)
 	#define bswap_32(X) SDL_Swap32(X)
 	#define bswap_64(X) SDL_Swap64(X)
-#elif defined(_IRR_WINDOWS_API_) && defined(_MSC_VER) && (_MSC_VER > 1298)
+#elif defined(_IRR_WINDOWS_API_) && defined(_MSC_VER)
 	#include <stdlib.h>
 	#define bswap_16(X) _byteswap_ushort(X)
 	#define bswap_32(X) _byteswap_ulong(X)
 	#define bswap_64(X) _byteswap_uint64(X)
-#if (_MSC_VER >= 1400)
 	#define localtime _localtime_s
-#endif
 #elif defined(_IRR_OSX_PLATFORM_) || defined(_IRR_IOS_PLATFORM_)
 	#include <libkern/OSByteOrder.h>
 	#define bswap_16(X) OSReadSwapInt16(&X,0)
@@ -65,13 +63,9 @@ namespace os
 // Windows specific functions
 // ----------------------------------------------------------------
 
-#ifdef _IRR_XBOX_PLATFORM_
-#include <xtl.h>
-#else
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <time.h>
-#endif
 
 namespace irr
 {
@@ -80,16 +74,10 @@ namespace os
 	//! prints a debuginfo string
 	void Printer::print(const c8* message, ELOG_LEVEL ll)
 	{
-#if defined (_WIN32_WCE )
-		core::stringw tmp(message);
-		tmp += L"\n";
-		OutputDebugStringW(tmp.c_str());
-#else
 		core::stringc tmp(message);
 		tmp += "\n";
 		OutputDebugStringA(tmp.c_str());
 		printf("%s", tmp.c_str());
-#endif
 	}
 
 	static LARGE_INTEGER HighPerformanceFreq;
