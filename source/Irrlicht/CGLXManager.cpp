@@ -313,7 +313,7 @@ void CGLXManager::destroySurface()
 
 bool CGLXManager::generateContext()
 {
-	GLXContext context;
+	GLXContext context = 0;
 
 	if (glxFBConfig)
 	{
