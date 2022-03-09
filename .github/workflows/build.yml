@@ -112,5 +112,9 @@ jobs:
 
       - name: Build
         run: |
-          cmake . -DCMAKE_FIND_FRAMEWORK=LAST
+          cmake . -DCMAKE_FIND_FRAMEWORK=LAST -DBUILD_EXAMPLES=1
           make -j3
+
+      - name: Test (headless)
+        run: |
+          ./bin/OSX/AutomatedTest null
