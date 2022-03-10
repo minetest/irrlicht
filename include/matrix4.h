@@ -1191,15 +1191,15 @@ namespace core
 	template <class T>
 	inline void CMatrix4<T>::transformVect( vector3df& vect) const
 	{
-		f32 vector[3];
+		T vector[3];
 
 		vector[0] = vect.X*M[0] + vect.Y*M[4] + vect.Z*M[8] + M[12];
 		vector[1] = vect.X*M[1] + vect.Y*M[5] + vect.Z*M[9] + M[13];
 		vector[2] = vect.X*M[2] + vect.Y*M[6] + vect.Z*M[10] + M[14];
 
-		vect.X = vector[0];
-		vect.Y = vector[1];
-		vect.Z = vector[2];
+		vect.X = static_cast<f32>(vector[0]);
+		vect.Y = static_cast<f32>(vector[1]);
+		vect.Z = static_cast<f32>(vector[2]);
 	}
 
 	template <class T>
