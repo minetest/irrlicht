@@ -1155,10 +1155,10 @@ namespace core
 	template <class T>
 	inline void CMatrix4<T>::rotateVect( vector3df& vect ) const
 	{
-		vector3df tmp = vect;
-		vect.X = tmp.X*M[0] + tmp.Y*M[4] + tmp.Z*M[8];
-		vect.Y = tmp.X*M[1] + tmp.Y*M[5] + tmp.Z*M[9];
-		vect.Z = tmp.X*M[2] + tmp.Y*M[6] + tmp.Z*M[10];
+		vector3d<T> tmp(static_cast<T>(vect.X), static_cast<T>(vect.Y), static_cast<T>(vect.Z));
+		vect.X = static_cast<f32>(tmp.X*M[0] + tmp.Y*M[4] + tmp.Z*M[8]);
+		vect.Y = static_cast<f32>(tmp.X*M[1] + tmp.Y*M[5] + tmp.Z*M[9]);
+		vect.Z = static_cast<f32>(tmp.X*M[2] + tmp.Y*M[6] + tmp.Z*M[10]);
 	}
 
 	//! An alternate transform vector method, writing into a second vector
@@ -1182,10 +1182,10 @@ namespace core
 	template <class T>
 	inline void CMatrix4<T>::inverseRotateVect( vector3df& vect ) const
 	{
-		vector3df tmp = vect;
-		vect.X = tmp.X*M[0] + tmp.Y*M[1] + tmp.Z*M[2];
-		vect.Y = tmp.X*M[4] + tmp.Y*M[5] + tmp.Z*M[6];
-		vect.Z = tmp.X*M[8] + tmp.Y*M[9] + tmp.Z*M[10];
+		vector3d<T> tmp(static_cast<T>(vect.X), static_cast<T>(vect.Y), static_cast<T>(vect.Z));
+		vect.X = static_cast<f32>(tmp.X*M[0] + tmp.Y*M[1] + tmp.Z*M[2]);
+		vect.Y = static_cast<f32>(tmp.X*M[4] + tmp.Y*M[5] + tmp.Z*M[6]);
+		vect.Z = static_cast<f32>(tmp.X*M[8] + tmp.Y*M[9] + tmp.Z*M[10]);
 	}
 
 	template <class T>
