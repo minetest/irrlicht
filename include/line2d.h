@@ -159,20 +159,20 @@ class line2d
 		{
 			// Uses the method given at:
 			// http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
-			const f32 commonDenominator = (f32)((l.end.Y - l.start.Y)*(end.X - start.X) -
+			const f64 commonDenominator = (f64)((l.end.Y - l.start.Y)*(end.X - start.X) -
 											(l.end.X - l.start.X)*(end.Y - start.Y));
 
-			const f32 numeratorA = (f32)((l.end.X - l.start.X)*(start.Y - l.start.Y) -
+			const f64 numeratorA = (f64)((l.end.X - l.start.X)*(start.Y - l.start.Y) -
 											(l.end.Y - l.start.Y)*(start.X -l.start.X));
 
-			const f32 numeratorB = (f32)((end.X - start.X)*(start.Y - l.start.Y) -
+			const f64 numeratorB = (f64)((end.X - start.X)*(start.Y - l.start.Y) -
 											(end.Y - start.Y)*(start.X -l.start.X));
 
-			if(equals(commonDenominator, 0.f))
+			if(equals(commonDenominator, 0.0))
 			{
 				// The lines are either coincident or parallel
 				// if both numerators are 0, the lines are coincident
-				if(!ignoreCoincidentLines && equals(numeratorA, 0.f) && equals(numeratorB, 0.f))
+				if(!ignoreCoincidentLines && equals(numeratorA, 0.0) && equals(numeratorB, 0.0))
 				{
 					// Try and find a common endpoint
 					if(l.start == start || l.end == start)
@@ -235,14 +235,14 @@ class line2d
 
 			// Get the point of intersection on this line, checking that
 			// it is within the line segment.
-			const f32 uA = numeratorA / commonDenominator;
+			const f64 uA = numeratorA / commonDenominator;
 			if (checkOnlySegments)
 			{
-				if(uA < 0.f || uA > 1.f)
+				if(uA < 0.0 || uA > 1.0)
 					return false; // Outside the line segment
 
-				const f32 uB = numeratorB / commonDenominator;
-				if(uB < 0.f || uB > 1.f)
+				const f64 uB = numeratorB / commonDenominator;
+				if(uB < 0.0 || uB > 1.0)
 					return false; // Outside the line segment
 			}
 
