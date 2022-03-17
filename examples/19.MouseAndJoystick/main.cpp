@@ -197,7 +197,6 @@ int main()
 	// As in example 04, we'll use framerate independent movement.
 	u32 then = device->getTimer()->getRealTime();
 	const f32 MOVEMENT_SPEED = 5.f;
-	bool followMouse = true;
 
 	// Ignore all events which happened until now.
 	// Like mouse events triggered while we chose our driver.
