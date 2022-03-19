@@ -1,6 +1,6 @@
 /** Example 022 Material Viewer
 
-This example can be used to play around with material settings and watch the results.
+This example can be used to experiment with material settings and watch the results.
 Only the default non-shader materials are used in here.
 
 You have a node with a mesh, one dynamic light and global ambient light to play around with.
@@ -127,9 +127,8 @@ video::E_VERTEX_TYPE getVertexTypeForMaterialType(video::E_MATERIAL_TYPE materia
 }
 
 /*
-	Custom GUI-control to edit colorvalues.
+	Custom GUI-control to edit color values.
 */
-// Constructor
 CColorControl::CColorControl(gui::IGUIEnvironment* guiEnv, const core::position2d<s32> & pos, const wchar_t *text, IGUIElement* parent, s32 id)
 	: gui::IGUIElement(gui::EGUIET_ELEMENT, guiEnv, parent,id, core::rect< s32 >(pos, pos+core::dimension2d<s32>(80, 75)))
 	, DirtyFlag(true)
@@ -147,12 +146,13 @@ CColorControl::CColorControl(gui::IGUIEnvironment* guiEnv, const core::position2
 	IGUIStaticText * groupElement =	guiEnv->addStaticText (L"", rectControls, true, false, this, -1, false);
 	groupElement->setNotClipped(true);
 
-	guiEnv->addStaticText (text, core::rect<s32>(0,0,80,15), false, false, groupElement, -1, false);
+	s32 border=guiEnv->getSkin()->getSize(EGDS_TEXT_DISTANCE_X);
+	guiEnv->addStaticText(text, core::rect<s32>(border,border,80,15), false, false, groupElement, -1, true);
 
-	EditAlpha = addEditForNumbers(guiEnv, core::position2d<s32>(0,15), L"a", -1, groupElement );
-	EditRed = addEditForNumbers(guiEnv, core::position2d<s32>(0,30), L"r", -1, groupElement );
-	EditGreen = addEditForNumbers(guiEnv, core::position2d<s32>(0,45), L"g", -1, groupElement );
-	EditBlue = addEditForNumbers(guiEnv, core::position2d<s32>(0,60), L"b", -1, groupElement );
+	EditAlpha = addEditForNumbers(guiEnv, core::position2d<s32>(border,15), L"a", -1, groupElement );
+	EditRed = addEditForNumbers(guiEnv, core::position2d<s32>(border,30), L"r", -1, groupElement );
+	EditGreen = addEditForNumbers(guiEnv, core::position2d<s32>(border,45), L"g", -1, groupElement );
+	EditBlue = addEditForNumbers(guiEnv, core::position2d<s32>(border,60), L"b", -1, groupElement );
 
 	ColorStatic = guiEnv->addStaticText (L"", core::rect<s32>(60,15,80,75), true, false, groupElement, -1, true);
 
@@ -163,10 +163,9 @@ CColorControl::CColorControl(gui::IGUIEnvironment* guiEnv, const core::position2
 // event receiver
 bool CColorControl::OnEvent(const SEvent &event)
 {
-	if ( event.EventType != EET_GUI_EVENT )
-		return false;
-
-	if ( event.GUIEvent.Caller->getID() == ButtonSetId && event.GUIEvent.EventType == gui::EGET_BUTTON_CLICKED )
+	if ( event.EventType == EET_GUI_EVENT 
+		&& event.GUIEvent.Caller->getID() == ButtonSetId 
+		&& event.GUIEvent.EventType == gui::EGET_BUTTON_CLICKED )
 	{
 		Color = getColorFromEdits();
 		setEditsFromColor(Color);
@@ -188,8 +187,8 @@ gui::IGUIEditBox* CColorControl::addEditForNumbers(gui::IGUIEnvironment* guiEnv,
 {
 	using namespace gui;
 
-	core::rect< s32 > rect(pos, pos+core::dimension2d<s32>(10, 15));
-	guiEnv->addStaticText (text, rect, false, false, parent, -1, false);
+	core::recti rect(pos, pos+core::dimension2d<s32>(10, 15));
+	guiEnv->addStaticText(text, rect, false, false, parent, -1, false);
 	rect += core::position2d<s32>( 20, 0 );
 	rect.LowerRightCorner.X += 20;
 	gui::IGUIEditBox* edit = guiEnv->addEditBox(L"0", rect, true, parent, id);
@@ -203,33 +202,25 @@ video::SColor CColorControl::getColorFromEdits() const
 
 	if (EditAlpha)
 	{
-		u32 alpha = core::strtoul10(core::stringc(EditAlpha->getText()).c_str());
-		if (alpha > 255)
-			alpha = 255;
+		u32 alpha = core::min_(core::strtoul10(core::stringc(EditAlpha->getText()).c_str()), 255u);
 		col.setAlpha(alpha);
 	}
 
 	if (EditRed)
 	{
-		u32 red = core::strtoul10(core::stringc(EditRed->getText()).c_str());
-		if (red > 255)
-			red = 255;
+		u32 red = core::min_(core::strtoul10(core::stringc(EditRed->getText()).c_str()), 255u);
 		col.setRed(red);
 	}
 
 	if (EditGreen)
 	{
-		u32 green = core::strtoul10(core::stringc(EditGreen->getText()).c_str());
-		if (green > 255)
-			green = 255;
+		u32 green = core::min_(core::strtoul10(core::stringc(EditGreen->getText()).c_str()), 255u);
 		col.setGreen(green);
 	}
 
 	if (EditBlue)
 	{
-		u32 blue = core::strtoul10(core::stringc(EditBlue->getText()).c_str());
-		if (blue > 255)
-			blue = 255;
+		u32 blue = core::min_(core::strtoul10(core::stringc(EditBlue->getText()).c_str()), 255u);
 		col.setBlue(blue);
 	}
 
@@ -345,10 +336,9 @@ CTextureControl::CTextureControl(gui::IGUIEnvironment* guiEnv, video::IVideoDriv
 
 bool CTextureControl::OnEvent(const SEvent &event)
 {
-	if ( event.EventType != EET_GUI_EVENT )
-		return false;
-
-	if ( event.GUIEvent.Caller == ComboTexture && event.GUIEvent.EventType == gui::EGET_COMBO_BOX_CHANGED )
+	if ( event.EventType == EET_GUI_EVENT 
+		&& event.GUIEvent.Caller == ComboTexture 
+		&& event.GUIEvent.EventType == gui::EGET_COMBO_BOX_CHANGED )
 	{
 		DirtyFlag = true;
 	}
@@ -429,17 +419,16 @@ void CMaterialControl::init(scene::IMeshSceneNode* node, IrrlichtDevice * device
 
 	Driver = device->getVideoDriver ();
 	gui::IGUIEnvironment* guiEnv = device->getGUIEnvironment();
-	//scene::ISceneManager* smgr = device->getSceneManager();
 	const video::SMaterial & material = node->getMaterial(0);
 
 	s32 top = pos.Y;
 
 	// Description
-	guiEnv->addStaticText(description, core::rect<s32>(pos.X, top, pos.X+60, top+15), false, false, 0, -1, false);
+	guiEnv->addStaticText(description, core::rect<s32>(pos.X, top, pos.X+150, top+15), true, false, 0, -1, true);
 	top += 15;
 
 	// Control for material type
-	core::rect<s32> rectCombo(pos.X, top, 150, top+15);
+	core::rect<s32> rectCombo(pos.X, top, pos.X+150, top+15);
 	top += 15;
 	ComboMaterial = guiEnv->addComboBox (rectCombo);
 	for ( int i=0; i <= (int)video::EMT_ONETEXTURE_BLEND; ++i )
@@ -454,7 +443,7 @@ void CMaterialControl::init(scene::IMeshSceneNode* node, IrrlichtDevice * device
 	ButtonLighting = guiEnv->addButton (rectBtn, 0, -1, L"Lighting");
 	ButtonLighting->setIsPushButton(true);
 	ButtonLighting->setPressed(material.Lighting);
-	core::rect<s32> rectInfo( rectBtn.LowerRightCorner.X, rectBtn.UpperLeftCorner.Y, rectBtn.LowerRightCorner.X+40, rectBtn.UpperLeftCorner.Y+15 );
+	core::rect<s32> rectInfo( rectBtn.LowerRightCorner.X, rectBtn.UpperLeftCorner.Y, rectBtn.LowerRightCorner.X+50, rectBtn.UpperLeftCorner.Y+15 );
 	InfoLighting = guiEnv->addStaticText(L"", rectInfo, true, false );
 	InfoLighting->setTextAlignment(gui::EGUIA_CENTER, gui::EGUIA_CENTER );
 
@@ -464,12 +453,14 @@ void CMaterialControl::init(scene::IMeshSceneNode* node, IrrlichtDevice * device
 	TypicalColorsControl->setColorsToMaterialColors(material);
 
 	// Controls for selecting the material textures
-	guiEnv->addStaticText(L"Textures", core::rect<s32>(pos.X, top, pos.X+60, top+15), false, false, 0, -1, false);
+	guiEnv->addStaticText(L"Textures", core::rect<s32>(pos.X, top, pos.X+150, top+15), true, false, 0, -1, true);
 	top += 15;
 
-	for (irr::u32 i=0; i<irr::video::MATERIAL_MAX_TEXTURES; ++i)
+	// The default material types only use first 2 textures
+	irr::u32 maxTextures = core::min_(2u, irr::video::MATERIAL_MAX_TEXTURES);
+	for (irr::u32 i=0; i<maxTextures; ++i)
 	{
-		TextureControls[i] = new CTextureControl(guiEnv, Driver, core::position2di(pos.X, top), guiEnv->getRootGUIElement());
+		TextureControls.push_back(new CTextureControl(guiEnv, Driver, core::position2di(pos.X, top), guiEnv->getRootGUIElement()));
 		top += 15;
 	}
 
@@ -525,19 +516,19 @@ void CMaterialControl::update(scene::IMeshSceneNode* sceneNode, scene::IMeshScen
 
 	TypicalColorsControl->resetDirty();
 
-	for (irr::u32 i=0; i<irr::video::MATERIAL_MAX_TEXTURES; ++i)
+	for (irr::u32 i=0; i<TextureControls.size(); ++i)
 		TextureControls[i]->resetDirty();
 }
 
 void CMaterialControl::updateTextures()
 {
-	for (irr::u32 i=0; i<irr::video::MATERIAL_MAX_TEXTURES; ++i)
+	for (irr::u32 i=0; i<TextureControls.size(); ++i)
 		TextureControls[i]->updateTextures(Driver);
 }
 
 void CMaterialControl::selectTextures(const irr::core::stringw& name)
 {
-	for (irr::u32 i=0; i<irr::video::MATERIAL_MAX_TEXTURES; ++i)
+	for (irr::u32 i=0; i<TextureControls.size(); ++i)
 		TextureControls[i]->selectTextureByName(name);
 }
 
@@ -550,11 +541,11 @@ void CMaterialControl::updateMaterial(video::SMaterial & material)
 {
 	TypicalColorsControl->updateMaterialColors(material);
 	material.Lighting = ButtonLighting->isPressed();
-	for (irr::u32 i=0; i<irr::video::MATERIAL_MAX_TEXTURES; ++i)
+	for (irr::u32 i=0; i<TextureControls.size(); ++i)
 	{
 		if ( TextureControls[i]->isDirty() )
 		{
-			material.TextureLayer[i].Texture = Driver->getTexture( io::path(TextureControls[i]->getSelectedTextureName()) );
+			material.TextureLayer[i].Texture = Driver->findTexture( io::path(TextureControls[i]->getSelectedTextureName()) );
 		}
 	}
 }
@@ -568,7 +559,7 @@ void CLightNodeControl::init(scene::ILightSceneNode* node, gui::IGUIEnvironment*
 	if ( Initialized || !node || !guiEnv) // initializing twice or with invalid data not allowed
 		return;
 
-	guiEnv->addStaticText(description, core::rect<s32>(pos.X, pos.Y, pos.X+70, pos.Y+15), false, false, 0, -1, false);
+	guiEnv->addStaticText(description, core::rect<s32>(pos.X, pos.Y, pos.X+80, pos.Y+15), true, false, 0, -1, true);
 	TypicalColorsControl = new CTypicalColorsControl(guiEnv, core::position2d<s32>(pos.X, pos.Y+15), false, guiEnv->getRootGUIElement());
 	const video::SLight & lightData = node->getLightData();
 	TypicalColorsControl->setColorsToLightDataColors(lightData);
@@ -711,10 +702,14 @@ bool CApp::init(int argc, char *argv[])
 	defaultMaterial.Shininess = 20.f;
 
 	// add the nodes which are used to show the materials
+#if 1
 	SceneNode = smgr->addCubeSceneNode (30.0f, 0, -1,
 									   core::vector3df(0, 0, 0),
 									   core::vector3df(0.f, 45.f, 0.f),
 									   core::vector3df(1.0f, 1.0f, 1.0f));
+#else
+	SceneNode = smgr->addSphereSceneNode(30.f);
+#endif
 	SceneNode->getMaterial(0) = defaultMaterial;
 
 	const s32 controlsTop = 20;
@@ -749,8 +744,8 @@ bool CApp::init(int argc, char *argv[])
 
 
 	// Add a the mesh vertex color control
-	guiEnv->addStaticText(L"Mesh", core::rect<s32>(200, controlsTop, 270, controlsTop+15), false, false, 0, -1, false);
-	ControlVertexColors = new CColorControl( guiEnv, core::position2d<s32>(200, controlsTop+15), L"Vertex colors", guiEnv->getRootGUIElement());
+	guiEnv->addStaticText(L"Mesh", core::rect<s32>(440, controlsTop, 520, controlsTop+15), true, false, 0, -1, true);
+	ControlVertexColors = new CColorControl( guiEnv, core::position2d<s32>(440, controlsTop+15), L"Vertex colors", guiEnv->getRootGUIElement());
 	video::S3DVertex * vertices =  (video::S3DVertex *)SceneNode->getMesh()->getMeshBuffer(0)->getVertices();
 	if ( vertices )
 	{
@@ -769,8 +764,6 @@ bool CApp::init(int argc, char *argv[])
 */
 bool CApp::update()
 {
-	using namespace irr;
-
 	video::IVideoDriver* videoDriver =  Device->getVideoDriver();
 	if ( !Device->run() )
 		return false;
@@ -807,22 +800,30 @@ bool CApp::update()
 			GlobalAmbient->resetDirty();
 		}
 
-		// Let the user move the light around
 		const float zoomSpeed = 10.f * deltaTime;
 		const float rotationSpeed = 100.f * deltaTime;
-		if ( KeysPressed[KEY_PLUS] || KeysPressed[KEY_ADD])
-			ZoomOut(NodeLight, zoomSpeed);
-		if ( KeysPressed[KEY_MINUS] || KeysPressed[KEY_SUBTRACT])
-			ZoomOut(NodeLight, -zoomSpeed);
-		if ( KeysPressed[KEY_RIGHT])
-			RotateHorizontal(NodeLight, rotationSpeed);
-		if ( KeysPressed[KEY_LEFT])
-			RotateHorizontal(NodeLight, -rotationSpeed);
-		UpdateRotationAxis(NodeLight, LightRotationAxis);
-		if ( KeysPressed[KEY_UP])
-			RotateAroundAxis(NodeLight, rotationSpeed, LightRotationAxis);
-		if ( KeysPressed[KEY_DOWN])
-			RotateAroundAxis(NodeLight, -rotationSpeed, LightRotationAxis);
+
+		// Let the user move the light around
+		irr::gui::IGUIElement* focus=guiEnv->getFocus();	// some checks to prevent interfering with UI input
+		if ( !focus || focus == guiEnv->getRootGUIElement() 
+			|| focus->getType() == irr::gui::EGUIET_STATIC_TEXT
+			|| focus->getType() == irr::gui::EGUIET_BUTTON
+			)
+		{
+			if ( KeysPressed[KEY_PLUS] || KeysPressed[KEY_ADD])
+				ZoomOut(NodeLight, zoomSpeed);
+			if ( KeysPressed[KEY_MINUS] || KeysPressed[KEY_SUBTRACT])
+				ZoomOut(NodeLight, -zoomSpeed);
+			if ( KeysPressed[KEY_RIGHT])
+				RotateHorizontal(NodeLight, rotationSpeed);
+			if ( KeysPressed[KEY_LEFT])
+				RotateHorizontal(NodeLight, -rotationSpeed);
+			UpdateRotationAxis(NodeLight, LightRotationAxis);
+			if ( KeysPressed[KEY_UP])
+				RotateAroundAxis(NodeLight, rotationSpeed, LightRotationAxis);
+			if ( KeysPressed[KEY_DOWN])
+				RotateAroundAxis(NodeLight, -rotationSpeed, LightRotationAxis);
+		}
 
 		// Let the user move the camera around
 		if (MousePressed)

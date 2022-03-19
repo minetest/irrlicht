@@ -140,15 +140,12 @@ public:
 	CMaterialControl()
 	: Initialized(false), Driver(0)
 	, TypicalColorsControl(0), ButtonLighting(0), InfoLighting(0), ComboMaterial(0)
-	{
-		for (irr::u32 i=0; i<irr::video::MATERIAL_MAX_TEXTURES; ++i)
-			TextureControls[i] = 0;
-	}
+	{}
 
 	// Destructor
 	~CMaterialControl()
 	{
-		for (irr::u32 i=0; i<irr::video::MATERIAL_MAX_TEXTURES; ++i)
+		for (irr::u32 i=0; i<TextureControls.size(); ++i)
 		{
 			if (TextureControls[i] )
 				TextureControls[i]->drop();
@@ -177,7 +174,7 @@ protected:
 	irr::gui::IGUIButton * 		ButtonLighting;
 	irr::gui::IGUIStaticText* 	InfoLighting;
 	irr::gui::IGUIComboBox * 	ComboMaterial;
-	CTextureControl*			TextureControls[irr::video::MATERIAL_MAX_TEXTURES];
+	irr::core::array<CTextureControl*> TextureControls;
 };
 
 /*
