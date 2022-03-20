@@ -182,7 +182,7 @@ void CColorControl::setColor(const video::SColor& col)
 	setEditsFromColor(Color);
 }
 
-// Add a staticbox for a description + an editbox so users can enter numbers
+// Add a statictext for a description + an editbox so users can enter numbers
 gui::IGUIEditBox* CColorControl::addEditForNumbers(gui::IGUIEnvironment* guiEnv, const core::position2d<s32> & pos, const wchar_t *text, s32 id, gui::IGUIElement * parent)
 {
 	using namespace gui;
@@ -195,7 +195,7 @@ gui::IGUIEditBox* CColorControl::addEditForNumbers(gui::IGUIEnvironment* guiEnv,
 	return edit;
 }
 
-// Get the color value from the editfields
+// Get the color value from the editboxes
 video::SColor CColorControl::getColorFromEdits() const
 {
 	video::SColor col;
@@ -227,7 +227,7 @@ video::SColor CColorControl::getColorFromEdits() const
 	return col;
 }
 
-// Fill the editfields with the value for the given color
+// Fill the editboxes with a color value
 void CColorControl::setEditsFromColor(video::SColor col)
 {
 	DirtyFlag = true;
@@ -382,13 +382,15 @@ void CTextureControl::selectTextureByName(const irr::core::stringw& name)
 void CTextureControl::updateTextures(video::IVideoDriver * driver)
 {
 	s32 oldSelected = ComboTexture->getSelected();
-	s32 selectNew = -1;
 	core::stringw oldTextureName;
 	if ( oldSelected >= 0 )
 	{
 		oldTextureName = ComboTexture->getItem(oldSelected);
 	}
+
 	ComboTexture->clear();
+
+	s32 selectNew = -1;
 	for ( u32 i=0; i < driver->getTextureCount(); ++i )
 	{
 		video::ITexture * texture = driver->getTextureByIndex(i);
@@ -579,9 +581,7 @@ void CLightNodeControl::update(scene::ILightSceneNode* node)
 	Main application class
 */
 
-/*
-	Event handler
-*/
+// Event handler
 bool CApp::OnEvent(const SEvent &event)
 {
 	if (event.EventType == EET_GUI_EVENT)
@@ -609,7 +609,7 @@ bool CApp::OnEvent(const SEvent &event)
 
 			case gui::EGET_FILE_SELECTED:
 			{
-				// load the model file, selected in the file open dialog
+				// load the texture file, selected in the file open dialog
 				gui::IGUIFileOpenDialog* dialog =
 					(gui::IGUIFileOpenDialog*)event.GUIEvent.Caller;
 				loadTexture(io::path(dialog->getFileName()).c_str());
@@ -700,7 +700,7 @@ bool CApp::init(int argc, char *argv[])
 	// default material
 	video::SMaterial defaultMaterial;
 	defaultMaterial.Shininess = 20.f;
-
+	
 	// add the nodes which are used to show the materials
 #if 1
 	SceneNode = smgr->addCubeSceneNode (30.0f, 0, -1,
@@ -729,11 +729,18 @@ bool CApp::init(int argc, char *argv[])
 
 
 	// add one light
-	NodeLight = smgr->addLightSceneNode(0, core::vector3df(0, 0, -40),
+	const f32 lightRadius = 80.f;
+	NodeLight = smgr->addLightSceneNode(0, core::vector3df(0, 0, -70),
 											video::SColorf(1.0f, 1.0f, 1.0f),
-											35.0f);
+											lightRadius);
 	LightControl = new CLightNodeControl();
 	LightControl->init(NodeLight, guiEnv, core::position2d<s32>(550,controlsTop), L"Dynamic light" );
+
+#if 0	// enable to have some visual feedback for the light size
+	scene::IMeshSceneNode* lightRadiusNode = smgr->addSphereSceneNode(lightRadius, 64, NodeLight);
+	lightRadiusNode->getMaterial(0).Lighting = false;
+	lightRadiusNode->getMaterial(0).Wireframe = true;
+#endif
 
 	// one large cube around everything. That's mainly to make the light more obvious.
 	scene::IMeshSceneNode* backgroundCube = smgr->addCubeSceneNode (200.0f, 0, -1, core::vector3df(0, 0, 0),
@@ -769,8 +776,7 @@ bool CApp::update()
 		return false;
 
 	// Figure out delta time since last frame
-	ITimer * timer = Device->getTimer();
-	u32 newTick = timer->getRealTime();
+	u32 newTick = Device->getTimer()->getRealTime();
 	f32 deltaTime = RealTimeTick > 0 ? f32(newTick-RealTimeTick)/1000.f : 0.f;	// in seconds
 	RealTimeTick = newTick;
 
@@ -958,7 +964,7 @@ void CApp::createDefaultTextures(video::IVideoDriver * driver)
 	imageA8R8G8B8->drop();
 }
 
-// Load a texture and make sure nodes know it when more textures are available.
+// Load a texture and make sure UI knows it when more textures are available.
 void CApp::loadTexture(const io::path &name)
 {
 	Device->getVideoDriver()->getTexture(name);
@@ -1005,7 +1011,7 @@ void CApp::ZoomOut(irr::scene::ISceneNode* node, irr::f32 units)
 void CApp::UpdateRotationAxis(irr::scene::ISceneNode* node, irr::core::vector3df& axis)
 {
 	// Find a perpendicular axis to the x,z vector. If none found (vector straight up/down) continue to use the existing one.
-	core::vector3df pos(node->getPosition());
+	core::vector3df pos(node->getPosition());	
 	if ( !core::equals(pos.X, 0.f) || !core::equals(pos.Z, 0.f) )
 	{
 		axis.X = -pos.Z;
