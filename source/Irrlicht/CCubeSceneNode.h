@@ -7,6 +7,7 @@
 
 #include "IMeshSceneNode.h"
 #include "SMesh.h"
+#include "IGeometryCreator.h"
 
 namespace irr
 {
@@ -20,7 +21,8 @@ namespace scene
 		CCubeSceneNode(f32 size, ISceneNode* parent, ISceneManager* mgr, s32 id,
 			const core::vector3df& position = core::vector3df(0,0,0),
 			const core::vector3df& rotation = core::vector3df(0,0,0),
-			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f));
+			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f),
+			ECUBE_MESH_TYPE type=ECMT_1BUF_12VTX_NA);
 
 		virtual ~CCubeSceneNode();
 
@@ -84,6 +86,7 @@ namespace scene
 		IMesh* Mesh;
 		IShadowVolumeSceneNode* Shadow;
 		f32 Size;
+		ECUBE_MESH_TYPE MeshType;
 	};
 
 } // end namespace scene

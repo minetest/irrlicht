@@ -37,9 +37,10 @@ namespace scene
 //! constructor
 CCubeSceneNode::CCubeSceneNode(f32 size, ISceneNode* parent, ISceneManager* mgr,
 		s32 id, const core::vector3df& position,
-		const core::vector3df& rotation, const core::vector3df& scale)
+		const core::vector3df& rotation, const core::vector3df& scale,
+		ECUBE_MESH_TYPE type)
 	: IMeshSceneNode(parent, mgr, id, position, rotation, scale),
-	Mesh(0), Shadow(0), Size(size)
+	Mesh(0), Shadow(0), Size(size), MeshType(type)
 {
 	#ifdef _DEBUG
 	setDebugName("CCubeSceneNode");
@@ -62,7 +63,7 @@ void CCubeSceneNode::setSize()
 {
 	if (Mesh)
 		Mesh->drop();
-	Mesh = SceneManager->getGeometryCreator()->createCubeMesh(core::vector3df(Size));
+	Mesh = SceneManager->getGeometryCreator()->createCubeMesh(core::vector3df(Size), MeshType);
 }
 
 
@@ -135,7 +136,7 @@ const core::aabbox3d<f32>& CCubeSceneNode::getBoundingBox() const
 
 //! Removes a child from this scene node.
 //! Implemented here, to be able to remove the shadow properly, if there is one,
-//! or to remove attached childs.
+//! or to remove attached child.
 bool CCubeSceneNode::removeChild(ISceneNode* child)
 {
 	if (child && Shadow == child)
@@ -199,17 +200,20 @@ void CCubeSceneNode::serializeAttributes(io::IAttributes* out, io::SAttributeRea
 	ISceneNode::serializeAttributes(out, options);
 
 	out->addFloat("Size", Size);
+	out->addEnum("MeshType", (irr::s32)MeshType, CubeMeshTypeNames);
 }
 
 
 //! Reads attributes of the scene node.
 void CCubeSceneNode::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
 {
-	f32 newSize = in->getAttributeAsFloat("Size");
+	f32 newSize = in->getAttributeAsFloat("Size", Size);
+	ECUBE_MESH_TYPE newMeshType = (ECUBE_MESH_TYPE)in->getAttributeAsEnumeration("MeshType", CubeMeshTypeNames, (irr::s32)MeshType);
 	newSize = core::max_(newSize, 0.0001f);
-	if (newSize != Size)
+	if (newSize != Size || newMeshType != MeshType)
 	{
 		Size = newSize;
+		MeshType = newMeshType;
 		setSize();
 	}
 
@@ -226,7 +230,7 @@ ISceneNode* CCubeSceneNode::clone(ISceneNode* newParent, ISceneManager* newManag
 		newManager = SceneManager;
 
 	CCubeSceneNode* nb = new CCubeSceneNode(Size, newParent,
-		newManager, ID, RelativeTranslation);
+		newManager, ID, RelativeTranslation, RelativeRotation, RelativeScale, MeshType);
 
 	nb->cloneMembers(this, newManager);
 	nb->getMaterial(0) = getMaterial(0);

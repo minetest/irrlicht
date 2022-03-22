@@ -453,13 +453,15 @@ namespace scene
 		where the scene node will be placed.
 		\param rotation: Initial rotation of the scene node.
 		\param scale: Initial scale of the scene node.
+		\param type: Type of cube-mesh to create. Check ECUBE_MESH_TYPE documentation for more info
 		\return Pointer to the created test scene node. This
 		pointer should not be dropped. See IReferenceCounted::drop()
 		for more information. */
 		virtual IMeshSceneNode* addCubeSceneNode(f32 size=10.0f, ISceneNode* parent=0, s32 id=-1,
 			const core::vector3df& position = core::vector3df(0,0,0),
 			const core::vector3df& rotation = core::vector3df(0,0,0),
-			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f)) = 0;
+			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f),
+			ECUBE_MESH_TYPE type=ECMT_1BUF_12VTX_NA) = 0;
 
 		//! Adds a sphere scene node of the given radius and detail
 		/** \param radius: Radius of the sphere.

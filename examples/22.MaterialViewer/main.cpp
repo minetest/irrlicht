@@ -693,7 +693,7 @@ bool CApp::init(int argc, char *argv[])
 	subMenuFile->addItem(L"Quit", GUI_ID_QUIT);
 
 	// a static camera
-	Camera = smgr->addCameraSceneNode (0, core::vector3df(0, 40, -40),
+	Camera = smgr->addCameraSceneNode (0, core::vector3df(0, 30, -50),
 										core::vector3df(0, 10, 0),
 										-1);
 
@@ -706,11 +706,19 @@ bool CApp::init(int argc, char *argv[])
 	SceneNode = smgr->addCubeSceneNode (30.0f, 0, -1,
 									   core::vector3df(0, 0, 0),
 									   core::vector3df(0.f, 45.f, 0.f),
-									   core::vector3df(1.0f, 1.0f, 1.0f));
+									   core::vector3df(1.0f, 1.0f, 1.0f),
+									   scene::ECMT_1BUF_24VTX_NP);
+	// avoid wrong colored lines at cube-borders (uv's go from 0-1 currently, which does not work well with interpolation)
+	for ( int i=0; i < irr::video::MATERIAL_MAX_TEXTURES_USED; ++i)
+	{
+		defaultMaterial.TextureLayer[i].TextureWrapU = irr::video::ETC_CLAMP_TO_EDGE;	
+		defaultMaterial.TextureLayer[i].TextureWrapV = irr::video::ETC_CLAMP_TO_EDGE;
+	}
 #else
 	SceneNode = smgr->addSphereSceneNode(30.f);
 #endif
 	SceneNode->getMaterial(0) = defaultMaterial;
+	// SceneNode->setDebugDataVisible(scene::EDS_NORMALS);	// showing normals can sometimes be useful to understand what's going on
 
 	const s32 controlsTop = 20;
 	MeshMaterialControl = new CMaterialControl();
@@ -730,7 +738,7 @@ bool CApp::init(int argc, char *argv[])
 
 	// add one light
 	const f32 lightRadius = 80.f;
-	NodeLight = smgr->addLightSceneNode(0, core::vector3df(0, 0, -70),
+	NodeLight = smgr->addLightSceneNode(0, core::vector3df(0, 30, -70),
 											video::SColorf(1.0f, 1.0f, 1.0f),
 											lightRadius);
 	LightControl = new CLightNodeControl();

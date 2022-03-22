@@ -609,13 +609,14 @@ IVolumeLightSceneNode* CSceneManager::addVolumeLightSceneNode(
 //! the returned pointer must not be dropped.
 IMeshSceneNode* CSceneManager::addCubeSceneNode(f32 size, ISceneNode* parent,
 		s32 id, const core::vector3df& position,
-		const core::vector3df& rotation, const core::vector3df& scale)
+		const core::vector3df& rotation, const core::vector3df& scale,
+		ECUBE_MESH_TYPE type)
 {
 #ifdef _IRR_COMPILE_WITH_CUBE_SCENENODE_
 	if (!parent)
 		parent = this;
 
-	IMeshSceneNode* node = new CCubeSceneNode(size, parent, this, id, position, rotation, scale);
+	IMeshSceneNode* node = new CCubeSceneNode(size, parent, this, id, position, rotation, scale, type);
 	node->drop();
 
 	return node;

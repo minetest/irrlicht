@@ -140,6 +140,69 @@ IMesh* CGeometryCreator::createCubeMesh(const core::vector3df& size, ECUBE_MESH_
 			buffer->drop();
 		}
 	}
+	else if ( type == ECMT_1BUF_24VTX_NP )
+	{
+		SMeshBuffer* buffer = new SMeshBuffer();
+
+		// Create indices (pos, neg describes normal direction of front-face)
+		const u16 u[36] = {	0,2,1,    0,3,2,		// NEG_Z
+							4,7,6,    4,5,7,		// POS_X
+							8,10,11,  8,9,10,		// POS_Z
+							15,13,12, 15,14,13,		// NEG_X
+							19,17,16, 19,18,17,		// POS_Y
+							20,23,22, 20,22,21};	// NEG_Y
+
+		buffer->Indices.set_used(36);
+
+		for (u32 i=0; i<36; ++i)
+			buffer->Indices[i] = u[i];
+
+		// Create vertices
+		buffer->Vertices.reallocate(24);
+
+		buffer->Vertices.push_back(video::S3DVertex(0,0,0,  0, 0,-1, clr, 0, 1));	// 0
+		buffer->Vertices.push_back(video::S3DVertex(1,0,0,  0, 0,-1, clr, 1, 1));	// 1
+		buffer->Vertices.push_back(video::S3DVertex(1,1,0,  0, 0,-1, clr, 1, 0));	// 2
+		buffer->Vertices.push_back(video::S3DVertex(0,1,0,  0, 0,-1, clr, 0, 0));	// 3
+
+		buffer->Vertices.push_back(video::S3DVertex(1,0,0,  1, 0, 0, clr, 1, 1));	// 4 (1)
+		buffer->Vertices.push_back(video::S3DVertex(1,1,0,  1, 0, 0, clr, 1, 0));	// 5 (2)
+		buffer->Vertices.push_back(video::S3DVertex(1,0,1,  1, 0, 0, clr, 0, 1));	// 6 (4)
+		buffer->Vertices.push_back(video::S3DVertex(1,1,1,  1, 0, 0, clr, 0, 0));	// 7 (5)
+
+		buffer->Vertices.push_back(video::S3DVertex(1,0,1,  0, 0, 1, clr, 0, 1));	// 8 (4)
+		buffer->Vertices.push_back(video::S3DVertex(1,1,1,  0, 0, 1, clr, 0, 0));	// 9 (5)
+		buffer->Vertices.push_back(video::S3DVertex(0,1,1,  0, 0, 1, clr, 1, 0));	// 10 (6)
+		buffer->Vertices.push_back(video::S3DVertex(0,0,1,  0, 0, 1, clr, 1, 1));	// 11 (7)
+
+		buffer->Vertices.push_back(video::S3DVertex(0,0,0, -1, 0, 0, clr, 0, 1));	// 12 (0)
+		buffer->Vertices.push_back(video::S3DVertex(0,1,0, -1, 0, 0, clr, 0, 0));	// 13 (3)
+		buffer->Vertices.push_back(video::S3DVertex(0,1,1, -1, 0, 0, clr, 1, 0));	// 14 (6)
+		buffer->Vertices.push_back(video::S3DVertex(0,0,1, -1, 0, 0, clr, 1, 1));	// 15 (7)
+
+		buffer->Vertices.push_back(video::S3DVertex(1,1,0,  0, 1, 0, clr, 1, 0));	// 16 (2)
+		buffer->Vertices.push_back(video::S3DVertex(1,1,1,  0, 1, 0, clr, 0, 0));	// 17 (5)
+		buffer->Vertices.push_back(video::S3DVertex(0,1,1,  0, 1, 0, clr, 0, 1));	// 18 (8)
+		buffer->Vertices.push_back(video::S3DVertex(0,1,0,  0, 1, 0, clr, 1, 1));	// 19 (9)
+
+		buffer->Vertices.push_back(video::S3DVertex(0,0,0,  0,-1, 0, clr, 0, 1));	// 20 (0)
+		buffer->Vertices.push_back(video::S3DVertex(0,0,1,  0,-1, 0, clr, 1, 1));	// 21 (7)
+		buffer->Vertices.push_back(video::S3DVertex(1,0,1,  0,-1, 0, clr, 1, 0));	// 22 (10)
+		buffer->Vertices.push_back(video::S3DVertex(1,0,0,  0,-1, 0, clr, 0, 0));	// 23 (11)
+
+		// Recalculate bounding box and set cube size
+		buffer->BoundingBox.reset(0,0,0);
+
+		for (u32 i=0; i<24; ++i)
+		{
+			buffer->Vertices[i].Pos -= core::vector3df(0.5f, 0.5f, 0.5f);
+			buffer->Vertices[i].Pos *= size;
+			buffer->BoundingBox.addInternalPoint(buffer->Vertices[i].Pos);
+		}
+
+		mesh->addMeshBuffer(buffer);
+		buffer->drop();
+	}
 
 	mesh->recalculateBoundingBox();
 	return mesh;
