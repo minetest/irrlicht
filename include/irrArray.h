@@ -234,9 +234,10 @@ public:
 	//! Set (copy) data from given memory block
 	/** \param newData data to set, must have newSize elements
 	\param newSize Amount of elements in newData
-	\param canShrink When true we reallocate the array even it can shrink. 
-	May reduce memory usage, but call is more whenever size changes.
 	\param newDataIsSorted Info if you pass sorted/unsorted data
+	\param canShrink Specifies whether the array is reallocated even if
+	enough space is available. Setting this flag to false can speed up
+	array usage, but may use more memory than required by the data.
 	*/
 	void set_data(const T* newData, u32 newSize, bool newDataIsSorted=false, bool canShrink=false)
 	{
