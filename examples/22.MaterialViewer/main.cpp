@@ -569,8 +569,10 @@ void CLightNodeControl::init(scene::ILightSceneNode* node, gui::IGUIEnvironment*
 	if ( Initialized || !node || !guiEnv) // initializing twice or with invalid data not allowed
 		return;
 
-	guiEnv->addStaticText(description, core::rect<s32>(pos.X, pos.Y, pos.X+80, pos.Y+15), true, false, 0, -1, true);
+	gui::IGUIStaticText* st = guiEnv->addStaticText(description, core::rect<s32>(pos.X, pos.Y, pos.X+80, pos.Y+15), true, false, 0, -1, true);
+	st->setAlignment(irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_UPPERLEFT, irr::gui::EGUIA_UPPERLEFT);
 	TypicalColorsControl = new CTypicalColorsControl(guiEnv, core::position2d<s32>(pos.X, pos.Y+15), false, guiEnv->getRootGUIElement());
+	TypicalColorsControl->setAlignment(irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_UPPERLEFT, irr::gui::EGUIA_UPPERLEFT);
 	const video::SLight & lightData = node->getLightData();
 	TypicalColorsControl->setColorsToLightDataColors(lightData);
 	Initialized = true;
@@ -722,7 +724,7 @@ bool CApp::init(int argc, char *argv[])
 
 	// a static camera
 	Camera = smgr->addCameraSceneNode (0, core::vector3df(0, 30, -50),
-										core::vector3df(0, 10, 0),
+										core::vector3df(0, 0, 0),
 										-1);
 
 	setActiveMeshNodeType(ENT_CUBE);
@@ -757,16 +759,20 @@ bool CApp::init(int argc, char *argv[])
 
 
 	// Add a the mesh UI controls
-	guiEnv->addStaticText(L"Mesh", core::rect<s32>(440, controlsTop, 520, controlsTop+15), true, false, 0, -1, true);
+	gui::IGUIStaticText* stMesh = guiEnv->addStaticText(L"Mesh", core::rect<s32>(440, controlsTop, 520, controlsTop+15), true, false, 0, -1, true);
+	stMesh->setAlignment(irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_UPPERLEFT, irr::gui::EGUIA_UPPERLEFT);
 	ComboMeshType = guiEnv->addComboBox(core::rect<s32>(440, controlsTop+16, 520, controlsTop+30), 0, -1);
+	ComboMeshType->setAlignment(irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_UPPERLEFT, irr::gui::EGUIA_UPPERLEFT);
 	ComboMeshType->addItem(L"cube");
 	ComboMeshType->addItem(L"sphere");
 	ControlVertexColors = new CColorControl( guiEnv, core::position2d<s32>(440, controlsTop+30), L"Vertex colors", guiEnv->getRootGUIElement());
+	ControlVertexColors->setAlignment(irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_UPPERLEFT, irr::gui::EGUIA_UPPERLEFT);
 	ControlVertexColors->setColor(irr::video::SColor(255,255,255,255));
 
 	// Add a control for ambient light
 	GlobalAmbient = new CColorControl( guiEnv, core::position2d<s32>(550, 300), L"Global ambient", guiEnv->getRootGUIElement());
 	GlobalAmbient->setColor( smgr->getAmbientLight().toSColor() );
+	GlobalAmbient->setAlignment(irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_UPPERLEFT, irr::gui::EGUIA_UPPERLEFT);
 
 	return true;
 }
@@ -1044,9 +1050,10 @@ void CApp::setActiveMeshNodeType(ENodeType nodeType)
 	defaultMaterial.Shininess = 20.f;
 	
 	// add the nodes which are used to show the materials
+	const irr::f32 size = 35.f;
 	if ( nodeType == ENT_CUBE)
 	{
-		SceneNode = smgr->addCubeSceneNode (30.0f, 0, -1,
+		SceneNode = smgr->addCubeSceneNode (size, 0, -1,
 										   core::vector3df(0, 0, 0),
 										   core::vector3df(0.f, 45.f, 0.f),
 										   core::vector3df(1.0f, 1.0f, 1.0f),
@@ -1060,7 +1067,7 @@ void CApp::setActiveMeshNodeType(ENodeType nodeType)
 	}
 	else
 	{
-		SceneNode = smgr->addSphereSceneNode(30.f);
+		SceneNode = smgr->addSphereSceneNode(size*0.5f);
 	}
 	SceneNode->getMaterial(0) = defaultMaterial;
 	// SceneNode->setDebugDataVisible(scene::EDS_NORMALS);	// showing normals can sometimes be useful to understand what's going on
