@@ -110,6 +110,12 @@ public:
 	// Change active selectionbased on the texture name
 	void selectTextureByName(const irr::core::stringw& name);
 
+	// Set dirty flag (node will update texture)
+	void setDirty()
+	{
+		DirtyFlag = true;
+	}
+
 	// Reset the dirty flag
 	void resetDirty()
 	{
@@ -154,7 +160,9 @@ public:
 			TypicalColorsControl->drop();
 	}
 
-	void init(irr::scene::IMeshSceneNode* node, irr::IrrlichtDevice * device, const irr::core::position2d<irr::s32> & pos, const wchar_t * description);
+	void init(irr::IrrlichtDevice * device, const irr::core::position2d<irr::s32> & pos, const wchar_t * description);
+	
+	void setMaterial(const irr::video::SMaterial & material);
 
 	void update(irr::scene::IMeshSceneNode* sceneNode, irr::scene::IMeshSceneNode* sceneNode2T, irr::scene::IMeshSceneNode* sceneNodeTangents);
 
@@ -239,6 +247,7 @@ public:
 	, LightRotationAxis(irr::core::vector3df(1,0,0))
 	, MeshMaterialControl(0)
 	, LightControl(0)
+	, ComboMeshType(0)
 	, ControlVertexColors(0)
 	, GlobalAmbient(0)
 	, MousePressed(false)
@@ -290,6 +299,14 @@ protected:
 	void ZoomOut(irr::scene::ISceneNode* node, irr::f32 units);
 	void UpdateRotationAxis(irr::scene::ISceneNode* node, irr::core::vector3df& axis);
 
+	enum ENodeType
+	{
+		ENT_CUBE,
+		ENT_SPHERE
+	};
+	void setActiveMeshNodeType(ENodeType nodeType);
+
+	irr::scene::IMeshSceneNode* getVisibleMeshNode() const;
 
 private:
 	SConfig	Config;
@@ -306,6 +323,7 @@ private:
 	irr::core::vector3df LightRotationAxis;
 	CMaterialControl*	MeshMaterialControl;
 	CLightNodeControl*	LightControl;
+	irr::gui::IGUIComboBox* ComboMeshType;
 	CColorControl*	ControlVertexColors;
 	CColorControl*	GlobalAmbient;
 	bool KeysPressed[irr::KEY_KEY_CODES_COUNT];

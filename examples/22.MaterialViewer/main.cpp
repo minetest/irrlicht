@@ -9,8 +9,7 @@ You can move the camera while left-mouse button is clicked.
 */
 
 // TODO: Should be possible to set all material values by the GUI.
-//		 For now just change the defaultMaterial in CApp::init for the rest.
-// TODO: Allow users to switch between a sphere and a box mesh.
+//		 For now just change the defaultMaterial in CApp::setActiveMeshNodeType for the rest.
 
 #include <irrlicht.h>
 #include "driverChoice.h"
@@ -414,14 +413,13 @@ void CTextureControl::updateTextures(video::IVideoDriver * driver)
 /*
 	Control which allows setting some of the material values for a meshscenenode
 */
-void CMaterialControl::init(scene::IMeshSceneNode* node, IrrlichtDevice * device, const core::position2d<s32> & pos, const wchar_t * description)
+void CMaterialControl::init(IrrlichtDevice * device, const core::position2d<s32> & pos, const wchar_t * description)
 {
-	if ( Initialized || !node || !device) // initializing twice or with invalid data not allowed
+	if ( Initialized || !device) // initializing twice or with invalid data not allowed
 		return;
 
 	Driver = device->getVideoDriver ();
 	gui::IGUIEnvironment* guiEnv = device->getGUIEnvironment();
-	const video::SMaterial & material = node->getMaterial(0);
 
 	s32 top = pos.Y;
 
@@ -437,14 +435,13 @@ void CMaterialControl::init(scene::IMeshSceneNode* node, IrrlichtDevice * device
 	{
 		ComboMaterial->addItem( core::stringw(video::sBuiltInMaterialTypeNames[i]).c_str() );
 	}
-	ComboMaterial->setSelected( (s32)material.MaterialType );
+	ComboMaterial->setSelected(0);
 
 	// Control to enable/disabling material lighting
 	core::rect<s32> rectBtn(core::position2d<s32>(pos.X, top), core::dimension2d<s32>(100, 15));
 	top += 15;
 	ButtonLighting = guiEnv->addButton (rectBtn, 0, -1, L"Lighting");
 	ButtonLighting->setIsPushButton(true);
-	ButtonLighting->setPressed(material.Lighting);
 	core::rect<s32> rectInfo( rectBtn.LowerRightCorner.X, rectBtn.UpperLeftCorner.Y, rectBtn.LowerRightCorner.X+50, rectBtn.UpperLeftCorner.Y+15 );
 	InfoLighting = guiEnv->addStaticText(L"", rectInfo, true, false );
 	InfoLighting->setTextAlignment(gui::EGUIA_CENTER, gui::EGUIA_CENTER );
@@ -452,7 +449,6 @@ void CMaterialControl::init(scene::IMeshSceneNode* node, IrrlichtDevice * device
 	// Controls for colors
 	TypicalColorsControl = new CTypicalColorsControl(guiEnv, core::position2d<s32>(pos.X, top), true, guiEnv->getRootGUIElement());
 	top += 300;
-	TypicalColorsControl->setColorsToMaterialColors(material);
 
 	// Controls for selecting the material textures
 	guiEnv->addStaticText(L"Textures", core::rect<s32>(pos.X, top, pos.X+150, top+15), true, false, 0, -1, true);
@@ -467,6 +463,18 @@ void CMaterialControl::init(scene::IMeshSceneNode* node, IrrlichtDevice * device
 	}
 
 	Initialized = true;
+}
+
+void CMaterialControl::setMaterial(const irr::video::SMaterial & material)
+{
+	if (ComboMaterial)
+		ComboMaterial->setSelected( (s32)material.MaterialType );
+	if (ButtonLighting)
+		ButtonLighting->setPressed(material.Lighting);
+	if (TypicalColorsControl) 
+		TypicalColorsControl->setColorsToMaterialColors(material);
+	for (irr::u32 i=0; i<TextureControls.size(); ++i)
+		TextureControls[i]->setDirty();
 }
 
 void CMaterialControl::update(scene::IMeshSceneNode* sceneNode, scene::IMeshSceneNode* sceneNode2T, scene::IMeshSceneNode* sceneNodeTangents)
@@ -616,6 +624,26 @@ bool CApp::OnEvent(const SEvent &event)
 			}
 			break;
 
+			case gui::EGET_COMBO_BOX_CHANGED:
+				if (event.GUIEvent.Caller == ComboMeshType )
+				{
+					irr::scene::IMeshSceneNode* currentNode = getVisibleMeshNode();
+					if (currentNode)
+					{
+						// ensure next mesh will get same color and material settings
+						if ( ControlVertexColors )
+						{
+							video::S3DVertex * vertices =  (video::S3DVertex *)currentNode->getMesh()->getMeshBuffer(0)->getVertices();
+							ControlVertexColors->setColor(vertices[0].Color);
+						}
+						if ( MeshMaterialControl )
+							MeshMaterialControl->setMaterial(currentNode->getMaterial(0));
+					}
+					setActiveMeshNodeType((ENodeType)ComboMeshType->getSelected());
+					return true;
+				}
+			break;
+
 			default:
 			break;
 		}
@@ -697,43 +725,13 @@ bool CApp::init(int argc, char *argv[])
 										core::vector3df(0, 10, 0),
 										-1);
 
-	// default material
-	video::SMaterial defaultMaterial;
-	defaultMaterial.Shininess = 20.f;
-	
-	// add the nodes which are used to show the materials
-#if 1
-	SceneNode = smgr->addCubeSceneNode (30.0f, 0, -1,
-									   core::vector3df(0, 0, 0),
-									   core::vector3df(0.f, 45.f, 0.f),
-									   core::vector3df(1.0f, 1.0f, 1.0f),
-									   scene::ECMT_1BUF_24VTX_NP);
-	// avoid wrong colored lines at cube-borders (uv's go from 0-1 currently, which does not work well with interpolation)
-	for ( int i=0; i < irr::video::MATERIAL_MAX_TEXTURES_USED; ++i)
-	{
-		defaultMaterial.TextureLayer[i].TextureWrapU = irr::video::ETC_CLAMP_TO_EDGE;	
-		defaultMaterial.TextureLayer[i].TextureWrapV = irr::video::ETC_CLAMP_TO_EDGE;
-	}
-#else
-	SceneNode = smgr->addSphereSceneNode(30.f);
-#endif
-	SceneNode->getMaterial(0) = defaultMaterial;
-	// SceneNode->setDebugDataVisible(scene::EDS_NORMALS);	// showing normals can sometimes be useful to understand what's going on
+	setActiveMeshNodeType(ENT_CUBE);
 
 	const s32 controlsTop = 20;
 	MeshMaterialControl = new CMaterialControl();
-	MeshMaterialControl->init( SceneNode, Device, core::position2d<s32>(10,controlsTop), L"Material" );
+	MeshMaterialControl->init( Device, core::position2d<s32>(10,controlsTop), L"Material");
+	MeshMaterialControl->setMaterial(SceneNode->getMaterial(0));
 	MeshMaterialControl->selectTextures(core::stringw("CARO_A8R8G8B8"));	// set a useful default texture
-
-	// create nodes with other vertex types
-	scene::IMesh * mesh2T = MeshManipulator->createMeshWith2TCoords(SceneNode->getMesh());
-	SceneNode2T = smgr->addMeshSceneNode(mesh2T, 0, -1, SceneNode->getPosition(), SceneNode->getRotation(), SceneNode->getScale() );
-	mesh2T->drop();
-
-	scene::IMesh * meshTangents = MeshManipulator->createMeshWithTangents(SceneNode->getMesh(), false, false, false);
-	SceneNodeTangents = smgr->addMeshSceneNode(meshTangents, 0, -1
-										, SceneNode->getPosition(), SceneNode->getRotation(), SceneNode->getScale() );
-	meshTangents->drop();
 
 
 	// add one light
@@ -758,14 +756,13 @@ bool CApp::init(int argc, char *argv[])
 	backgroundCube->getMaterial(0).EmissiveColor.set(255,50,50,50);	// we keep some self lighting to keep texts visible
 
 
-	// Add a the mesh vertex color control
+	// Add a the mesh UI controls
 	guiEnv->addStaticText(L"Mesh", core::rect<s32>(440, controlsTop, 520, controlsTop+15), true, false, 0, -1, true);
-	ControlVertexColors = new CColorControl( guiEnv, core::position2d<s32>(440, controlsTop+15), L"Vertex colors", guiEnv->getRootGUIElement());
-	video::S3DVertex * vertices =  (video::S3DVertex *)SceneNode->getMesh()->getMeshBuffer(0)->getVertices();
-	if ( vertices )
-	{
-		ControlVertexColors->setColor(vertices[0].Color);
-	}
+	ComboMeshType = guiEnv->addComboBox(core::rect<s32>(440, controlsTop+16, 520, controlsTop+30), 0, -1);
+	ComboMeshType->addItem(L"cube");
+	ComboMeshType->addItem(L"sphere");
+	ControlVertexColors = new CColorControl( guiEnv, core::position2d<s32>(440, controlsTop+30), L"Vertex colors", guiEnv->getRootGUIElement());
+	ControlVertexColors->setColor(irr::video::SColor(255,255,255,255));
 
 	// Add a control for ambient light
 	GlobalAmbient = new CColorControl( guiEnv, core::position2d<s32>(550, 300), L"Global ambient", guiEnv->getRootGUIElement());
@@ -1026,6 +1023,68 @@ void CApp::UpdateRotationAxis(irr::scene::ISceneNode* node, irr::core::vector3df
 		axis.Z = pos.X;
 		axis.normalize();
 	}
+}
+
+void CApp::setActiveMeshNodeType(ENodeType nodeType)
+{
+	scene::ISceneManager* smgr = Device->getSceneManager();
+
+	if ( SceneNode )
+		smgr->addToDeletionQueue(SceneNode);
+	SceneNode = nullptr;
+	if ( SceneNode2T )
+		smgr->addToDeletionQueue(SceneNode2T);
+	SceneNode2T = nullptr;
+	if ( SceneNodeTangents )
+		smgr->addToDeletionQueue(SceneNodeTangents);
+	SceneNodeTangents = nullptr;
+
+	// default material
+	video::SMaterial defaultMaterial;
+	defaultMaterial.Shininess = 20.f;
+	
+	// add the nodes which are used to show the materials
+	if ( nodeType == ENT_CUBE)
+	{
+		SceneNode = smgr->addCubeSceneNode (30.0f, 0, -1,
+										   core::vector3df(0, 0, 0),
+										   core::vector3df(0.f, 45.f, 0.f),
+										   core::vector3df(1.0f, 1.0f, 1.0f),
+										   scene::ECMT_1BUF_24VTX_NP);
+		// avoid wrong colored lines at cube-borders (uv's go from 0-1 currently, which does not work well with interpolation)
+		for ( u32 i=0; i < irr::video::MATERIAL_MAX_TEXTURES_USED; ++i)
+		{
+			defaultMaterial.TextureLayer[i].TextureWrapU = irr::video::ETC_CLAMP_TO_EDGE;	
+			defaultMaterial.TextureLayer[i].TextureWrapV = irr::video::ETC_CLAMP_TO_EDGE;
+		}
+	}
+	else
+	{
+		SceneNode = smgr->addSphereSceneNode(30.f);
+	}
+	SceneNode->getMaterial(0) = defaultMaterial;
+	// SceneNode->setDebugDataVisible(scene::EDS_NORMALS);	// showing normals can sometimes be useful to understand what's going on
+
+	// create nodes with other vertex types
+	scene::IMesh * mesh2T = MeshManipulator->createMeshWith2TCoords(SceneNode->getMesh());
+	SceneNode2T = smgr->addMeshSceneNode(mesh2T, 0, -1, SceneNode->getPosition(), SceneNode->getRotation(), SceneNode->getScale() );
+	mesh2T->drop();
+
+	scene::IMesh * meshTangents = MeshManipulator->createMeshWithTangents(SceneNode->getMesh(), false, false, false);
+	SceneNodeTangents = smgr->addMeshSceneNode(meshTangents, 0, -1
+										, SceneNode->getPosition(), SceneNode->getRotation(), SceneNode->getScale() );
+	meshTangents->drop();
+}
+
+irr::scene::IMeshSceneNode* CApp::getVisibleMeshNode() const
+{
+	if ( SceneNode && SceneNode->isVisible() )
+		return SceneNode;
+	if ( SceneNode2T && SceneNode2T->isVisible() )
+		return SceneNode2T;
+	if ( SceneNodeTangents && SceneNodeTangents->isVisible() )
+		return SceneNodeTangents;
+	return nullptr;
 }
 
 /*
