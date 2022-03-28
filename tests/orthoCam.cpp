@@ -96,7 +96,7 @@ bool orthoCam(void)
 //	passed &= testOrthoCam(video::EDT_SOFTWARE);
 	passed &= testOrthoCam(video::EDT_BURNINGSVIDEO);
 	passed &= testOrthoCam(video::EDT_DIRECT3D9);
-
+	SLOW_SWITCH;
 	// TODO: not sure if burnings could work? Currently it doesn't.
 	passed &= testOrthoStencil(video::EDT_OPENGL);
 	passed &= testOrthoStencil(video::EDT_DIRECT3D9);
