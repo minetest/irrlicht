@@ -125,6 +125,10 @@ static bool testShotsOfShots(video::E_DRIVER_TYPE type)
 		name += irr::core::stringc((int)aa);
 		name += ".png";
 		result = takeScreenshotAndCompareAgainstReference(driver, name.c_str());
+		if ( !result )
+		{
+			logTestString("driver color format: %s\n", video::ColorFormatNames[driver->getColorFormat()]);
+		}
 	}
 	else
 	{
