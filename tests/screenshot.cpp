@@ -117,7 +117,7 @@ static bool testShotsOfShots(video::E_DRIVER_TYPE type)
 
 		driver->beginScene(video::ECBF_COLOR | video::ECBF_DEPTH, video::SColor(255,100,101,140));
 		drawSomeStuff(driver);
-		driver->draw2DImage(screenshot, core::recti(0, 30, 80, 90), core::recti(screenshot->getSize()), 0, 0, 0);
+		driver->draw2DImage(screenshot, core::recti(0, 30, 80, 90), core::recti(screenshot->getOriginalSize()), 0, 0, 0);
 		driver->endScene();
 		img->drop();
 
