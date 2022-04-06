@@ -707,6 +707,7 @@ namespace video
 		bool checkPrimitiveCount(u32 prmcnt) const;
 
 		bool checkImage(const core::array<IImage*>& image) const;
+		bool checkImage(ECOLOR_FORMAT format, const core::dimension2du& size) const;
 
 		// adds a material renderer and drops it afterwards. To be used for internal creation
 		s32 addAndDropMaterialRenderer(IMaterialRenderer* m);
