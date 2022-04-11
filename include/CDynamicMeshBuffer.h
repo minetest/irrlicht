@@ -114,6 +114,12 @@ namespace scene
 			return PrimitiveType;
 		}
 
+		//! Returns type of the class implementing the IMeshBuffer
+		virtual EMESH_BUFFER_TYPE getType() const  IRR_OVERRIDE
+		{
+			return EMBT_DYNAMIC;
+		}
+
 		video::SMaterial Material;
 		core::aabbox3d<f32> BoundingBox;
 		//! Primitive type used for rendering (triangles, lines, ...)

@@ -286,6 +286,17 @@ namespace scene
 		/** This shouldn't be used for anything outside the VideoDriver. */
 		virtual u32 getChangedID_Index() const IRR_OVERRIDE {return ChangedID_Index;}
 
+		//! Returns type of the class implementing the IMeshBuffer
+		virtual EMESH_BUFFER_TYPE getType() const  IRR_OVERRIDE
+		{
+			return getTypeT();
+		}
+
+		//! Returns type of the class implementing the IMeshBuffer for template specialization
+		// Minor note: Some compilers (VS) allow directly specializating the virtual function,
+		// but this will fail on other compilers (GCC).
+		EMESH_BUFFER_TYPE getTypeT() const;
+
 		u32 ChangedID_Vertex;
 		u32 ChangedID_Index;
 
@@ -311,6 +322,25 @@ namespace scene
 	typedef CMeshBuffer<video::S3DVertex2TCoords> SMeshBufferLightMap;
 	//! Meshbuffer with vertices having tangents stored, e.g. for normal mapping
 	typedef CMeshBuffer<video::S3DVertexTangents> SMeshBufferTangents;
+
+	//! partial specialization to return types
+	template <>
+	inline EMESH_BUFFER_TYPE CMeshBuffer<video::S3DVertex>::getTypeT() const
+	{
+		return EMBT_STANDARD;
+	}
+	template <>
+	inline EMESH_BUFFER_TYPE CMeshBuffer<video::S3DVertex2TCoords>::getTypeT() const
+	{
+		return EMBT_LIGHTMAP;
+	}
+	template <>
+	inline EMESH_BUFFER_TYPE CMeshBuffer<video::S3DVertexTangents>::getTypeT() const
+	{
+		return EMBT_TANGENTS;
+	}
+
+
 } // end namespace scene
 } // end namespace irr
 

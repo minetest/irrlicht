@@ -383,6 +383,12 @@ struct SSkinMeshBuffer : public IMeshBuffer
 
 	virtual u32 getChangedID_Index() const IRR_OVERRIDE {return ChangedID_Index;}
 
+	//! Returns type of the class implementing the IMeshBuffer
+	virtual EMESH_BUFFER_TYPE getType() const  IRR_OVERRIDE
+	{
+		return EMBT_SKIN;
+	}
+
 	//! Call this after changing the positions of any vertex.
 	void boundingBoxNeedsRecalculated(void) { BoundingBoxNeedsRecalculated = true; }
 

@@ -12,6 +12,7 @@
 #include "SVertexIndex.h"
 #include "EHardwareBufferFlags.h"
 #include "EPrimitiveTypes.h"
+#include "EMeshBufferTypes.h"
 
 namespace irr
 {
@@ -175,6 +176,14 @@ namespace scene
 			}
 			return 0;
 		}
+
+		//! Returns type of the class implementing the IMeshBuffer
+		/** \return The class type of this meshbuffer. */
+		virtual EMESH_BUFFER_TYPE getType() const
+		{
+			return EMBT_UNKNOWN;
+		}
+
 
 	};
 
