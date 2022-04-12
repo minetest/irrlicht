@@ -16,16 +16,16 @@ namespace scene
 	of simple numbers (easier to add external classes). */
 	enum EMESH_BUFFER_TYPE
 	{
-		//! SMeshBuffer
+		//! SMeshBuffer (16 bit buffers)
 		EMBT_STANDARD = MAKE_IRR_ID('s','t','a','n'),
 
-		//! SMeshBufferLightMap
+		//! SMeshBufferLightMap (16 bit buffers)
 		EMBT_LIGHTMAP = MAKE_IRR_ID('l','i','g','h'),
 
-		//! SMeshBufferTangents
+		//! SMeshBufferTangents (16 bit buffers)
 		EMBT_TANGENTS = MAKE_IRR_ID('t','a','n','g'),
 
-		//! CDynamicMeshBuffer
+		//! CDynamicMeshBuffer (16 or 32 bit buffers)
 		EMBT_DYNAMIC  = MAKE_IRR_ID('d','y','n','a'),
 
 		// SSharedMeshBuffer

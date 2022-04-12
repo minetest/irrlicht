@@ -72,11 +72,17 @@ namespace scene
 		virtual video::E_INDEX_TYPE getIndexType() const =0;
 
 		//! Get access to indices.
-		/** \return Pointer to indices array. */
+		/** Note: For historical reasons data pointer is of type u16*, but
+		for an index type of EIT_32BIT the index data is using an u32 array
+		and therefore needs a cast to u32*.
+		\return Pointer to indices array. */
 		virtual const u16* getIndices() const = 0;
 
 		//! Get access to indices.
-		/** \return Pointer to indices array. */
+		/** Note: For historical reasons data pointer is of type u16*, but
+		for an index type of EIT_32BIT the index data is using an u32 array
+		and therefore needs a cast to u32*.
+		\return Pointer to indices array. */
 		virtual u16* getIndices() = 0;
 
 		//! Get amount of indices in this meshbuffer.

@@ -14,7 +14,7 @@ namespace irr
 {
 namespace scene
 {
-
+	//! Implementation of the IMeshBuffer interface for which can work with 16 and 32 bit indices as well as different vertex types
 	class CDynamicMeshBuffer: public IDynamicMeshBuffer
 	{
 	public:

@@ -12,7 +12,7 @@ namespace irr
 {
 namespace scene
 {
-	//! Template implementation of the IMeshBuffer interface
+	//! Template implementation of the IMeshBuffer interface for 16-bit buffers
 	template <class T>
 	class CMeshBuffer : public IMeshBuffer
 	{
