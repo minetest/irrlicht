@@ -1,5 +1,6 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- Add IMeshBufffer::clone function to create buffer copies. CMeshManipulator::createMeshCopy uses that now and works now with all types of meshbuffers.
 - obj writer can now write 32 bit buffers
 - obj meshloader can now load 32 bit buffers when setPreferredIndexType is set to EIT_32BIT.
   It's 16 bit meshes use now also an IDynamicMeshbuffer instead of an SMeshBuffer.

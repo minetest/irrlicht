@@ -127,10 +127,10 @@ bool COBJMeshWriter::writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 fla
 			file->write(num.c_str(), num.size());
 			file->write("\n",1);
 
+			unsigned int idx2=0, idx1=0, idx0 = 0;
 			const u32 indexCount = buffer->getIndexCount();
 			for (j=0; j<indexCount; j+=3)
 			{
-				unsigned int idx2, idx1, idx0;
 				switch(buffer->getIndexType())
 				{
 					case video::EIT_16BIT:

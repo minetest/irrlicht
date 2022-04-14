@@ -292,9 +292,33 @@ namespace scene
 			return getTypeT();
 		}
 
+		//! Create copy of the meshbuffer
+		virtual IMeshBuffer* createClone(int cloneFlags) const IRR_OVERRIDE
+		{
+			CMeshBuffer<T> * clone = new CMeshBuffer<T>();
+
+			if (cloneFlags & ECF_VERTICES)
+			{
+				clone->Vertices = Vertices;
+				clone->BoundingBox = BoundingBox;
+			}
+
+			if (cloneFlags & ECF_INDICES)
+			{
+				clone->Indices = Indices;
+			}
+
+			clone->PrimitiveType = PrimitiveType;
+			clone->Material = getMaterial();
+			clone->MappingHint_Vertex = MappingHint_Vertex;
+			clone->MappingHint_Index = MappingHint_Index;
+
+			return clone;
+		}
+
 		//! Returns type of the class implementing the IMeshBuffer for template specialization
-		// Minor note: Some compilers (VS) allow directly specializating the virtual function,
-		// but this will fail on other compilers (GCC).
+		// Minor note: Some compilers (VS) allow directly specializing the virtual function,
+		// but this will fail on other compilers (GCC). So using a helper function.
 		EMESH_BUFFER_TYPE getTypeT() const;
 
 		u32 ChangedID_Vertex;

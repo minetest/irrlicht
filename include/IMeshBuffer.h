@@ -190,6 +190,16 @@ namespace scene
 			return EMBT_UNKNOWN;
 		}
 
+		//! Bitflags with options for cloning
+		enum ECloneFlags
+		{
+			ECF_VERTICES = 1,	//! clone the vertices (or copy pointer for SSharedMeshBuffer)
+			ECF_INDICES = 2		//! clone the indices
+		};
+
+		//! Create a new object with a copy of the meshbuffer
+		//\param cloneFlags A combination of ECloneFlags
+		virtual IMeshBuffer* createClone(int cloneFlags=ECF_VERTICES|ECF_INDICES) const = 0;
 
 	};
 

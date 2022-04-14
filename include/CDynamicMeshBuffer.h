@@ -120,6 +120,40 @@ namespace scene
 			return EMBT_DYNAMIC;
 		}
 
+		//! Create copy of the meshbuffer
+		virtual IMeshBuffer* createClone(int cloneFlags) const IRR_OVERRIDE
+		{
+			CDynamicMeshBuffer* clone = new CDynamicMeshBuffer(VertexBuffer->getType(), IndexBuffer->getType());
+
+			if (cloneFlags & ECF_VERTICES)
+			{
+				const u32 numVertices = VertexBuffer->size();
+				clone->VertexBuffer->reallocate(numVertices);
+				for ( u32 i=0; i<numVertices; ++i )
+				{
+					clone->VertexBuffer->push_back((*VertexBuffer)[i]);
+				}
+				clone->BoundingBox = BoundingBox;
+			}
+
+			if (cloneFlags & ECF_INDICES)
+			{
+				const u32 numIndices = IndexBuffer->size();
+				clone->IndexBuffer->reallocate(numIndices);
+				for ( u32 i=0; i<numIndices; ++i )
+				{
+					clone->IndexBuffer->push_back((*IndexBuffer)[i]);
+				}
+			}
+
+			clone->VertexBuffer->setHardwareMappingHint(VertexBuffer->getHardwareMappingHint());
+			clone->IndexBuffer->setHardwareMappingHint(clone->IndexBuffer->getHardwareMappingHint());
+			clone->Material = Material;
+			clone->PrimitiveType = PrimitiveType;
+
+			return clone;
+		}
+
 		video::SMaterial Material;
 		core::aabbox3d<f32> BoundingBox;
 		//! Primitive type used for rendering (triangles, lines, ...)
