@@ -8,6 +8,7 @@
 #include "IReferenceCounted.h"
 #include "path.h"
 #include "IMeshTextureLoader.h"
+#include "SVertexIndex.h"
 
 namespace irr
 {
@@ -29,7 +30,7 @@ class IMeshLoader : public virtual IReferenceCounted
 public:
 
 	//! Constructor
-	IMeshLoader() : TextureLoader(0) {}
+	IMeshLoader() : TextureLoader(0), PreferredIndexType(video::EIT_16BIT)	{}
 
 	//! Destructor
 	virtual ~IMeshLoader()
@@ -78,8 +79,30 @@ public:
 		return TextureLoader;
 	}
 
+	//! Give loader a hint if you would prefer 16 or 32 bit meshbuffers.
+	/** 
+	Generally Irrlicht works with 16-bit meshbuffers so far.
+	Rendering 32-bit meshbuffers works, other functions like 
+	mesh-writing and mesh manipulation might not work yet.
+	NOTE: Most loaders will ignore this hint so far, but hopefully 
+	will care about it in the future.
+	*/
+	void setPreferredIndexType(irr::video::E_INDEX_TYPE typeHint)
+	{
+		PreferredIndexType = typeHint;
+	}
+
+	//! Return current preference user has for the index-size of meshbuffers
+	/** Note that this is _not_ necessarily the type used by the meshloader */
+	irr::video::E_INDEX_TYPE getPreferredIndexType() const
+	{
+		return PreferredIndexType;
+	}
+
+
 protected:
 	IMeshTextureLoader* TextureLoader;
+	irr::video::E_INDEX_TYPE PreferredIndexType;
 };
 
 

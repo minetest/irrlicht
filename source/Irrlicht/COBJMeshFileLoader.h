@@ -9,7 +9,7 @@
 #include "IFileSystem.h"
 #include "ISceneManager.h"
 #include "irrString.h"
-#include "SMeshBuffer.h"
+#include "CDynamicMeshBuffer.h"
 #include "irrMap.h"
 
 namespace irr
@@ -42,10 +42,10 @@ private:
 
 	struct SObjMtl
 	{
-		SObjMtl() : Meshbuffer(0), Bumpiness (1.0f), Illumination(0),
+		SObjMtl(irr::video::E_INDEX_TYPE indexType) : IndexType(indexType), Meshbuffer(0), Bumpiness (1.0f), Illumination(0),
 			RecalculateNormals(false)
 		{
-			Meshbuffer = new SMeshBuffer();
+			Meshbuffer = new CDynamicMeshBuffer(irr::video::EVT_STANDARD, IndexType);
 			Meshbuffer->Material.Shininess = 0.0f;
 			Meshbuffer->Material.AmbientColor = video::SColorf(0.2f, 0.2f, 0.2f, 1.0f).toSColor();
 			Meshbuffer->Material.DiffuseColor = video::SColorf(0.8f, 0.8f, 0.8f, 1.0f).toSColor();
@@ -53,16 +53,17 @@ private:
 		}
 
 		SObjMtl(const SObjMtl& o)
-			: Name(o.Name), Group(o.Group),
+			: IndexType(o.IndexType), Name(o.Name), Group(o.Group),
 			Bumpiness(o.Bumpiness), Illumination(o.Illumination),
 			RecalculateNormals(false)
 		{
-			Meshbuffer = new SMeshBuffer();
+			Meshbuffer = new CDynamicMeshBuffer(irr::video::EVT_STANDARD, IndexType);
 			Meshbuffer->Material = o.Meshbuffer->Material;
 		}
 
 		core::map<video::S3DVertex, int> VertMap;
-		scene::SMeshBuffer *Meshbuffer;
+		irr::video::E_INDEX_TYPE IndexType;
+		scene::CDynamicMeshBuffer *Meshbuffer;
 		core::stringc Name;
 		core::stringc Group;
 		f32 Bumpiness;
