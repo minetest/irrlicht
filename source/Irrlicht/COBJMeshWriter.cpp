@@ -130,8 +130,23 @@ bool COBJMeshWriter::writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 fla
 			const u32 indexCount = buffer->getIndexCount();
 			for (j=0; j<indexCount; j+=3)
 			{
+				unsigned int idx2, idx1, idx0;
+				switch(buffer->getIndexType())
+				{
+					case video::EIT_16BIT:
+						idx2 = buffer->getIndices()[j+2]+allVertexCount;
+						idx1 = buffer->getIndices()[j+1]+allVertexCount;
+						idx0 = buffer->getIndices()[j+0]+allVertexCount;
+						break;
+					case video::EIT_32BIT:
+						idx2 = ((u32*)buffer->getIndices())[j+2]+allVertexCount;
+						idx1 = ((u32*)buffer->getIndices())[j+1]+allVertexCount;
+						idx0 = ((u32*)buffer->getIndices())[j+0]+allVertexCount;
+						break;
+				}
+
 				file->write("f ",2);
-				num = core::stringc(buffer->getIndices()[j+2]+allVertexCount);
+				num = core::stringc(idx2);
 				file->write(num.c_str(), num.size());
 				file->write("/",1);
 				file->write(num.c_str(), num.size());
@@ -139,7 +154,7 @@ bool COBJMeshWriter::writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 fla
 				file->write(num.c_str(), num.size());
 				file->write(" ",1);
 
-				num = core::stringc(buffer->getIndices()[j+1]+allVertexCount);
+				num = core::stringc(idx1);
 				file->write(num.c_str(), num.size());
 				file->write("/",1);
 				file->write(num.c_str(), num.size());
@@ -147,7 +162,7 @@ bool COBJMeshWriter::writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 fla
 				file->write(num.c_str(), num.size());
 				file->write(" ",1);
 
-				num = core::stringc(buffer->getIndices()[j+0]+allVertexCount);
+				num = core::stringc(idx0);
 				file->write(num.c_str(), num.size());
 				file->write("/",1);
 				file->write(num.c_str(), num.size());
