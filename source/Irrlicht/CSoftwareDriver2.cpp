@@ -947,14 +947,14 @@ REALINLINE size_t clipToFrustumTest(const s4DVertex* v)
 {
 	size_t flag = 0;
 
-	flag |= v->Pos.z <= v->Pos.w ? VERTEX4D_CLIP_NEAR : 0;
-	flag |= -v->Pos.z <= v->Pos.w ? VERTEX4D_CLIP_FAR : 0;
+	flag |= v->Pos.z <= v->Pos.w ? (size_t)VERTEX4D_CLIP_NEAR : 0;
+	flag |= -v->Pos.z <= v->Pos.w ? (size_t)VERTEX4D_CLIP_FAR : 0;
 
-	flag |= v->Pos.x <= v->Pos.w ? VERTEX4D_CLIP_LEFT : 0;
-	flag |= -v->Pos.x <= v->Pos.w ? VERTEX4D_CLIP_RIGHT : 0;
+	flag |= v->Pos.x <= v->Pos.w ? (size_t)VERTEX4D_CLIP_LEFT : 0;
+	flag |= -v->Pos.x <= v->Pos.w ? (size_t)VERTEX4D_CLIP_RIGHT : 0;
 
-	flag |= v->Pos.y <= v->Pos.w ? VERTEX4D_CLIP_BOTTOM : 0;
-	flag |= -v->Pos.y <= v->Pos.w ? VERTEX4D_CLIP_TOP : 0;
+	flag |= v->Pos.y <= v->Pos.w ? (size_t)VERTEX4D_CLIP_BOTTOM : 0;
+	flag |= -v->Pos.y <= v->Pos.w ? (size_t)VERTEX4D_CLIP_TOP : 0;
 
 
 	/*

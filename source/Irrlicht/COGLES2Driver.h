@@ -118,7 +118,7 @@ namespace video
 			const video::SColor* const colors = 0, bool useAlphaChannelOfTexture = false) IRR_OVERRIDE;
 
 		// internally used
-		virtual void draw2DImage(const video::ITexture* texture, u32 layer, bool flip);
+		virtual void draw2DImageQuad(const video::ITexture* texture, u32 layer, bool flip);
 
 		//! draws a set of 2d images
 		virtual void draw2DImageBatch(const video::ITexture* texture,

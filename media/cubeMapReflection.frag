@@ -1,3 +1,4 @@
+#version 130
 uniform samplerCube cubeTex;
 uniform float Roughness;
 

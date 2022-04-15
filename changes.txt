@@ -9,6 +9,18 @@ Changes in ogl-es (not yet released - will be merged with trunk at some point)
 
 --------------------------
 Changes in 1.9 (not yet released)
+- Add IMeshBufffer::clone function to create buffer copies. CMeshManipulator::createMeshCopy uses that now and works now with all types of meshbuffers.
+- obj writer can now write 32 bit buffers
+- obj meshloader can now load 32 bit buffers when setPreferredIndexType is set to EIT_32BIT.
+  It's 16 bit meshes use now also an IDynamicMeshbuffer instead of an SMeshBuffer.
+- Add IMeshLoader::setPreferredIndexType and getPreferredIndexType to allow setting hints for the loaders if users prefer 16 or 32 bit meshbuffers.
+- Add IMeshBuffer::getType to allow finding out which class type a meshbuffer has (similar to ISceneNode::getType).
+- Add IGUIImage::flip to flip/mirror images
+- IBillboardSceneNode got functions to access meshbuffers. So uv-coordinates can now be modified directly (previously only possible via texture matrix).
+- vector3d scalar operator/ and operator/= no longer multiply by the inverse but use the expected division. 
+  Costs some speed, but fixes floating point troubles caused by this optimization (like x/x no longer being 1.0).
+- Bugfix: XML reader dropped last character in strings if there was a special character replacement for the second-last character.
+- Avoid allocating more than 16k on stack in OCT loader. Also avoid potential heap overwrites in there.
 - obj file loader now allows using mtl files with spaces in the filename. 
   Note that this means it no longer handles obj files which have multiple mtl files behind the mtllib command. 
   But Irrlicht ignored all but the first name anyway and this way of handling mtllib commands seems to be more common.

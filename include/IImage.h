@@ -74,7 +74,6 @@ public:
 	//! Returns bits per pixel.
 	u32 getBitsPerPixel() const
 	{
-
 		return getBitsPerPixelFromFormat(Format);
 	}
 
@@ -358,6 +357,11 @@ public:
 	//! copies this surface into another, scaling it to fit, applying a box filter
 	/**	NOTE: mipmaps are ignored */
 	virtual void copyToScalingBoxFilter(IImage* target, s32 bias = 0, bool blend = false) = 0;
+
+	//! Flips (mirrors) the image in one or two directions
+	/** \param topBottom Flip around central x-axis (vertical flipping)
+	\param leftRight Flip around central y-axis (typical mirror, horizontal flipping) */
+	virtual void flip(bool topBottom, bool leftRight) = 0;
 
 	//! fills the surface with given color
 	virtual void fill(const SColor &color) =0;

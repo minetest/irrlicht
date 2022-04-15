@@ -1,6 +1,6 @@
 /** Example 022 Material Viewer
 
-This example can be used to play around with material settings and watch the results.
+This example can be used to experiment with material settings and watch the results.
 Only the default non-shader materials are used in here.
 
 You have a node with a mesh, one dynamic light and global ambient light to play around with.
@@ -9,8 +9,7 @@ You can move the camera while left-mouse button is clicked.
 */
 
 // TODO: Should be possible to set all material values by the GUI.
-//		 For now just change the defaultMaterial in CApp::init for the rest.
-// TODO: Allow users to switch between a sphere and a box mesh.
+//		 For now just change the defaultMaterial in CApp::setActiveMeshNodeType for the rest.
 
 #include <irrlicht.h>
 #include "driverChoice.h"
@@ -127,9 +126,8 @@ video::E_VERTEX_TYPE getVertexTypeForMaterialType(video::E_MATERIAL_TYPE materia
 }
 
 /*
-	Custom GUI-control to edit colorvalues.
+	Custom GUI-control to edit color values.
 */
-// Constructor
 CColorControl::CColorControl(gui::IGUIEnvironment* guiEnv, const core::position2d<s32> & pos, const wchar_t *text, IGUIElement* parent, s32 id)
 	: gui::IGUIElement(gui::EGUIET_ELEMENT, guiEnv, parent,id, core::rect< s32 >(pos, pos+core::dimension2d<s32>(80, 75)))
 	, DirtyFlag(true)
@@ -147,12 +145,13 @@ CColorControl::CColorControl(gui::IGUIEnvironment* guiEnv, const core::position2
 	IGUIStaticText * groupElement =	guiEnv->addStaticText (L"", rectControls, true, false, this, -1, false);
 	groupElement->setNotClipped(true);
 
-	guiEnv->addStaticText (text, core::rect<s32>(0,0,80,15), false, false, groupElement, -1, false);
+	s32 border=guiEnv->getSkin()->getSize(EGDS_TEXT_DISTANCE_X);
+	guiEnv->addStaticText(text, core::rect<s32>(border,border,80,15), false, false, groupElement, -1, true);
 
-	EditAlpha = addEditForNumbers(guiEnv, core::position2d<s32>(0,15), L"a", -1, groupElement );
-	EditRed = addEditForNumbers(guiEnv, core::position2d<s32>(0,30), L"r", -1, groupElement );
-	EditGreen = addEditForNumbers(guiEnv, core::position2d<s32>(0,45), L"g", -1, groupElement );
-	EditBlue = addEditForNumbers(guiEnv, core::position2d<s32>(0,60), L"b", -1, groupElement );
+	EditAlpha = addEditForNumbers(guiEnv, core::position2d<s32>(border,15), L"a", -1, groupElement );
+	EditRed = addEditForNumbers(guiEnv, core::position2d<s32>(border,30), L"r", -1, groupElement );
+	EditGreen = addEditForNumbers(guiEnv, core::position2d<s32>(border,45), L"g", -1, groupElement );
+	EditBlue = addEditForNumbers(guiEnv, core::position2d<s32>(border,60), L"b", -1, groupElement );
 
 	ColorStatic = guiEnv->addStaticText (L"", core::rect<s32>(60,15,80,75), true, false, groupElement, -1, true);
 
@@ -163,10 +162,9 @@ CColorControl::CColorControl(gui::IGUIEnvironment* guiEnv, const core::position2
 // event receiver
 bool CColorControl::OnEvent(const SEvent &event)
 {
-	if ( event.EventType != EET_GUI_EVENT )
-		return false;
-
-	if ( event.GUIEvent.Caller->getID() == ButtonSetId && event.GUIEvent.EventType == gui::EGET_BUTTON_CLICKED )
+	if ( event.EventType == EET_GUI_EVENT 
+		&& event.GUIEvent.Caller->getID() == ButtonSetId 
+		&& event.GUIEvent.EventType == gui::EGET_BUTTON_CLICKED )
 	{
 		Color = getColorFromEdits();
 		setEditsFromColor(Color);
@@ -183,60 +181,52 @@ void CColorControl::setColor(const video::SColor& col)
 	setEditsFromColor(Color);
 }
 
-// Add a staticbox for a description + an editbox so users can enter numbers
+// Add a statictext for a description + an editbox so users can enter numbers
 gui::IGUIEditBox* CColorControl::addEditForNumbers(gui::IGUIEnvironment* guiEnv, const core::position2d<s32> & pos, const wchar_t *text, s32 id, gui::IGUIElement * parent)
 {
 	using namespace gui;
 
-	core::rect< s32 > rect(pos, pos+core::dimension2d<s32>(10, 15));
-	guiEnv->addStaticText (text, rect, false, false, parent, -1, false);
+	core::recti rect(pos, pos+core::dimension2d<s32>(10, 15));
+	guiEnv->addStaticText(text, rect, false, false, parent, -1, false);
 	rect += core::position2d<s32>( 20, 0 );
 	rect.LowerRightCorner.X += 20;
 	gui::IGUIEditBox* edit = guiEnv->addEditBox(L"0", rect, true, parent, id);
 	return edit;
 }
 
-// Get the color value from the editfields
+// Get the color value from the editboxes
 video::SColor CColorControl::getColorFromEdits() const
 {
 	video::SColor col;
 
 	if (EditAlpha)
 	{
-		u32 alpha = core::strtoul10(core::stringc(EditAlpha->getText()).c_str());
-		if (alpha > 255)
-			alpha = 255;
+		u32 alpha = core::min_(core::strtoul10(core::stringc(EditAlpha->getText()).c_str()), 255u);
 		col.setAlpha(alpha);
 	}
 
 	if (EditRed)
 	{
-		u32 red = core::strtoul10(core::stringc(EditRed->getText()).c_str());
-		if (red > 255)
-			red = 255;
+		u32 red = core::min_(core::strtoul10(core::stringc(EditRed->getText()).c_str()), 255u);
 		col.setRed(red);
 	}
 
 	if (EditGreen)
 	{
-		u32 green = core::strtoul10(core::stringc(EditGreen->getText()).c_str());
-		if (green > 255)
-			green = 255;
+		u32 green = core::min_(core::strtoul10(core::stringc(EditGreen->getText()).c_str()), 255u);
 		col.setGreen(green);
 	}
 
 	if (EditBlue)
 	{
-		u32 blue = core::strtoul10(core::stringc(EditBlue->getText()).c_str());
-		if (blue > 255)
-			blue = 255;
+		u32 blue = core::min_(core::strtoul10(core::stringc(EditBlue->getText()).c_str()), 255u);
 		col.setBlue(blue);
 	}
 
 	return col;
 }
 
-// Fill the editfields with the value for the given color
+// Fill the editboxes with a color value
 void CColorControl::setEditsFromColor(video::SColor col)
 {
 	DirtyFlag = true;
@@ -345,10 +335,9 @@ CTextureControl::CTextureControl(gui::IGUIEnvironment* guiEnv, video::IVideoDriv
 
 bool CTextureControl::OnEvent(const SEvent &event)
 {
-	if ( event.EventType != EET_GUI_EVENT )
-		return false;
-
-	if ( event.GUIEvent.Caller == ComboTexture && event.GUIEvent.EventType == gui::EGET_COMBO_BOX_CHANGED )
+	if ( event.EventType == EET_GUI_EVENT 
+		&& event.GUIEvent.Caller == ComboTexture 
+		&& event.GUIEvent.EventType == gui::EGET_COMBO_BOX_CHANGED )
 	{
 		DirtyFlag = true;
 	}
@@ -392,13 +381,15 @@ void CTextureControl::selectTextureByName(const irr::core::stringw& name)
 void CTextureControl::updateTextures(video::IVideoDriver * driver)
 {
 	s32 oldSelected = ComboTexture->getSelected();
-	s32 selectNew = -1;
 	core::stringw oldTextureName;
 	if ( oldSelected >= 0 )
 	{
 		oldTextureName = ComboTexture->getItem(oldSelected);
 	}
+
 	ComboTexture->clear();
+
+	s32 selectNew = -1;
 	for ( u32 i=0; i < driver->getTextureCount(); ++i )
 	{
 		video::ITexture * texture = driver->getTextureByIndex(i);
@@ -422,58 +413,68 @@ void CTextureControl::updateTextures(video::IVideoDriver * driver)
 /*
 	Control which allows setting some of the material values for a meshscenenode
 */
-void CMaterialControl::init(scene::IMeshSceneNode* node, IrrlichtDevice * device, const core::position2d<s32> & pos, const wchar_t * description)
+void CMaterialControl::init(IrrlichtDevice * device, const core::position2d<s32> & pos, const wchar_t * description)
 {
-	if ( Initialized || !node || !device) // initializing twice or with invalid data not allowed
+	if ( Initialized || !device) // initializing twice or with invalid data not allowed
 		return;
 
 	Driver = device->getVideoDriver ();
 	gui::IGUIEnvironment* guiEnv = device->getGUIEnvironment();
-	//scene::ISceneManager* smgr = device->getSceneManager();
-	const video::SMaterial & material = node->getMaterial(0);
 
 	s32 top = pos.Y;
 
 	// Description
-	guiEnv->addStaticText(description, core::rect<s32>(pos.X, top, pos.X+60, top+15), false, false, 0, -1, false);
+	guiEnv->addStaticText(description, core::rect<s32>(pos.X, top, pos.X+150, top+15), true, false, 0, -1, true);
 	top += 15;
 
 	// Control for material type
-	core::rect<s32> rectCombo(pos.X, top, 150, top+15);
+	core::rect<s32> rectCombo(pos.X, top, pos.X+150, top+15);
 	top += 15;
 	ComboMaterial = guiEnv->addComboBox (rectCombo);
 	for ( int i=0; i <= (int)video::EMT_ONETEXTURE_BLEND; ++i )
 	{
 		ComboMaterial->addItem( core::stringw(video::sBuiltInMaterialTypeNames[i]).c_str() );
 	}
-	ComboMaterial->setSelected( (s32)material.MaterialType );
+	ComboMaterial->setSelected(0);
 
 	// Control to enable/disabling material lighting
 	core::rect<s32> rectBtn(core::position2d<s32>(pos.X, top), core::dimension2d<s32>(100, 15));
 	top += 15;
 	ButtonLighting = guiEnv->addButton (rectBtn, 0, -1, L"Lighting");
 	ButtonLighting->setIsPushButton(true);
-	ButtonLighting->setPressed(material.Lighting);
-	core::rect<s32> rectInfo( rectBtn.LowerRightCorner.X, rectBtn.UpperLeftCorner.Y, rectBtn.LowerRightCorner.X+40, rectBtn.UpperLeftCorner.Y+15 );
+	core::rect<s32> rectInfo( rectBtn.LowerRightCorner.X, rectBtn.UpperLeftCorner.Y, rectBtn.LowerRightCorner.X+50, rectBtn.UpperLeftCorner.Y+15 );
 	InfoLighting = guiEnv->addStaticText(L"", rectInfo, true, false );
 	InfoLighting->setTextAlignment(gui::EGUIA_CENTER, gui::EGUIA_CENTER );
 
 	// Controls for colors
 	TypicalColorsControl = new CTypicalColorsControl(guiEnv, core::position2d<s32>(pos.X, top), true, guiEnv->getRootGUIElement());
 	top += 300;
-	TypicalColorsControl->setColorsToMaterialColors(material);
 
 	// Controls for selecting the material textures
-	guiEnv->addStaticText(L"Textures", core::rect<s32>(pos.X, top, pos.X+60, top+15), false, false, 0, -1, false);
+	guiEnv->addStaticText(L"Textures", core::rect<s32>(pos.X, top, pos.X+150, top+15), true, false, 0, -1, true);
 	top += 15;
 
-	for (irr::u32 i=0; i<irr::video::MATERIAL_MAX_TEXTURES; ++i)
+	// The default material types only use first 2 textures
+	irr::u32 maxTextures = core::min_(2u, irr::video::MATERIAL_MAX_TEXTURES);
+	for (irr::u32 i=0; i<maxTextures; ++i)
 	{
-		TextureControls[i] = new CTextureControl(guiEnv, Driver, core::position2di(pos.X, top), guiEnv->getRootGUIElement());
+		TextureControls.push_back(new CTextureControl(guiEnv, Driver, core::position2di(pos.X, top), guiEnv->getRootGUIElement()));
 		top += 15;
 	}
 
 	Initialized = true;
+}
+
+void CMaterialControl::setMaterial(const irr::video::SMaterial & material)
+{
+	if (ComboMaterial)
+		ComboMaterial->setSelected( (s32)material.MaterialType );
+	if (ButtonLighting)
+		ButtonLighting->setPressed(material.Lighting);
+	if (TypicalColorsControl) 
+		TypicalColorsControl->setColorsToMaterialColors(material);
+	for (irr::u32 i=0; i<TextureControls.size(); ++i)
+		TextureControls[i]->setDirty();
 }
 
 void CMaterialControl::update(scene::IMeshSceneNode* sceneNode, scene::IMeshSceneNode* sceneNode2T, scene::IMeshSceneNode* sceneNodeTangents)
@@ -525,19 +526,19 @@ void CMaterialControl::update(scene::IMeshSceneNode* sceneNode, scene::IMeshScen
 
 	TypicalColorsControl->resetDirty();
 
-	for (irr::u32 i=0; i<irr::video::MATERIAL_MAX_TEXTURES; ++i)
+	for (irr::u32 i=0; i<TextureControls.size(); ++i)
 		TextureControls[i]->resetDirty();
 }
 
 void CMaterialControl::updateTextures()
 {
-	for (irr::u32 i=0; i<irr::video::MATERIAL_MAX_TEXTURES; ++i)
+	for (irr::u32 i=0; i<TextureControls.size(); ++i)
 		TextureControls[i]->updateTextures(Driver);
 }
 
 void CMaterialControl::selectTextures(const irr::core::stringw& name)
 {
-	for (irr::u32 i=0; i<irr::video::MATERIAL_MAX_TEXTURES; ++i)
+	for (irr::u32 i=0; i<TextureControls.size(); ++i)
 		TextureControls[i]->selectTextureByName(name);
 }
 
@@ -550,11 +551,11 @@ void CMaterialControl::updateMaterial(video::SMaterial & material)
 {
 	TypicalColorsControl->updateMaterialColors(material);
 	material.Lighting = ButtonLighting->isPressed();
-	for (irr::u32 i=0; i<irr::video::MATERIAL_MAX_TEXTURES; ++i)
+	for (irr::u32 i=0; i<TextureControls.size(); ++i)
 	{
 		if ( TextureControls[i]->isDirty() )
 		{
-			material.TextureLayer[i].Texture = Driver->getTexture( io::path(TextureControls[i]->getSelectedTextureName()) );
+			material.TextureLayer[i].Texture = Driver->findTexture( io::path(TextureControls[i]->getSelectedTextureName()) );
 		}
 	}
 }
@@ -568,8 +569,10 @@ void CLightNodeControl::init(scene::ILightSceneNode* node, gui::IGUIEnvironment*
 	if ( Initialized || !node || !guiEnv) // initializing twice or with invalid data not allowed
 		return;
 
-	guiEnv->addStaticText(description, core::rect<s32>(pos.X, pos.Y, pos.X+70, pos.Y+15), false, false, 0, -1, false);
+	gui::IGUIStaticText* st = guiEnv->addStaticText(description, core::rect<s32>(pos.X, pos.Y, pos.X+80, pos.Y+15), true, false, 0, -1, true);
+	st->setAlignment(irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_UPPERLEFT, irr::gui::EGUIA_UPPERLEFT);
 	TypicalColorsControl = new CTypicalColorsControl(guiEnv, core::position2d<s32>(pos.X, pos.Y+15), false, guiEnv->getRootGUIElement());
+	TypicalColorsControl->setAlignment(irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_UPPERLEFT, irr::gui::EGUIA_UPPERLEFT);
 	const video::SLight & lightData = node->getLightData();
 	TypicalColorsControl->setColorsToLightDataColors(lightData);
 	Initialized = true;
@@ -588,9 +591,7 @@ void CLightNodeControl::update(scene::ILightSceneNode* node)
 	Main application class
 */
 
-/*
-	Event handler
-*/
+// Event handler
 bool CApp::OnEvent(const SEvent &event)
 {
 	if (event.EventType == EET_GUI_EVENT)
@@ -618,11 +619,31 @@ bool CApp::OnEvent(const SEvent &event)
 
 			case gui::EGET_FILE_SELECTED:
 			{
-				// load the model file, selected in the file open dialog
+				// load the texture file, selected in the file open dialog
 				gui::IGUIFileOpenDialog* dialog =
 					(gui::IGUIFileOpenDialog*)event.GUIEvent.Caller;
 				loadTexture(io::path(dialog->getFileName()).c_str());
 			}
+			break;
+
+			case gui::EGET_COMBO_BOX_CHANGED:
+				if (event.GUIEvent.Caller == ComboMeshType )
+				{
+					irr::scene::IMeshSceneNode* currentNode = getVisibleMeshNode();
+					if (currentNode)
+					{
+						// ensure next mesh will get same color and material settings
+						if ( ControlVertexColors )
+						{
+							video::S3DVertex * vertices =  (video::S3DVertex *)currentNode->getMesh()->getMeshBuffer(0)->getVertices();
+							ControlVertexColors->setColor(vertices[0].Color);
+						}
+						if ( MeshMaterialControl )
+							MeshMaterialControl->setMaterial(currentNode->getMaterial(0));
+					}
+					setActiveMeshNodeType((ENodeType)ComboMeshType->getSelected());
+					return true;
+				}
 			break;
 
 			default:
@@ -702,43 +723,32 @@ bool CApp::init(int argc, char *argv[])
 	subMenuFile->addItem(L"Quit", GUI_ID_QUIT);
 
 	// a static camera
-	Camera = smgr->addCameraSceneNode (0, core::vector3df(0, 40, -40),
-										core::vector3df(0, 10, 0),
+	Camera = smgr->addCameraSceneNode (0, core::vector3df(0, 30, -50),
+										core::vector3df(0, 0, 0),
 										-1);
 
-	// default material
-	video::SMaterial defaultMaterial;
-	defaultMaterial.Shininess = 20.f;
-
-	// add the nodes which are used to show the materials
-	SceneNode = smgr->addCubeSceneNode (30.0f, 0, -1,
-									   core::vector3df(0, 0, 0),
-									   core::vector3df(0.f, 45.f, 0.f),
-									   core::vector3df(1.0f, 1.0f, 1.0f));
-	SceneNode->getMaterial(0) = defaultMaterial;
+	setActiveMeshNodeType(ENT_CUBE);
 
 	const s32 controlsTop = 20;
 	MeshMaterialControl = new CMaterialControl();
-	MeshMaterialControl->init( SceneNode, Device, core::position2d<s32>(10,controlsTop), L"Material" );
+	MeshMaterialControl->init( Device, core::position2d<s32>(10,controlsTop), L"Material");
+	MeshMaterialControl->setMaterial(SceneNode->getMaterial(0));
 	MeshMaterialControl->selectTextures(core::stringw("CARO_A8R8G8B8"));	// set a useful default texture
-
-	// create nodes with other vertex types
-	scene::IMesh * mesh2T = MeshManipulator->createMeshWith2TCoords(SceneNode->getMesh());
-	SceneNode2T = smgr->addMeshSceneNode(mesh2T, 0, -1, SceneNode->getPosition(), SceneNode->getRotation(), SceneNode->getScale() );
-	mesh2T->drop();
-
-	scene::IMesh * meshTangents = MeshManipulator->createMeshWithTangents(SceneNode->getMesh(), false, false, false);
-	SceneNodeTangents = smgr->addMeshSceneNode(meshTangents, 0, -1
-										, SceneNode->getPosition(), SceneNode->getRotation(), SceneNode->getScale() );
-	meshTangents->drop();
 
 
 	// add one light
-	NodeLight = smgr->addLightSceneNode(0, core::vector3df(0, 0, -40),
+	const f32 lightRadius = 80.f;
+	NodeLight = smgr->addLightSceneNode(0, core::vector3df(0, 30, -70),
 											video::SColorf(1.0f, 1.0f, 1.0f),
-											35.0f);
+											lightRadius);
 	LightControl = new CLightNodeControl();
 	LightControl->init(NodeLight, guiEnv, core::position2d<s32>(550,controlsTop), L"Dynamic light" );
+
+#if 0	// enable to have some visual feedback for the light size
+	scene::IMeshSceneNode* lightRadiusNode = smgr->addSphereSceneNode(lightRadius, 64, NodeLight);
+	lightRadiusNode->getMaterial(0).Lighting = false;
+	lightRadiusNode->getMaterial(0).Wireframe = true;
+#endif
 
 	// one large cube around everything. That's mainly to make the light more obvious.
 	scene::IMeshSceneNode* backgroundCube = smgr->addCubeSceneNode (200.0f, 0, -1, core::vector3df(0, 0, 0),
@@ -748,18 +758,21 @@ bool CApp::init(int argc, char *argv[])
 	backgroundCube->getMaterial(0).EmissiveColor.set(255,50,50,50);	// we keep some self lighting to keep texts visible
 
 
-	// Add a the mesh vertex color control
-	guiEnv->addStaticText(L"Mesh", core::rect<s32>(200, controlsTop, 270, controlsTop+15), false, false, 0, -1, false);
-	ControlVertexColors = new CColorControl( guiEnv, core::position2d<s32>(200, controlsTop+15), L"Vertex colors", guiEnv->getRootGUIElement());
-	video::S3DVertex * vertices =  (video::S3DVertex *)SceneNode->getMesh()->getMeshBuffer(0)->getVertices();
-	if ( vertices )
-	{
-		ControlVertexColors->setColor(vertices[0].Color);
-	}
+	// Add a the mesh UI controls
+	gui::IGUIStaticText* stMesh = guiEnv->addStaticText(L"Mesh", core::rect<s32>(440, controlsTop, 520, controlsTop+15), true, false, 0, -1, true);
+	stMesh->setAlignment(irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_UPPERLEFT, irr::gui::EGUIA_UPPERLEFT);
+	ComboMeshType = guiEnv->addComboBox(core::rect<s32>(440, controlsTop+16, 520, controlsTop+30), 0, -1);
+	ComboMeshType->setAlignment(irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_UPPERLEFT, irr::gui::EGUIA_UPPERLEFT);
+	ComboMeshType->addItem(L"cube");
+	ComboMeshType->addItem(L"sphere");
+	ControlVertexColors = new CColorControl( guiEnv, core::position2d<s32>(440, controlsTop+30), L"Vertex colors", guiEnv->getRootGUIElement());
+	ControlVertexColors->setAlignment(irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_UPPERLEFT, irr::gui::EGUIA_UPPERLEFT);
+	ControlVertexColors->setColor(irr::video::SColor(255,255,255,255));
 
 	// Add a control for ambient light
 	GlobalAmbient = new CColorControl( guiEnv, core::position2d<s32>(550, 300), L"Global ambient", guiEnv->getRootGUIElement());
 	GlobalAmbient->setColor( smgr->getAmbientLight().toSColor() );
+	GlobalAmbient->setAlignment(irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_UPPERLEFT, irr::gui::EGUIA_UPPERLEFT);
 
 	return true;
 }
@@ -769,15 +782,12 @@ bool CApp::init(int argc, char *argv[])
 */
 bool CApp::update()
 {
-	using namespace irr;
-
 	video::IVideoDriver* videoDriver =  Device->getVideoDriver();
 	if ( !Device->run() )
 		return false;
 
 	// Figure out delta time since last frame
-	ITimer * timer = Device->getTimer();
-	u32 newTick = timer->getRealTime();
+	u32 newTick = Device->getTimer()->getRealTime();
 	f32 deltaTime = RealTimeTick > 0 ? f32(newTick-RealTimeTick)/1000.f : 0.f;	// in seconds
 	RealTimeTick = newTick;
 
@@ -807,22 +817,30 @@ bool CApp::update()
 			GlobalAmbient->resetDirty();
 		}
 
-		// Let the user move the light around
 		const float zoomSpeed = 10.f * deltaTime;
 		const float rotationSpeed = 100.f * deltaTime;
-		if ( KeysPressed[KEY_PLUS] || KeysPressed[KEY_ADD])
-			ZoomOut(NodeLight, zoomSpeed);
-		if ( KeysPressed[KEY_MINUS] || KeysPressed[KEY_SUBTRACT])
-			ZoomOut(NodeLight, -zoomSpeed);
-		if ( KeysPressed[KEY_RIGHT])
-			RotateHorizontal(NodeLight, rotationSpeed);
-		if ( KeysPressed[KEY_LEFT])
-			RotateHorizontal(NodeLight, -rotationSpeed);
-		UpdateRotationAxis(NodeLight, LightRotationAxis);
-		if ( KeysPressed[KEY_UP])
-			RotateAroundAxis(NodeLight, rotationSpeed, LightRotationAxis);
-		if ( KeysPressed[KEY_DOWN])
-			RotateAroundAxis(NodeLight, -rotationSpeed, LightRotationAxis);
+
+		// Let the user move the light around
+		irr::gui::IGUIElement* focus=guiEnv->getFocus();	// some checks to prevent interfering with UI input
+		if ( !focus || focus == guiEnv->getRootGUIElement() 
+			|| focus->getType() == irr::gui::EGUIET_STATIC_TEXT
+			|| focus->getType() == irr::gui::EGUIET_BUTTON
+			)
+		{
+			if ( KeysPressed[KEY_PLUS] || KeysPressed[KEY_ADD])
+				ZoomOut(NodeLight, zoomSpeed);
+			if ( KeysPressed[KEY_MINUS] || KeysPressed[KEY_SUBTRACT])
+				ZoomOut(NodeLight, -zoomSpeed);
+			if ( KeysPressed[KEY_RIGHT])
+				RotateHorizontal(NodeLight, rotationSpeed);
+			if ( KeysPressed[KEY_LEFT])
+				RotateHorizontal(NodeLight, -rotationSpeed);
+			UpdateRotationAxis(NodeLight, LightRotationAxis);
+			if ( KeysPressed[KEY_UP])
+				RotateAroundAxis(NodeLight, rotationSpeed, LightRotationAxis);
+			if ( KeysPressed[KEY_DOWN])
+				RotateAroundAxis(NodeLight, -rotationSpeed, LightRotationAxis);
+		}
 
 		// Let the user move the camera around
 		if (MousePressed)
@@ -957,7 +975,7 @@ void CApp::createDefaultTextures(video::IVideoDriver * driver)
 	imageA8R8G8B8->drop();
 }
 
-// Load a texture and make sure nodes know it when more textures are available.
+// Load a texture and make sure UI knows it when more textures are available.
 void CApp::loadTexture(const io::path &name)
 {
 	Device->getVideoDriver()->getTexture(name);
@@ -1004,13 +1022,76 @@ void CApp::ZoomOut(irr::scene::ISceneNode* node, irr::f32 units)
 void CApp::UpdateRotationAxis(irr::scene::ISceneNode* node, irr::core::vector3df& axis)
 {
 	// Find a perpendicular axis to the x,z vector. If none found (vector straight up/down) continue to use the existing one.
-	core::vector3df pos(node->getPosition());
+	core::vector3df pos(node->getPosition());	
 	if ( !core::equals(pos.X, 0.f) || !core::equals(pos.Z, 0.f) )
 	{
 		axis.X = -pos.Z;
 		axis.Z = pos.X;
 		axis.normalize();
 	}
+}
+
+void CApp::setActiveMeshNodeType(ENodeType nodeType)
+{
+	scene::ISceneManager* smgr = Device->getSceneManager();
+
+	if ( SceneNode )
+		smgr->addToDeletionQueue(SceneNode);
+	SceneNode = nullptr;
+	if ( SceneNode2T )
+		smgr->addToDeletionQueue(SceneNode2T);
+	SceneNode2T = nullptr;
+	if ( SceneNodeTangents )
+		smgr->addToDeletionQueue(SceneNodeTangents);
+	SceneNodeTangents = nullptr;
+
+	// default material
+	video::SMaterial defaultMaterial;
+	defaultMaterial.Shininess = 20.f;
+	
+	// add the nodes which are used to show the materials
+	const irr::f32 size = 35.f;
+	if ( nodeType == ENT_CUBE)
+	{
+		SceneNode = smgr->addCubeSceneNode (size, 0, -1,
+										   core::vector3df(0, 0, 0),
+										   core::vector3df(0.f, 45.f, 0.f),
+										   core::vector3df(1.0f, 1.0f, 1.0f),
+										   scene::ECMT_1BUF_24VTX_NP);
+		// avoid wrong colored lines at cube-borders (uv's go from 0-1 currently, which does not work well with interpolation)
+		for ( u32 i=0; i < irr::video::MATERIAL_MAX_TEXTURES_USED; ++i)
+		{
+			defaultMaterial.TextureLayer[i].TextureWrapU = irr::video::ETC_CLAMP_TO_EDGE;	
+			defaultMaterial.TextureLayer[i].TextureWrapV = irr::video::ETC_CLAMP_TO_EDGE;
+		}
+	}
+	else
+	{
+		SceneNode = smgr->addSphereSceneNode(size*0.5f);
+	}
+	SceneNode->getMaterial(0) = defaultMaterial;
+	// SceneNode->setDebugDataVisible(scene::EDS_NORMALS);	// showing normals can sometimes be useful to understand what's going on
+
+	// create nodes with other vertex types
+	scene::IMesh * mesh2T = MeshManipulator->createMeshWith2TCoords(SceneNode->getMesh());
+	SceneNode2T = smgr->addMeshSceneNode(mesh2T, 0, -1, SceneNode->getPosition(), SceneNode->getRotation(), SceneNode->getScale() );
+	mesh2T->drop();
+
+	scene::IMesh * meshTangents = MeshManipulator->createMeshWithTangents(SceneNode->getMesh(), false, false, false);
+	SceneNodeTangents = smgr->addMeshSceneNode(meshTangents, 0, -1
+										, SceneNode->getPosition(), SceneNode->getRotation(), SceneNode->getScale() );
+	meshTangents->drop();
+}
+
+irr::scene::IMeshSceneNode* CApp::getVisibleMeshNode() const
+{
+	if ( SceneNode && SceneNode->isVisible() )
+		return SceneNode;
+	if ( SceneNode2T && SceneNode2T->isVisible() )
+		return SceneNode2T;
+	if ( SceneNodeTangents && SceneNodeTangents->isVisible() )
+		return SceneNodeTangents;
+	return nullptr;
 }
 
 /*

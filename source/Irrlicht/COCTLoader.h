@@ -115,12 +115,10 @@ namespace scene
 		};
 
 		struct octTexture {
-			u32 id;
 			char fileName[64];
 		};
 
 		struct octLightmap {
-			u32 id;
 			u8 data[128][128][3];
 		};
 

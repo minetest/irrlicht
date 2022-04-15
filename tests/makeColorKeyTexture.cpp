@@ -27,12 +27,12 @@ static bool doTestWith(E_DRIVER_TYPE driverType,
 	cube->setMaterialTexture(0, driver->getTexture("../media/wall.bmp"));
 	cube->setMaterialFlag(video::EMF_LIGHTING, false);
 
-	ITexture * Texture = device->getVideoDriver()->getTexture("../media/portal2.bmp");
+	ITexture * texture = device->getVideoDriver()->getTexture("../media/portal2.bmp");
 
-	device->getVideoDriver()->makeColorKeyTexture(Texture,
+	device->getVideoDriver()->makeColorKeyTexture(texture,
 												  position2d<s32>(64,64),
 												  zeroTexels);
-	device->getVideoDriver()->makeColorKeyTexture(Texture,
+	device->getVideoDriver()->makeColorKeyTexture(texture,
 												  position2d<s32>(64,64),
 												  zeroTexels);
 	(void)smgr->addCameraSceneNode();
@@ -40,9 +40,9 @@ static bool doTestWith(E_DRIVER_TYPE driverType,
 	driver->beginScene(video::ECBF_COLOR | video::ECBF_DEPTH, SColor(255,100,101,140));
 	smgr->drawAll();
 
-	driver->draw2DImage(Texture,
+	driver->draw2DImage(texture,
 						position2di(40, 40),
-						rect<s32>(0, 0, Texture->getSize().Width, Texture->getSize().Height),
+						recti(texture->getOriginalSize()),
 						0,
 						SColor(255,255,255,255),
 						true);

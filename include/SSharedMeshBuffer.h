@@ -172,9 +172,16 @@ namespace scene
 		}
 
 		//! append the vertices and indices to the current buffer
-		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices)  IRR_OVERRIDE {}
+		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices)  IRR_OVERRIDE 
+		{
+			// can't do that as it doesn't own the vertex memory
+		}
+
 		//! append the meshbuffer to the current buffer
-		virtual void append(const IMeshBuffer* const other) IRR_OVERRIDE {}
+		virtual void append(const IMeshBuffer* const other) IRR_OVERRIDE 
+		{
+			// can't do that as it doesn't own the vertex memory
+		}
 
 		//! get the current hardware mapping hint
 		virtual E_HARDWARE_MAPPING getHardwareMappingHint_Vertex() const IRR_OVERRIDE
@@ -225,6 +232,36 @@ namespace scene
 		//! Get the currently used ID for identification of changes.
 		/** This shouldn't be used for anything outside the VideoDriver. */
 		virtual u32 getChangedID_Index() const IRR_OVERRIDE {return ChangedID_Index;}
+
+		//! Returns type of the class implementing the IMeshBuffer
+		virtual EMESH_BUFFER_TYPE getType() const  IRR_OVERRIDE
+		{
+			return EMBT_SHARED;
+		}
+
+		//! Create copy of the meshbuffer
+		virtual IMeshBuffer* createClone(int cloneFlags) const IRR_OVERRIDE
+		{
+			SSharedMeshBuffer * clone = new SSharedMeshBuffer();
+
+			if (cloneFlags & ECF_VERTICES)
+			{
+				clone->Vertices = Vertices;
+				clone->BoundingBox = BoundingBox;
+			}
+
+			if (cloneFlags & ECF_INDICES)
+			{
+				clone->Indices = Indices;
+			}
+
+			clone->Material = Material;
+			clone->MappingHintVertex = MappingHintVertex;
+			clone->MappingHintIndex = MappingHintIndex;
+			clone->PrimitiveType = PrimitiveType;
+
+			return clone;
+		}
 
 		//! Material of this meshBuffer
 		video::SMaterial Material;

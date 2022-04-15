@@ -107,7 +107,7 @@
 		<Unit filename="irrString.cpp" />
 		<Unit filename="lightMaps.cpp" />
 		<Unit filename="lights.cpp" />
-        <Unit filename="line2d.cpp" />
+		<Unit filename="line2d.cpp" />
 		<Unit filename="loadTextures.cpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="makeColorKeyTexture.cpp" />
@@ -117,6 +117,7 @@
 		<Unit filename="meshLoaders.cpp" />
 		<Unit filename="meshTransform.cpp" />
 		<Unit filename="mrt.cpp" />
+		<Unit filename="orthoCam.cpp" />
 		<Unit filename="planeMatrix.cpp" />
 		<Unit filename="projectionMatrix.cpp" />
 		<Unit filename="removeCustomAnimator.cpp" />
@@ -127,6 +128,7 @@
 		<Unit filename="serializeAttributes.cpp" />
 		<Unit filename="skinnedMesh.cpp" />
 		<Unit filename="softwareDevice.cpp" />
+		<Unit filename="stencilshadow.cpp" />
 		<Unit filename="terrainSceneNode.cpp" />
 		<Unit filename="testDimension2d.cpp" />
 		<Unit filename="testGeometryCreator.cpp" />
@@ -150,10 +152,6 @@
 		<Unit filename="videoDriver.cpp" />
 		<Unit filename="viewPort.cpp" />
 		<Unit filename="writeImageToFile.cpp" />
-		<Extensions>
-			<code_completion />
-			<debugger />
-			<envvars />
-		</Extensions>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

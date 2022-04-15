@@ -73,7 +73,8 @@ namespace scene
 		virtual IMeshSceneNode* addCubeSceneNode(f32 size=10.0f, ISceneNode* parent=0, s32 id=-1,
 			const core::vector3df& position = core::vector3df(0,0,0),
 			const core::vector3df& rotation = core::vector3df(0,0,0),
-			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f)) IRR_OVERRIDE;
+			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f),
+			ECUBE_MESH_TYPE type=ECMT_1BUF_12VTX_NA) IRR_OVERRIDE;
 
 		//! Adds a sphere scene node to the scene.
 		virtual IMeshSceneNode* addSphereSceneNode(f32 radius=5.0f, s32 polyCount=16, ISceneNode* parent=0, s32 id=-1,

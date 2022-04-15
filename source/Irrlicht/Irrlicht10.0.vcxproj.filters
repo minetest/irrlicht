@@ -137,13 +137,13 @@
     </ClInclude>
     <ClInclude Include="..\..\include\leakHunter.h">
       <Filter>include</Filter>
-    </ClInclude>	
+    </ClInclude>
     <ClInclude Include="..\..\include\IrrlichtDevice.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\irrTypes.h">
       <Filter>include</Filter>
-    </ClInclude>	
+    </ClInclude>
     <ClInclude Include="..\..\include\ITimer.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -1416,7 +1416,7 @@
     </ClInclude>
     <ClInclude Include="CBlit.h">
       <Filter>Irrlicht\video\Null</Filter>
-    </ClInclude>		
+    </ClInclude>
     <ClInclude Include="..\..\include\fast_atof.h">
       <Filter>include\core</Filter>
     </ClInclude>
@@ -1482,6 +1482,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\EDeviceTypes.h">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\EMeshBufferTypes.h">
+      <Filter>include\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,11 +2,11 @@
 
 A tutorial by Max Winkel.
 
-In this tutorial we'll learn how to use splitscreen (e.g. for racing-games)
-with Irrlicht. We'll create a viewport divided
-into 4 parts, with 3 fixed cameras and one user-controlled.
+In this tutorial we'll learn how to use split screen (e.g. for racing-games)
+with Irrlicht. We'll create a viewport divided into 4 parts, with 3 fixed 
+cameras and one user-controlled.
 
-Ok, let's start with the headers (I think there's
+OK, let's start with the headers (I think there's
 nothing to say about it)
 */
 
@@ -23,55 +23,62 @@ using namespace irr;
 using namespace core;
 using namespace video;
 using namespace scene;
+using namespace gui;
 
 /*
 Now we'll define the resolution in a constant for use in
-initializing the device and setting up the viewport. In addition
-we set up a global variable saying splitscreen is active or not.
+initializing the device and setting up the viewport. 
 */
+
 //Resolution
 const int ResX=800;
 const int ResY=600;
-const bool fullScreen=false;
 
 //Use SplitScreen?
 bool SplitScreen=true;
 
+// We allow quitting the with the ESC key
+bool Quit = false;
+
 /*
-Now we need four pointers to our cameras which are created later:
+We need four pointers to our cameras which are created later:
 */
-//cameras
-ICameraSceneNode *camera[4]={0,0,0,0};
+ICameraSceneNode *Camera[4]={0,0,0,0};
+
 /*
 In our event-receiver we switch the SplitScreen-variable,
-whenever the user press the S-key. All other events are sent
-to the FPS camera.
+whenever the user press the S-key. 
+We also allow quitting the application with ESC. 
 */
-
 class MyEventReceiver : public IEventReceiver
 {
 	public:
 		virtual bool OnEvent(const SEvent& event)
 		{
 			//Key S enables/disables SplitScreen
-			if (event.EventType == irr::EET_KEY_INPUT_EVENT &&
-				event.KeyInput.Key == KEY_KEY_S && event.KeyInput.PressedDown)
+			if (event.EventType == irr::EET_KEY_INPUT_EVENT && event.KeyInput.PressedDown )
 			{
-				SplitScreen = !SplitScreen;
-				return true;
+				if ( event.KeyInput.Key == KEY_KEY_S )
+				{
+					SplitScreen = !SplitScreen;
+					return true;
+				}
+				if (event.KeyInput.Key == KEY_ESCAPE )
+				{
+					Quit = true;
+					return true;
+				}
 			}
-			//Send all other events to camera4
-			if (camera[3])
-				return camera[3]->OnEvent(event);
+
 			return false;
 		}
 };
 
 /*
-Ok, now the main-function:
-First, we initialize the device, get the SourceManager and
-VideoDriver, load an animated mesh from .md2 and a map from
-.pk3. Because that's old stuff, I won't explain every step.
+The main-function:
+First, we initialize the device, get some useful variables, 
+load an animated mesh from .md2 and a map from .pk3. 
+Because that's old stuff, I won't explain every step.
 Just take care of the maps position.
 */
 int main()
@@ -84,7 +91,8 @@ int main()
 	//Instance of the EventReceiver
 	MyEventReceiver receiver;
 
-	//Initialise the engine
+	//Initialize the engine
+	const bool fullScreen=false;
 	IrrlichtDevice *device = createDevice(driverType,
 			dimension2du(ResX,ResY), 32, fullScreen,
 			false, false, &receiver);
@@ -93,6 +101,7 @@ int main()
 
 	ISceneManager *smgr = device->getSceneManager();
 	IVideoDriver *driver = device->getVideoDriver();
+	IGUIEnvironment* guienv = device->getGUIEnvironment();
 
 	const io::path mediaPath = getExampleMediaPath();
 
@@ -121,6 +130,9 @@ int main()
 		map_node->setPosition(vector3df(-850,-220,-850));
 	}
 
+	// Add some static text gui element, to give users information and how to show how using the UI works.
+	guienv->addStaticText(L"<S> to switch split screen.\n<ESC> to quit", recti(5,5, 100, 30), false, true, 0, -1, true);
+
 /*
 Now we create our four cameras. One is looking at the model
 from the front, one from the top and one from the side. In
@@ -129,19 +141,19 @@ user.
 */
 	// Create 3 fixed and one user-controlled cameras
 	//Front
-	camera[0] = smgr->addCameraSceneNode(0, vector3df(50,0,0), vector3df(0,0,0));
+	Camera[0] = smgr->addCameraSceneNode(0, vector3df(50,0,0), vector3df(0,0,0));
 	//Top
-	camera[1] = smgr->addCameraSceneNode(0, vector3df(0,50,0), vector3df(0,0,0));
+	Camera[1] = smgr->addCameraSceneNode(0, vector3df(0,50,0), vector3df(0,0,0));
 	//Left
-	camera[2] = smgr->addCameraSceneNode(0, vector3df(0,0,50), vector3df(0,0,0));
+	Camera[2] = smgr->addCameraSceneNode(0, vector3df(0,0,50), vector3df(0,0,0));
 	//User-controlled
-	camera[3] = smgr->addCameraSceneNodeFPS();
-	// don't start at sydney's position
-	if (camera[3])
-		camera[3]->setPosition(core::vector3df(-50,0,-50));
+	Camera[3] = smgr->addCameraSceneNodeFPS();
+	// don't start at Sydney's position
+	if (Camera[3])
+		Camera[3]->setPosition(core::vector3df(-50,0,-50));
 
 /*
-Create a variable for counting the fps and hide the mouse:
+Hide the mouse and create a variable for counting the fps:
 */
 	//Hide mouse
 	device->getCursorControl()->setVisible(false);
@@ -150,12 +162,12 @@ Create a variable for counting the fps and hide the mouse:
 
 /*
 There wasn't much new stuff - till now!
-Only by defining four cameras, the game won't be splitscreen.
-To do this you need several steps:
+The game won't be split the screen just by defining four cameras.
+To do this several steps are needed:
   - Set the viewport to the whole screen
   - Begin a new scene (Clear screen)
 
-  - The following 3 steps are repeated for every viewport in the splitscreen
+  - The following 3 steps are repeated for every viewport in the split screen
     - Set the viewport to the area you wish
     - Activate the camera which should be "linked" with the viewport
     - Render all objects
@@ -168,31 +180,31 @@ To do this you need several steps:
 Sounds a little complicated, but you'll see it isn't:
 */
 
-	while(device->run())
+	while(!Quit && device->run())
 	{
 		// Don't reset mouse cursor when window is not active
-		camera[3]->setInputReceiverEnabled(device->isWindowActive());
+		Camera[3]->setInputReceiverEnabled(device->isWindowActive());
 
 		//Set the viewpoint to the whole screen and begin scene
 		driver->setViewPort(rect<s32>(0,0,ResX,ResY));
 		driver->beginScene(video::ECBF_COLOR | video::ECBF_DEPTH, SColor(255,100,100,100));
-		//If SplitScreen is used
+		//If split screen is used
 		if (SplitScreen)
 		{
 			//Activate camera1
-			smgr->setActiveCamera(camera[0]);
+			smgr->setActiveCamera(Camera[0]);
 			//Set viewpoint to the first quarter (left top)
 			driver->setViewPort(rect<s32>(0,0,ResX/2,ResY/2));
 			//Draw scene
 			smgr->drawAll();
 			//Activate camera2
-			smgr->setActiveCamera(camera[1]);
+			smgr->setActiveCamera(Camera[1]);
 			//Set viewpoint to the second quarter (right top)
 			driver->setViewPort(rect<s32>(ResX/2,0,ResX,ResY/2));
 			//Draw scene
 			smgr->drawAll();
 			//Activate camera3
-			smgr->setActiveCamera(camera[2]);
+			smgr->setActiveCamera(Camera[2]);
 			//Set viewpoint to the third quarter (left bottom)
 			driver->setViewPort(rect<s32>(0,ResY/2,ResX/2,ResY));
 			//Draw scene
@@ -201,15 +213,21 @@ Sounds a little complicated, but you'll see it isn't:
 			driver->setViewPort(rect<s32>(ResX/2,ResY/2,ResX,ResY));
 		}
 		//Activate camera4
-		smgr->setActiveCamera(camera[3]);
+		smgr->setActiveCamera(Camera[3]);
 		//Draw scene
 		smgr->drawAll();
+
+		// Back to whole screen for the UI
+		if (SplitScreen)
+			driver->setViewPort(rect<s32>(0,0,ResX,ResY));
+		guienv->drawAll();
+
 		driver->endScene();
 
 		/*
 		As you can probably see, the image is rendered for every
 		viewport separately. That means, that you'll loose much performance.
-		Ok, if you're asking "How do I have to set the viewport
+		OK, if you're asking "How do I have to set the viewport
 		to get this or that screen?", don't panic. It's really
 		easy: In the rect-function you define 4 coordinates:
 		- X-coordinate of the corner left top
@@ -225,10 +243,8 @@ Sounds a little complicated, but you'll see it isn't:
 		If you didn't fully understand, just play around with the example
 		to check out what happens.
 
-		Now we just view the current fps and shut down the engine,
-		when the user wants to:
+		Last we show the current fps.
 		*/
-		//Get and show fps
 		if (driver->getFPS() != lastFPS)
 		{
 			lastFPS = driver->getFPS();
@@ -244,7 +260,4 @@ Sounds a little complicated, but you'll see it isn't:
 }
 /*
 That's it! Just compile and play around with the program.
-Note: With the S-Key you can switch between using splitscreen
-and not.
 **/
-

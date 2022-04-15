@@ -3,13 +3,11 @@
 This tutorial builds on example 04.Movement which showed how to
 handle keyboard events in Irrlicht.  Here we'll handle mouse events
 and joystick events, if you have a joystick connected and a device
-that supports joysticks.  These are currently Windows, Linux and SDL
+that supports joysticks. These are currently Windows, Linux and SDL
 devices.
 */
 
 #ifdef _MSC_VER
-// We'll define this to stop MSVC complaining about sprintf().
-#define _CRT_SECURE_NO_WARNINGS
 #pragma comment(lib, "Irrlicht.lib")
 #endif
 
@@ -19,8 +17,21 @@ devices.
 using namespace irr;
 
 /*
-Just as we did in example 04.Movement, we'll store the latest state of the
+Just as we did in example 04.Movement with keys, we'll store the latest state of the
 mouse and the first joystick, updating them as we receive events.
+
+Note that instead of working with events we could work with CursorControl, aka
+device->getCursorControl(), to get the current mouse state.
+With events you get every mouse movement since the last device->run(), 
+while CursorControl will always return the current state at the moment you check it.
+CursorControl will be able to get cursor positions even if the mouse is outside the 
+active Window, while the behavior of mouse-events for this is a bit system dependent 
+and also can be influenced by system calls for mouse-grabbing.
+Events tend to work on more devices (especially mobile devices) where CursorControl might
+not be available. Also on some systems (X11) checking the mouse position with CursorControl
+can be rather slow compared to events.
+Often it depends a bit on the type of game which solution is preferable, just be aware
+that you have some choice for this.
 */
 class MyEventReceiver : public IEventReceiver
 {
@@ -30,7 +41,8 @@ public:
 	{
 		core::position2di Position;
 		bool LeftButtonDown;
-		SMouseState() : LeftButtonDown(false) { }
+		bool WasMouseMoved;
+		SMouseState() : LeftButtonDown(false), WasMouseMoved(false) { }
 	} MouseState;
 
 	// This is the one method that we have to implement
@@ -52,6 +64,7 @@ public:
 			case EMIE_MOUSE_MOVED:
 				MouseState.Position.X = event.MouseInput.X;
 				MouseState.Position.Y = event.MouseInput.Y;
+				MouseState.WasMouseMoved = true;
 				break;
 
 			default:
@@ -63,7 +76,6 @@ public:
 		// The state of each connected joystick is sent to us
 		// once every run() of the Irrlicht device.  Store the
 		// state of the first joystick, ignoring other joysticks.
-		// This is currently only supported on Windows and Linux.
 		if (event.EventType == irr::EET_JOYSTICK_INPUT_EVENT
 			&& event.JoystickEvent.Joystick == 0)
 		{
@@ -83,9 +95,9 @@ public:
 		return MouseState;
 	}
 
-
-	MyEventReceiver()
+	void ResetMouseMoved()
 	{
+		MouseState.WasMouseMoved = false;
 	}
 
 private:
@@ -94,11 +106,9 @@ private:
 
 
 /*
-The event receiver for keeping the pressed keys is ready, the actual responses
+The event receiver for remembering the events is ready, the actual responses
 will be made inside the render loop, right before drawing the scene. So lets
-just create an irr::IrrlichtDevice and the scene node we want to move. We also
-create some other additional scene nodes, to show that there are also some
-different possibilities to move and animate scene nodes.
+just create an irr::IrrlichtDevice and the scene node we want to move.
 */
 int main()
 {
@@ -117,6 +127,11 @@ int main()
 		return 1; // could not create selected driver.
 
 
+	/*
+		Joysticks have to be activated to generate events.
+		So lets's do that and also print out some info to the console
+		about all the joysticks we found and can use.
+	*/
 	core::array<SJoystickInfo> joystickInfo;
 	if(device->activateJoysticks(joystickInfo))
 	{
@@ -153,6 +168,7 @@ int main()
 		std::cout << "Joystick support is not enabled." << std::endl;
 	}
 
+	// Set some window caption text
 	core::stringw tmp = L"Irrlicht Joystick Example (";
 	tmp += joystickInfo.size();
 	tmp += " joysticks)";
@@ -179,20 +195,24 @@ int main()
 	camera->setPosition(core::vector3df(0, 0, -10));
 
 	// As in example 04, we'll use framerate independent movement.
-	u32 then = device->getTimer()->getTime();
+	u32 then = device->getTimer()->getRealTime();
 	const f32 MOVEMENT_SPEED = 5.f;
+
+	// Ignore all events which happened until now.
+	// Like mouse events triggered while we chose our driver.
+	device->clearSystemMessages();
 
 	while(device->run())
 	{
 		// Work out a frame delta time.
-		const u32 now = device->getTimer()->getTime();
+		const u32 now = device->getTimer()->getRealTime();
 		const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
 		then = now;
 
 		bool movedWithJoystick = false;
 		core::vector3df nodePosition = node->getPosition();
 
-		if(joystickInfo.size() > 0)
+		if(joystickInfo.size() > 0)	// if we have at least one joystick
 		{
 			f32 moveHorizontal = 0.f; // Range is -1.f for full left to +1.f for full right
 			f32 moveVertical = 0.f; // -1.f for full down to +1.f for full up.
@@ -237,11 +257,14 @@ int main()
 				nodePosition.X += MOVEMENT_SPEED * frameDeltaTime * moveHorizontal;
 				nodePosition.Y += MOVEMENT_SPEED * frameDeltaTime * moveVertical;
 				movedWithJoystick = true;
+
+				// We only go back to following mouse when it moves again
+				receiver.ResetMouseMoved();
 			}
 		}
 
 		// If the arrow node isn't being moved with the joystick, then have it follow the mouse cursor.
-		if(!movedWithJoystick)
+		if (!movedWithJoystick && receiver.GetMouseState().WasMouseMoved)
 		{
 			// Create a ray through the mouse cursor.
 			core::line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(
@@ -257,9 +280,13 @@ int main()
 				const f32 availableMovement = MOVEMENT_SPEED * frameDeltaTime;
 
 				if(toMousePosition.getLength() <= availableMovement)
+				{
 					nodePosition = mousePosition; // Jump to the final position
+				}
 				else
+				{
 					nodePosition += toMousePosition.normalize() * availableMovement; // Move towards it
+				}
 			}
 		}
 

@@ -145,6 +145,18 @@ namespace scene
 
 		virtual const core::aabbox3d<f32>& getTransformedBillboardBoundingBox(const irr::scene::ICameraSceneNode* camera) IRR_OVERRIDE;
 
+		//! Get the amount of mesh buffers.
+		virtual u32 getMeshBufferCount() const IRR_OVERRIDE
+		{
+			return Mesh ? Mesh->getMeshBufferCount() : 0;
+		}
+
+		//! Get pointer to the mesh buffer.
+		virtual IMeshBuffer* getMeshBuffer(u32 nr) const IRR_OVERRIDE
+		{
+			return Mesh ? Mesh->getMeshBuffer(nr) : 0;
+		}
+
 	protected:
 		void updateMesh(const irr::scene::ICameraSceneNode* camera);
 

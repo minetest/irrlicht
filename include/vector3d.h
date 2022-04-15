@@ -54,8 +54,8 @@ namespace core
 
 		vector3d<T> operator/(const vector3d<T>& other) const { return vector3d<T>(X / other.X, Y / other.Y, Z / other.Z); }
 		vector3d<T>& operator/=(const vector3d<T>& other) { X/=other.X; Y/=other.Y; Z/=other.Z; return *this; }
-		vector3d<T> operator/(const T v) const { T i=(T)1.0/v; return vector3d<T>(X * i, Y * i, Z * i); }
-		vector3d<T>& operator/=(const T v) { T i=(T)1.0/v; X*=i; Y*=i; Z*=i; return *this; }
+		vector3d<T> operator/(const T v) const { return vector3d<T>(X/v, Y/v, Z/v); }
+		vector3d<T>& operator/=(const T v) { X/=v; Y/=v; Z/=v; return *this; }
 
 		T& operator [](u32 index)
 		{

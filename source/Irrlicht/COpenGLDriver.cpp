@@ -1446,7 +1446,7 @@ void COpenGLDriver::draw2DImage(const video::ITexture* texture, const core::rect
 }
 
 
-void COpenGLDriver::draw2DImage(const video::ITexture* texture, u32 layer, bool flip)
+void COpenGLDriver::draw2DImageQuad(const video::ITexture* texture, u32 layer, bool flip)
 {
 	if (!texture || !CacheHandler->getTextureCache().set(0, texture))
 		return;
@@ -3971,7 +3971,7 @@ IImage* COpenGLDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RE
 	if (format==video::ECF_UNKNOWN)
 		format=getColorFormat();
 
-	// TODO: Maybe we could support more formats (floating point and some of those beyond ECF_R8), didn't really try yet 
+	// TODO: Maybe we could support more formats (floating point and some of those beyond ECF_R8), didn't really try yet
 	if (IImage::isCompressedFormat(format) || IImage::isDepthFormat(format) || IImage::isFloatingPointFormat(format) || format >= ECF_R8)
 		return 0;
 

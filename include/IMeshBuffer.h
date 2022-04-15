@@ -12,6 +12,7 @@
 #include "SVertexIndex.h"
 #include "EHardwareBufferFlags.h"
 #include "EPrimitiveTypes.h"
+#include "EMeshBufferTypes.h"
 
 namespace irr
 {
@@ -71,11 +72,17 @@ namespace scene
 		virtual video::E_INDEX_TYPE getIndexType() const =0;
 
 		//! Get access to indices.
-		/** \return Pointer to indices array. */
+		/** Note: For historical reasons data pointer is of type u16*, but
+		for an index type of EIT_32BIT the index data is using an u32 array
+		and therefore needs a cast to u32*.
+		\return Pointer to indices array. */
 		virtual const u16* getIndices() const = 0;
 
 		//! Get access to indices.
-		/** \return Pointer to indices array. */
+		/** Note: For historical reasons data pointer is of type u16*, but
+		for an index type of EIT_32BIT the index data is using an u32 array
+		and therefore needs a cast to u32*.
+		\return Pointer to indices array. */
 		virtual u16* getIndices() = 0;
 
 		//! Get amount of indices in this meshbuffer.
@@ -175,6 +182,24 @@ namespace scene
 			}
 			return 0;
 		}
+
+		//! Returns type of the class implementing the IMeshBuffer
+		/** \return The class type of this meshbuffer. */
+		virtual EMESH_BUFFER_TYPE getType() const
+		{
+			return EMBT_UNKNOWN;
+		}
+
+		//! Bitflags with options for cloning
+		enum ECloneFlags
+		{
+			ECF_VERTICES = 1,	//! clone the vertices (or copy pointer for SSharedMeshBuffer)
+			ECF_INDICES = 2		//! clone the indices
+		};
+
+		//! Create a new object with a copy of the meshbuffer
+		//\param cloneFlags A combination of ECloneFlags
+		virtual IMeshBuffer* createClone(int cloneFlags=ECF_VERTICES|ECF_INDICES) const = 0;
 
 	};
 

@@ -1192,7 +1192,7 @@ void CD3D9Driver::removeOcclusionQuery(scene::ISceneNode* node)
 	if (index != -1)
 	{
 		if (OcclusionQueries[index].PID != 0)
-			reinterpret_cast<IDirect3DQuery9*>(OcclusionQueries[index].PID)->Release();
+			static_cast<IDirect3DQuery9*>(OcclusionQueries[index].PID)->Release();
 		CNullDriver::removeOcclusionQuery(node);
 	}
 }
@@ -1210,10 +1210,10 @@ void CD3D9Driver::runOcclusionQuery(scene::ISceneNode* node, bool visible)
 	if (index != -1)
 	{
 		if (OcclusionQueries[index].PID)
-			reinterpret_cast<IDirect3DQuery9*>(OcclusionQueries[index].PID)->Issue(D3DISSUE_BEGIN);
+			static_cast<IDirect3DQuery9*>(OcclusionQueries[index].PID)->Issue(D3DISSUE_BEGIN);
 		CNullDriver::runOcclusionQuery(node,visible);
 		if (OcclusionQueries[index].PID)
-			reinterpret_cast<IDirect3DQuery9*>(OcclusionQueries[index].PID)->Issue(D3DISSUE_END);
+			static_cast<IDirect3DQuery9*>(OcclusionQueries[index].PID)->Issue(D3DISSUE_END);
 	}
 }
 
@@ -1232,12 +1232,12 @@ void CD3D9Driver::updateOcclusionQuery(scene::ISceneNode* node, bool block)
 		bool available = block?true:false;
 		int tmp=0;
 		if (!block)
-			available=(reinterpret_cast<IDirect3DQuery9*>(OcclusionQueries[index].PID)->GetData(&tmp, sizeof(DWORD), 0)==S_OK);
+			available=(static_cast<IDirect3DQuery9*>(OcclusionQueries[index].PID)->GetData(&tmp, sizeof(DWORD), 0)==S_OK);
 		else
 		{
 			do
 			{
-				HRESULT hr = reinterpret_cast<IDirect3DQuery9*>(OcclusionQueries[index].PID)->GetData(&tmp, sizeof(DWORD), D3DGETDATA_FLUSH);
+				HRESULT hr = static_cast<IDirect3DQuery9*>(OcclusionQueries[index].PID)->GetData(&tmp, sizeof(DWORD), D3DGETDATA_FLUSH);
 				available = (hr == S_OK);
 				if (hr!=S_FALSE)
 					break;
@@ -2946,7 +2946,7 @@ bool CD3D9Driver::reset()
 	{
 		if (OcclusionQueries[i].PID)
 		{
-			reinterpret_cast<IDirect3DQuery9*>(OcclusionQueries[i].PID)->Release();
+			static_cast<IDirect3DQuery9*>(OcclusionQueries[i].PID)->Release();
 			OcclusionQueries[i].PID=0;
 		}
 	}

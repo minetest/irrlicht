@@ -234,9 +234,10 @@ public:
 	//! Set (copy) data from given memory block
 	/** \param newData data to set, must have newSize elements
 	\param newSize Amount of elements in newData
-	\param canShrink When true we reallocate the array even it can shrink. 
-	May reduce memory usage, but call is more whenever size changes.
 	\param newDataIsSorted Info if you pass sorted/unsorted data
+	\param canShrink Specifies whether the array is reallocated even if
+	enough space is available. Setting this flag to false can speed up
+	array usage, but may use more memory than required by the data.
 	*/
 	void set_data(const T* newData, u32 newSize, bool newDataIsSorted=false, bool canShrink=false)
 	{
@@ -299,22 +300,27 @@ public:
 			return *this;
 		strategy = other.strategy;
 
+		// (TODO: we could probably avoid re-allocations of data when (allocated < other.allocated)
+
 		if (data)
 			clear();
-
-		//if (allocated < other.allocated)
-		if (other.allocated == 0)
-			data = 0;
-		else
-			data = allocator.allocate(other.allocated); // new T[other.allocated];
 
 		used = other.used;
 		free_when_destroyed = true;
 		is_sorted = other.is_sorted;
 		allocated = other.allocated;
 
-		for (u32 i=0; i<other.used; ++i)
-			allocator.construct(&data[i], other.data[i]); // data[i] = other.data[i];
+		if (other.allocated == 0)
+		{
+			data = 0;
+		}
+		else
+		{
+			data = allocator.allocate(other.allocated); // new T[other.allocated];
+
+			for (u32 i=0; i<other.used; ++i)
+				allocator.construct(&data[i], other.data[i]); // data[i] = other.data[i];
+		}
 
 		return *this;
 	}

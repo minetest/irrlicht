@@ -55,6 +55,9 @@ public:
 	//! copies this surface into another, scaling it to fit, applying a box filter
 	virtual void copyToScalingBoxFilter(IImage* target, s32 bias = 0, bool blend = false) IRR_OVERRIDE;
 
+	//! Flips (mirrors) the image in one or two directions
+	virtual void flip(bool topBottom, bool leftRight) IRR_OVERRIDE;
+
 	//! fills the surface with given color
 	virtual void fill(const SColor &color) IRR_OVERRIDE;
 

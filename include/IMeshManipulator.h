@@ -229,9 +229,7 @@ namespace scene
 				u8 axis, const core::vector3df& offset) const=0;
 
 		//! Clones a static IMesh into a modifiable SMesh.
-		/** All meshbuffers in the returned SMesh
-		are of type SMeshBuffer or SMeshBufferLightMap.
-		\param mesh Mesh to copy.
+		/** \param mesh Mesh to copy.
 		\return Cloned mesh. If you no longer need the
 		cloned mesh, you should call SMesh::drop(). See
 		IReferenceCounted::drop() for more information. */

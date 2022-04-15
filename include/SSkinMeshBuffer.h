@@ -383,6 +383,41 @@ struct SSkinMeshBuffer : public IMeshBuffer
 
 	virtual u32 getChangedID_Index() const IRR_OVERRIDE {return ChangedID_Index;}
 
+	//! Returns type of the class implementing the IMeshBuffer
+	virtual EMESH_BUFFER_TYPE getType() const  IRR_OVERRIDE
+	{
+		return EMBT_SKIN;
+	}
+
+	//! Create copy of the meshbuffer
+	virtual IMeshBuffer* createClone(int cloneFlags) const IRR_OVERRIDE
+	{
+		SSkinMeshBuffer* clone = new SSkinMeshBuffer(VertexType);
+
+		if (cloneFlags & ECF_VERTICES)
+		{
+			clone->Vertices_Tangents = Vertices_Tangents;
+			clone->Vertices_2TCoords = Vertices_2TCoords;
+			clone->Vertices_Standard = Vertices_Standard;
+
+			clone->BoundingBox = BoundingBox;
+			clone->BoundingBoxNeedsRecalculated = BoundingBoxNeedsRecalculated;
+		}
+
+		if (cloneFlags & ECF_INDICES)
+		{
+			clone->Indices = Indices;
+		}
+
+		clone->Transformation = Transformation;
+		clone->Material = getMaterial();
+		clone->PrimitiveType = PrimitiveType;
+		clone->MappingHint_Vertex = MappingHint_Vertex;
+		clone->MappingHint_Index = MappingHint_Index;
+
+		return clone;
+	}
+
 	//! Call this after changing the positions of any vertex.
 	void boundingBoxNeedsRecalculated(void) { BoundingBoxNeedsRecalculated = true; }
 

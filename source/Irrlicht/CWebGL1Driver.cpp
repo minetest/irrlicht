@@ -290,7 +290,7 @@ void CWebGL1Driver::draw2DImage(const video::ITexture* texture, const core::rect
 	testGLError();
 }
 
-void CWebGL1Driver::draw2DImage(const video::ITexture* texture, u32 layer, bool flip)
+void CWebGL1Driver::draw2DImageQuad(const video::ITexture* texture, u32 layer, bool flip)
 {
 	if (!texture )
 		return;

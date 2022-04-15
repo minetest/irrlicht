@@ -12,7 +12,7 @@ namespace irr
 {
 namespace scene
 {
-	//! Template implementation of the IMeshBuffer interface
+	//! Template implementation of the IMeshBuffer interface for 16-bit buffers
 	template <class T>
 	class CMeshBuffer : public IMeshBuffer
 	{
@@ -193,8 +193,8 @@ namespace scene
 			Vertices.reallocate(vertexCount+numVertices);
 			for (i=0; i<numVertices; ++i)
 			{
-				Vertices.push_back(reinterpret_cast<const T*>(vertices)[i]);
-				BoundingBox.addInternalPoint(reinterpret_cast<const T*>(vertices)[i].Pos);
+				Vertices.push_back(static_cast<const T*>(vertices)[i]);
+				BoundingBox.addInternalPoint(static_cast<const T*>(vertices)[i].Pos);
 			}
 
 			Indices.reallocate(getIndexCount()+numIndices);
@@ -286,6 +286,41 @@ namespace scene
 		/** This shouldn't be used for anything outside the VideoDriver. */
 		virtual u32 getChangedID_Index() const IRR_OVERRIDE {return ChangedID_Index;}
 
+		//! Returns type of the class implementing the IMeshBuffer
+		virtual EMESH_BUFFER_TYPE getType() const  IRR_OVERRIDE
+		{
+			return getTypeT();
+		}
+
+		//! Create copy of the meshbuffer
+		virtual IMeshBuffer* createClone(int cloneFlags) const IRR_OVERRIDE
+		{
+			CMeshBuffer<T> * clone = new CMeshBuffer<T>();
+
+			if (cloneFlags & ECF_VERTICES)
+			{
+				clone->Vertices = Vertices;
+				clone->BoundingBox = BoundingBox;
+			}
+
+			if (cloneFlags & ECF_INDICES)
+			{
+				clone->Indices = Indices;
+			}
+
+			clone->PrimitiveType = PrimitiveType;
+			clone->Material = getMaterial();
+			clone->MappingHint_Vertex = MappingHint_Vertex;
+			clone->MappingHint_Index = MappingHint_Index;
+
+			return clone;
+		}
+
+		//! Returns type of the class implementing the IMeshBuffer for template specialization
+		// Minor note: Some compilers (VS) allow directly specializing the virtual function,
+		// but this will fail on other compilers (GCC). So using a helper function.
+		EMESH_BUFFER_TYPE getTypeT() const;
+
 		u32 ChangedID_Vertex;
 		u32 ChangedID_Index;
 
@@ -311,6 +346,25 @@ namespace scene
 	typedef CMeshBuffer<video::S3DVertex2TCoords> SMeshBufferLightMap;
 	//! Meshbuffer with vertices having tangents stored, e.g. for normal mapping
 	typedef CMeshBuffer<video::S3DVertexTangents> SMeshBufferTangents;
+
+	//! partial specialization to return types
+	template <>
+	inline EMESH_BUFFER_TYPE CMeshBuffer<video::S3DVertex>::getTypeT() const
+	{
+		return EMBT_STANDARD;
+	}
+	template <>
+	inline EMESH_BUFFER_TYPE CMeshBuffer<video::S3DVertex2TCoords>::getTypeT() const
+	{
+		return EMBT_LIGHTMAP;
+	}
+	template <>
+	inline EMESH_BUFFER_TYPE CMeshBuffer<video::S3DVertexTangents>::getTypeT() const
+	{
+		return EMBT_TANGENTS;
+	}
+
+
 } // end namespace scene
 } // end namespace irr
 

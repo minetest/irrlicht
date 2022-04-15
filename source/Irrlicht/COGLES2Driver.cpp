@@ -1099,7 +1099,7 @@ COGLES2Driver::~COGLES2Driver()
 		testGLError(__LINE__);
 	}
 
-	void COGLES2Driver::draw2DImage(const video::ITexture* texture, u32 layer, bool flip)
+	void COGLES2Driver::draw2DImageQuad(const video::ITexture* texture, u32 layer, bool flip)
 	{
 		if (!texture)
 			return;

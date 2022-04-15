@@ -347,6 +347,60 @@ void CImage::fill(const SColor &color)
 	memset32( Data, c, getImageDataSizeInBytes() );
 }
 
+void CImage::flip(bool topBottom, bool leftRight)
+{
+	if ( !topBottom && !leftRight)
+		return;
+
+	const core::dimension2du dim(getDimension());
+	if ( dim.Width == 0 || dim.Height == 0 )
+		return;
+
+	u8* data = (u8*)getData();
+	if (!data) 
+		return;
+
+	const u32 bpp = getBytesPerPixel();
+	const u32 pitch = getPitch();
+
+	if ( topBottom )
+	{
+		for ( u32 i=0; i<dim.Height/2; ++i)
+		{
+			// Reverse bottom/top lines
+			u8* l1 = data+i*pitch;
+			u8* l2 = data+(dim.Height-1-i)*pitch;
+			for ( u32 b=0; b<pitch; ++b)
+			{
+				irr::u8 dummy = *l1;
+				*l1 = *l2;
+				*l2 = dummy;
+				++l1;
+				++l2;
+			}
+		}
+	}
+	if ( leftRight )
+	{
+		for ( u32 i=0; i<dim.Height; ++i)
+		{
+			// Reverse left/right for each line
+			u8* l1 = data+i*pitch;
+			u8* l2 = l1+(dim.Width-1)*bpp;
+			for ( u32 p=0; p<dim.Width/2; ++p)
+			{
+				for ( u32 b=0; b<bpp; ++b)
+				{
+					irr::u8 dummy = l1[b];
+					l1[b] = l2[b];
+					l2[b] = dummy;
+				}
+				l1 += bpp;
+				l2 -= bpp;
+			}
+		}
+	}
+}
 
 //! get a filtered pixel
 inline SColor CImage::getPixelBox( s32 x, s32 y, s32 fx, s32 fy, s32 bias ) const

@@ -46,7 +46,7 @@ enum eItemSubGroup
 	CHAINGUN,
 };
 
-//! aplly a special effect to the shader
+//! apply a special effect to the shader
 enum eItemSpecialEffect
 {
 	SPECIAL_SFX_NONE		= 0,
@@ -55,7 +55,7 @@ enum eItemSpecialEffect
 	SPECIAL_SFX_ROTATE_1	= 4,
 };
 
-// a List for defining a model
+// a list for defining a model
 struct SItemElement
 {
 	const c8 *key;
@@ -124,11 +124,11 @@ funcptr_createDeviceEx load_createDeviceEx ( const c8 * filename);
 
 
 /*
-	get the current collision respone camera animator
+	get the current collision response camera animator
 */
 ISceneNodeAnimatorCollisionResponse* camCollisionResponse( IrrlichtDevice * device );
 
-//! internal Animation
+//! internal animation
 enum eTimeFireFlag
 {
 	FIRED = 1,

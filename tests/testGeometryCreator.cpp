@@ -77,7 +77,7 @@ bool testGeometryCreator(void)
 	{
 		smgr->drawAll();
 		driver->endScene();
-		result = takeScreenshotAndCompareAgainstReference(driver, "-testGeometryCreator.png", 99.994f);
+		result = takeScreenshotAndCompareAgainstReference(driver, "-testGeometryCreator.png", 99.989f);
 	}
 
 	smgr->clear();

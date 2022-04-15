@@ -616,7 +616,7 @@ namespace video
 		virtual bool writeImageToFile(IImage* image, io::IWriteFile * file, u32 param = 0) IRR_OVERRIDE;
 
 		//! Sets the name of a material renderer.
-		virtual void setMaterialRendererName(s32 idx, const char* name) IRR_OVERRIDE;
+		virtual void setMaterialRendererName(u32 idx, const char* name) IRR_OVERRIDE;
 
 		//! Swap the material renderers used for certain id's
 		virtual void swapMaterialRenderers(u32 idx1, u32 idx2, bool swapNames) IRR_OVERRIDE;
@@ -710,6 +710,7 @@ namespace video
 		bool checkPrimitiveCount(u32 prmcnt) const;
 
 		bool checkImage(const core::array<IImage*>& image) const;
+		bool checkImage(ECOLOR_FORMAT format, const core::dimension2du& size) const;
 
 		// adds a material renderer and drops it afterwards. To be used for internal creation
 		s32 addAndDropMaterialRenderer(IMaterialRenderer* m);

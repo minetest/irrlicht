@@ -148,7 +148,10 @@ namespace video
 			const core::rect<s32>& sourceRect, const core::rect<s32>* clipRect = 0,
 			const video::SColor* const colors = 0, bool useAlphaChannelOfTexture = false) IRR_OVERRIDE;
 
-		virtual void draw2DImage(const video::ITexture* texture, u32 layer, bool flip);
+		// Was some helper function used in previous texture locking. Currently not accessible for users
+		// and also no longer needed internally (unless we switch back to old texture lock code).
+		// It seems to draw the texture to a fullscreen quad. Also allows drawing one side of a cubemap texture.
+		void draw2DImageQuad(const video::ITexture* texture, u32 layer, bool flip);
 
 		//! draws a set of 2d images, using a color and the alpha channel of the
 		//! texture if desired.

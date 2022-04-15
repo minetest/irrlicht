@@ -73,12 +73,16 @@ void COSOperator::copyToClipboard(const c8* text) const
 	char * buffer;
 
 	clipbuffer = GlobalAlloc(GMEM_DDESHARE, strlen(text)+1);
-	buffer = (char*)GlobalLock(clipbuffer);
-
-	strcpy(buffer, text);
-
-	GlobalUnlock(clipbuffer);
-	SetClipboardData(CF_TEXT, clipbuffer);
+	if ( clipbuffer )
+	{
+		buffer = (char*)GlobalLock(clipbuffer);
+		if ( buffer )
+		{
+			strcpy(buffer, text);
+		}
+		GlobalUnlock(clipbuffer);
+		SetClipboardData(CF_TEXT, clipbuffer);
+	}
 	CloseClipboard();
 
 #elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)

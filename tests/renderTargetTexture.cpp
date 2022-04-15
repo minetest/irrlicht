@@ -45,14 +45,13 @@ static bool testWith2DImage(video::E_DRIVER_TYPE driverType)
 	//draw the image :
 	driver->beginScene(video::ECBF_COLOR | video::ECBF_DEPTH, video::SColor (255, 200, 200, 200));
 	driver->draw2DImage (image,
-		       core::rect < s32 >
-		       (64 - image->getSize ().Width / 2,
-			64 - image->getSize ().Height / 2,
-			64 + image->getSize ().Width / 2,
-			64 + image->getSize ().Height / 2),
-		       core::rect < s32 > (0, 0, image->getSize ().Width,
-					   image->getSize ().Height), 0, colors,
-		       true);
+				core::recti(
+				64 - image->getOriginalSize().Width / 2,
+				64 - image->getOriginalSize().Height / 2,
+				64 + image->getOriginalSize().Width / 2,
+				64 + image->getOriginalSize().Height / 2),
+				core::recti(image->getOriginalSize()), 
+				0, colors, true);
 	driver->endScene ();
 
 	//then create a model and apply to it the RTT Texture
@@ -76,14 +75,13 @@ static bool testWith2DImage(video::E_DRIVER_TYPE driverType)
 
 		//draw img
 		driver->draw2DImage (image,
-				   core::rect < s32 >
-				   (64 - image->getSize ().Width / 2,
-				    64 - image->getSize ().Height / 2,
-				    64 + image->getSize ().Width / 2,
-				    64 + image->getSize ().Height / 2),
-				   core::rect < s32 > (0, 0, image->getSize ().Width,
-						       image->getSize ().Height), 0,
-				   colors, true);
+				   core::recti(
+					64 - image->getOriginalSize().Width / 2,
+				    64 - image->getOriginalSize().Height / 2,
+				    64 + image->getOriginalSize().Width / 2,
+				    64 + image->getOriginalSize().Height / 2),
+					core::recti(image->getOriginalSize()), 
+					0, colors, true);
 
 		//call this is important :
 		//if not called, the bug won't appear
@@ -243,7 +241,7 @@ bool rttAndText(video::E_DRIVER_TYPE driverType)
 
 	driver->beginScene(0, video::SColor(255,255, 255, 255));
 	driver->setRenderTargetEx(renderTarget, video::ECBF_COLOR | video::ECBF_DEPTH, video::SColor(255,255,0,255));
-	driver->draw2DImage(driver->getTexture("../media/fireball.bmp"), core::recti(0, 0, renderTargetTex->getSize().Width, renderTargetTex->getSize().Height), core::recti(0, 0, 64, 64));
+	driver->draw2DImage(driver->getTexture("../media/fireball.bmp"), core::recti(renderTargetTex->getOriginalSize()), core::recti(0, 0, 64, 64));
 	guienv->getBuiltInFont()->draw(L"OMGGG =!", core::rect<s32>(120, 100, 256, 256), video::SColor(255, 0, 0, 255));
 	driver->setRenderTargetEx(0, 0, 0);
 	driver->endScene();

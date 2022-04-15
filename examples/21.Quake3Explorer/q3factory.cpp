@@ -301,7 +301,7 @@ const SItemElement * getItemElement ( const stringc& key )
 }
 
 /*!
-	Quake3 Model Factory.
+	Quake3 model factory.
 	Takes the mesh buffers and creates scenenodes for their associated shaders
 */
 void Q3ShaderFactory (	Q3LevelLoadParameter &loadParam,
@@ -399,7 +399,7 @@ void Q3ShaderFactory (	Q3LevelLoadParameter &loadParam,
 			sceneNodeID += 1;
 		}
 
-		// show Debug Shader Name
+		// show debug shader name
 		if ( showShaderName && node )
 		{
 			swprintf_irr ( (wchar_t*) buf, 64, L"%hs:%d", node->getName(),node->getID() );
@@ -413,7 +413,7 @@ void Q3ShaderFactory (	Q3LevelLoadParameter &loadParam,
 			sceneNodeID += 1;
 		}
 
-		// create Portal Rendertargets
+		// create portal rendertargets
 		if ( shader )
 		{
 			const SVarGroup *group = shader->getGroup(1);
@@ -496,7 +496,7 @@ void Q3ShaderFactory (	Q3LevelLoadParameter &loadParam,
 
 
 /*!
-	create Items from Entity
+	create items from entity
 */
 void Q3ModelFactory (	Q3LevelLoadParameter &loadParam,
 						IrrlichtDevice *device,
@@ -513,7 +513,7 @@ void Q3ModelFactory (	Q3LevelLoadParameter &loadParam,
 
 
 	char buf[128];
-	const SVarGroup *group;
+	const SVarGroup *group = 0;
 	IEntity search;
 	s32 index;
 	s32 lastIndex;
@@ -531,12 +531,12 @@ void Q3ModelFactory (	Q3LevelLoadParameter &loadParam,
 	}
 	fclose ( f );
 */
-	IAnimatedMeshMD3* model;
-	SMD3Mesh * mesh;
-	const SMD3MeshBuffer *meshBuffer;
-	IMeshSceneNode* node;
-	ISceneNodeAnimator* anim;
-	const IShader *shader;
+	IAnimatedMeshMD3* model = 0;
+	SMD3Mesh * mesh = 0;
+	const SMD3MeshBuffer *meshBuffer = 0;
+	IMeshSceneNode* node = 0;
+	ISceneNodeAnimator* anim = 0;
+	const IShader *shader = 0;
 	u32 pos;
 	vector3df p;
 	u32 nodeCount = 0;
@@ -546,7 +546,7 @@ void Q3ModelFactory (	Q3LevelLoadParameter &loadParam,
 	if ( showShaderName )
 		font = device->getGUIEnvironment()->getFont("fontlucida.png");
 
-	const SItemElement *itemElement;
+	const SItemElement *itemElement = 0;
 
 	// walk list
 	for ( index = 0; (u32) index < entity.size(); ++index )
@@ -706,7 +706,7 @@ s32 Q3StartPosition (	IQ3LevelMesh* mesh,
 
 	u32 parsepos;
 
-	const SVarGroup *group;
+	const SVarGroup *group = 0;
 	group = entityList[ index ].getGroup(1);
 
 	parsepos = 0;
@@ -802,7 +802,7 @@ ISceneNodeAnimatorCollisionResponse* camCollisionResponse( IrrlichtDevice * devi
 }
 
 
-//! internal Animation
+//! internal animation
 void setTimeFire ( TimeFire *t, u32 delta, u32 flags )
 {
 	t->flags = flags;

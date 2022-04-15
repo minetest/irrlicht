@@ -206,7 +206,7 @@ IMesh * CAnimatedMeshSceneNode::getMeshForCurrentFrame()
 		// As multiple scene nodes may be sharing the same skinned mesh, we have to
 		// re-animate it every frame to ensure that this node gets the mesh that it needs.
 
-		CSkinnedMesh* skinnedMesh = reinterpret_cast<CSkinnedMesh*>(Mesh);
+		CSkinnedMesh* skinnedMesh = static_cast<CSkinnedMesh*>(Mesh);
 
 		if (JointMode == EJUOR_CONTROL)//write to mesh
 			skinnedMesh->transferJointsToMesh(JointChildSceneNodes);
@@ -949,7 +949,7 @@ void CAnimatedMeshSceneNode::animateJoints(bool CalculateAbsolutePositions)
 		checkJoints();
 		const f32 frame = getFrameNr(); //old?
 
-		CSkinnedMesh* skinnedMesh=reinterpret_cast<CSkinnedMesh*>(Mesh);
+		CSkinnedMesh* skinnedMesh=static_cast<CSkinnedMesh*>(Mesh);
 
 		skinnedMesh->transferOnlyJointsHintsToMesh( JointChildSceneNodes );
 		skinnedMesh->animateMesh(frame, 1.0f);

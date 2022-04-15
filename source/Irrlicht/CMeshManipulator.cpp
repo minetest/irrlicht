@@ -577,8 +577,7 @@ void CMeshManipulator::makePlanarTextureMapping(scene::IMesh* mesh, f32 resoluti
 }
 
 
-//! Clones a static IMesh into a modifyable SMesh.
-// not yet 32bit
+//! Clones a static IMesh into a modifiable SMesh.
 SMesh* CMeshManipulator::createMeshCopy(scene::IMesh* mesh) const
 {
 	if (!mesh)
@@ -590,66 +589,10 @@ SMesh* CMeshManipulator::createMeshCopy(scene::IMesh* mesh) const
 
 	for ( u32 b=0; b<meshBufferCount; ++b)
 	{
-		const IMeshBuffer* const mb = mesh->getMeshBuffer(b);
-		switch(mb->getVertexType())
-		{
-		case video::EVT_STANDARD:
-			{
-				SMeshBuffer* buffer = new SMeshBuffer();
-				buffer->Material = mb->getMaterial();
-				const u32 vcount = mb->getVertexCount();
-				buffer->Vertices.reallocate(vcount);
-				video::S3DVertex* vertices = (video::S3DVertex*)mb->getVertices();
-				for (u32 i=0; i < vcount; ++i)
-					buffer->Vertices.push_back(vertices[i]);
-				const u32 icount = mb->getIndexCount();
-				buffer->Indices.reallocate(icount);
-				const u16* indices = mb->getIndices();
-				for (u32 i=0; i < icount; ++i)
-					buffer->Indices.push_back(indices[i]);
-				clone->addMeshBuffer(buffer);
-				buffer->drop();
-			}
-			break;
-		case video::EVT_2TCOORDS:
-			{
-				SMeshBufferLightMap* buffer = new SMeshBufferLightMap();
-				buffer->Material = mb->getMaterial();
-				const u32 vcount = mb->getVertexCount();
-				buffer->Vertices.reallocate(vcount);
-				video::S3DVertex2TCoords* vertices = (video::S3DVertex2TCoords*)mb->getVertices();
-				for (u32 i=0; i < vcount; ++i)
-					buffer->Vertices.push_back(vertices[i]);
-				const u32 icount = mb->getIndexCount();
-				buffer->Indices.reallocate(icount);
-				const u16* indices = mb->getIndices();
-				for (u32 i=0; i < icount; ++i)
-					buffer->Indices.push_back(indices[i]);
-				clone->addMeshBuffer(buffer);
-				buffer->drop();
-			}
-			break;
-		case video::EVT_TANGENTS:
-			{
-				SMeshBufferTangents* buffer = new SMeshBufferTangents();
-				buffer->Material = mb->getMaterial();
-				const u32 vcount = mb->getVertexCount();
-				buffer->Vertices.reallocate(vcount);
-				video::S3DVertexTangents* vertices = (video::S3DVertexTangents*)mb->getVertices();
-				for (u32 i=0; i < vcount; ++i)
-					buffer->Vertices.push_back(vertices[i]);
-				const u32 icount = mb->getIndexCount();
-				buffer->Indices.reallocate(icount);
-				const u16* indices = mb->getIndices();
-				for (u32 i=0; i < icount; ++i)
-					buffer->Indices.push_back(indices[i]);
-				clone->addMeshBuffer(buffer);
-				buffer->drop();
-			}
-			break;
-		}// end switch
-
-	}// end for all mesh buffers
+		IMeshBuffer* bufferClone = mesh->getMeshBuffer(b)->createClone();
+		clone->addMeshBuffer(bufferClone);
+		bufferClone->drop();
+	}
 
 	clone->BoundingBox = mesh->getBoundingBox();
 	return clone;

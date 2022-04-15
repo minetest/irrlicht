@@ -110,6 +110,12 @@ public:
 	// Change active selectionbased on the texture name
 	void selectTextureByName(const irr::core::stringw& name);
 
+	// Set dirty flag (node will update texture)
+	void setDirty()
+	{
+		DirtyFlag = true;
+	}
+
 	// Reset the dirty flag
 	void resetDirty()
 	{
@@ -140,15 +146,12 @@ public:
 	CMaterialControl()
 	: Initialized(false), Driver(0)
 	, TypicalColorsControl(0), ButtonLighting(0), InfoLighting(0), ComboMaterial(0)
-	{
-		for (irr::u32 i=0; i<irr::video::MATERIAL_MAX_TEXTURES; ++i)
-			TextureControls[i] = 0;
-	}
+	{}
 
 	// Destructor
 	~CMaterialControl()
 	{
-		for (irr::u32 i=0; i<irr::video::MATERIAL_MAX_TEXTURES; ++i)
+		for (irr::u32 i=0; i<TextureControls.size(); ++i)
 		{
 			if (TextureControls[i] )
 				TextureControls[i]->drop();
@@ -157,7 +160,9 @@ public:
 			TypicalColorsControl->drop();
 	}
 
-	void init(irr::scene::IMeshSceneNode* node, irr::IrrlichtDevice * device, const irr::core::position2d<irr::s32> & pos, const wchar_t * description);
+	void init(irr::IrrlichtDevice * device, const irr::core::position2d<irr::s32> & pos, const wchar_t * description);
+	
+	void setMaterial(const irr::video::SMaterial & material);
 
 	void update(irr::scene::IMeshSceneNode* sceneNode, irr::scene::IMeshSceneNode* sceneNode2T, irr::scene::IMeshSceneNode* sceneNodeTangents);
 
@@ -177,7 +182,7 @@ protected:
 	irr::gui::IGUIButton * 		ButtonLighting;
 	irr::gui::IGUIStaticText* 	InfoLighting;
 	irr::gui::IGUIComboBox * 	ComboMaterial;
-	CTextureControl*			TextureControls[irr::video::MATERIAL_MAX_TEXTURES];
+	irr::core::array<CTextureControl*> TextureControls;
 };
 
 /*
@@ -242,6 +247,7 @@ public:
 	, LightRotationAxis(irr::core::vector3df(1,0,0))
 	, MeshMaterialControl(0)
 	, LightControl(0)
+	, ComboMeshType(0)
 	, ControlVertexColors(0)
 	, GlobalAmbient(0)
 	, MousePressed(false)
@@ -293,6 +299,14 @@ protected:
 	void ZoomOut(irr::scene::ISceneNode* node, irr::f32 units);
 	void UpdateRotationAxis(irr::scene::ISceneNode* node, irr::core::vector3df& axis);
 
+	enum ENodeType
+	{
+		ENT_CUBE,
+		ENT_SPHERE
+	};
+	void setActiveMeshNodeType(ENodeType nodeType);
+
+	irr::scene::IMeshSceneNode* getVisibleMeshNode() const;
 
 private:
 	SConfig	Config;
@@ -309,6 +323,7 @@ private:
 	irr::core::vector3df LightRotationAxis;
 	CMaterialControl*	MeshMaterialControl;
 	CLightNodeControl*	LightControl;
+	irr::gui::IGUIComboBox* ComboMeshType;
 	CColorControl*	ControlVertexColors;
 	CColorControl*	GlobalAmbient;
 	bool KeysPressed[irr::KEY_KEY_CODES_COUNT];

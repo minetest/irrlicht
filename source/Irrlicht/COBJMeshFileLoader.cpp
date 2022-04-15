@@ -82,7 +82,7 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 	core::array<core::vector3df, core::irrAllocatorFast<core::vector3df> > normalsBuffer(1000);
 	core::array<core::vector2df, core::irrAllocatorFast<core::vector2df> > textureCoordBuffer(1000);
 
-	SObjMtl * currMtl = new SObjMtl();
+	SObjMtl * currMtl = new SObjMtl(PreferredIndexType);
 	Materials.push_back(currMtl);
 	u32 smoothingGroup=0;
 
@@ -224,6 +224,8 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 				v.Color = currMtl->Meshbuffer->Material.DiffuseColor;
 
 			// get all vertices data in this face (current line of obj file)
+			IVertexBuffer& mbVertexBuffer = currMtl->Meshbuffer->getVertexBuffer();
+			IIndexBuffer& mbIndexBuffer = currMtl->Meshbuffer->getIndexBuffer();
 			const core::stringc wordBuffer = copyLine(bufPtr, bufEnd);
 			const c8* linePtr = wordBuffer.c_str();
 			const c8* const endPtr = linePtr+wordBuffer.size();
@@ -272,8 +274,8 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 				}
 				else
 				{
-					currMtl->Meshbuffer->Vertices.push_back(v);
-					vertLocation = currMtl->Meshbuffer->Vertices.size() -1;
+					mbVertexBuffer.push_back(v);
+					vertLocation = mbVertexBuffer.size() -1;
 					currMtl->VertMap.insert(v, vertLocation);
 				}
 
@@ -292,9 +294,9 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 				const int b = faceCorners[i];
 				if (a != b && a != c && b != c)	// ignore degenerated faces. We can get them when we merge vertices above in the VertMap.
 				{
-					currMtl->Meshbuffer->Indices.push_back(a);
-					currMtl->Meshbuffer->Indices.push_back(b);
-					currMtl->Meshbuffer->Indices.push_back(c);
+					mbIndexBuffer.push_back(a);
+					mbIndexBuffer.push_back(b);
+					mbIndexBuffer.push_back(c);
 				}
 				else
 				{
@@ -577,7 +579,7 @@ void COBJMeshFileLoader::readMTL(const c8* fileName, const io::path& relPath)
 				c8 mtlNameBuf[WORD_BUFFER_LENGTH];
 				bufPtr = goAndCopyNextWord(mtlNameBuf, bufPtr, WORD_BUFFER_LENGTH, bufEnd);
 
-				currMaterial = new SObjMtl;
+				currMaterial = new SObjMtl(PreferredIndexType);
 				currMaterial->Name = mtlNameBuf;
 			}
 			break;

@@ -1354,7 +1354,7 @@ bool CIrrDeviceWin32::present(video::IImage* image, void* windowId, core::rect<s
 {
 	HWND hwnd = HWnd;
 	if ( windowId )
-		hwnd = reinterpret_cast<HWND>(windowId);
+		hwnd = static_cast<HWND>(windowId);
 
 	HDC dc = GetDC(hwnd);
 

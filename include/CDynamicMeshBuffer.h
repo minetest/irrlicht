@@ -14,7 +14,7 @@ namespace irr
 {
 namespace scene
 {
-
+	//! Implementation of the IMeshBuffer interface for which can work with 16 and 32 bit indices as well as different vertex types
 	class CDynamicMeshBuffer: public IDynamicMeshBuffer
 	{
 	public:
@@ -112,6 +112,46 @@ namespace scene
 		virtual E_PRIMITIVE_TYPE getPrimitiveType() const IRR_OVERRIDE
 		{
 			return PrimitiveType;
+		}
+
+		//! Returns type of the class implementing the IMeshBuffer
+		virtual EMESH_BUFFER_TYPE getType() const  IRR_OVERRIDE
+		{
+			return EMBT_DYNAMIC;
+		}
+
+		//! Create copy of the meshbuffer
+		virtual IMeshBuffer* createClone(int cloneFlags) const IRR_OVERRIDE
+		{
+			CDynamicMeshBuffer* clone = new CDynamicMeshBuffer(VertexBuffer->getType(), IndexBuffer->getType());
+
+			if (cloneFlags & ECF_VERTICES)
+			{
+				const u32 numVertices = VertexBuffer->size();
+				clone->VertexBuffer->reallocate(numVertices);
+				for ( u32 i=0; i<numVertices; ++i )
+				{
+					clone->VertexBuffer->push_back((*VertexBuffer)[i]);
+				}
+				clone->BoundingBox = BoundingBox;
+			}
+
+			if (cloneFlags & ECF_INDICES)
+			{
+				const u32 numIndices = IndexBuffer->size();
+				clone->IndexBuffer->reallocate(numIndices);
+				for ( u32 i=0; i<numIndices; ++i )
+				{
+					clone->IndexBuffer->push_back((*IndexBuffer)[i]);
+				}
+			}
+
+			clone->VertexBuffer->setHardwareMappingHint(VertexBuffer->getHardwareMappingHint());
+			clone->IndexBuffer->setHardwareMappingHint(clone->IndexBuffer->getHardwareMappingHint());
+			clone->Material = Material;
+			clone->PrimitiveType = PrimitiveType;
+
+			return clone;
 		}
 
 		video::SMaterial Material;

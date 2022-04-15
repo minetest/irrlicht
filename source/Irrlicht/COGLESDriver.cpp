@@ -1032,7 +1032,7 @@ void COGLES1Driver::draw2DImage(const video::ITexture* texture, const core::rect
 		glDisable(GL_SCISSOR_TEST);
 }
 
-void COGLES1Driver::draw2DImage(const video::ITexture* texture, u32 layer, bool flip)
+void COGLES1Driver::draw2DImageQuad(const video::ITexture* texture, u32 layer, bool flip)
 {
 	if (!texture || !CacheHandler->getTextureCache().set(0, texture))
 		return;

@@ -328,7 +328,7 @@ public:
 
 				glClear(GL_COLOR_BUFFER_BIT);
 
-				Driver->draw2DImage(this, layer, true);
+				Driver->draw2DImageQuad(this, layer, true);
 
 				IImage* tmpImage = Driver->createImage(ECF_A8R8G8B8, Size);
 				glReadPixels(0, 0, Size.Width, Size.Height, GL_RGBA, GL_UNSIGNED_BYTE, tmpImage->getData());
