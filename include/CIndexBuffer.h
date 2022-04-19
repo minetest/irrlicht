@@ -110,11 +110,14 @@ namespace scene
 		}
 
 		//virtual void setType(video::E_INDEX_TYPE IndexType);
-		virtual void setType(video::E_INDEX_TYPE IndexType) IRR_OVERRIDE
+		virtual void setType(video::E_INDEX_TYPE indexType) IRR_OVERRIDE
 		{
+			if ( Indices && Indices->getType() == indexType )
+				return;
+
 			IIndexList *NewIndices=0;
 
-			switch (IndexType)
+			switch (indexType)
 			{
 				case video::EIT_16BIT:
 				{
