@@ -35,7 +35,7 @@ namespace scene
 		virtual video::S3DVertex& operator [](const u32 index) const =0;
 		virtual video::S3DVertex& getLast() =0;
 		virtual void set_used(u32 usedNow) =0;
-		virtual void reallocate(u32 new_size) =0;
+		virtual void reallocate(u32 new_size, bool canShrink=true) =0;
 		virtual u32 allocated_size() const =0;
 
 		//! Same as getData() - not sure why we got 2, should probably deprecate (and we don't always have video::S3DVertex*, so just confusing)

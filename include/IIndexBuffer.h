@@ -33,7 +33,7 @@ namespace scene
 		virtual u32 getLast() =0;
 		virtual void setValue(u32 index, u32 value) =0;
 		virtual void set_used(u32 usedNow) =0;
-		virtual void reallocate(u32 new_size) =0;
+		virtual void reallocate(u32 new_size, bool canShrink=true) =0;
 		virtual u32 allocated_size() const=0;
 
 		virtual void* pointer() =0;

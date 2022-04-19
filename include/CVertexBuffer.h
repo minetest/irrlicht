@@ -28,7 +28,7 @@ namespace scene
 			virtual video::S3DVertex& operator [](const u32 index) const =0;
 			virtual video::S3DVertex& getLast() =0;
 			virtual void set_used(u32 usedNow) =0;
-			virtual void reallocate(u32 new_size) =0;
+			virtual void reallocate(u32 new_size, bool canShrink=true) =0;
 			virtual u32 allocated_size() const =0;
 			virtual video::S3DVertex* pointer() =0;
 			virtual video::E_VERTEX_TYPE getType() const =0;
@@ -56,8 +56,8 @@ namespace scene
 			virtual void set_used(u32 usedNow) IRR_OVERRIDE
 			{Vertices.set_used(usedNow);}
 
-			virtual void reallocate(u32 new_size) IRR_OVERRIDE
-			{Vertices.reallocate(new_size);}
+			virtual void reallocate(u32 new_size, bool canShrink) IRR_OVERRIDE
+			{Vertices.reallocate(new_size, canShrink);}
 
 			virtual u32 allocated_size() const IRR_OVERRIDE
 			{
@@ -164,9 +164,9 @@ namespace scene
 			Vertices->set_used(usedNow);
 		}
 
-		virtual void reallocate(u32 new_size) IRR_OVERRIDE
+		virtual void reallocate(u32 new_size, bool canShrink=true) IRR_OVERRIDE
 		{
-			Vertices->reallocate(new_size);
+			Vertices->reallocate(new_size, canShrink);
 		}
 
 		virtual u32 allocated_size() const IRR_OVERRIDE
