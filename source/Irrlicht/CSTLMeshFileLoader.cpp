@@ -8,7 +8,7 @@
 
 #include "CSTLMeshFileLoader.h"
 #include "SMesh.h"
-#include "SMeshBuffer.h"
+#include "CDynamicMeshBuffer.h"
 #include "SAnimatedMesh.h"
 #include "IReadFile.h"
 #include "fast_atof.h"
@@ -41,7 +41,8 @@ IAnimatedMesh* CSTLMeshFileLoader::createMesh(io::IReadFile* file)
 		return 0;
 
 	SMesh* mesh = new SMesh();
-	SMeshBuffer* meshBuffer = new SMeshBuffer();
+	CDynamicMeshBuffer* meshBuffer = new CDynamicMeshBuffer(video::EVT_STANDARD, video::EIT_16BIT);
+	IVertexBuffer& vertBuffer = meshBuffer->getVertexBuffer();
 	mesh->addMeshBuffer(meshBuffer);
 	meshBuffer->drop();
 
@@ -132,29 +133,41 @@ IAnimatedMesh* CSTLMeshFileLoader::createMesh(io::IReadFile* file)
 #endif
 		}
 
-		SMeshBuffer* mb = reinterpret_cast<SMeshBuffer*>(mesh->getMeshBuffer(mesh->getMeshBufferCount()-1));
-		u32 vCount = mb->getVertexCount();
 		video::SColor color(0xffffffff);
 		if (attrib & 0x8000)
 			color = video::A1R5G5B5toA8R8G8B8(attrib);
 		if (normal==core::vector3df())
 			normal=core::plane3df(vertex[2],vertex[1],vertex[0]).Normal;
-		mb->Vertices.push_back(video::S3DVertex(vertex[2],normal,color, core::vector2df()));
-		mb->Vertices.push_back(video::S3DVertex(vertex[1],normal,color, core::vector2df()));
-		mb->Vertices.push_back(video::S3DVertex(vertex[0],normal,color, core::vector2df()));
-		mb->Indices.push_back(vCount);
-		mb->Indices.push_back(vCount+1);
-		mb->Indices.push_back(vCount+2);
+		vertBuffer.push_back(video::S3DVertex(vertex[2],normal,color, core::vector2df()));
+		vertBuffer.push_back(video::S3DVertex(vertex[1],normal,color, core::vector2df()));
+		vertBuffer.push_back(video::S3DVertex(vertex[0],normal,color, core::vector2df()));
 	}	// end while (file->getPos() < filesize)
-	mesh->getMeshBuffer(0)->recalculateBoundingBox();
 
 	// Create the Animated mesh if there's anything in the mesh
 	SAnimatedMesh* pAM = 0;
 	if ( 0 != mesh->getMeshBufferCount() )
 	{
+		IIndexBuffer& indexBuffer = meshBuffer->getIndexBuffer();
+		u32 vertCount = vertBuffer.size();
+		if (vertCount > 65535 )	// Note 65535 instead of 65536 as it divides by 3
+		{
+			if ( getIndexTypeHint() != EITH_16BIT )
+				indexBuffer.setType(video::EIT_32BIT);
+			else
+			{
+				 // Could split buffer, but probably no one really needs this anymore now with 32-bit support and necessary buffer manipulation functions are not there yet
+				vertCount = 65535;
+			}
+		}
+
+		indexBuffer.reallocate(vertCount);
+		for (u32 i=0; i<vertCount; ++i)	//every vertex is unique, so we can just generate the indices
+			indexBuffer.push_back(i);
+
+		meshBuffer->recalculateBoundingBox();
 		mesh->recalculateBoundingBox();
 		pAM = new SAnimatedMesh();
-		pAM->Type = EAMT_OBJ;
+		pAM->Type = EAMT_STATIC;
 		pAM->addMesh(mesh);
 		pAM->recalculateBoundingBox();
 	}

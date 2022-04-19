@@ -1,9 +1,12 @@
 --------------------------
 Changes in 1.9 (not yet released)
+- stl meshloader can now load 32 bit buffers. 
+  Thanks @Foaly for the patch (https://irrlicht.sourceforge.io/forum/viewtopic.php?f=9&t=51441)
 - Add IMeshBufffer::clone function to create buffer copies. CMeshManipulator::createMeshCopy uses that now and works now with all types of meshbuffers.
 - obj writer can now write 32 bit buffers
 - obj meshloader can now load 32 bit buffers when setIndexTypeHint is set correspondingly
   It's 16 bit meshes use now also an IDynamicMeshbuffer instead of an SMeshBuffer.
+  Thanks @Wol101 for original patch proposal (https://irrlicht.sourceforge.io/forum/viewtopic.php?f=9&t=51441)  
 - Add IMeshLoader::setIndexTypeHint and getIndexTypeHint to allow setting hints for the loaders if users prefer 16 or 32 bit meshbuffers.
 - Add IMeshBuffer::getType to allow finding out which class type a meshbuffer has (similar to ISceneNode::getType).
 - Add IGUIImage::flip to flip/mirror images
