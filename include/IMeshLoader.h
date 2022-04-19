@@ -30,7 +30,7 @@ class IMeshLoader : public virtual IReferenceCounted
 public:
 
 	//! Constructor
-	IMeshLoader() : TextureLoader(0), IndexTypeHint(EITH_16BIT)	{}
+	IMeshLoader() : TextureLoader(0), IndexTypeHint(EITH_OPTIMAL)	{}
 
 	//! Destructor
 	virtual ~IMeshLoader()
@@ -82,21 +82,24 @@ public:
 	enum E_INDEX_TYPE_HINT
 	{
 		//! Prefer to use 16-bit index buffers even if it breaks the mesh
+		//! The default (and only option) before Irrlicht 1.9
 		EITH_16BIT,
 
 		//! Allow using 32-bit index buffers
 		EITH_32BIT,
 
 		//! Allow 32-bit, but copy back to 16-bit when 32 is not needed.
-		//! So tiny overhead on loading, but meshes are later more optimal
+		//! So tiny overhead (sometimes extra allocation+copying) on loading, 
+		//! but meshes are later more optimal.
+		//! Default since Irrlicht 1.9
 		EITH_OPTIMAL
 	};
 
 
 	//! Give loader a hint if you would prefer 16 or 32 bit meshbuffers.
 	/** 
-	Generally Irrlicht works with 16-bit meshbuffers so far.
-	Rendering 32-bit meshbuffers works, other functions like 
+	Before Irrlicht 1.9 Irrlicht worked mostly with 16-bit meshbuffers.
+	Rendering 32-bit meshbuffers works, but some functions like 
 	mesh-writing and mesh manipulation might not work yet.
 	NOTE: Most loaders will ignore this hint so far, but hopefully 
 	will care about it in the future.

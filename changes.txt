@@ -8,6 +8,7 @@ Changes in 1.9 (not yet released)
   It's 16 bit meshes use now also an IDynamicMeshbuffer instead of an SMeshBuffer.
   Thanks @Wol101 for original patch proposal (https://irrlicht.sourceforge.io/forum/viewtopic.php?f=9&t=51441)  
 - Add IMeshLoader::setIndexTypeHint and getIndexTypeHint to allow setting hints for the loaders if users prefer 16 or 32 bit meshbuffers.
+  Default is now to use optimal meshbuffer depending on number of vertices (if the loader supports it).
 - Add IMeshBuffer::getType to allow finding out which class type a meshbuffer has (similar to ISceneNode::getType).
 - Add IGUIImage::flip to flip/mirror images
 - IBillboardSceneNode got functions to access meshbuffers. So uv-coordinates can now be modified directly (previously only possible via texture matrix).
