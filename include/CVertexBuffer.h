@@ -97,6 +97,9 @@ namespace scene
 
 		void setType(video::E_VERTEX_TYPE vertexType) override
 		{
+			if ( Vertices && Vertices->getType() == vertexType )
+				return;
+
 			IVertexList *NewVertices=0;
 
 			switch (vertexType)
