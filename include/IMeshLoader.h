@@ -30,7 +30,7 @@ class IMeshLoader : public virtual IReferenceCounted
 public:
 
 	//! Constructor
-	IMeshLoader() : TextureLoader(0), PreferredIndexType(video::EIT_16BIT)	{}
+	IMeshLoader() : TextureLoader(0), IndexTypeHint(EITH_16BIT)	{}
 
 	//! Destructor
 	virtual ~IMeshLoader()
@@ -79,6 +79,20 @@ public:
 		return TextureLoader;
 	}
 
+	enum E_INDEX_TYPE_HINT
+	{
+		//! Prefer to use 16-bit index buffers even if it breaks the mesh
+		EITH_16BIT,
+
+		//! Allow using 32-bit index buffers
+		EITH_32BIT,
+
+		//! Allow 32-bit, but copy back to 16-bit when 32 is not needed.
+		//! So tiny overhead on loading, but meshes are later more optimal
+		EITH_OPTIMAL
+	};
+
+
 	//! Give loader a hint if you would prefer 16 or 32 bit meshbuffers.
 	/** 
 	Generally Irrlicht works with 16-bit meshbuffers so far.
@@ -87,22 +101,22 @@ public:
 	NOTE: Most loaders will ignore this hint so far, but hopefully 
 	will care about it in the future.
 	*/
-	void setPreferredIndexType(irr::video::E_INDEX_TYPE typeHint)
+	void setIndexTypeHint(E_INDEX_TYPE_HINT typeHint)
 	{
-		PreferredIndexType = typeHint;
+		IndexTypeHint = typeHint;
 	}
 
-	//! Return current preference user has for the index-size of meshbuffers
+	//! Return current preference user has for the index type of meshbuffers
 	/** Note that this is _not_ necessarily the type used by the meshloader */
-	irr::video::E_INDEX_TYPE getPreferredIndexType() const
+	E_INDEX_TYPE_HINT getIndexTypeHint() const
 	{
-		return PreferredIndexType;
+		return IndexTypeHint;
 	}
 
 
 protected:
 	IMeshTextureLoader* TextureLoader;
-	irr::video::E_INDEX_TYPE PreferredIndexType;
+	E_INDEX_TYPE_HINT IndexTypeHint;
 };
 
 

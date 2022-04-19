@@ -2,9 +2,9 @@
 Changes in 1.9 (not yet released)
 - Add IMeshBufffer::clone function to create buffer copies. CMeshManipulator::createMeshCopy uses that now and works now with all types of meshbuffers.
 - obj writer can now write 32 bit buffers
-- obj meshloader can now load 32 bit buffers when setPreferredIndexType is set to EIT_32BIT.
+- obj meshloader can now load 32 bit buffers when setIndexTypeHint is set correspondingly
   It's 16 bit meshes use now also an IDynamicMeshbuffer instead of an SMeshBuffer.
-- Add IMeshLoader::setPreferredIndexType and getPreferredIndexType to allow setting hints for the loaders if users prefer 16 or 32 bit meshbuffers.
+- Add IMeshLoader::setIndexTypeHint and getIndexTypeHint to allow setting hints for the loaders if users prefer 16 or 32 bit meshbuffers.
 - Add IMeshBuffer::getType to allow finding out which class type a meshbuffer has (similar to ISceneNode::getType).
 - Add IGUIImage::flip to flip/mirror images
 - IBillboardSceneNode got functions to access meshbuffers. So uv-coordinates can now be modified directly (previously only possible via texture matrix).
