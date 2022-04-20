@@ -46,7 +46,7 @@ IAnimatedMesh* CSTLMeshFileLoader::createMesh(io::IReadFile* fileIn)
 	if ( fileIn->getType() != io::ERFT_MEMORY_READ_FILE )
 	{
 		u8* fileBuffer = new u8[filesize];
-		if ( fileIn->read(fileBuffer, filesize) != filesize )
+		if ( fileIn->read(fileBuffer, filesize) != (size_t)filesize )
 		{
 			delete[] fileBuffer;
 			return 0;
