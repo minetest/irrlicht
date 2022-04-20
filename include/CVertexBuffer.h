@@ -26,6 +26,7 @@ namespace scene
 
 			virtual void push_back (const video::S3DVertex &element) =0;
 			virtual void setValue(u32 index, const video::S3DVertex &value) =0;
+			virtual video::S3DVertex& operator [](u32 index) = 0;
 			virtual video::S3DVertex& operator [](const u32 index) const =0;
 			virtual video::S3DVertex& getLast() =0;
 			virtual void set_used(u32 usedNow) =0;
@@ -50,6 +51,9 @@ namespace scene
 
 			virtual void setValue(u32 index, const video::S3DVertex &value) IRR_OVERRIDE
 			{Vertices[index] = (T&)value;}
+
+			virtual video::S3DVertex& operator [](u32 index) IRR_OVERRIDE
+			{return (video::S3DVertex&)Vertices[index];}
 
 			virtual video::S3DVertex& operator [](const u32 index) const IRR_OVERRIDE
 			{return (video::S3DVertex&)Vertices[index];}
@@ -156,6 +160,11 @@ namespace scene
 		virtual void setValue(u32 index, const video::S3DVertex &value) IRR_OVERRIDE
 		{
 			Vertices->setValue(index, value);
+		}
+
+		virtual video::S3DVertex& operator [](u32 index) IRR_OVERRIDE
+		{
+			return (*Vertices)[index];
 		}
 
 		virtual video::S3DVertex& operator [](const u32 index) const IRR_OVERRIDE

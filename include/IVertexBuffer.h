@@ -37,12 +37,14 @@ namespace scene
 		//* Note that depending on vertex type reference has to be one of the types derived from video::S3DVertex. */
 		virtual void push_back(const video::S3DVertex &element) =0;
 
-		//! Set value at index. 
-		/** Depending on vertex type reference has to be one of the types derived from video::S3DVertex.
-		Buffer must be already large enough. This is basically the non const version of operator [] */
+		//! Set value at index. Buffer must be already large enough that element exists.
+		/** Depending on vertex type reference has to be one of the types derived from video::S3DVertex */
 		virtual void setValue(u32 index, const video::S3DVertex &value) =0;
 
-		// Note that the reference can also be to one of the derived types
+		// Note that the reference can also be to one of the types derived from video::S3DVertex.
+		// This is especially important for the non const access version - you need to have the correct type and do some casting
+		// if you write vertices. 
+		virtual video::S3DVertex& operator [](u32 index) = 0;
 		virtual video::S3DVertex& operator [](const u32 index) const =0;
 		virtual video::S3DVertex& getLast() =0;
 
