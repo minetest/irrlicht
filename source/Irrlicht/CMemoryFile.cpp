@@ -52,14 +52,15 @@ bool CMemoryReadFile::seek(long finalPos, bool relativeMovement)
 {
 	if (relativeMovement)
 	{
-		if (Pos + finalPos > Len)
+		const long newPos = Pos + finalPos;
+		if (newPos > Len || newPos < 0)
 			return false;
 
 		Pos += finalPos;
 	}
 	else
 	{
-		if (finalPos > Len)
+		if (finalPos > Len || finalPos < 0)
 			return false;
 
 		Pos = finalPos;
