@@ -255,18 +255,36 @@ bool CB3DMeshWriter::writeMesh(io::IWriteFile* file, IMesh* const mesh, s32 flag
         file->write(&i, 4);
 
         u32 numIndices = mb->getIndexCount();
-        const u16 * const idx = (u16 *) mb->getIndices();
-        for (u32 j = 0; j < numIndices; j += 3)
+		if ( mb->getIndexType() == video::EIT_16BIT )
 		{
-            u32 tmp = idx[j] + currentMeshBufferIndex;
-            file->write(&tmp, sizeof(u32));
+			const u16 * const idx = mb->getIndices();
+			for (u32 j = 0; j < numIndices; j += 3)
+			{
+				u32 tmp = idx[j] + currentMeshBufferIndex;
+				file->write(&tmp, sizeof(u32));
 
-            tmp = idx[j + 1] + currentMeshBufferIndex;
-            file->write(&tmp, sizeof(u32));
+				tmp = idx[j + 1] + currentMeshBufferIndex;
+				file->write(&tmp, sizeof(u32));
 
-            tmp = idx[j + 2] + currentMeshBufferIndex;
-            file->write(&tmp, sizeof(u32));
-        }
+				tmp = idx[j + 2] + currentMeshBufferIndex;
+				file->write(&tmp, sizeof(u32));
+			}
+		}
+		else if ( mb->getIndexType() == video::EIT_32BIT )
+		{
+			const u32 * const idx = (const u32*) mb->getIndices();
+			for (u32 j = 0; j < numIndices; j += 3)
+			{
+				u32 tmp = idx[j] + currentMeshBufferIndex;
+				file->write(&tmp, sizeof(u32));
+
+				tmp = idx[j + 1] + currentMeshBufferIndex;
+				file->write(&tmp, sizeof(u32));
+
+				tmp = idx[j + 2] + currentMeshBufferIndex;
+				file->write(&tmp, sizeof(u32));
+			}
+		}
         writeSizeFrom(file, trisSizeAdress+4, trisSizeAdress);  // TRIS chunk size
 
         currentMeshBufferIndex += mb->getVertexCount();

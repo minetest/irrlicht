@@ -859,7 +859,7 @@ bool CB3DMeshFileLoader::readChunkBRUS()
 
 	while((B3dStack.getLast().startposition + B3dStack.getLast().length) > B3DFile->getPos()) //this chunk repeats
 	{
-		// This is what blitz basic calls a brush, like a Irrlicht Material
+		// This is what blitz basic calls a brush, like an Irrlicht material
 
 		core::stringc name;
 		readString(name);
@@ -933,7 +933,7 @@ bool CB3DMeshFileLoader::readChunkBRUS()
 			}
 		}
 
-		//If a preceeding texture slot is empty move the others down:
+		//If a preceding texture slot is empty move the others down:
 		for (i=num_textures; i>0; --i)
 		{
 			for (u32 j=i-1; j<num_textures-1; ++j)
