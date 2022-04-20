@@ -20,23 +20,32 @@ namespace scene
 	{
 	public:
 
+		//! Pointer to first element
 		virtual void* getData() =0;
+
+		//! Same as getData()
+		virtual void* pointer() =0;
 
 		virtual video::E_INDEX_TYPE getType() const =0;
 		virtual void setType(video::E_INDEX_TYPE IndexType) =0;
 
+		//! Number of bytes per element
 		virtual u32 stride() const =0;
 
+		//! Number of elements
 		virtual u32 size() const =0;
+
 		virtual void push_back (const u32 &element) =0;
+
+		//! Set value at index. 
+		/** Buffer must be already large enough. This is basically the non const version of operator [] */
+		virtual void setValue(u32 index, u32 value) =0;
+
 		virtual u32 operator [](u32 index) const =0;
 		virtual u32 getLast() =0;
-		virtual void setValue(u32 index, u32 value) =0;
 		virtual void set_used(u32 usedNow) =0;
 		virtual void reallocate(u32 new_size, bool canShrink=true) =0;
 		virtual u32 allocated_size() const=0;
-
-		virtual void* pointer() =0;
 
 		//! get the current hardware mapping hint
 		virtual E_HARDWARE_MAPPING getHardwareMappingHint() const =0;
