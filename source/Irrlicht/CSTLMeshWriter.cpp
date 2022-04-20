@@ -92,17 +92,37 @@ bool CSTLMeshWriter::writeMeshBinary(io::IWriteFile* file, scene::IMesh* mesh, s
 		{
 			const u32 indexCount = buffer->getIndexCount();
 			const u16 attributes = 0;
-			for (u32 j=0; j<indexCount; j+=3)
+			if( buffer->getIndexType() == video::EIT_16BIT )
 			{
-				const core::vector3df& v1 = buffer->getPosition(buffer->getIndices()[j]);
-				const core::vector3df& v2 = buffer->getPosition(buffer->getIndices()[j+1]);
-				const core::vector3df& v3 = buffer->getPosition(buffer->getIndices()[j+2]);
-				const core::plane3df tmpplane(v1,v2,v3);
-				file->write(&tmpplane.Normal, 12);
-				file->write(&v1, 12);
-				file->write(&v2, 12);
-				file->write(&v3, 12);
-				file->write(&attributes, 2);
+				const u16* indices = buffer->getIndices();
+				for (u32 j=0; j<indexCount; j+=3)
+				{
+					const core::vector3df& v1 = buffer->getPosition(indices[j]);
+					const core::vector3df& v2 = buffer->getPosition(indices[j+1]);
+					const core::vector3df& v3 = buffer->getPosition(indices[j+2]);
+					const core::plane3df tmpplane(v1,v2,v3);
+					file->write(&tmpplane.Normal, 12);
+					file->write(&v1, 12);
+					file->write(&v2, 12);
+					file->write(&v3, 12);
+					file->write(&attributes, 2);
+				}
+			}
+			else if( buffer->getIndexType() == video::EIT_32BIT )
+			{
+				const u32* indices = (const u32*)buffer->getIndices();
+				for (u32 j=0; j<indexCount; j+=3)
+				{
+					const core::vector3df& v1 = buffer->getPosition(indices[j]);
+					const core::vector3df& v2 = buffer->getPosition(indices[j+1]);
+					const core::vector3df& v3 = buffer->getPosition(indices[j+2]);
+					const core::plane3df tmpplane(v1,v2,v3);
+					file->write(&tmpplane.Normal, 12);
+					file->write(&v1, 12);
+					file->write(&v2, 12);
+					file->write(&v3, 12);
+					file->write(&attributes, 2);
+				}
 			}
 		}
 	}
@@ -127,12 +147,27 @@ bool CSTLMeshWriter::writeMeshASCII(io::IWriteFile* file, scene::IMesh* mesh, s3
 		if (buffer)
 		{
 			const u32 indexCount = buffer->getIndexCount();
-			for (u32 j=0; j<indexCount; j+=3)
+			if ( buffer->getIndexType() == video::EIT_16BIT )
 			{
-				writeFace(file,
-					buffer->getPosition(buffer->getIndices()[j]),
-					buffer->getPosition(buffer->getIndices()[j+1]),
-					buffer->getPosition(buffer->getIndices()[j+2]));
+				const u16* indices = buffer->getIndices();
+				for (u32 j=0; j<indexCount; j+=3)
+				{
+					writeFace(file,
+						buffer->getPosition(indices[j]),
+						buffer->getPosition(indices[j+1]),
+						buffer->getPosition(indices[j+2]));
+				}
+			}
+			else if ( buffer->getIndexType() == video::EIT_32BIT )
+			{
+				const u32* indices = (const u32*)buffer->getIndices();
+				for (u32 j=0; j<indexCount; j+=3)
+				{
+					writeFace(file,
+						buffer->getPosition(indices[j]),
+						buffer->getPosition(indices[j+1]),
+						buffer->getPosition(indices[j+2]));
+				}
 			}
 			file->write("\n",1);
 		}
