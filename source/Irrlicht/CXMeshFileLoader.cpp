@@ -760,10 +760,12 @@ bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 
 	// read vertices
 	mesh.Vertices.set_used(nVertices);
+	irr::video::S3DVertex vertex;	// set_used doesn't call constructor, so we initalize it explicit here
+	vertex.Color = 0xFFFFFFFF;
 	for (u32 n=0; n<nVertices; ++n)
 	{
-		readVector3(mesh.Vertices[n].Pos);
-		mesh.Vertices[n].Color=0xFFFFFFFF;
+		readVector3(vertex.Pos);
+		mesh.Vertices[n] = vertex;
 	}
 
 	if (!checkForTwoFollowingSemicolons())
