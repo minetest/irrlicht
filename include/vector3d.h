@@ -28,14 +28,10 @@ namespace core
 		vector3d(T nx, T ny, T nz) : X(nx), Y(ny), Z(nz) {}
 		//! Constructor with the same value for all elements
 		explicit vector3d(T n) : X(n), Y(n), Z(n) {}
-		//! Copy constructor
-		vector3d(const vector3d<T>& other) : X(other.X), Y(other.Y), Z(other.Z) {}
 
 		// operators
 
 		vector3d<T> operator-() const { return vector3d<T>(-X, -Y, -Z); }
-
-		vector3d<T>& operator=(const vector3d<T>& other) { X = other.X; Y = other.Y; Z = other.Z; return *this; }
 
 		vector3d<T> operator+(const vector3d<T>& other) const { return vector3d<T>(X + other.X, Y + other.Y, Z + other.Z); }
 		vector3d<T>& operator+=(const vector3d<T>& other) { X+=other.X; Y+=other.Y; Z+=other.Z; return *this; }

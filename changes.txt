@@ -1,14 +1,18 @@
 --------------------------
 Changes in 1.9 (not yet released)
+
+- Fix OSX nor resizing properly. Thanks @torleif, Jordach and sfan5 for patch and report: https://irrlicht.sourceforge.io/forum/viewtopic.php?f=2&t=52819
+- X meshloader fixes bug with uninitialized normals. Thanks @sfan5 for patch: https://irrlicht.sourceforge.io/forum/viewtopic.php?f=2&t=52819
 - stl meshloader now faster, especially with text format
-- CMemoryReadFile::seek no longer allowed to go _before_ start.
+- CMemoryReadFile::seek CMemoryWriteFile::seek and no longer allowed to go _before_ start.
+  Thanks @sfan5 for patch: https://irrlicht.sourceforge.io/forum/viewtopic.php?f=2&t=52819
 - stl meshloader can now load 32 bit buffers. 
-  Thanks @Foaly for the patch (https://irrlicht.sourceforge.io/forum/viewtopic.php?f=9&t=51441)
+  Thanks @Foaly for the patch: https://irrlicht.sourceforge.io/forum/viewtopic.php?f=9&t=51441
 - Add IMeshBufffer::clone function to create buffer copies. CMeshManipulator::createMeshCopy uses that now and works now with all types of meshbuffers.
 - obj writer can now write 32 bit buffers
 - obj meshloader can now load 32 bit buffers when setIndexTypeHint is set correspondingly
   It's 16 bit meshes use now also an IDynamicMeshbuffer instead of an SMeshBuffer.
-  Thanks @Wol101 for original patch proposal (https://irrlicht.sourceforge.io/forum/viewtopic.php?f=9&t=51441)  
+  Thanks @Wol101 for original patch proposal: https://irrlicht.sourceforge.io/forum/viewtopic.php?f=9&t=51441
 - Add IMeshLoader::setIndexTypeHint and getIndexTypeHint to allow setting hints for the loaders if users prefer 16 or 32 bit meshbuffers.
   Default is now to use optimal meshbuffer depending on number of vertices (if the loader supports it).
 - Add IMeshBuffer::getType to allow finding out which class type a meshbuffer has (similar to ISceneNode::getType).

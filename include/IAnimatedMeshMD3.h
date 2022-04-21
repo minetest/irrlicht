@@ -153,13 +153,7 @@ namespace scene
 	{
 		virtual ~SMD3QuaternionTag()
 		{
-			position.X = 0.f;
-		}
-
-		// construct copy constructor
-		SMD3QuaternionTag( const SMD3QuaternionTag & copyMe )
-		{
-			*this = copyMe;
+			position.X = 0.f;	// anyone got an idea why?
 		}
 
 		// construct for searching
@@ -181,14 +175,6 @@ namespace scene
 			return Name == other.Name;
 		}
 
-		SMD3QuaternionTag & operator=( const SMD3QuaternionTag & copyMe )
-		{
-			Name = copyMe.Name;
-			position = copyMe.position;
-			rotation = copyMe.rotation;
-			return *this;
-		}
-
 		core::stringc Name;
 		core::vector3df position;
 		core::quaternion rotation;
@@ -200,12 +186,6 @@ namespace scene
 		SMD3QuaternionTagList()
 		{
 			Container.setAllocStrategy(core::ALLOC_STRATEGY_SAFE);
-		}
-
-		// construct copy constructor
-		SMD3QuaternionTagList(const SMD3QuaternionTagList& copyMe)
-		{
-			*this = copyMe;
 		}
 
 		virtual ~SMD3QuaternionTagList() {}
@@ -248,12 +228,6 @@ namespace scene
 		void push_back(const SMD3QuaternionTag& other)
 		{
 			Container.push_back(other);
-		}
-
-		SMD3QuaternionTagList& operator = (const SMD3QuaternionTagList & copyMe)
-		{
-			Container = copyMe.Container;
-			return *this;
 		}
 
 	private:
