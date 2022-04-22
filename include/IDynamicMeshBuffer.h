@@ -24,46 +24,13 @@ namespace scene
 		virtual void setVertexBuffer(IVertexBuffer *vertexBuffer) =0;
 		virtual void setIndexBuffer(IIndexBuffer *indexBuffer) =0;
 
-		//! Get the material of this meshbuffer
-		/** \return Material of this buffer. */
-		virtual video::SMaterial& getMaterial() IRR_OVERRIDE =0;
 
-		//! Get the material of this meshbuffer
-		/** \return Material of this buffer. */
-		virtual const video::SMaterial& getMaterial() const IRR_OVERRIDE =0;
+		// ------------------- Old interface -------------------  //
+		// That stuff could also be in CDynamicMeshBuffer
+		// I suppose it was put here to show that the information 
+		// is now basically handled by the vertex/index buffers instead
+		// of the meshbuffer itself.
 
-		//! Get the axis aligned bounding box of this meshbuffer.
-		/** \return Axis aligned bounding box of this buffer. */
-		virtual const core::aabbox3df& getBoundingBox() const IRR_OVERRIDE =0;
-
-		//! Set axis aligned bounding box
-		/** \param box User defined axis aligned bounding box to use
-		for this buffer. */
-		virtual void setBoundingBox(const core::aabbox3df& box) IRR_OVERRIDE =0;
-
-		//! Recalculates the bounding box. Should be called if the mesh changed.
-		virtual void recalculateBoundingBox() IRR_OVERRIDE =0;
-
-		//! Append the vertices and indices to the current buffer
-		/** Only works for compatible vertex types.
-		\param vertices Pointer to a vertex array.
-		\param numVertices Number of vertices in the array.
-		\param indices Pointer to index array.
-		\param numIndices Number of indices in array. */
-		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices) IRR_OVERRIDE
-		{
-
-		}
-
-		//! Append the meshbuffer to the current buffer
-		/** Only works for compatible vertex types
-		\param other Buffer to append to this one. */
-		virtual void append(const IMeshBuffer* const other) IRR_OVERRIDE
-		{
-
-		}
-
-		// ------------------- To be removed? -------------------  //
 
 		//! get the current hardware mapping hint
 		virtual E_HARDWARE_MAPPING getHardwareMappingHint_Vertex() const IRR_OVERRIDE
@@ -105,7 +72,6 @@ namespace scene
 			return getIndexBuffer().getChangedID();
 		}
 
-		// ------------------- Old interface -------------------  //
 
 		//! Get type of vertex data which is stored in this meshbuffer.
 		/** \return Vertex type of this buffer. */
