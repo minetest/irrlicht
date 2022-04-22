@@ -1,6 +1,9 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- IIndexBuffer has some interface changes: pointer() deprecated (was same as getData()). Adding a const version of getData(). 
+  Also some functions no longer use references but copy by value which shouldn't be slower for this and is safer to use.
+- Fix CIndexBuffer::setType going from 16 to 32 bit. This had some casts which simply could mess up the results.
 - Fix OSX nor resizing properly. Thanks @torleif, Jordach and sfan5 for patch and report: https://irrlicht.sourceforge.io/forum/viewtopic.php?f=2&t=52819
 - X meshloader fixes bug with uninitialized normals. Thanks @sfan5 for patch: https://irrlicht.sourceforge.io/forum/viewtopic.php?f=2&t=52819
 - stl meshloader now faster, especially with text format
