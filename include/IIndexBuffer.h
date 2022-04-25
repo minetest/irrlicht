@@ -26,8 +26,8 @@ namespace scene
 		//! Const pointer to first element
 		virtual const void* getData() const =0;
 
-		//! Deprecated: Was same as getData(), just closer to core::array interface
-		IRR_DEPRECATED void* pointer() { return getData(); }
+		//! Same as getData(), just closer to core::array interface
+		void* pointer() { return getData(); }
 
 		virtual video::E_INDEX_TYPE getType() const =0;
 

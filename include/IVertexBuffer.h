@@ -21,8 +21,11 @@ namespace scene
 		//! Pointer to first element of vertex data
 		virtual void* getData() =0;
 
-		//! Same as getData() and real type returned is not always video::S3DVertex* but depends on type
-		virtual video::S3DVertex* pointer() =0;
+		//! Const pointer to first element
+		virtual const void* getData() const =0;
+
+		//! Same as getData.
+		virtual void* pointer() { return getData(); }
 
 		virtual video::E_VERTEX_TYPE getType() const =0;
 		virtual void setType(video::E_VERTEX_TYPE vertexType) =0;
@@ -34,16 +37,20 @@ namespace scene
 		virtual u32 size() const =0;
 
 		//! Add vertex to end. 
-		//* Note that depending on vertex type reference has to be one of the types derived from video::S3DVertex. */
+		//* Note that if you pass another type than the currently used vertex type then information can be lost */
 		virtual void push_back(const video::S3DVertex &element) =0;
+		virtual void push_back(const video::S3DVertex2TCoords &element) =0;
+		virtual void push_back(const video::S3DVertexTangents &element) =0;
 
 		//! Set value at index. Buffer must be already large enough that element exists.
-		/** Depending on vertex type reference has to be one of the types derived from video::S3DVertex */
+		//* Note that if you pass another type than the currently used vertex type then information can be lost */
 		virtual void setValue(u32 index, const video::S3DVertex &value) =0;
+		virtual void setValue(u32 index, const video::S3DVertex2TCoords &value) =0;
+		virtual void setValue(u32 index, const video::S3DVertexTangents &value) =0;
 
-		// Note that the reference can also be to one of the types derived from video::S3DVertex.
-		// This is especially important for the non const access version - you need to have the correct type and do some casting
-		// if you write vertices. 
+		//! Direct access to elements. Risky to use!
+		/** The reference _must_ be cast to the correct type before use. It's only video::S3DVertex if getType is EVT_STANDARD.
+		    otherwise cast it first to a reference type derived from S3DVertex like S3DVertex2TCoords& or S3DVertexTangents&. */
 		virtual video::S3DVertex& operator [](u32 index) = 0;
 		virtual video::S3DVertex& operator [](const u32 index) const =0;
 		virtual video::S3DVertex& getLast() =0;

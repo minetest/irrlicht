@@ -25,14 +25,20 @@ namespace scene
 			virtual u32 size() const =0;
 
 			virtual void push_back (const video::S3DVertex &element) =0;
+			virtual void push_back(const video::S3DVertex2TCoords &element) =0;
+			virtual void push_back(const video::S3DVertexTangents &element) =0;
 			virtual void setValue(u32 index, const video::S3DVertex &value) =0;
+			virtual void setValue(u32 index, const video::S3DVertex2TCoords &value) =0;
+			virtual void setValue(u32 index, const video::S3DVertexTangents &value) =0;
+
 			virtual video::S3DVertex& operator [](u32 index) = 0;
 			virtual video::S3DVertex& operator [](const u32 index) const =0;
 			virtual video::S3DVertex& getLast() =0;
 			virtual void set_used(u32 usedNow) =0;
 			virtual void reallocate(u32 new_size, bool canShrink=true) =0;
 			virtual u32 allocated_size() const =0;
-			virtual video::S3DVertex* pointer() =0;
+			virtual void* pointer() =0;
+			virtual const void* const_pointer() const =0;
 			virtual video::E_VERTEX_TYPE getType() const =0;
 		};
 
@@ -47,10 +53,18 @@ namespace scene
 			virtual u32 size() const IRR_OVERRIDE {return Vertices.size();}
 
 			virtual void push_back (const video::S3DVertex &element) IRR_OVERRIDE
-			{Vertices.push_back((T&)element);}
+			{Vertices.push_back(element);}
+			virtual void push_back(const video::S3DVertex2TCoords &element) IRR_OVERRIDE
+			{Vertices.push_back(element);}
+			virtual void push_back(const video::S3DVertexTangents &element) IRR_OVERRIDE
+			{Vertices.push_back(element);}
 
 			virtual void setValue(u32 index, const video::S3DVertex &value) IRR_OVERRIDE
-			{Vertices[index] = (T&)value;}
+			{Vertices[index] = value;}
+			virtual void setValue(u32 index, const video::S3DVertex2TCoords &value) IRR_OVERRIDE
+			{Vertices[index] = value;}
+			virtual void setValue(u32 index, const video::S3DVertexTangents &value) IRR_OVERRIDE
+			{Vertices[index] = value;}
 
 			virtual video::S3DVertex& operator [](u32 index) IRR_OVERRIDE
 			{return (video::S3DVertex&)Vertices[index];}
@@ -72,7 +86,8 @@ namespace scene
 				return Vertices.allocated_size();
 			}
 
-			virtual video::S3DVertex* pointer() IRR_OVERRIDE {return Vertices.pointer();}
+			virtual void* pointer() IRR_OVERRIDE {return Vertices.pointer();}
+			virtual const void* const_pointer() const IRR_OVERRIDE {return Vertices.const_pointer();}
 
 			virtual video::E_VERTEX_TYPE getType() const IRR_OVERRIDE {return T::getType();}
 		};
@@ -101,7 +116,6 @@ namespace scene
 		{
 			delete Vertices;
 		}
-
 
 		virtual void setType(video::E_VERTEX_TYPE vertexType) IRR_OVERRIDE
 		{
@@ -132,8 +146,27 @@ namespace scene
 			{
 				NewVertices->reallocate( Vertices->size() );
 
-				for(u32 n=0;n<Vertices->size();++n)
-					NewVertices->push_back((*Vertices)[n]);
+				switch (Vertices->getType())	// old type
+				{
+					case video::EVT_STANDARD:
+					{
+						for(u32 n=0;n<Vertices->size();++n)
+							NewVertices->push_back((*Vertices)[n]);
+						break;
+					}
+					case video::EVT_2TCOORDS:
+					{
+						for(u32 n=0;n<Vertices->size();++n)
+							NewVertices->push_back((video::S3DVertex2TCoords&)(*Vertices)[n]);
+						break;
+					}
+					case video::EVT_TANGENTS:
+					{
+						for(u32 n=0;n<Vertices->size();++n)
+							NewVertices->push_back((video::S3DVertexTangents&)(*Vertices)[n]);
+						break;
+					}
+				}
 
 				delete Vertices;
 			}
@@ -142,6 +175,7 @@ namespace scene
 		}
 
 		virtual void* getData() IRR_OVERRIDE {return Vertices->pointer();}
+		virtual const void* getData() const IRR_OVERRIDE {return Vertices->const_pointer();}
 
 		virtual video::E_VERTEX_TYPE getType() const IRR_OVERRIDE {return Vertices->getType();}
 
@@ -157,7 +191,27 @@ namespace scene
 			Vertices->push_back(element);
 		}
 
+		virtual void push_back(const video::S3DVertex2TCoords &element) IRR_OVERRIDE
+		{
+			Vertices->push_back(element);
+		}
+
+		virtual void push_back(const video::S3DVertexTangents &element) IRR_OVERRIDE
+		{
+			Vertices->push_back(element);
+		}
+
 		virtual void setValue(u32 index, const video::S3DVertex &value) IRR_OVERRIDE
+		{
+			Vertices->setValue(index, value);
+		}
+
+		virtual void setValue(u32 index, const video::S3DVertex2TCoords &value) IRR_OVERRIDE
+		{
+			Vertices->setValue(index, value);
+		}
+
+		virtual void setValue(u32 index, const video::S3DVertexTangents &value) IRR_OVERRIDE
 		{
 			Vertices->setValue(index, value);
 		}
@@ -190,11 +244,6 @@ namespace scene
 		virtual u32 allocated_size() const IRR_OVERRIDE
 		{
 			return Vertices->allocated_size();
-		}
-
-		virtual video::S3DVertex* pointer() IRR_OVERRIDE
-		{
-			return Vertices->pointer();
 		}
 
 		//! get the current hardware mapping hint
