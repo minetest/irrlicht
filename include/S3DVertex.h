@@ -44,7 +44,7 @@ const char* const sBuiltInVertexTypeNames[] =
 struct S3DVertex
 {
 	//! default constructor
-	S3DVertex() {}
+	S3DVertex() : Color(0xffffffff) {}
 
 	//! constructor
 	S3DVertex(f32 x, f32 y, f32 z, f32 nx, f32 ny, f32 nz, SColor c, f32 tu, f32 tv)
@@ -142,7 +142,7 @@ struct S3DVertex2TCoords : public S3DVertex
 		: S3DVertex(pos, normal, color, tcoords), TCoords2(tcoords) {}
 
 	//! constructor from S3DVertex
-	S3DVertex2TCoords(S3DVertex& o) : S3DVertex(o) {}
+	S3DVertex2TCoords(const S3DVertex& o) : S3DVertex(o) {}
 
 	//! Second set of texture coordinates
 	core::vector2d<f32> TCoords2;
@@ -213,6 +213,9 @@ struct S3DVertexTangents : public S3DVertex
 		const core::vector3df& tangent=core::vector3df(),
 		const core::vector3df& binormal=core::vector3df())
 		: S3DVertex(pos, normal, c, tcoords), Tangent(tangent), Binormal(binormal) { }
+
+	//! constructor from S3DVertex
+	S3DVertexTangents(const S3DVertex& o) : S3DVertex(o) {}
 
 	//! Tangent vector along the x-axis of the texture
 	core::vector3df Tangent;
