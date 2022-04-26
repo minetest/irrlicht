@@ -151,11 +151,6 @@ namespace scene
 	/** Basically its an alternate way to describe a transformation. */
 	struct SMD3QuaternionTag
 	{
-		virtual ~SMD3QuaternionTag()
-		{
-			position.X = 0.f;	// anyone got an idea why?
-		}
-
 		// construct for searching
 		SMD3QuaternionTag( const core::stringc& name )
 			: Name ( name ) {}
@@ -187,8 +182,6 @@ namespace scene
 		{
 			Container.setAllocStrategy(core::ALLOC_STRATEGY_SAFE);
 		}
-
-		virtual ~SMD3QuaternionTagList() {}
 
 		SMD3QuaternionTag* get(const core::stringc& name)
 		{
