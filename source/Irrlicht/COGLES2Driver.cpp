@@ -589,13 +589,12 @@ COGLES2Driver::~COGLES2Driver()
 		SHWBufferLink_opengl *HWBuffer = new SHWBufferLink_opengl(mb);
 
 		//add to map
-		HWBufferMap.insert(HWBuffer->MeshBuffer, HWBuffer);
+		HWBuffer->listPosition = HWBufferList.insert(HWBufferList.end(), HWBuffer);
 
 		HWBuffer->ChangedID_Vertex = HWBuffer->MeshBuffer->getChangedID_Vertex();
 		HWBuffer->ChangedID_Index = HWBuffer->MeshBuffer->getChangedID_Index();
 		HWBuffer->Mapped_Vertex = mb->getHardwareMappingHint_Vertex();
 		HWBuffer->Mapped_Index = mb->getHardwareMappingHint_Index();
-		HWBuffer->LastUsed = 0;
 		HWBuffer->vbo_verticesID = 0;
 		HWBuffer->vbo_indicesID = 0;
 		HWBuffer->vbo_verticesSize = 0;
@@ -641,8 +640,6 @@ COGLES2Driver::~COGLES2Driver()
 		SHWBufferLink_opengl *HWBuffer = static_cast<SHWBufferLink_opengl*>(_HWBuffer);
 
 		updateHardwareBuffer(HWBuffer); //check if update is needed
-
-		HWBuffer->LastUsed = 0;//reset count
 
 		const scene::IMeshBuffer* mb = HWBuffer->MeshBuffer;
 		const void *vertices = mb->getVertices();

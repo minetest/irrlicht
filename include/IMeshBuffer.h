@@ -145,6 +145,10 @@ namespace scene
 		/** This shouldn't be used for anything outside the VideoDriver. */
 		virtual u32 getChangedID_Index() const = 0;
 
+		//! Used by the VideoDriver to remember the buffer link.
+		virtual void setHWBuffer(void *ptr) const = 0;
+		virtual void *getHWBuffer() const = 0;
+
 		//! Describe what kind of primitive geometry is used by the meshbuffer
 		/** Note: Default is EPT_TRIANGLES. Using other types is fine for rendering.
 		But meshbuffer manipulation functions might expect type EPT_TRIANGLES
