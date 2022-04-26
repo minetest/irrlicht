@@ -21,7 +21,6 @@
 #include "SVertexIndex.h"
 #include "SLight.h"
 #include "SExposedVideoData.h"
-
 #include <list>
 
 namespace irr

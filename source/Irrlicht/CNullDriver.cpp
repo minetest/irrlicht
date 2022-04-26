@@ -1706,9 +1706,7 @@ void CNullDriver::updateAllHardwareBuffers()
 		++it;
 
 		if (!Link->MeshBuffer || Link->MeshBuffer->getReferenceCount() == 1)
-		{
 			deleteHardwareBuffer(Link);
-		}
 	}
 }
 
@@ -1727,7 +1725,7 @@ void CNullDriver::removeHardwareBuffer(const scene::IMeshBuffer* mb)
 {
 	if (!mb)
 		return;
-        SHWBufferLink *HWBuffer = reinterpret_cast<SHWBufferLink*>(mb->getHWBuffer());
+	SHWBufferLink *HWBuffer = reinterpret_cast<SHWBufferLink*>(mb->getHWBuffer());
 	if (HWBuffer)
 		deleteHardwareBuffer(HWBuffer);
 }

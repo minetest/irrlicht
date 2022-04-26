@@ -287,11 +287,11 @@ namespace scene
 		/** This shouldn't be used for anything outside the VideoDriver. */
 		virtual u32 getChangedID_Index() const _IRR_OVERRIDE_ {return ChangedID_Index;}
 
-                virtual void setHWBuffer(void *ptr) const _IRR_OVERRIDE_ {
+		virtual void setHWBuffer(void *ptr) const _IRR_OVERRIDE_ {
 			HWBuffer = ptr;
 		}
 
-                virtual void *getHWBuffer() const _IRR_OVERRIDE_ {
+		virtual void *getHWBuffer() const _IRR_OVERRIDE_ {
 			return HWBuffer;
 		}
 
