@@ -301,16 +301,6 @@ namespace video
 			FogEnable(false), NormalizeNormals(false), UseMipMaps(true)
 		{ }
 
-		//! Copy constructor
-		/** \param other Material to copy from. */
-		SMaterial(const SMaterial& other)
-		{
-			// These pointers are checked during assignment
-			for (u32 i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-				TextureLayer[i].TextureMatrix = 0;
-			*this = other;
-		}
-
 		//! Texture layer array.
 		SMaterialLayer TextureLayer[MATERIAL_MAX_TEXTURES];
 
