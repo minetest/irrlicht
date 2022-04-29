@@ -1689,9 +1689,9 @@ CNullDriver::SHWBufferLink *CNullDriver::getBufferLink(const scene::IMeshBuffer*
 		return 0;
 
 	//search for hardware links
-	core::map< const scene::IMeshBuffer*,SHWBufferLink* >::Node* node = HWBufferMap.find(mb);
-	if (node)
-		return node->getValue();
+	SHWBufferLink *HWBuffer = reinterpret_cast<SHWBufferLink*>(mb->getHWBuffer());
+	if (HWBuffer)
+		return HWBuffer;
 
 	return createHardwareBuffer(mb); //no hardware links, and mesh wants one, create it
 }
@@ -1700,20 +1700,13 @@ CNullDriver::SHWBufferLink *CNullDriver::getBufferLink(const scene::IMeshBuffer*
 //! Update all hardware buffers, remove unused ones
 void CNullDriver::updateAllHardwareBuffers()
 {
-	core::map<const scene::IMeshBuffer*,SHWBufferLink*>::ParentFirstIterator Iterator=HWBufferMap.getParentFirstIterator();
+	auto it = HWBufferList.begin();
+	while (it != HWBufferList.end()) {
+		SHWBufferLink *Link = *it;
+		++it;
 
-	for (;!Iterator.atEnd();Iterator++)
-	{
-		SHWBufferLink *Link=Iterator.getNode()->getValue();
-
-		Link->LastUsed++;
-		if (Link->LastUsed>20000)
-		{
+		if (!Link->MeshBuffer || Link->MeshBuffer->getReferenceCount() == 1)
 			deleteHardwareBuffer(Link);
-
-			// todo: needs better fix
-			Iterator = HWBufferMap.getParentFirstIterator();
-		}
 	}
 }
 
@@ -1722,7 +1715,7 @@ void CNullDriver::deleteHardwareBuffer(SHWBufferLink *HWBuffer)
 {
 	if (!HWBuffer)
 		return;
-	HWBufferMap.remove(HWBuffer->MeshBuffer);
+	HWBufferList.erase(HWBuffer->listPosition);
 	delete HWBuffer;
 }
 
@@ -1730,17 +1723,19 @@ void CNullDriver::deleteHardwareBuffer(SHWBufferLink *HWBuffer)
 //! Remove hardware buffer
 void CNullDriver::removeHardwareBuffer(const scene::IMeshBuffer* mb)
 {
-	core::map<const scene::IMeshBuffer*,SHWBufferLink*>::Node* node = HWBufferMap.find(mb);
-	if (node)
-		deleteHardwareBuffer(node->getValue());
+	if (!mb)
+		return;
+	SHWBufferLink *HWBuffer = reinterpret_cast<SHWBufferLink*>(mb->getHWBuffer());
+	if (HWBuffer)
+		deleteHardwareBuffer(HWBuffer);
 }
 
 
 //! Remove all hardware buffers
 void CNullDriver::removeAllHardwareBuffers()
 {
-	while (HWBufferMap.size())
-		deleteHardwareBuffer(HWBufferMap.getRoot()->getValue());
+	while (!HWBufferList.empty())
+		deleteHardwareBuffer(HWBufferList.front());
 }
 
 

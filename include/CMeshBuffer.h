@@ -21,6 +21,7 @@ namespace scene
 		CMeshBuffer()
 			: ChangedID_Vertex(1), ChangedID_Index(1)
 			, MappingHint_Vertex(EHM_NEVER), MappingHint_Index(EHM_NEVER)
+			, HWBuffer(NULL)
 			, PrimitiveType(EPT_TRIANGLES)
 		{
 			#ifdef _DEBUG
@@ -286,12 +287,22 @@ namespace scene
 		/** This shouldn't be used for anything outside the VideoDriver. */
 		virtual u32 getChangedID_Index() const _IRR_OVERRIDE_ {return ChangedID_Index;}
 
+		virtual void setHWBuffer(void *ptr) const _IRR_OVERRIDE_ {
+			HWBuffer = ptr;
+		}
+
+		virtual void *getHWBuffer() const _IRR_OVERRIDE_ {
+			return HWBuffer;
+		}
+
+
 		u32 ChangedID_Vertex;
 		u32 ChangedID_Index;
 
 		//! hardware mapping hint
 		E_HARDWARE_MAPPING MappingHint_Vertex;
 		E_HARDWARE_MAPPING MappingHint_Index;
+		mutable void *HWBuffer;
 
 		//! Material for this meshbuffer.
 		video::SMaterial Material;
