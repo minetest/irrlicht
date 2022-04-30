@@ -13,6 +13,7 @@
 
 #undef IPOL_C0
 #undef IPOL_A0
+#undef IPOL_C1
 #undef IPOL_T0
 #undef IPOL_T1
 #undef IPOL_T2
@@ -22,3 +23,4 @@
 #undef ipol_test
 
 #undef INVERSE_W_RANGE
+#undef burning_shader_colormask

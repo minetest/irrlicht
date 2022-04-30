@@ -218,6 +218,7 @@ int main()
         break;
 
     case video::EDT_OPENGL:
+    case video::EDT_BURNINGSVIDEO:
         psFileName = mediaPath + "pp_opengl.frag";
         vsFileName = mediaPath + "pp_opengl.vert";
         break;

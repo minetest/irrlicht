@@ -284,8 +284,8 @@ void CImage::copyToScalingBoxFilter(IImage* target, s32 bias, bool blend)
 
 	target->getData();
 
-	s32 fx = core::ceil32( sourceXStep );
-	s32 fy = core::ceil32( sourceYStep );
+	const s32 fx = core::ceil32( sourceXStep );
+	const s32 fy = core::ceil32( sourceYStep );
 	f32 sx;
 	f32 sy;
 
@@ -403,14 +403,15 @@ void CImage::flip(bool topBottom, bool leftRight)
 }
 
 //! get a filtered pixel
-inline SColor CImage::getPixelBox( s32 x, s32 y, s32 fx, s32 fy, s32 bias ) const
+inline SColor CImage::getPixelBox( const s32 x, const s32 y, const s32 fx, const s32 fy, const s32 bias ) const
 {
+/*
 	if (IImage::isCompressedFormat(Format))
 	{
 		os::Printer::log("IImage::getPixelBox method doesn't work with compressed images.", ELL_WARNING);
 		return SColor(0);
 	}
-
+*/
 	SColor c;
 	s32 a = 0, r = 0, g = 0, b = 0;
 
@@ -430,12 +431,12 @@ inline SColor CImage::getPixelBox( s32 x, s32 y, s32 fx, s32 fy, s32 bias ) cons
 
 	}
 
-	s32 sdiv = s32_log2_s32(fx * fy);
+	const s32 sdiv = fx * fy; // s32_log2_s32(fx * fy);
 
-	a = core::s32_clamp( ( a >> sdiv ) + bias, 0, 255 );
-	r = core::s32_clamp( ( r >> sdiv ) + bias, 0, 255 );
-	g = core::s32_clamp( ( g >> sdiv ) + bias, 0, 255 );
-	b = core::s32_clamp( ( b >> sdiv ) + bias, 0, 255 );
+	a = core::s32_clamp( ( a / sdiv ) + bias, 0, 255 );
+	r = core::s32_clamp( ( r / sdiv ) + bias, 0, 255 );
+	g = core::s32_clamp( ( g / sdiv ) + bias, 0, 255 );
+	b = core::s32_clamp( ( b / sdiv ) + bias, 0, 255 );
 
 	c.set( a, r, g, b );
 	return c;

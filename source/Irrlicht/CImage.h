@@ -62,7 +62,7 @@ public:
 	virtual void fill(const SColor &color) IRR_OVERRIDE;
 
 private:
-	inline SColor getPixelBox ( s32 x, s32 y, s32 fx, s32 fy, s32 bias ) const;
+	inline SColor getPixelBox ( const s32 x, const s32 y, const s32 fx, const s32 fy, s32 bias ) const;
 };
 
 } // end namespace video

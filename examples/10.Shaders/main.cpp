@@ -228,6 +228,12 @@ int main()
 			vsFileName = mediaPath + "opengl.vsh";
 		}
 		break;
+	case video::EDT_BURNINGSVIDEO:
+		UseHighLevelShaders = true;
+		psFileName = mediaPath + "opengl.frag";
+		vsFileName = mediaPath + "opengl.vert";
+		break;
+
 	default:
 		break;
 	}

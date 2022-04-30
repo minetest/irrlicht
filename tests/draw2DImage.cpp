@@ -173,7 +173,8 @@ bool testExactPlacement(video::E_DRIVER_TYPE driverType)
 	video::IImage* img = driver->createImage(renderTargetTex, core::vector2di(), renderTargetTex->getSize());
 	driver->writeImageToFile(img, "results/fireball.png");
 	img->drop();
-	bool result = fuzzyCompareImages(driver, "media/fireball.png", "results/fireball.png")>98.25f;
+	bool result = fuzzyCompareImages(driver,
+		driverType == video::EDT_BURNINGSVIDEO ? "media/Burning's Video-fireball.png":"media/fireball.png", "results/fireball.png")>98.25f;
 
 	device->closeDevice();
 	device->run();

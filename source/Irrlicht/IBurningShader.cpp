@@ -10,10 +10,7 @@
 #include "CSoftwareDriver2.h"
 #include "IShaderConstantSetCallBack.h"
 
-namespace irr
-{
-namespace video
-{
+burning_namespace_start
 
 const tFixPointu IBurningShader::dithermask[] =
 {
@@ -30,7 +27,7 @@ void IBurningShader::constructor_IBurningShader(CBurningVideoDriver* driver)
 #endif
 
 #if defined(ENV64BIT)
-	if (((unsigned long long)&scan & 15) || ((unsigned long long)&line & 15))
+	if (((unsigned long long) & scan & 15) || ((unsigned long long) & line & 15))
 	{
 		os::Printer::log("BurningVideo Shader not 16 byte aligned", ELL_ERROR);
 		IRR_DEBUG_BREAK_IF(1);
@@ -42,7 +39,6 @@ void IBurningShader::constructor_IBurningShader(CBurningVideoDriver* driver)
 	Interlaced.nr = 0;
 
 	EdgeTestPass = edge_test_pass;
-	EdgeTestPass_stack = edge_test_pass;
 
 	for (u32 i = 0; i < BURNING_MATERIAL_MAX_TEXTURES; ++i)
 	{
@@ -69,6 +65,8 @@ void IBurningShader::constructor_IBurningShader(CBurningVideoDriver* driver)
 	RenderPass_ShaderIsTransparent = 0;
 	PrimitiveColor = COLOR_BRIGHT_WHITE;
 	TL_Flag = 0;
+	fragment_draw_count = 0;
+	VertexShaderProgram_buildin = BVT_Fix;
 }
 
 IBurningShader::IBurningShader(CBurningVideoDriver* driver)
@@ -103,8 +101,66 @@ IBurningShader::IBurningShader(
 	if (CallBack)
 		CallBack->grab();
 
+	//set default Transparent/Solid
+	switch (BaseMaterial)
+	{
+	case EMT_TRANSPARENT_ADD_COLOR:
+	case EMT_TRANSPARENT_ALPHA_CHANNEL:
+	case EMT_TRANSPARENT_ALPHA_CHANNEL_REF:
+	case EMT_TRANSPARENT_VERTEX_ALPHA:
+	case EMT_TRANSPARENT_REFLECTION_2_LAYER:
+	case EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR:
+	case EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:
+	case EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR:
+	case EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA:
+	case EMT_ONETEXTURE_BLEND:
+		RenderPass_ShaderIsTransparent = 1;
+		break;
+	default:
+		RenderPass_ShaderIsTransparent = 0;
+		break;
+	}
+
+	//v0.53 compile. only buildin
+	const c8* ip = vertexShaderProgram;
+	unsigned hash = 0;
+	unsigned len = 0;
+	if (ip)
+	{
+		while (ip[len])
+		{
+			hash = ip[len] + (hash << 6) + (hash << 16) - hash;
+			len += 1;
+		}
+	}
+
+	if (len == 815 && hash == 0x1f847599)	VertexShaderProgram_buildin = BVT_815_0x1f847599; /* pp_opengl.vert */
+	else if (len == 1100 && hash == 0x12c79d1c) VertexShaderProgram_buildin = BVT_opengl_vsh_shaderexample; /*opengl.vert */
+	else if (len == 1259 && hash == 0xc8226e1a) VertexShaderProgram_buildin = STK_1259_0xc8226e1a; /* supertuxkart bubble.vert */
+	else if (len == 958 && hash == 0xa048973b) VertexShaderProgram_buildin = STK_958_0xa048973b;	/* supertuxkart motion_blur.vert */
+	else if (len == 1309 && hash == 0x1fd689c2) VertexShaderProgram_buildin = STK_1309_0x1fd689c2;	/* supertuxkart normalmap.vert */
+	else if (len == 1204 && hash == 0x072a4094) VertexShaderProgram_buildin = STK_1204_0x072a4094;	/* supertuxkart splatting.vert */
+
+
+	//VertexShaderProgram = vertexShaderProgram;
+	//PixelShaderProgram = pixelShaderProgram;
+
 	// register myself as new material
 	outMaterialTypeNr = Driver->addMaterialRenderer(this);
+
+	//save info
+#if 0
+	static int run = 0;
+	FILE* f = fopen("shader_id.txt", run ? "a" : "wb");
+	if (f)
+	{
+		fprintf(f, "--- start outMaterialTypeNr:%d len:%d hash: 0x%08x\n", outMaterialTypeNr, len, hash);
+		fprintf(f, "%s", vertexShaderProgram);
+		fprintf(f, "\n-------------- end ---------------------------\n");
+		fclose(f);
+	}
+	run += 1;
+#endif
 }
 
 
@@ -139,7 +195,7 @@ void IBurningShader::setRenderTarget(video::IImage* surface, const core::rect<s3
 	if (RenderTarget)
 		RenderTarget->drop();
 
-	RenderTarget = (video::CImage*) surface;
+	RenderTarget = (video::CImage*)surface;
 
 	if (RenderTarget)
 	{
@@ -156,7 +212,9 @@ void IBurningShader::setTextureParam(const size_t stage, video::CSoftwareTexture
 	sInternalTexture* it = &IT[stage];
 
 	if (it->Texture)
+	{
 		it->Texture->drop();
+	}
 
 	it->Texture = texture;
 
@@ -212,9 +270,12 @@ void IBurningShader::drawPoint(const s4DVertex* a)
 {
 }
 
-void IBurningShader::drawWireFrameTriangle(const s4DVertex* a, const s4DVertex* b, const s4DVertex* c)
+void IBurningShader::drawWireFrameTriangle(s4DVertex* a, s4DVertex* b, s4DVertex* c)
 {
-	if (EdgeTestPass & edge_test_pass) drawTriangle(a, b, c);
+	if (EdgeTestPass & edge_test_pass)
+	{
+		drawTriangle(a, b, c);
+	}
 	else if (EdgeTestPass & edge_test_point)
 	{
 		drawPoint(a);
@@ -234,7 +295,7 @@ void IBurningShader::OnSetMaterial(const SMaterial& material, const SMaterial& l
 	bool resetAllRenderstates, IMaterialRendererServices* services)
 {
 	if (Driver)
-		Driver->setFallback_Material(BaseMaterial);
+		Driver->setFallback_Material(BaseMaterial, VertexShaderProgram_buildin);
 	services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 	if (CallBack)
 		CallBack->OnSetMaterial(material);
@@ -243,6 +304,7 @@ void IBurningShader::OnSetMaterial(const SMaterial& material, const SMaterial& l
 
 void IBurningShader::OnUnsetMaterial()
 {
+	//restore previous state
 }
 
 bool IBurningShader::OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype)
@@ -271,6 +333,59 @@ void IBurningShader::setBasicRenderStates(const SMaterial& material, const SMate
 {
 	// forward
 	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+}
+
+#if 0
+const core::matrix4& IBurningShader::uniform_mat4(const c8* name)
+{
+	return (const core::matrix4&)*getUniform(name, BL_VERTEX_FLOAT);
+}
+
+video::sVec4 IBurningShader::uniform_vec4(const c8* name)
+{
+	const f32* v = getUniform(name, BL_VERTEX_FLOAT);
+	return video::sVec4(v[0], v[1], v[2], v[3]);
+}
+
+video::sVec4 IBurningShader::uniform_vec3(const c8* name)
+{
+	const f32* v = getUniform(name, BL_VERTEX_FLOAT);
+	return video::sVec4(v[0], v[1], v[2], 0.f);
+}
+
+
+core::matrix4& IBurningShader::varying_mat4(const c8* name)
+{
+	return (core::matrix4&)*getUniform(name, BL_FRAGMENT_FLOAT);
+}
+
+video::sVec4 IBurningShader::varying_vec4(const c8* name)
+{
+	const f32* v = getUniform(name, BL_FRAGMENT_FLOAT);
+	return video::sVec4(v[0], v[1], v[2], v[3]);
+}
+
+video::sVec4 IBurningShader::varying_vec3(const c8* name)
+{
+	const f32* v = getUniform(name, BL_FRAGMENT_FLOAT);
+	return video::sVec4(v[0], v[1], v[2], 0.f);
+}
+#endif
+
+static BurningUniform _empty = { "null",BL_VERTEX_FLOAT,{0.f,0.f,0.f,0.f} };
+const f32* IBurningShader::getUniform(const c8* name, EBurningUniformFlags flags) const
+{
+	const size_t size = UniformInfo.size();
+	if (size && name && name[0])
+	{
+		const BurningUniform* b = &UniformInfo[0];
+		for (size_t i = 0; i < size; ++i)
+		{
+			if (tiny_istoken(b[i].name, name))
+				return b[i].data;
+		}
+	}
+	return _empty.data;
 }
 
 s32 IBurningShader::getShaderConstantID(EBurningUniformFlags flags, const c8* name)
@@ -405,6 +520,27 @@ void IBurningShader::setStencilOp(eBurningStencilOp sfail, eBurningStencilOp dpf
 	stencilOp[2] = dppass;
 }
 
+void PushShaderData::push(IBurningShader* shader)
+{
+	CurrentShader = shader;
+	if (shader) shader->pushShader(this,1);
+}
+void PushShaderData::pop()
+{
+	if (CurrentShader) CurrentShader->pushShader(this, 0);
+}
+
+void IBurningShader::pushShader(PushShaderData* data, int save)
+{
+	if (save)
+	{
+		data->EdgeTestPass = EdgeTestPass;
+	}
+	else
+	{
+		EdgeTestPass = data->EdgeTestPass;
+	}
+}
 
 IVideoDriver* IBurningShader::getVideoDriver()
 {
@@ -412,7 +548,6 @@ IVideoDriver* IBurningShader::getVideoDriver()
 }
 
 
-} // end namespace video
-} // end namespace irr
+burning_namespace_end
 
 #endif // _IRR_COMPILE_WITH_BURNINGSVIDEO_

@@ -356,6 +356,7 @@ int main(int argc, char* argv[])
 	// Add the mesh to the scene graph
 	IMeshSceneNode* meshnode = smgr -> addMeshSceneNode(mesh.Mesh);
 	meshnode->setMaterialFlag(video::EMF_BACK_FACE_CULLING, false);
+	meshnode->getMaterial(0).Shininess = 80.f;
 
 	// light is just for nice effects
 	ILightSceneNode *node = smgr->addLightSceneNode(0, vector3df(0,100,0),
