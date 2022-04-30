@@ -73,13 +73,13 @@ public:
 	virtual const core::aabbox3d<f32>& getTransformedBillboardBoundingBox(const irr::scene::ICameraSceneNode* camera) _IRR_OVERRIDE_;
 
 	//! Get the amount of mesh buffers.
-	virtual u32 getMeshBufferCount() const
+	virtual u32 getMeshBufferCount() const _IRR_OVERRIDE_
 	{
 		return Buffer ? 1 : 0;
 	}
 
 	//! Get pointer to the mesh buffer.
-	virtual IMeshBuffer* getMeshBuffer(u32 nr) const
+	virtual IMeshBuffer* getMeshBuffer(u32 nr) const _IRR_OVERRIDE_
 	{
 		if ( nr == 0 )
 			return Buffer;
