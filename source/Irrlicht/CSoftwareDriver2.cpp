@@ -2153,11 +2153,13 @@ void CBurningVideoDriver::VertexCache_fill(const u32 sourceIndex, const u32 dest
 			v.x = dot(lightdir, t);
 			v.y = dot(lightdir, b);
 			v.z = dot(lightdir, n);
+			v.w = 0;
 			lightVec = normalize(v);
 
 			v.x = dot(vertexPosition, t);
 			v.y = dot(vertexPosition, b);
 			v.z = dot(vertexPosition, n);
+			v.w = 0;
 			eyeVec = normalize(v);
 
 			vertexPosition = normalize(vertexPosition);
@@ -3366,7 +3368,7 @@ void CBurningVideoDriver::assignHardwareLight(SBurningShaderLight& l, const SLig
 //! adds a dynamic light
 s32 CBurningVideoDriver::addDynamicLight(const SLight& dl)
 {
-	s32 i0 = CNullDriver::addDynamicLight(dl);
+	/*s32 i0 = */CNullDriver::addDynamicLight(dl);
 
 	SBurningShaderLight l;
 	EyeSpace.Light.push_back(l);

@@ -4,7 +4,10 @@
 */
 void burning_shader_class::burning_shader_fragment()
 {
+#ifdef burning_shader_colormask
+#else
 	tVideoSample *dst;
+#endif
 
 #ifdef USE_ZBUFFER
 	fp24 *z;
@@ -84,7 +87,10 @@ void burning_shader_class::burning_shader_fragment()
 #endif
 
 	SOFTWARE_DRIVER_2_CLIPCHECK;
+#ifdef burning_shader_colormask
+#else
 	dst = (tVideoSample*)RenderTarget->getData() + (line.y * RenderTarget->getDimension().Width) + xStart;
+#endif
 
 #ifdef USE_ZBUFFER
 	z = (fp24*)DepthBuffer->lock() + (line.y * RenderTarget->getDimension().Width) + xStart;

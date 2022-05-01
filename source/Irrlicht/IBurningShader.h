@@ -47,6 +47,10 @@ struct SBurningShaderLight
 	sVec3Color AmbientColor;
 	sVec3Color DiffuseColor;
 	sVec3Color SpecularColor;
+	SBurningShaderLight()
+	{
+		LightIsOn = false;
+	}
 };
 
 enum eTransformLightFlags

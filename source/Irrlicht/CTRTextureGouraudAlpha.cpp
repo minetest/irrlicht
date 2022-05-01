@@ -225,7 +225,7 @@ void CTRTextureGouraudAlpha2::fragmentShader()
 #endif
 
 #ifdef IPOL_C1
-	tFixPoint aFog = FIX_POINT_ONE;
+	//tFixPoint aFog = FIX_POINT_ONE;
 #endif
 
 #endif
