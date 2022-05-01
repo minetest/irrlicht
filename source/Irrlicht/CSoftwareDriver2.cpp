@@ -1743,12 +1743,14 @@ f32 MipmapLevel(const sVec2& uv, const sVec2& textureSize)
 #define MAT_TEXTURE(tex) ( (video::CSoftwareTexture2*) Material.org.TextureLayer[tex].Texture )
 
 //! clamp(value,0,1)
+#if 0
 static inline float clampfuv(const float v, const float b)
 {
 	// b = 1.f - (2.f * (1/width))
 	return v < b ? b : v > 1.f - b ? 1.f - b : v;
 	//return v < b ? b : v > 1.f-b ? 1.f-b : v;
 }
+#endif
 
 static inline float clampf01(const float v)
 {

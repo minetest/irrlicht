@@ -336,7 +336,7 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* data)
 	}
 #endif
 
-#if 1
+#if 0
 	//save mipmap chain
 	if (0)
 	{

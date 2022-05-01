@@ -379,6 +379,7 @@ int main(int argc, char* argv[])
 		camera->setTarget(vector3df(200.f, -80.f, 150.f));
 		camera->setFarValue(20000.0f);
 	}
+	switchToMayaCamera(device);
 
 	/*
 	Just a usual render loop with event handling. The custom mesh is
