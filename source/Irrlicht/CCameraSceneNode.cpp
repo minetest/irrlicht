@@ -265,6 +265,9 @@ void CCameraSceneNode::render()
 //! update
 void CCameraSceneNode::updateMatrices()
 {
+#if defined(_IRR_COMPILE_WITH_90_DEGREE_CAMERA)
+	ViewArea.getTransform(video::ETS_VIEW).buildCameraLookAtMatrixLH(getAbsolutePosition(), Target, UpVector);
+#else
 	core::vector3df pos = getAbsolutePosition();
 	core::vector3df tgtv = Target - pos;
 	tgtv.normalize();
@@ -282,6 +285,7 @@ void CCameraSceneNode::updateMatrices()
 	}
 
 	ViewArea.getTransform(video::ETS_VIEW).buildCameraLookAtMatrixLH(pos, Target, up);
+#endif
 	ViewArea.getTransform(video::ETS_VIEW) *= Affector;
 	recalculateViewArea();
 }

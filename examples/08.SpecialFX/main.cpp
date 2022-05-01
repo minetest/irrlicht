@@ -291,6 +291,7 @@ int main()
 
 	// disable mouse cursor
 	device->getCursorControl()->setVisible(false);
+	switchToMayaCamera(device);
 
 	s32 lastFPS = -1;
 

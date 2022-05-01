@@ -147,7 +147,9 @@ namespace scene
 		virtual ICameraSceneNode* addCameraSceneNodeMaya(ISceneNode* parent=0,
 			f32 rotateSpeed=-1500.f, f32 zoomSpeed=200.f,
 			f32 translationSpeed=1500.f, s32 id=-1, f32 distance=70.f,
-			bool makeActive=true) IRR_OVERRIDE;
+			bool makeActive=true
+			, f32 rotX = 0.f, f32 rotY = 0.f
+		) IRR_OVERRIDE;
 
 		//! Adds a camera scene node which is able to be controled with the mouse and keys
 		//! like in most first person shooters (FPS):
@@ -565,13 +567,36 @@ namespace scene
 			void* TextureValue;
 		};
 
+		/*
+			const core::aabbox3d<f32> box = Node->getTransformedBoundingBox();
+			Distance = core::min_(camera.getDistanceFromSQ(box.MinEdge), camera.getDistanceFromSQ(box.MaxEdge));
+		*/
+		static inline f32 estimatedSphereDistance(const ISceneNode* node, const core::vector3df& camera)
+		{
+			const core::aabbox3d<f32>& box = node->getBoundingBox();
+			const f32* m = node->getAbsoluteTransformation().pointer();
+
+			f32 p[4];
+			p[0] = camera.X - (box.MinEdge.X * m[0] + box.MinEdge.Y * m[4] + box.MinEdge.Z * m[8] + m[12]);
+			p[1] = camera.Y - (box.MinEdge.X * m[1] + box.MinEdge.Y * m[5] + box.MinEdge.Z * m[9] + m[13]);
+			p[2] = camera.Z - (box.MinEdge.X * m[2] + box.MinEdge.Y * m[6] + box.MinEdge.Z * m[10] + m[14]);
+			f32 l0 = (p[0] * p[0]) + (p[1] * p[1]) + (p[2] * p[2]);
+
+			p[0] = camera.X - (box.MaxEdge.X * m[0] + box.MaxEdge.Y * m[4] + box.MaxEdge.Z * m[8] + m[12]);
+			p[1] = camera.Y - (box.MaxEdge.X * m[1] + box.MaxEdge.Y * m[5] + box.MaxEdge.Z * m[9] + m[13]);
+			p[2] = camera.Z - (box.MaxEdge.X * m[2] + box.MaxEdge.Y * m[6] + box.MaxEdge.Z * m[10] + m[14]);
+			f32 l1 = (p[0] * p[0]) + (p[1] * p[1]) + (p[2] * p[2]);
+			return core::min_(l0, l1);
+		}
+
 		//! sort on distance (center) to camera
 		struct TransparentNodeEntry
 		{
 			TransparentNodeEntry(ISceneNode* n, const core::vector3df& camera)
 				: Node(n)
 			{
-				Distance = Node->getAbsoluteTransformation().getTranslation().getDistanceFromSQ(camera);
+				//Distance = Node->getAbsoluteTransformation().getTranslation().getDistanceFromSQ(camera);
+				Distance = estimatedSphereDistance(n, camera);
 			}
 
 			bool operator < (const TransparentNodeEntry& other) const

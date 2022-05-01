@@ -29,7 +29,9 @@ namespace scene
 	public:
 		//! Constructor
 		CSceneNodeAnimatorCameraMaya(gui::ICursorControl* cursor, f32 rotateSpeed = -1500.f,
-			f32 zoomSpeed = 200.f, f32 translationSpeed = 1500.f, f32 distance=70.f);
+			f32 zoomSpeed = 200.f, f32 translationSpeed = 1500.f, f32 distance=70.f
+			, f32 rotX = 0.f, f32 rotY = 0.f
+		);
 
 		//! Destructor
 		virtual ~CSceneNodeAnimatorCameraMaya();

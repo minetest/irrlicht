@@ -450,6 +450,12 @@ void CMaterialControl::init(IrrlichtDevice * device, const core::position2d<s32>
 	TypicalColorsControl = new CTypicalColorsControl(guiEnv, core::position2d<s32>(pos.X, top), true, guiEnv->getRootGUIElement());
 	top += 300;
 
+	guiEnv->addStaticText(L"Shininess", core::rect<s32>(pos.X, top, pos.X + 150, top + 15), true, false, 0, -1, true);
+	top += 15;
+	ShininessControl = guiEnv->addScrollBar(true, core::rect<s32>(pos.X, top, pos.X + 150, top + 15));
+	ShininessControl->setMax(10000);
+	top += 20;
+
 	// Controls for selecting the material textures
 	guiEnv->addStaticText(L"Textures", core::rect<s32>(pos.X, top, pos.X+150, top+15), true, false, 0, -1, true);
 	top += 15;
@@ -475,6 +481,9 @@ void CMaterialControl::setMaterial(const irr::video::SMaterial & material)
 		TypicalColorsControl->setColorsToMaterialColors(material);
 	for (irr::u32 i=0; i<TextureControls.size(); ++i)
 		TextureControls[i]->setDirty();
+
+	if (ShininessControl)
+		ShininessControl->setPos((int)(material.Shininess*100.f));
 }
 
 void CMaterialControl::update(scene::IMeshSceneNode* sceneNode, scene::IMeshSceneNode* sceneNode2T, scene::IMeshSceneNode* sceneNodeTangents)
@@ -558,6 +567,7 @@ void CMaterialControl::updateMaterial(video::SMaterial & material)
 			material.TextureLayer[i].Texture = Driver->findTexture( io::path(TextureControls[i]->getSelectedTextureName()) );
 		}
 	}
+	material.Shininess = ShininessControl->getPos() * 0.01f;
 }
 
 /*
@@ -765,6 +775,7 @@ bool CApp::init(int argc, char *argv[])
 	ComboMeshType->setAlignment(irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_UPPERLEFT, irr::gui::EGUIA_UPPERLEFT);
 	ComboMeshType->addItem(L"cube");
 	ComboMeshType->addItem(L"sphere");
+	ComboMeshType->addItem(L"sphere highres");
 	ControlVertexColors = new CColorControl( guiEnv, core::position2d<s32>(440, controlsTop+30), L"Vertex colors", guiEnv->getRootGUIElement());
 	ControlVertexColors->setAlignment(irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_LOWERRIGHT, irr::gui::EGUIA_UPPERLEFT, irr::gui::EGUIA_UPPERLEFT);
 	ControlVertexColors->setColor(irr::video::SColor(255,255,255,255));
@@ -817,8 +828,8 @@ bool CApp::update()
 			GlobalAmbient->resetDirty();
 		}
 
-		const float zoomSpeed = 10.f * deltaTime;
-		const float rotationSpeed = 100.f * deltaTime;
+		const float zoomSpeed = (KeysPressed[KEY_LSHIFT] ? 40.f : 10.f) * deltaTime;
+		const float rotationSpeed = (KeysPressed[KEY_LSHIFT] ? 20.f : 100.f) * deltaTime;
 
 		// Let the user move the light around
 		irr::gui::IGUIElement* focus=guiEnv->getFocus();	// some checks to prevent interfering with UI input
@@ -843,7 +854,7 @@ bool CApp::update()
 		}
 
 		// Let the user move the camera around
-		if (MousePressed)
+		if (MousePressed && !focus)
 		{
 			gui::ICursorControl* cursorControl = Device->getCursorControl();
 			const core::position2d<s32>& mousePos = cursorControl->getPosition ();
@@ -1051,13 +1062,13 @@ void CApp::setActiveMeshNodeType(ENodeType nodeType)
 	
 	// add the nodes which are used to show the materials
 	const irr::f32 size = 35.f;
-	if ( nodeType == ENT_CUBE)
+	if ( nodeType == ENT_CUBE )
 	{
 		SceneNode = smgr->addCubeSceneNode (size, 0, -1,
 										   core::vector3df(0, 0, 0),
 										   core::vector3df(0.f, 45.f, 0.f),
 										   core::vector3df(1.0f, 1.0f, 1.0f),
-										   scene::ECMT_1BUF_24VTX_NP);
+											scene::ECMT_1BUF_24VTX_NP);
 		// avoid wrong colored lines at cube-borders (uv's go from 0-1 currently, which does not work well with interpolation)
 		for ( u32 i=0; i < irr::video::MATERIAL_MAX_TEXTURES_USED; ++i)
 		{
@@ -1067,8 +1078,14 @@ void CApp::setActiveMeshNodeType(ENodeType nodeType)
 	}
 	else
 	{
-		SceneNode = smgr->addSphereSceneNode(size*0.5f);
+		SceneNode = smgr->addSphereSceneNode(size * 0.5f, nodeType == ENT_SPHERE_HIGHRES ? 128 : 16);
 	}
+	// off center to test shader
+	//SceneNode->setPosition(core::vector3df(20.f, -4.f, 10.f));
+	//SceneNode->setScale(core::vector3df(1.f, 0.2f, 1.5f));
+	//SceneNode->setRotation(core::vector3df(0.f, 30.f, -10.f));
+	//defaultMaterial.NormalizeNormals = true;
+
 	SceneNode->getMaterial(0) = defaultMaterial;
 	// SceneNode->setDebugDataVisible(scene::EDS_NORMALS);	// showing normals can sometimes be useful to understand what's going on
 

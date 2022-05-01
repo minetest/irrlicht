@@ -146,6 +146,7 @@ public:
 	CMaterialControl()
 	: Initialized(false), Driver(0)
 	, TypicalColorsControl(0), ButtonLighting(0), InfoLighting(0), ComboMaterial(0)
+	, ShininessControl(0)
 	{}
 
 	// Destructor
@@ -183,6 +184,8 @@ protected:
 	irr::gui::IGUIStaticText* 	InfoLighting;
 	irr::gui::IGUIComboBox * 	ComboMaterial;
 	irr::core::array<CTextureControl*> TextureControls;
+
+	irr::gui::IGUIScrollBar*	ShininessControl;
 };
 
 /*
@@ -302,7 +305,8 @@ protected:
 	enum ENodeType
 	{
 		ENT_CUBE,
-		ENT_SPHERE
+		ENT_SPHERE,
+		ENT_SPHERE_HIGHRES,
 	};
 	void setActiveMeshNodeType(ENodeType nodeType);
 

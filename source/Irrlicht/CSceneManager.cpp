@@ -775,14 +775,16 @@ ICameraSceneNode* CSceneManager::addCameraSceneNode(ISceneNode* parent,
 //! The returned pointer must not be dropped.
 ICameraSceneNode* CSceneManager::addCameraSceneNodeMaya(ISceneNode* parent,
 	f32 rotateSpeed, f32 zoomSpeed, f32 translationSpeed, s32 id, f32 distance,
-	bool makeActive)
+	bool makeActive
+	, f32 rotX, f32 rotY)
 {
 	ICameraSceneNode* node = addCameraSceneNode(parent, core::vector3df(),
 			core::vector3df(0,0,100), id, makeActive);
 	if (node)
 	{
 		ISceneNodeAnimator* anm = new CSceneNodeAnimatorCameraMaya(CursorControl,
-			rotateSpeed, zoomSpeed, translationSpeed, distance);
+			rotateSpeed, zoomSpeed, translationSpeed, distance
+			,rotX,rotY);
 
 		node->addAnimator(anm);
 		anm->drop();

@@ -195,6 +195,36 @@ namespace core
 			return (*this *= newlength);
 		}
 
+#if defined(_IRR_COMPILE_WITH_90_DEGREE_CAMERA)
+		vector3d<T>& normalize_camera_direction(const vector3d<T>& def)
+		{
+			f64 l = (f64)X * X + (f64)Y * Y + (f64)Z * Z;
+			if (::fabs(l) < 0.000000001)
+			{
+				X = def.X;
+				Y = def.Y;
+				Z = def.Z;
+			}
+			else
+			{
+				l = 1.0 / ::sqrt(l);
+				f64 v;
+				v = X * l; X = ::fabs(v) < 0.00000001 ? (T)0 : (T)v;
+				v = Y * l; Y = ::fabs(v) < 0.00000001 ? (T)0 : (T)v;
+				v = Z * l; Z = ::fabs(v) < 0.00000001 ? (T)0 : (T)v;
+			}
+			return *this;
+		}
+#define normalize_x() normalize_camera_direction(core::vector3df(1.f, 0.f, 0.f))
+#define normalize_z() normalize_camera_direction(core::vector3df(0.f, 0.f, 1.f))
+#define normalize_y(v) core::vector3df(v).normalize_camera_direction(core::vector3df(0.f, 1.f, 0.f))
+#else
+#define normalize_x() normalize()
+#define normalize_z() normalize()
+#define normalize_y(v) v
+#endif
+
+
 		//! Inverts the vector.
 		vector3d<T>& invert()
 		{

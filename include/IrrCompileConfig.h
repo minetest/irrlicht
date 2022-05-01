@@ -862,4 +862,11 @@ precision will be lower but speed higher. currently X86 only
 	#endif
 #endif
 
+//! Solve Camera errors - Debug Feature
+/* - Allow Camera 90 degree up, Target==Position,buildCameraLookAtMatrixLH
+   - pre v1.9 CCameraSceneNode moved the up non-particular in the positive x-Direction. not compatible
+   - Enabled is not compatible with Irrlicht Collision and Response. 
+*/
+//#define _IRR_COMPILE_WITH_90_DEGREE_CAMERA
+
 #endif // IRR_COMPILE_CONFIG_H_INCLUDED
