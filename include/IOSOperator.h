@@ -38,8 +38,8 @@ public:
 	virtual bool getProcessorSpeedMHz(u32* MHz) const = 0;
 
 	//! Get the total and available system RAM
-	/** \param totalBytes: will contain the total system memory in bytes
-	\param availableBytes: will contain the available memory in bytes
+	/** \param totalBytes: will contain the total system memory in Kilobytes (1024 B)
+	\param availableBytes: will contain the available memory in Kilobytes (1024 B)
 	\return True if successful, false if not */
 	virtual bool getSystemMemory(u32* totalBytes, u32* availableBytes) const = 0;
 

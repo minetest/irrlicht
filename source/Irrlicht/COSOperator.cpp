@@ -239,24 +239,19 @@ bool COSOperator::getSystemMemory(u32* Total, u32* Avail) const
     return true;
 	#endif
 
-#elif defined(_IRR_POSIX_API_) && !defined(__FreeBSD__)
-#if defined(_SC_PHYS_PAGES) && defined(_SC_AVPHYS_PAGES)
-        long ps = sysconf(_SC_PAGESIZE);
-        long pp = sysconf(_SC_PHYS_PAGES);
-        long ap = sysconf(_SC_AVPHYS_PAGES);
+#elif defined(_IRR_POSIX_API_) && defined(_SC_PHYS_PAGES) && defined(_SC_AVPHYS_PAGES)
+	long ps = sysconf(_SC_PAGESIZE);
+	long pp = sysconf(_SC_PHYS_PAGES);
+	long ap = sysconf(_SC_AVPHYS_PAGES);
 
-	if ((ps==-1)||(pp==-1)||(ap==-1))
+ 	if (ps == -1 || (Total && pp == -1) || (Avail && ap == -1))
 		return false;
 
 	if (Total)
-		*Total = (u32)((ps*(long long)pp)>>10);
+		*Total = (u32)((pp>>10)*ps);
 	if (Avail)
-		*Avail = (u32)((ps*(long long)ap)>>10);
+		*Avail = (u32)((ap>>10)*ps);
 	return true;
-#else
-	// TODO: implement for non-availability of symbols/features
-	return false;
-#endif
 #elif defined(_IRR_OSX_PLATFORM_)
 	int mib[2];
 	int64_t physical_memory;
@@ -267,6 +262,11 @@ bool COSOperator::getSystemMemory(u32* Total, u32* Avail) const
 	mib[1] = HW_MEMSIZE;
 	length = sizeof(int64_t);
 	sysctl(mib, 2, &physical_memory, &length, NULL, 0);
+
+	if (Total)
+		*Total = (u32)(physical_memory>>10);
+	if (Avail)
+		*Avail = (u32)(physical_memory>>10); // we don't know better
 	return true;
 #else
 	// TODO: implement for others
