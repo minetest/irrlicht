@@ -124,6 +124,7 @@ public:
 			m_data.shrink_to_fit();
 		}
 		std::copy(newData, newData + newSize, m_data.begin());
+		is_sorted = newDataIsSorted;
 	}
 
 	//! Compare if given data block is identical to the data in our array
