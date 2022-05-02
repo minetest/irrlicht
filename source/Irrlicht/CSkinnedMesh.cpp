@@ -1042,7 +1042,8 @@ void CSkinnedMesh::finalize()
 
 	for (i=0; i<LocalBuffers.size(); ++i)
 	{
-		Vertices_Moved.emplace_back(LocalBuffers[i]->getVertexCount());
+		Vertices_Moved.push_back( core::array<char>() );
+		Vertices_Moved[i].set_used(LocalBuffers[i]->getVertexCount());
 	}
 
 	checkForAnimation();

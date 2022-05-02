@@ -196,45 +196,9 @@ private:
 		core::array<SJoint*> AllJoints;
 		core::array<SJoint*> RootJoints;
 
-		// std::vector<bool> can't be used here because it doesn't
-		// allow taking a bool& reference to individual elements.
-		struct BoolVector {
-			BoolVector(size_t size) :
-				m_data(new bool[size]),
-				m_size(size)
-			{
-				std::fill(m_data, m_data + m_size, false);
-			}
-
-			// Needed by std::vector
-			BoolVector(BoolVector &&o) :
-				m_data(o.m_data),
-				m_size(o.m_size) {
-				o.m_data = nullptr;
-				o.m_size = 0;
-			}
-
-			~BoolVector() {
-				if (m_data) {
-					delete[] m_data;
-				}
-			}
-
-			bool& operator[](size_t pos) {
-				return m_data[pos];
-			}
-
-			size_t size() const {
-				return m_size;
-			}
-		private:
-			bool *m_data;
-			size_t m_size;
-			BoolVector() = delete;
-			BoolVector(const BoolVector &) = delete;
-			BoolVector& operator=(const BoolVector &) = delete;
-		};
-		std::vector<BoolVector> Vertices_Moved;
+		// bool can't be used here because std::vector<bool>
+		// doesn't allow taking a reference to individual elements.
+		core::array< core::array<char> > Vertices_Moved;
 
 		core::aabbox3d<f32> BoundingBox;
 
