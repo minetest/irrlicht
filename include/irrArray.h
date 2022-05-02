@@ -24,6 +24,8 @@ template <class T>
 class array
 {
 public:
+	static_assert(!std::is_same<T, bool>::value,
+		"irr::core::array<T> with T = bool not supported. Use std::vector instead.");
 
 	//! Default constructor for empty array.
 	array() : m_data(), is_sorted(true)
