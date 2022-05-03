@@ -646,7 +646,7 @@ private:
 	\param sizeWithoutHeader: Text size in characters without header
 	*/
 	template<class src_char_type>
-	void convertTextData(src_char_type* source, char* pointerToStore, long sizeWithoutHeader)
+	void convertTextData(src_char_type* source, char* pointerToStore, int sizeWithoutHeader)
 	{
 		// convert little to big endian if necessary
 		if (sizeof(src_char_type) > 1 &&
