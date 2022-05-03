@@ -108,7 +108,7 @@ private:
 
 //! constructor
 CTRTextureBlend::CTRTextureBlend(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver, EMT_ONETEXTURE_BLEND)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRTextureBlend");

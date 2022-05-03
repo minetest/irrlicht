@@ -112,7 +112,7 @@ private:
 
 //! constructor
 CTRTextureGouraud2::CTRTextureGouraud2(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver,EMT_SOLID)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRTextureGouraud2");

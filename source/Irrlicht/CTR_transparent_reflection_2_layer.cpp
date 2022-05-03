@@ -98,7 +98,7 @@ private:
 
 //! constructor
 CTR_transparent_reflection_2_layer::CTR_transparent_reflection_2_layer(CBurningVideoDriver* driver)
-	: IBurningShader(driver)
+	: IBurningShader(driver, EMT_REFLECTION_2_LAYER)
 {
 #ifdef _DEBUG
 	setDebugName("CTR_transparent_reflection_2_layer");

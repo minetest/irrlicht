@@ -93,7 +93,7 @@ private:
 
 //! constructor
 CTRStencilShadow::CTRStencilShadow(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver, EMT_SOLID)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRStencilShadow");

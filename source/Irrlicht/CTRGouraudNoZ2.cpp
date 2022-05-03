@@ -92,7 +92,7 @@ protected:
 
 //! constructor
 CTRGouraudNoZ2::CTRGouraudNoZ2(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver, EMT_SOLID)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRGouraudNoZ2");

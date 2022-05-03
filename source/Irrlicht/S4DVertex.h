@@ -166,9 +166,15 @@ struct ALIGN(16) sVec4
 		struct { f32 s, t, p, q; };
 	};
 
-	sVec4() {}
-	sVec4(f32 _x, f32 _y, f32 _z, f32 _w)
+#if __GNUC__
+	//have one warning i can't find
+	sVec4(f32 _x = 0.f, f32 _y = 0.f, f32 _z = 0.f, f32 _w = 0.f)
 		: x(_x), y(_y), z(_z), w(_w) {}
+#else
+	sVec4() {}
+	sVec4(f32 _x, f32 _y, f32 _z, f32 _w=0.f)
+		: x(_x), y(_y), z(_z), w(_w) {}
+#endif
 
 	// f = a * t + b * ( 1 - t )
 	REALINLINE void interpolate(const sVec4& burning_restrict a, const sVec4& burning_restrict b, const ipoltype t)
@@ -244,6 +250,11 @@ struct ALIGN(16) sVec4
 		return x * other.x + y * other.y + z * other.z;
 	}
 
+	REALINLINE f32 dot(const irr::core::vector3df& other) const
+	{
+		return x * other.X + y * other.Y + z * other.Z;
+	}
+
 	REALINLINE f32 dot_minus_xyz(const sVec4& other) const
 	{
 		return x * -other.x + y * -other.y + z * -other.z;
@@ -315,19 +326,19 @@ struct ALIGN(16) sVec4
 		//const f32 l = len * core::reciprocal_squareroot ( r * r + g * g + b * b );
 		f32 l = x * x + y * y + z * z;
 
-		l = l > 0.0000001f ? len / sqrtf(l) : 0.f;
+		l = l > 0.00000001f ? len / sqrtf(l) : 0.f;
 		out.x = (x * l) + ofs;
 		out.y = (y * l) + ofs;
 		out.z = (z * l) + ofs;
 	}
 
 	//shader suppport
-	sVec4(const sVec4& a, double w)
+	sVec4(const sVec4& a, double _w)
 	{
 		x = a.x;
 		y = a.y;
 		z = a.z;
-		this->w = (float)w;
+		w = (float)_w;
 	}
 	sVec4 xyz() const
 	{
@@ -385,15 +396,15 @@ struct ALIGN(16) sVec4
 	}
 
 	//sVec4 is a,r,g,b, alpha pass
-/*
-	void sat(sVec4& dest, const u32 argb) const
+#if 0
+	void sat_alpha_pass(sVec4& dest, const u32 argb) const
 	{
 		dest.a = ((argb & 0xFF000000) >> 24) * (1.f / 255.f);
 		dest.r = r <= 1.f ? r : 1.f;
 		dest.g = g <= 1.f ? g : 1.f;
 		dest.b = b <= 1.f ? b : 1.f;
 	}
-*/
+#endif
 	void sat_alpha_pass(sVec4& dest, const f32 vertex_alpha) const
 	{
 		dest.a = vertex_alpha;
@@ -434,81 +445,7 @@ typedef sVec4 sVec3Pack_unpack;
 
 typedef sVec4 sVec3Color;
 
-#if 0
-//!sVec4 is argb. sVec3Color is rgba
-struct sVec3Color
-{
-	f32 r, g, b, a;
-
-	void set(const f32 s)
-	{
-		r = s;
-		g = s;
-		b = s;
-		a = s;
-	}
-
-
-	void setColorf(const video::SColorf& color)
-	{
-		r = color.r;
-		g = color.g;
-		b = color.b;
-		a = color.a;
-	}
-
-	void add_rgb(const sVec3Color& other)
-	{
-		r += other.r;
-		g += other.g;
-		b += other.b;
-	}
-
-	void mad_rgb(const sVec3Color& other, const f32 v)
-	{
-		r += other.r * v;
-		g += other.g * v;
-		b += other.b * v;
-	}
-
-	void mad_rgbv(const sVec3Color& v0, const sVec3Color& v1)
-	{
-		r += v0.r * v1.r;
-		g += v0.g * v1.g;
-		b += v0.b * v1.b;
-	}
-
-	//sVec4 is a,r,g,b, alpha pass
-	void sat(sVec4& dest, const u32 argb) const
-	{
-		dest.a = ((argb & 0xFF000000) >> 24) * (1.f / 255.f);
-		dest.r = r <= 1.f ? r : 1.f;
-		dest.g = g <= 1.f ? g : 1.f;
-		dest.b = b <= 1.f ? b : 1.f;
-	}
-
-	void sat_xyz(sVec3Pack& dest, const sVec3Color& v1) const
-	{
-		f32 v;
-		v = r * v1.r;	dest.x = v < 1.f ? v : 1.f;
-		v = g * v1.g;	dest.y = v < 1.f ? v : 1.f;
-		v = b * v1.b;	dest.z = v < 1.f ? v : 1.f;
-	}
-
-	void sat_xyz(sVec4& dest, const sVec3Color& v1) const
-	{
-		f32 v;
-		dest.a = 1.f;
-		v = r * v1.r;	dest.r = v < 1.f ? v : 1.f;
-		v = g * v1.g;	dest.g = v < 1.f ? v : 1.f;
-		v = b * v1.b;	dest.b = v < 1.f ? v : 1.f;
-	}
-
-};
-
-#endif
-
-//internal BurningShaderFlag for a Vertex
+//internal BurningShaderFlag for a Vertex (Attributes)
 enum e4DVertexFlag
 {
 	VERTEX4D_CLIPMASK = 0x0000003F,
@@ -526,25 +463,26 @@ enum e4DVertexFlag
 
 	VERTEX4D_FORMAT_MASK = 0xFFFF0000,
 
-	VERTEX4D_FORMAT_MASK_TEXTURE = 0x000F0000,
-	VERTEX4D_FORMAT_TEXTURE_1 = 0x00010000,
-	VERTEX4D_FORMAT_TEXTURE_2 = 0x00020000,
-	VERTEX4D_FORMAT_TEXTURE_3 = 0x00030000,
-	VERTEX4D_FORMAT_TEXTURE_4 = 0x00040000,
+	VERTEX4D_FORMAT_MASK_TEXTURE	= 0x000F0000,
+	VERTEX4D_FORMAT_TEXTURE_1		= 0x00010000,
+	VERTEX4D_FORMAT_TEXTURE_2		= 0x00020000,
+	VERTEX4D_FORMAT_TEXTURE_3		= 0x00030000,
+	VERTEX4D_FORMAT_TEXTURE_4		= 0x00040000,
 
-	VERTEX4D_FORMAT_MASK_COLOR = 0x00F00000,
-	VERTEX4D_FORMAT_COLOR_1 = 0x00100000,
+	VERTEX4D_FORMAT_MASK_COLOR	= 0x00F00000,
+	VERTEX4D_FORMAT_COLOR_1		= 0x00100000,
 	VERTEX4D_FORMAT_COLOR_2_FOG = 0x00200000,
-	VERTEX4D_FORMAT_COLOR_3 = 0x00300000,
-	VERTEX4D_FORMAT_COLOR_4 = 0x00400000,
+	VERTEX4D_FORMAT_COLOR_3		= 0x00300000,
+	VERTEX4D_FORMAT_COLOR_4		= 0x00400000,
 
-	VERTEX4D_FORMAT_MASK_LIGHT = 0x0F000000,
-	VERTEX4D_FORMAT_LIGHT_1 = 0x01000000,
-	VERTEX4D_FORMAT_LIGHT_2 = 0x02000000,
+	VERTEX4D_FORMAT_MASK_LIGHT	= 0x0F000000,
+	VERTEX4D_FORMAT_LIGHT_1		= 0x01000000,
+	//VERTEX4D_FORMAT_LIGHT_2		= 0x02000000,
 
-	VERTEX4D_FORMAT_MASK_TANGENT = 0xF0000000,
-	VERTEX4D_FORMAT_BUMP_DOT3 = 0x10000000,
-	VERTEX4D_FORMAT_SPECULAR = 0x20000000,
+	VERTEX4D_FORMAT_MASK_TANGENT	= 0xF0000000,
+	VERTEX4D_FORMAT_BUMP_DOT3		= 0x10000000,
+	VERTEX4D_FORMAT_PARALLAX		= 0x20000000,
+	//VERTEX4D_FORMAT_SPECULAR		= 0x20000000,
 
 };
 
@@ -554,10 +492,13 @@ enum e4DVertexType
 	E4VT_STANDARD = 0,			// EVT_STANDARD, video::S3DVertex.
 	E4VT_2TCOORDS = 1,			// EVT_2TCOORDS, video::S3DVertex2TCoords.
 	E4VT_TANGENTS = 2,			// EVT_TANGENTS, video::S3DVertexTangents
-	E4VT_REFLECTION_MAP = 3,
-	E4VT_SHADOW = 4,			// float * 3
-	E4VT_NO_TEXTURE = 5,		// runtime if texture missing
-	E4VT_LINE = 6,
+
+	//encode attributes
+	E4VT_TANGENTS_PARALLAX = 4,
+	E4VT_REFLECTION_MAP = 5,
+	E4VT_SHADOW = 6,			// float * 3
+	E4VT_NO_TEXTURE = 7,		// runtime if texture missing
+	E4VT_LINE = 8,
 
 	E4VT_COUNT
 };
@@ -873,13 +814,14 @@ static REALINLINE void memcpy_s4DVertexPair(void* burning_restrict dst, const vo
 }
 
 
-//! hold info for different Vertex Types
+//! hold info for different Vertex Types (Attribute mapping)
 struct SVSize
 {
 	u32 Format;		// e4DVertexFlag VERTEX4D_FORMAT_MASK_TEXTURE
 	u32 Pitch;		// sizeof Vertex
 	u32 TexSize;	// amount Textures
-	u32 TexCooSize;	// sizeof TextureCoordinates
+	u32 TexCooSize;	// amount TextureCoordinates
+	u32 ColSize;	// amount Color Interpolators
 };
 
 
@@ -898,9 +840,6 @@ struct SVertexShader
 	SVertexShader() {}
 	~SVertexShader() {}
 
-	//VertexType
-	SVSize vSize[E4VT_COUNT];
-
 	// Transformed and lite, clipping state
 	// + Clipped, Projected
 	SAligned4DVertex mem;
@@ -918,6 +857,9 @@ struct SVertexShader
 	// primitives consist of x vertices
 	u32 primitiveHasVertex;
 	u32 primitiveRun;
+
+	//VertexType
+	SVSize vSize[E4VT_COUNT];
 
 	e4DVertexType vType;		//E_VERTEX_TYPE
 	scene::E_PRIMITIVE_TYPE pType;		//scene::E_PRIMITIVE_TYPE

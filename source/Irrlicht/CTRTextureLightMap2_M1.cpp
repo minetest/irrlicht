@@ -92,7 +92,7 @@ private:
 
 //! constructor
 CTRTextureLightMap2_M1::CTRTextureLightMap2_M1(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver, EMT_LIGHTMAP)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRTextureLightMap2_M1");

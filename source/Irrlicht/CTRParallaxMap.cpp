@@ -45,7 +45,7 @@
 #define IPOL_C3
 #define IPOL_T0
 #define IPOL_T1
-//#define IPOL_L0
+#define IPOL_L0
 
 // apply global override
 #ifndef SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
@@ -62,6 +62,14 @@
 
 #if BURNING_MATERIAL_MAX_COLORS < 2
 #undef IPOL_C1
+#endif
+
+#if BURNING_MATERIAL_MAX_COLORS < 3
+#undef IPOL_C2
+#endif
+
+#if BURNING_MATERIAL_MAX_COLORS < 4
+#undef IPOL_C3
 #endif
 
 #if BURNING_MATERIAL_MAX_LIGHT_TANGENT < 1
@@ -90,26 +98,30 @@
 burning_namespace_start
 
 
-class CTRNormalMap : public IBurningShader
+class CBurningParallaxMap : public IBurningShader
 {
 public:
 
 	//! constructor
-	CTRNormalMap(CBurningVideoDriver* driver,s32& outMaterialTypeNr, E_MATERIAL_TYPE baseMaterial);
-	~CTRNormalMap();
+	CBurningParallaxMap(CBurningVideoDriver* driver,s32& outMaterialTypeNr, E_MATERIAL_TYPE baseMaterial);
+	~CBurningParallaxMap();
 
 	//! draws an indexed triangle list
 	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) IRR_OVERRIDE;
 	virtual void OnSetMaterial(const SBurningShaderMaterial& material) IRR_OVERRIDE;
+	virtual void OnSetMaterial(const video::SMaterial& material,
+		const video::SMaterial& lastMaterial,
+		bool resetAllRenderstates, video::IMaterialRendererServices* services) IRR_OVERRIDE;
 	virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData) IRR_OVERRIDE;
 private:
 	void fragmentShader();
-
+	f32 CurrentScale;
+	tFixPoint CurrentScaleFix[2];
 };
 
 
 //! constructor
-CTRNormalMap::CTRNormalMap(CBurningVideoDriver* driver, s32& outMaterialTypeNr, E_MATERIAL_TYPE baseMaterial)
+CBurningParallaxMap::CBurningParallaxMap(CBurningVideoDriver* driver, s32& outMaterialTypeNr, E_MATERIAL_TYPE baseMaterial)
 	: IBurningShader(driver, baseMaterial)
 {
 #ifdef _DEBUG
@@ -117,21 +129,33 @@ CTRNormalMap::CTRNormalMap(CBurningVideoDriver* driver, s32& outMaterialTypeNr, 
 #endif
 	CallBack = this;
 	outMaterialTypeNr = driver->addMaterialRenderer(this);
+	CurrentScale = 0.02f;
 }
 
-CTRNormalMap::~CTRNormalMap()
+CBurningParallaxMap::~CBurningParallaxMap()
 {
 	if (CallBack == this)
 		CallBack = 0;
 }
 
-void CTRNormalMap::OnSetMaterial(const SBurningShaderMaterial& material)
+void CBurningParallaxMap::OnSetMaterial(const SBurningShaderMaterial& material)
 {
+	CurrentScale = material.org.MaterialTypeParam;
+}
+
+void CBurningParallaxMap::OnSetMaterial(const video::SMaterial& material,
+	const video::SMaterial& lastMaterial,
+	bool resetAllRenderstates, video::IMaterialRendererServices* services)
+{
+	IBurningShader::OnSetMaterial(material, lastMaterial,
+		resetAllRenderstates, services);
+
+	CurrentScale = material.MaterialTypeParam;
 }
 
 /*!
 */
-void CTRNormalMap::fragmentShader()
+void CBurningParallaxMap::fragmentShader()
 {
 	tVideoSample* dst;
 
@@ -258,11 +282,12 @@ void CTRNormalMap::fragmentShader()
 #endif
 
 	tFixPoint r0, g0, b0;
-	tFixPoint r1, g1, b1;
+	tFixPoint r1, g1, b1,a1;
 	tFixPoint r2, g2, b2;
 
 #ifdef IPOL_L0
 	tFixPoint lx, ly, lz;
+	sVec4 norm;
 #endif
 	tFixPoint ndotl = FIX_POINT_ONE;
 
@@ -274,10 +299,6 @@ void CTRNormalMap::fragmentShader()
 #ifdef IPOL_C1
 	tFixPoint aFog = FIX_POINT_ONE;
 #endif
-
-#ifdef IPOL_C2
-	tFixPoint lx, ly, lz;
-#endif	
 
 
 	for (s32 i = 0; i <= dx; i += SOFTWARE_DRIVER_2_STEP_X)
@@ -320,16 +341,46 @@ void CTRNormalMap::fragmentShader()
 				}
 #endif
 
-				tx0 = tofix(line.t[0][0].x, inversew);
-				ty0 = tofix(line.t[0][0].y, inversew);
 				tx1 = tofix(line.t[1][0].x, inversew);
 				ty1 = tofix(line.t[1][0].y, inversew);
 
+				// normal map height
+				getSample_texture(a1, &IT[1], tx1, ty1);
+
+				// xyz * 2 - 1
+				a1 = (a1 - FIX_POINT_HALF_COLOR) >> (COLOR_MAX_LOG2 - 1);
+				tFixPoint ofs = imulFix_simple(a1,CurrentScaleFix[0]);
+				//eyevector
+#ifdef IPOL_L0
+#if 0
+				norm.x = line.l[0][0].x * inversew;
+				norm.y = line.l[0][0].y * inversew;
+				norm.z = line.l[0][0].z * inversew;
+				norm.normalize_dir_xyz_zero();
+
+				lx = tofix(norm.x, FIX_POINT_F32_MUL);
+				ly = tofix(norm.y, FIX_POINT_F32_MUL);
+#else
+				lx = tofix(line.l[0][0].x, inversew);
+				ly = tofix(line.l[0][0].y, inversew);
+#endif
+				//lz = tofix(line.l[0][0].z, inversew);
+
+#endif
+				// vec2 TexCoord = EyeVector.xy * TempFetch.w + vTexCoord;
+				tx0 = tofix(line.t[0][0].x, inversew) + imulFix_simple(lx, ofs);
+				ty0 = tofix(line.t[0][0].y, inversew) + imulFix_simple(ly, ofs);
+				
 				// diffuse map
 				getSample_texture(r0, g0, b0, &IT[0], tx0, ty0);
 
+				ofs = imulFix_simple(a1, CurrentScaleFix[1]);
+				tx1 += imulFix_simple(lx, ofs);
+				ty1 += imulFix_simple(ly, ofs);
+
 				// normal map ( same texcoord0 but different mipmapping)
 				getSample_texture(r1, g1, b1, &IT[1], tx1, ty1);
+
 
 				// normal: xyz * 2 - 1
 				r1 = (r1 - FIX_POINT_HALF_COLOR) >> (COLOR_MAX_LOG2 - 1);
@@ -338,19 +389,11 @@ void CTRNormalMap::fragmentShader()
 
 
 				//lightvector
-#ifdef IPOL_L0
-				lx = tofix(line.l[0][0].x, inversew);
-				ly = tofix(line.l[0][0].y, inversew);
-				lz = tofix(line.l[0][0].z, inversew);
-
-				// DOT 3 Normal Map light in tangent space
-				//max(dot(LightVector, Normal), 0.0);
-				ndotl = clampfix_mincolor((imulFix_simple(r1, lx) + imulFix_simple(g1, ly) + imulFix_simple(b1, lz)));
-#endif
 				lx = tofix(line.c[2][0].x, inversew);
 				ly = tofix(line.c[2][0].y, inversew);
 				lz = tofix(line.c[2][0].z, inversew);
 				//omit normalize
+				//max(dot(LightVector, Normal), 0.0);
 				ndotl = clampfix_mincolor((imulFix_simple(r1, lx) + imulFix_simple(g1, ly) + imulFix_simple(b1, lz)));
 
 #ifdef IPOL_C0
@@ -441,7 +484,7 @@ void CTRNormalMap::fragmentShader()
 
 }
 
-void CTRNormalMap::drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c)
+void CBurningParallaxMap::drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c)
 {
 	// sort on height, y
 	if (F32_A_GREATER_B(a->Pos.y, b->Pos.y)) swapVertexPointer(&a, &b);
@@ -458,6 +501,9 @@ void CTRNormalMap::drawTriangle(const s4DVertex* burning_restrict a, const s4DVe
 
 	if (F32_LOWER_EQUAL_0(scan.invDeltaY[0]))
 		return;
+
+	CurrentScaleFix[0] = tofix(CurrentScale, FIX_POINT_F32_MUL) << (IT[0].pitchlog2- SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+	CurrentScaleFix[1] = tofix(CurrentScale, FIX_POINT_F32_MUL) << (IT[1].pitchlog2 - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
 
 	// find if the major edge is left or right aligned
 	f32 temp[4];
@@ -1039,13 +1085,15 @@ void CTRNormalMap::drawTriangle(const s4DVertex* burning_restrict a, const s4DVe
 #endif
 
 		}
-}
+	}
 
 }
+
+
 
 //! Called by the engine when the vertex and/or pixel shader constants for an
 //! material renderer should be set.
-void CTRNormalMap::OnSetConstants(IMaterialRendererServices* services, s32 userData)
+void CBurningParallaxMap::OnSetConstants(IMaterialRendererServices* services, s32 userData)
 {
 #if 0
 	video::IVideoDriver* driver = services->getVideoDriver();
@@ -1093,19 +1141,37 @@ void CTRNormalMap::OnSetConstants(IMaterialRendererServices* services, s32 userD
 		services->setVertexShaderConstant(
 			reinterpret_cast<const f32*>(&light.DiffuseColor), 13 + (i * 2), 1);
 	}
+
+	// Obtain the view position by transforming 0,0,0 by the inverse view matrix
+	// and then multiply this by the inverse world matrix.
+	core::vector3df viewPos(0.0f, 0.0f, 0.0f);
+	core::matrix4 inverseView;
+	driver->getTransform(video::ETS_VIEW).getInverse(inverseView);
+	inverseView.transformVect(viewPos);
+	invWorldMat.transformVect(viewPos);
+	services->setVertexShaderConstant(reinterpret_cast<const f32*>(&viewPos.X), 16, 1);
+
+	// set scale factor
+	f32 factor = 0.02f; // default value
+	if (CurrentScale != 0.0f)
+		factor = CurrentScale;
+
+	f32 c6[] = { factor, factor, factor, factor };
+	services->setPixelShaderConstant(c6, 0, 1);
 #endif
 }
+
 burning_namespace_end
 
 #endif // _IRR_COMPILE_WITH_BURNINGSVIDEO_
 
 burning_namespace_start
 
-//! creates a triangle renderer
-IBurningShader* createTRNormalMap(CBurningVideoDriver* driver, s32& outMaterialTypeNr, E_MATERIAL_TYPE baseMaterial)
+
+IBurningShader* createTRParallaxMap(CBurningVideoDriver* driver, s32& outMaterialTypeNr, E_MATERIAL_TYPE baseMaterial)
 {
 #ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
-	return new CTRNormalMap(driver, outMaterialTypeNr,baseMaterial);
+	return new CBurningParallaxMap(driver, outMaterialTypeNr, baseMaterial);
 #else
 	return 0;
 #endif // _IRR_COMPILE_WITH_BURNINGSVIDEO_

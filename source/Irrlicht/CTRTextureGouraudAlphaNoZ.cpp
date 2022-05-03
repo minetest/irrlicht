@@ -103,7 +103,7 @@ private:
 
 //! constructor
 CTRTextureGouraudAlphaNoZ::CTRTextureGouraudAlphaNoZ(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver, EMT_TRANSPARENT_ALPHA_CHANNEL)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRTextureGouraudAlphaNoZ");
@@ -125,7 +125,7 @@ void CTRTextureGouraudAlphaNoZ::OnSetMaterial(const SBurningShaderMaterial& mate
 
 	//check triangle on w = 1.f instead..
 #ifdef	SOFTWARE_DRIVER_2_BILINEAR
-	if (material.Fallback_MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL_REF)
+	if (material.org.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL_REF)
 		fragmentShader = &CTRTextureGouraudAlphaNoZ::fragment_linear_alpharef;
 	else
 	if ( material.org.TextureLayer[0].BilinearFilter )

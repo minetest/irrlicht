@@ -1154,6 +1154,57 @@ static REALINLINE void getSample_texture(tFixPoint& a, tFixPoint& r, tFixPoint& 
 
 }
 
+// get Sample bilinear
+static REALINLINE void getSample_texture(tFixPoint& a,
+	const sInternalTexture* burning_restrict tex, const tFixPointu tx, const tFixPointu ty
+)
+{
+
+	tFixPointu a00;
+	tFixPointu a01;
+	tFixPointu a10;
+	tFixPointu a11;
+
+	size_t o0, o1, o2, o3;
+	tVideoSample t00;
+
+	o0 = (((ty)&tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
+	o1 = (((ty + FIX_POINT_ONE) & tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
+	o2 = ((tx)&tex->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+	o3 = ((tx + FIX_POINT_ONE) & tex->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+
+	t00 = *((tVideoSample*)((u8*)tex->data + (o0 + o2)));
+	a00 = (t00 & MASK_A) >> SHIFT_A;
+
+	t00 = *((tVideoSample*)((u8*)tex->data + (o0 + o3)));
+	a10 = (t00 & MASK_A) >> SHIFT_A;
+
+	t00 = *((tVideoSample*)((u8*)tex->data + (o1 + o2)));
+	a01 = (t00 & MASK_A) >> SHIFT_A;
+
+	t00 = *((tVideoSample*)((u8*)tex->data + (o1 + o3)));
+	a11 = (t00 & MASK_A) >> SHIFT_A;
+
+	const tFixPointu txFract = tx & FIX_POINT_FRACT_MASK;
+	const tFixPointu txFractInv = FIX_POINT_ONE - txFract;
+
+	const tFixPointu tyFract = ty & FIX_POINT_FRACT_MASK;
+	const tFixPointu tyFractInv = FIX_POINT_ONE - tyFract;
+
+	const tFixPointu w00 = imulFixu(txFractInv, tyFractInv);
+	const tFixPointu w10 = imulFixu(txFract, tyFractInv);
+	const tFixPointu w01 = imulFixu(txFractInv, tyFract);
+	const tFixPointu w11 = imulFixu(txFract, tyFract);
+
+	a = (a00 * w00) +
+		(a01 * w01) +
+		(a10 * w10) +
+		(a11 * w11);
+
+	fix_alpha_color_max(a);
+
+}
+
 #else // SOFTWARE_DRIVER_2_BILINEAR
 
 // get Sample linear == getSample_fixpoint

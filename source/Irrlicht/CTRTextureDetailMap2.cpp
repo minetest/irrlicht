@@ -94,7 +94,7 @@ protected:
 
 //! constructor
 CTRTextureDetailMap2::CTRTextureDetailMap2(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver, EMT_DETAIL_MAP)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRTextureDetailMap2");

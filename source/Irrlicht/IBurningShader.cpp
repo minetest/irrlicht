@@ -20,7 +20,7 @@ const tFixPointu IBurningShader::dithermask[] =
 	0xf0,0x70,0xd0,0x50
 };
 
-void IBurningShader::constructor_IBurningShader(CBurningVideoDriver* driver)
+void IBurningShader::constructor_IBurningShader(CBurningVideoDriver* driver, E_MATERIAL_TYPE baseMaterial)
 {
 #ifdef _DEBUG
 	setDebugName("IBurningShader");
@@ -62,16 +62,37 @@ void IBurningShader::constructor_IBurningShader(CBurningVideoDriver* driver)
 	stencilOp[1] = StencilOp_KEEP;
 	stencilOp[2] = StencilOp_KEEP;
 	AlphaRef = 0;
-	RenderPass_ShaderIsTransparent = 0;
 	PrimitiveColor = COLOR_BRIGHT_WHITE;
 	TL_Flag = 0;
 	fragment_draw_count = 0;
 	VertexShaderProgram_buildin = BVT_Fix;
+
+	//set default Transparent/Solid
+	BaseMaterial = baseMaterial;
+	switch (BaseMaterial)
+	{
+	case EMT_TRANSPARENT_ADD_COLOR:
+	case EMT_TRANSPARENT_ALPHA_CHANNEL:
+	case EMT_TRANSPARENT_ALPHA_CHANNEL_REF:
+	case EMT_TRANSPARENT_VERTEX_ALPHA:
+	case EMT_TRANSPARENT_REFLECTION_2_LAYER:
+	case EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR:
+	case EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:
+	case EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR:
+	case EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA:
+	case EMT_ONETEXTURE_BLEND:
+		RenderPass_ShaderIsTransparent = 1;
+		break;
+	default:
+		RenderPass_ShaderIsTransparent = 0;
+		break;
+	}
+
 }
 
-IBurningShader::IBurningShader(CBurningVideoDriver* driver)
+IBurningShader::IBurningShader(CBurningVideoDriver* driver,E_MATERIAL_TYPE baseMaterial)
 {
-	constructor_IBurningShader(driver);
+	constructor_IBurningShader(driver, baseMaterial);
 }
 
 //! Constructor
@@ -94,32 +115,12 @@ IBurningShader::IBurningShader(
 	E_MATERIAL_TYPE baseMaterial,
 	s32 userData)
 {
-	constructor_IBurningShader(driver);
-	BaseMaterial = baseMaterial;
+	constructor_IBurningShader(driver, baseMaterial);
 	UserData = userData;
 	CallBack = callback;
 	if (CallBack)
 		CallBack->grab();
 
-	//set default Transparent/Solid
-	switch (BaseMaterial)
-	{
-	case EMT_TRANSPARENT_ADD_COLOR:
-	case EMT_TRANSPARENT_ALPHA_CHANNEL:
-	case EMT_TRANSPARENT_ALPHA_CHANNEL_REF:
-	case EMT_TRANSPARENT_VERTEX_ALPHA:
-	case EMT_TRANSPARENT_REFLECTION_2_LAYER:
-	case EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR:
-	case EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:
-	case EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR:
-	case EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA:
-	case EMT_ONETEXTURE_BLEND:
-		RenderPass_ShaderIsTransparent = 1;
-		break;
-	default:
-		RenderPass_ShaderIsTransparent = 0;
-		break;
-	}
 
 	//v0.53 compile. only buildin
 	const c8* ip = vertexShaderProgram;
@@ -140,6 +141,7 @@ IBurningShader::IBurningShader(
 	else if (len == 958 && hash == 0xa048973b) VertexShaderProgram_buildin = STK_958_0xa048973b;	/* supertuxkart motion_blur.vert */
 	else if (len == 1309 && hash == 0x1fd689c2) VertexShaderProgram_buildin = STK_1309_0x1fd689c2;	/* supertuxkart normalmap.vert */
 	else if (len == 1204 && hash == 0x072a4094) VertexShaderProgram_buildin = STK_1204_0x072a4094;	/* supertuxkart splatting.vert */
+	else if (len == 1303 && hash == 0xd872cdb6) VertexShaderProgram_buildin = STK_1303_0xd872cdb6;	/* supertuxkart water.vert */
 
 
 	//VertexShaderProgram = vertexShaderProgram;
@@ -154,7 +156,8 @@ IBurningShader::IBurningShader(
 	FILE* f = fopen("shader_id.txt", run ? "a" : "wb");
 	if (f)
 	{
-		fprintf(f, "--- start outMaterialTypeNr:%d len:%d hash: 0x%08x\n", outMaterialTypeNr, len, hash);
+		fprintf(f, "--- start outMaterialTypeNr:%d len:%d hash: 0x%08x buildIn:%d\n"
+			, outMaterialTypeNr, len, hash, VertexShaderProgram_buildin);
 		fprintf(f, "%s", vertexShaderProgram);
 		fprintf(f, "\n-------------- end ---------------------------\n");
 		fclose(f);
@@ -335,43 +338,6 @@ void IBurningShader::setBasicRenderStates(const SMaterial& material, const SMate
 	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 }
 
-#if 0
-const core::matrix4& IBurningShader::uniform_mat4(const c8* name)
-{
-	return (const core::matrix4&)*getUniform(name, BL_VERTEX_FLOAT);
-}
-
-video::sVec4 IBurningShader::uniform_vec4(const c8* name)
-{
-	const f32* v = getUniform(name, BL_VERTEX_FLOAT);
-	return video::sVec4(v[0], v[1], v[2], v[3]);
-}
-
-video::sVec4 IBurningShader::uniform_vec3(const c8* name)
-{
-	const f32* v = getUniform(name, BL_VERTEX_FLOAT);
-	return video::sVec4(v[0], v[1], v[2], 0.f);
-}
-
-
-core::matrix4& IBurningShader::varying_mat4(const c8* name)
-{
-	return (core::matrix4&)*getUniform(name, BL_FRAGMENT_FLOAT);
-}
-
-video::sVec4 IBurningShader::varying_vec4(const c8* name)
-{
-	const f32* v = getUniform(name, BL_FRAGMENT_FLOAT);
-	return video::sVec4(v[0], v[1], v[2], v[3]);
-}
-
-video::sVec4 IBurningShader::varying_vec3(const c8* name)
-{
-	const f32* v = getUniform(name, BL_FRAGMENT_FLOAT);
-	return video::sVec4(v[0], v[1], v[2], 0.f);
-}
-#endif
-
 static BurningUniform _empty = { "null",BL_VERTEX_FLOAT,{0.f,0.f,0.f,0.f} };
 const f32* IBurningShader::getUniform(const c8* name, EBurningUniformFlags flags) const
 {
@@ -430,15 +396,6 @@ bool IBurningShader::setShaderConstantID(EBurningUniformFlags flags, s32 index, 
 {
 	if ((u32)index >= UniformInfo.size())
 		return false;
-#if 0
-	BurningUniform add;
-	while ((u32)index >= UniformInfo.size())
-	{
-		tiny_strcpy(add.name, tiny_itoa(UniformInfo.size(), 10));
-		add.type = flags;
-		UniformInfo.push_back(add);
-	}
-#endif
 
 	BurningUniform& use = UniformInfo[index];
 	use.type = flags;
@@ -472,7 +429,7 @@ void IBurningShader::setVertexShaderConstant(const f32* data, s32 startRegister,
 	c8 name[BL_ACTIVE_UNIFORM_MAX_LENGTH];
 	tiny_strcpy(name, tiny_itoa(startRegister, 10));
 
-	setShaderConstantID(BL_VERTEX_FLOAT, getShaderConstantID(BL_VERTEX_PROGRAM, name), data, constantAmount);
+	setShaderConstantID(BL_VERTEX_FLOAT, getShaderConstantID(BL_VERTEX_PROGRAM, name), data, constantAmount*4);
 }
 
 void IBurningShader::setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
@@ -480,7 +437,7 @@ void IBurningShader::setPixelShaderConstant(const f32* data, s32 startRegister, 
 	c8 name[BL_ACTIVE_UNIFORM_MAX_LENGTH];
 	tiny_strcpy(name, tiny_itoa(startRegister, 10));
 
-	setShaderConstantID(BL_FRAGMENT_FLOAT, getShaderConstantID(BL_FRAGMENT_PROGRAM, name), data, constantAmount);
+	setShaderConstantID(BL_FRAGMENT_FLOAT, getShaderConstantID(BL_FRAGMENT_PROGRAM, name), data, constantAmount*4);
 }
 
 bool IBurningShader::setVertexShaderConstant(s32 index, const f32* floats, int count)

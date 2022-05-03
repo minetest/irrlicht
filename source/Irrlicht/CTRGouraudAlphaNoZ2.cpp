@@ -93,7 +93,7 @@ private:
 
 //! constructor
 CTRGouraudAlphaNoZ2::CTRGouraudAlphaNoZ2(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver, EMT_TRANSPARENT_ALPHA_CHANNEL)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRGouraudAlphaNoZ2");

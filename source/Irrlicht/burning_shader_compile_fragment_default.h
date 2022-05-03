@@ -36,7 +36,7 @@ private:
 
 //! constructor
 burning_shader_class::burning_shader_class(CBurningVideoDriver* driver)
-	: IBurningShader(driver)
+	: IBurningShader(driver,EMT_SOLID)
 {
 #ifdef _DEBUG
 	setDebugName(burning_stringify(burning_shader_class) );

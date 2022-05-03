@@ -99,7 +99,7 @@ private:
 
 //! constructor
 CTRTextureVertexAlpha2::CTRTextureVertexAlpha2(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver, EMT_TRANSPARENT_VERTEX_ALPHA)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRTextureVertexAlpha2");

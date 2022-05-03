@@ -108,7 +108,6 @@ bool mat44_transposed_inverse(irr::core::CMatrix4<T>& out, const irr::core::CMat
 }
 #endif
 
-#if 0
 // difference to CMatrix4<T>::getInverse . higher precision in determinant. return identity on failure
 template <class T>
 bool mat44_inverse(irr::core::CMatrix4<T>& out, const irr::core::CMatrix4<T>& M)
@@ -153,7 +152,7 @@ bool mat44_inverse(irr::core::CMatrix4<T>& out, const irr::core::CMatrix4<T>& M)
 
 	return true;
 }
-#endif
+
 
 // void CMatrix4<T>::transformVec4(T *out, const T * in) const
 template <class T>
@@ -165,6 +164,15 @@ inline void transformVec4Vec4(const irr::core::CMatrix4<T>& m, T* burning_restri
 	out[1] = in[0] * M[1] + in[1] * M[5] + in[2] * M[9] + in[3] * M[13];
 	out[2] = in[0] * M[2] + in[1] * M[6] + in[2] * M[10] + in[3] * M[14];
 	out[3] = in[0] * M[3] + in[1] * M[7] + in[2] * M[11] + in[3] * M[15];
+}
+
+template <class T>
+inline void transformVec3Vec3(const irr::core::CMatrix4<T>& m, T* burning_restrict out, const T* burning_restrict in)
+{
+	const T* burning_restrict M = m.pointer();
+	out[0] = in[0] * M[0] + in[1] * M[4] + in[2] * M[8] + M[12];
+	out[1] = in[0] * M[1] + in[1] * M[5] + in[2] * M[9] + M[13];
+	out[2] = in[0] * M[2] + in[1] * M[6] + in[2] * M[10] + M[14];
 }
 
 #if 0
@@ -254,6 +262,11 @@ irr::video::sVec4 operator* (const irr::video::sVec4& v, const irr::core::CMatri
 static inline float dot(const irr::video::sVec4& a, const irr::video::sVec4& b)
 {
 	return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
+}
+
+static inline float inversesqrt(const float x )
+{
+	return x!= 0.f ? 1.f / sqrtf(x) : 0.f;
 }
 
 
@@ -619,7 +632,7 @@ CBurningVideoDriver::CBurningVideoDriver(const irr::SIrrlichtCreationParameters&
 	BurningShader[ETR_TEXTURE_GOURAUD_ALPHA] = createTRTextureGouraudAlpha(this);
 	BurningShader[ETR_TEXTURE_GOURAUD_ALPHA_NOZ] = createTRTextureGouraudAlphaNoZ(this);
 
-	BurningShader[ETR_NORMAL_MAP_SOLID] = createTRNormalMap(this);
+	//BurningShader[ETR_NORMAL_MAP_SOLID] = createTRNormalMap(this, EMT_NORMAL_MAP_SOLID);
 	BurningShader[ETR_STENCIL_SHADOW] = createTRStencilShadow(this);
 	BurningShader[ETR_TEXTURE_BLEND] = createTRTextureBlend(this);
 
@@ -651,12 +664,28 @@ CBurningVideoDriver::CBurningVideoDriver(const irr::SIrrlichtCreationParameters&
 	addMaterialRenderer(tmr); // EMT_TRANSPARENT_ALPHA_CHANNEL_REF,
 	addMaterialRenderer(tmr); // EMT_TRANSPARENT_VERTEX_ALPHA,
 	addMaterialRenderer(tmr); // EMT_TRANSPARENT_REFLECTION_2_LAYER,
+
+#if 0
 	addMaterialRenderer(smr); // EMT_NORMAL_MAP_SOLID,
 	addMaterialRenderer(tmr); // EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR,
 	addMaterialRenderer(tmr); // EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA,
 	addMaterialRenderer(smr); // EMT_PARALLAX_MAP_SOLID,
 	addMaterialRenderer(tmr); // EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR,
 	addMaterialRenderer(tmr); // EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA,
+#else
+	// add normal map renderers
+	s32 tmp = 0;
+	video::IMaterialRenderer* renderer = 0;
+	renderer = createTRNormalMap(this, tmp, EMT_NORMAL_MAP_SOLID); renderer->drop();
+	renderer = createTRNormalMap(this, tmp, EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR); renderer->drop();
+	renderer = createTRNormalMap(this, tmp, EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA); renderer->drop();
+
+	renderer = createTRParallaxMap(this, tmp, EMT_PARALLAX_MAP_SOLID); renderer->drop();
+	renderer = createTRParallaxMap(this, tmp, EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR); renderer->drop();
+	renderer = createTRParallaxMap(this, tmp, EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA); renderer->drop();
+
+#endif
+
 	addMaterialRenderer(tmr); // EMT_ONETEXTURE_BLEND
 
 	smr->drop();
@@ -820,6 +849,9 @@ void CBurningVideoDriver::transform_calc(E_TRANSFORMATION_STATE_BURNING_VIDEO st
 	case ETS_NORMAL:
 		ok = flag[ETS_MODEL_VIEW] & ETF_VALID;
 		break;
+	case ETS_MODEL_INVERSE:
+		ok = flag[ETS_WORLD] & ETF_VALID;
+		break;
 	default:
 		break;
 	}
@@ -827,7 +859,7 @@ void CBurningVideoDriver::transform_calc(E_TRANSFORMATION_STATE_BURNING_VIDEO st
 	if (!ok)
 	{
 		char buf[256];
-		sprintf(buf, "transform_calc not valid for %d\n", state);
+		sprintf(buf, "transform_calc not valid for %d", state);
 		os::Printer::log(buf, ELL_WARNING);
 	}
 
@@ -861,6 +893,16 @@ void CBurningVideoDriver::transform_calc(E_TRANSFORMATION_STATE_BURNING_VIDEO st
 		break;
 	case ETS_NORMAL:
 		mat33_transposed_inverse(matrix[state], matrix[ETS_MODEL_VIEW]);
+		break;
+	case ETS_MODEL_INVERSE:
+		if (flag[ETS_WORLD] & ETF_IDENTITY)
+		{
+			matrix[state] = matrix[ETS_WORLD];
+		}
+		else
+		{
+			mat44_inverse(matrix[state], matrix[ETS_WORLD]);
+		}
 		break;
 
 	default:
@@ -917,6 +959,7 @@ void CBurningVideoDriver::setTransform(E_TRANSFORMATION_STATE state, const core:
 			flag[ETS_MODEL_VIEW_PROJ] &= ~ETF_VALID;
 			flag[ETS_MODEL_VIEW] &= ~ETF_VALID;
 			flag[ETS_NORMAL] &= ~ETF_VALID;
+			flag[ETS_MODEL_INVERSE] &= ~ETF_VALID;
 			break;
 		case ETS_TEXTURE_0:
 		case ETS_TEXTURE_1:
@@ -1739,7 +1782,6 @@ f32 MipmapLevel(const sVec2& uv, const sVec2& textureSize)
 }
 #endif
 
-//#define MAT_TEXTURE(tex) ( (video::CSoftwareTexture2*) Material.org.getTexture ( (u32)tex ) )
 #define MAT_TEXTURE(tex) ( (video::CSoftwareTexture2*) Material.org.TextureLayer[tex].Texture )
 
 //! clamp(value,0,1)
@@ -1904,46 +1946,59 @@ void CBurningVideoDriver::VertexCache_map_source_format()
 
 
 	SVSize* vSize = VertexShader.vSize;
-	//vSize[E4VT_STANDARD].Format = VERTEX4D_FORMAT_TEXTURE_1 | VERTEX4D_FORMAT_COLOR_1 | VERTEX4D_FORMAT_LIGHT_1 | VERTEX4D_FORMAT_SPECULAR;
 	vSize[E4VT_STANDARD].Format = VERTEX4D_FORMAT_TEXTURE_1 | VERTEX4D_FORMAT_COLOR_2_FOG;
 	vSize[E4VT_STANDARD].Pitch = sizeof(S3DVertex);
 	vSize[E4VT_STANDARD].TexSize = 1;
 	vSize[E4VT_STANDARD].TexCooSize = 1;
+	vSize[E4VT_STANDARD].ColSize = 2;
 
 	vSize[E4VT_2TCOORDS].Format = VERTEX4D_FORMAT_TEXTURE_2 | VERTEX4D_FORMAT_COLOR_2_FOG;
 	vSize[E4VT_2TCOORDS].Pitch = sizeof(S3DVertex2TCoords);
 	vSize[E4VT_2TCOORDS].TexSize = 2;
 	vSize[E4VT_2TCOORDS].TexCooSize = 2;
+	vSize[E4VT_2TCOORDS].ColSize = 2;
 
-	//vSize[E4VT_TANGENTS].Format = VERTEX4D_FORMAT_TEXTURE_2 | VERTEX4D_FORMAT_COLOR_1 | VERTEX4D_FORMAT_LIGHT_1 | VERTEX4D_FORMAT_BUMP_DOT3;
-	vSize[E4VT_TANGENTS].Format = VERTEX4D_FORMAT_TEXTURE_2 | VERTEX4D_FORMAT_COLOR_2_FOG | VERTEX4D_FORMAT_LIGHT_1 | VERTEX4D_FORMAT_BUMP_DOT3;
+	// 	EMT_NORMAL_MAP_SOLID,EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR,EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA
+	vSize[E4VT_TANGENTS].Format = VERTEX4D_FORMAT_TEXTURE_2 | VERTEX4D_FORMAT_COLOR_4 | VERTEX4D_FORMAT_BUMP_DOT3;
 	vSize[E4VT_TANGENTS].Pitch = sizeof(S3DVertexTangents);
 	vSize[E4VT_TANGENTS].TexSize = 2;
 	vSize[E4VT_TANGENTS].TexCooSize = 2;
+	vSize[E4VT_TANGENTS].ColSize = 4;
 
-	// reflection map
+	// 	EMT_PARALLAX_MAP_SOLID,EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR,EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA
+	vSize[E4VT_TANGENTS_PARALLAX].Format = VERTEX4D_FORMAT_TEXTURE_2 | VERTEX4D_FORMAT_COLOR_4 | VERTEX4D_FORMAT_PARALLAX;
+	vSize[E4VT_TANGENTS_PARALLAX].Pitch = sizeof(S3DVertexTangents);
+	vSize[E4VT_TANGENTS_PARALLAX].TexSize = 2;
+	vSize[E4VT_TANGENTS_PARALLAX].TexCooSize = 2;
+	vSize[E4VT_TANGENTS_PARALLAX].ColSize = 4;
+
+	// EMT_TRANSPARENT_REFLECTION_2_LAYER map
 	vSize[E4VT_REFLECTION_MAP].Format = VERTEX4D_FORMAT_TEXTURE_2 | VERTEX4D_FORMAT_COLOR_2_FOG;
 	vSize[E4VT_REFLECTION_MAP].Pitch = sizeof(S3DVertex);
 	vSize[E4VT_REFLECTION_MAP].TexSize = 2;
 	vSize[E4VT_REFLECTION_MAP].TexCooSize = 1; //TexCoo2 generated
+	vSize[E4VT_REFLECTION_MAP].ColSize = 2;
 
 	// shadow
 	vSize[E4VT_SHADOW].Format = 0;
 	vSize[E4VT_SHADOW].Pitch = sizeof(f32) * 3; // core::vector3df*
 	vSize[E4VT_SHADOW].TexSize = 0;
 	vSize[E4VT_SHADOW].TexCooSize = 0;
+	vSize[E4VT_SHADOW].ColSize = 0;
 
 	// color shading only (no texture)
-	vSize[E4VT_NO_TEXTURE].Format = VERTEX4D_FORMAT_COLOR_1 | VERTEX4D_FORMAT_LIGHT_1 | VERTEX4D_FORMAT_SPECULAR;
+	vSize[E4VT_NO_TEXTURE].Format = VERTEX4D_FORMAT_COLOR_2_FOG;
 	vSize[E4VT_NO_TEXTURE].Pitch = sizeof(S3DVertex);
 	vSize[E4VT_NO_TEXTURE].TexSize = 0;
 	vSize[E4VT_NO_TEXTURE].TexCooSize = 0;
+	vSize[E4VT_NO_TEXTURE].ColSize = 2;
 
 	//Line
 	vSize[E4VT_LINE].Format = VERTEX4D_FORMAT_COLOR_1;
 	vSize[E4VT_LINE].Pitch = sizeof(S3DVertex);
 	vSize[E4VT_LINE].TexSize = 0;
 	vSize[E4VT_LINE].TexCooSize = 0;
+	vSize[E4VT_LINE].ColSize = 1;
 
 	//verify with global defines
 	u32 size;
@@ -1952,7 +2007,7 @@ void CBurningVideoDriver::VertexCache_map_source_format()
 		u32& flag = vSize[i].Format;
 
 #if !defined(SOFTWARE_DRIVER_2_USE_SEPARATE_SPECULAR_COLOR)
-		flag &= ~VERTEX4D_FORMAT_SPECULAR;
+		//flag &= ~VERTEX4D_FORMAT_SPECULAR;
 #endif
 
 		if (vSize[i].TexSize > BURNING_MATERIAL_MAX_TEXTURES)
@@ -2036,9 +2091,29 @@ void CBurningVideoDriver::VertexCache_fill(const u32 sourceIndex, const u32 dest
 		sVec4 gl_Color; gl_Color.setA8R8G8B8(base->Color.color);
 
 		// Irrlicht TCoords and TCoords2 must be contiguous memory. baseTCoord has no 4 byte aligned start address!
-		sVec4 gl_MultiTexCoord0(base->TCoords.X, base->TCoords.Y, 1.f, 1.f);
-		sVec4 gl_MultiTexCoord1(((S3DVertex2TCoords*)source)->TCoords2.X, ((S3DVertex2TCoords*)source)->TCoords2.Y, 1.f, 1.f);
+		sVec4 gl_MultiTexCoord[4];
+		const sVec2Pack* baseTCoord = (const sVec2Pack*)&base->TCoords.X;
+		for (u32 m = 0; m < array_size(gl_MultiTexCoord); ++m)
+		{
+			if (m < VertexShader.vSize[VertexShader.vType].TexCooSize)
+			{
+				gl_MultiTexCoord[m].s = baseTCoord[m].x;
+				gl_MultiTexCoord[m].t = baseTCoord[m].y;
+			}
+			else
+			{
+				gl_MultiTexCoord[m].s = 0.f;
+				gl_MultiTexCoord[m].t = 0.f;
+			}
 
+			gl_MultiTexCoord[m].p = 1.f;
+			gl_MultiTexCoord[m].q = 1.f;
+		}
+
+#define gl_MultiTexCoord0 gl_MultiTexCoord[0]
+#define gl_MultiTexCoord1 gl_MultiTexCoord[1]
+#define gl_MultiTexCoord2 gl_MultiTexCoord[2]
+#define gl_MultiTexCoord3 gl_MultiTexCoord[3]
 #define gl_Position dest->Pos
 #define gl_TexCoord dest->Tex
 #define gl_FrontColor dest->Color[0]
@@ -2051,9 +2126,6 @@ void CBurningVideoDriver::VertexCache_fill(const u32 sourceIndex, const u32 dest
 #define gl_ModelViewMatrix matrix[ETS_MODEL_VIEW]
 #define gl_ModelViewProjectionMatrix matrix[ETS_MODEL_VIEW_PROJ]
 #define ftransform() (matrix[ETS_MODEL_VIEW_PROJ] * gl_Vertex)
-
-		//#define uniform(var,name) const var& name = shader->uniform_##var(#name)
-		//#define varying(var,name) var name = shader->varying_##var(#name)
 
 #define uniform(var,name) const var& name = (const var&)*shader->getUniform(#name,BL_VERTEX_FLOAT)
 #define varying(var,name) var& name = (var&)*shader->getUniform(#name,BL_FRAGMENT_FLOAT)
@@ -2198,12 +2270,66 @@ void CBurningVideoDriver::VertexCache_fill(const u32 sourceIndex, const u32 dest
 			normal = normalize(gl_Normal);
 			lightdir2 = normalize(lightdir);
 		}
+		else if (Material.VertexShader == STK_1303_0xd872cdb6)
+		{
+			// Shader based on work by Fabien Sanglard
+			// Released under the terms of CC-BY 3.0
 
+			varying(vec3,lightVec);
+			varying(vec3,halfVec);
+			varying(vec3,eyeVec);
+
+			uniform(vec3,lightdir);
+
+			//void main()
+			{
+
+				gl_TexCoord[0] = gl_MultiTexCoord0;
+
+				// Building the matrix Eye Space -> Tangent Space
+				vec3 n = normalize(gl_NormalMatrix * gl_Normal);
+				// gl_MultiTexCoord1.xyz
+				vec3 t = normalize(gl_NormalMatrix * vec3(1.0, 0.0, 0.0)); // tangent
+				vec3 b = cross(n, t);
+
+				vec3 vertexPosition = vec3(gl_ModelViewMatrix * gl_Vertex);
+
+				// transform light and half angle vectors by tangent basis
+				vec3 v;
+				v.x = dot(lightdir, t);
+				v.y = dot(lightdir, b);
+				v.z = dot(lightdir, n);
+				lightVec = normalize(v);
+
+				vertexPosition = normalize(vertexPosition);
+
+				eyeVec = normalize(-vertexPosition); // we are in Eye Coordinates, so EyePos is (0,0,0)
+
+				// Normalize the halfVector to pass it to the fragment shader
+
+				// No need to divide by two, the result is normalized anyway.
+				// vec3 halfVector = normalize((vertexPosition + lightDir) / 2.0);
+				vec3 halfVector = normalize(vertexPosition + lightdir);
+				v.x = dot(halfVector, t);
+				v.y = dot(halfVector, b);
+				v.z = dot(halfVector, n);
+
+				// No need to normalize, t,b,n and halfVector are normal vectors.
+				//normalize (v);
+				halfVec = v;
+
+				gl_Position = ftransform();
+			}
+		}
 #ifdef _MSC_VER
 #pragma warning (default: 4244) // conversion
 #pragma warning (default: 4305) // truncation
 #endif
 
+#undef gl_MultiTexCoord0
+#undef gl_MultiTexCoord1
+#undef gl_MultiTexCoord2
+#undef gl_MultiTexCoord3
 #undef vec2
 #undef vec3
 #undef vec4
@@ -2335,7 +2461,7 @@ fftransform:
 			break;
 		}
 
-		sVec4* a = dest->Color + ((VertexShader.vSize[VertexShader.vType].Format & VERTEX4D_FORMAT_COLOR_2_FOG) ? 1 : 0);
+		sVec4* a = dest->Color + (((VertexShader.vSize[VertexShader.vType].Format & VERTEX4D_FORMAT_MASK_COLOR)>=VERTEX4D_FORMAT_COLOR_2_FOG) ? 1 : 0);
 		a->a = clampf01(fog_factor);
 	}
 
@@ -2497,42 +2623,71 @@ fftransform:
 
 #if BURNING_MATERIAL_MAX_LIGHT_TANGENT > 0
 	if ((EyeSpace.TL_Flag & TL_LIGHT0_IS_NORMAL_MAP) &&
-		((VertexShader.vSize[VertexShader.vType].Format & VERTEX4D_FORMAT_MASK_TANGENT) == VERTEX4D_FORMAT_BUMP_DOT3)
+		((VertexShader.vSize[VertexShader.vType].Format & VERTEX4D_FORMAT_MASK_TANGENT) >= VERTEX4D_FORMAT_BUMP_DOT3)
 		)
 	{
 		const S3DVertexTangents* tangent = ((S3DVertexTangents*)source);
 
 		sVec4 vp;
+
 		sVec4 light_accu;
-		light_accu.x = 0.f;
-		light_accu.y = 0.f;
-		light_accu.z = 0.f;
-		light_accu.w = 0.f;
-		for (u32 i = 0; i < 2 && i < EyeSpace.Light.size(); ++i)
+		light_accu.set(0.f);
+
+		/*
+		* Color[0] lightcolor[0] a: vertexalpha
+		* Color[1] lightcolor[1] a: fogdistance
+		* Color[2] lightvector[0] 
+		* Color[3] lightvector[1] 
+		* LightVector[0] eyevector
+		*/
+
+		if ((VertexShader.vSize[VertexShader.vType].Format & VERTEX4D_FORMAT_MASK_TANGENT) >= VERTEX4D_FORMAT_PARALLAX)
+		{
+			vp.x = EyeSpace.leye.x - base->Pos.X;
+			vp.y = EyeSpace.leye.y - base->Pos.Y;
+			vp.z = EyeSpace.leye.z - base->Pos.Z;
+
+			light_accu.x = vp.dot(tangent->Tangent);
+			light_accu.y = -vp.dot(tangent->Binormal);
+			light_accu.z = -vp.dot(tangent->Normal);
+			light_accu.normalize_pack_xyz(dest->LightTangent[0], 1.f, 0.f);
+		}
+
+		const u32 maxLight = core::min_((u32)BURNING_MATERIAL_MAX_COLORS,(u32)2, EyeSpace.Light.size());
+		for (u32 i = 0; i < maxLight; ++i)
 		{
 			const SBurningShaderLight& light = EyeSpace.Light[i];
 			if (!light.LightIsOn)
 				continue;
 
-			// lightcolor with standard model
-			// but shader is different. treating light and vertex in same space
-#if 1
-			vp.x = light.pos.x - base->Pos.X;
-			vp.y = light.pos.y - base->Pos.Y;
-			vp.z = light.pos.z - base->Pos.Z;
-#else
-			vp.x = light.pos4.x - EyeSpace.vertex.x;
-			vp.y = light.pos4.y - EyeSpace.vertex.y;
-			vp.z = light.pos4.z - EyeSpace.vertex.z;
-#endif
+			vp.x = light.pos_local.x - base->Pos.X;
+			vp.y = light.pos_local.y - base->Pos.Y;
+			vp.z = light.pos_local.z - base->Pos.Z;
 
-			// transform by tangent matrix
+			f32 attenuation = inversesqrt(vp.dot_xyz(vp) * light.nmap_linearAttenuation);
+			dest->Color[i].r = light.DiffuseColor.r * attenuation;
+			dest->Color[i].g = light.DiffuseColor.g * attenuation;
+			dest->Color[i].b = light.DiffuseColor.b * attenuation;
+			dest->Color[i].clampf01();
+
+			// lightvector transform by tangent matrix
+#if BURNING_MATERIAL_MAX_COLORS >=4
+			dest->Color[2+i].x = vp.dot(tangent->Tangent);
+			dest->Color[2+i].y = vp.dot(tangent->Binormal);
+			dest->Color[2+i].z = vp.dot(tangent->Normal);
+			dest->Color[2 + i].normalize_dir_xyz_zero();
+#else
 			light_accu.x += (vp.x * tangent->Tangent.X + vp.y * tangent->Tangent.Y + vp.z * tangent->Tangent.Z);
 			light_accu.y += (vp.x * tangent->Binormal.X + vp.y * tangent->Binormal.Y + vp.z * tangent->Binormal.Z);
 			light_accu.z += (vp.x * tangent->Normal.X + vp.y * tangent->Normal.Y + vp.z * tangent->Normal.Z);
+#endif
 		}
+
+#if BURNING_MATERIAL_MAX_COLORS >=4
+#else
 		//normalize [-1,+1] to [0,1] -> obsolete
 		light_accu.normalize_pack_xyz(dest->LightTangent[0], 1.f, 0.f);
+#endif
 		dest->Tex[1].x = dest->Tex[0].x;
 		dest->Tex[1].y = dest->Tex[0].y;
 
@@ -2887,6 +3042,11 @@ int CBurningVideoDriver::VertexCache_reset(const void* vertices, u32 vertexCount
 
 	switch (Material.org.MaterialType) // (Material.Fallback_MaterialType)
 	{
+	case EMT_PARALLAX_MAP_SOLID:
+	case EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR:
+	case EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA:
+		VertexShader.vType = vType == EVT_TANGENTS ? E4VT_TANGENTS_PARALLAX : (e4DVertexType)vType;
+		break;
 	case EMT_REFLECTION_2_LAYER:
 	case EMT_TRANSPARENT_REFLECTION_2_LAYER:
 		VertexShader.vType = vType == EVT_STANDARD ? E4VT_REFLECTION_MAP : (e4DVertexType)vType;
@@ -2937,12 +3097,7 @@ void CBurningVideoDriver::drawVertexPrimitiveList(const void* vertices, u32 vert
 		return;
 
 	pushShader(pType, 1);
-	/*
-		if ((u32)Material.org.MaterialType < MaterialRenderers.size())
-		{
-			MaterialRenderers[Material.org.MaterialType].Renderer->OnRender(this, vType);
-		}
-	*/
+
 	//Matrices needed for this primitive
 	transform_calc(ETS_MODEL_VIEW_PROJ);
 	if ((EyeSpace.TL_Flag & (TL_TEXTURE_TRANSFORM | TL_FOG | TL_LIGHT)) ||
@@ -2952,6 +3107,37 @@ void CBurningVideoDriver::drawVertexPrimitiveList(const void* vertices, u32 vert
 		transform_calc(ETS_NORMAL);
 	}
 
+	//objectspace
+	if (EyeSpace.TL_Flag & TL_LIGHT0_IS_NORMAL_MAP)
+	{
+		transform_calc(ETS_MODEL_INVERSE);
+
+		const core::matrix4* matrix = Transformation[TransformationStack];
+		if ((VertexShader.vSize[VertexShader.vType].Format & VERTEX4D_FORMAT_MASK_TANGENT) >= VERTEX4D_FORMAT_PARALLAX)
+		{
+			transform_calc(ETS_MODEL_VIEW);
+			mat44_inverse(EyeSpace.mvi, matrix[ETS_MODEL_VIEW]);
+
+			sVec4 eye(0.f, 0.f, 0.f, 1.f);
+			transformVec3Vec3(EyeSpace.mvi, &EyeSpace.leye.x, &eye.x);
+		}
+
+		const u32 maxLight = core::min_((u32)BURNING_MATERIAL_MAX_COLORS, (u32)2, EyeSpace.Light.size());
+		for (u32 i = 0; i < maxLight; ++i)
+		{
+			SBurningShaderLight& light = EyeSpace.Light[i];
+			if (!light.LightIsOn)
+				continue;
+
+			transformVec3Vec3(matrix[ETS_MODEL_INVERSE], &light.pos_local.x, &light.pos.x);
+		}
+
+	}
+
+	if ((u32)Material.org.MaterialType < MaterialRenderers.size())
+	{
+		MaterialRenderers[Material.org.MaterialType].Renderer->OnRender(this, (video::E_VERTEX_TYPE)VertexShader.vType);
+	}
 
 	s4DVertexPair* face[4];
 
@@ -3087,106 +3273,72 @@ void CBurningVideoDriver::drawVertexPrimitiveList(const void* vertices, u32 vert
 						continue; //not break; per clipper triangle
 
 
-					// mipmap2 
-#if 1
 				// select mipmap
 #if BURNING_MAX_MIP_CLIPPER == 1
-					if (probe == use_max_mip)
+				if (probe == use_max_mip)
 #endif
-						for (u32 m = 0; m < VertexShader.vSize[VertexShader.vType].TexSize; ++m)
-						{
-							video::CSoftwareTexture2* tex = MAT_TEXTURE(m);
-
-							const sVec2& v0 = (face[0] + s4DVertex_ofs(0))->Tex[m];
-							const sVec2& v1 = (face[1] + s4DVertex_ofs(0))->Tex[m];
-							const sVec2& v2 = (face[2] + s4DVertex_ofs(0))->Tex[m];
-
-							//todo: get triangle setup here
-							//bbox
-							t[0] = t[2] = v0.x;
-							t[1] = t[3] = v0.y;
-							if (v1.x < t[0]) t[0] = v1.x;
-							if (v1.y < t[1]) t[1] = v1.y;
-							if (v1.x > t[2]) t[2] = v1.x;
-							if (v1.y > t[3]) t[3] = v1.y;
-
-							if (v2.x < t[0]) t[0] = v2.x;
-							if (v2.y < t[1]) t[1] = v2.y;
-							if (v2.x > t[2]) t[2] = v2.x;
-							if (v2.y > t[3]) t[3] = v2.y;
-
-							f32 tex_area = fabsf((t[2] - t[0]) * (t[3] - t[1]));
-
-							//tex_area = |a.x * b.y - b.x * a.y| * 0.5; // crossproduct
-							//f32 tex_area = fabsf((v1.x - v0.x) * (v2.y - v0.y) - (v2.x - v0.x) * (v1.y - v0.y));
-
-							//various over and underflow cases
-							if (tex_area <= 0.000001f)
-								tex_area = 0.000001f;
-							else if (tex_area > 1.01f)
-								tex_area = 1.f / tex_area;
-
-							/* 2.f * tex_area * 1.6f bias. 1.6 too much for detailsmap3 */
-							//not dc_area * 0.5 cancel out 2 * TexBias
-							const u32 dc_area_over_tex_area = (u32)floorf( /*/tex_area > 0.0000001f ? */
-								fabsf(dc_area.f) * TexBias[TransformationStack] / tex_area
-								/*: 0.f*/
-							);
-
-							// get a near 1:1 ratio between pixel and texel
-							// tex_area * b[lodFactor].w * b[lodFactor].h > dc_area_abs
-
-							s32 lodFactor = 0;
-							const CSoftwareTexture2_Bound* b = tex->getTexBound_index();
-							while (lodFactor < SOFTWARE_DRIVER_2_MIPMAPPING_MAX &&
-								b[lodFactor].area > dc_area_over_tex_area
-								)
-							{
-								lodFactor += 1;
-							}
-
-							//clipped triangle should take single area based mipmap from unclipped face
-							//skybox,billboard test case 
-							//if (vertex_from_clipper) lodFactor -= 1;
-							if (has_vertex_run == 0) lod_max[m] = lodFactor;
-							else if (lodFactor < lod_max[m]) lod_max[m] = lodFactor;
-
-							//CurrentShader->setTextureParam(m, tex, lodFactor);
-							//select_polygon_mipmap_inside(face, m, tex->getTexBound());
-						}
-
-#else
-				//select mipmap ratio between drawing space and texture space (for multiply divide here)
-					dc_area.f = reciprocal_zero(dc_area.f);
-
-					// select mipmap
 					for (u32 m = 0; m < VertexShader.vSize[VertexShader.vType].TexSize; ++m)
 					{
 						video::CSoftwareTexture2* tex = MAT_TEXTURE(m);
 
-						//only guessing: take more detail (lower mipmap) in light+bump textures
-						f32 lod_bias = 0.100f;// core::clamp(map_value((f32)ScreenSize.Width * ScreenSize.Height, 160 * 120, 640 * 480, 1.f / 8.f, 1.f / 8.f), 0.01f, 1.f);
+						const sVec2& v0 = (face[0] + s4DVertex_ofs(0))->Tex[m];
+						const sVec2& v1 = (face[1] + s4DVertex_ofs(0))->Tex[m];
+						const sVec2& v2 = (face[2] + s4DVertex_ofs(0))->Tex[m];
 
-						//assume transparent add is ~50% transparent -> more detail
-						switch (Material.org.MaterialType)
+						//todo: get triangle setup here
+						//bbox
+						t[0] = t[2] = v0.x;
+						t[1] = t[3] = v0.y;
+						if (v1.x < t[0]) t[0] = v1.x;
+						if (v1.y < t[1]) t[1] = v1.y;
+						if (v1.x > t[2]) t[2] = v1.x;
+						if (v1.y > t[3]) t[3] = v1.y;
+
+						if (v2.x < t[0]) t[0] = v2.x;
+						if (v2.y < t[1]) t[1] = v2.y;
+						if (v2.x > t[2]) t[2] = v2.x;
+						if (v2.y > t[3]) t[3] = v2.y;
+
+						f32 tex_area = fabsf((t[2] - t[0]) * (t[3] - t[1]));
+
+						//tex_area = |a.x * b.y - b.x * a.y| * 0.5; // crossproduct
+						//f32 tex_area = fabsf((v1.x - v0.x) * (v2.y - v0.y) - (v2.x - v0.x) * (v1.y - v0.y));
+
+						//various over and underflow cases
+						if (tex_area <= 0.000001f)
+							tex_area = 0.000001f;
+						else if (tex_area > 1.01f)
+							tex_area = 1.f / tex_area;
+
+						/* 2.f * tex_area * 1.6f bias. 1.6 too much for detailsmap3 */
+						//not dc_area * 0.5 cancel out 2 * TexBias
+						const u32 dc_area_over_tex_area = (u32)floorf( /*/tex_area > 0.0000001f ? */
+							fabsf(dc_area.f) * TexBias[TransformationStack] / tex_area
+							/*: 0.f*/
+						);
+
+						// get a near 1:1 ratio between pixel and texel
+						// tex_area * b[lodFactor].w * b[lodFactor].h > dc_area_abs
+
+						s32 lodFactor = 0;
+						const CSoftwareTexture2_Bound* b = tex->getTexBound_index();
+						while (lodFactor < SOFTWARE_DRIVER_2_MIPMAPPING_MAX &&
+							b[lodFactor].area > dc_area_over_tex_area
+							)
 						{
-						case EMT_TRANSPARENT_ADD_COLOR:
-						case EMT_TRANSPARENT_ALPHA_CHANNEL:
-							lod_bias *= 0.5f;
-							break;
-						default:
-							break;
+							lodFactor += 1;
 						}
-						lod_bias *= tex->get_lod_bias();
-						//lod_bias += Material.org.TextureLayer[m].LODBias * 0.125f;
 
-						s32 lodFactor = lodFactor_inside(face, m, dc_area.f, lod_bias);
+						//clipped triangle should take single area based mipmap from unclipped face
+						//skybox,billboard test case 
+						//if (vertex_from_clipper) lodFactor -= 1;
+						if (has_vertex_run == 0) lod_max[m] = lodFactor;
+						else if (lodFactor < lod_max[m]) lod_max[m] = lodFactor;
 
-						CurrentShader->setTextureParam(m, tex, lodFactor);
-						//currently shader receives texture coordinate as Pixelcoo of 1 Texture
-						select_polygon_mipmap_inside(face, m, tex->getTexBound());
+						//CurrentShader->setTextureParam(m, tex, lodFactor);
+						//select_polygon_mipmap_inside(face, m, tex->getTexBound());
 					}
-#endif
+
 				}
 				//else /* if (VertexShader.primitiveHasVertex == 3) */
 #if BURNING_MAX_MIP_CLIPPER == 1
@@ -3349,6 +3501,7 @@ void CBurningVideoDriver::assignHardwareLight(SBurningShaderLight& l, const SLig
 	transformVec4Vec4(matrix[ETS_MODEL_VIEW], &l.pos4.x, &l.pos.x);
 	rotateMat44Vec3Vec4(matrix[ETS_MODEL_VIEW], &l.spotDirection4.x, &l.spotDirection.x);
 
+	l.nmap_linearAttenuation = 1.f / (0.001f + dl.Radius * dl.Radius);
 
 	/*
 	//case ELT_DIRECTIONAL:
@@ -3432,13 +3585,14 @@ void CBurningVideoDriver::setMaterial(const SMaterial& material)
 
 	const SMaterial& in = Material.org;
 
+	const u32 shaderid = (u32)in.MaterialType;
+
 	//basically set always. 2d does its own compare
 	//if (TransformationStack == ETF_STACK_2D ||	Material.resetRenderStates || compare_3d_material(Material.lastMaterial,in))
 	{
 		// ---------- Notify Shader
 		// unset old material
 		u32 shaderid_old = (u32)Material.lastMaterial.MaterialType;
-		u32 shaderid = (u32)in.MaterialType;
 
 		if (shaderid != shaderid_old && shaderid_old < MaterialRenderers.size())
 		{
@@ -3470,7 +3624,8 @@ void CBurningVideoDriver::setMaterial(const SMaterial& material)
 	EyeSpace.TL_Flag &= ~(TL_TEXTURE_TRANSFORM | TL_LIGHT0_IS_NORMAL_MAP);
 
 #ifdef SOFTWARE_DRIVER_2_TEXTURE_TRANSFORM
-	for (u32 m = 0; m < VertexShader.vSize[VertexShader.vType].TexSize; ++m)
+	//vertextype not set!
+	for (u32 m = 0; m < BURNING_MATERIAL_MAX_TEXTURES /*VertexShader.vSize[VertexShader.vType].TexSize*/; ++m)
 	{
 		flag[ETS_TEXTURE_0 + m] &= ~ETF_TEXGEN_MASK;
 		setTransform((E_TRANSFORMATION_STATE)(ETS_TEXTURE_0 + m), in.getTextureMatrix(m));
@@ -3520,7 +3675,7 @@ void CBurningVideoDriver::setMaterial(const SMaterial& material)
 
 	EBurningFFShader shader = Material.depth_test ? ETR_TEXTURE_GOURAUD : ETR_TEXTURE_GOURAUD_NOZ;
 
-	switch (Material.Fallback_MaterialType) //(Material.org.MaterialType)
+	switch (Material.Fallback_MaterialType) //(Material.org.MaterialType) // Material.Fallback_MaterialType)
 	{
 	case EMT_ONETEXTURE_BLEND:
 		shader = ETR_TEXTURE_BLEND;
@@ -3604,6 +3759,7 @@ void CBurningVideoDriver::setMaterial(const SMaterial& material)
 		{
 			shader = ETR_NORMAL_MAP_SOLID;
 			EyeSpace.TL_Flag |= TL_TEXTURE_TRANSFORM | TL_LIGHT0_IS_NORMAL_MAP;
+			EyeSpace.TL_Flag &= ~TL_LIGHT;
 		}
 		break;
 	case EMT_PARALLAX_MAP_SOLID:
@@ -3611,8 +3767,9 @@ void CBurningVideoDriver::setMaterial(const SMaterial& material)
 	case EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA:
 		if (texture1)
 		{
-			shader = ETR_NORMAL_MAP_SOLID;
+			shader = ETR_PARALLAX_MAP_SOLID;
 			EyeSpace.TL_Flag |= TL_TEXTURE_TRANSFORM | TL_LIGHT0_IS_NORMAL_MAP;
+			EyeSpace.TL_Flag &= ~TL_LIGHT;
 		}
 		break;
 
@@ -3653,6 +3810,11 @@ void CBurningVideoDriver::setMaterial(const SMaterial& material)
 
 	// switchToTriangleRenderer
 	CurrentShader = BurningShader[shader];
+	if (!CurrentShader && shaderid < MaterialRenderers.size())
+	{
+		CurrentShader = (IBurningShader *) MaterialRenderers[shaderid].Renderer;
+	}
+
 	if (CurrentShader)
 	{
 		CurrentShader->setTLFlag(EyeSpace.TL_Flag);
@@ -3664,12 +3826,13 @@ void CBurningVideoDriver::setMaterial(const SMaterial& material)
 	}
 
 
+#if 0
 	{
-		u32 shaderid = (u32)Material.org.MaterialType;
+		//u32 shaderid = (u32)Material.org.MaterialType;
 		if (shaderid < MaterialRenderers.size())
 			MaterialRenderers[shaderid].Renderer->OnRender(this, (video::E_VERTEX_TYPE)VertexShader.vType);
 	}
-
+#endif
 }
 
 
@@ -3913,7 +4076,7 @@ void CBurningVideoDriver::lightVertex_eye(s4DVertex* dest, const u32 vertexargb)
 	//separate specular
 	const sVec4& spec_mat = (EyeSpace.TL_Flag & TL_COLORMAT_SPECULAR) ? vertexColor : Material.SpecularColor;
 #if defined(SOFTWARE_DRIVER_2_USE_SEPARATE_SPECULAR_COLOR)
-	if ((VertexShader.vSize[VertexShader.vType].Format & VERTEX4D_FORMAT_COLOR_2_FOG))
+	if ((VertexShader.vSize[VertexShader.vType].Format & VERTEX4D_FORMAT_MASK_COLOR)>=VERTEX4D_FORMAT_COLOR_2_FOG)
 	{
 		specular.sat_mul_xyz(dest->Color[1], spec_mat);
 	}
@@ -4566,17 +4729,17 @@ void CBurningVideoDriver::pushShader(scene::E_PRIMITIVE_TYPE pType, int testCurr
 const wchar_t* CBurningVideoDriver::getName() const
 {
 #ifdef BURNINGVIDEO_RENDERER_BEAUTIFUL
-	return L"Burning's Video 0.53 beautiful";
+	return L"Burning's Video 0.54 beautiful";
 #elif defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
-	return L"Burning's Video 0.53 STK";
+	return L"Burning's Video 0.54 STK";
 #elif defined ( BURNINGVIDEO_RENDERER_ULTRA_FAST )
-	return L"Burning's Video 0.53 ultra fast";
+	return L"Burning's Video 0.54 ultra fast";
 #elif defined ( BURNINGVIDEO_RENDERER_FAST )
-	return L"Burning's Video 0.53 fast";
+	return L"Burning's Video 0.54 fast";
 #elif defined ( BURNINGVIDEO_RENDERER_CE )
-	return L"Burning's Video 0.53 CE";
+	return L"Burning's Video 0.54 CE";
 #else
-	return L"Burning's Video 0.53";
+	return L"Burning's Video 0.54";
 #endif
 }
 

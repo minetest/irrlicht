@@ -20,6 +20,7 @@
 #include "IMaterialRenderer.h"
 #include "IMaterialRendererServices.h"
 #include "IGPUProgrammingServices.h"
+#include "IShaderConstantSetCallback.h"
 
 burning_namespace_start
 
@@ -47,6 +48,11 @@ struct SBurningShaderLight
 	sVec3Color AmbientColor;
 	sVec3Color DiffuseColor;
 	sVec3Color SpecularColor;
+
+	//normal,parallax
+	sVec4 pos_local;	//modelinverse
+	f32 nmap_linearAttenuation;
+
 	SBurningShaderLight()
 	{
 		LightIsOn = false;
@@ -105,6 +111,10 @@ struct SBurningShaderEyeSpace
 	f32 fog_scale; // 1 / (fog.end-fog.start)
 
 	size_t TL_Flag; // eTransformLightFlags
+
+	// objectspace
+	core::matrix4 mvi;	// inverse Model*View
+	sVec4 leye;	//eye vector unprojected
 };
 
 enum eBurningCullFlag
@@ -137,6 +147,7 @@ enum eBurningVertexShader
 	STK_958_0xa048973b,		/* supertuxkart motion_blur.vert */
 	STK_1204_0x072a4094,	/* supertuxkart splatting.vert */
 	STK_1309_0x1fd689c2,	/* supertuxkart normalmap.vert */
+	STK_1303_0xd872cdb6,	/* supertuxkart water.vert */
 };
 
 struct SBurningShaderMaterial
@@ -195,6 +206,7 @@ enum EBurningFFShader
 	ETR_TEXTURE_GOURAUD_ALPHA_NOZ_NOPERSPECTIVE_CORRECT,
 
 	ETR_NORMAL_MAP_SOLID,
+	ETR_PARALLAX_MAP_SOLID,
 	ETR_STENCIL_SHADOW,
 
 	ETR_TEXTURE_BLEND,
@@ -235,7 +247,7 @@ struct BurningUniform
 
 	bool operator==(const BurningUniform& other) const
 	{
-		return tiny_istoken(name, other.name);
+		return ((type & 3) == (other.type & 3)) && tiny_istoken(name, other.name);
 	}
 
 };
@@ -250,11 +262,11 @@ struct PushShaderData
 };
 
 class CBurningVideoDriver;
-class IBurningShader : public IMaterialRenderer, public IMaterialRendererServices
+class IBurningShader : public IMaterialRenderer, public IMaterialRendererServices, public IShaderConstantSetCallBack
 {
 public:
 	//! Constructor
-	IBurningShader(CBurningVideoDriver* driver);
+	IBurningShader(CBurningVideoDriver* driver, E_MATERIAL_TYPE baseMaterial );
 
 	//! Constructor
 	IBurningShader(
@@ -303,8 +315,10 @@ public:
 
 	void setStencilOp(eBurningStencilOp sfail, eBurningStencilOp dpfail, eBurningStencilOp dppass);
 
-	//IMaterialRenderer
+	//IShaderConstantSetCallBack
+	virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData) IRR_OVERRIDE {};
 
+	//IMaterialRenderer
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
 		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE;
 
@@ -380,21 +394,13 @@ public:
 	}
 
 	u32 fragment_draw_count;
-/*
-	const core::matrix4& uniform_mat4(const c8* name);
-	video::sVec4 uniform_vec4(const c8* name);
-	video::sVec4 uniform_vec3(const c8* name);
 
-	core::matrix4& varying_mat4(const c8* name);
-	video::sVec4 varying_vec4(const c8* name);
-	video::sVec4 varying_vec3(const c8* name);
-*/
 	const f32* getUniform(const c8* name, EBurningUniformFlags flags) const;
 
 protected:
 	//friend class CBurningVideoDriver;
 
-	void constructor_IBurningShader(CBurningVideoDriver* driver);
+	void constructor_IBurningShader(CBurningVideoDriver* driver, E_MATERIAL_TYPE baseMaterial);
 
 	CBurningVideoDriver* Driver;
 	IShaderConstantSetCallBack* CallBack;
@@ -462,7 +468,6 @@ IBurningShader* createTriangleRendererTextureVertexAlpha2(CBurningVideoDriver* d
 IBurningShader* createTriangleRendererTextureGouraudWire2(CBurningVideoDriver* driver);
 IBurningShader* createTriangleRendererGouraud2(CBurningVideoDriver* driver);
 IBurningShader* createTriangleRendererGouraudNoZ2(CBurningVideoDriver* driver);
-IBurningShader* createTriangleRendererGouraudAlpha2(CBurningVideoDriver* driver);
 IBurningShader* createTRGouraudAlphaNoZ2(CBurningVideoDriver* driver);
 IBurningShader* createTriangleRendererGouraudWire2(CBurningVideoDriver* driver);
 IBurningShader* createTriangleRendererTextureFlat2(CBurningVideoDriver* driver);
@@ -478,7 +483,8 @@ IBurningShader* createTRTextureGouraudAlphaNoZ(CBurningVideoDriver* driver);
 IBurningShader* createTRTextureBlend(CBurningVideoDriver* driver);
 IBurningShader* createTRTextureInverseAlphaBlend(CBurningVideoDriver* driver);
 
-IBurningShader* createTRNormalMap(CBurningVideoDriver* driver);
+IBurningShader* createTRNormalMap(CBurningVideoDriver* driver, s32& outMaterialTypeNr, E_MATERIAL_TYPE baseMaterial);
+IBurningShader* createTRParallaxMap(CBurningVideoDriver* driver, s32& outMaterialTypeNr, E_MATERIAL_TYPE baseMaterial);
 IBurningShader* createTRStencilShadow(CBurningVideoDriver* driver);
 
 IBurningShader* createTriangleRendererReference(CBurningVideoDriver* driver);

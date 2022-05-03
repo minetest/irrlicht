@@ -239,7 +239,6 @@
 		5E34CB931B7F6EC500F212E8 /* CSoftwareDriver2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E34C9641B7F6A7600F212E8 /* CSoftwareDriver2.cpp */; };
 		5E34CB951B7F6EC500F212E8 /* CSoftwareTexture2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E34C9661B7F6A7600F212E8 /* CSoftwareTexture2.cpp */; };
 		5E34CB971B7F6EC500F212E8 /* CTRGouraud2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E34C9681B7F6A7600F212E8 /* CTRGouraud2.cpp */; };
-		5E34CB981B7F6EC500F212E8 /* CTRGouraudAlpha2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E34C9691B7F6A7600F212E8 /* CTRGouraudAlpha2.cpp */; };
 		5E34CB991B7F6EC500F212E8 /* CTRGouraudAlphaNoZ2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E34C96A1B7F6A7600F212E8 /* CTRGouraudAlphaNoZ2.cpp */; };
 		5E34CB9A1B7F6EC500F212E8 /* CTRNormalMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E34C96B1B7F6A7600F212E8 /* CTRNormalMap.cpp */; };
 		5E34CB9B1B7F6EC500F212E8 /* CTRStencilShadow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E34C96C1B7F6A7600F212E8 /* CTRStencilShadow.cpp */; };
@@ -308,6 +307,7 @@
 		5E79089B1C10FEF900DFE7FE /* CB3DMeshWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E7908981C10FE4A00DFE7FE /* CB3DMeshWriter.cpp */; };
 		5E8570BC1B7F9AC400B267D2 /* CIrrDeviceConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E8570BA1B7F9AC400B267D2 /* CIrrDeviceConsole.cpp */; };
 		5E8570BD1B7F9AC400B267D2 /* CIrrDeviceConsole.h in Headers */ = {isa = PBXBuildFile; fileRef = 5E8570BB1B7F9AC400B267D2 /* CIrrDeviceConsole.h */; };
+		65E74BB3282193B50004CA1D /* CTRParallaxMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65E74BB2282193B40004CA1D /* CTRParallaxMap.cpp */; };
 		8493BC02249DEBB30092813E /* IOctreeSceneNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 8493BC01249DEBB20092813E /* IOctreeSceneNode.h */; };
 		8493BC04249DED3F0092813E /* IMemoryReadFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 8493BC03249DED3F0092813E /* IMemoryReadFile.h */; };
 		84A219A5249F823900E189FC /* SOverrideMaterial.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A219A4249F823800E189FC /* SOverrideMaterial.h */; };
@@ -926,7 +926,6 @@
 		5E34C9661B7F6A7600F212E8 /* CSoftwareTexture2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CSoftwareTexture2.cpp; sourceTree = "<group>"; };
 		5E34C9671B7F6A7600F212E8 /* CSoftwareTexture2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CSoftwareTexture2.h; sourceTree = "<group>"; };
 		5E34C9681B7F6A7600F212E8 /* CTRGouraud2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CTRGouraud2.cpp; sourceTree = "<group>"; };
-		5E34C9691B7F6A7600F212E8 /* CTRGouraudAlpha2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CTRGouraudAlpha2.cpp; sourceTree = "<group>"; };
 		5E34C96A1B7F6A7600F212E8 /* CTRGouraudAlphaNoZ2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CTRGouraudAlphaNoZ2.cpp; sourceTree = "<group>"; };
 		5E34C96B1B7F6A7600F212E8 /* CTRNormalMap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CTRNormalMap.cpp; sourceTree = "<group>"; };
 		5E34C96C1B7F6A7600F212E8 /* CTRStencilShadow.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CTRStencilShadow.cpp; sourceTree = "<group>"; };
@@ -1047,6 +1046,7 @@
 		5E8570BA1B7F9AC400B267D2 /* CIrrDeviceConsole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CIrrDeviceConsole.cpp; sourceTree = "<group>"; };
 		5E8570BB1B7F9AC400B267D2 /* CIrrDeviceConsole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CIrrDeviceConsole.h; sourceTree = "<group>"; };
 		5EC24F5E1B8B861200DCA615 /* exampleHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = exampleHelper.h; path = ../../include/exampleHelper.h; sourceTree = "<group>"; };
+		65E74BB2282193B40004CA1D /* CTRParallaxMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CTRParallaxMap.cpp; sourceTree = "<group>"; };
 		8493BC01249DEBB20092813E /* IOctreeSceneNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOctreeSceneNode.h; path = ../../include/IOctreeSceneNode.h; sourceTree = "<group>"; };
 		8493BC03249DED3F0092813E /* IMemoryReadFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMemoryReadFile.h; path = ../../include/IMemoryReadFile.h; sourceTree = "<group>"; };
 		84A219A4249F823800E189FC /* SOverrideMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SOverrideMaterial.h; path = ../../include/SOverrideMaterial.h; sourceTree = "<group>"; };
@@ -1918,10 +1918,10 @@
 				5E34C9661B7F6A7600F212E8 /* CSoftwareTexture2.cpp */,
 				5E34C9671B7F6A7600F212E8 /* CSoftwareTexture2.h */,
 				5E34C9681B7F6A7600F212E8 /* CTRGouraud2.cpp */,
-				5E34C9691B7F6A7600F212E8 /* CTRGouraudAlpha2.cpp */,
 				5E34C96A1B7F6A7600F212E8 /* CTRGouraudAlphaNoZ2.cpp */,
 				84A219B8249F834000E189FC /* CTRGouraudNoZ2.cpp */,
 				5E34C96B1B7F6A7600F212E8 /* CTRNormalMap.cpp */,
+				65E74BB2282193B40004CA1D /* CTRParallaxMap.cpp */,
 				5E34C96C1B7F6A7600F212E8 /* CTRStencilShadow.cpp */,
 				5E34C96D1B7F6A7600F212E8 /* CTRTextureBlend.cpp */,
 				5E34C96E1B7F6A7600F212E8 /* CTRTextureDetailMap2.cpp */,
@@ -2410,7 +2410,6 @@
 				5E34CB931B7F6EC500F212E8 /* CSoftwareDriver2.cpp in Sources */,
 				5E34CB951B7F6EC500F212E8 /* CSoftwareTexture2.cpp in Sources */,
 				5E34CB971B7F6EC500F212E8 /* CTRGouraud2.cpp in Sources */,
-				5E34CB981B7F6EC500F212E8 /* CTRGouraudAlpha2.cpp in Sources */,
 				5E34CB991B7F6EC500F212E8 /* CTRGouraudAlphaNoZ2.cpp in Sources */,
 				5E34CB9A1B7F6EC500F212E8 /* CTRNormalMap.cpp in Sources */,
 				5E34CB9B1B7F6EC500F212E8 /* CTRStencilShadow.cpp in Sources */,
@@ -2418,6 +2417,7 @@
 				5E34CB9D1B7F6EC500F212E8 /* CTRTextureDetailMap2.cpp in Sources */,
 				5E34CB9E1B7F6EC500F212E8 /* CTRTextureGouraud2.cpp in Sources */,
 				5E34CB9F1B7F6EC500F212E8 /* CTRTextureGouraudAdd2.cpp in Sources */,
+				65E74BB3282193B50004CA1D /* CTRParallaxMap.cpp in Sources */,
 				5E34CBA01B7F6EC500F212E8 /* CTRTextureGouraudAddNoZ2.cpp in Sources */,
 				5E34CBA11B7F6EC500F212E8 /* CTRTextureGouraudAlpha.cpp in Sources */,
 				5E34CBA21B7F6EC500F212E8 /* CTRTextureGouraudAlphaNoZ.cpp in Sources */,

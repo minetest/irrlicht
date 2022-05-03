@@ -365,6 +365,8 @@ namespace video
 			ETS_MODEL_VIEW,
 			ETS_NORMAL, //3x3 ModelView Transposed Inverse
 
+			ETS_MODEL_INVERSE,	//normal,parallax
+
 			ETS_COUNT_BURNING = 16
 		};
 

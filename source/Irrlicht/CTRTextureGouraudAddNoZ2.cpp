@@ -93,7 +93,7 @@ private:
 
 //! constructor
 CTRTextureGouraudAddNoZ2::CTRTextureGouraudAddNoZ2(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver, EMT_TRANSPARENT_ADD_COLOR)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRTextureGouraudAddNoZ2");

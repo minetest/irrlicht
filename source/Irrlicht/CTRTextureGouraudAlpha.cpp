@@ -100,7 +100,7 @@ private:
 
 //! constructor
 CTRTextureGouraudAlpha2::CTRTextureGouraudAlpha2(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver, EMT_TRANSPARENT_ALPHA_CHANNEL)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRTextureGouraudAlpha2");
