@@ -99,7 +99,6 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <OutputFile>..\..\bin\Win32-VisualStudio\18.SplitScreen.exe</OutputFile>
@@ -121,7 +120,6 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <OutputFile>..\..\bin\Win64-VisualStudio\18.SplitScreen.exe</OutputFile>
