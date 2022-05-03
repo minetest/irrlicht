@@ -809,7 +809,7 @@ IReadFile* CZipReader::createAndOpenFile(u32 index)
 					pcData+4, propSize,
 					e.header.GeneralBitFlag&0x1?LZMA_FINISH_END:LZMA_FINISH_ANY, &status,
 					&lzmaAlloc);
-			uncompressedSize = tmpDstSize; // may be different to expected value
+			uncompressedSize = (u32)tmpDstSize; // may be different to expected value
 
 			if (decrypted)
 				decrypted->drop();

@@ -207,7 +207,7 @@ void CXMLWriter::writeText(const wchar_t* text)
 	// Making a member-variable would work, but a lot of memory would stay around after writing.
 	// So the correct solution is probably using fixed block here and always write when that is full.
 	core::stringw s;
-	s.reserve(wcslen(text)+1);
+	s.reserve((u32)wcslen(text)+1);
 	const wchar_t* p = text;
 
 	while(*p)
@@ -424,7 +424,7 @@ void CXMLWriterUTF8::writeText(const c8* text)
 	// Making a member-variable would work, but a lot of memory would stay around after writing.
 	// So the correct solution is probably using fixed block here and always write when that is full.
 	core::stringc s;
-	s.reserve(strlen(text)+1);
+	s.reserve((u32)strlen(text)+1);
 	const c8* p = text;
 
 	while(*p)

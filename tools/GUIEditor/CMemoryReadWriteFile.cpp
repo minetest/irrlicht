@@ -21,12 +21,12 @@ size_t CMemoryReadWriteFile::write(const void* buffer, size_t sizeToWrite)
 
 	// expand size
 	if (Pos + sizeToWrite > Data.size())
-		Data.set_used(Pos+sizeToWrite);
+		Data.set_used((u32)(Pos+sizeToWrite));
 
 	// copy data
 	memcpy( (void*) &Data[Pos], buffer, sizeToWrite);
 
-	Pos += sizeToWrite;
+	Pos += (long)sizeToWrite;
 
 	return sizeToWrite;
 
@@ -46,7 +46,7 @@ bool CMemoryReadWriteFile::seek(long finalPos, bool relativeMovement)
 		Pos = finalPos;
 	}
 
-	if (Pos > (s32)Data.size())
+	if (Pos > (long)Data.size())
 		Data.set_used(Pos+1);
 
 	return true;
