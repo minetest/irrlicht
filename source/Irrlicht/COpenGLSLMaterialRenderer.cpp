@@ -243,6 +243,8 @@ void COpenGLSLMaterialRenderer::OnSetMaterial(const video::SMaterial& material,
 	{
 		cacheHandler->setBlend(true);
 		cacheHandler->setBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		cacheHandler->setAlphaTest(true);
+		cacheHandler->setAlphaFunc(GL_GREATER, 0.f);
 	}
 	else if (FixedBlending)
 	{
@@ -291,7 +293,7 @@ void COpenGLSLMaterialRenderer::OnUnsetMaterial()
 	{
 		cacheHandler->setBlend(false);
 	}
-	else if (AlphaTest)
+	if (Alpha || AlphaTest)
 	{
 		cacheHandler->setAlphaTest(false);
 	}
