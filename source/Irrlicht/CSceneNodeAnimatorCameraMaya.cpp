@@ -15,11 +15,13 @@ namespace scene
 
 //! constructor
 CSceneNodeAnimatorCameraMaya::CSceneNodeAnimatorCameraMaya(gui::ICursorControl* cursor,
-	f32 rotateSpeed, f32 zoomSpeed, f32 translateSpeed, f32 distance)
+	f32 rotateSpeed, f32 zoomSpeed, f32 translateSpeed, f32 distance
+	, f32 rotX, f32 rotY
+)
 	: CursorControl(cursor), OldCamera(0), MousePos(0.5f, 0.5f),
 	TargetMinDistance(0.f),
 	ZoomSpeed(zoomSpeed), RotateSpeed(rotateSpeed), TranslateSpeed(translateSpeed),
-	CurrentZoom(distance), RotX(0.0f), RotY(0.0f),
+	CurrentZoom(distance), RotX(rotX), RotY(rotY),
 	Zooming(false), Rotating(false), Moving(false), Translating(false)
 {
 	#ifdef _DEBUG
@@ -164,18 +166,18 @@ void CSceneNodeAnimatorCameraMaya::animateNode(ISceneNode *node, u32 timeMs)
 	// Translation ---------------------------------
 
 	core::vector3df translate(OldTarget);
-	const core::vector3df upVector(camera->getUpVector());
+	const core::vector3df upVector(normalize_y(camera->getUpVector()));
 	const core::vector3df target = camera->getTarget();
 
 	core::vector3df pos = camera->getPosition();
 	core::vector3df tvectX = pos - target;
 	tvectX = tvectX.crossProduct(upVector);
-	tvectX.normalize();
+	tvectX.normalize_z();
 
 	const SViewFrustum* const va = camera->getViewFrustum();
 	core::vector3df tvectY = (va->getFarLeftDown() - va->getFarRightDown());
 	tvectY = tvectY.crossProduct(upVector.Y > 0 ? pos - target : target - pos);
-	tvectY.normalize();
+	tvectY.normalize_x();
 
 	if (isMouseKeyDown(2) && !Zooming)
 	{

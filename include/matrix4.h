@@ -1908,10 +1908,10 @@ namespace core
 				const vector3df& upVector)
 	{
 		vector3df zaxis = target - position;
-		zaxis.normalize();
+		zaxis.normalize_z();
 
-		vector3df xaxis = upVector.crossProduct(zaxis);
-		xaxis.normalize();
+		vector3df xaxis = normalize_y(upVector).crossProduct(zaxis);
+		xaxis.normalize_x();
 
 		vector3df yaxis = zaxis.crossProduct(xaxis);
 

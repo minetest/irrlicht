@@ -294,7 +294,11 @@ bool CGLXManager::generateSurface()
 			return false;
 		}
 
-		CurrentContext.OpenGLLinux.X11Window=GlxWin;
+		CurrentContext.OpenGLLinux.GLXWindow=GlxWin;
+	}
+	else
+	{
+		CurrentContext.OpenGLLinux.GLXWindow=CurrentContext.OpenGLLinux.X11Window;
 	}
 	return true;
 }
@@ -353,13 +357,14 @@ bool CGLXManager::activateContext(const SExposedVideoData& videoData, bool resto
 	{
 		if (videoData.OpenGLLinux.X11Display && videoData.OpenGLLinux.X11Context)
 		{
-			if (!glXMakeCurrent((Display*)videoData.OpenGLLinux.X11Display, videoData.OpenGLLinux.X11Window, (GLXContext)videoData.OpenGLLinux.X11Context))
+			if (!glXMakeCurrent((Display*)videoData.OpenGLLinux.X11Display, videoData.OpenGLLinux.GLXWindow, (GLXContext)videoData.OpenGLLinux.X11Context))
 			{
 				os::Printer::log("Context activation failed.");
 				return false;
 			}
 			else
 			{
+				CurrentContext.OpenGLLinux.GLXWindow = videoData.OpenGLLinux.GLXWindow;
 				CurrentContext.OpenGLLinux.X11Window = videoData.OpenGLLinux.X11Window;
 				CurrentContext.OpenGLLinux.X11Display = videoData.OpenGLLinux.X11Display;
 			}
@@ -367,13 +372,14 @@ bool CGLXManager::activateContext(const SExposedVideoData& videoData, bool resto
 		else
 		{
 			// in case we only got a window ID, try with the existing values for display and context
-			if (!glXMakeCurrent((Display*)PrimaryContext.OpenGLLinux.X11Display, videoData.OpenGLLinux.X11Window, (GLXContext)PrimaryContext.OpenGLLinux.X11Context))
+			if (!glXMakeCurrent((Display*)PrimaryContext.OpenGLLinux.X11Display, videoData.OpenGLLinux.GLXWindow, (GLXContext)PrimaryContext.OpenGLLinux.X11Context))
 			{
 				os::Printer::log("Context activation failed.");
 				return false;
 			}
 			else
 			{
+				CurrentContext.OpenGLLinux.GLXWindow = videoData.OpenGLLinux.GLXWindow;
 				CurrentContext.OpenGLLinux.X11Window = videoData.OpenGLLinux.X11Window;
 				CurrentContext.OpenGLLinux.X11Display = PrimaryContext.OpenGLLinux.X11Display;
 			}
@@ -425,7 +431,7 @@ void CGLXManager::destroyContext()
 
 bool CGLXManager::swapBuffers()
 {
-	glXSwapBuffers((Display*)CurrentContext.OpenGLLinux.X11Display, CurrentContext.OpenGLLinux.X11Window);
+	glXSwapBuffers((Display*)CurrentContext.OpenGLLinux.X11Display, CurrentContext.OpenGLLinux.GLXWindow);
 	return true;
 }
 

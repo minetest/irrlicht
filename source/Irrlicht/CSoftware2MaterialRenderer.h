@@ -30,7 +30,7 @@ public:
 		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
 		if (Driver)
-			Driver->setFallback_Material(material.MaterialType);
+			Driver->setFallback_Material(material.MaterialType, BVT_Fix);
 	}
 
 protected:

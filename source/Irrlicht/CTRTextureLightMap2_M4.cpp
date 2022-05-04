@@ -68,11 +68,7 @@
 
 #endif
 
-namespace irr
-{
-
-namespace video
-{
+burning_namespace_start
 
 class CTRTextureLightMap2_M4 : public IBurningShader
 {
@@ -84,34 +80,31 @@ public:
 	//! draws an indexed triangle list
 	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) IRR_OVERRIDE;
 
-
 private:
 
-#if defined(SOFTWARE_DRIVER_2_SCANLINE_MAG_MIN)
-	void drawTriangle_Min ( const s4DVertex* burning_restrict a,const s4DVertex* burning_restrict b,const s4DVertex* burning_restrict c );
-	void drawTriangle_Mag ( const s4DVertex* burning_restrict a,const s4DVertex* burning_restrict b,const s4DVertex* burning_restrict c );
-	void scanline_bilinear2_mag ();
-	void scanline_bilinear2_min ();
-#else
-	#define scanline_bilinear2_mag fragmentShader
-#endif
+	// fragment shader
+	typedef void (CTRTextureLightMap2_M4::* tFragmentShader) ();
+	void fragment_linear_mag();
+	void fragment_nearest_min();
 
-	void fragmentShader();
+	tFragmentShader fragmentShader;
 
 };
 
 //! constructor
 CTRTextureLightMap2_M4::CTRTextureLightMap2_M4(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver, EMT_LIGHTMAP_M4)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRTextureLightMap2_M4");
 	#endif
+	fragmentShader = &CTRTextureLightMap2_M4::fragment_linear_mag;
 }
+
 
 /*!
 */
-void CTRTextureLightMap2_M4::scanline_bilinear2_mag ()
+void CTRTextureLightMap2_M4::fragment_linear_mag()
 {
 	tVideoSample *dst;
 	fp24 *z;
@@ -138,11 +131,17 @@ void CTRTextureLightMap2_M4::scanline_bilinear2_mag ()
 	dst = (tVideoSample*)RenderTarget->getData() + i;
 
 	// subTexel
+#ifdef SUBTEXEL
 	const f32 subPixel = ( (f32) xStart ) - line.x[0];
+#endif
 
 #ifdef IPOL_W
 	const fp24 b = (line.w[1] - line.w[0]) * invDeltaX;
-	fp24 a = line.w[0] + ( b * subPixel );
+	fp24 a = line.w[0]
+#ifdef SUBTEXEL
+		+ ( b * subPixel )
+#endif
+		;
 
 	i = 0;
 
@@ -161,7 +160,11 @@ void CTRTextureLightMap2_M4::scanline_bilinear2_mag ()
 	line.w[1] = b;
 #else
 	const f32 b = (line.z[1] - line.z[0]) * invDeltaX;
-	f32 a = line.z[0] + ( b * subPixel );
+	fp24 a = line.z[0]
+#ifdef SUBTEXEL
+		+ (b * subPixel)
+#endif
+		;
 
 	i = 0;
 
@@ -180,8 +183,11 @@ void CTRTextureLightMap2_M4::scanline_bilinear2_mag ()
 	line.z[1] = b;
 #endif
 
-	a = (f32) i + subPixel;
-
+	a = (f32)i
+#ifdef SUBTEXEL
+		+ subPixel
+#endif
+		;
 	line.t[0][1] = (line.t[0][1] - line.t[0][0]) * invDeltaX;
 	line.t[1][1] = (line.t[1][1] - line.t[1][0]) * invDeltaX;
 
@@ -221,7 +227,6 @@ void CTRTextureLightMap2_M4::scanline_bilinear2_mag ()
 #endif
 
 
-
 #ifdef BURNINGVIDEO_RENDERER_FAST
 
 			const tFixPointu d = dithermask [ dIndex | ( i ) & 3 ];
@@ -248,8 +253,7 @@ void CTRTextureLightMap2_M4::scanline_bilinear2_mag ()
 }
 
 
-#if defined (SOFTWARE_DRIVER_2_SCANLINE_MAG_MIN)
-void CTRTextureLightMap2_M4::scanline_bilinear2_min ()
+void CTRTextureLightMap2_M4::fragment_nearest_min()
 {
 	tVideoSample *dst;
 	fp24 *z;
@@ -352,7 +356,6 @@ void CTRTextureLightMap2_M4::scanline_bilinear2_min ()
 			f32 inversew = FIX_POINT_F32_MUL;
 #endif
 
-
 			getTexel_fix ( r0, g0, b0, &IT[0], tofix ( line.t[0][0].x,inversew), tofix ( line.t[0][0].y,inversew) );
 			getTexel_fix ( r1, g1, b1, &IT[1], tofix ( line.t[1][0].x,inversew), tofix ( line.t[1][0].y,inversew) );
 
@@ -370,20 +373,19 @@ void CTRTextureLightMap2_M4::scanline_bilinear2_min ()
 
 }
 
-void CTRTextureLightMap2_M4::drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c)
+void CTRTextureLightMap2_M4::drawTriangle ( const s4DVertex* burning_restrict a,const s4DVertex* burning_restrict b,const s4DVertex* burning_restrict c )
 {
-	if (IT[0].lodFactor < 4)
+/*
+	if ( IT[0].lodFactor < 4)
 	{
-		drawTriangle_Mag(a, b, c);
+		fragmentShader = &CTRTextureLightMap2_M4::fragment_linear_mag;
 	}
 	else
 	{
-		drawTriangle_Min(a, b, c);
+		fragmentShader = &CTRTextureLightMap2_M4::fragment_nearest_min;
 	}
-}
+*/
 
-void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex* burning_restrict a,const s4DVertex* burning_restrict b,const s4DVertex* burning_restrict c )
-{
 	// sort on height, y
 	if ( F32_A_GREATER_B ( a->Pos.y , b->Pos.y ) ) swapVertexPointer(&a, &b);
 	if ( F32_A_GREATER_B ( b->Pos.y , c->Pos.y ) ) swapVertexPointer(&b, &c);
@@ -392,6 +394,7 @@ void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex* burning_restric
 	const f32 ca = c->Pos.y - a->Pos.y;
 	const f32 ba = b->Pos.y - a->Pos.y;
 	const f32 cb = c->Pos.y - b->Pos.y;
+
 	// calculate delta y of the edges
 	scan.invDeltaY[0] = fill_step_y( ca );
 	scan.invDeltaY[1] = fill_step_y( ba );
@@ -401,14 +404,16 @@ void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex* burning_restric
 		return;
 
 	// find if the major edge is left or right aligned
+/*
 	f32 temp[4];
 
 	temp[0] = a->Pos.x - c->Pos.x;
-	temp[1] = -ca;
-	temp[2] = b->Pos.x - a->Pos.x;
+	temp[1] = ca;
+	temp[2] = a->Pos.x - b->Pos.x;
 	temp[3] = ba;
-
-	scan.left = ( temp[0] * temp[3] - temp[1] * temp[2] ) > 0.f ? 0 : 1;
+*/
+	//scan.left = ((a->Pos.x - c->Pos.x) * ba - ca * (a->Pos.x - b->Pos.x)) < 0.f ? 1 : 0;
+	scan.left = (ca * (b->Pos.x - a->Pos.x) - ba *(c->Pos.x-a->Pos.x ) ) < 0.f ? 1 : 0;
 	scan.right = 1 - scan.left;
 
 	// calculate slopes for the major edge
@@ -481,8 +486,8 @@ void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex* burning_restric
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = fill_convention_left( a->Pos.y );
-		yEnd = fill_convention_right( b->Pos.y );
+		yStart = fill_convention_top( a->Pos.y );
+		yEnd = fill_convention_down( b->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - a->Pos.y;
@@ -518,6 +523,8 @@ void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex* burning_restric
 
 #endif
 
+		line.x_edgetest = fill_convention_edge(scan.slopeX[scan.left]);
+
 		// rasterize the edge scanlines
 		for( line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
 		{
@@ -550,7 +557,9 @@ void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex* burning_restric
 #endif
 
 			// render a scanline
-			interlace_scanline scanline_bilinear2_min ();
+			if_interlace_scanline
+			(this->*fragmentShader) ();
+			if (EdgeTestPass & edge_test_first_line) break;
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];
@@ -590,23 +599,23 @@ void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex* burning_restric
 		// advance to middle point
 		if ( F32_GREATER_0 ( scan.invDeltaY[1] )  )
 		{
-			temp[0] = b->Pos.y - a->Pos.y;	// dy
+			const f32 dy = b->Pos.y - a->Pos.y;	// dy
 
-			scan.x[0] = a->Pos.x + scan.slopeX[0] * temp[0];
+			scan.x[0] = a->Pos.x + scan.slopeX[0] * dy;
 #ifdef IPOL_Z
-			scan.z[0] = a->Pos.z + scan.slopeZ[0] * temp[0];
+			scan.z[0] = a->Pos.z + scan.slopeZ[0] * dy;
 #endif
 #ifdef IPOL_W
-			scan.w[0] = a->Pos.w + scan.slopeW[0] * temp[0];
+			scan.w[0] = a->Pos.w + scan.slopeW[0] * dy;
 #endif
 #ifdef IPOL_C0
-			scan.c[0] = a->Color[0] + scan.slopeC[0] * temp[0];
+			scan.c[0] = a->Color[0] + scan.slopeC[0] * dy;
 #endif
 #ifdef IPOL_T0
-			scan.t[0][0] = a->Tex[0] + scan.slopeT[0][0] * temp[0];
+			scan.t[0][0] = a->Tex[0] + scan.slopeT[0][0] * dy;
 #endif
 #ifdef IPOL_T1
-			scan.t[1][0] = a->Tex[1] + scan.slopeT[1][0] * temp[0];
+			scan.t[1][0] = a->Tex[1] + scan.slopeT[1][0] * dy;
 #endif
 
 		}
@@ -641,8 +650,8 @@ void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex* burning_restric
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = fill_convention_left( b->Pos.y );
-		yEnd = fill_convention_right( c->Pos.y );
+		yStart = fill_convention_top( b->Pos.y );
+		yEnd = fill_convention_down( c->Pos.y );
 
 #ifdef SUBTEXEL
 
@@ -679,6 +688,8 @@ void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex* burning_restric
 
 #endif
 
+		line.x_edgetest = fill_convention_edge(scan.slopeX[scan.left]);
+
 		// rasterize the edge scanlines
 		for( line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
 		{
@@ -711,7 +722,9 @@ void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex* burning_restric
 #endif
 
 			// render a scanline
-			interlace_scanline scanline_bilinear2_min ();
+			if_interlace_scanline
+			(this->*fragmentShader) (); 
+			if (EdgeTestPass & edge_test_first_line) break;
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];
@@ -746,394 +759,12 @@ void CTRTextureLightMap2_M4::drawTriangle_Min ( const s4DVertex* burning_restric
 
 }
 
-void CTRTextureLightMap2_M4::drawTriangle_Mag ( const s4DVertex* burning_restrict a,const s4DVertex* burning_restrict b,const s4DVertex* burning_restrict c )
 
-#else //#if defined (SOFTWARE_DRIVER_2_SCANLINE_MAG_MIN)
-
-void CTRTextureLightMap2_M4::drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c)
-
-#endif
-
-{
-
-	// sort on height, y
-	if ( F32_A_GREATER_B ( a->Pos.y , b->Pos.y ) ) swapVertexPointer(&a, &b);
-	if ( F32_A_GREATER_B ( b->Pos.y , c->Pos.y ) ) swapVertexPointer(&b, &c);
-	if ( F32_A_GREATER_B ( a->Pos.y , b->Pos.y ) ) swapVertexPointer(&a, &b);
-
-	const f32 ca = c->Pos.y - a->Pos.y;
-	const f32 ba = b->Pos.y - a->Pos.y;
-	const f32 cb = c->Pos.y - b->Pos.y;
-
-	if ( F32_LOWER_EQUAL_0 ( ca )  )
-		return;
-
-	// calculate delta y of the edges
-	scan.invDeltaY[0] = fill_step_y( ca );
-	scan.invDeltaY[1] = fill_step_y( ba );
-	scan.invDeltaY[2] = fill_step_y( cb );
-
-	//if ( F32_LOWER_EQUAL_0 ( scan.invDeltaY[0] )  )
-	//	return;
-
-	// find if the major edge is left or right aligned
-	f32 temp[4];
-
-	temp[0] = a->Pos.x - c->Pos.x;
-	temp[1] = -ca;
-	temp[2] = b->Pos.x - a->Pos.x;
-	temp[3] = ba;
-
-	scan.left = ( temp[0] * temp[3] - temp[1] * temp[2] ) > 0.f ? 0 : 1;
-	scan.right = 1 - scan.left;
-
-	// calculate slopes for the major edge
-	scan.slopeX[0] = (c->Pos.x - a->Pos.x) * scan.invDeltaY[0];
-	scan.x[0] = a->Pos.x;
-
-#ifdef IPOL_Z
-	scan.slopeZ[0] = (c->Pos.z - a->Pos.z) * scan.invDeltaY[0];
-	scan.z[0] = a->Pos.z;
-#endif
-
-#ifdef IPOL_W
-	scan.slopeW[0] = (c->Pos.w - a->Pos.w) * scan.invDeltaY[0];
-	scan.w[0] = a->Pos.w;
-#endif
-
-#ifdef IPOL_C0
-	scan.slopeC[0] = (c->Color[0] - a->Color[0]) * scan.invDeltaY[0];
-	scan.c[0] = a->Color[0];
-#endif
-
-#ifdef IPOL_T0
-	scan.slopeT[0][0] = (c->Tex[0] - a->Tex[0]) * scan.invDeltaY[0];
-	scan.t[0][0] = a->Tex[0];
-#endif
-
-#ifdef IPOL_T1
-	scan.slopeT[1][0] = (c->Tex[1] - a->Tex[1]) * scan.invDeltaY[0];
-	scan.t[1][0] = a->Tex[1];
-#endif
-
-	// top left fill convention y run
-	s32 yStart;
-	s32 yEnd;
-
-#ifdef SUBTEXEL
-	f32 subPixel;
-#endif
-
-
-	// rasterize upper sub-triangle
-	if ( F32_GREATER_0 ( scan.invDeltaY[1] ) )
-	{
-		// calculate slopes for top edge
-		scan.slopeX[1] = (b->Pos.x - a->Pos.x) * scan.invDeltaY[1];
-		scan.x[1] = a->Pos.x;
-
-#ifdef IPOL_Z
-		scan.slopeZ[1] = (b->Pos.z - a->Pos.z) * scan.invDeltaY[1];
-		scan.z[1] = a->Pos.z;
-#endif
-
-#ifdef IPOL_W
-		scan.slopeW[1] = (b->Pos.w - a->Pos.w) * scan.invDeltaY[1];
-		scan.w[1] = a->Pos.w;
-#endif
-
-#ifdef IPOL_C0
-		scan.slopeC[1] = (b->Color[0] - a->Color[0]) * scan.invDeltaY[1];
-		scan.c[1] = a->Color[0];
-#endif
-
-#ifdef IPOL_T0
-		scan.slopeT[0][1] = (b->Tex[0] - a->Tex[0]) * scan.invDeltaY[1];
-		scan.t[0][1] = a->Tex[0];
-#endif
-
-#ifdef IPOL_T1
-		scan.slopeT[1][1] = (b->Tex[1] - a->Tex[1]) * scan.invDeltaY[1];
-		scan.t[1][1] = a->Tex[1];
-#endif
-
-		// apply top-left fill convention, top part
-		yStart = fill_convention_left( a->Pos.y );
-		yEnd = fill_convention_right( b->Pos.y );
-
-#ifdef SUBTEXEL
-		subPixel = ( (f32) yStart ) - a->Pos.y;
-
-		// correct to pixel center
-		scan.x[0] += scan.slopeX[0] * subPixel;
-		scan.x[1] += scan.slopeX[1] * subPixel;
-
-#ifdef IPOL_Z
-		scan.z[0] += scan.slopeZ[0] * subPixel;
-		scan.z[1] += scan.slopeZ[1] * subPixel;
-#endif
-
-#ifdef IPOL_W
-		scan.w[0] += scan.slopeW[0] * subPixel;
-		scan.w[1] += scan.slopeW[1] * subPixel;
-#endif
-
-#ifdef IPOL_C0
-		scan.c[0] += scan.slopeC[0] * subPixel;
-		scan.c[1] += scan.slopeC[1] * subPixel;
-#endif
-
-#ifdef IPOL_T0
-		scan.t[0][0] += scan.slopeT[0][0] * subPixel;
-		scan.t[0][1] += scan.slopeT[0][1] * subPixel;
-#endif
-
-#ifdef IPOL_T1
-		scan.t[1][0] += scan.slopeT[1][0] * subPixel;
-		scan.t[1][1] += scan.slopeT[1][1] * subPixel;
-#endif
-
-#endif
-
-		// rasterize the edge scanlines
-		for( line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
-		{
-			line.x[scan.left] = scan.x[0];
-			line.x[scan.right] = scan.x[1];
-
-#ifdef IPOL_Z
-			line.z[scan.left] = scan.z[0];
-			line.z[scan.right] = scan.z[1];
-#endif
-
-#ifdef IPOL_W
-			line.w[scan.left] = scan.w[0];
-			line.w[scan.right] = scan.w[1];
-#endif
-
-#ifdef IPOL_C0
-			line.c[scan.left] = scan.c[0];
-			line.c[scan.right] = scan.c[1];
-#endif
-
-#ifdef IPOL_T0
-			line.t[0][scan.left] = scan.t[0][0];
-			line.t[0][scan.right] = scan.t[0][1];
-#endif
-
-#ifdef IPOL_T1
-			line.t[1][scan.left] = scan.t[1][0];
-			line.t[1][scan.right] = scan.t[1][1];
-#endif
-
-			// render a scanline
-			interlace_scanline scanline_bilinear2_mag ();
-
-			scan.x[0] += scan.slopeX[0];
-			scan.x[1] += scan.slopeX[1];
-
-#ifdef IPOL_Z
-			scan.z[0] += scan.slopeZ[0];
-			scan.z[1] += scan.slopeZ[1];
-#endif
-
-#ifdef IPOL_W
-			scan.w[0] += scan.slopeW[0];
-			scan.w[1] += scan.slopeW[1];
-#endif
-
-#ifdef IPOL_C0
-			scan.c[0] += scan.slopeC[0];
-			scan.c[1] += scan.slopeC[1];
-#endif
-
-#ifdef IPOL_T0
-			scan.t[0][0] += scan.slopeT[0][0];
-			scan.t[0][1] += scan.slopeT[0][1];
-#endif
-
-#ifdef IPOL_T1
-			scan.t[1][0] += scan.slopeT[1][0];
-			scan.t[1][1] += scan.slopeT[1][1];
-#endif
-
-		}
-	}
-
-	// rasterize lower sub-triangle
-	//if ( (f32) 0.0 != scan.invDeltaY[2] )
-	if ( F32_GREATER_0 ( scan.invDeltaY[2] ) )
-	{
-		// advance to middle point
-		if ( F32_GREATER_0 ( scan.invDeltaY[1] )  )
-		{
-			temp[0] = b->Pos.y - a->Pos.y;	// dy
-
-			scan.x[0] = a->Pos.x + scan.slopeX[0] * temp[0];
-#ifdef IPOL_Z
-			scan.z[0] = a->Pos.z + scan.slopeZ[0] * temp[0];
-#endif
-#ifdef IPOL_W
-			scan.w[0] = a->Pos.w + scan.slopeW[0] * temp[0];
-#endif
-#ifdef IPOL_C0
-			scan.c[0] = a->Color[0] + scan.slopeC[0] * temp[0];
-#endif
-#ifdef IPOL_T0
-			scan.t[0][0] = a->Tex[0] + scan.slopeT[0][0] * temp[0];
-#endif
-#ifdef IPOL_T1
-			scan.t[1][0] = a->Tex[1] + scan.slopeT[1][0] * temp[0];
-#endif
-
-		}
-
-		// calculate slopes for bottom edge
-		scan.slopeX[1] = (c->Pos.x - b->Pos.x) * scan.invDeltaY[2];
-		scan.x[1] = b->Pos.x;
-
-#ifdef IPOL_Z
-		scan.slopeZ[1] = (c->Pos.z - b->Pos.z) * scan.invDeltaY[2];
-		scan.z[1] = b->Pos.z;
-#endif
-
-#ifdef IPOL_W
-		scan.slopeW[1] = (c->Pos.w - b->Pos.w) * scan.invDeltaY[2];
-		scan.w[1] = b->Pos.w;
-#endif
-
-#ifdef IPOL_C0
-		scan.slopeC[1] = (c->Color[0] - b->Color[0]) * scan.invDeltaY[2];
-		scan.c[1] = b->Color[0];
-#endif
-
-#ifdef IPOL_T0
-		scan.slopeT[0][1] = (c->Tex[0] - b->Tex[0]) * scan.invDeltaY[2];
-		scan.t[0][1] = b->Tex[0];
-#endif
-
-#ifdef IPOL_T1
-		scan.slopeT[1][1] = (c->Tex[1] - b->Tex[1]) * scan.invDeltaY[2];
-		scan.t[1][1] = b->Tex[1];
-#endif
-
-		// apply top-left fill convention, top part
-		yStart = fill_convention_left( b->Pos.y );
-		yEnd = fill_convention_right( c->Pos.y );
-
-#ifdef SUBTEXEL
-
-		subPixel = ( (f32) yStart ) - b->Pos.y;
-
-		// correct to pixel center
-		scan.x[0] += scan.slopeX[0] * subPixel;
-		scan.x[1] += scan.slopeX[1] * subPixel;
-
-#ifdef IPOL_Z
-		scan.z[0] += scan.slopeZ[0] * subPixel;
-		scan.z[1] += scan.slopeZ[1] * subPixel;
-#endif
-
-#ifdef IPOL_W
-		scan.w[0] += scan.slopeW[0] * subPixel;
-		scan.w[1] += scan.slopeW[1] * subPixel;
-#endif
-
-#ifdef IPOL_C0
-		scan.c[0] += scan.slopeC[0] * subPixel;
-		scan.c[1] += scan.slopeC[1] * subPixel;
-#endif
-
-#ifdef IPOL_T0
-		scan.t[0][0] += scan.slopeT[0][0] * subPixel;
-		scan.t[0][1] += scan.slopeT[0][1] * subPixel;
-#endif
-
-#ifdef IPOL_T1
-		scan.t[1][0] += scan.slopeT[1][0] * subPixel;
-		scan.t[1][1] += scan.slopeT[1][1] * subPixel;
-#endif
-
-#endif
-
-		// rasterize the edge scanlines
-		for( line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
-		{
-			line.x[scan.left] = scan.x[0];
-			line.x[scan.right] = scan.x[1];
-
-#ifdef IPOL_Z
-			line.z[scan.left] = scan.z[0];
-			line.z[scan.right] = scan.z[1];
-#endif
-
-#ifdef IPOL_W
-			line.w[scan.left] = scan.w[0];
-			line.w[scan.right] = scan.w[1];
-#endif
-
-#ifdef IPOL_C0
-			line.c[scan.left] = scan.c[0];
-			line.c[scan.right] = scan.c[1];
-#endif
-
-#ifdef IPOL_T0
-			line.t[0][scan.left] = scan.t[0][0];
-			line.t[0][scan.right] = scan.t[0][1];
-#endif
-
-#ifdef IPOL_T1
-			line.t[1][scan.left] = scan.t[1][0];
-			line.t[1][scan.right] = scan.t[1][1];
-#endif
-
-			// render a scanline
-			interlace_scanline scanline_bilinear2_mag ();
-
-			scan.x[0] += scan.slopeX[0];
-			scan.x[1] += scan.slopeX[1];
-
-#ifdef IPOL_Z
-			scan.z[0] += scan.slopeZ[0];
-			scan.z[1] += scan.slopeZ[1];
-#endif
-
-#ifdef IPOL_W
-			scan.w[0] += scan.slopeW[0];
-			scan.w[1] += scan.slopeW[1];
-#endif
-
-#ifdef IPOL_C0
-			scan.c[0] += scan.slopeC[0];
-			scan.c[1] += scan.slopeC[1];
-#endif
-
-#ifdef IPOL_T0
-			scan.t[0][0] += scan.slopeT[0][0];
-			scan.t[0][1] += scan.slopeT[0][1];
-#endif
-
-#ifdef IPOL_T1
-			scan.t[1][0] += scan.slopeT[1][0];
-			scan.t[1][1] += scan.slopeT[1][1];
-#endif
-
-		}
-	}
-
-}
-
-#undef scanline_bilinear2_mag
-
-} // end namespace video
-} // end namespace irr
+burning_namespace_end
 
 #endif // _IRR_COMPILE_WITH_BURNINGSVIDEO_
 
-namespace irr
-{
-namespace video
-{
+burning_namespace_start
 
 
 //! creates a flat triangle renderer
@@ -1147,8 +778,4 @@ IBurningShader* createTriangleRendererTextureLightMap2_M4(CBurningVideoDriver* d
 }
 
 
-} // end namespace video
-} // end namespace irr
-
-
-
+burning_namespace_end

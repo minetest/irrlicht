@@ -112,7 +112,7 @@ private:
 
 //! constructor
 CTRTextureGouraud2::CTRTextureGouraud2(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver,EMT_SOLID)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRTextureGouraud2");
@@ -313,7 +313,7 @@ void CTRTextureGouraud2::fragmentShader ()
 				b0 = clampfix_maxcolor(b1 + b0);
 			}
 			//mix with distance
-			if (aFog < FIX_POINT_ONE)
+			if (aFog < FIX_POINT_ONE) //TL_Flag & TL_FOG)
 			{
 				r0 = fog_color[1] + imulFix(aFog, r0 - fog_color[1]);
 				g0 = fog_color[2] + imulFix(aFog, g0 - fog_color[2]);
@@ -397,7 +397,7 @@ void CTRTextureGouraud2::drawTriangle(const s4DVertex* burning_restrict a, const
 	temp[2] = b->Pos.x - a->Pos.x;
 	temp[3] = ba;
 
-	scan.left = ( temp[0] * temp[3] - temp[1] * temp[2] ) > 0.f ? 0 : 1;
+	scan.left = (temp[0] * temp[3] - temp[1] * temp[2]) < 0.f ? 1 : 0;
 	scan.right = 1 - scan.left;
 
 	// calculate slopes for the major edge
@@ -500,8 +500,8 @@ void CTRTextureGouraud2::drawTriangle(const s4DVertex* burning_restrict a, const
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = fill_convention_left( a->Pos.y );
-		yEnd = fill_convention_right( b->Pos.y );
+		yStart = fill_convention_top( a->Pos.y );
+		yEnd = fill_convention_down( b->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - a->Pos.y;
@@ -551,9 +551,10 @@ void CTRTextureGouraud2::drawTriangle(const s4DVertex* burning_restrict a, const
 #endif
 
 #endif
-		line.x_edgetest = fill_convention_edge(scan.slopeX[scan.left]);
 
 		// rasterize the edge scanlines
+		line.x_edgetest = fill_convention_edge(scan.slopeX[scan.left]);
+
 		for( line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
 		{
 			line.x[scan.left] = scan.x[0];
@@ -600,7 +601,7 @@ void CTRTextureGouraud2::drawTriangle(const s4DVertex* burning_restrict a, const
 #endif
 
 			// render a scanline
-			interlace_scanline fragmentShader ();
+			if_interlace_scanline fragmentShader ();
 			if ( EdgeTestPass & edge_test_first_line ) break;
 
 
@@ -731,8 +732,8 @@ void CTRTextureGouraud2::drawTriangle(const s4DVertex* burning_restrict a, const
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = fill_convention_left( b->Pos.y );
-		yEnd = fill_convention_right( c->Pos.y );
+		yStart = fill_convention_top( b->Pos.y );
+		yEnd = fill_convention_down( c->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - b->Pos.y;
@@ -782,9 +783,9 @@ void CTRTextureGouraud2::drawTriangle(const s4DVertex* burning_restrict a, const
 #endif
 
 #endif
-		line.x_edgetest = fill_convention_edge(scan.slopeX[scan.left]);
-
 		// rasterize the edge scanlines
+		line.x_edgetest = fill_convention_edge(scan.slopeX[scan.left]);
+		
 		for( line.y = yStart; line.y <= yEnd; line.y += SOFTWARE_DRIVER_2_STEP_Y)
 		{
 			line.x[scan.left] = scan.x[0];
@@ -831,7 +832,7 @@ void CTRTextureGouraud2::drawTriangle(const s4DVertex* burning_restrict a, const
 #endif
 
 			// render a scanline
-			interlace_scanline fragmentShader ();
+			if_interlace_scanline fragmentShader ();
 			if ( EdgeTestPass & edge_test_first_line ) break;
 
 
@@ -907,6 +908,4 @@ IBurningShader* createTriangleRendererTextureGouraud2(CBurningVideoDriver* drive
 
 } // end namespace video
 } // end namespace irr
-
-
 

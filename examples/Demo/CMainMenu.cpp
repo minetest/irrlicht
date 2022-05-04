@@ -27,11 +27,7 @@ CMainMenu::CMainMenu()
 
 bool CMainMenu::run()
 {
-	video::E_DRIVER_TYPE driverType = video::EDT_OPENGL;
-	if (!IrrlichtDevice::isDriverSupported(video::EDT_OPENGL))
-		driverType = video::EDT_BURNINGSVIDEO;
-
-	MenuDevice = createDevice(driverType,
+	MenuDevice = createDevice(video::EDT_BURNINGSVIDEO,
 		core::dimension2d<u32>(512, 384), 16, false, false, false, this);
 
 	const io::path mediaPath = getExampleMediaPath();
@@ -72,14 +68,17 @@ bool CMainMenu::run()
 	// add list box
 
 	gui::IGUIListBox* box = guienv->addListBox(core::rect<int>(10,10,220,120), optTab, 1);
-	for (u32 i=1; i<video::EDT_COUNT; ++i)
+	box->addItem(L"OpenGL 1.5");
+	box->addItem(L"Direct3D 9.0c");
+	box->addItem(L"Burning's Video 0.54");
+	box->addItem(L"Irrlicht Software Renderer 1.0");
+	switch (driverType )
 	{
-		if (IrrlichtDevice::isDriverSupported(video::E_DRIVER_TYPE(i)))
-		{
-			box->addItem(core::stringw(video::DRIVER_TYPE_NAMES[i]).c_str());
-			if ( driverType == video::E_DRIVER_TYPE(i) )
-				selected = box->getItemCount()-1;
-		}
+		case video::EDT_OPENGL:        selected = 0; break;
+		case video::EDT_DIRECT3D9:     selected = 1; break;
+		case video::EDT_BURNINGSVIDEO: selected = 2; break;
+		case video::EDT_SOFTWARE:      selected = 3; break;
+		default: break;
 	}
 	box->setSelected(selected);
 
@@ -261,17 +260,12 @@ bool CMainMenu::run()
 
 	MenuDevice->drop();
 
-	for (u32 i=1; i<video::EDT_COUNT; ++i)
+	switch(selected)
 	{
-		if (IrrlichtDevice::isDriverSupported(video::E_DRIVER_TYPE(i)))
-		{
-			if (!selected)
-			{
-				driverType=video::E_DRIVER_TYPE(i);
-				break;
-			}
-			--selected;
-		}
+	case 0:	driverType = video::EDT_OPENGL; break;
+	case 1:	driverType = video::EDT_DIRECT3D9; break;
+	case 2:	driverType = video::EDT_BURNINGSVIDEO; break;
+	case 3:	driverType = video::EDT_SOFTWARE; break;
 	}
 
 	return start;

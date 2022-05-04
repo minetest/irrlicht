@@ -92,7 +92,7 @@ protected:
 
 //! constructor
 CTRGouraudNoZ2::CTRGouraudNoZ2(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver, EMT_SOLID)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRGouraudNoZ2");
@@ -272,7 +272,7 @@ void CTRGouraudNoZ2::drawTriangle(const s4DVertex* burning_restrict a, const s4D
 	temp[2] = b->Pos.x - a->Pos.x;
 	temp[3] = ba;
 
-	scan.left = ( temp[0] * temp[3] - temp[1] * temp[2] ) > 0.f ? 0 : 1;
+	scan.left = (temp[0] * temp[3] - temp[1] * temp[2]) < 0.f ? 1 : 0;
 	scan.right = 1 - scan.left;
 
 	// calculate slopes for the major edge
@@ -346,8 +346,8 @@ void CTRGouraudNoZ2::drawTriangle(const s4DVertex* burning_restrict a, const s4D
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = fill_convention_left( a->Pos.y );
-		yEnd = fill_convention_right( b->Pos.y );
+		yStart = fill_convention_top( a->Pos.y );
+		yEnd = fill_convention_down( b->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - a->Pos.y;
@@ -417,7 +417,7 @@ void CTRGouraudNoZ2::drawTriangle(const s4DVertex* burning_restrict a, const s4D
 #endif
 
 			// render a scanline
-			interlace_scanline fragmentShader();
+			if_interlace_scanline fragmentShader();
 			if ( EdgeTestPass & edge_test_first_line ) break;
 
 			scan.x[0] += scan.slopeX[0];
@@ -507,8 +507,8 @@ void CTRGouraudNoZ2::drawTriangle(const s4DVertex* burning_restrict a, const s4D
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = fill_convention_left( b->Pos.y );
-		yEnd = fill_convention_right( c->Pos.y );
+		yStart = fill_convention_top( b->Pos.y );
+		yEnd = fill_convention_down( c->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - b->Pos.y;
@@ -577,7 +577,7 @@ void CTRGouraudNoZ2::drawTriangle(const s4DVertex* burning_restrict a, const s4D
 #endif
 
 			// render a scanline
-			interlace_scanline fragmentShader();
+			if_interlace_scanline fragmentShader();
 			if ( EdgeTestPass & edge_test_first_line ) break;
 
 			scan.x[0] += scan.slopeX[0];

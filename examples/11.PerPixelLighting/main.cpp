@@ -212,6 +212,8 @@ int main()
 	// disable mouse cursor
 	device->getCursorControl()->setVisible(false);
 
+	switchToMayaCamera(device);
+
 	/*
 	Because we want the whole scene to look a little bit scarier, we add
 	some fog to it. This is done by a call to IVideoDriver::setFog(). There

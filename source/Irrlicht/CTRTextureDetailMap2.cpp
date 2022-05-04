@@ -85,7 +85,7 @@ public:
 
 	//! draws an indexed triangle list
 	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) IRR_OVERRIDE;
-	virtual bool canWireFrame () IRR_OVERRIDE { return true; }
+	virtual bool canWireFrame () IRR_OVERRIDE { return false; } // not that ready
 
 protected:
 	virtual void fragmentShader();
@@ -94,7 +94,7 @@ protected:
 
 //! constructor
 CTRTextureDetailMap2::CTRTextureDetailMap2(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver, EMT_DETAIL_MAP)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRTextureDetailMap2");
@@ -284,7 +284,7 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 	temp[2] = b->Pos.x - a->Pos.x;
 	temp[3] = ba;
 
-	scan.left = ( temp[0] * temp[3] - temp[1] * temp[2] ) > 0.f ? 0 : 1;
+	scan.left = (temp[0] * temp[3] - temp[1] * temp[2]) < 0.f ? 1 : 0;
 	scan.right = 1 - scan.left;
 
 	// calculate slopes for the major edge
@@ -357,8 +357,8 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = fill_convention_left( a->Pos.y );
-		yEnd = fill_convention_right( b->Pos.y );
+		yStart = fill_convention_top( a->Pos.y );
+		yEnd = fill_convention_down( b->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - a->Pos.y;
@@ -427,7 +427,7 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 #endif
 
 			// render a scanline
-			interlace_scanline fragmentShader();
+			if_interlace_scanline fragmentShader();
 			if (EdgeTestPass & edge_test_first_line) break;
 
 			scan.x[0] += scan.slopeX[0];
@@ -460,6 +460,7 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 
 		}
 	}
+
 
 	// rasterize lower sub-triangle
 	if (F32_GREATER_0(scan.invDeltaY[2]) )
@@ -518,8 +519,8 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = fill_convention_left( b->Pos.y );
-		yEnd = fill_convention_right( c->Pos.y );
+		yStart = fill_convention_top( b->Pos.y );
+		yEnd = fill_convention_down( c->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - b->Pos.y;
@@ -589,7 +590,7 @@ void CTRTextureDetailMap2::drawTriangle(const s4DVertex* burning_restrict a, con
 #endif
 
 			// render a scanline
-			interlace_scanline fragmentShader();
+			if_interlace_scanline fragmentShader();
 			if (EdgeTestPass & edge_test_first_line) break;
 
 			scan.x[0] += scan.slopeX[0];

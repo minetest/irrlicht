@@ -4,7 +4,10 @@
 */
 void burning_shader_class::burning_shader_fragment()
 {
+#ifdef burning_shader_colormask
+#else
 	tVideoSample *dst;
+#endif
 
 #ifdef USE_ZBUFFER
 	fp24 *z;
@@ -25,7 +28,7 @@ void burning_shader_class::burning_shader_fragment()
 	fp24 slopeW;
 #endif
 #ifdef IPOL_C0
-	sVec4 slopeC;
+	sVec4 slopeC[BURNING_MATERIAL_MAX_COLORS];
 #endif
 #ifdef IPOL_T0
 	sVec2 slopeT[BURNING_MATERIAL_MAX_TEXTURES];
@@ -49,7 +52,10 @@ void burning_shader_class::burning_shader_fragment()
 	slopeW = (line.w[1] - line.w[0]) * invDeltaX;
 #endif
 #ifdef IPOL_C0
-	slopeC = (line.c[0][1] - line.c[0][0]) * invDeltaX;
+	slopeC[0] = (line.c[0][1] - line.c[0][0]) * invDeltaX;
+#endif
+#ifdef IPOL_C1
+	slopeC[1] = (line.c[1][1] - line.c[1][0]) * invDeltaX;
 #endif
 #ifdef IPOL_T0
 	slopeT[0] = (line.t[0][1] - line.t[0][0]) * invDeltaX;
@@ -67,7 +73,10 @@ void burning_shader_class::burning_shader_fragment()
 	line.w[0] += slopeW * subPixel;
 #endif
 #ifdef IPOL_C0
-	line.c[0][0] += slopeC * subPixel;
+	line.c[0][0] += slopeC[0] * subPixel;
+#endif
+#ifdef IPOL_C1
+	line.c[1][0] += slopeC[1] * subPixel;
 #endif
 #ifdef IPOL_T0
 	line.t[0][0] += slopeT[0] * subPixel;
@@ -78,21 +87,29 @@ void burning_shader_class::burning_shader_fragment()
 #endif
 
 	SOFTWARE_DRIVER_2_CLIPCHECK;
+#ifdef burning_shader_colormask
+#else
 	dst = (tVideoSample*)RenderTarget->getData() + (line.y * RenderTarget->getDimension().Width) + xStart;
+#endif
 
 #ifdef USE_ZBUFFER
 	z = (fp24*)DepthBuffer->lock() + (line.y * RenderTarget->getDimension().Width) + xStart;
 #endif
 
-
+#ifdef burning_shader_colormask
+#else
 	f32 inversew = INVERSE_W_RANGE;
+#endif
 
 #ifdef IPOL_C0
-	tFixPoint r0, g0, b0;
+	tFixPoint a0,r0, g0, b0;
+#endif
+
+#ifdef IPOL_C1
+	tFixPoint r2, g2, b2;
 #endif
 
 #ifdef IPOL_A0
-	tFixPoint a0;
 	tFixPoint r1, g1, b1;
 #endif
 

@@ -32,10 +32,7 @@ CGUISpriteBank::CGUISpriteBank(IGUIEnvironment* env) :
 
 CGUISpriteBank::~CGUISpriteBank()
 {
-	// drop textures
-	for (u32 i=0; i<Textures.size(); ++i)
-		if (Textures[i])
-			Textures[i]->drop();
+	clear();
 
 	// drop video driver
 	if (Driver)
@@ -133,15 +130,38 @@ s32 CGUISpriteBank::addTextureAsSprite(video::ITexture* texture)
 	return Sprites.size() - 1;
 }
 
+// get FrameNr for time. return true on exisiting frame
+inline bool CGUISpriteBank::getFrameNr(u32& frame,u32 index, u32 time, bool loop) const
+{
+	frame = 0;
+	if (index >= Sprites.size())
+		return false;
+
+	const SGUISprite& sprite = Sprites[index];
+	const u32 frameSize = sprite.Frames.size();
+	if (frameSize < 1)
+		return false;
+
+	if (sprite.frameTime)
+	{
+		u32 f = (time / sprite.frameTime);
+		if (loop)
+			frame = f % frameSize;
+		else
+			frame = (f >= frameSize) ? frameSize - 1 : f;
+	}
+	return true;
+}
+
 //! draws a sprite in 2d with scale and color
 void CGUISpriteBank::draw2DSprite(u32 index, const core::position2di& pos,
 		const core::rect<s32>* clip, const video::SColor& color,
 		u32 starttime, u32 currenttime, bool loop, bool center)
 {
-	if (index >= Sprites.size() || Sprites[index].Frames.empty() )
+	u32 frame = 0;
+	if (!getFrameNr(frame, index, currenttime - starttime, loop))
 		return;
 
-	u32 frame = getFrameNr(index, currenttime - starttime, loop);
 	const video::ITexture* tex = getTexture(Sprites[index].Frames[frame].textureNumber);
 	if (!tex)
 		return;
@@ -163,10 +183,10 @@ void CGUISpriteBank::draw2DSprite(u32 index, const core::rect<s32>& destRect,
 		const core::rect<s32>* clip, const video::SColor * const colors,
 		u32 timeTicks, bool loop)
 {
-	if (index >= Sprites.size() || Sprites[index].Frames.empty() )
+	u32 frame = 0;
+	if (!getFrameNr(frame,index, timeTicks, loop))
 		return;
 
-	u32 frame = getFrameNr(index, timeTicks, loop);
 	const video::ITexture* tex = getTexture(Sprites[index].Frames[frame].textureNumber);
 	if (!tex)
 		return;
@@ -201,21 +221,16 @@ void CGUISpriteBank::draw2DSpriteBatch(	const core::array<u32>& indices,
 	{
 		const u32 index = indices[i];
 
-		if (index >= Sprites.size() || Sprites[index].Frames.empty() )
-			continue;
-
 		// work out frame number
 		u32 frame = 0;
-		if (Sprites[index].frameTime)
-		{
-			u32 f = ((currenttime - starttime) / Sprites[index].frameTime);
-			if (loop)
-				frame = f % Sprites[index].Frames.size();
-			else
-				frame = (f >= Sprites[index].Frames.size()) ? Sprites[index].Frames.size()-1 : f;
-		}
+		if (!getFrameNr(frame, index, currenttime - starttime, loop))
+			return;
 
 		const u32 texNum = Sprites[index].Frames[frame].textureNumber;
+		if (texNum >= drawBatches.size())
+		{
+			continue;
+		}
 		SDrawBatch& currentBatch = drawBatches[texNum];
 
 		const u32 rn = Sprites[index].Frames[frame].rectNumber;

@@ -93,7 +93,7 @@ private:
 
 //! constructor
 CTRTextureGouraudAddNoZ2::CTRTextureGouraudAddNoZ2(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver, EMT_TRANSPARENT_ADD_COLOR)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRTextureGouraudAddNoZ2");
@@ -228,9 +228,9 @@ void CTRTextureGouraudAddNoZ2::fragmentShader()
 			if (r0 | g0 | b0)
 			{
 				color_to_fix(r1, g1, b1, dst[i]);
-				r1 = imulFix_tex1(r1, FIXPOINT_COLOR_MAX - r0);
-				g1 = imulFix_tex1(g1, FIXPOINT_COLOR_MAX - g0);
-				b1 = imulFix_tex1(b1, FIXPOINT_COLOR_MAX - b0);
+				r1 = imulFix_tex1(r1, FIX_POINT_COLOR_MAX - r0);
+				g1 = imulFix_tex1(g1, FIX_POINT_COLOR_MAX - g0);
+				b1 = imulFix_tex1(b1, FIX_POINT_COLOR_MAX - b0);
 				dst[i] = fix_to_sample(r0+r1, g0+g1, b0+b1);
 			}
 
@@ -290,7 +290,7 @@ void CTRTextureGouraudAddNoZ2::drawTriangle(const s4DVertex* burning_restrict a,
 	temp[2] = b->Pos.x - a->Pos.x;
 	temp[3] = ba;
 
-	scan.left = ( temp[0] * temp[3] - temp[1] * temp[2] ) > 0.f ? 0 : 1;
+	scan.left = (temp[0] * temp[3] - temp[1] * temp[2]) < 0.f ? 1 : 0;
 	scan.right = 1 - scan.left;
 
 	// calculate slopes for the major edge
@@ -363,8 +363,8 @@ void CTRTextureGouraudAddNoZ2::drawTriangle(const s4DVertex* burning_restrict a,
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = fill_convention_left( a->Pos.y );
-		yEnd = fill_convention_right( b->Pos.y );
+		yStart = fill_convention_top( a->Pos.y );
+		yEnd = fill_convention_down( b->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - a->Pos.y;
@@ -432,7 +432,7 @@ void CTRTextureGouraudAddNoZ2::drawTriangle(const s4DVertex* burning_restrict a,
 #endif
 
 			// render a scanline
-			interlace_scanline fragmentShader();
+			if_interlace_scanline fragmentShader();
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];
@@ -522,8 +522,8 @@ void CTRTextureGouraudAddNoZ2::drawTriangle(const s4DVertex* burning_restrict a,
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = fill_convention_left( b->Pos.y );
-		yEnd = fill_convention_right( c->Pos.y );
+		yStart = fill_convention_top( b->Pos.y );
+		yEnd = fill_convention_down( c->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - b->Pos.y;
@@ -591,7 +591,7 @@ void CTRTextureGouraudAddNoZ2::drawTriangle(const s4DVertex* burning_restrict a,
 #endif
 
 			// render a scanline
-			interlace_scanline fragmentShader();
+			if_interlace_scanline fragmentShader();
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];

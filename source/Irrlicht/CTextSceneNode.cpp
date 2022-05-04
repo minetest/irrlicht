@@ -215,8 +215,9 @@ void CBillboardTextSceneNode::setText(const wchar_t* text)
 		u32 rectno = sprites[spriteno].Frames[0].rectNumber;
 		u32 texno = sprites[spriteno].Frames[0].textureNumber;
 
-		dim[0] = core::reciprocal ( (f32) Font->getSpriteBank()->getTexture(texno)->getSize().Width );
-		dim[1] = core::reciprocal ( (f32) Font->getSpriteBank()->getTexture(texno)->getSize().Height );
+		const core::dimension2d<u32>& texSize = Font->getSpriteBank()->getTexture(texno)->getOriginalSize();
+		dim[0] = core::reciprocal((f32)texSize.Width);
+		dim[1] = core::reciprocal((f32)texSize.Height);
 
 		const core::rect<s32>& s = sourceRects[rectno];
 

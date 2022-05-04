@@ -49,7 +49,7 @@ namespace video
         void destroyContext() IRR_OVERRIDE;
 
 		//! Get current context
-		const SExposedVideoData& getContext() const;
+		const SExposedVideoData& getContext() const IRR_OVERRIDE;
 
 		//! Change render context, disable old and activate new defined by videoData
 		bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero) IRR_OVERRIDE;

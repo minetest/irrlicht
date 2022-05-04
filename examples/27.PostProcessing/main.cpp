@@ -17,10 +17,9 @@ written in HLSL and GLSL.
 
 We include all headers and define necessary variables as we have done before.
 */
+#include <irrlicht.h>
 #include "driverChoice.h"
 #include "exampleHelper.h"
-
-#include <irrlicht.h>
 
 using namespace irr;
 
@@ -218,6 +217,7 @@ int main()
         break;
 
     case video::EDT_OPENGL:
+    case video::EDT_BURNINGSVIDEO:
         psFileName = mediaPath + "pp_opengl.frag";
         vsFileName = mediaPath + "pp_opengl.vert";
         break;

@@ -3,16 +3,14 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
 /*
-	History:
-	- changed behavior for log2 textures ( replaced multiplies by shift )
+History:
+- changed behavior for log2 textures ( replaced multiplies by shift )
 */
 
 #ifndef S_VIDEO_2_SOFTWARE_HELPER_H_INCLUDED
 #define S_VIDEO_2_SOFTWARE_HELPER_H_INCLUDED
 
 #include "SoftwareDriver2_compile_config.h"
-#include "irrMath.h"
-#include "irrMathFastCompat.h"
 #include "CSoftwareTexture2.h"
 #include "SMaterial.h"
 
@@ -23,44 +21,44 @@ namespace irr
 // supporting different packed pixel needs many defines...
 
 #if defined(SOFTWARE_DRIVER_2_32BIT)
-	typedef u32	tVideoSample;
-	typedef u32	tStencilSample;
+typedef u32	tVideoSample;
+typedef u32	tStencilSample;
 
-	#define	MASK_A	0xFF000000
-	#define	MASK_R	0x00FF0000
-	#define	MASK_G	0x0000FF00
-	#define	MASK_B	0x000000FF
+#define	MASK_A	0xFF000000
+#define	MASK_R	0x00FF0000
+#define	MASK_G	0x0000FF00
+#define	MASK_B	0x000000FF
 
-	#define	SHIFT_A	(unsigned)24
-	#define	SHIFT_R	(unsigned)16
-	#define	SHIFT_G	(unsigned)8
-	#define	SHIFT_B	(unsigned)0
+#define	SHIFT_A	(unsigned)24
+#define	SHIFT_R	(unsigned)16
+#define	SHIFT_G	(unsigned)8
+#define	SHIFT_B	(unsigned)0
 
-	#define	COLOR_MAX					0xFF
-	#define	COLOR_MAX_LOG2				8
-	#define	COLOR_BRIGHT_WHITE			0xFFFFFFFF
+#define	COLOR_MAX					0xFF
+#define	COLOR_MAX_LOG2				8
+#define	COLOR_BRIGHT_WHITE			0xFFFFFFFF
 
-	#define SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY	(unsigned)2
-	#define SOFTWARE_DRIVER_2_RENDERTARGET_GRANULARITY	(unsigned)2
+#define SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY	(unsigned)2
+#define SOFTWARE_DRIVER_2_RENDERTARGET_GRANULARITY	(unsigned)2
 #else
-	typedef u16	tVideoSample;
-	typedef u8	tStencilSample;
+typedef u16	tVideoSample;
+typedef u8	tStencilSample;
 
-	#define	MASK_A	0x8000
-	#define	MASK_R	0x7C00
-	#define	MASK_G	0x03E0
-	#define	MASK_B	0x001F
+#define	MASK_A	0x8000
+#define	MASK_R	0x7C00
+#define	MASK_G	0x03E0
+#define	MASK_B	0x001F
 
-	#define	SHIFT_A	(unsigned)15
-	#define	SHIFT_R	(unsigned)10
-	#define	SHIFT_G	(unsigned)5
-	#define	SHIFT_B	(unsigned)0
+#define	SHIFT_A	(unsigned)15
+#define	SHIFT_R	(unsigned)10
+#define	SHIFT_G	(unsigned)5
+#define	SHIFT_B	(unsigned)0
 
-	#define	COLOR_MAX					0x1F
-	#define	COLOR_MAX_LOG2				5
-	#define	COLOR_BRIGHT_WHITE			0xFFFF
-	#define SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY	(unsigned)1
-	#define SOFTWARE_DRIVER_2_RENDERTARGET_GRANULARITY	(unsigned)1
+#define	COLOR_MAX					0x1F
+#define	COLOR_MAX_LOG2				5
+#define	COLOR_BRIGHT_WHITE			0xFFFF
+#define SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY	(unsigned)1
+#define SOFTWARE_DRIVER_2_RENDERTARGET_GRANULARITY	(unsigned)1
 
 #endif
 
@@ -73,9 +71,9 @@ namespace irr
 
 //! a more useful memset for pixel. dest must be aligned at least to 4 byte
 // (standard memset only works with 8-bit values)
-inline void memset32(void * dest, const u32 value, size_t bytesize)
+static inline void memset32(void* dest, const u32 value, size_t bytesize)
 {
-	u32 * d = (u32*) dest;
+	u32* d = (u32*)dest;
 
 	size_t i;
 
@@ -97,7 +95,7 @@ inline void memset32(void * dest, const u32 value, size_t bytesize)
 		i -= 1;
 	}
 
-	i = (bytesize >> 2 ) & 7;
+	i = (bytesize >> 2) & 7;
 	while (i)
 	{
 		d[0] = value;
@@ -108,9 +106,9 @@ inline void memset32(void * dest, const u32 value, size_t bytesize)
 
 //! a more useful memset for pixel. dest must be aligned at least to 2 byte
 // (standard memset only works with 8-bit values)
-inline void memset16(void * dest, const u16 value, size_t bytesize)
+static inline void memset16(void* dest, const u16 value, size_t bytesize)
 {
-	u16 * d = (u16*) dest;
+	u16* d = (u16*)dest;
 
 	size_t i;
 
@@ -132,7 +130,7 @@ inline void memset16(void * dest, const u16 value, size_t bytesize)
 		--i;
 	}
 
-	i = (bytesize >> 1 ) & 7;
+	i = (bytesize >> 1) & 7;
 	while (i)
 	{
 		d[0] = value;
@@ -142,7 +140,7 @@ inline void memset16(void * dest, const u16 value, size_t bytesize)
 }
 
 //! memset interleaved
-inline void memset32_interlaced(void* dest, const u32 value, size_t pitch,u32 height,const interlaced_control Interlaced)
+static inline void memset32_interlaced(void* dest, const u32 value, size_t pitch, u32 height, const interlaced_control Interlaced)
 {
 	if (Interlaced.bypass) return memset32(dest, value, pitch * height);
 
@@ -150,7 +148,7 @@ inline void memset32_interlaced(void* dest, const u32 value, size_t pitch,u32 he
 	interlace_scanline_data line;
 	for (line.y = 0; line.y < height; line.y += SOFTWARE_DRIVER_2_STEP_Y)
 	{
-		interlace_scanline_enabled memset32(dst, value, pitch);
+		if_interlace_scanline_active memset32(dst, value, pitch);
 		dst += pitch;
 	}
 }
@@ -162,8 +160,8 @@ inline void memset32_interlaced(void* dest, const u32 value, size_t pitch,u32 he
 typedef union {
 	float f;
 	unsigned int u;
-	struct { unsigned int frac:23; unsigned exp:8; unsigned int sign:1; } fields;
-	struct { unsigned int frac_exp:31; } abs;
+	struct { unsigned int frac : 23; unsigned exp : 8; unsigned int sign : 1; } fields;
+	struct { unsigned int frac_exp : 31; } abs;
 } PACK_STRUCT ieee754;
 
 // Default alignment
@@ -176,7 +174,7 @@ typedef union {
 
 #if 0
 // integer log2 of a float ieee 754. [not used anymore]
-static inline s32 s32_log2_f32( f32 f)
+static inline s32 s32_log2_f32(f32 f)
 {
 	//u32 x = IR ( f ); return ((x & 0x7F800000) >> 23) - 127;
 	ieee754 _log2;
@@ -203,14 +201,14 @@ static inline s32 s32_log2_s32(u32 in)
 static inline s32 s32_abs(s32 x)
 {
 	s32 b = x >> 31;
-	return (x ^ b ) - b;
+	return (x ^ b) - b;
 }
 
 
 //! conditional set based on mask and arithmetic shift
-REALINLINE u32 if_mask_a_else_b ( const u32 mask, const u32 a, const u32 b )
+REALINLINE u32 if_mask_a_else_b(const u32 mask, const u32 a, const u32 b)
 {
-	return ( mask & ( a ^ b ) ) ^ b;
+	return (mask & (a ^ b)) ^ b;
 }
 #endif
 
@@ -219,7 +217,7 @@ REALINLINE u32 if_mask_a_else_b ( const u32 mask, const u32 a, const u32 b )
 	Pixel = dest * ( 1 - alpha ) + source * alpha
 	alpha [0;256]
 */
-REALINLINE u32 PixelBlend32 ( const u32 c2, const u32 c1, const u32 alpha )
+REALINLINE u32 PixelBlend32(const u32 c2, const u32 c1, const u32 alpha)
 {
 	u32 srcRB = c1 & 0x00FF00FF;
 	u32 srcXG = c1 & 0x0000FF00;
@@ -249,7 +247,7 @@ REALINLINE u32 PixelBlend32 ( const u32 c2, const u32 c1, const u32 alpha )
 	Pixel = dest * ( 1 - alpha ) + source * alpha
 	alpha [0;32]
 */
-inline u16 PixelBlend16 ( const u16 c2, const u16 c1, const u16 alpha )
+inline u16 PixelBlend16(const u16 c2, const u16 c1, const u16 alpha)
 {
 	const u16 srcRB = c1 & 0x7C1F;
 	const u16 srcXG = c1 & 0x03E0;
@@ -277,103 +275,103 @@ inline u16 PixelBlend16 ( const u16 c2, const u16 c1, const u16 alpha )
 /*
 	Pixel = c0 * (c1/31). c0 Alpha retain
 */
-inline u16 PixelMul16 ( const u16 c0, const u16 c1)
+inline u16 PixelMul16(const u16 c0, const u16 c1)
 {
-	return (u16)((( ( (c0 & 0x7C00) * (c1 & 0x7C00) ) & 0x3E000000 ) >> 15 ) |
-			(( ( (c0 & 0x03E0) * (c1 & 0x03E0) ) & 0x000F8000 ) >> 10 ) |
-			(( ( (c0 & 0x001F) * (c1 & 0x001F) ) & 0x000003E0 ) >> 5 ) |
-			(c0 & 0x8000));
+	return (u16)(((((c0 & 0x7C00) * (c1 & 0x7C00)) & 0x3E000000) >> 15) |
+		((((c0 & 0x03E0) * (c1 & 0x03E0)) & 0x000F8000) >> 10) |
+		((((c0 & 0x001F) * (c1 & 0x001F)) & 0x000003E0) >> 5) |
+		(c0 & 0x8000));
 }
 
 /*
 	Pixel = c0 * (c1/31).
 */
-inline u16 PixelMul16_2 ( u16 c0, u16 c1)
+inline u16 PixelMul16_2(u16 c0, u16 c1)
 {
-	return	(u16)(( ( (c0 & 0x7C00) * (c1 & 0x7C00) ) & 0x3E000000 ) >> 15 |
-			( ( (c0 & 0x03E0) * (c1 & 0x03E0) ) & 0x000F8000 ) >> 10 |
-			( ( (c0 & 0x001F) * (c1 & 0x001F) ) & 0x000003E0 ) >> 5  |
-			( c0 & c1 & 0x8000));
+	return	(u16)((((c0 & 0x7C00) * (c1 & 0x7C00)) & 0x3E000000) >> 15 |
+		(((c0 & 0x03E0) * (c1 & 0x03E0)) & 0x000F8000) >> 10 |
+		(((c0 & 0x001F) * (c1 & 0x001F)) & 0x000003E0) >> 5 |
+		(c0 & c1 & 0x8000));
 }
 
 /*
 	Pixel = c0 * (c1/255). c0 Alpha Retain
 */
-REALINLINE u32 PixelMul32 ( const u32 c0, const u32 c1)
+REALINLINE u32 PixelMul32(const u32 c0, const u32 c1)
 {
 	return	(c0 & 0xFF000000) |
-			(( ( (c0 & 0x00FF0000) >> 12 ) * ( (c1 & 0x00FF0000) >> 12 ) ) & 0x00FF0000 ) |
-			(( ( (c0 & 0x0000FF00) * (c1 & 0x0000FF00) ) >> 16 ) & 0x0000FF00 ) |
-			(( ( (c0 & 0x000000FF) * (c1 & 0x000000FF) ) >> 8  ) & 0x000000FF);
+		((((c0 & 0x00FF0000) >> 12) * ((c1 & 0x00FF0000) >> 12)) & 0x00FF0000) |
+		((((c0 & 0x0000FF00) * (c1 & 0x0000FF00)) >> 16) & 0x0000FF00) |
+		((((c0 & 0x000000FF) * (c1 & 0x000000FF)) >> 8) & 0x000000FF);
 }
 
 /*
 	Pixel = c0 * (c1/255).
 */
-REALINLINE u32 PixelMul32_2 ( const u32 c0, const u32 c1)
+REALINLINE u32 PixelMul32_2(const u32 c0, const u32 c1)
 {
-	return	(( ( (c0 & 0xFF000000) >> 16 ) * ( (c1 & 0xFF000000) >> 16 ) ) & 0xFF000000 ) |
-			(( ( (c0 & 0x00FF0000) >> 12 ) * ( (c1 & 0x00FF0000) >> 12 ) ) & 0x00FF0000 ) |
-			(( ( (c0 & 0x0000FF00) * (c1 & 0x0000FF00) ) >> 16 ) & 0x0000FF00 ) |
-			(( ( (c0 & 0x000000FF) * (c1 & 0x000000FF) ) >> 8  ) & 0x000000FF);
+	return	((((c0 & 0xFF000000) >> 16) * ((c1 & 0xFF000000) >> 16)) & 0xFF000000) |
+		((((c0 & 0x00FF0000) >> 12) * ((c1 & 0x00FF0000) >> 12)) & 0x00FF0000) |
+		((((c0 & 0x0000FF00) * (c1 & 0x0000FF00)) >> 16) & 0x0000FF00) |
+		((((c0 & 0x000000FF) * (c1 & 0x000000FF)) >> 8) & 0x000000FF);
 }
 
 /*
 	Pixel = clamp ( c0 + c1, 0, 255 )
 */
-REALINLINE u32 PixelAdd32 ( const u32 c2, const u32 c1)
+REALINLINE u32 PixelAdd32(const u32 c2, const u32 c1)
 {
-	u32 sum = ( c2 & 0x00FFFFFF )  + ( c1 & 0x00FFFFFF );
-	u32 low_bits = ( c2 ^ c1 ) & 0x00010101;
-	s32 carries  = ( sum - low_bits ) & 0x01010100;
+	u32 sum = (c2 & 0x00FFFFFF) + (c1 & 0x00FFFFFF);
+	u32 low_bits = (c2 ^ c1) & 0x00010101;
+	s32 carries = (sum - low_bits) & 0x01010100;
 	u32 modulo = sum - carries;
-	u32 clamp = carries - ( carries >> 8 );
+	u32 clamp = carries - (carries >> 8);
 	return modulo | clamp;
 }
 
 #if 0
 
 // 1 - Bit Alpha Blending
-inline u16 PixelBlend16 ( const u16 destination, const u16 source )
+inline u16 PixelBlend16(const u16 destination, const u16 source)
 {
-	if((source & 0x8000) == 0x8000)
+	if ((source & 0x8000) == 0x8000)
 		return source; // The source is visible, so use it.
 	else
 		return destination; // The source is transparent, so use the destination.
 }
 
 // 1 - Bit Alpha Blending 16Bit SIMD
-inline u32 PixelBlend16_simd ( const u32 destination, const u32 source )
+inline u32 PixelBlend16_simd(const u32 destination, const u32 source)
 {
-	switch(source & 0x80008000)
+	switch (source & 0x80008000)
 	{
-		case 0x80008000: // Both source pixels are visible
-			return source;
+	case 0x80008000: // Both source pixels are visible
+		return source;
 
-		case 0x80000000: // Only the first source pixel is visible
-			return (source & 0xFFFF0000) | (destination & 0x0000FFFF);
+	case 0x80000000: // Only the first source pixel is visible
+		return (source & 0xFFFF0000) | (destination & 0x0000FFFF);
 
-		case 0x00008000: // Only the second source pixel is visible.
-			return (destination & 0xFFFF0000) | (source & 0x0000FFFF);
+	case 0x00008000: // Only the second source pixel is visible.
+		return (destination & 0xFFFF0000) | (source & 0x0000FFFF);
 
-		default: // Neither source pixel is visible.
-			return destination;
+	default: // Neither source pixel is visible.
+		return destination;
 	}
 }
 #else
 
 // 1 - Bit Alpha Blending
-inline u16 PixelBlend16 ( const u16 c2, const u16 c1 )
+inline u16 PixelBlend16(const u16 c2, const u16 c1)
 {
-	u16 mask = ((c1 & 0x8000) >> 15 ) + 0x7fff;
-	return (c2 & mask ) | ( c1 & ~mask );
+	u16 mask = ((c1 & 0x8000) >> 15) + 0x7fff;
+	return (c2 & mask) | (c1 & ~mask);
 }
 
 // 1 - Bit Alpha Blending 16Bit SIMD
-inline u32 PixelBlend16_simd ( const u32 c2, const u32 c1 )
+inline u32 PixelBlend16_simd(const u32 c2, const u32 c1)
 {
-	u32 mask = ((c1 & 0x80008000) >> 15 ) + 0x7fff7fff;
-	return (c2 & mask ) | ( c1 & ~mask );
+	u32 mask = ((c1 & 0x80008000) >> 15) + 0x7fff7fff;
+	return (c2 & mask) | (c1 & ~mask);
 }
 
 #endif
@@ -381,14 +379,14 @@ inline u32 PixelBlend16_simd ( const u32 c2, const u32 c1 )
 /*!
 	Pixel = dest * ( 1 - SourceAlpha ) + source * SourceAlpha (OpenGL blending)
 */
-inline u32 PixelBlend32 ( const u32 c2, const u32 c1 )
+inline u32 PixelBlend32(const u32 c2, const u32 c1)
 {
 	// alpha test
 	u32 alpha = c1 & 0xFF000000;
 
-	if ( 0 == alpha )
+	if (0 == alpha)
 		return c2;
-	if ( 0xFF000000 == alpha )
+	if (0xFF000000 == alpha)
 	{
 		return c1;
 	}
@@ -396,7 +394,7 @@ inline u32 PixelBlend32 ( const u32 c2, const u32 c1 )
 	alpha >>= 24;
 
 	// add highbit alpha, if ( alpha > 127 ) alpha += 1;
-	alpha += ( alpha >> 7);
+	alpha += (alpha >> 7);
 
 	u32 srcRB = c1 & 0x00FF00FF;
 	u32 srcXG = c1 & 0x0000FF00;
@@ -436,87 +434,93 @@ typedef u32 tFixPointu;
 
 // Fix Point 12 (overflow on s32)
 #if 0
-	#define FIX_POINT_PRE			12
-	#define FIX_POINT_FRACT_MASK	0xFFF
-	#define FIX_POINT_UNSIGNED_MASK	0x7FFFF000
-	#define FIX_POINT_ONE			0x1000
-	#define FIX_POINT_ZERO_DOT_FIVE	0x0800
-	#define FIX_POINT_F32_MUL		4096.f
+#define FIX_POINT_PRE			12
+#define FIX_POINT_FRACT_MASK	0xFFF
+#define FIX_POINT_UNSIGNED_MASK	0x7FFFF000
+#define FIX_POINT_ONE			0x1000
+#define FIX_POINT_ZERO_DOT_FIVE	0x0800
+#define FIX_POINT_F32_MUL		4096.f
 #endif
 
 // Fix Point 11 (overflow on s32)
 #if 0
-	#define FIX_POINT_PRE			11
-	#define FIX_POINT_FRACT_MASK	0x7FF
-	#define FIX_POINT_UNSIGNED_MASK	0xFFFFF800
-	#define FIX_POINT_ONE			0x800
-	#define FIX_POINT_ZERO_DOT_FIVE	0x400
-	#define FIX_POINT_F32_MUL		2048.f
+#define FIX_POINT_PRE			11
+#define FIX_POINT_FRACT_MASK	0x7FF
+#define FIX_POINT_UNSIGNED_MASK	0xFFFFF800
+#define FIX_POINT_ONE			0x800
+#define FIX_POINT_ZERO_DOT_FIVE	0x400
+#define FIX_POINT_F32_MUL		2048.f
 #endif
 
 // Fix Point 10
 #if 1
-	#define FIX_POINT_PRE			10
-	#define FIX_POINT_FRACT_MASK	0x000003FF
-	#define FIX_POINT_UNSIGNED_MASK	0x7FFFFE00
-	#define FIX_POINT_ONE			0x00000400
-	#define FIX_POINT_ZERO_DOT_FIVE	0x00000200
-	#define FIX_POINT_F32_MUL		1024.f
+#define FIX_POINT_PRE			10
+#define FIX_POINT_FRACT_MASK	0x000003FF
+#define FIX_POINT_UNSIGNED_MASK	0x7FFFFC00
+#define FIX_POINT_ONE			0x00000400
+#define FIX_POINT_ZERO_DOT_FIVE	0x00000200
+#define FIX_POINT_F32_MUL		1024.f
 #endif
 
 // Fix Point 9
 #if 0
-	#define FIX_POINT_PRE			9
-	#define FIX_POINT_FRACT_MASK	0x1FF
-	#define FIX_POINT_UNSIGNED_MASK	0x7FFFFE00
-	#define FIX_POINT_ONE			0x200
-	#define FIX_POINT_ZERO_DOT_FIVE	0x100
-	#define FIX_POINT_F32_MUL		512.f
+#define FIX_POINT_PRE			9
+#define FIX_POINT_FRACT_MASK	0x1FF
+#define FIX_POINT_UNSIGNED_MASK	0x7FFFFE00
+#define FIX_POINT_ONE			0x200
+#define FIX_POINT_ZERO_DOT_FIVE	0x100
+#define FIX_POINT_F32_MUL		512.f
 #endif
 
 // Fix Point 7
 #if 0
-	#define FIX_POINT_PRE			7
-	#define FIX_POINT_FRACT_MASK	0x7F
-	#define FIX_POINT_UNSIGNED_MASK	0x7FFFFF80
-	#define FIX_POINT_ONE			0x80
-	#define FIX_POINT_ZERO_DOT_FIVE	0x40
-	#define FIX_POINT_F32_MUL		128.f
+#define FIX_POINT_PRE			7
+#define FIX_POINT_FRACT_MASK	0x7F
+#define FIX_POINT_UNSIGNED_MASK	0x7FFFFF80
+#define FIX_POINT_ONE			0x80
+#define FIX_POINT_ZERO_DOT_FIVE	0x40
+#define FIX_POINT_F32_MUL		128.f
 #endif
 
-#define	FIXPOINT_COLOR_MAX		( COLOR_MAX << FIX_POINT_PRE )
+#define	FIX_POINT_COLOR_MAX		( COLOR_MAX << FIX_POINT_PRE )
+#define FIX_POINT_EPSILON   1
+
+#define FIX_POINT_COLOR_FLOAT_MIN -0.5f
+//#define FIX_POINT_COLOR_FLOAT_MAX (FIX_POINT_F32_MUL- ((FIX_POINT_F32_MUL-0.5.f)/(f32) COLOR_MAX))
+#define FIX_POINT_COLOR_MAX_CENTER (COLOR_MAX * FIX_POINT_F32_MUL)
 
 #if   FIX_POINT_PRE == 10 && COLOR_MAX == 255
-	#define FIX_POINT_HALF_COLOR	0x1FE00
-	#define FIX_POINT_COLOR_ERROR	4
+#define FIX_POINT_HALF_COLOR	0x1FE00
+#define FIX_POINT_COLOR_ERROR	4
+
 #elif FIX_POINT_PRE == 12 && COLOR_MAX == 255
-	#define FIX_POINT_HALF_COLOR	0x7F800
-	#define FIX_POINT_COLOR_ERROR	16
+#define FIX_POINT_HALF_COLOR	0x7F800
+#define FIX_POINT_COLOR_ERROR	16
 #elif FIX_POINT_PRE == 10 && COLOR_MAX == 31
-	#define FIX_POINT_HALF_COLOR	0x3E00
-	#define FIX_POINT_COLOR_ERROR	32
+#define FIX_POINT_HALF_COLOR	0x3E00
+#define FIX_POINT_COLOR_ERROR	32
 #else
-	#define FIX_POINT_HALF_COLOR	( (tFixPoint) ( ((f32) COLOR_MAX / 2.f * FIX_POINT_F32_MUL ) ) )
-	#define FIX_POINT_COLOR_ERROR	(1<<(FIX_POINT_PRE-COLOR_MAX_LOG2))
+#define FIX_POINT_HALF_COLOR	( (tFixPoint) ( ((f32) COLOR_MAX / 2.f * FIX_POINT_F32_MUL ) ) )
+#define FIX_POINT_COLOR_ERROR	(1<<(FIX_POINT_PRE-COLOR_MAX_LOG2))
 #endif
 
 
 /*
-	convert signed integer to fixpoint
+convert signed integer to fixpoint
 */
-inline tFixPoint s32_to_fixPoint (const s32 x)
+inline tFixPoint s32_to_fixPoint(const s32 x)
 {
 	return x << FIX_POINT_PRE;
 }
 
 #if 0
-inline tFixPointu u32_to_fixPoint (const u32 x)
+inline tFixPointu u32_to_fixPoint(const u32 x)
 {
 	return x << FIX_POINT_PRE;
 }
 #endif
 
-inline u32 fixPointu_to_u32 (const tFixPointu x)
+inline u32 fixPointu_to_u32(const tFixPointu x)
 {
 	return (u32)(x >> FIX_POINT_PRE);
 }
@@ -528,15 +532,15 @@ inline u32 fixPointu_to_u32 (const tFixPointu x)
 
 
 /*
-	convert float to fixpoint
-	fast convert (fistp on x86) HAS to be used..
-	hints: compileflag /QIfist for msvc7. msvc 8.0 has smth different
-	others should use their favourite assembler..
+convert float to fixpoint
+fast convert (fistp on x86) HAS to be used..
+hints: compileflag /QIfist for msvc7. msvc 8.0 has smth different
+others should use their favourite assembler..
 */
 #if 0
 static inline int f_round2(f32 f)
 {
-	f += (3<<22);
+	f += (3 << 22);
 	return IR(f) - 0x4b400000;
 }
 #endif
@@ -582,19 +586,19 @@ REALINLINE tFixPoint imulFix(const tFixPoint x, const tFixPoint y)
 */
 REALINLINE tFixPoint imulFix2(const tFixPoint x, const tFixPoint y)
 {
-	return ( x * y) >> ( FIX_POINT_PRE -1 );
+	return (x * y) >> (FIX_POINT_PRE - 1);
 }
 #endif
 
 /*
-	Multiply x * y * 1 FIXPOINT_COLOR_MAX
+	Multiply x * y * 1 FIX_POINT_COLOR_MAX
 */
 REALINLINE tFixPoint imulFix_tex1(const tFixPoint x, const tFixPoint y)
 {
 #if SOFTWARE_DRIVER_2_TEXTURE_COLOR_FORMAT == ECF_A8R8G8B8
-	return (((tFixPointu)x >> 2)*(((tFixPointu)y + FIX_POINT_ONE) >> 2)) >> (tFixPointu) (FIX_POINT_PRE + 4);
+	return (((tFixPointu)x >> 2) * (((tFixPointu)y + FIX_POINT_ONE) >> 2)) >> (tFixPointu)(FIX_POINT_PRE + 4);
 #else
-	return (x * (y+ FIX_POINT_ONE)) >> (FIX_POINT_PRE + 5);
+	return (x * (y + FIX_POINT_ONE)) >> (FIX_POINT_PRE + 5);
 #endif
 }
 
@@ -603,7 +607,7 @@ REALINLINE tFixPoint imulFix_tex1(const tFixPoint x, const tFixPoint y)
 */
 REALINLINE tFixPoint imulFix_tex2(const tFixPoint x, const tFixPoint y)
 {
-	return ( ( (tFixPointu) x >> 2 ) * ( (tFixPointu) y >> 2 ) ) >> (tFixPointu) ( FIX_POINT_PRE + 3 );
+	return (((tFixPointu)x >> 2) * ((tFixPointu)y >> 2)) >> (tFixPointu)(FIX_POINT_PRE + 3);
 }
 
 /*
@@ -613,44 +617,44 @@ REALINLINE tFixPoint imulFix_tex2(const tFixPoint x, const tFixPoint y)
 REALINLINE tFixPoint imulFix_tex4(const tFixPoint x, const tFixPoint y)
 {
 #if SOFTWARE_DRIVER_2_TEXTURE_COLOR_FORMAT == ECF_A8R8G8B8
-	tFixPoint a = (((tFixPointu)x >> 2)*(((tFixPointu)y + FIX_POINT_ONE) >> 2)) >> (tFixPointu)(FIX_POINT_PRE + 2);
+	tFixPoint a = (((tFixPointu)x >> 2) * (((tFixPointu)y + FIX_POINT_ONE) >> 2)) >> (tFixPointu)(FIX_POINT_PRE + 2);
 #else
 	tFixPoint a = (x * (y + FIX_POINT_ONE)) >> (FIX_POINT_PRE + 3);
 #endif
-	tFixPoint mask = (a - FIXPOINT_COLOR_MAX) >> 31;
-	return (a & mask) | (FIXPOINT_COLOR_MAX & ~mask);
+	tFixPoint mask = (a - FIX_POINT_COLOR_MAX) >> 31;
+	return (a & mask) | (FIX_POINT_COLOR_MAX & ~mask);
 }
 
 
 /*!
 	clamp FixPoint to maxcolor in FixPoint, min(a,COLOR_MAX)
 */
-REALINLINE tFixPoint clampfix_maxcolor ( const tFixPoint a)
+REALINLINE tFixPoint clampfix_maxcolor(const tFixPoint a)
 {
-	tFixPoint c = (a - FIXPOINT_COLOR_MAX) >> 31;
-	return (a & c) | ( FIXPOINT_COLOR_MAX & ~c);
+	tFixPoint c = (a - FIX_POINT_COLOR_MAX) >> 31;
+	return (a & c) | (FIX_POINT_COLOR_MAX & ~c);
 }
 
 
 /*!
 	clamp FixPoint to 0 in FixPoint, max(a,0)
 */
-REALINLINE tFixPoint clampfix_mincolor ( const tFixPoint a)
+REALINLINE tFixPoint clampfix_mincolor(const tFixPoint a)
 {
-	return a - ( a & ( a >> 31 ) );
+	return a - (a & (a >> 31));
 }
 
-REALINLINE tFixPoint saturateFix ( const tFixPoint a)
+REALINLINE tFixPoint saturateFix(const tFixPoint a)
 {
-	return clampfix_mincolor ( clampfix_maxcolor ( a ) );
+	return clampfix_mincolor(clampfix_maxcolor(a));
 }
 
 
 #if 0
 // rount fixpoint to int
-inline s32 roundFix ( const tFixPoint x )
+inline s32 roundFix(const tFixPoint x)
 {
-	return (s32)(( x + FIX_POINT_ZERO_DOT_FIVE ) >> FIX_POINT_PRE);
+	return (s32)((x + FIX_POINT_ZERO_DOT_FIVE) >> FIX_POINT_PRE);
 }
 #endif
 
@@ -666,12 +670,21 @@ inline s32 f32_to_23Bits(const f32 x)
 /*!
 	fixpoint in [0..Fixpoint_color] to VideoSample xrgb
 */
-REALINLINE tVideoSample fix_to_sample ( const tFixPoint r, const tFixPoint g, const tFixPoint b )
+REALINLINE tVideoSample fix_to_sample(const tFixPoint r, const tFixPoint g, const tFixPoint b)
 {
-	return	( FIXPOINT_COLOR_MAX & FIXPOINT_COLOR_MAX) << ( SHIFT_A - FIX_POINT_PRE ) |
-			( r & FIXPOINT_COLOR_MAX) << ( SHIFT_R - FIX_POINT_PRE ) |
-			( g & FIXPOINT_COLOR_MAX) >> ( FIX_POINT_PRE - SHIFT_G ) |
-			( b & FIXPOINT_COLOR_MAX) >> ( FIX_POINT_PRE - SHIFT_B );
+	return	(FIX_POINT_COLOR_MAX & FIX_POINT_COLOR_MAX) << (SHIFT_A - FIX_POINT_PRE) |
+		(r & FIX_POINT_COLOR_MAX) << (SHIFT_R - FIX_POINT_PRE) |
+		(g & FIX_POINT_COLOR_MAX) >> (FIX_POINT_PRE - SHIFT_G) |
+		(b & FIX_POINT_COLOR_MAX) >> (FIX_POINT_PRE - SHIFT_B);
+}
+
+REALINLINE tVideoSample fix_to_sample_nearest(const tFixPoint a, const tFixPoint r, const tFixPoint g, const tFixPoint b)
+{
+	return
+		((a + FIX_POINT_ZERO_DOT_FIVE) & FIX_POINT_COLOR_MAX) << (SHIFT_A - FIX_POINT_PRE) |
+		((r + FIX_POINT_ZERO_DOT_FIVE) & FIX_POINT_COLOR_MAX) << (SHIFT_R - FIX_POINT_PRE) |
+		((g + FIX_POINT_ZERO_DOT_FIVE) & FIX_POINT_COLOR_MAX) >> (FIX_POINT_PRE - SHIFT_G) |
+		((b + FIX_POINT_ZERO_DOT_FIVE) & FIX_POINT_COLOR_MAX) >> (FIX_POINT_PRE - SHIFT_B);
 }
 
 
@@ -680,43 +693,43 @@ REALINLINE tVideoSample fix_to_sample ( const tFixPoint r, const tFixPoint g, co
 	a in [0;1]
 	rgb in [0;255] colormax
 */
-REALINLINE tVideoSample fix4_to_sample ( const tFixPoint a, const tFixPoint r, const tFixPoint g, const tFixPoint b )
+REALINLINE tVideoSample fix4_to_sample(const tFixPoint a, const tFixPoint r, const tFixPoint g, const tFixPoint b)
 {
-	return	( a & (FIX_POINT_FRACT_MASK - 1 )) << ( SHIFT_A - 1 ) |
-			( r & FIXPOINT_COLOR_MAX) << ( SHIFT_R - FIX_POINT_PRE ) |
-			( g & FIXPOINT_COLOR_MAX) >> ( FIX_POINT_PRE - SHIFT_G ) |
-			( b & FIXPOINT_COLOR_MAX) >> ( FIX_POINT_PRE - SHIFT_B );
+	return	(a & (FIX_POINT_FRACT_MASK - 1)) << (SHIFT_A - 1) |
+		(r & FIX_POINT_COLOR_MAX) << (SHIFT_R - FIX_POINT_PRE) |
+		(g & FIX_POINT_COLOR_MAX) >> (FIX_POINT_PRE - SHIFT_G) |
+		(b & FIX_POINT_COLOR_MAX) >> (FIX_POINT_PRE - SHIFT_B);
 }
 
 /*!
-	return fixpoint from VideoSample granularity FIXPOINT_COLOR_MAX
+	return fixpoint from VideoSample granularity FIX_POINT_COLOR_MAX
 */
-inline void color_to_fix ( tFixPoint &r, tFixPoint &g, tFixPoint &b, const tVideoSample t00 )
+inline void color_to_fix(tFixPoint& r, tFixPoint& g, tFixPoint& b, const tVideoSample t00)
 {
-	(tFixPointu&) r =	(t00 & MASK_R) >> ( SHIFT_R - FIX_POINT_PRE );
-	(tFixPointu&) g =	(t00 & MASK_G) << ( FIX_POINT_PRE - SHIFT_G );
-	(tFixPointu&) b =	(t00 & MASK_B) << ( FIX_POINT_PRE - SHIFT_B );
+	(tFixPointu&)r = (t00 & MASK_R) >> (SHIFT_R - FIX_POINT_PRE);
+	(tFixPointu&)g = (t00 & MASK_G) << (FIX_POINT_PRE - SHIFT_G);
+	(tFixPointu&)b = (t00 & MASK_B) << (FIX_POINT_PRE - SHIFT_B);
 }
 
 /*!
-	return fixpoint from VideoSample granularity FIXPOINT_COLOR_MAX
+	return fixpoint from VideoSample granularity FIX_POINT_COLOR_MAX
 */
-inline void color_to_fix ( tFixPoint &a, tFixPoint &r, tFixPoint &g, tFixPoint &b, const tVideoSample t00 )
+inline void color_to_fix(tFixPoint& a, tFixPoint& r, tFixPoint& g, tFixPoint& b, const tVideoSample t00)
 {
-	(tFixPointu&) a =	(t00 & MASK_A) >> ( SHIFT_A - FIX_POINT_PRE );
-	(tFixPointu&) r =	(t00 & MASK_R) >> ( SHIFT_R - FIX_POINT_PRE );
-	(tFixPointu&) g =	(t00 & MASK_G) << ( FIX_POINT_PRE - SHIFT_G );
-	(tFixPointu&) b =	(t00 & MASK_B) << ( FIX_POINT_PRE - SHIFT_B );
+	(tFixPointu&)a = (t00 & MASK_A) >> (SHIFT_A - FIX_POINT_PRE);
+	(tFixPointu&)r = (t00 & MASK_R) >> (SHIFT_R - FIX_POINT_PRE);
+	(tFixPointu&)g = (t00 & MASK_G) << (FIX_POINT_PRE - SHIFT_G);
+	(tFixPointu&)b = (t00 & MASK_B) << (FIX_POINT_PRE - SHIFT_B);
 }
 
 /*!
 	return fixpoint from VideoSample granularity 0..FIX_POINT_ONE
 */
-inline void color_to_fix1 ( tFixPoint &r, tFixPoint &g, tFixPoint &b, const tVideoSample t00 )
+inline void color_to_fix1(tFixPoint& r, tFixPoint& g, tFixPoint& b, const tVideoSample t00)
 {
-	(tFixPointu&) r =	(t00 & MASK_R) >> ( SHIFT_R + COLOR_MAX_LOG2 - FIX_POINT_PRE );
-	(tFixPointu&) g =	(t00 & MASK_G) >> ( SHIFT_G + COLOR_MAX_LOG2 - FIX_POINT_PRE );
-	(tFixPointu&) b =	(t00 & MASK_B) << ( FIX_POINT_PRE - COLOR_MAX_LOG2 );
+	(tFixPointu&)r = (t00 & MASK_R) >> (SHIFT_R + COLOR_MAX_LOG2 - FIX_POINT_PRE);
+	(tFixPointu&)g = (t00 & MASK_G) >> (SHIFT_G + COLOR_MAX_LOG2 - FIX_POINT_PRE);
+	(tFixPointu&)b = (t00 & MASK_B) << (FIX_POINT_PRE - COLOR_MAX_LOG2);
 
 	//0..255 -> 0..256 | c += c >= 0.5 ? 1 : 0
 	r += (r & FIX_POINT_ZERO_DOT_FIVE) ? FIX_POINT_COLOR_ERROR : 0;
@@ -727,12 +740,12 @@ inline void color_to_fix1 ( tFixPoint &r, tFixPoint &g, tFixPoint &b, const tVid
 /*!
 	return fixpoint from VideoSample granularity 0..FIX_POINT_ONE
 */
-inline void color_to_fix1 ( tFixPoint &a, tFixPoint &r, tFixPoint &g, tFixPoint &b, const tVideoSample t00 )
+inline void color_to_fix1(tFixPoint& a, tFixPoint& r, tFixPoint& g, tFixPoint& b, const tVideoSample t00)
 {
-	(tFixPointu&) a =	(t00 & MASK_A) >> ( SHIFT_A + COLOR_MAX_LOG2 - FIX_POINT_PRE );
-	(tFixPointu&) r =	(t00 & MASK_R) >> ( SHIFT_R + COLOR_MAX_LOG2 - FIX_POINT_PRE );
-	(tFixPointu&) g =	(t00 & MASK_G) >> ( SHIFT_G + COLOR_MAX_LOG2 - FIX_POINT_PRE );
-	(tFixPointu&) b =	(t00 & MASK_B) << ( FIX_POINT_PRE - COLOR_MAX_LOG2 );
+	(tFixPointu&)a = (t00 & MASK_A) >> (SHIFT_A + COLOR_MAX_LOG2 - FIX_POINT_PRE);
+	(tFixPointu&)r = (t00 & MASK_R) >> (SHIFT_R + COLOR_MAX_LOG2 - FIX_POINT_PRE);
+	(tFixPointu&)g = (t00 & MASK_G) >> (SHIFT_G + COLOR_MAX_LOG2 - FIX_POINT_PRE);
+	(tFixPointu&)b = (t00 & MASK_B) << (FIX_POINT_PRE - COLOR_MAX_LOG2);
 
 	//0..255 -> 0..256 | c += c >= 0.5 ? 1 : 0
 	a += (a & FIX_POINT_ZERO_DOT_FIVE) ? FIX_POINT_COLOR_ERROR : 0;
@@ -743,7 +756,7 @@ inline void color_to_fix1 ( tFixPoint &a, tFixPoint &r, tFixPoint &g, tFixPoint 
 }
 
 /*!
-	return fixpoint from VideoSample granularity FIXPOINT_COLOR_MAX
+	return fixpoint from VideoSample granularity FIX_POINT_COLOR_MAX
 */
 inline void color_to_fix(tFixPoint c[4], const tVideoSample t00)
 {
@@ -784,26 +797,26 @@ struct fp24
 
 	fp24() {}
 
-	fp24 ( const f32 f )
+	fp24(const f32 f)
 	{
 		f32 y = f + 1.f;
 		v = ((u32&)y) & 0x7FFFFF;	// last 23 bits
 	}
 
-	void operator=(const f32 f )
+	void operator=(const f32 f)
 	{
-	f32 y = f + 1.f;
+		f32 y = f + 1.f;
 		v = ((u32&)y) & 0x7FFFFF;	// last 23 bits
-		}
+	}
 
-	void operator+=(const fp24 &other )
+	void operator+=(const fp24& other)
 	{
 		v += other.v;
 	}
 
 	operator f32 () const
 	{
-		f32 r = FR ( v );
+		f32 r = FR(v);
 		return r + 1.f;
 	}
 
@@ -822,53 +835,53 @@ struct sInternalTexture
 
 	size_t pitchlog2;
 
-	video::CSoftwareTexture2 *Texture;
+	video::CSoftwareTexture2* Texture;
 	s32 lodFactor; // magnify/minify
 };
 
 
 
 // get video sample plain
-static inline tVideoSample getTexel_plain ( const sInternalTexture* t, const tFixPointu tx, const tFixPointu ty )
+static inline tVideoSample getTexel_plain(const sInternalTexture* t, const tFixPointu tx, const tFixPointu ty)
 {
 	size_t ofs;
 
-	ofs = ( ( ty & t->textureYMask ) >> FIX_POINT_PRE ) << t->pitchlog2;
-	ofs |= ( tx & t->textureXMask ) >> ( FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY );
+	ofs = ((ty & t->textureYMask) >> FIX_POINT_PRE) << t->pitchlog2;
+	ofs |= (tx & t->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
 
 	// texel
-	return *((tVideoSample*)( (u8*) t->data + ofs ));
+	return *((tVideoSample*)((u8*)t->data + ofs));
 }
 
 // get video sample to fix
-inline void getTexel_fix ( tFixPoint &r, tFixPoint &g, tFixPoint &b,
-						const sInternalTexture* t, const tFixPointu tx, const tFixPointu ty
-								)
-{
-	size_t ofs;
-
-	ofs = ( ((ty + FIX_POINT_ZERO_DOT_FIVE) & t->textureYMask ) >> FIX_POINT_PRE ) << t->pitchlog2;
-	ofs |= ((tx + FIX_POINT_ZERO_DOT_FIVE) & t->textureXMask ) >> ( FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY );
-
-	// texel
-	tVideoSample t00;
-	t00 = *((tVideoSample*)( (u8*) t->data + ofs ));
-
-	r = (t00 & MASK_R) >> ( SHIFT_R - FIX_POINT_PRE);
-	g = (t00 & MASK_G) << ( FIX_POINT_PRE - SHIFT_G );
-	b = (t00 & MASK_B) << ( FIX_POINT_PRE - SHIFT_B );
-
-}
-
-// get video sample to fixpoint colormax
-inline void getTexel_fix(tFixPoint &a, tFixPoint &r, tFixPoint &g, tFixPoint &b,
+inline void getTexel_fix(tFixPoint& r, tFixPoint& g, tFixPoint& b,
 	const sInternalTexture* t, const tFixPointu tx, const tFixPointu ty
 )
 {
 	size_t ofs;
 
-	ofs = (((ty+ FIX_POINT_ZERO_DOT_FIVE) & t->textureYMask) >> FIX_POINT_PRE) << t->pitchlog2;
-	ofs |= ((tx+ FIX_POINT_ZERO_DOT_FIVE) & t->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+	ofs = (((ty + FIX_POINT_ZERO_DOT_FIVE) & t->textureYMask) >> FIX_POINT_PRE) << t->pitchlog2;
+	ofs |= ((tx + FIX_POINT_ZERO_DOT_FIVE) & t->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+
+	// texel
+	tVideoSample t00;
+	t00 = *((tVideoSample*)((u8*)t->data + ofs));
+
+	r = (t00 & MASK_R) >> (SHIFT_R - FIX_POINT_PRE);
+	g = (t00 & MASK_G) << (FIX_POINT_PRE - SHIFT_G);
+	b = (t00 & MASK_B) << (FIX_POINT_PRE - SHIFT_B);
+
+}
+
+// get video sample to fixpoint colormax
+inline void getTexel_fix(tFixPoint& a, tFixPoint& r, tFixPoint& g, tFixPoint& b,
+	const sInternalTexture* t, const tFixPointu tx, const tFixPointu ty
+)
+{
+	size_t ofs;
+
+	ofs = (((ty + FIX_POINT_ZERO_DOT_FIVE) & t->textureYMask) >> FIX_POINT_PRE) << t->pitchlog2;
+	ofs |= ((tx + FIX_POINT_ZERO_DOT_FIVE) & t->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
 
 	// texel
 	tVideoSample t00;
@@ -883,19 +896,19 @@ inline void getTexel_fix(tFixPoint &a, tFixPoint &r, tFixPoint &g, tFixPoint &b,
 
 #if 0
 // get video sample to fixpoint
-static REALINLINE void getTexel_fix ( tFixPoint &a,
-			const sInternalTexture * t, const tFixPointu tx, const tFixPointu ty)
+static REALINLINE void getTexel_fix(tFixPoint& a,
+	const sInternalTexture* t, const tFixPointu tx, const tFixPointu ty)
 {
 	size_t ofs;
 
-	ofs = ( ((ty + FIX_POINT_ZERO_DOT_FIVE) & t->textureYMask ) >> FIX_POINT_PRE ) << t->pitchlog2;
-	ofs |= ((tx + FIX_POINT_ZERO_DOT_FIVE) & t->textureXMask ) >> ( FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY );
+	ofs = (((ty + FIX_POINT_ZERO_DOT_FIVE) & t->textureYMask) >> FIX_POINT_PRE) << t->pitchlog2;
+	ofs |= ((tx + FIX_POINT_ZERO_DOT_FIVE) & t->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
 
 	// texel
 	tVideoSample t00;
-	t00 = *((tVideoSample*)( (u8*) t->data + ofs ));
+	t00 = *((tVideoSample*)((u8*)t->data + ofs));
 
-	a = (t00 & MASK_A) >> ( SHIFT_A - FIX_POINT_PRE);
+	a = (t00 & MASK_A) >> (SHIFT_A - FIX_POINT_PRE);
 }
 #endif
 
@@ -906,7 +919,7 @@ static REALINLINE void getTexel_fix ( tFixPoint &a,
 
 #if 0
 // texture2D in fixpoint color range bilinear
-static REALINLINE void getSample_texture(tFixPoint &r, tFixPoint &g, tFixPoint &b,
+static REALINLINE void getSample_texture(tFixPoint& r, tFixPoint& g, tFixPoint& b,
 	const sInternalTexture* burning_restrict t, const tFixPointu tx, const tFixPointu ty
 )
 {
@@ -938,9 +951,9 @@ static REALINLINE void getSample_texture(tFixPoint &r, tFixPoint &g, tFixPoint &
 	tVideoSample t00;
 
 	//wraps positive (ignoring negative)
-	o0 = (((ty)& t->textureYMask) >> FIX_POINT_PRE) << t->pitchlog2;
+	o0 = (((ty)&t->textureYMask) >> FIX_POINT_PRE) << t->pitchlog2;
 	o1 = (((ty + FIX_POINT_ONE) & t->textureYMask) >> FIX_POINT_PRE) << t->pitchlog2;
-	o2 = ((tx)& t->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+	o2 = ((tx)&t->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
 	o3 = ((tx + FIX_POINT_ONE) & t->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
 
 	t00 = *((tVideoSample*)((u8*)t->data + (o0 + o2)));
@@ -994,7 +1007,7 @@ static REALINLINE void getSample_texture(tFixPoint &r, tFixPoint &g, tFixPoint &
 #else
 
 // texture2D in fixpoint color range bilinear
-static REALINLINE void getSample_texture(tFixPoint &r, tFixPoint &g, tFixPoint &b,
+static REALINLINE void getSample_texture(tFixPoint& r, tFixPoint& g, tFixPoint& b,
 	const sInternalTexture* burning_restrict tex, const tFixPointu tx, const tFixPointu ty
 )
 {
@@ -1015,6 +1028,7 @@ static REALINLINE void getSample_texture(tFixPoint &r, tFixPoint &g, tFixPoint &
 		return;
 	}
 #endif
+
 	//w00 w01 w10 w11
 	tFixPointu w[4];
 	{
@@ -1030,9 +1044,12 @@ static REALINLINE void getSample_texture(tFixPoint &r, tFixPoint &g, tFixPoint &
 	tVideoSample t[4];
 	{
 		size_t o0, o1, o2, o3;
-		o0 = (((ty) & tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
+
+		// #if FIX_POINT_PRE > SOFTWARE_DRIVER_2_TEXTURE_MAXSIZE_LOG2 >> FIX_POINT_PRE - tex->pitchlog2
+
+		o0 = (((ty)&tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
 		o1 = (((ty + FIX_POINT_ONE) & tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
-		o2 = ((tx)& tex->textureXMask) >> (unsigned)(FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+		o2 = ((tx)&tex->textureXMask) >> (unsigned)(FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
 		o3 = ((tx + FIX_POINT_ONE) & tex->textureXMask) >> (unsigned)(FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
 
 		t[0] = *((tVideoSample*)((u8*)tex->data + (o0 + o2)));
@@ -1060,7 +1077,7 @@ static REALINLINE void getSample_texture(tFixPoint &r, tFixPoint &g, tFixPoint &
 #endif
 
 // get Sample bilinear
-static REALINLINE void getSample_texture(tFixPoint &a, tFixPoint &r, tFixPoint &g, tFixPoint &b,
+static REALINLINE void getSample_texture(tFixPoint& a, tFixPoint& r, tFixPoint& g, tFixPoint& b,
 	const sInternalTexture* burning_restrict tex, const tFixPointu tx, const tFixPointu ty
 )
 {
@@ -1073,9 +1090,9 @@ static REALINLINE void getSample_texture(tFixPoint &a, tFixPoint &r, tFixPoint &
 	size_t o0, o1, o2, o3;
 	tVideoSample t00;
 
-	o0 = (((ty)& tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
+	o0 = (((ty)&tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
 	o1 = (((ty + FIX_POINT_ONE) & tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
-	o2 = ((tx)& tex->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+	o2 = ((tx)&tex->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
 	o3 = ((tx + FIX_POINT_ONE) & tex->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
 
 	t00 = *((tVideoSample*)((u8*)tex->data + (o0 + o2)));
@@ -1137,44 +1154,111 @@ static REALINLINE void getSample_texture(tFixPoint &a, tFixPoint &r, tFixPoint &
 
 }
 
+// get Sample bilinear
+static REALINLINE void getSample_texture(tFixPoint& a,
+	const sInternalTexture* burning_restrict tex, const tFixPointu tx, const tFixPointu ty
+)
+{
+
+	tFixPointu a00;
+	tFixPointu a01;
+	tFixPointu a10;
+	tFixPointu a11;
+
+	size_t o0, o1, o2, o3;
+	tVideoSample t00;
+
+	o0 = (((ty)&tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
+	o1 = (((ty + FIX_POINT_ONE) & tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
+	o2 = ((tx)&tex->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+	o3 = ((tx + FIX_POINT_ONE) & tex->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+
+	t00 = *((tVideoSample*)((u8*)tex->data + (o0 + o2)));
+	a00 = (t00 & MASK_A) >> SHIFT_A;
+
+	t00 = *((tVideoSample*)((u8*)tex->data + (o0 + o3)));
+	a10 = (t00 & MASK_A) >> SHIFT_A;
+
+	t00 = *((tVideoSample*)((u8*)tex->data + (o1 + o2)));
+	a01 = (t00 & MASK_A) >> SHIFT_A;
+
+	t00 = *((tVideoSample*)((u8*)tex->data + (o1 + o3)));
+	a11 = (t00 & MASK_A) >> SHIFT_A;
+
+	const tFixPointu txFract = tx & FIX_POINT_FRACT_MASK;
+	const tFixPointu txFractInv = FIX_POINT_ONE - txFract;
+
+	const tFixPointu tyFract = ty & FIX_POINT_FRACT_MASK;
+	const tFixPointu tyFractInv = FIX_POINT_ONE - tyFract;
+
+	const tFixPointu w00 = imulFixu(txFractInv, tyFractInv);
+	const tFixPointu w10 = imulFixu(txFract, tyFractInv);
+	const tFixPointu w01 = imulFixu(txFractInv, tyFract);
+	const tFixPointu w11 = imulFixu(txFract, tyFract);
+
+	a = (a00 * w00) +
+		(a01 * w01) +
+		(a10 * w10) +
+		(a11 * w11);
+
+	fix_alpha_color_max(a);
+
+}
+
 #else // SOFTWARE_DRIVER_2_BILINEAR
 
 // get Sample linear == getSample_fixpoint
 
-static REALINLINE void getSample_texture(tFixPoint &r, tFixPoint &g, tFixPoint &b,
-	const sInternalTexture* burning_restrict t, const tFixPointu tx, const tFixPointu ty
+static REALINLINE void getSample_texture(tFixPoint& r, tFixPoint& g, tFixPoint& b,
+	const sInternalTexture* burning_restrict tex, const tFixPointu tx, const tFixPointu ty
 )
 {
 	size_t ofs;
-	ofs = (((ty + FIX_POINT_ZERO_DOT_FIVE) & t->textureYMask) >> FIX_POINT_PRE) << t->pitchlog2;
-	ofs += ((tx + FIX_POINT_ZERO_DOT_FIVE) & t->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+	ofs = (((ty + FIX_POINT_ZERO_DOT_FIVE) & tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
+	ofs += ((tx + FIX_POINT_ZERO_DOT_FIVE) & tex->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
 
 	// texel
-	const tVideoSample t00 = *((tVideoSample*)((u8*)t->data + ofs));
+	const tVideoSample t00 = *((tVideoSample*)((u8*)tex->data + ofs));
 
-	(tFixPointu &)r = (t00 & MASK_R) >> (SHIFT_R - FIX_POINT_PRE);
-	(tFixPointu &)g = (t00 & MASK_G) << (FIX_POINT_PRE - SHIFT_G);
-	(tFixPointu &)b = (t00 & MASK_B) << (FIX_POINT_PRE - SHIFT_B);
+	(tFixPointu&)r = (t00 & MASK_R) >> (SHIFT_R - FIX_POINT_PRE);
+	(tFixPointu&)g = (t00 & MASK_G) << (FIX_POINT_PRE - SHIFT_G);
+	(tFixPointu&)b = (t00 & MASK_B) << (FIX_POINT_PRE - SHIFT_B);
 }
 
-static REALINLINE void getSample_texture(tFixPoint &a, tFixPoint &r, tFixPoint &g, tFixPoint &b,
-	const sInternalTexture* burning_restrict t, const tFixPointu tx, const tFixPointu ty
+static REALINLINE void getSample_texture(tFixPoint& a, tFixPoint& r, tFixPoint& g, tFixPoint& b,
+	const sInternalTexture* burning_restrict tex, const tFixPointu tx, const tFixPointu ty
 )
 {
 	size_t ofs;
-	ofs = (((ty + FIX_POINT_ZERO_DOT_FIVE) & t->textureYMask) >> FIX_POINT_PRE) << t->pitchlog2;
-	ofs += ((tx + FIX_POINT_ZERO_DOT_FIVE) & t->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+	ofs = (((ty + FIX_POINT_ZERO_DOT_FIVE) & tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
+	ofs += ((tx + FIX_POINT_ZERO_DOT_FIVE) & tex->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
 
 	// texel
-	const tVideoSample t00 = *((tVideoSample*)((u8*)t->data + ofs));
+	const tVideoSample t00 = *((tVideoSample*)((u8*)tex->data + ofs));
 
-	(tFixPointu &)a = (t00 & MASK_A) >> (SHIFT_A - FIX_POINT_PRE);
+	(tFixPointu&)a = (t00 & MASK_A) >> (SHIFT_A - FIX_POINT_PRE);
 	fix_alpha_color_max(a);
-	(tFixPointu &)r = (t00 & MASK_R) >> (SHIFT_R - FIX_POINT_PRE);
-	(tFixPointu &)g = (t00 & MASK_G) << (FIX_POINT_PRE - SHIFT_G);
-	(tFixPointu &)b = (t00 & MASK_B) << (FIX_POINT_PRE - SHIFT_B);
+	(tFixPointu&)r = (t00 & MASK_R) >> (SHIFT_R - FIX_POINT_PRE);
+	(tFixPointu&)g = (t00 & MASK_G) << (FIX_POINT_PRE - SHIFT_G);
+	(tFixPointu&)b = (t00 & MASK_B) << (FIX_POINT_PRE - SHIFT_B);
 }
 
+
+// get Sample bilinear
+static REALINLINE void getSample_texture(tFixPoint& a,
+	const sInternalTexture* burning_restrict tex, const tFixPointu tx, const tFixPointu ty
+)
+{
+	size_t ofs;
+	ofs = (((ty + FIX_POINT_ZERO_DOT_FIVE) & tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
+	ofs += ((tx + FIX_POINT_ZERO_DOT_FIVE) & tex->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+
+	// texel
+	const tVideoSample t00 = *((tVideoSample*)((u8*)tex->data + ofs));
+
+	(tFixPointu&)a = (t00 & MASK_A) >> (SHIFT_A - FIX_POINT_PRE);
+	fix_alpha_color_max(a);
+}
 
 #endif // SOFTWARE_DRIVER_2_BILINEAR
 
@@ -1189,13 +1273,13 @@ struct AbsRectangle
 };
 
 //! 2D Intersection test
-inline bool intersect ( AbsRectangle &dest, const AbsRectangle& a, const AbsRectangle& b)
+inline bool intersect(AbsRectangle& dest, const AbsRectangle& a, const AbsRectangle& b)
 {
-	dest.x0 = core::s32_max( a.x0, b.x0 );
-	dest.y0 = core::s32_max( a.y0, b.y0 );
-	dest.x1 = core::s32_min( a.x1, b.x1 );
-	dest.y1 = core::s32_min( a.y1, b.y1 );
-	return dest.x0 < dest.x1 && dest.y0 < dest.y1;
+	dest.x0 = core::s32_max(a.x0, b.x0);
+	dest.y0 = core::s32_max(a.y0, b.y0);
+	dest.x1 = core::s32_min(a.x1, b.x1);
+	dest.y1 = core::s32_min(a.y1, b.y1);
+	return dest.x0 < dest.x1&& dest.y0 < dest.y1;
 }
 
 #if 0
@@ -1207,9 +1291,9 @@ struct sIntervall
 };
 
 // returning intersection width
-inline s32 intervall_intersect_test( const sIntervall& a, const sIntervall& b)
+inline s32 intervall_intersect_test(const sIntervall& a, const sIntervall& b)
 {
-	return core::s32_min( a.end, b.end ) - core::s32_max( a.start, b.start );
+	return core::s32_min(a.end, b.end) - core::s32_max(a.start, b.start);
 }
 
 #endif
@@ -1225,7 +1309,7 @@ static inline void tiny_strncpy(char* to, const char* from, const size_t count)
 
 
 // tiny_isequal = !strncmp(a,b,sizeof(a)-1)
-static inline int tiny_isequal(const char *s1, const char *s2, size_t n)
+static inline int tiny_isequal(const char* s1, const char* s2, size_t n)
 {
 	do {
 		if (*s1 != *s2++) return 0;

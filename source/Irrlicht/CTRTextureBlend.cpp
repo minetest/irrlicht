@@ -85,7 +85,7 @@ namespace video
 
 		//! draws an indexed triangle list
 		virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) IRR_OVERRIDE;
-		virtual void OnSetMaterial(const SBurningShaderMaterial& material) IRR_OVERRIDE;
+		virtual void OnSetMaterialBurning(const SBurningShaderMaterial& material) IRR_OVERRIDE;
 
 private:
 	// fragment shader
@@ -108,7 +108,7 @@ private:
 
 //! constructor
 CTRTextureBlend::CTRTextureBlend(CBurningVideoDriver* driver)
-: IBurningShader(driver)
+: IBurningShader(driver, EMT_ONETEXTURE_BLEND)
 {
 	#ifdef _DEBUG
 	setDebugName("CTRTextureBlend");
@@ -120,12 +120,12 @@ CTRTextureBlend::CTRTextureBlend(CBurningVideoDriver* driver)
 
 /*!
 */
-void CTRTextureBlend::OnSetMaterial(const SBurningShaderMaterial& material)
+void CTRTextureBlend::OnSetMaterialBurning(const SBurningShaderMaterial& material)
 {
 	int showname = 0;
 
 	depth_func = (E_COMPARISON_FUNC)material.org.ZBuffer;
-	AlphaRef = 0; // tofix(material.org.MaterialTypeParam, FIXPOINT_COLOR_MAX);
+	AlphaRef = 0; // tofix(material.org.MaterialTypeParam, FIX_POINT_COLOR_MAX);
 
 	E_BLEND_FACTOR srcFact,dstFact;
 	E_MODULATE_FUNC modulate;
@@ -2201,7 +2201,7 @@ void CTRTextureBlend::drawTriangle(const s4DVertex* burning_restrict a, const s4
 	temp[2] = b->Pos.x - a->Pos.x;
 	temp[3] = ba;
 
-	scan.left = ( temp[0] * temp[3] - temp[1] * temp[2] ) > 0.f ? 0 : 1;
+	scan.left = (temp[0] * temp[3] - temp[1] * temp[2]) < 0.f ? 1 : 0;
 	scan.right = 1 - scan.left;
 
 	// calculate slopes for the major edge
@@ -2274,8 +2274,8 @@ void CTRTextureBlend::drawTriangle(const s4DVertex* burning_restrict a, const s4
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = fill_convention_left( a->Pos.y );
-		yEnd = fill_convention_right( b->Pos.y );
+		yStart = fill_convention_top( a->Pos.y );
+		yEnd = fill_convention_down( b->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - a->Pos.y;
@@ -2343,7 +2343,7 @@ void CTRTextureBlend::drawTriangle(const s4DVertex* burning_restrict a, const s4
 #endif
 
 			// render a scanline
-			interlace_scanline (this->*fragmentShader) ();
+			if_interlace_scanline (this->*fragmentShader) ();
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];
@@ -2433,8 +2433,8 @@ void CTRTextureBlend::drawTriangle(const s4DVertex* burning_restrict a, const s4
 #endif
 
 		// apply top-left fill convention, top part
-		yStart = fill_convention_left( b->Pos.y );
-		yEnd = fill_convention_right( c->Pos.y );
+		yStart = fill_convention_top( b->Pos.y );
+		yEnd = fill_convention_down( c->Pos.y );
 
 #ifdef SUBTEXEL
 		subPixel = ( (f32) yStart ) - b->Pos.y;
@@ -2502,7 +2502,7 @@ void CTRTextureBlend::drawTriangle(const s4DVertex* burning_restrict a, const s4
 #endif
 
 			// render a scanline
-			interlace_scanline (this->*fragmentShader) ();
+			if_interlace_scanline (this->*fragmentShader) ();
 
 			scan.x[0] += scan.slopeX[0];
 			scan.x[1] += scan.slopeX[1];

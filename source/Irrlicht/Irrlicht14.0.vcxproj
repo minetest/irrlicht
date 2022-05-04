@@ -849,30 +849,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\EDeviceTypes.h" />  
+    <ClInclude Include="..\..\include\EDeviceTypes.h" />
     <ClInclude Include="..\..\include\EDriverFeatures.h" />
-    <ClInclude Include="..\..\include\EHardwareBufferFlags.h" />	
+    <ClInclude Include="..\..\include\EHardwareBufferFlags.h" />
     <ClInclude Include="..\..\include\EMaterialFlags.h" />
     <ClInclude Include="..\..\include\EMaterialTypes.h" />
     <ClInclude Include="..\..\include\EReadFileType.h" />
     <ClInclude Include="..\..\include\EShaderTypes.h" />
-    <ClInclude Include="..\..\include\fast_atof.h" />	
+    <ClInclude Include="..\..\include\fast_atof.h" />
     <ClInclude Include="..\..\include\IAnimatedMeshMD3.h" />
-    <ClInclude Include="..\..\include\IBillboardTextSceneNode.h" />	
-	<ClInclude Include="..\..\include\IBoneSceneNode.h" />
-    <ClInclude Include="..\..\include\IColladaMeshWriter.h" />	
+    <ClInclude Include="..\..\include\IBillboardTextSceneNode.h" />
+    <ClInclude Include="..\..\include\IBoneSceneNode.h" />
+    <ClInclude Include="..\..\include\IColladaMeshWriter.h" />
     <ClInclude Include="..\..\include\IDynamicMeshBuffer.h" />
     <ClInclude Include="..\..\include\IEventReceiver.h" />
-    <ClInclude Include="..\..\include\IFileArchive.h" />	
-	<ClInclude Include="..\..\include\IGUIFontBitmap.h" />
+    <ClInclude Include="..\..\include\IFileArchive.h" />
+    <ClInclude Include="..\..\include\IGUIFontBitmap.h" />
     <ClInclude Include="..\..\include\IGUITable.h" />
     <ClInclude Include="..\..\include\IImageWriter.h" />
     <ClInclude Include="..\..\include\IIndexBuffer.h" />
-    <ClInclude Include="..\..\include\ILightManager.h" />	
+    <ClInclude Include="..\..\include\ILightManager.h" />
     <ClInclude Include="..\..\include\IOctreeSceneNode.h" />
     <ClInclude Include="..\..\include\IProfiler.h" />
     <ClInclude Include="..\..\include\ILogger.h" />
-    <ClInclude Include="..\..\include\IMemoryReadFile.h" />	
+    <ClInclude Include="..\..\include\IMemoryReadFile.h" />
     <ClInclude Include="..\..\include\IOSOperator.h" />
     <ClInclude Include="..\..\include\IRandomizer.h" />
     <ClInclude Include="..\..\include\IReferenceCounted.h" />
@@ -882,9 +882,9 @@
     <ClInclude Include="..\..\include\leakHunter.h" />
     <ClInclude Include="..\..\include\IrrlichtDevice.h" />
     <ClInclude Include="..\..\include\irrTypes.h" />
-    <ClInclude Include="..\..\include\ISceneUserDataSerializer.h" />	
+    <ClInclude Include="..\..\include\ISceneUserDataSerializer.h" />
     <ClInclude Include="..\..\include\ITimer.h" />
-    <ClInclude Include="..\..\include\IVertexBuffer.h" />	
+    <ClInclude Include="..\..\include\IVertexBuffer.h" />
     <ClInclude Include="..\..\include\Keycodes.h" />
     <ClInclude Include="..\..\include\SIrrCreationParameters.h" />
     <ClInclude Include="..\..\include\SKeyMap.h" />
@@ -926,7 +926,7 @@
     <ClInclude Include="..\..\include\SOverrideMaterial.h" />
     <ClInclude Include="..\..\include\SSharedMeshBuffer.h" />
     <ClInclude Include="..\..\include\SVertexIndex.h" />
-    <ClInclude Include="..\..\include\SVertexManipulator.h" />	
+    <ClInclude Include="..\..\include\SVertexManipulator.h" />
     <ClInclude Include="..\..\include\triangle3d.h" />
     <ClInclude Include="..\..\include\vector2d.h" />
     <ClInclude Include="..\..\include\vector3d.h" />
@@ -1081,7 +1081,7 @@
     <ClInclude Include="COpenGLSLMaterialRenderer.h" />
     <ClInclude Include="CSceneManager.h" />
     <ClInclude Include="CWGLManager.h" />
-	<ClInclude Include="ISceneNodeAnimatorFinishing.h" />
+    <ClInclude Include="ISceneNodeAnimatorFinishing.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="CSMFMeshFileLoader.h" />
     <ClInclude Include="C3DSMeshFileLoader.h" />
@@ -1365,6 +1365,7 @@
     <ClCompile Include="CSkinnedMesh.cpp" />
     <ClCompile Include="CSTLMeshFileLoader.cpp" />
     <ClCompile Include="CTRGouraudNoZ2.cpp" />
+    <ClCompile Include="CTRParallaxMap.cpp" />
     <ClCompile Include="CTR_transparent_reflection_2_layer.cpp" />
     <ClCompile Include="CWGLManager.cpp" />
     <ClCompile Include="CXMeshFileLoader.cpp" />
@@ -1468,7 +1469,6 @@
     <ClCompile Include="CSoftwareDriver2.cpp" />
     <ClCompile Include="CSoftwareTexture2.cpp" />
     <ClCompile Include="CTRGouraud2.cpp" />
-    <ClCompile Include="CTRGouraudAlpha2.cpp" />
     <ClCompile Include="CTRGouraudAlphaNoZ2.cpp" />
     <ClCompile Include="CTRNormalMap.cpp" />
     <ClCompile Include="CTRStencilShadow.cpp" />

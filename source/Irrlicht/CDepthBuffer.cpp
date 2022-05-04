@@ -40,7 +40,7 @@ CDepthBuffer::~CDepthBuffer()
 
 
 //! clears the zbuffer
-void CDepthBuffer::clear(f32 value, interlaced_control interlaced)
+void CDepthBuffer::clear(f32 value, const interlaced_control interlaced)
 {
 	ieee754 zMaxValue;
 
@@ -69,7 +69,7 @@ void CDepthBuffer::setSize(const core::dimension2d<u32>& size)
 	size_t TotalSize = Pitch * size.Height;
 	Buffer = new u8[align_next(TotalSize,16)];
 
-	clear( 1.f, interlace_disabled());
+	clear( 1.f, interlaced_disabled());
 }
 
 
@@ -135,7 +135,7 @@ void CStencilBuffer::setSize(const core::dimension2d<u32>& size)
 	size_t TotalSize = Pitch * size.Height;
 	Buffer = new u8[align_next(TotalSize,16)];
 
-	clear(0, interlace_disabled());
+	clear(0, interlaced_disabled());
 }
 
 

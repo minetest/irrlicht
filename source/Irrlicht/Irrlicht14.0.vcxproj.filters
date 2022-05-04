@@ -1288,7 +1288,7 @@
     <ClInclude Include="..\..\include\EMaterialFlags.h">
       <Filter>include\video</Filter>
     </ClInclude>
-	<ClInclude Include="..\..\include\SSharedMeshBuffer.h">
+    <ClInclude Include="..\..\include\SSharedMeshBuffer.h">
       <Filter>include\scene</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\IRenderTarget.h">
@@ -1417,7 +1417,7 @@
     <ClInclude Include="CBlit.h">
       <Filter>Irrlicht\video\Null</Filter>
     </ClInclude>
-	<ClInclude Include="..\..\include\fast_atof.h">
+    <ClInclude Include="..\..\include\fast_atof.h">
       <Filter>include\core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ILightManager.h">
@@ -1482,7 +1482,7 @@
     </ClInclude>
     <ClInclude Include="..\..\include\EDeviceTypes.h">
       <Filter>include</Filter>
-    </ClInclude>	
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\changes.txt">
@@ -1881,9 +1881,6 @@
       <Filter>Irrlicht\video\Burning Video</Filter>
     </ClCompile>
     <ClCompile Include="CTRGouraud2.cpp">
-      <Filter>Irrlicht\video\Burning Video</Filter>
-    </ClCompile>
-    <ClCompile Include="CTRGouraudAlpha2.cpp">
       <Filter>Irrlicht\video\Burning Video</Filter>
     </ClCompile>
     <ClCompile Include="CTRGouraudAlphaNoZ2.cpp">
@@ -2457,6 +2454,9 @@
       <Filter>Irrlicht\video\Burning Video</Filter>
     </ClCompile>
     <ClCompile Include="CTRGouraudNoZ2.cpp">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClCompile>
+    <ClCompile Include="CTRParallaxMap.cpp">
       <Filter>Irrlicht\video\Burning Video</Filter>
     </ClCompile>
   </ItemGroup>

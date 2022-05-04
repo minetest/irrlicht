@@ -10,6 +10,8 @@ Changes in ogl-es (not yet released - will be merged with trunk at some point)
 --------------------------
 Changes in 1.9 (not yet released)
 
+- COSOperator::getSystemMemory now returns some value on OSX (thought same for total and available). 
+  Thanks @sfan5 for patch https://irrlicht.sourceforge.io/forum/viewtopic.php?f=2&t=52819 and https://github.com/minetest/irrlicht/commit/e469c54f76f6d24f92389b4e8a27b9cce7152888
 - Fix CVertexBuffer::setType switching types for non-empty arrays. Before we had some bad casts which could result in random initializing of some vertex data.
 - IVertexBuffer interface changes: pointer() now returns void*. Adding a const version of getData(). Some set functions have now overload for all vertex types.
 - S3DVertex now always initializes color to 0xffffff. That was previously the only uninitialized variable in there. Also both derived classes have now a constructor taking a const S3DVertex&.

@@ -34,6 +34,22 @@ namespace video
 		//! Create render target.
 		virtual IRenderTarget* addRenderTarget() IRR_OVERRIDE;
 
+		//! Run occlusion query. Draws mesh stored in query.
+		/** If the mesh shall not be rendered visible, use
+		overrideMaterial to disable the color and depth buffer. */
+		virtual void runOcclusionQuery(scene::ISceneNode* node, bool visible = false) IRR_OVERRIDE;
+
+		//! Update occlusion query. Retrieves results from GPU.
+		/** If the query shall not block, set the flag to false.
+		Update might not occur in this case, though */
+		virtual void updateOcclusionQuery(scene::ISceneNode* node, bool block = true) IRR_OVERRIDE;
+
+		//! Return query result.
+		/** Return value is the number of visible pixels/fragments.
+		The value is a safe approximation, i.e. can be larger then the
+		actual value of pixels. */
+		virtual u32 getOcclusionQueryResult(scene::ISceneNode* node) const IRR_OVERRIDE;
+
 		//! sets transformation
 		virtual void setTransform(E_TRANSFORMATION_STATE state, const core::matrix4& mat) IRR_OVERRIDE;
 
@@ -253,7 +269,8 @@ namespace video
 			bool resetAllRenderstates) IRR_OVERRIDE;
 
 		//pass BaseMaterialID
-		void setFallback_Material(E_MATERIAL_TYPE fallback_MaterialType);
+		void setFallback_Material(E_MATERIAL_TYPE fallback_MaterialType
+			, eBurningVertexShader vertexShader);
 
 		//! Return an index constant for the vertex shader based on a name.
 		virtual s32 getVertexShaderConstantID(const c8* name) IRR_OVERRIDE;
@@ -328,6 +345,9 @@ namespace video
 		IBurningShader* CurrentShader;
 		IBurningShader* BurningShader[ETR2_COUNT];
 
+		PushShaderData PushShader;
+		void pushShader(scene::E_PRIMITIVE_TYPE pType, int testCurrent);
+
 		IDepthBuffer* DepthBuffer;
 		IStencilBuffer* StencilBuffer;
 
@@ -341,9 +361,11 @@ namespace video
 		enum E_TRANSFORMATION_STATE_BURNING_VIDEO
 		{
 			ETS_VIEW_PROJECTION = ETS_COUNT,
-			ETS_PROJ_MODEL_VIEW,
+			ETS_MODEL_VIEW_PROJ,
 			ETS_MODEL_VIEW,
-			ETS_NORMAL, //3x3 ModelView Tansposed Inverse
+			ETS_NORMAL, //3x3 ModelView Transposed Inverse
+
+			ETS_MODEL_INVERSE,	//normal,parallax
 
 			ETS_COUNT_BURNING = 16
 		};
@@ -354,12 +376,18 @@ namespace video
 		{
 			ETF_VALID = 1,
 			ETF_IDENTITY = 2,
-			ETF_TEXGEN_CAMERA_SPHERE = 4,
-			ETF_TEXGEN_CAMERA_REFLECTION = 8,
-			ETF_TEXGEN_WRAP = 16,
-			ETF_TEXGEN_MASK = ETF_TEXGEN_CAMERA_SPHERE | ETF_TEXGEN_CAMERA_REFLECTION | ETF_TEXGEN_WRAP
+			ETF_TEXGEN_MATRIX = 4,	// or !ETF_IDENTITY
+			ETF_TEXGEN_CAMERA_SPHERE = 8,
+			ETF_TEXGEN_CAMERA_REFLECTION = 16,
+			ETF_TEXGEN_MASK = ETF_TEXGEN_CAMERA_SPHERE | ETF_TEXGEN_CAMERA_REFLECTION | ETF_TEXGEN_MATRIX
 		};
-		size_t TransformationStack; // 0 .. 3D , 1 .. 2D
+		enum E_TRANSFORMATION_STACK
+		{
+			ETF_STACK_3D = 0,
+			ETF_STACK_2D = 1,
+		};
+
+		size_t TransformationStack; // 0 .. 3D , 1 .. 2D, 2.. Geometric Clipper
 		core::matrix4 ALIGN(16) Transformation[2][ETS_COUNT_BURNING];
 		size_t TransformationFlag[2][ETS_COUNT_BURNING]; // E_TRANSFORMATION_FLAG
 		
@@ -375,34 +403,33 @@ namespace video
 		AbsRectangle Scissor;
 
 		// Vertex Cache
-		SVertexCache VertexCache;
+		SVertexShader VertexShader;
 
 		int VertexCache_reset (const void* vertices, u32 vertexCount,
 					const void* indices, u32 indexCount,
 					E_VERTEX_TYPE vType,scene::E_PRIMITIVE_TYPE pType,
 					E_INDEX_TYPE iType);
-		void VertexCache_get (s4DVertexPair* face[4] );
+		//void VertexCache_get (s4DVertexPair* face[4] );
 
 		void VertexCache_map_source_format();
-		void VertexCache_fill ( const u32 sourceIndex,const u32 destIndex );
-		s4DVertexPair* VertexCache_getVertex ( const u32 sourceIndex ) const;
-
+		//s4DVertexPair* VertexCache_getVertex ( const u32 sourceIndex ) const;
 
 		// culling & clipping
 		//size_t inline clipToHyperPlane (s4DVertexPair* burning_restrict dest, const s4DVertexPair* burning_restrict source, const size_t inCount, const sVec4 &plane );
 		//size_t inline clipToFrustumTest ( const s4DVertex * v  ) const;
 		public:
-		size_t clipToFrustum( const size_t vIn /*, const size_t clipmask_for_face*/ );
+		void VertexCache_fill(const u32 sourceIndex, const u32 destIndex);
+		u32 clipToFrustum( const u32 vIn /*, const size_t clipmask_for_face*/ );
 		protected:
 
 		// holds transformed, clipped vertices for a triangle. triangle expands on clipping
 		// Buffer is in in pairs of 4DVertex (0 ... ndc, 1 .. dc and projected)
 		SAligned4DVertex Clipper;
-		SAligned4DVertex Clipper_temp;
+		SAligned4DVertex Clipper_disjoint; // __restrict helper
 
 
 #ifdef SOFTWARE_DRIVER_2_LIGHTING
-		void lightVertex_eye ( s4DVertex *dest, u32 vertexargb );
+		void lightVertex_eye ( s4DVertex *dest, const u32 vertexargb );
 #endif
 
 		//! Sets the fog mode.
@@ -410,22 +437,29 @@ namespace video
 			f32 end, f32 density, bool pixelFog, bool rangeFog) IRR_OVERRIDE;
 
 
-		void ndc_2_dc_and_project (s4DVertexPair* dest,const s4DVertexPair* source, const size_t vIn ) const;
+		//void ndc_2_dc_and_project (s4DVertexPair* dest,const s4DVertexPair* source, const size_t vIn ) const;
 
 		//const is misleading. **v is const that true, but not *v..
-		f32 screenarea_inside (const s4DVertexPair* burning_restrict const face[] ) const;
-		s32 lodFactor_inside ( const s4DVertexPair* burning_restrict const face[], const size_t tex, const f32 dc_area, const f32 lod_bias ) const;
-		void select_polygon_mipmap_inside ( s4DVertex* burning_restrict face[], const size_t tex, const CSoftwareTexture2_Bound& b ) const;
+		//f32 screenarea_inside (const s4DVertexPair* burning_restrict const face[] ) const;
+		//s32 lodFactor_inside ( const s4DVertexPair* burning_restrict const face[], const size_t tex, const f32 dc_area, const f32 lod_bias ) const;
+		//void select_polygon_mipmap_inside (s4DVertexPair* burning_restrict face[], const size_t tex, const CSoftwareTexture2_Bound& b ) const;
 
-		void getCameraPosWorldSpace();
+		//void getCameraPosWorldSpace();
+		void assignHardwareLight(SBurningShaderLight& l, const SLight& dl);
 		SBurningShaderEyeSpace EyeSpace;
 		SBurningShaderMaterial Material;
 
-		static const sVec4 NDCPlane[6+2];
+		//static const sVec4 NDCPlane[6+2];
 
 		//! Built-in 2D quad for 2D rendering.
 		S3DVertex Quad2DVertices[4];
 		interlaced_control Interlaced;
+		f32 TexBias[2];
+public:
+		const interlaced_control& getInterlace() { return Interlaced; }
+protected:
+
+		u32 samples_passed;
 
 #if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
 		core::array<IRenderTarget*> RenderTargets;

@@ -1,4 +1,4 @@
-// Copyright (C) 2002-2012 Nikolaus Gebhardt / Thomas Alten
+// Copyright (C) 2022 Thomas Alten
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
@@ -20,7 +20,7 @@ namespace video
 
 /*!
 */
-void burning_shader_class::OnSetMaterial(const SBurningShaderMaterial& material)
+void burning_shader_class::OnSetMaterialBurning(const SBurningShaderMaterial& material)
 {
 	switch (material.org.MaterialType)
 	{
@@ -41,7 +41,7 @@ void burning_shader_class::OnSetMaterial(const SBurningShaderMaterial& material)
 	case EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:
 	case EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA:
 		RenderPass_ShaderIsTransparent = 1;
-		AlphaRef = tofix(material.org.MaterialTypeParam, FIXPOINT_COLOR_MAX);
+		AlphaRef = tofix(material.org.MaterialTypeParam, FIX_POINT_COLOR_MAX);
 		break;
 	default:
 		RenderPass_ShaderIsTransparent = 0;
@@ -53,7 +53,9 @@ void burning_shader_class::OnSetMaterial(const SBurningShaderMaterial& material)
 	{
 		if (material.org.ZBuffer == ECFN_LESSEQUAL)
 		{
-			if (material.depth_write) fragmentShader = &burning_shader_class::fragment_depth_less_equal_depth_write_blend_one_zero;
+			if (material.org.ColorMask == ECP_NONE)
+				fragmentShader = &burning_shader_class::fragment_depth_less_equal_no_depth_write_colormask_none;
+			else if (material.depth_write) fragmentShader = &burning_shader_class::fragment_depth_less_equal_depth_write_blend_one_zero;
 			else fragmentShader = &burning_shader_class::fragment_depth_less_equal_no_depth_write_blend_one_zero;
 		}
 		else /*if (material.org.ZBuffer == ECFN_DISABLED)*/
