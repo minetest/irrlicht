@@ -140,9 +140,6 @@ class map
 			reset();
 		}
 
-		// Copy constructor
-		Iterator(const Iterator& src) : Root(src.Root), Cur(src.Cur) {}
-
 		void reset(bool atLowest=true)
 		{
 			if (atLowest)
@@ -159,13 +156,6 @@ class map
 		Node* getNode() const
 		{
 			return Cur;
-		}
-
-		Iterator& operator=(const Iterator& src)
-		{
-			Root = src.Root;
-			Cur = src.Cur;
-			return (*this);
 		}
 
 		void operator++(int)
@@ -287,8 +277,7 @@ class map
 			reset();
 		}
 
-		// Copy constructor
-		ConstIterator(const ConstIterator& src) : Root(src.Root), Cur(src.Cur) {}
+		// Constructor(Iterator)
 		ConstIterator(const Iterator& src) : Root(src.Root), Cur(src.Cur) {}
 
 		void reset(bool atLowest=true)
@@ -307,13 +296,6 @@ class map
 		const Node* getNode() const
 		{
 			return Cur;
-		}
-
-		ConstIterator& operator=(const ConstIterator& src)
-		{
-			Root = src.Root;
-			Cur = src.Cur;
-			return (*this);
 		}
 
 		void operator++(int)

@@ -34,12 +34,15 @@ private:
 	// skips to the first non-space character available
 	void goNextWord(io::IReadFile* file) const;
 	// returns the next word
-	const core::stringc& getNextToken(io::IReadFile* file, core::stringc& token) const;
+	const core::stringc& getNextToken(io::IReadFile* file);
 	// skip to next printable character after the first line break
 	void goNextLine(io::IReadFile* file) const;
 
 	//! Read 3d vector of floats
-	void getNextVector(io::IReadFile* file, core::vector3df& vec, bool binary) const;
+	void getNextVector(io::IReadFile* file, core::vector3df& vec, bool binary);
+
+	//! Buffering last read token to avoid reallocating string all the time
+	core::stringc Token;
 };
 
 } // end namespace scene

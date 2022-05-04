@@ -42,7 +42,9 @@ private:
 
 	struct SObjMtl
 	{
-		SObjMtl(irr::video::E_INDEX_TYPE indexType) : IndexType(indexType), Meshbuffer(0), Bumpiness (1.0f), Illumination(0),
+		SObjMtl(E_INDEX_TYPE_HINT typeHint) 
+			: IndexType(typeHint == EITH_16BIT ? video::EIT_16BIT : video::EIT_32BIT)
+			, Meshbuffer(0), Bumpiness (1.0f), Illumination(0),
 			RecalculateNormals(false)
 		{
 			Meshbuffer = new CDynamicMeshBuffer(irr::video::EVT_STANDARD, IndexType);

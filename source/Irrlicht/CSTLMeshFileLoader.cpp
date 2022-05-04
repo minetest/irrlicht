@@ -8,7 +8,8 @@
 
 #include "CSTLMeshFileLoader.h"
 #include "SMesh.h"
-#include "SMeshBuffer.h"
+#include "CDynamicMeshBuffer.h"
+#include "CMemoryFile.h"
 #include "SAnimatedMesh.h"
 #include "IReadFile.h"
 #include "fast_atof.h"
@@ -34,14 +35,29 @@ bool CSTLMeshFileLoader::isALoadableFileExtension(const io::path& filename) cons
 //! \return Pointer to the created mesh. Returns 0 if loading failed.
 //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
 //! See IReferenceCounted::drop() for more information.
-IAnimatedMesh* CSTLMeshFileLoader::createMesh(io::IReadFile* file)
+IAnimatedMesh* CSTLMeshFileLoader::createMesh(io::IReadFile* fileIn)
 {
-	const long filesize = file->getSize();
+	const long filesize = fileIn->getSize();
 	if (filesize < 6) // we need a header
 		return 0;
 
+	// We copy the whole file into a memory-read file if it isn't already one.
+	io::CMemoryReadFile * memoryFile = 0;
+	if ( fileIn->getType() != io::ERFT_MEMORY_READ_FILE )
+	{
+		u8* fileBuffer = new u8[filesize];
+		if ( fileIn->read(fileBuffer, filesize) != (size_t)filesize )
+		{
+			delete[] fileBuffer;
+			return 0;
+		}
+		memoryFile = new io::CMemoryReadFile(fileBuffer, filesize, io::path(""), true);	// takes over fileBuffer
+	}
+	io::IReadFile* file = memoryFile ? memoryFile : fileIn;
+
 	SMesh* mesh = new SMesh();
-	SMeshBuffer* meshBuffer = new SMeshBuffer();
+	CDynamicMeshBuffer* meshBuffer = new CDynamicMeshBuffer(video::EVT_STANDARD, video::EIT_16BIT);
+	IVertexBuffer& vertBuffer = meshBuffer->getVertexBuffer();
 	mesh->addMeshBuffer(meshBuffer);
 	meshBuffer->drop();
 
@@ -49,8 +65,7 @@ IAnimatedMesh* CSTLMeshFileLoader::createMesh(io::IReadFile* file)
 	core::vector3df normal;
 
 	bool binary = false;
-	core::stringc token;
-	if (getNextToken(file, token) != "solid")
+	if (getNextToken(file) != "solid")
 		binary = true;
 	// read/skip header
 	u32 binFaceCount = 0;
@@ -66,62 +81,64 @@ IAnimatedMesh* CSTLMeshFileLoader::createMesh(io::IReadFile* file)
 		goNextLine(file);
 
 	u16 attrib=0;
-	token.reserve(32);
+	Token.reserve(32);
+	bool failure = false;
 
 	while (file->getPos() < filesize)
 	{
 		if (!binary)
 		{
-			if (getNextToken(file, token) != "facet")
+			if (getNextToken(file) != "facet")
 			{
-				if (token=="endsolid")
-					break;
-				mesh->drop();
-				return 0;
+				if (Token!="endsolid")
+					failure = true;
+				break;
 			}
-			if (getNextToken(file, token) != "normal")
+			if (getNextToken(file) != "normal")
 			{
-				mesh->drop();
-				return 0;
+				failure = true;
+				break;
 			}
 		}
 		getNextVector(file, normal, binary);
 		if (!binary)
 		{
-			if (getNextToken(file, token) != "outer")
+			if (getNextToken(file) != "outer")
 			{
-				mesh->drop();
-				return 0;
+				failure = true;
+				break;
 			}
-			if (getNextToken(file, token) != "loop")
+			if (getNextToken(file) != "loop")
 			{
-				mesh->drop();
-				return 0;
+				failure = true;
+				break;
 			}
 		}
 		for (u32 i=0; i<3; ++i)
 		{
 			if (!binary)
 			{
-				if (getNextToken(file, token) != "vertex")
+				if (getNextToken(file) != "vertex")
 				{
-					mesh->drop();
-					return 0;
+					failure = true;
+					break;
 				}
 			}
 			getNextVector(file, vertex[i], binary);
 		}
+		if ( failure )
+			break;
 		if (!binary)
 		{
-			if (getNextToken(file, token) != "endloop")
+			if (getNextToken(file) != "endloop")
 			{
-				mesh->drop();
-				return 0;
+				failure = true;
+				break;
 			}
-			if (getNextToken(file, token) != "endfacet")
+			if (getNextToken(file) != "endfacet")
 			{
-				mesh->drop();
-				return 0;
+				failure = true;
+				break;
 			}
 		}
 		else
@@ -132,41 +149,56 @@ IAnimatedMesh* CSTLMeshFileLoader::createMesh(io::IReadFile* file)
 #endif
 		}
 
-		SMeshBuffer* mb = reinterpret_cast<SMeshBuffer*>(mesh->getMeshBuffer(mesh->getMeshBufferCount()-1));
-		u32 vCount = mb->getVertexCount();
 		video::SColor color(0xffffffff);
 		if (attrib & 0x8000)
 			color = video::A1R5G5B5toA8R8G8B8(attrib);
 		if (normal==core::vector3df())
 			normal=core::plane3df(vertex[2],vertex[1],vertex[0]).Normal;
-		mb->Vertices.push_back(video::S3DVertex(vertex[2],normal,color, core::vector2df()));
-		mb->Vertices.push_back(video::S3DVertex(vertex[1],normal,color, core::vector2df()));
-		mb->Vertices.push_back(video::S3DVertex(vertex[0],normal,color, core::vector2df()));
-		mb->Indices.push_back(vCount);
-		mb->Indices.push_back(vCount+1);
-		mb->Indices.push_back(vCount+2);
+		vertBuffer.push_back(video::S3DVertex(vertex[2],normal,color, core::vector2df()));
+		vertBuffer.push_back(video::S3DVertex(vertex[1],normal,color, core::vector2df()));
+		vertBuffer.push_back(video::S3DVertex(vertex[0],normal,color, core::vector2df()));
 	}	// end while (file->getPos() < filesize)
-	mesh->getMeshBuffer(0)->recalculateBoundingBox();
 
 	// Create the Animated mesh if there's anything in the mesh
 	SAnimatedMesh* pAM = 0;
-	if ( 0 != mesh->getMeshBufferCount() )
+	if ( !failure && mesh->getMeshBufferCount() > 0 )
 	{
+		IIndexBuffer& indexBuffer = meshBuffer->getIndexBuffer();
+		u32 vertCount = vertBuffer.size();
+		if (vertCount > 65535 )	// Note 65535 instead of 65536 as it divides by 3
+		{
+			if ( getIndexTypeHint() != EITH_16BIT )
+				indexBuffer.setType(video::EIT_32BIT);
+			else
+			{
+				 // Could split buffer, but probably no one really needs this anymore now with 32-bit support and necessary buffer manipulation functions are not there yet
+				vertCount = 65535;
+			}
+		}
+
+		indexBuffer.reallocate(vertCount);
+		for (u32 i=0; i<vertCount; ++i)	//every vertex is unique, so we can just generate the indices
+			indexBuffer.push_back(i);
+
+		meshBuffer->recalculateBoundingBox();
 		mesh->recalculateBoundingBox();
 		pAM = new SAnimatedMesh();
-		pAM->Type = EAMT_OBJ;
+		pAM->Type = EAMT_STATIC;
 		pAM->addMesh(mesh);
 		pAM->recalculateBoundingBox();
 	}
 
 	mesh->drop();
+	Token.clear();
+	if ( memoryFile )
+		memoryFile->drop();
 
 	return pAM;
 }
 
 
 //! Read 3d vector of floats
-void CSTLMeshFileLoader::getNextVector(io::IReadFile* file, core::vector3df& vec, bool binary) const
+void CSTLMeshFileLoader::getNextVector(io::IReadFile* file, core::vector3df& vec, bool binary)
 {
 	if (binary)
 	{
@@ -182,34 +214,33 @@ void CSTLMeshFileLoader::getNextVector(io::IReadFile* file, core::vector3df& vec
 	else
 	{
 		goNextWord(file);
-		core::stringc tmp;
 
-		getNextToken(file, tmp);
-		core::fast_atof_move(tmp.c_str(), vec.X);
-		getNextToken(file, tmp);
-		core::fast_atof_move(tmp.c_str(), vec.Y);
-		getNextToken(file, tmp);
-		core::fast_atof_move(tmp.c_str(), vec.Z);
+		getNextToken(file);
+		core::fast_atof_move(Token.c_str(), vec.X);
+		getNextToken(file);
+		core::fast_atof_move(Token.c_str(), vec.Y);
+		getNextToken(file);
+		core::fast_atof_move(Token.c_str(), vec.Z);
 	}
 	vec.X=-vec.X;
 }
 
 
 //! Read next word
-const core::stringc& CSTLMeshFileLoader::getNextToken(io::IReadFile* file, core::stringc& token) const
+const core::stringc& CSTLMeshFileLoader::getNextToken(io::IReadFile* file)
 {
 	goNextWord(file);
 	u8 c;
-	token = "";
+	Token = "";
 	while(file->getPos() != file->getSize())
 	{
 		file->read(&c, 1);
 		// found it, so leave
 		if (core::isspace(c))
 			break;
-		token.append(c);
+		Token.append(c);
 	}
-	return token;
+	return Token;
 }
 
 

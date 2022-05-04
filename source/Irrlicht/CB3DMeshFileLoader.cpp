@@ -136,7 +136,8 @@ bool CB3DMeshFileLoader::load()
 		else
 		{
 			os::Printer::log("Unknown chunk found in mesh base - skipping");
-			B3DFile->seek(B3dStack.getLast().startposition + B3dStack.getLast().length);
+			if (!B3DFile->seek(B3dStack.getLast().startposition + B3dStack.getLast().length))
+				return false;
 			B3dStack.erase(B3dStack.size()-1);
 		}
 	}
@@ -232,7 +233,8 @@ bool CB3DMeshFileLoader::readChunkNODE(CSkinnedMesh::SJoint *inJoint)
 		else
 		{
 			os::Printer::log("Unknown chunk found in node chunk - skipping");
-			B3DFile->seek(B3dStack.getLast().startposition + B3dStack.getLast().length);
+			if (!B3DFile->seek(B3dStack.getLast().startposition + B3dStack.getLast().length))
+				return false;
 			B3dStack.erase(B3dStack.size()-1);
 		}
 	}
@@ -315,7 +317,8 @@ bool CB3DMeshFileLoader::readChunkMESH(CSkinnedMesh::SJoint *inJoint)
 		else
 		{
 			os::Printer::log("Unknown chunk found in mesh - skipping");
-			B3DFile->seek(B3dStack.getLast().startposition + B3dStack.getLast().length);
+			if (!B3DFile->seek(B3dStack.getLast().startposition + B3dStack.getLast().length))
+				return false;
 			B3dStack.erase(B3dStack.size()-1);
 		}
 	}
@@ -859,7 +862,7 @@ bool CB3DMeshFileLoader::readChunkBRUS()
 
 	while((B3dStack.getLast().startposition + B3dStack.getLast().length) > B3DFile->getPos()) //this chunk repeats
 	{
-		// This is what blitz basic calls a brush, like a Irrlicht Material
+		// This is what blitz basic calls a brush, like an Irrlicht material
 
 		core::stringc name;
 		readString(name);
@@ -933,7 +936,7 @@ bool CB3DMeshFileLoader::readChunkBRUS()
 			}
 		}
 
-		//If a preceeding texture slot is empty move the others down:
+		//If a preceding texture slot is empty move the others down:
 		for (i=num_textures; i>0; --i)
 		{
 			for (u32 j=i-1; j<num_textures-1; ++j)

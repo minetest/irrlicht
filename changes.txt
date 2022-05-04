@@ -9,11 +9,28 @@ Changes in ogl-es (not yet released - will be merged with trunk at some point)
 
 --------------------------
 Changes in 1.9 (not yet released)
+
+- Fix CVertexBuffer::setType switching types for non-empty arrays. Before we had some bad casts which could result in random initializing of some vertex data.
+- IVertexBuffer interface changes: pointer() now returns void*. Adding a const version of getData(). Some set functions have now overload for all vertex types.
+- S3DVertex now always initializes color to 0xffffff. That was previously the only uninitialized variable in there. Also both derived classes have now a constructor taking a const S3DVertex&.
+- Fix deserialization in CGUITable. Use now getAttributeAsStringW instead of getAttributeAsString. 
+  Thanks @chronologicaldot for report and patch: https://irrlicht.sourceforge.io/forum/viewtopic.php?f=7&t=52821
+- IIndexBuffer interface changes: Adding a const version of getData(). Some set functions now copy by value instead of per reference, which shouldn't be slower for this and is safer to use.
+- Fix CIndexBuffer::setType going from 16 to 32 bit. This had some casts which simply could mess up the results.
+- Fix OSX nor resizing properly. Thanks @torleif, Jordach and sfan5 for patch and report: https://irrlicht.sourceforge.io/forum/viewtopic.php?f=2&t=52819
+- X meshloader fixes bug with uninitialized normals. Thanks @sfan5 for patch: https://irrlicht.sourceforge.io/forum/viewtopic.php?f=2&t=52819
+- stl meshloader now faster, especially with text format
+- CMemoryReadFile::seek CMemoryWriteFile::seek and no longer allowed to go _before_ start.
+  Thanks @sfan5 for patch: https://irrlicht.sourceforge.io/forum/viewtopic.php?f=2&t=52819
+- stl meshloader can now load 32 bit buffers. 
+  Thanks @Foaly for the patch: https://irrlicht.sourceforge.io/forum/viewtopic.php?f=9&t=51441
 - Add IMeshBufffer::clone function to create buffer copies. CMeshManipulator::createMeshCopy uses that now and works now with all types of meshbuffers.
 - obj writer can now write 32 bit buffers
-- obj meshloader can now load 32 bit buffers when setPreferredIndexType is set to EIT_32BIT.
+- obj meshloader can now load 32 bit buffers when setIndexTypeHint is set correspondingly
   It's 16 bit meshes use now also an IDynamicMeshbuffer instead of an SMeshBuffer.
-- Add IMeshLoader::setPreferredIndexType and getPreferredIndexType to allow setting hints for the loaders if users prefer 16 or 32 bit meshbuffers.
+  Thanks @Wol101 for original patch proposal: https://irrlicht.sourceforge.io/forum/viewtopic.php?f=9&t=51441
+- Add IMeshLoader::setIndexTypeHint and getIndexTypeHint to allow setting hints for the loaders if users prefer 16 or 32 bit meshbuffers.
+  Default is now to use optimal meshbuffer depending on number of vertices (if the loader supports it).
 - Add IMeshBuffer::getType to allow finding out which class type a meshbuffer has (similar to ISceneNode::getType).
 - Add IGUIImage::flip to flip/mirror images
 - IBillboardSceneNode got functions to access meshbuffers. So uv-coordinates can now be modified directly (previously only possible via texture matrix).

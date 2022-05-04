@@ -1217,7 +1217,7 @@ void CGUITable::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWri
 		Column column;
 
 		label = "Column"; label += i; label += "name";
-		column.Name = core::stringw(in->getAttributeAsString(label.c_str()).c_str());
+		column.Name = in->getAttributeAsStringW(label.c_str());
 		label = "Column"; label += i; label += "width";
 		column.Width = in->getAttributeAsInt(label.c_str());
 		label = "Column"; label += i; label += "OrderingMode";
@@ -1252,7 +1252,7 @@ void CGUITable::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWri
 			Cell cell;
 
 			label = "Row"; label += i; label += "cell"; label += c; label += "text";
-			cell.Text = core::stringw(in->getAttributeAsString(label.c_str()).c_str());
+			cell.Text = in->getAttributeAsStringW(label.c_str());
 			breakText( cell.Text, cell.BrokenText, Columns[c].Width );
 			label = "Row"; label += i; label += "cell"; label += c; label += "color";
 			cell.Color = in->getAttributeAsColor(label.c_str());

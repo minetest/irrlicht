@@ -102,6 +102,26 @@ namespace scene
 			}
 		}
 
+		//! Append the vertices and indices to the current buffer
+		/** Only works for compatible vertex types.
+		\param vertices Pointer to a vertex array.
+		\param numVertices Number of vertices in the array.
+		\param indices Pointer to index array.
+		\param numIndices Number of indices in array. */
+		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices) IRR_OVERRIDE
+		{
+			// TODO
+		}
+
+		//! Append the meshbuffer to the current buffer
+		/** Only works for compatible vertex types
+		\param other Buffer to append to this one. */
+		virtual void append(const IMeshBuffer* const other) IRR_OVERRIDE
+		{
+			// TODO
+		}
+
+
 		//! Describe what kind of primitive geometry is used by the meshbuffer
 		virtual void setPrimitiveType(E_PRIMITIVE_TYPE type) IRR_OVERRIDE
 		{

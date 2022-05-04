@@ -14,7 +14,7 @@ namespace scene
 
 	class CIndexBuffer : public IIndexBuffer
 	{
-
+		// Virtual function wrapper around irr::core::array
 		class IIndexList
 		{
 		public:
@@ -22,14 +22,15 @@ namespace scene
 
 			virtual u32 stride() const =0;
 			virtual u32 size() const =0;
-			virtual void push_back(const u32 &element) =0;
+			virtual void push_back(u32 value) =0;
 			virtual u32 operator [](u32 index) const =0;
 			virtual u32 getLast() =0;
 			virtual void setValue(u32 index, u32 value) =0;
 			virtual void set_used(u32 usedNow) =0;
-			virtual void reallocate(u32 new_size) =0;
+			virtual void reallocate(u32 new_size, bool canShrink=true) =0;
 			virtual u32 allocated_size() const =0;
 			virtual void* pointer() =0;
+			virtual const void* const_pointer() const =0;
 			virtual video::E_INDEX_TYPE getType() const =0;
 		};
 
@@ -43,10 +44,9 @@ namespace scene
 
 			virtual u32 size() const IRR_OVERRIDE {return Indices.size();}
 
-			virtual void push_back(const u32 &element) IRR_OVERRIDE
+			virtual void push_back(u32 value) IRR_OVERRIDE
 			{
-				// push const ref due to compiler problem with gcc 4.6, big endian
-				Indices.push_back((const T&)element);
+				Indices.push_back((T)value);
 			}
 
 			virtual u32 operator [](u32 index) const IRR_OVERRIDE
@@ -66,9 +66,9 @@ namespace scene
 				Indices.set_used(usedNow);
 			}
 
-			virtual void reallocate(u32 new_size) IRR_OVERRIDE
+			virtual void reallocate(u32 new_size, bool canShrink) IRR_OVERRIDE
 			{
-				Indices.reallocate(new_size);
+				Indices.reallocate(new_size, canShrink);
 			}
 
 			virtual u32 allocated_size() const IRR_OVERRIDE
@@ -76,7 +76,8 @@ namespace scene
 				return Indices.allocated_size();
 			}
 
-			virtual void* pointer() IRR_OVERRIDE  {return Indices.pointer();}
+			virtual void* pointer() IRR_OVERRIDE  { return Indices.pointer(); }
+			virtual const void* const_pointer() const IRR_OVERRIDE  { return Indices.const_pointer(); }
 
 			virtual video::E_INDEX_TYPE getType() const IRR_OVERRIDE
 			{
@@ -109,12 +110,14 @@ namespace scene
 			delete Indices;
 		}
 
-		//virtual void setType(video::E_INDEX_TYPE IndexType);
-		virtual void setType(video::E_INDEX_TYPE IndexType) IRR_OVERRIDE
+		virtual void setType(video::E_INDEX_TYPE indexType) IRR_OVERRIDE
 		{
+			if ( Indices && Indices->getType() == indexType )
+				return;
+
 			IIndexList *NewIndices=0;
 
-			switch (IndexType)
+			switch (indexType)
 			{
 				case video::EIT_16BIT:
 				{
@@ -142,6 +145,7 @@ namespace scene
 		}
 
 		virtual void* getData() IRR_OVERRIDE {return Indices->pointer();}
+		virtual const void* getData() const IRR_OVERRIDE { return Indices->const_pointer(); }
 
 		virtual video::E_INDEX_TYPE getType() const IRR_OVERRIDE {return Indices->getType();}
 
@@ -152,9 +156,9 @@ namespace scene
 			return Indices->size();
 		}
 
-		virtual void push_back(const u32 &element) IRR_OVERRIDE
+		virtual void push_back(u32 value) IRR_OVERRIDE
 		{
-			Indices->push_back(element);
+			Indices->push_back(value);
 		}
 
 		virtual u32 operator [](u32 index) const IRR_OVERRIDE
@@ -177,19 +181,14 @@ namespace scene
 			Indices->set_used(usedNow);
 		}
 
-		virtual void reallocate(u32 new_size) IRR_OVERRIDE
+		virtual void reallocate(u32 new_size, bool canShrink=true) IRR_OVERRIDE
 		{
-			Indices->reallocate(new_size);
+			Indices->reallocate(new_size, canShrink);
 		}
 
 		virtual u32 allocated_size() const IRR_OVERRIDE
 		{
 			return Indices->allocated_size();
-		}
-
-		virtual void* pointer() IRR_OVERRIDE
-		{
-			return Indices->pointer();
 		}
 
 		//! get the current hardware mapping hint

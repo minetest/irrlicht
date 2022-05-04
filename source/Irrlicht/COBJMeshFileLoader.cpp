@@ -82,7 +82,7 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 	core::array<core::vector3df, core::irrAllocatorFast<core::vector3df> > normalsBuffer(1000);
 	core::array<core::vector2df, core::irrAllocatorFast<core::vector2df> > textureCoordBuffer(1000);
 
-	SObjMtl * currMtl = new SObjMtl(PreferredIndexType);
+	SObjMtl * currMtl = new SObjMtl(getIndexTypeHint());
 	Materials.push_back(currMtl);
 	u32 smoothingGroup=0;
 
@@ -330,19 +330,21 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 	{
 		if ( Materials[m]->Meshbuffer->getIndexCount() > 0 )
 		{
+			if ( getIndexTypeHint() == EITH_OPTIMAL 
+				&& Materials[m]->Meshbuffer->getVertexCount() <= 65536 )
+			{
+				Materials[m]->Meshbuffer->getIndexBuffer().setType(video::EIT_16BIT);
+			}
+				
+
 			Materials[m]->Meshbuffer->recalculateBoundingBox();
 			if (Materials[m]->RecalculateNormals)
 				SceneManager->getMeshManipulator()->recalculateNormals(Materials[m]->Meshbuffer);
 			if (Materials[m]->Meshbuffer->Material.MaterialType == video::EMT_PARALLAX_MAP_SOLID)
 			{
-				SMesh tmp;
-				tmp.addMeshBuffer(Materials[m]->Meshbuffer);
-				IMesh* tangentMesh = SceneManager->getMeshManipulator()->createMeshWithTangents(&tmp);
-				mesh->addMeshBuffer(tangentMesh->getMeshBuffer(0));
-				tangentMesh->drop();
+				Materials[m]->Meshbuffer->getVertexBuffer().setType(video::EVT_TANGENTS);
 			}
-			else
-				mesh->addMeshBuffer( Materials[m]->Meshbuffer );
+			mesh->addMeshBuffer( Materials[m]->Meshbuffer );
 		}
 	}
 
@@ -579,7 +581,7 @@ void COBJMeshFileLoader::readMTL(const c8* fileName, const io::path& relPath)
 				c8 mtlNameBuf[WORD_BUFFER_LENGTH];
 				bufPtr = goAndCopyNextWord(mtlNameBuf, bufPtr, WORD_BUFFER_LENGTH, bufEnd);
 
-				currMaterial = new SObjMtl(PreferredIndexType);
+				currMaterial = new SObjMtl(getIndexTypeHint());
 				currMaterial->Name = mtlNameBuf;
 			}
 			break;
