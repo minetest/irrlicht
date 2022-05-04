@@ -178,6 +178,7 @@ public:
 	virtual void setTextures(ITexture* const * textures, u32 numTextures, ITexture* depthStencil, const E_CUBE_SURFACE* cubeSurfaces, u32 numCubeSurfaces) IRR_OVERRIDE;
 
 #if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+public:
 	E_DRIVER_TYPE DriverType;
 	core::array<ITexture*> Textures;
 	ITexture* DepthStencil;

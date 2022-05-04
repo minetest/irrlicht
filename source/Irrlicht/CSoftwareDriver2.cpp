@@ -454,7 +454,7 @@ void get_scale(interlaced_control& o, const irr::SIrrlichtCreationParameters& pa
 	if (o.enable || o.target_scalex || o.tex_scalex)
 	{
 		char buf[256];
-		snprintf_irr(buf, sizeof(buf), "Burningvideo: Interlaced:%d,%d target:%d,%d tex:%d,%d",
+		snprintf_irr(buf, sizeof(buf), "Burningvideo: Interlaced:%u,%u target:%u,%u tex:%u,%u",
 			o.enable,
 			o.bypass,
 			o.target_scalex,
@@ -465,26 +465,6 @@ void get_scale(interlaced_control& o, const irr::SIrrlichtCreationParameters& pa
 		irr::os::Printer::log(buf, irr::ELL_NONE);
 	}
 }
-
-#if 0
-#include <fenv.h>
-//#pragma STDC FENV_ACCESS ON
-#pragma fenv_access (on)
-void show_fe_exceptions(void)
-{
-	int t = fetestexcept(FE_ALL_EXCEPT);
-	if (t == 0) return;
-
-	printf("exceptions raised:");
-	if (t & FE_DIVBYZERO) printf(" FE_DIVBYZERO");
-	if (t & FE_INEXACT)   printf(" FE_INEXACT");
-	if (t & FE_INVALID)   printf(" FE_INVALID");
-	if (t & FE_OVERFLOW)  printf(" FE_OVERFLOW");
-	if (t & FE_UNDERFLOW) printf(" FE_UNDERFLOW");
-	feclearexcept(FE_ALL_EXCEPT);
-	printf("\n");
-}
-#endif
 
 #if 0
 //code snippets
@@ -788,10 +768,6 @@ bool CBurningVideoDriver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
 		on = 1;
 		break;
 
-	case EVDF_DEPTH_CLAMP: // shadow
-		on = 1;
-		break;
-
 	case EVDF_ARB_FRAGMENT_PROGRAM_1:
 	case EVDF_ARB_VERTEX_PROGRAM_1:
 		on = 1;
@@ -804,6 +780,9 @@ bool CBurningVideoDriver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
 #else
 	case EVDF_TEXTURE_NPOT: // for 2D
 		on = 0;
+		break;
+	case EVDF_DEPTH_CLAMP: // shadow
+		on = 1;
 		break;
 #endif
 
@@ -1474,89 +1453,6 @@ u32 CBurningVideoDriver::clipToFrustum(const u32 vIn /*, const size_t clipmask_f
 	replace w/w by 1/w
 */
 //aliasing problems! [dest = source + 1]
-#if 0
-inline void CBurningVideoDriver::ndc_2_dc_and_project(s4DVertexPair* dest, const s4DVertexPair* source, const size_t vIn) const
-{
-	const f32* dc = Transformation_ETS_CLIPSCALE[TransformationStack];
-
-	for (size_t g = 0; g < vIn; g += sizeof_s4DVertexPairRel)
-	{
-		//cache doesn't work anymore?
-		//if ( dest[g].flag & VERTEX4D_PROJECTED )
-		//	continue;
-		//dest[g].flag = source[g].flag | VERTEX4D_PROJECTED;
-		const f32 iw = reciprocal_zero_pos_underflow(source[g].Pos.w);
-
-		// to device coordinates
-		dest[g].Pos.x = iw * source[g].Pos.x * dc[0] + dc[1];
-		dest[g].Pos.y = iw * source[g].Pos.y * dc[2] + dc[3];
-
-		//burning uses direct Z. for OpenGL it should be -Z,[-1;1] and texture flip
-#if !defined(SOFTWARE_DRIVER_2_USE_WBUFFER) || 1
-		dest[g].Pos.z = -iw * source[g].Pos.z * 0.5f + 0.5f;
-#endif
-		dest[g].Pos.w = iw;
-
-		//ortographic projection w == 1 looses stencil
-		//dest[g].Pos.w = 1.f - dest[g].Pos.z;
-
-		// Texture Coordinates will be projected after mipmap selection
-		// satisfy write-combiner
-#if 1
-#if BURNING_MATERIAL_MAX_TEXTURES > 0
-		dest[g].Tex[0] = source[g].Tex[0];
-#endif
-#if BURNING_MATERIAL_MAX_TEXTURES > 1
-		dest[g].Tex[1] = source[g].Tex[1];
-#endif
-#if BURNING_MATERIAL_MAX_TEXTURES > 2
-		dest[g].Tex[2] = source[g].Tex[2];
-#endif
-#if BURNING_MATERIAL_MAX_TEXTURES > 3
-		dest[g].Tex[3] = source[g].Tex[3];
-#endif
-#endif
-
-#if BURNING_MATERIAL_MAX_COLORS > 0
-#ifdef SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
-		dest[g].Color[0] = source[g].Color[0] * iw; // alpha?
-#else
-		dest[g].Color[0] = source[g].Color[0];
-#endif
-#endif
-
-#if BURNING_MATERIAL_MAX_COLORS > 1
-#ifdef SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
-		dest[g].Color[1] = source[g].Color[1] * iw; // alpha?
-#else
-		dest[g].Color[1] = source[g].Color[1];
-#endif
-#endif
-
-#if BURNING_MATERIAL_MAX_COLORS > 2
-#ifdef SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
-		dest[g].Color[2] = source[g].Color[2] * iw; // alpha?
-#else
-		dest[g].Color[2] = source[g].Color[2];
-#endif
-#endif
-
-#if BURNING_MATERIAL_MAX_COLORS > 3
-#ifdef SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
-		dest[g].Color[3] = source[g].Color[3] * iw; // alpha?
-#else
-		dest[g].Color[3] = source[g].Color[3];
-#endif
-#endif
-
-#if BURNING_MATERIAL_MAX_LIGHT_TANGENT > 0
-		dest[g].LightTangent[0] = source[g].LightTangent[0] * iw;
-#endif
-
-	}
-}
-#endif
-
 
 inline void ndc_2_dc_and_project(s4DVertexPair* burning_restrict v, const u32 vIn,
 	const f32* burning_restrict dc_matrix
@@ -1751,37 +1647,6 @@ inline void ndc_2_dc_and_project_grid(s4DVertexPair* burning_restrict v, const u
 }
 
 
-#if 0
-/*!
-	crossproduct in projected 2D, face
-*/
-REALINLINE f32 CBurningVideoDriver::screenarea_inside(const s4DVertexPair* burning_restrict const face[]) const
-{
-	return	(((face[1] + 1)->Pos.x - (face[0] + 1)->Pos.x) * ((face[2] + 1)->Pos.y - (face[0] + 1)->Pos.y)) -
-		(((face[2] + 1)->Pos.x - (face[0] + 1)->Pos.x) * ((face[1] + 1)->Pos.y - (face[0] + 1)->Pos.y));
-	/*
-		float signedArea = 0;
-		for (int k = 1; k < output->count; k++) {
-			signedArea += (output->vertices[k - 1].values[0] * output->vertices[k - 0].values[1]);
-			signedArea -= (output->vertices[k - 0].values[0] * output->vertices[k - 1].values[1]);
-		}
-	*/
-}
-
-
-static inline f32 dot(const sVec2& a, const sVec2& b) { return a.x * b.x + a.y * b.y; }
-sVec2 dFdx(const sVec2& v) { return v; }
-sVec2 dFdy(const sVec2& v) { return v; }
-
-f32 MipmapLevel(const sVec2& uv, const sVec2& textureSize)
-{
-	sVec2 dx = dFdx(uv * textureSize.x);
-	sVec2 dy = dFdy(uv * textureSize.y);
-	f32 d = core::max_(dot(dx, dx), dot(dy, dy));
-	return log2f(sqrtf(d));
-}
-#endif
-
 #define MAT_TEXTURE(tex) ( (video::CSoftwareTexture2*) Material.org.TextureLayer[tex].Texture )
 
 //! clamp(value,0,1)
@@ -1799,124 +1664,14 @@ static inline float clampf01(const float v)
 	return v < 0.f ? 0.f : v > 1.f ? 1.f : v;
 }
 
-#if 0
-/*!
-	calculate from unprojected.
-	attribute need not to follow winding rule from position.
-	Edge-walking problem
-	Texture Wrapping problem
-	Atlas problem
-*/
-REALINLINE s32 CBurningVideoDriver::lodFactor_inside(const s4DVertexPair* burning_restrict const face[],
-	const size_t m, const f32 dc_area_one_over, const f32 lod_bias) const
-{
-	/*
-		sVec2 a(v[1]->Tex[tex].x - v[0]->Tex[tex].x,v[1]->Tex[tex].y - v[0]->Tex[tex].y);
-		sVec2 b(v[2]->Tex[tex].x - v[0]->Tex[tex].x,v[2]->Tex[tex].y - v[0]->Tex[tex].y);
-		f32 area = a.x * b.y - b.x * a.y;
-	*/
-
-
-	/*
-		degenerate(A, B, C, minarea) = ((B - A).cross(C - A)).lengthSquared() < (4.0f * minarea * minarea);
-		check for collapsed or "long thin triangles"
-	*/
-	ieee754 signedArea;
-
-	ieee754 t[4];
-	t[0].f = face[1]->Tex[m].x - face[0]->Tex[m].x;
-	t[1].f = face[1]->Tex[m].y - face[0]->Tex[m].y;
-
-	t[2].f = face[2]->Tex[m].x - face[0]->Tex[m].x;
-	t[3].f = face[2]->Tex[m].y - face[0]->Tex[m].y;
-
-	//|crossproduct| in projected 2D -> screen area triangle * 0.5f
-	signedArea.f = t[0].f * t[3].f - t[2].f * t[1].f;
-
-	//signedArea =
-	//	  ((face[1]->Tex[m].x - face[0]->Tex[m].x) * (face[2]->Tex[m].y - face[0]->Tex[m].y))
-	//	- ((face[2]->Tex[m].x - face[0]->Tex[m].x) * (face[1]->Tex[m].y - face[0]->Tex[m].y));
-
-	//if (signedArea*signedArea <= 0.00000000001f)
-	if (signedArea.fields.exp == 0)
-	{
-		ieee754 _max;
-		_max.u = t[0].abs.frac_exp;
-		if (t[1].abs.frac_exp > _max.u) _max.u = t[1].abs.frac_exp;
-		if (t[2].abs.frac_exp > _max.u) _max.u = t[2].abs.frac_exp;
-		if (t[3].abs.frac_exp > _max.u) _max.u = t[3].abs.frac_exp;
-
-		signedArea.u = _max.fields.exp ? _max.u : ieee754_one;
-
-		/*
-				//dot,length
-				ieee754 v[2];
-				v[0].f = t[0] * t[2];
-				v[1].f = t[1] * t[3];
-
-				//signedArea.f = t[4] > t[5] ? t[4] : t[5];
-				signedArea.u = v[0].fields.frac > v[1].fields.frac ? v[0].u : v[1].u;
-				if (signedArea.fields.exp == 0)
-				{
-					return -1;
-				}
-		*/
-	}
-
-	//only guessing: take more detail (lower mipmap) in light+bump textures
-	//assume transparent add is ~50% transparent -> more detail
-
-	// 2.f from dc_area, 2.f from tex triangle ( parallelogram area)
-	const u32* d = MAT_TEXTURE(m)->getMipMap0_Area();
-	f32 texelspace = d[0] * d[1] * lod_bias; //(m ? 0.5f : 0.5f);
-
-	ieee754 ratio;
-	ratio.f = (signedArea.f * texelspace) * dc_area_one_over;
-	ratio.fields.sign = 0;
-
-	//log2(0)==denormal [ use high lod] [ only if dc_area == 0 checked outside ]
-	return (ratio.fields.exp & 0x80) ? ratio.fields.exp - 127 : 0; /*denormal very high lod*/
-
-}
-#endif
-
-#if 0
-/*!
-	texcoo in current mipmap dimension (face, already clipped)
-	-> want to help fixpoint
-*/
-inline void CBurningVideoDriver::select_polygon_mipmap_inside(s4DVertexPair* burning_restrict face[], const size_t tex, const CSoftwareTexture2_Bound& b) const
-{
-#ifdef SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
-	(face[0] + 1)->Tex[tex].x = face[0]->Tex[tex].x * (face[0] + 1)->Pos.w * b.mat[0] + b.mat[1];
-	(face[0] + 1)->Tex[tex].y = face[0]->Tex[tex].y * (face[0] + 1)->Pos.w * b.mat[2] + b.mat[3];
-
-	(face[1] + 1)->Tex[tex].x = face[1]->Tex[tex].x * (face[1] + 1)->Pos.w * b.mat[0] + b.mat[1];
-	(face[1] + 1)->Tex[tex].y = face[1]->Tex[tex].y * (face[1] + 1)->Pos.w * b.mat[2] + b.mat[3];
-
-	(face[2] + 1)->Tex[tex].x = face[2]->Tex[tex].x * (face[2] + 1)->Pos.w * b.mat[0] + b.mat[1];
-	(face[2] + 1)->Tex[tex].y = face[2]->Tex[tex].y * (face[2] + 1)->Pos.w * b.mat[2] + b.mat[3];
-#else
-	(face[0] + 1)->Tex[tex].x = face[0]->Tex[tex].x * b.mat[0] + b.mat[1];
-	(face[0] + 1)->Tex[tex].y = face[0]->Tex[tex].y * b.mat[2] + b.mat[3];
-
-	(face[1] + 1)->Tex[tex].x = face[1]->Tex[tex].x * b.mat[0] + b.mat[1];
-	(face[1] + 1)->Tex[tex].y = face[1]->Tex[tex].y * b.mat[2] + b.mat[3];
-
-	(face[2] + 1)->Tex[tex].x = face[2]->Tex[tex].x * b.mat[0] + b.mat[1];
-	(face[2] + 1)->Tex[tex].y = face[2]->Tex[tex].y * b.mat[2] + b.mat[3];
-#endif
-
-}
-#endif
 
 // Vertex Cache
 
 //! setup Vertex Format
 void CBurningVideoDriver::VertexCache_map_source_format()
 {
-	u32 s0 = sizeof(s4DVertex);
-	u32 s1 = sizeof(s4DVertex_proxy);
+	const u32 s0 = sizeof(s4DVertex);
+	const u32 s1 = sizeof(s4DVertex_proxy);
 
 	if (s1 <= sizeof_s4DVertex / 2)
 	{
@@ -2718,21 +2473,6 @@ clipandproject:
 
 }
 
-#if 0
-//todo: this should return only index
-s4DVertexPair* CBurningVideoDriver::VertexCache_getVertex(const u32 sourceIndex) const
-{
-	for (size_t i = 0; i < VERTEXCACHE_ELEMENT; ++i)
-	{
-		if (VertexShader.info[i].index == sourceIndex)
-		{
-			return VertexShader.mem.data + s4DVertex_ofs(i);
-		}
-	}
-	return VertexShader.mem.data; //error
-}
-#endif
-
 
 void SVertexShader::setIndices(const void* _indices, const video::E_INDEX_TYPE _iType)
 {
@@ -2950,78 +2690,6 @@ void SVertexShader::getPrimitive(s4DVertexPair* face[4], CBurningVideoDriver* dr
 	indicesRun += indicesPitch;
 }
 
-#if 0
-void CBurningVideoDriver::VertexCache_get(s4DVertexPair* face[4])
-{
-	// next primitive must be complete in cache
-	if (VertexShader.indicesIndex - VertexShader.indicesRun < VertexShader.primitiveHasVertex &&
-		VertexShader.indicesIndex < VertexShader.indexCount
-		)
-	{
-		// get the next unique vertices cache line
-		VertexShader.get_next_info();
-
-		// mark all existing
-		VertexShader.mark_existing();
-
-		// fill new
-		for (u32 i = 0; i != VertexShader.fillIndex; ++i)
-		{
-			if (VertexShader.info_temp[i].hit != VERTEXCACHE_MISS)
-				continue;
-
-			for (u32 dIndex = 0; dIndex < VERTEXCACHE_ELEMENT; ++dIndex)
-			{
-				if (0 == VertexShader.info[dIndex].hit)
-				{
-					VertexCache_fill(VertexShader.info_temp[i].index, dIndex);
-					VertexShader.info[dIndex].hit += 1;
-					VertexShader.info_temp[i].hit = dIndex;
-					break;
-				}
-			}
-		}
-	}
-
-	VertexShader.getPrimitive(face);
-#if 0
-	//const u32 i0 = core::if_c_a_else_0 ( VertexShader.pType != scene::EPT_TRIANGLE_FAN, VertexShader.indicesRun );
-	const u32 i0 = VertexShader.pType != scene::EPT_TRIANGLE_FAN ? VertexShader.indicesRun : 0;
-
-	switch (VertexShader.iType)
-	{
-	case E4IT_16BIT:
-	{
-		const u16* p = (const u16*)VertexShader.indices;
-		face[0] = VertexCache_getVertex(p[i0]);
-		face[1] = VertexCache_getVertex(p[VertexShader.indicesRun + 1]);
-		face[2] = VertexCache_getVertex(p[VertexShader.indicesRun + 2]);
-	}
-	break;
-
-	case E4IT_32BIT:
-	{
-		const u32* p = (const u32*)VertexShader.indices;
-		face[0] = VertexCache_getVertex(p[i0]);
-		face[1] = VertexCache_getVertex(p[VertexShader.indicesRun + 1]);
-		face[2] = VertexCache_getVertex(p[VertexShader.indicesRun + 2]);
-	}
-	break;
-
-	case E4IT_NONE:
-		face[0] = VertexCache_getVertex(VertexShader.indicesRun + 0);
-		face[1] = VertexCache_getVertex(VertexShader.indicesRun + 1);
-		face[2] = VertexCache_getVertex(VertexShader.indicesRun + 2);
-		break;
-	default:
-		face[0] = face[1] = face[2] = VertexCache_getVertex(VertexShader.indicesRun + 0);
-		break;
-	}
-	face[3] = face[0]; // quad unsupported
-	VertexShader.indicesRun += VertexShader.indicesPitch;
-#endif
-}
-#endif
 
 /*!
 */
@@ -3821,7 +3489,7 @@ void CBurningVideoDriver::setMaterial(const SMaterial& material)
 		if (EyeSpace.TL_Flag & TL_FOG) CurrentShader->setFog(FogColor);
 		if (EyeSpace.TL_Flag & TL_SCISSOR) CurrentShader->setScissor(Scissor);
 		CurrentShader->setRenderTarget(RenderTargetSurface, ViewPort, Interlaced);
-		CurrentShader->OnSetMaterial(Material);
+		CurrentShader->OnSetMaterialBurning(Material);
 		CurrentShader->setEdgeTest(in.Wireframe, in.PointCloud);
 	}
 
@@ -4095,40 +3763,18 @@ void CBurningVideoDriver::lightVertex_eye(s4DVertex* dest, const u32 vertexargb)
 
 	dColor.add_rgb(Material.EmissiveColor);
 
-	// https://www.ozone3d.net/tutorials/glsl_lighting_phong.php
-
 	dColor.sat_alpha_pass(dest->Color[0], vertexColor.a);
 
 }
 
 #endif
-/*
-CImage* getImage(const video::ITexture* texture)
-{
-	if (!texture) return 0;
 
-	CImage* img = 0;
-	switch (texture->getDriverType())
-	{
-	case EDT_BURNINGSVIDEO:
-		img = ((CSoftwareTexture2*)texture)->getImage();
-		break;
-	case EDT_SOFTWARE:
-		img = ((CSoftwareTexture*)texture)->getImage();
-		break;
-	default:
-		os::Printer::log("Fatal Error: Tried to copy from a surface not owned by this driver.", ELL_ERROR);
-		break;
-	}
-	return img;
-}
-*/
 /*
 	draw2DImage with single color scales into destination quad & cliprect(more like viewport)
 	draw2DImage with 4 color scales on destination and cliprect is scissor
 */
 
-static const u16 quad_triangle_indexList[6 + 2] = { 0,1,2,0,2,3, 3,3 };
+static const u32 quad_triangle_indexList[6 + 2] = { 0,1,2,0,2,3, 3,3 };
 
 
 #if defined(SOFTWARE_DRIVER_2_2D_AS_2D)
@@ -4427,7 +4073,7 @@ void CBurningVideoDriver::draw2DImage(const video::ITexture* texture, const core
 
 	drawVertexPrimitiveList(Quad2DVertices, 4,
 		quad_triangle_indexList, 2,
-		EVT_STANDARD, scene::EPT_TRIANGLES, EIT_16BIT);
+		EVT_STANDARD, scene::EPT_TRIANGLES, EIT_32BIT);
 
 	setRenderStates3DMode();
 
@@ -4496,7 +4142,7 @@ void CBurningVideoDriver::draw2DImage(const video::ITexture* texture, const core
 
 	drawVertexPrimitiveList(Quad2DVertices, 4,
 		quad_triangle_indexList, 2,
-		EVT_STANDARD, scene::EPT_TRIANGLES, EIT_16BIT);
+		EVT_STANDARD, scene::EPT_TRIANGLES, EIT_32BIT);
 
 	if (clipRect)
 		EyeSpace.TL_Flag &= ~TL_SCISSOR;
@@ -4545,7 +4191,7 @@ void CBurningVideoDriver::draw2DRectangle(const core::rect<s32>& position,
 
 	drawVertexPrimitiveList(Quad2DVertices, 4,
 		quad_triangle_indexList, 2,
-		EVT_STANDARD, scene::EPT_TRIANGLES, EIT_16BIT);
+		EVT_STANDARD, scene::EPT_TRIANGLES, EIT_32BIT);
 
 	setRenderStates3DMode();
 
@@ -4718,7 +4364,7 @@ void CBurningVideoDriver::pushShader(scene::E_PRIMITIVE_TYPE pType, int testCurr
 			PushShader.push(CurrentShader);
 			CurrentShader = shader;
 			shader->setRenderTarget(RenderTargetSurface, ViewPort, Interlaced);
-			shader->OnSetMaterial(Material);
+			shader->OnSetMaterialBurning(Material);
 		}
 		shader->setEdgeTest(wireFrame, pointCloud);
 	}

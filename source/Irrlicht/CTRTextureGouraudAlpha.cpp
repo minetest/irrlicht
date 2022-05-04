@@ -91,7 +91,7 @@ public:
 
 	//! draws an indexed triangle list
 	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) IRR_OVERRIDE;
-	virtual void OnSetMaterial(const SBurningShaderMaterial& material) IRR_OVERRIDE;
+	virtual void OnSetMaterialBurning(const SBurningShaderMaterial& material) IRR_OVERRIDE;
 
 private:
 	void fragmentShader();
@@ -110,7 +110,7 @@ CTRTextureGouraudAlpha2::CTRTextureGouraudAlpha2(CBurningVideoDriver* driver)
 
 /*!
 */
-void CTRTextureGouraudAlpha2::OnSetMaterial(const SBurningShaderMaterial& material)
+void CTRTextureGouraudAlpha2::OnSetMaterialBurning(const SBurningShaderMaterial& material)
 {
 #if defined(BURNINGVIDEO_RENDERER_FAST) && COLOR_MAX==0xff
 	AlphaRef = core::floor32(material.org.MaterialTypeParam * 256.f);

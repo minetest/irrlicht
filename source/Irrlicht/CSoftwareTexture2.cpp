@@ -426,10 +426,11 @@ void CSoftwareTexture2::calcDerivative()
 
 /* Software Render Target 2 */
 
-CSoftwareRenderTarget2::CSoftwareRenderTarget2(CBurningVideoDriver* driver) : Driver(driver)
+CSoftwareRenderTarget2::CSoftwareRenderTarget2(CBurningVideoDriver* driver) : 
 #if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
-, IRenderTarget(0), DepthStencil(0)
+IRenderTarget(0), DepthStencil(0),
 #endif
+Driver(driver)
 {
 	DriverType = EDT_BURNINGSVIDEO;
 

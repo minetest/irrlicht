@@ -20,7 +20,7 @@
 #include "IMaterialRenderer.h"
 #include "IMaterialRendererServices.h"
 #include "IGPUProgrammingServices.h"
-#include "IShaderConstantSetCallback.h"
+#include "IShaderConstantSetCallBack.h"
 
 burning_namespace_start
 
@@ -302,7 +302,7 @@ public:
 
 	void drawWireFrameTriangle(s4DVertex* a, s4DVertex* b, s4DVertex* c);
 
-	virtual void OnSetMaterial(const SBurningShaderMaterial& material) {};
+	virtual void OnSetMaterialBurning(const SBurningShaderMaterial& material) {};
 
 	void setEdgeTest(const int wireFrame, const int pointCloud)
 	{
@@ -317,6 +317,7 @@ public:
 
 	//IShaderConstantSetCallBack
 	virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData) IRR_OVERRIDE {};
+	virtual void OnSetMaterial(const SMaterial& material) IRR_OVERRIDE { }
 
 	//IMaterialRenderer
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,

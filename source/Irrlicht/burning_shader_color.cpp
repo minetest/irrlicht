@@ -20,7 +20,7 @@ namespace video
 
 /*!
 */
-void burning_shader_class::OnSetMaterial(const SBurningShaderMaterial& material)
+void burning_shader_class::OnSetMaterialBurning(const SBurningShaderMaterial& material)
 {
 	switch (material.org.MaterialType)
 	{

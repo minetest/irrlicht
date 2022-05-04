@@ -1210,15 +1210,15 @@ static REALINLINE void getSample_texture(tFixPoint& a,
 // get Sample linear == getSample_fixpoint
 
 static REALINLINE void getSample_texture(tFixPoint& r, tFixPoint& g, tFixPoint& b,
-	const sInternalTexture* burning_restrict t, const tFixPointu tx, const tFixPointu ty
+	const sInternalTexture* burning_restrict tex, const tFixPointu tx, const tFixPointu ty
 )
 {
 	size_t ofs;
-	ofs = (((ty + FIX_POINT_ZERO_DOT_FIVE) & t->textureYMask) >> FIX_POINT_PRE) << t->pitchlog2;
-	ofs += ((tx + FIX_POINT_ZERO_DOT_FIVE) & t->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+	ofs = (((ty + FIX_POINT_ZERO_DOT_FIVE) & tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
+	ofs += ((tx + FIX_POINT_ZERO_DOT_FIVE) & tex->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
 
 	// texel
-	const tVideoSample t00 = *((tVideoSample*)((u8*)t->data + ofs));
+	const tVideoSample t00 = *((tVideoSample*)((u8*)tex->data + ofs));
 
 	(tFixPointu&)r = (t00 & MASK_R) >> (SHIFT_R - FIX_POINT_PRE);
 	(tFixPointu&)g = (t00 & MASK_G) << (FIX_POINT_PRE - SHIFT_G);
@@ -1226,15 +1226,15 @@ static REALINLINE void getSample_texture(tFixPoint& r, tFixPoint& g, tFixPoint& 
 }
 
 static REALINLINE void getSample_texture(tFixPoint& a, tFixPoint& r, tFixPoint& g, tFixPoint& b,
-	const sInternalTexture* burning_restrict t, const tFixPointu tx, const tFixPointu ty
+	const sInternalTexture* burning_restrict tex, const tFixPointu tx, const tFixPointu ty
 )
 {
 	size_t ofs;
-	ofs = (((ty + FIX_POINT_ZERO_DOT_FIVE) & t->textureYMask) >> FIX_POINT_PRE) << t->pitchlog2;
-	ofs += ((tx + FIX_POINT_ZERO_DOT_FIVE) & t->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+	ofs = (((ty + FIX_POINT_ZERO_DOT_FIVE) & tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
+	ofs += ((tx + FIX_POINT_ZERO_DOT_FIVE) & tex->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
 
 	// texel
-	const tVideoSample t00 = *((tVideoSample*)((u8*)t->data + ofs));
+	const tVideoSample t00 = *((tVideoSample*)((u8*)tex->data + ofs));
 
 	(tFixPointu&)a = (t00 & MASK_A) >> (SHIFT_A - FIX_POINT_PRE);
 	fix_alpha_color_max(a);
@@ -1243,6 +1243,22 @@ static REALINLINE void getSample_texture(tFixPoint& a, tFixPoint& r, tFixPoint& 
 	(tFixPointu&)b = (t00 & MASK_B) << (FIX_POINT_PRE - SHIFT_B);
 }
 
+
+// get Sample bilinear
+static REALINLINE void getSample_texture(tFixPoint& a,
+	const sInternalTexture* burning_restrict tex, const tFixPointu tx, const tFixPointu ty
+)
+{
+	size_t ofs;
+	ofs = (((ty + FIX_POINT_ZERO_DOT_FIVE) & tex->textureYMask) >> FIX_POINT_PRE) << tex->pitchlog2;
+	ofs += ((tx + FIX_POINT_ZERO_DOT_FIVE) & tex->textureXMask) >> (FIX_POINT_PRE - SOFTWARE_DRIVER_2_TEXTURE_GRANULARITY);
+
+	// texel
+	const tVideoSample t00 = *((tVideoSample*)((u8*)tex->data + ofs));
+
+	(tFixPointu&)a = (t00 & MASK_A) >> (SHIFT_A - FIX_POINT_PRE);
+	fix_alpha_color_max(a);
+}
 
 #endif // SOFTWARE_DRIVER_2_BILINEAR
 

@@ -292,8 +292,18 @@ typedef float ipoltype;
 #define burning_namespace_end } /* end namespace video*/ } /* end namespace irr */
 
 #if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
+
+#if defined(_MSC_VER) && _MSC_VER > 1310 && !defined (_WIN32_WCE)
 #define snprintf_irr sprintf_s
-#define EVDF_DEPTH_CLAMP 43
+#elif defined(__APPLE__)
+#define snprintf_irr snprintf
+#elif !defined(__CYGWIN__)
+#define swprintf_irr _snwprintf
+#define snprintf_irr _snprintf
+#endif
+
+
+//#define EVDF_DEPTH_CLAMP (video::E_VIDEO_DRIVER_FEATURE) 43
 #define E_CUBE_SURFACE int
 #define ECFN_DISABLED 0
 

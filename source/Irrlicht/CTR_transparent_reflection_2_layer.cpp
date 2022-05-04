@@ -87,7 +87,7 @@ public:
 
 	//! draws an indexed triangle list
 	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) IRR_OVERRIDE;
-	virtual void OnSetMaterial(const SBurningShaderMaterial& material) IRR_OVERRIDE;
+	virtual void OnSetMaterialBurning(const SBurningShaderMaterial& material) IRR_OVERRIDE;
 
 private:
 	void fragmentShader();
@@ -105,7 +105,7 @@ CTR_transparent_reflection_2_layer::CTR_transparent_reflection_2_layer(CBurningV
 #endif
 }
 
-void CTR_transparent_reflection_2_layer::OnSetMaterial(const SBurningShaderMaterial& material)
+void CTR_transparent_reflection_2_layer::OnSetMaterialBurning(const SBurningShaderMaterial& material)
 {
 	MaterialType = material.org.MaterialType;
 

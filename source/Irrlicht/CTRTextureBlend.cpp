@@ -85,7 +85,7 @@ namespace video
 
 		//! draws an indexed triangle list
 		virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) IRR_OVERRIDE;
-		virtual void OnSetMaterial(const SBurningShaderMaterial& material) IRR_OVERRIDE;
+		virtual void OnSetMaterialBurning(const SBurningShaderMaterial& material) IRR_OVERRIDE;
 
 private:
 	// fragment shader
@@ -120,7 +120,7 @@ CTRTextureBlend::CTRTextureBlend(CBurningVideoDriver* driver)
 
 /*!
 */
-void CTRTextureBlend::OnSetMaterial(const SBurningShaderMaterial& material)
+void CTRTextureBlend::OnSetMaterialBurning(const SBurningShaderMaterial& material)
 {
 	int showname = 0;
 

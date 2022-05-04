@@ -84,7 +84,7 @@ public:
 
 	//! draws an indexed triangle list
 	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) IRR_OVERRIDE;
-	virtual void OnSetMaterial(const SBurningShaderMaterial& material) IRR_OVERRIDE;
+	virtual void OnSetMaterialBurning(const SBurningShaderMaterial& material) IRR_OVERRIDE;
 
 	virtual bool canWireFrame() IRR_OVERRIDE { return true; }
 
@@ -111,7 +111,7 @@ CTRTextureGouraudNoZ2::CTRTextureGouraudNoZ2(CBurningVideoDriver* driver)
 
 /*!
 */
-void CTRTextureGouraudNoZ2::OnSetMaterial(const SBurningShaderMaterial& material)
+void CTRTextureGouraudNoZ2::OnSetMaterialBurning(const SBurningShaderMaterial& material)
 {
 
 	if (material.org.TextureLayer[0].BilinearFilter ||

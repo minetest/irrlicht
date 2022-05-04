@@ -78,7 +78,7 @@ public:
 	//! constructor
 	CTRTextureWire2(CBurningVideoDriver* driver);
 
-	virtual void OnSetMaterial(const SBurningShaderMaterial& material) IRR_OVERRIDE;
+	virtual void OnSetMaterialBurning(const SBurningShaderMaterial& material) IRR_OVERRIDE;
 
 	//! draws an indexed triangle list
 	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) IRR_OVERRIDE;
@@ -108,7 +108,7 @@ CTRTextureWire2::CTRTextureWire2(CBurningVideoDriver* driver)
 	depth_write = 0;
 }
 
-void CTRTextureWire2::OnSetMaterial(const SBurningShaderMaterial& material)
+void CTRTextureWire2::OnSetMaterialBurning(const SBurningShaderMaterial& material)
 {
 	depth_pass = material.depth_test == 0;
 	depth_write = material.depth_write;

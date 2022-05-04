@@ -64,6 +64,15 @@
 #undef IPOL_C1
 #endif
 
+#if BURNING_MATERIAL_MAX_COLORS < 3
+#define IPOL_L0
+#undef IPOL_C2
+#endif
+
+#if BURNING_MATERIAL_MAX_COLORS < 4
+#undef IPOL_C3
+#endif
+
 #if BURNING_MATERIAL_MAX_LIGHT_TANGENT < 1
 #undef IPOL_L0
 #endif
@@ -100,7 +109,7 @@ public:
 
 	//! draws an indexed triangle list
 	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) IRR_OVERRIDE;
-	virtual void OnSetMaterial(const SBurningShaderMaterial& material) IRR_OVERRIDE;
+	virtual void OnSetMaterialBurning(const SBurningShaderMaterial& material) IRR_OVERRIDE;
 	virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData) IRR_OVERRIDE;
 private:
 	void fragmentShader();
@@ -125,7 +134,7 @@ CTRNormalMap::~CTRNormalMap()
 		CallBack = 0;
 }
 
-void CTRNormalMap::OnSetMaterial(const SBurningShaderMaterial& material)
+void CTRNormalMap::OnSetMaterialBurning(const SBurningShaderMaterial& material)
 {
 }
 

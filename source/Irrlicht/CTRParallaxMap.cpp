@@ -108,7 +108,7 @@ public:
 
 	//! draws an indexed triangle list
 	virtual void drawTriangle(const s4DVertex* burning_restrict a, const s4DVertex* burning_restrict b, const s4DVertex* burning_restrict c) IRR_OVERRIDE;
-	virtual void OnSetMaterial(const SBurningShaderMaterial& material) IRR_OVERRIDE;
+	virtual void OnSetMaterialBurning(const SBurningShaderMaterial& material) IRR_OVERRIDE;
 	virtual void OnSetMaterial(const video::SMaterial& material,
 		const video::SMaterial& lastMaterial,
 		bool resetAllRenderstates, video::IMaterialRendererServices* services) IRR_OVERRIDE;
@@ -138,7 +138,7 @@ CBurningParallaxMap::~CBurningParallaxMap()
 		CallBack = 0;
 }
 
-void CBurningParallaxMap::OnSetMaterial(const SBurningShaderMaterial& material)
+void CBurningParallaxMap::OnSetMaterialBurning(const SBurningShaderMaterial& material)
 {
 	CurrentScale = material.org.MaterialTypeParam;
 }
