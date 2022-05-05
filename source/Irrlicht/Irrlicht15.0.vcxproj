@@ -1343,7 +1343,6 @@
     <ClCompile Include="CSkinnedMesh.cpp" />
     <ClCompile Include="CSTLMeshFileLoader.cpp" />
     <ClCompile Include="CTRGouraudNoZ2.cpp" />
-		<ClCompile Include="CTRParallaxMap.cpp" />
     <ClCompile Include="CTR_transparent_reflection_2_layer.cpp" />
     <ClCompile Include="CWGLManager.cpp" />
     <ClCompile Include="CXMeshFileLoader.cpp" />
@@ -1449,6 +1448,7 @@
     <ClCompile Include="CTRGouraud2.cpp" />
     <ClCompile Include="CTRGouraudAlphaNoZ2.cpp" />
     <ClCompile Include="CTRNormalMap.cpp" />
+    <ClCompile Include="CTRParallaxMap.cpp" />
     <ClCompile Include="CTRStencilShadow.cpp" />
     <ClCompile Include="CTRTextureBlend.cpp" />
     <ClCompile Include="CTRTextureDetailMap2.cpp" />
