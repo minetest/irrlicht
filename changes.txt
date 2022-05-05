@@ -1,6 +1,7 @@
 --------------------------
 Changes in ogl-es (not yet released - will be merged with trunk at some point)
 
+- COGLES2Driver: fix swapped color screenshots. Thanks @sfan5 for patch (https://github.com/minetest/irrlicht/commit/05c109a1d52db8293d8721337853043924feedae)
 - Add support for (experimental) WebGL1 driver for emscripten (still work in process)
 - Add support for emscripten. Thanks @labsin for the patch.
 - Add IVideoDriver::getAmbientLight function so shaders can access global ambient light easier

@@ -2535,7 +2535,7 @@ COGLES2Driver::~COGLES2Driver()
 		if (target==video::ERT_MULTI_RENDER_TEXTURES || target==video::ERT_RENDER_TEXTURE || target==video::ERT_STEREO_BOTH_BUFFERS)
 			return 0;
 
-		GLint internalformat = GL_RGBA;
+		GLint internalformat = GL_RGBA;	// Note BGRA not available on ES2. Thought there might be extensions we could use maybe.
 		GLint type = GL_UNSIGNED_BYTE;
 		{
 //			glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &internalformat);
@@ -2590,6 +2590,22 @@ COGLES2Driver::~COGLES2Driver()
 			p2 -= pitch;
 		}
 		delete [] tmpBuffer;
+
+		// also GL_RGBA doesn't match the internal encoding of the image (which is BGRA)
+		if (GL_RGBA == internalformat && GL_UNSIGNED_BYTE == type)
+		{
+			pixels = static_cast<u8*>(newImage->getData());
+			for (u32 i = 0; i < ScreenSize.Height; i++)
+			{
+				for (u32 j = 0; j < ScreenSize.Width; j++)
+				{
+					u32 c = *(u32*) (pixels + 4 * j);
+					*(u32*) (pixels + 4 * j) = (c & 0xFF00FF00) |
+						((c & 0x00FF0000) >> 16) | ((c & 0x000000FF) << 16);
+				}
+				pixels += pitch;
+			}
+		}
 
 		if (testGLError(__LINE__))
 		{
