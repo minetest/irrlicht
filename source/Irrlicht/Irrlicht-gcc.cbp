@@ -970,11 +970,11 @@
 		<Unit filename="CTRFlatWire.cpp" />
 		<Unit filename="CTRGouraud.cpp" />
 		<Unit filename="CTRGouraud2.cpp" />
-		<Unit filename="CTRGouraudAlpha2.cpp" />
 		<Unit filename="CTRGouraudAlphaNoZ2.cpp" />
 		<Unit filename="CTRGouraudNoZ2.cpp" />
 		<Unit filename="CTRGouraudWire.cpp" />
 		<Unit filename="CTRNormalMap.cpp" />
+		<Unit filename="CTRParallaxMap.cpp" />
 		<Unit filename="CTRStencilShadow.cpp" />
 		<Unit filename="CTRTextureBlend.cpp" />
 		<Unit filename="CTRTextureDetailMap2.cpp" />

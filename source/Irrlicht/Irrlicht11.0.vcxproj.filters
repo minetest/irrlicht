@@ -1883,13 +1883,13 @@
     <ClCompile Include="CTRGouraud2.cpp">
       <Filter>Irrlicht\video\Burning Video</Filter>
     </ClCompile>
-    <ClCompile Include="CTRGouraudAlpha2.cpp">
-      <Filter>Irrlicht\video\Burning Video</Filter>
-    </ClCompile>
     <ClCompile Include="CTRGouraudAlphaNoZ2.cpp">
       <Filter>Irrlicht\video\Burning Video</Filter>
     </ClCompile>
     <ClCompile Include="CTRNormalMap.cpp">
+      <Filter>Irrlicht\video\Burning Video</Filter>
+    </ClCompile>
+    <ClCompile Include="CTRParallaxMap.cpp">
       <Filter>Irrlicht\video\Burning Video</Filter>
     </ClCompile>
     <ClCompile Include="CTRStencilShadow.cpp">

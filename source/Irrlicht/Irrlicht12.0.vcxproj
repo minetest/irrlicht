@@ -1457,9 +1457,9 @@
     <ClCompile Include="CSoftwareDriver2.cpp" />
     <ClCompile Include="CSoftwareTexture2.cpp" />
     <ClCompile Include="CTRGouraud2.cpp" />
-    <ClCompile Include="CTRGouraudAlpha2.cpp" />
     <ClCompile Include="CTRGouraudAlphaNoZ2.cpp" />
     <ClCompile Include="CTRNormalMap.cpp" />
+    <ClCompile Include="CTRParallaxMap.cpp" />
     <ClCompile Include="CTRStencilShadow.cpp" />
     <ClCompile Include="CTRTextureBlend.cpp" />
     <ClCompile Include="CTRTextureDetailMap2.cpp" />
