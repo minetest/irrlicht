@@ -36,9 +36,6 @@ namespace gui
 		//! returns string of a list item. the id may be a value from 0 to itemCount-1
 		virtual const wchar_t* getListItem(u32 id) const IRR_OVERRIDE;
 
-		//! adds an list item, returns id of item
-		virtual u32 addItem(const wchar_t* text) IRR_OVERRIDE;
-
 		//! clears the list
 		virtual void clear() IRR_OVERRIDE;
 
@@ -62,7 +59,14 @@ namespace gui
 		//! \param icon Sprite index of the Icon within the current sprite bank. Set it to -1 if you want no icon
 		//! \return
 		//! returns the id of the new created item
-		virtual u32 addItem(const wchar_t* text, s32 icon) IRR_OVERRIDE;
+		virtual u32 addItem(const wchar_t* text, s32 icon=-1) IRR_OVERRIDE;
+
+		//! Insert the item at the given index
+		//! Return the index on success or -1 on failure.
+		virtual s32 insertItem(u32 index, const wchar_t* text, s32 icon=-1) IRR_OVERRIDE;
+
+		//! set the item at the given index
+		virtual void setItem(u32 index, const wchar_t* text, s32 icon=-1) IRR_OVERRIDE;
 
 		//! Returns the icon of an item
 		virtual s32 getIcon(u32 id) const IRR_OVERRIDE;
@@ -114,13 +118,6 @@ namespace gui
 
 		//! return the default color which is used for the given colorType
 		virtual video::SColor getItemDefaultColor(EGUI_LISTBOX_COLOR colorType) const IRR_OVERRIDE;
-
-		//! set the item at the given index
-		virtual void setItem(u32 index, const wchar_t* text, s32 icon) IRR_OVERRIDE;
-
-		//! Insert the item at the given index
-		//! Return the index on success or -1 on failure.
-		virtual s32 insertItem(u32 index, const wchar_t* text, s32 icon) IRR_OVERRIDE;
 
 		//! Swap the items at the given indices
 		virtual void swapItems(u32 index1, u32 index2) IRR_OVERRIDE;
