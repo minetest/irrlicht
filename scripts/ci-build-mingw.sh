@@ -34,15 +34,17 @@ tmp=(
 	-DZLIB_LIBRARY=$libs/zlib/lib/libz.dll.a \
 	-DZLIB_INCLUDE_DIR=$libs/zlib/include
 )
-[ "$1" = "package" ] && tmp+=(-DCMAKE_EXE_LINKER_FLAGS="-s")
 
 cmake . "${tmp[@]}"
 make -j$(nproc)
 
 if [ "$1" = "package" ]; then
 	make DESTDIR=$PWD/_install install
+	# strip library
+	"${CXX%-*}-strip" --strip-unneeded _install/usr/local/lib/*.dll
 	# bundle the DLLs that are specific to Irrlicht (kind of a hack)
 	cp -p $libs/*/bin/lib{jpeg,png}*.dll _install/usr/local/lib/
-	(cd _install/usr/local; zip -9r "$OLDPWD"/irrlicht-windows.zip -- *)
+	# create a ZIP
+	(cd _install/usr/local; zip -9r "$OLDPWD"/irrlicht-$variant.zip -- *)
 fi
 exit 0
