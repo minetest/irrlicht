@@ -1,3 +1,4 @@
+#include <iostream>
 #include <irrlicht.h>
 #include "exampleHelper.h"
 
@@ -5,6 +6,8 @@ using namespace irr;
 
 static IrrlichtDevice *device = nullptr;
 static int test_fail = 0;
+
+extern void test_irr_array();
 
 static video::E_DRIVER_TYPE chooseDriver(const char *arg_)
 {
@@ -27,8 +30,15 @@ static inline void check(bool ok, const char *msg)
 	}
 }
 
+void run_unit_tests() {
+	std::cout << "Running unit tests:" << std::endl;
+	test_irr_array();
+}
+
 int main(int argc, char *argv[])
 {
+	run_unit_tests();
+
 	SIrrlichtCreationParameters p;
 	p.DriverType = chooseDriver(argc > 1 ? argv[1] : "");
 	p.WindowSize = core::dimension2du(640, 480);
