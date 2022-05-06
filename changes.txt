@@ -1,6 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Add IImage::checkDataSizeLimit and make IImage getDataSizeFromFormat return size_t so image loaders can check if sizes are sane.
 - Fix crash with large jpg files. Based somewhat on a patch in Minetest from sfan5 https://github.com/minetest/irrlicht/commit/594de9915346a87f67cd94e28c7933993efb5d3b
 - COSOperator::getSystemMemory now returns some value on OSX (thought same for total and available). 
   Thanks @sfan5 for patch https://irrlicht.sourceforge.io/forum/viewtopic.php?f=2&t=52819 and https://github.com/minetest/irrlicht/commit/e469c54f76f6d24f92389b4e8a27b9cce7152888

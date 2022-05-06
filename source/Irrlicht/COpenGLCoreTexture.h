@@ -401,7 +401,7 @@ public:
 			u32 width = Size.Width;
 			u32 height = Size.Height;
 			u8* tmpData = static_cast<u8*>(data);
-			u32 dataSize = 0;
+			size_t dataSize = 0;
 			u32 level = 0;
 
 			do
@@ -600,7 +600,7 @@ protected:
 		}
 		else
 		{
-			u32 dataSize = IImage::getDataSizeFromFormat(ColorFormat, width, height);
+			GLsizei dataSize = (GLsizei)IImage::getDataSizeFromFormat(ColorFormat, width, height);
 
 			switch (TextureType)
 			{
