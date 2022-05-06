@@ -131,5 +131,5 @@ void test_irr_array()
 	test_basics();
 	test_linear_searches();
 	test_binary_searches();
-        std::cout << "    test_irr_array PASSED" << std::endl;
+	std::cout << "    test_irr_array PASSED" << std::endl;
 }
