@@ -108,6 +108,8 @@ public:
 	//! Clears the array and deletes all allocated memory.
 	void clear()
 	{
+		// vector::clear() reduces the size to 0, but doesn't free memory.
+		// This swap is guaranteed to delete the allocated memory.
 		std::vector<T>().swap(m_data);
 		is_sorted = true;
 	}
@@ -159,13 +161,15 @@ public:
 		return *this;
 	}
 
-	array<T>& operator=(const std::vector<T> &other) {
+	array<T>& operator=(const std::vector<T> &other)
+	{
 		m_data = other;
 		is_sorted = false;
 		return *this;
 	}
 
-	array<T>& operator=(std::vector<T> &&other) {
+	array<T>& operator=(std::vector<T> &&other)
+	{
 		m_data = std::move(other);
 		is_sorted = false;
 		return *this;
@@ -417,10 +421,11 @@ public:
 
 	//! Pull the contents of this array as a vector.
 	// The array is left empty.
-	std::vector<T> steal() {
+	std::vector<T> steal()
+	{
 		std::vector<T> ret = std::move(m_data);
 		m_data.clear();
-		is_sorted = false;
+		is_sorted = true;
 		return ret;
 	}
 
