@@ -58,6 +58,3 @@ register_test(testFilesystem filesystem.cpp)
 register_test(testMeshLoaders meshLoaders.cpp)
 register_test(testTimer timer.cpp)
 register_test(testCoreutil coreutil.cpp)
-
-# All driver checks.
-register_test(testVideoDriver videoDriver.cpp)
