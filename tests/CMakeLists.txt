@@ -34,9 +34,6 @@ endmacro()
 
 message(STATUS "Generating unit tests.")
 
-# Validates working directory.
-register_test(testDisambiguateTextures disambiguateTextures.cpp)
-
 # Simple tests without device.
 register_test(testIrrArray irrArray.cpp)
 register_test(testIrrMap irrMap.cpp)
