@@ -143,9 +143,7 @@ public:
 	}
 
 	//! Sets the size of the array and allocates new elements if necessary.
-	/** Please note: This is only secure when using it with simple types,
-	because no default constructor will be called for the added elements.
-	\param usedNow Amount of elements now used. */
+	/** \param usedNow Amount of elements now used. */
 	void set_used(u32 usedNow)
 	{
 		m_data.resize(usedNow);
