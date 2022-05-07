@@ -971,43 +971,6 @@ void CGUISkin::draw2DRectangle(IGUIElement* element,
 	Driver->draw2DRectangle(color, pos, clip);
 }
 
-
-//! Writes attributes of the skin
-void CGUISkin::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
-{
-	u32 i;
-	for (i=0; i<EGDC_COUNT; ++i)
-		out->addColor(GUISkinColorNames[i], Colors[i]);
-
-	for (i=0; i<EGDS_COUNT; ++i)
-		out->addInt(GUISkinSizeNames[i], Sizes[i]);
-
-	for (i=0; i<EGDT_COUNT; ++i)
-		out->addString(GUISkinTextNames[i], Texts[i].c_str());
-
-	for (i=0; i<EGDI_COUNT; ++i)
-		out->addInt(GUISkinIconNames[i], Icons[i]);
-}
-
-
-//! Reads attributes of the skikn
-void CGUISkin::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
-{
-	u32 i;
-	for (i=0; i<EGDC_COUNT; ++i)
-		Colors[i] = in->getAttributeAsColor(GUISkinColorNames[i], Colors[i]);
-
-	for (i=0; i<EGDS_COUNT; ++i)
-		Sizes[i] = in->getAttributeAsInt(GUISkinSizeNames[i], Sizes[i]);
-
-	for (i=0; i<EGDT_COUNT; ++i)
-		Texts[i] = in->getAttributeAsStringW(GUISkinTextNames[i], Texts[i]);
-
-	for (i=0; i<EGDI_COUNT; ++i)
-		Icons[i] = in->getAttributeAsInt(GUISkinIconNames[i], Icons[i]);
-}
-
-
 } // end namespace gui
 } // end namespace irr
 

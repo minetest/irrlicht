@@ -130,12 +130,6 @@ namespace scene
 		//! Returns if the input receiver of the camera is currently enabled.
 		virtual bool isInputReceiverEnabled() const _IRR_OVERRIDE_;
 
-		//! Writes attributes of the scene node.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_;
-
-		//! Reads attributes of the scene node.
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_;
-
 		//! Returns type of the scene node
 		virtual ESCENE_NODE_TYPE getType() const _IRR_OVERRIDE_ { return ESNT_CAMERA; }
 

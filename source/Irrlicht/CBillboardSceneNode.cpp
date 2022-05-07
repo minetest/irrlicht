@@ -220,42 +220,6 @@ void CBillboardSceneNode::getSize(f32& height, f32& bottomEdgeWidth,
 }
 
 
-//! Writes attributes of the scene node.
-void CBillboardSceneNode::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
-{
-	IBillboardSceneNode::serializeAttributes(out, options);
-
-	out->addFloat("Width", Size.Width);
-	out->addFloat("TopEdgeWidth", TopEdgeWidth);
-	out->addFloat("Height", Size.Height);
-	out->addColor("Shade_Top", Buffer->Vertices[1].Color);
-	out->addColor("Shade_Down", Buffer->Vertices[0].Color);
-}
-
-
-//! Reads attributes of the scene node.
-void CBillboardSceneNode::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
-{
-	IBillboardSceneNode::deserializeAttributes(in, options);
-
-	Size.Width = in->getAttributeAsFloat("Width");
-	Size.Height = in->getAttributeAsFloat("Height");
-
-	if (in->existsAttribute("TopEdgeWidth"))
-	{
-		TopEdgeWidth = in->getAttributeAsFloat("TopEdgeWidth");
-		if (Size.Width != TopEdgeWidth)
-			setSize(Size.Height, Size.Width, TopEdgeWidth);
-	}
-	else
-		setSize(Size);
-	Buffer->Vertices[1].Color = in->getAttributeAsColor("Shade_Top");
-	Buffer->Vertices[0].Color = in->getAttributeAsColor("Shade_Down");
-	Buffer->Vertices[2].Color = Buffer->Vertices[1].Color;
-	Buffer->Vertices[3].Color = Buffer->Vertices[0].Color;
-}
-
-
 //! Set the color of all vertices of the billboard
 //! \param overallColor: the color to set
 void CBillboardSceneNode::setColor(const video::SColor& overallColor)

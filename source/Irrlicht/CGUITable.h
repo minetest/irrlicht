@@ -168,16 +168,6 @@ namespace gui
 		/** \return true if background drawing is enabled, false otherwise */
 		virtual bool isDrawBackgroundEnabled() const _IRR_OVERRIDE_;
 
-		//! Writes attributes of the object.
-		//! Implement this to expose the attributes of your scene node animator for
-		//! scripting languages, editors, debuggers or xml serialization purposes.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_;
-
-		//! Reads attributes of the object.
-		//! Implement this to set the attributes of your scene node animator for
-		//! scripting languages, editors, debuggers or xml deserialization purposes.
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_;
-
 	protected:
 		void refreshControls();
 		void checkScrollbars();

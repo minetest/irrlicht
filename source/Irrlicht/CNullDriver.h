@@ -21,10 +21,7 @@
 #include "SVertexIndex.h"
 #include "SLight.h"
 #include "SExposedVideoData.h"
-
-#ifdef _MSC_VER
-#pragma warning( disable: 4996)
-#endif
+#include <list>
 
 namespace irr
 {
@@ -335,10 +332,6 @@ namespace video
 		virtual void makeColorKeyTexture(video::ITexture* texture, core::position2d<s32> colorKeyPixelPos,
 			bool zeroTexels) const _IRR_OVERRIDE_;
 
-		//! Creates a normal map from a height map texture.
-		//! \param amplitude: Constant value by which the height information is multiplied.
-		virtual void makeNormalMapTexture(video::ITexture* texture, f32 amplitude=1.0f) const _IRR_OVERRIDE_;
-
 		//! Returns the maximum amount of primitives (mostly vertices) which
 		//! the device is able to render with one drawIndexedTriangleList
 		//! call.
@@ -396,25 +389,29 @@ namespace video
 		{
 			SHWBufferLink(const scene::IMeshBuffer *_MeshBuffer)
 				:MeshBuffer(_MeshBuffer),
-				ChangedID_Vertex(0),ChangedID_Index(0),LastUsed(0),
+				ChangedID_Vertex(0),ChangedID_Index(0),
 				Mapped_Vertex(scene::EHM_NEVER),Mapped_Index(scene::EHM_NEVER)
 			{
-				if (MeshBuffer)
+				if (MeshBuffer) {
 					MeshBuffer->grab();
+					MeshBuffer->setHWBuffer(reinterpret_cast<void*>(this));
+				}
 			}
 
 			virtual ~SHWBufferLink()
 			{
-				if (MeshBuffer)
+				if (MeshBuffer) {
+					MeshBuffer->setHWBuffer(NULL);
 					MeshBuffer->drop();
+				}
 			}
 
 			const scene::IMeshBuffer *MeshBuffer;
 			u32 ChangedID_Vertex;
 			u32 ChangedID_Index;
-			u32 LastUsed;
 			scene::E_HARDWARE_MAPPING Mapped_Vertex;
 			scene::E_HARDWARE_MAPPING Mapped_Index;
+			std::list<SHWBufferLink*>::iterator listPosition;
 		};
 
 		//! Gets hardware buffer link from a meshbuffer (may create or update buffer)
@@ -621,13 +618,6 @@ namespace video
 		//! Swap the material renderers used for certain id's
 		virtual void swapMaterialRenderers(u32 idx1, u32 idx2, bool swapNames) _IRR_OVERRIDE_;
 
-		//! Creates material attributes list from a material, usable for serialization and more.
-		virtual io::IAttributes* createAttributesFromMaterial(const video::SMaterial& material,
-			io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_;
-
-		//! Fills an SMaterial structure from attributes.
-		virtual void fillMaterialStructureFromAttributes(video::SMaterial& outMaterial, io::IAttributes* attributes) _IRR_OVERRIDE_;
-
 		//! looks if the image is already loaded
 		virtual video::ITexture* findTexture(const io::path& filename) _IRR_OVERRIDE_;
 
@@ -719,35 +709,6 @@ namespace video
 
 		// prints renderer version
 		void printVersion();
-
-		//! normal map lookup 32 bit version
-		inline f32 nml32(int x, int y, int pitch, int height, s32 *p) const
-		{
-			if (x < 0)
-				x = pitch-1;
-			if (x >= pitch)
-				x = 0;
-			if (y < 0)
-				y = height-1;
-			if (y >= height)
-				y = 0;
-			return (f32)(((p[(y * pitch) + x])>>16) & 0xff);
-		}
-
-		//! normal map lookup 16 bit version
-		inline f32 nml16(int x, int y, int pitch, int height, s16 *p) const
-		{
-			if (x < 0)
-				x = pitch-1;
-			if (x >= pitch)
-				x = 0;
-			if (y < 0)
-				y = height-1;
-			if (y >= height)
-				y = 0;
-
-			return (f32) getAverage ( p[(y * pitch) + x] );
-		}
 
 		inline bool getWriteZBuffer(const SMaterial& material) const
 		{
@@ -862,8 +823,7 @@ namespace video
 		core::array<SLight> Lights;
 		core::array<SMaterialRenderer> MaterialRenderers;
 
-		//core::array<SHWBufferLink*> HWBufferLinks;
-		core::map< const scene::IMeshBuffer* , SHWBufferLink* > HWBufferMap;
+		std::list<SHWBufferLink*> HWBufferList;
 
 		io::IFileSystem* FileSystem;
 

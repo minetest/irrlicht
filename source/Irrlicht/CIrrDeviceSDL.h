@@ -20,8 +20,8 @@
 #include <emscripten/html5.h>
 #endif
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_syswm.h>
+#include <SDL.h>
+#include <SDL_syswm.h>
 
 namespace irr
 {
@@ -66,9 +66,6 @@ namespace irr
 		//! notifies the device that it should close itself
 		virtual void closeDevice() _IRR_OVERRIDE_;
 
-		//! \return Returns a pointer to a list with all video modes supported
-		virtual video::IVideoModeList* getVideoModeList() _IRR_OVERRIDE_;
-
 		//! Sets if the window should be resizable in windowed mode.
 		virtual void setResizable(bool resize=false) _IRR_OVERRIDE_;
 
@@ -102,6 +99,8 @@ namespace irr
 		{
 			return EIDT_SDL;
 		}
+
+		void SwapWindow();
 
 		//! Implementation of the linux cursor control
 		class CCursorControl : public gui::ICursorControl
@@ -152,7 +151,7 @@ namespace irr
 			//! Sets the new position of the cursor.
 			virtual void setPosition(s32 x, s32 y) _IRR_OVERRIDE_
 			{
-				SDL_WarpMouse( x, y );
+				SDL_WarpMouseInWindow(Device->Window, x, y);
 			}
 
 			//! Returns the current position of the mouse cursor.
@@ -224,9 +223,9 @@ namespace irr
 	static EM_BOOL MouseEnterCallback(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData);
 	static EM_BOOL MouseLeaveCallback(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData);
 
-	// Check if it's a special key like left, right, up down and so on which shouldn't have a Unicode character.
-	bool isNoUnicodeKey(EKEY_CODE key) const;
 #endif
+		// Check if it's a special key like left, right, up down and so on which shouldn't have a Unicode character.
+		bool isNoUnicodeKey(EKEY_CODE key) const;
 
 		//! create the driver
 		void createDriver();
@@ -236,8 +235,8 @@ namespace irr
 		void createKeyMap();
 
 		void logAttributes();
-
-		SDL_Surface* Screen;
+		SDL_GLContext Context;
+		SDL_Window *Window;
 		int SDL_Flags;
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
 		core::array<SDL_Joystick*> Joysticks;

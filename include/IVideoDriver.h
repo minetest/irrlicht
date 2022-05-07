@@ -25,7 +25,6 @@ namespace irr
 namespace io
 {
 	class IAttributes;
-	struct SAttributeReadWriteOptions;
 	class IReadFile;
 	class IWriteFile;
 } // end namespace io
@@ -508,20 +507,6 @@ namespace video
 		virtual void makeColorKeyTexture(video::ITexture* texture,
 				core::position2d<s32> colorKeyPixelPos,
 				bool zeroTexels = false) const =0;
-
-		//! Creates a normal map from a height map texture.
-		/** As input is considered to be a height map the texture is read like:
-		- For a 32-bit texture only the red channel is regarded
-		- For a 16-bit texture the rgb-values are averaged.
-		Output channels red/green for X/Y and blue for up (Z).
-		For a 32-bit texture we store additionally the height value in the
-		alpha channel. This value is used by the video::EMT_PARALLAX_MAP_SOLID
-		material and similar materials.
-		On the borders the texture is considered to repeat.
-		\param texture Height map texture which is converted to a normal map.
-		\param amplitude Constant value by which the height
-		information is multiplied.*/
-		virtual void makeNormalMapTexture(video::ITexture* texture, f32 amplitude=1.0f) const =0;
 
 		//! Set a render target.
 		/** This will only work if the driver supports the
@@ -1355,28 +1340,6 @@ namespace video
 		                  When false the names will stay at the original index */
 		virtual void swapMaterialRenderers(u32 idx1, u32 idx2, bool swapNames=true) = 0;
 
-		//! Creates material attributes list from a material
-		/** This method is useful for serialization and more.
-		Please note that the video driver will use the material
-		renderer names from getMaterialRendererName() to write out the
-		material type name, so they should be set before.
-		\param material The material to serialize.
-		\param options Additional options which might influence the
-		serialization.
-		\return The io::IAttributes container holding the material
-		properties. */
-		virtual io::IAttributes* createAttributesFromMaterial(const video::SMaterial& material,
-			io::SAttributeReadWriteOptions* options=0) =0;
-
-		//! Fills an SMaterial structure from attributes.
-		/** Please note that for setting material types of the
-		material, the video driver will need to query the material
-		renderers for their names, so all non built-in materials must
-		have been created before calling this method.
-		\param outMaterial The material to set the properties for.
-		\param attributes The attributes to read from. */
-		virtual void fillMaterialStructureFromAttributes(video::SMaterial& outMaterial, io::IAttributes* attributes) =0;
-
 		//! Returns driver and operating system specific data about the IVideoDriver.
 		/** This method should only be used if the engine should be
 		extended without having to modify the source of the engine.
@@ -1423,7 +1386,7 @@ namespace video
 		you have to render some special things, you can clear the
 		zbuffer during the rendering process with this method any time.
 		*/
-		_IRR_DEPRECATED_ void clearZBuffer()
+		void clearZBuffer()
 		{
 			clearBuffers(ECBF_DEPTH, SColor(255,0,0,0), 1.f, 0);
 		}

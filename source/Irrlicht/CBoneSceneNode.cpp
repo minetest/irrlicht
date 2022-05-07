@@ -96,26 +96,6 @@ void CBoneSceneNode::updateAbsolutePositionOfAllChildren()
 }
 
 
-void CBoneSceneNode::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
-{
-	IBoneSceneNode::serializeAttributes(out, options);
-	out->addInt("BoneIndex", BoneIndex);
-	out->addEnum("AnimationMode", AnimationMode, BoneAnimationModeNames);
-}
-
-
-void CBoneSceneNode::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
-{
-	BoneIndex = in->getAttributeAsInt("BoneIndex");
-	AnimationMode = (E_BONE_ANIMATION_MODE)in->getAttributeAsEnumeration("AnimationMode", BoneAnimationModeNames);
-	// for legacy files (before 1.5)
-	const core::stringc boneName = in->getAttributeAsString("BoneName");
-	setName(boneName);
-	IBoneSceneNode::deserializeAttributes(in, options);
-	// TODO: add/replace bone in parent with bone from mesh
-}
-
-
 } // namespace scene
 } // namespace irr
 

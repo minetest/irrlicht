@@ -155,12 +155,6 @@ namespace gui
 			return ClickControlState;
 		}
 
-		//! Writes attributes of the element.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
-
-		//! Reads attributes of the element
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
-
 	protected:
 		void drawSprite(EGUI_BUTTON_STATE state, u32 startTime, const core::position2di& center);
 		EGUI_BUTTON_IMAGE_STATE getImageState(bool pressed) const;

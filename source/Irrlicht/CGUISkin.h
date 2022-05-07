@@ -216,12 +216,6 @@ namespace gui
 		//! get the type of this skin
 		virtual EGUI_SKIN_TYPE getType() const _IRR_OVERRIDE_;
 
-		//! Writes attributes of the skin
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_;
-
-		//! Reads attributes of the skin
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_;
-
 	private:
 
 		video::SColor Colors[EGDC_COUNT];

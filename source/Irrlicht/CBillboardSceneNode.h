@@ -72,11 +72,19 @@ public:
 	//! Get the real boundingbox used by the billboard (which depends on the active camera)
 	virtual const core::aabbox3d<f32>& getTransformedBillboardBoundingBox(const irr::scene::ICameraSceneNode* camera) _IRR_OVERRIDE_;
 
-	//! Writes attributes of the scene node.
-	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_;
+	//! Get the amount of mesh buffers.
+	virtual u32 getMeshBufferCount() const _IRR_OVERRIDE_
+	{
+		return Buffer ? 1 : 0;
+	}
 
-	//! Reads attributes of the scene node.
-	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_;
+	//! Get pointer to the mesh buffer.
+	virtual IMeshBuffer* getMeshBuffer(u32 nr) const _IRR_OVERRIDE_
+	{
+		if ( nr == 0 )
+			return Buffer;
+		return 0;
+	}
 
 	//! Returns type of the scene node
 	virtual ESCENE_NODE_TYPE getType() const _IRR_OVERRIDE_ { return ESNT_BILLBOARD; }

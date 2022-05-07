@@ -14,7 +14,7 @@
 #include "IAnimatedMeshSceneNode.h"
 #include "CMeshManipulator.h"
 #include "CColorConverter.h"
-#include "IAttributeExchangingObject.h"
+#include "IReferenceCounted.h"
 #include "IRenderTarget.h"
 
 
@@ -1291,124 +1291,6 @@ void CNullDriver::makeColorKeyTexture(video::ITexture* texture,
 }
 
 
-
-//! Creates a normal map from a height map texture.
-//! \param amplitude: Constant value by which the height information is multiplied.
-void CNullDriver::makeNormalMapTexture(video::ITexture* texture, f32 amplitude) const
-{
-	if (!texture)
-		return;
-
-	if (texture->getColorFormat() != ECF_A1R5G5B5 &&
-		texture->getColorFormat() != ECF_A8R8G8B8 )
-	{
-		os::Printer::log("Error: Unsupported texture color format for making normal map.", ELL_ERROR);
-		return;
-	}
-
-	core::dimension2d<u32> dim = texture->getSize();
-	amplitude = amplitude / 255.0f;
-	f32 vh = dim.Height / (f32)dim.Width;
-	f32 hh = dim.Width / (f32)dim.Height;
-
-	if (texture->getColorFormat() == ECF_A8R8G8B8)
-	{
-		// ECF_A8R8G8B8 version
-
-		s32 *p = (s32*)texture->lock();
-
-		if (!p)
-		{
-			os::Printer::log("Could not lock texture for making normal map.", ELL_ERROR);
-			return;
-		}
-
-		// copy texture
-
-		u32 pitch = texture->getPitch() / 4;
-
-		s32* in = new s32[dim.Height * pitch];
-		memcpy(in, p, dim.Height * pitch * 4);
-
-		for (s32 x=0; x < s32(pitch); ++x)
-			for (s32 y=0; y < s32(dim.Height); ++y)
-			{
-				// TODO: this could be optimized really a lot
-
-				core::vector3df h1((x-1)*hh, nml32(x-1, y, pitch, dim.Height, in)*amplitude, y*vh);
-				core::vector3df h2((x+1)*hh, nml32(x+1, y, pitch, dim.Height, in)*amplitude, y*vh);
-				//core::vector3df v1(x*hh, nml32(x, y-1, pitch, dim.Height, in)*amplitude, (y-1)*vh);
-				//core::vector3df v2(x*hh, nml32(x, y+1, pitch, dim.Height, in)*amplitude, (y+1)*vh);
-				core::vector3df v1(x*hh, nml32(x, y+1, pitch, dim.Height, in)*amplitude, (y-1)*vh);
-				core::vector3df v2(x*hh, nml32(x, y-1, pitch, dim.Height, in)*amplitude, (y+1)*vh);
-
-				core::vector3df v = v1-v2;
-				core::vector3df h = h1-h2;
-
-				core::vector3df n = v.crossProduct(h);
-				n.normalize();
-				n *= 0.5f;
-				n += core::vector3df(0.5f,0.5f,0.5f); // now between 0 and 1
-				n *= 255.0f;
-
-				s32 height = (s32)nml32(x, y, pitch, dim.Height, in);
-				p[y*pitch + x] = video::SColor(
-					height, // store height in alpha
-					(s32)n.X, (s32)n.Z, (s32)n.Y).color;
-			}
-
-		delete [] in;
-		texture->unlock();
-	}
-	else
-	{
-		// ECF_A1R5G5B5 version
-
-		s16 *p = (s16*)texture->lock();
-
-		if (!p)
-		{
-			os::Printer::log("Could not lock texture for making normal map.", ELL_ERROR);
-			return;
-		}
-
-		u32 pitch = texture->getPitch() / 2;
-
-		// copy texture
-
-		s16* in = new s16[dim.Height * pitch];
-		memcpy(in, p, dim.Height * pitch * 2);
-
-		for (s32 x=0; x < s32(pitch); ++x)
-			for (s32 y=0; y < s32(dim.Height); ++y)
-			{
-				// TODO: this could be optimized really a lot
-
-				core::vector3df h1((x-1)*hh, nml16(x-1, y, pitch, dim.Height, in)*amplitude, y*vh);
-				core::vector3df h2((x+1)*hh, nml16(x+1, y, pitch, dim.Height, in)*amplitude, y*vh);
-				core::vector3df v1(x*hh, nml16(x, y-1, pitch, dim.Height, in)*amplitude, (y-1)*vh);
-				core::vector3df v2(x*hh, nml16(x, y+1, pitch, dim.Height, in)*amplitude, (y+1)*vh);
-
-				core::vector3df v = v1-v2;
-				core::vector3df h = h1-h2;
-
-				core::vector3df n = v.crossProduct(h);
-				n.normalize();
-				n *= 0.5f;
-				n += core::vector3df(0.5f,0.5f,0.5f); // now between 0 and 1
-				n *= 255.0f;
-
-				p[y*pitch + x] = video::RGBA16((u32)n.X, (u32)n.Z, (u32)n.Y);
-			}
-
-		delete [] in;
-		texture->unlock();
-	}
-
-	texture->regenerateMipMapLevels();
-}
-
-
 //! Returns the maximum amount of primitives (mostly vertices) which
 //! the device is able to render with one drawIndexedTriangleList
 //! call.
@@ -1425,8 +1307,8 @@ bool CNullDriver::checkPrimitiveCount(u32 prmCount) const
 
 	if (prmCount > m)
 	{
-		char tmp[1024];
-		sprintf(tmp,"Could not draw triangles, too many primitives(%u), maximum is %u.", prmCount, m);
+		char tmp[128];
+		snprintf_irr(tmp, sizeof(tmp), "Could not draw triangles, too many primitives(%u), maximum is %u.", prmCount, m);
 		os::Printer::log(tmp, ELL_ERROR);
 		return false;
 	}
@@ -1807,9 +1689,9 @@ CNullDriver::SHWBufferLink *CNullDriver::getBufferLink(const scene::IMeshBuffer*
 		return 0;
 
 	//search for hardware links
-	core::map< const scene::IMeshBuffer*,SHWBufferLink* >::Node* node = HWBufferMap.find(mb);
-	if (node)
-		return node->getValue();
+	SHWBufferLink *HWBuffer = reinterpret_cast<SHWBufferLink*>(mb->getHWBuffer());
+	if (HWBuffer)
+		return HWBuffer;
 
 	return createHardwareBuffer(mb); //no hardware links, and mesh wants one, create it
 }
@@ -1818,20 +1700,13 @@ CNullDriver::SHWBufferLink *CNullDriver::getBufferLink(const scene::IMeshBuffer*
 //! Update all hardware buffers, remove unused ones
 void CNullDriver::updateAllHardwareBuffers()
 {
-	core::map<const scene::IMeshBuffer*,SHWBufferLink*>::ParentFirstIterator Iterator=HWBufferMap.getParentFirstIterator();
+	auto it = HWBufferList.begin();
+	while (it != HWBufferList.end()) {
+		SHWBufferLink *Link = *it;
+		++it;
 
-	for (;!Iterator.atEnd();Iterator++)
-	{
-		SHWBufferLink *Link=Iterator.getNode()->getValue();
-
-		Link->LastUsed++;
-		if (Link->LastUsed>20000)
-		{
+		if (!Link->MeshBuffer || Link->MeshBuffer->getReferenceCount() == 1)
 			deleteHardwareBuffer(Link);
-
-			// todo: needs better fix
-			Iterator = HWBufferMap.getParentFirstIterator();
-		}
 	}
 }
 
@@ -1840,7 +1715,7 @@ void CNullDriver::deleteHardwareBuffer(SHWBufferLink *HWBuffer)
 {
 	if (!HWBuffer)
 		return;
-	HWBufferMap.remove(HWBuffer->MeshBuffer);
+	HWBufferList.erase(HWBuffer->listPosition);
 	delete HWBuffer;
 }
 
@@ -1848,17 +1723,19 @@ void CNullDriver::deleteHardwareBuffer(SHWBufferLink *HWBuffer)
 //! Remove hardware buffer
 void CNullDriver::removeHardwareBuffer(const scene::IMeshBuffer* mb)
 {
-	core::map<const scene::IMeshBuffer*,SHWBufferLink*>::Node* node = HWBufferMap.find(mb);
-	if (node)
-		deleteHardwareBuffer(node->getValue());
+	if (!mb)
+		return;
+	SHWBufferLink *HWBuffer = reinterpret_cast<SHWBufferLink*>(mb->getHWBuffer());
+	if (HWBuffer)
+		deleteHardwareBuffer(HWBuffer);
 }
 
 
 //! Remove all hardware buffers
 void CNullDriver::removeAllHardwareBuffers()
 {
-	while (HWBufferMap.size())
-		deleteHardwareBuffer(HWBufferMap.getRoot()->getValue());
+	while (!HWBufferList.empty())
+		deleteHardwareBuffer(HWBufferList.front());
 }
 
 
@@ -2116,193 +1993,6 @@ void CNullDriver::swapMaterialRenderers(u32 idx1, u32 idx2, bool swapNames)
 		if ( swapNames )
 			irr::core::swap(MaterialRenderers[idx1].Name, MaterialRenderers[idx2].Name);
 	}
-}
-
-//! Creates material attributes list from a material, usable for serialization and more.
-io::IAttributes* CNullDriver::createAttributesFromMaterial(const video::SMaterial& material,
-	io::SAttributeReadWriteOptions* options)
-{
-	io::CAttributes* attr = new io::CAttributes(this);
-
-	attr->addEnum("Type", material.MaterialType, sBuiltInMaterialTypeNames);
-
-	attr->addColor("Ambient", material.AmbientColor);
-	attr->addColor("Diffuse", material.DiffuseColor);
-	attr->addColor("Emissive", material.EmissiveColor);
-	attr->addColor("Specular", material.SpecularColor);
-
-	attr->addFloat("Shininess", material.Shininess);
-	attr->addFloat("Param1", material.MaterialTypeParam);
-	attr->addFloat("Param2", material.MaterialTypeParam2);
-	attr->addFloat("Thickness", material.Thickness);
-
-	core::stringc prefix="Texture";
-	u32 i;
-	for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-	{
-		video::ITexture* texture = material.getTexture(i);
-		if (options && (options->Flags&io::EARWF_USE_RELATIVE_PATHS) && options->Filename && texture)
-		{
-			io::path path = FileSystem->getRelativeFilename(
-				FileSystem->getAbsolutePath(material.getTexture(i)->getName()), options->Filename);
-			attr->addTexture((prefix+core::stringc(i+1)).c_str(), material.getTexture(i), path);
-		}
-		else
-		{
-			attr->addTexture((prefix+core::stringc(i+1)).c_str(), texture);
-		}
-	}
-
-	attr->addBool("Wireframe", material.Wireframe);
-	attr->addBool("PointCloud", material.PointCloud);
-	attr->addBool("GouraudShading", material.GouraudShading);
-	attr->addBool("Lighting", material.Lighting);
-	attr->addEnum("ZWriteEnable", (irr::s32)material.ZWriteEnable, video::ZWriteNames);
-	attr->addInt("ZBuffer", material.ZBuffer);
-	attr->addBool("BackfaceCulling", material.BackfaceCulling);
-	attr->addBool("FrontfaceCulling", material.FrontfaceCulling);
-	attr->addBool("FogEnable", material.FogEnable);
-	attr->addBool("NormalizeNormals", material.NormalizeNormals);
-	attr->addBool("UseMipMaps", material.UseMipMaps);
-	attr->addInt("AntiAliasing", material.AntiAliasing);
-	attr->addInt("ColorMask", material.ColorMask);
-	attr->addInt("ColorMaterial", material.ColorMaterial);
-	attr->addInt("BlendOperation", material.BlendOperation);
-	attr->addFloat("BlendFactor", material.BlendFactor);
-	attr->addInt("PolygonOffsetFactor", material.PolygonOffsetFactor);
-	attr->addEnum("PolygonOffsetDirection", material.PolygonOffsetDirection, video::PolygonOffsetDirectionNames);
-	attr->addFloat("PolygonOffsetDepthBias", material.PolygonOffsetDepthBias);
-	attr->addFloat("PolygonOffsetSlopeScale", material.PolygonOffsetSlopeScale);
-
-	// TODO: Would be nice to have a flag that only serializes rest of texture data when a texture pointer exists.
-	prefix = "BilinearFilter";
-	for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-		attr->addBool((prefix+core::stringc(i+1)).c_str(), material.TextureLayer[i].BilinearFilter);
-	prefix = "TrilinearFilter";
-	for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-		attr->addBool((prefix+core::stringc(i+1)).c_str(), material.TextureLayer[i].TrilinearFilter);
-	prefix = "AnisotropicFilter";
-	for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-		attr->addInt((prefix+core::stringc(i+1)).c_str(), material.TextureLayer[i].AnisotropicFilter);
-	prefix="TextureWrapU";
-	for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-		attr->addEnum((prefix+core::stringc(i+1)).c_str(), material.TextureLayer[i].TextureWrapU, aTextureClampNames);
-	prefix="TextureWrapV";
-	for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-		attr->addEnum((prefix+core::stringc(i+1)).c_str(), material.TextureLayer[i].TextureWrapV, aTextureClampNames);
-	prefix="TextureWrapW";
-	for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-		attr->addEnum((prefix+core::stringc(i+1)).c_str(), material.TextureLayer[i].TextureWrapW, aTextureClampNames);
-	prefix="LODBias";
-	for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-		attr->addInt((prefix+core::stringc(i+1)).c_str(), material.TextureLayer[i].LODBias);
-
-	return attr;
-}
-
-
-//! Fills an SMaterial structure from attributes.
-void CNullDriver::fillMaterialStructureFromAttributes(video::SMaterial& outMaterial, io::IAttributes* attr)
-{
-	outMaterial.MaterialType = video::EMT_SOLID;
-
-	core::stringc name = attr->getAttributeAsString("Type");
-
-	u32 i;
-
-	for ( i=0; i < MaterialRenderers.size(); ++i)
-		if ( name == MaterialRenderers[i].Name )
-		{
-			outMaterial.MaterialType = (video::E_MATERIAL_TYPE)i;
-			break;
-		}
-
-	outMaterial.AmbientColor = attr->getAttributeAsColor("Ambient", outMaterial.AmbientColor);
-	outMaterial.DiffuseColor = attr->getAttributeAsColor("Diffuse", outMaterial.DiffuseColor);
-	outMaterial.EmissiveColor = attr->getAttributeAsColor("Emissive", outMaterial.EmissiveColor);
-	outMaterial.SpecularColor = attr->getAttributeAsColor("Specular", outMaterial.SpecularColor);
-
-	outMaterial.Shininess = attr->getAttributeAsFloat("Shininess", outMaterial.Shininess);
-	outMaterial.MaterialTypeParam = attr->getAttributeAsFloat("Param1", outMaterial.MaterialTypeParam);
-	outMaterial.MaterialTypeParam2 = attr->getAttributeAsFloat("Param2", outMaterial.MaterialTypeParam2);
-	outMaterial.Thickness = attr->getAttributeAsFloat("Thickness", outMaterial.Thickness);
-
-	core::stringc prefix="Texture";
-	for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-		outMaterial.setTexture(i, attr->getAttributeAsTexture((prefix+core::stringc(i+1)).c_str()));
-
-	outMaterial.Wireframe = attr->getAttributeAsBool("Wireframe", outMaterial.Wireframe);
-	outMaterial.PointCloud = attr->getAttributeAsBool("PointCloud", outMaterial.PointCloud);
-	outMaterial.GouraudShading = attr->getAttributeAsBool("GouraudShading", outMaterial.GouraudShading);
-	outMaterial.Lighting = attr->getAttributeAsBool("Lighting", outMaterial.Lighting);
-
-	io::E_ATTRIBUTE_TYPE attType = attr->getAttributeType("ZWriteEnable");
-	if (attType == io::EAT_BOOL )	// Before Irrlicht 1.9
-		outMaterial.ZWriteEnable = attr->getAttributeAsBool("ZWriteEnable", outMaterial.ZWriteEnable != video::EZW_OFF ) ? video::EZW_AUTO : video::EZW_OFF;
-	else if (attType == io::EAT_ENUM )
-		outMaterial.ZWriteEnable = (video::E_ZWRITE)attr->getAttributeAsEnumeration("ZWriteEnable", video::ZWriteNames, outMaterial.ZWriteEnable);
-
-	outMaterial.ZBuffer = (u8)attr->getAttributeAsInt("ZBuffer", outMaterial.ZBuffer);
-	outMaterial.BackfaceCulling = attr->getAttributeAsBool("BackfaceCulling", outMaterial.BackfaceCulling);
-	outMaterial.FrontfaceCulling = attr->getAttributeAsBool("FrontfaceCulling", outMaterial.FrontfaceCulling);
-	outMaterial.FogEnable = attr->getAttributeAsBool("FogEnable", outMaterial.FogEnable);
-	outMaterial.NormalizeNormals = attr->getAttributeAsBool("NormalizeNormals", outMaterial.NormalizeNormals);
-	outMaterial.UseMipMaps = attr->getAttributeAsBool("UseMipMaps", outMaterial.UseMipMaps);
-
-	outMaterial.AntiAliasing = attr->getAttributeAsInt("AntiAliasing", outMaterial.AntiAliasing);
-	outMaterial.ColorMask = attr->getAttributeAsInt("ColorMask", outMaterial.ColorMask);
-	outMaterial.ColorMaterial = attr->getAttributeAsInt("ColorMaterial", outMaterial.ColorMaterial);
-	outMaterial.BlendOperation = (video::E_BLEND_OPERATION)attr->getAttributeAsInt("BlendOperation", outMaterial.BlendOperation);
-	outMaterial.BlendFactor = attr->getAttributeAsFloat("BlendFactor", outMaterial.BlendFactor);
-	outMaterial.PolygonOffsetFactor = attr->getAttributeAsInt("PolygonOffsetFactor", outMaterial.PolygonOffsetFactor);
-	outMaterial.PolygonOffsetDirection = (video::E_POLYGON_OFFSET)attr->getAttributeAsEnumeration("PolygonOffsetDirection", video::PolygonOffsetDirectionNames, outMaterial.PolygonOffsetDirection);
-	outMaterial.PolygonOffsetDepthBias = attr->getAttributeAsFloat("PolygonOffsetDepthBias", outMaterial.PolygonOffsetDepthBias);
-	outMaterial.PolygonOffsetSlopeScale = attr->getAttributeAsFloat("PolygonOffsetSlopeScale", outMaterial.PolygonOffsetSlopeScale);
-
-	prefix = "BilinearFilter";
-	if (attr->existsAttribute(prefix.c_str())) // legacy
-		outMaterial.setFlag(EMF_BILINEAR_FILTER, attr->getAttributeAsBool(prefix.c_str()));
-	else
-		for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-			outMaterial.TextureLayer[i].BilinearFilter = attr->getAttributeAsBool((prefix+core::stringc(i+1)).c_str(), outMaterial.TextureLayer[i].BilinearFilter);
-
-	prefix = "TrilinearFilter";
-	if (attr->existsAttribute(prefix.c_str())) // legacy
-		outMaterial.setFlag(EMF_TRILINEAR_FILTER, attr->getAttributeAsBool(prefix.c_str()));
-	else
-		for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-			outMaterial.TextureLayer[i].TrilinearFilter = attr->getAttributeAsBool((prefix+core::stringc(i+1)).c_str(), outMaterial.TextureLayer[i].TrilinearFilter);
-
-	prefix = "AnisotropicFilter";
-	if (attr->existsAttribute(prefix.c_str())) // legacy
-		outMaterial.setFlag(EMF_ANISOTROPIC_FILTER, attr->getAttributeAsBool(prefix.c_str()));
-	else
-		for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-			outMaterial.TextureLayer[i].AnisotropicFilter = attr->getAttributeAsInt((prefix+core::stringc(i+1)).c_str(), outMaterial.TextureLayer[i].AnisotropicFilter);
-
-	prefix = "TextureWrap";
-	if (attr->existsAttribute(prefix.c_str())) // legacy
-	{
-		for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-		{
-			outMaterial.TextureLayer[i].TextureWrapU = (E_TEXTURE_CLAMP)attr->getAttributeAsEnumeration((prefix+core::stringc(i+1)).c_str(), aTextureClampNames);
-			outMaterial.TextureLayer[i].TextureWrapV = outMaterial.TextureLayer[i].TextureWrapU;
-			outMaterial.TextureLayer[i].TextureWrapW = outMaterial.TextureLayer[i].TextureWrapW;
-		}
-	}
-	else
-	{
-		for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-		{
-			outMaterial.TextureLayer[i].TextureWrapU = (E_TEXTURE_CLAMP)attr->getAttributeAsEnumeration((prefix+"U"+core::stringc(i+1)).c_str(), aTextureClampNames, outMaterial.TextureLayer[i].TextureWrapU);
-			outMaterial.TextureLayer[i].TextureWrapV = (E_TEXTURE_CLAMP)attr->getAttributeAsEnumeration((prefix+"V"+core::stringc(i+1)).c_str(), aTextureClampNames, outMaterial.TextureLayer[i].TextureWrapV);
-			outMaterial.TextureLayer[i].TextureWrapW = (E_TEXTURE_CLAMP)attr->getAttributeAsEnumeration((prefix+"W"+core::stringc(i+1)).c_str(), aTextureClampNames, outMaterial.TextureLayer[i].TextureWrapW);
-		}
-	}
-
-	prefix="LODBias";
-	for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-		outMaterial.TextureLayer[i].LODBias = attr->getAttributeAsInt((prefix+core::stringc(i+1)).c_str(), outMaterial.TextureLayer[i].LODBias);
 }
 
 

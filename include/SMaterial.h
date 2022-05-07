@@ -282,23 +282,6 @@ namespace video
 	*/
 	const u32 MATERIAL_MAX_TEXTURES = _IRR_MATERIAL_MAX_TEXTURES_;
 
-	//! By default this is identical to MATERIAL_MAX_TEXTURES
-	/** Users can modify this value if they are certain they don't need all
-		available textures per material in their application. For example if you
-		never need more than 2 textures per material you can set this to 2.
-
-		We (mostly) avoid dynamic memory in SMaterial, so the extra memory
-		will still be allocated. But by lowering MATERIAL_MAX_TEXTURES_USED the
-		material comparisons and assignments can be faster. Also several other
-		places in the engine can be faster when reducing this value to the limit
-		you need.
-
-		NOTE: This should only be changed once and before any call to createDevice.
-		NOTE: Do not set it below 1 or above the value of _IRR_MATERIAL_MAX_TEXTURES_.
-		NOTE: Going below 4 is usually not worth it.
-	*/
-	IRRLICHT_API extern u32 MATERIAL_MAX_TEXTURES_USED;
-
 	//! Struct for holding parameters for a material renderer
 	// Note for implementors: Serialization is in CNullDriver
 	class SMaterial
@@ -317,16 +300,6 @@ namespace video
 			Lighting(true), ZWriteEnable(EZW_AUTO), BackfaceCulling(true), FrontfaceCulling(false),
 			FogEnable(false), NormalizeNormals(false), UseMipMaps(true)
 		{ }
-
-		//! Copy constructor
-		/** \param other Material to copy from. */
-		SMaterial(const SMaterial& other)
-		{
-			// These pointers are checked during assignment
-			for (u32 i=0; i<MATERIAL_MAX_TEXTURES_USED; ++i)
-				TextureLayer[i].TextureMatrix = 0;
-			*this = other;
-		}
 
 		//! Texture layer array.
 		SMaterialLayer TextureLayer[MATERIAL_MAX_TEXTURES];
@@ -372,7 +345,7 @@ namespace video
 		f32 Shininess;
 
 		//! Free parameter, dependent on the material type.
-		/** Mostly ignored, used for example in EMT_PARALLAX_MAP_SOLID,
+		/** Mostly ignored, used for example in
 		EMT_TRANSPARENT_ALPHA_CHANNEL and EMT_ONETEXTURE_BLEND. */
 		f32 MaterialTypeParam;
 
@@ -565,23 +538,23 @@ namespace video
 					FrontfaceCulling = value; break;
 				case EMF_BILINEAR_FILTER:
 				{
-					for (u32 i=0; i<MATERIAL_MAX_TEXTURES_USED; ++i)
+					for (u32 i=0; i<MATERIAL_MAX_TEXTURES; ++i)
 						TextureLayer[i].BilinearFilter = value;
 				}
 				break;
 				case EMF_TRILINEAR_FILTER:
 				{
-					for (u32 i=0; i<MATERIAL_MAX_TEXTURES_USED; ++i)
+					for (u32 i=0; i<MATERIAL_MAX_TEXTURES; ++i)
 						TextureLayer[i].TrilinearFilter = value;
 				}
 				break;
 				case EMF_ANISOTROPIC_FILTER:
 				{
 					if (value)
-						for (u32 i=0; i<MATERIAL_MAX_TEXTURES_USED; ++i)
+						for (u32 i=0; i<MATERIAL_MAX_TEXTURES; ++i)
 							TextureLayer[i].AnisotropicFilter = 0xFF;
 					else
-						for (u32 i=0; i<MATERIAL_MAX_TEXTURES_USED; ++i)
+						for (u32 i=0; i<MATERIAL_MAX_TEXTURES; ++i)
 							TextureLayer[i].AnisotropicFilter = 0;
 				}
 				break;
@@ -591,7 +564,7 @@ namespace video
 					NormalizeNormals = value; break;
 				case EMF_TEXTURE_WRAP:
 				{
-					for (u32 i=0; i<MATERIAL_MAX_TEXTURES_USED; ++i)
+					for (u32 i=0; i<MATERIAL_MAX_TEXTURES; ++i)
 					{
 						TextureLayer[i].TextureWrapU = (E_TEXTURE_CLAMP)value;
 						TextureLayer[i].TextureWrapV = (E_TEXTURE_CLAMP)value;
@@ -713,7 +686,7 @@ namespace video
 				PolygonOffsetSlopeScale != b.PolygonOffsetSlopeScale ||
 				UseMipMaps != b.UseMipMaps
 				;
-			for (u32 i=0; (i<MATERIAL_MAX_TEXTURES_USED) && !different; ++i)
+			for (u32 i=0; (i<MATERIAL_MAX_TEXTURES) && !different; ++i)
 			{
 				different |= (TextureLayer[i] != b.TextureLayer[i]);
 			}

@@ -15,8 +15,6 @@
 
 #include "COGLES2MaterialRenderer.h"
 #include "COGLES2FixedPipelineRenderer.h"
-#include "COGLES2NormalMapRenderer.h"
-#include "COGLES2ParallaxMapRenderer.h"
 #include "COGLES2Renderer2D.h"
 
 #include "EVertexAttributes.h"
@@ -248,12 +246,6 @@ COGLES2Driver::~COGLES2Driver()
 		COGLES2MaterialSolidCB* TransparentAlphaChannelRefCB = new COGLES2MaterialSolidCB();
 		COGLES2MaterialSolidCB* TransparentVertexAlphaCB = new COGLES2MaterialSolidCB();
 		COGLES2MaterialReflectionCB* TransparentReflection2LayerCB = new COGLES2MaterialReflectionCB();
-		COGLES2MaterialNormalMapCB* NormalMapCB = new COGLES2MaterialNormalMapCB();
-		COGLES2MaterialNormalMapCB* NormalMapAddColorCB = new COGLES2MaterialNormalMapCB();
-		COGLES2MaterialNormalMapCB* NormalMapVertexAlphaCB = new COGLES2MaterialNormalMapCB();
-		COGLES2MaterialParallaxMapCB* ParallaxMapCB = new COGLES2MaterialParallaxMapCB();
-		COGLES2MaterialParallaxMapCB* ParallaxMapAddColorCB = new COGLES2MaterialParallaxMapCB();
-		COGLES2MaterialParallaxMapCB* ParallaxMapVertexAlphaCB = new COGLES2MaterialParallaxMapCB();
 		COGLES2MaterialOneTextureBlendCB* OneTextureBlendCB = new COGLES2MaterialOneTextureBlendCB();
 
 		// Create built-in materials.
@@ -342,30 +334,6 @@ COGLES2Driver::~COGLES2Driver()
 		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
 			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, TransparentReflection2LayerCB, EMT_TRANSPARENT_ALPHA_CHANNEL, 0);
 
-		VertexShader = OGLES2ShaderPath + "COGLES2NormalMap.vsh";
-		FragmentShader = OGLES2ShaderPath + "COGLES2NormalMap.fsh";
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, NormalMapCB, EMT_SOLID, 0);
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, NormalMapAddColorCB, EMT_TRANSPARENT_ADD_COLOR, 0);
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, NormalMapVertexAlphaCB, EMT_TRANSPARENT_ALPHA_CHANNEL, 0);
-
-		VertexShader = OGLES2ShaderPath + "COGLES2ParallaxMap.vsh";
-		FragmentShader = OGLES2ShaderPath + "COGLES2ParallaxMap.fsh";
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, ParallaxMapCB, EMT_SOLID, 0);
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, ParallaxMapAddColorCB, EMT_TRANSPARENT_ADD_COLOR, 0);
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, ParallaxMapVertexAlphaCB, EMT_TRANSPARENT_ALPHA_CHANNEL, 0);
-
 		VertexShader = OGLES2ShaderPath + "COGLES2Solid.vsh";
 		FragmentShader = OGLES2ShaderPath + "COGLES2OneTextureBlend.fsh";
 
@@ -391,12 +359,6 @@ COGLES2Driver::~COGLES2Driver()
 		TransparentAlphaChannelRefCB->drop();
 		TransparentVertexAlphaCB->drop();
 		TransparentReflection2LayerCB->drop();
-		NormalMapCB->drop();
-		NormalMapAddColorCB->drop();
-		NormalMapVertexAlphaCB->drop();
-		ParallaxMapCB->drop();
-		ParallaxMapAddColorCB->drop();
-		ParallaxMapVertexAlphaCB->drop();
 		OneTextureBlendCB->drop();
 
 		// Create 2D material renderers
@@ -627,13 +589,12 @@ COGLES2Driver::~COGLES2Driver()
 		SHWBufferLink_opengl *HWBuffer = new SHWBufferLink_opengl(mb);
 
 		//add to map
-		HWBufferMap.insert(HWBuffer->MeshBuffer, HWBuffer);
+		HWBuffer->listPosition = HWBufferList.insert(HWBufferList.end(), HWBuffer);
 
 		HWBuffer->ChangedID_Vertex = HWBuffer->MeshBuffer->getChangedID_Vertex();
 		HWBuffer->ChangedID_Index = HWBuffer->MeshBuffer->getChangedID_Index();
 		HWBuffer->Mapped_Vertex = mb->getHardwareMappingHint_Vertex();
 		HWBuffer->Mapped_Index = mb->getHardwareMappingHint_Index();
-		HWBuffer->LastUsed = 0;
 		HWBuffer->vbo_verticesID = 0;
 		HWBuffer->vbo_indicesID = 0;
 		HWBuffer->vbo_verticesSize = 0;
@@ -679,8 +640,6 @@ COGLES2Driver::~COGLES2Driver()
 		SHWBufferLink_opengl *HWBuffer = static_cast<SHWBufferLink_opengl*>(_HWBuffer);
 
 		updateHardwareBuffer(HWBuffer); //check if update is needed
-
-		HWBuffer->LastUsed = 0;//reset count
 
 		const scene::IMeshBuffer* mb = HWBuffer->MeshBuffer;
 		const void *vertices = mb->getVertices();

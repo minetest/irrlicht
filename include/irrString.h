@@ -920,8 +920,10 @@ public:
 		if ((length+begin) > size())
 			length = size()-begin;
 
+		// accounting for null terminator.
+		s32 substrAllocLength = length + 1;
 		string<T> o;
-		o.reserve(length+1);
+		o.reserve(substrAllocLength);
 
 		if ( !make_lower )
 		{
@@ -934,7 +936,7 @@ public:
 				o.array[i] = locale_lower ( array[i+begin] );
 		}
 
-		o.array[length] = 0;
+		o.array[substrAllocLength - 1] = 0;
 		o.used = length + 1;
 
 		return o;

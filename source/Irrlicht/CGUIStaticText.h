@@ -112,12 +112,6 @@ namespace gui
 		//! Checks if the text should be interpreted as right-to-left text
 		virtual bool isRightToLeft() const _IRR_OVERRIDE_;
 
-		//! Writes attributes of the element.
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const _IRR_OVERRIDE_;
-
-		//! Reads attributes of the element
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) _IRR_OVERRIDE_;
-
 	private:
 
 		//! Breaks the single text line.

@@ -49,9 +49,6 @@ namespace gui
 		//! draws the element and its children
 		virtual void draw() _IRR_OVERRIDE_;
 
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_;
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_;
-
 	protected:
 
 		void setFileName(const irr::io::path& name);

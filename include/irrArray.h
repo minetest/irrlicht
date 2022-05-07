@@ -299,22 +299,27 @@ public:
 			return *this;
 		strategy = other.strategy;
 
+		// (TODO: we could probably avoid re-allocations of data when (allocated < other.allocated)
+
 		if (data)
 			clear();
-
-		//if (allocated < other.allocated)
-		if (other.allocated == 0)
-			data = 0;
-		else
-			data = allocator.allocate(other.allocated); // new T[other.allocated];
 
 		used = other.used;
 		free_when_destroyed = true;
 		is_sorted = other.is_sorted;
 		allocated = other.allocated;
 
-		for (u32 i=0; i<other.used; ++i)
-			allocator.construct(&data[i], other.data[i]); // data[i] = other.data[i];
+		if (other.allocated == 0)
+		{
+			data = 0;
+		}
+		else
+		{
+			data = allocator.allocate(other.allocated); // new T[other.allocated];
+
+			for (u32 i=0; i<other.used; ++i)
+				allocator.construct(&data[i], other.data[i]); // data[i] = other.data[i];
+		}
 
 		return *this;
 	}

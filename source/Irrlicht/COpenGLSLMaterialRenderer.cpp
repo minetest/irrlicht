@@ -58,13 +58,9 @@ COpenGLSLMaterialRenderer::COpenGLSLMaterialRenderer(video::COpenGLDriver* drive
 	{
 	case EMT_TRANSPARENT_VERTEX_ALPHA:
 	case EMT_TRANSPARENT_ALPHA_CHANNEL:
-	case EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:
-	case EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA:
 		Alpha = true;
 		break;
 	case EMT_TRANSPARENT_ADD_COLOR:
-	case EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR:
-	case EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR:
 		FixedBlending = true;
 		break;
 	case EMT_ONETEXTURE_BLEND:
@@ -98,13 +94,9 @@ COpenGLSLMaterialRenderer::COpenGLSLMaterialRenderer(COpenGLDriver* driver,
 	{
 	case EMT_TRANSPARENT_VERTEX_ALPHA:
 	case EMT_TRANSPARENT_ALPHA_CHANNEL:
-	case EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:
-	case EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA:
 		Alpha = true;
 		break;
 	case EMT_TRANSPARENT_ADD_COLOR:
-	case EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR:
-	case EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR:
 		FixedBlending = true;
 		break;
 	case EMT_ONETEXTURE_BLEND:
@@ -251,6 +243,8 @@ void COpenGLSLMaterialRenderer::OnSetMaterial(const video::SMaterial& material,
 	{
 		cacheHandler->setBlend(true);
 		cacheHandler->setBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		cacheHandler->setAlphaTest(true);
+		cacheHandler->setAlphaFunc(GL_GREATER, 0.f);
 	}
 	else if (FixedBlending)
 	{
@@ -299,7 +293,7 @@ void COpenGLSLMaterialRenderer::OnUnsetMaterial()
 	{
 		cacheHandler->setBlend(false);
 	}
-	else if (AlphaTest)
+	if (Alpha || AlphaTest)
 	{
 		cacheHandler->setAlphaTest(false);
 	}

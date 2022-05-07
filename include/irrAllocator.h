@@ -15,11 +15,6 @@ namespace irr
 namespace core
 {
 
-#ifdef DEBUG_CLIENTBLOCK
-#undef DEBUG_CLIENTBLOCK
-#define DEBUG_CLIENTBLOCK new
-#endif
-
 //! Very simple allocator implementation, containers using it can be used across dll boundaries
 template<typename T>
 class irrAllocator
@@ -101,12 +96,6 @@ public:
 	}
 };
 
-
-
-#ifdef DEBUG_CLIENTBLOCK
-#undef DEBUG_CLIENTBLOCK
-#define DEBUG_CLIENTBLOCK new( _CLIENT_BLOCK, __FILE__, __LINE__)
-#endif
 
 //! defines an allocation strategy (used only by irr::array so far)
 enum eAllocStrategy

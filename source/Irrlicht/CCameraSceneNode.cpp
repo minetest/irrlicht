@@ -300,41 +300,6 @@ void CCameraSceneNode::recalculateViewArea()
 }
 
 
-//! Writes attributes of the scene node.
-void CCameraSceneNode::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
-{
-	ICameraSceneNode::serializeAttributes(out, options);
-
-	out->addVector3d("Target", Target);
-	out->addVector3d("UpVector", UpVector);
-	out->addFloat("Fovy", Fovy);
-	out->addFloat("Aspect", Aspect);
-	out->addFloat("ZNear", ZNear);
-	out->addFloat("ZFar", ZFar);
-	out->addBool("Binding", TargetAndRotationAreBound);
-	out->addBool("ReceiveInput", InputReceiverEnabled);
-}
-
-//! Reads attributes of the scene node.
-void CCameraSceneNode::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
-{
-	ICameraSceneNode::deserializeAttributes(in, options);
-
-	Target = in->getAttributeAsVector3d("Target");
-	UpVector = in->getAttributeAsVector3d("UpVector");
-	Fovy = in->getAttributeAsFloat("Fovy");
-	Aspect = in->getAttributeAsFloat("Aspect");
-	ZNear = in->getAttributeAsFloat("ZNear");
-	ZFar = in->getAttributeAsFloat("ZFar");
-	TargetAndRotationAreBound = in->getAttributeAsBool("Binding");
-	if ( in->findAttribute("ReceiveInput") )
-		InputReceiverEnabled = in->getAttributeAsBool("ReceiveInput");
-
-	recalculateProjectionMatrix();
-	recalculateViewArea();
-}
-
-
 //! Set the binding between the camera's rotation adn target.
 void CCameraSceneNode::bindTargetAndRotation(bool bound)
 {

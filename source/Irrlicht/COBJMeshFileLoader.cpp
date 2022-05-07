@@ -26,8 +26,6 @@ namespace scene
 #define _IRR_DEBUG_OBJ_LOADER_
 #endif
 
-static const u32 WORD_BUFFER_LENGTH = 512;
-
 //! Constructor
 COBJMeshFileLoader::COBJMeshFileLoader(scene::ISceneManager* smgr, io::IFileSystem* fs)
 : SceneManager(smgr), FileSystem(fs)
@@ -318,16 +316,7 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 			Materials[m]->Meshbuffer->recalculateBoundingBox();
 			if (Materials[m]->RecalculateNormals)
 				SceneManager->getMeshManipulator()->recalculateNormals(Materials[m]->Meshbuffer);
-			if (Materials[m]->Meshbuffer->Material.MaterialType == video::EMT_PARALLAX_MAP_SOLID)
-			{
-				SMesh tmp;
-				tmp.addMeshBuffer(Materials[m]->Meshbuffer);
-				IMesh* tangentMesh = SceneManager->getMeshManipulator()->createMeshWithTangents(&tmp);
-				mesh->addMeshBuffer(tangentMesh->getMeshBuffer(0));
-				tangentMesh->drop();
-			}
-			else
-				mesh->addMeshBuffer( Materials[m]->Meshbuffer );
+			mesh->addMeshBuffer( Materials[m]->Meshbuffer );
 		}
 	}
 

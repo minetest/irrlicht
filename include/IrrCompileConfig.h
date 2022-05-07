@@ -6,8 +6,8 @@
 #define __IRR_COMPILE_CONFIG_H_INCLUDED__
 
 //! Identifies the IrrlichtMt fork customized for the Minetest engine
-#define IRRLICHT_VERSION_MT_REVISION 4
-#define IRRLICHT_VERSION_MT "mt4"
+#define IRRLICHT_VERSION_MT_REVISION 6
+#define IRRLICHT_VERSION_MT "mt6"
 
 //! Irrlicht SDK Version
 #define IRRLICHT_VERSION_MAJOR 1
@@ -61,32 +61,15 @@
 //! WIN32 for Windows32
 //! WIN64 for Windows64
 // The windows platform and API support SDL and WINDOW device
-#if defined(_WIN32) || defined(_WIN64) || defined(WIN32) || defined(WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 #define _IRR_WINDOWS_
 #define _IRR_WINDOWS_API_
+#ifndef _IRR_COMPILE_WITH_SDL_DEVICE_
 #define _IRR_COMPILE_WITH_WINDOWS_DEVICE_
 #endif
-
-#if defined(_MSC_VER) && (_MSC_VER < 1500)
-#  error "Only Microsoft Visual Studio 9.0 and later are supported."
 #endif
 
-// XBox is deprecated (as DX8 is removed). Use Irrlicht 1.8 if you still want to work on this.
-#if defined(_XBOX)
-	#undef _IRR_WINDOWS_
-	#define _IRR_XBOX_PLATFORM_	// deprecated
-	#define _IRR_WINDOWS_API_
-	//#define _IRR_COMPILE_WITH_WINDOWS_DEVICE_
-	#undef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
-	//#define _IRR_COMPILE_WITH_SDL_DEVICE_
-
-	#include <xtl.h>
-#endif
-
-#if defined(__APPLE__) || defined(MACOSX)
-#if !defined(MACOSX)
-#define MACOSX // legacy support
-#endif
+#if defined(__APPLE__)
 #if defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__) || defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #define _IRR_IOS_PLATFORM_
 #define _IRR_COMPILE_WITH_IOS_DEVICE_
@@ -98,7 +81,9 @@
 #define _IRR_COMPILE_WITH_IOS_BUILTIN_MAIN_
 #else
 #define _IRR_OSX_PLATFORM_
+#ifndef _IRR_COMPILE_WITH_SDL_DEVICE_
 #define _IRR_COMPILE_WITH_OSX_DEVICE_
+#endif
 #define NO_IRR_COMPILE_WITH_OGLES1_
 #define NO_IRR_COMPILE_WITH_OGLES2_
 #define NO_IRR_COMPILE_WITH_WEBGL1_
@@ -137,7 +122,9 @@
 #define _IRR_LINUX_PLATFORM_
 #endif
 #define _IRR_POSIX_API_
+#ifndef _IRR_COMPILE_WITH_SDL_DEVICE_
 #define _IRR_COMPILE_WITH_X11_DEVICE_
+#endif
 #endif
 
 
@@ -151,7 +138,7 @@
 
 
 //! Maximum number of texture an SMaterial can have, up to 8 are supported by Irrlicht.
-#define _IRR_MATERIAL_MAX_TEXTURES_ 8
+#define _IRR_MATERIAL_MAX_TEXTURES_ 4
 
 //! Add a leak-hunter to Irrlicht which helps finding unreleased reference counted objects.
 //! NOTE: This is slow and should only be used for debugging
@@ -185,10 +172,6 @@ and this to the linker settings: -ld3dx9
 If not defined, Windows Multimedia library is used, which offers also broad support for joystick devices. */
 #define _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
 #ifdef NO_IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
-#undef _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
-#endif
-// can't get this to compile currently under borland, can be removed if someone has a better solution
-#if defined(__BORLANDC__)
 #undef _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
 #endif
 
@@ -466,7 +449,7 @@ ones. */
 #else // _IRR_WINDOWS_API_
 
 // Force symbol export in shared libraries built with gcc.
-#if (__GNUC__ >= 4) && !defined(_IRR_STATIC_LIB_) && defined(IRRLICHT_EXPORTS)
+#if defined(__GNUC__) && !defined(_IRR_STATIC_LIB_) && defined(IRRLICHT_EXPORTS)
 #define IRRLICHT_API __attribute__ ((visibility("default")))
 #else
 #define IRRLICHT_API
@@ -484,22 +467,6 @@ ones. */
 #define __IRR_HAS_S64
 #ifdef NO__IRR_HAS_S64
 #undef __IRR_HAS_S64
-#endif
-
-#if defined(__BORLANDC__)
-	#include <tchar.h>
-
-	// Borland 5.5.1
-	#if __BORLANDC__ == 0x551
-		#undef _tfinddata_t
-		#undef _tfindfirst
-		#undef _tfindnext
-
-		#define _tfinddata_t __tfinddata_t
-		#define _tfindfirst  __tfindfirst
-		#define _tfindnext   __tfindnext
-		typedef long intptr_t;
-	#endif
 #endif
 
 #ifndef __has_feature

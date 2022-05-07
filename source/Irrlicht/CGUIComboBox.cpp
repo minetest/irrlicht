@@ -486,52 +486,6 @@ void CGUIComboBox::openCloseMenu()
 }
 
 
-//! Writes attributes of the element.
-void CGUIComboBox::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const
-{
-	IGUIComboBox::serializeAttributes(out,options);
-
-	out->addEnum ("HTextAlign", HAlign, GUIAlignmentNames);
-	out->addEnum ("VTextAlign", VAlign, GUIAlignmentNames);
-	out->addInt("MaxSelectionRows", (s32)MaxSelectionRows );
-
-	out->addInt	("Selected",	Selected );
-	out->addInt	("ItemCount",	Items.size());
-	for (u32 i=0; i < Items.size(); ++i)
-	{
-		core::stringc s = "Item";
-		s += i;
-		s += "Text";
-		out->addString(s.c_str(), Items[i].Name.c_str());
-	}
-}
-
-
-//! Reads attributes of the element
-void CGUIComboBox::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)
-{
-	IGUIComboBox::deserializeAttributes(in,options);
-
-	setTextAlignment( (EGUI_ALIGNMENT) in->getAttributeAsEnumeration("HTextAlign", GUIAlignmentNames),
-                      (EGUI_ALIGNMENT) in->getAttributeAsEnumeration("VTextAlign", GUIAlignmentNames));
-	setMaxSelectionRows( (u32)(in->getAttributeAsInt("MaxSelectionRows")) );
-
-	// clear the list
-	clear();
-	// get item count
-	u32 c = in->getAttributeAsInt("ItemCount");
-	// add items
-	for (u32 i=0; i < c; ++i)
-	{
-		core::stringc s = "Item";
-		s += i;
-		s += "Text";
-		addItem(in->getAttributeAsStringW(s.c_str()).c_str(), 0);
-	}
-
-	setSelected(in->getAttributeAsInt("Selected"));
-}
-
 } // end namespace gui
 } // end namespace irr
 

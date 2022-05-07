@@ -98,45 +98,6 @@ video::SColor CGUITab::getBackgroundColor() const
 }
 
 
-//! Writes attributes of the element.
-void CGUITab::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const
-{
-	IGUITab::serializeAttributes(out,options);
-
-	IGUITabControl* parentTabControl = Parent && Parent->getType() == EGUIET_TAB_CONTROL ? static_cast<IGUITabControl*>(Parent) : 0;
-	if ( parentTabControl )
-		out->addInt		("TabNumber",	parentTabControl->getTabIndex(this));	// order of children and tabs can be different, so we save tab-number
-	out->addBool	("DrawBackground",	DrawBackground);
-	out->addColor	("BackColor",		BackColor);
-	out->addBool	("OverrideTextColorEnabled", OverrideTextColorEnabled);
-	out->addColor	("TextColor",		TextColor);
-
-}
-
-
-//! Reads attributes of the element
-void CGUITab::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)
-{
-	IGUITab::deserializeAttributes(in,options);
-
-	setDrawBackground(in->getAttributeAsBool("DrawBackground", DrawBackground));
-	setBackgroundColor(in->getAttributeAsColor("BackColor", BackColor));
-	bool overrideColor = in->getAttributeAsBool("OverrideTextColorEnabled", OverrideTextColorEnabled);
-	setTextColor(in->getAttributeAsColor("TextColor", TextColor));
-	OverrideTextColorEnabled = overrideColor;	// because setTextColor does set OverrideTextColorEnabled always to true
-
-	IGUITabControl* parentTabControl = Parent && Parent->getType() == EGUIET_TAB_CONTROL ? static_cast<IGUITabControl*>(Parent) : 0;
-	if (parentTabControl)
-	{
-		s32 idx = in->getAttributeAsInt("TabNumber", -1);
-		if ( idx >= 0 )
-			parentTabControl->insertTab(idx, this, true);
-		else
-			parentTabControl->addTab(this);
-	}
-}
-
-
 // ------------------------------------------------------------------
 // Tabcontrol
 // ------------------------------------------------------------------
@@ -1017,38 +978,6 @@ void CGUITabControl::updateAbsolutePosition()
 {
 	IGUIElement::updateAbsolutePosition();
 	recalculateScrollBar();
-}
-
-
-//! Writes attributes of the element.
-void CGUITabControl::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const
-{
-	IGUITabControl::serializeAttributes(out,options);
-
-	out->addInt ("ActiveTab",	ActiveTabIndex);
-	out->addBool("Border",		Border);
-	out->addBool("FillBackground",	FillBackground);
-	out->addInt ("TabHeight",	TabHeight);
-	out->addInt ("TabMaxWidth", TabMaxWidth);
-	out->addEnum("TabVerticalAlignment", s32(VerticalAlignment), GUIAlignmentNames);
-}
-
-
-//! Reads attributes of the element
-void CGUITabControl::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)
-{
-	Border          = in->getAttributeAsBool("Border");
-	FillBackground  = in->getAttributeAsBool("FillBackground");
-
-	ActiveTabIndex = -1;
-
-	setTabHeight(in->getAttributeAsInt("TabHeight"));
-	TabMaxWidth     = in->getAttributeAsInt("TabMaxWidth");
-
-	IGUITabControl::deserializeAttributes(in,options);
-
-	ActiveTabIndex = in->getAttributeAsInt("ActiveTab", -1);	// not setActiveTab as tabs are loaded later
-	setTabVerticalAlignment( static_cast<EGUI_ALIGNMENT>(in->getAttributeAsEnumeration("TabVerticalAlignment" , GUIAlignmentNames)) );
 }
 
 

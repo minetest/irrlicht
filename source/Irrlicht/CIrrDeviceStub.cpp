@@ -308,11 +308,6 @@ namespace
 			return os::Randomizer::rand();
 		}
 
-		virtual f32 frand() const _IRR_OVERRIDE_
-		{
-			return os::Randomizer::frand();
-		}
-
 		virtual s32 randMax() const _IRR_OVERRIDE_
 		{
 			return os::Randomizer::randMax();

@@ -68,7 +68,6 @@ private:
 
 	core::array<video::S3DVertex2TCoords> BaseVertices;
 
-	ISceneManager*	SceneManager;
 	CSkinnedMesh*	AnimatedMesh;
 	io::IReadFile*	B3DFile;
 

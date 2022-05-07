@@ -82,7 +82,7 @@ namespace
 	{
 		return a.rotation == b.rotation;
 	}
-};
+}
 
 namespace irr
 {
@@ -813,6 +813,39 @@ bool CSkinnedMesh::setHardwareSkinning(bool on)
 	return HardwareSkinning;
 }
 
+void CSkinnedMesh::refreshJointCache()
+{
+	//copy cache from the mesh...
+	for (u32 i=0; i<AllJoints.size(); ++i)
+	{
+		SJoint *joint=AllJoints[i];
+		for (u32 j=0; j<joint->Weights.size(); ++j)
+		{
+			const u16 buffer_id=joint->Weights[j].buffer_id;
+			const u32 vertex_id=joint->Weights[j].vertex_id;
+			joint->Weights[j].StaticPos = LocalBuffers[buffer_id]->getVertex(vertex_id)->Pos;
+			joint->Weights[j].StaticNormal = LocalBuffers[buffer_id]->getVertex(vertex_id)->Normal;
+		}
+	}
+}
+
+void CSkinnedMesh::resetAnimation()
+{
+	//copy from the cache to the mesh...
+	for (u32 i=0; i<AllJoints.size(); ++i)
+	{
+		SJoint *joint=AllJoints[i];
+		for (u32 j=0; j<joint->Weights.size(); ++j)
+		{
+			const u16 buffer_id=joint->Weights[j].buffer_id;
+			const u32 vertex_id=joint->Weights[j].vertex_id;
+			LocalBuffers[buffer_id]->getVertex(vertex_id)->Pos = joint->Weights[j].StaticPos;
+			LocalBuffers[buffer_id]->getVertex(vertex_id)->Normal = joint->Weights[j].StaticNormal;
+		}
+	}
+	SkinnedLastFrame = false;
+	LastAnimatedFrame = -1;
+}
 
 void CSkinnedMesh::calculateGlobalMatrices(SJoint *joint,SJoint *parentJoint)
 {

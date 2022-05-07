@@ -22,20 +22,13 @@
 #include "IGUISpriteBank.h"
 #include <winuser.h>
 #include "SExposedVideoData.h"
+
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
 #include <mmsystem.h>
 #include <regstr.h>
 #ifdef _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
-#ifdef _MSC_VER
-#pragma comment(lib, "dinput8.lib")
-#pragma comment(lib, "dxguid.lib")
-#endif
-#else
-#ifdef _MSC_VER
-#pragma comment(lib, "winmm.lib")
-#endif
 #endif
 #endif
 
@@ -514,7 +507,7 @@ bool SJoystickWin32Control::activateJoysticks(core::array<SJoystickInfo> & joyst
 	for(joystick = 0; joystick < joystickInfo.size(); ++joystick)
 	{
 		char logString[256];
-		(void)sprintf(logString, "Found joystick %d, %d axes, %d buttons '%s'",
+		snprintf_irr(logString, sizeof(logString), "Found joystick %d, %d axes, %d buttons '%s'",
 			joystick, joystickInfo[joystick].Axes,
 			joystickInfo[joystick].Buttons, joystickInfo[joystick].Name.c_str());
 		os::Printer::log(logString, ELL_INFORMATION);
@@ -1096,12 +1089,12 @@ void CIrrDeviceWin32::resizeIfNecessary()
 
 	if (r.right < 2 || r.bottom < 2)
 	{
-		sprintf(tmp, "Ignoring resize operation to (%ld %ld)", r.right, r.bottom);
+		snprintf_irr(tmp, sizeof(tmp), "Ignoring resize operation to (%ld %ld)", r.right, r.bottom);
 		os::Printer::log(tmp);
 	}
 	else
 	{
-		sprintf(tmp, "Resizing window (%ld %ld)", r.right, r.bottom);
+		snprintf_irr(tmp, sizeof(tmp), "Resizing window (%ld %ld)", r.right, r.bottom);
 		os::Printer::log(tmp);
 
 		getVideoDriver()->OnResize(irr::core::dimension2du((u32)r.right, (u32)r.bottom));
@@ -1140,7 +1133,7 @@ bool CIrrDeviceWin32::present(video::IImage* image, void* windowId, core::rect<s
 {
 	HWND hwnd = HWnd;
 	if ( windowId )
-		hwnd = reinterpret_cast<HWND>(windowId);
+		hwnd = static_cast<HWND>(windowId);
 
 	HDC dc = GetDC(hwnd);
 

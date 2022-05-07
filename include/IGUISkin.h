@@ -5,7 +5,7 @@
 #ifndef __I_GUI_SKIN_H_INCLUDED__
 #define __I_GUI_SKIN_H_INCLUDED__
 
-#include "IAttributeExchangingObject.h"
+#include "IReferenceCounted.h"
 #include "EGUIAlignment.h"
 #include "SColor.h"
 #include "rect.h"
@@ -381,7 +381,7 @@ namespace gui
 	};
 
 	//! A skin modifies the look of the GUI elements.
-	class IGUISkin : public virtual io::IAttributeExchangingObject
+	class IGUISkin : virtual public IReferenceCounted
 	{
 	public:
 

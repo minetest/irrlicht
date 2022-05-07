@@ -5,7 +5,7 @@
 #ifndef __I_GUI_ELEMENT_H_INCLUDED__
 #define __I_GUI_ELEMENT_H_INCLUDED__
 
-#include "IAttributeExchangingObject.h"
+#include "IReferenceCounted.h"
 #include "irrList.h"
 #include "rect.h"
 #include "irrString.h"
@@ -20,7 +20,7 @@ namespace irr
 namespace gui
 {
 //! Base class of all GUI elements.
-class IGUIElement : public virtual io::IAttributeExchangingObject, public IEventReceiver
+class IGUIElement : virtual public IReferenceCounted, public IEventReceiver
 {
 public:
 
@@ -210,25 +210,25 @@ public:
 	}
 
 	//! How left element border is aligned when parent is resized
-	EGUI_ALIGNMENT getAlignLeft() const 
+	EGUI_ALIGNMENT getAlignLeft() const
 	{
 		return AlignLeft;
 	}
 
 	//! How right element border is aligned when parent is resized
-	EGUI_ALIGNMENT getAlignRight() const 
+	EGUI_ALIGNMENT getAlignRight() const
 	{
 		return AlignRight;
 	}
 
 	//! How top element border is aligned when parent is resized
-	EGUI_ALIGNMENT getAlignTop() const 
+	EGUI_ALIGNMENT getAlignTop() const
 	{
 		return AlignTop;
 	}
 
 	//! How bottom element border is aligned when parent is resized
-	EGUI_ALIGNMENT getAlignBottom() const 
+	EGUI_ALIGNMENT getAlignBottom() const
 	{
 		return AlignBottom;
 	}
@@ -795,62 +795,6 @@ public:
 		return false;
 	}
 
-
-	//! Writes attributes of the scene node.
-	/** Implement this to expose the attributes of your scene node for
-	scripting languages, editors, debuggers or xml serialization purposes. */
-	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_
-	{
-		out->addString("Name", Name.c_str());
-		out->addInt("Id", ID );
-		out->addString("Caption", getText());
-		out->addString("ToolTip", getToolTipText().c_str());
-		out->addRect("Rect", DesiredRect);
-		out->addPosition2d("MinSize", core::position2di(MinSize.Width, MinSize.Height));
-		out->addPosition2d("MaxSize", core::position2di(MaxSize.Width, MaxSize.Height));
-		out->addEnum("LeftAlign", AlignLeft, GUIAlignmentNames);
-		out->addEnum("RightAlign", AlignRight, GUIAlignmentNames);
-		out->addEnum("TopAlign", AlignTop, GUIAlignmentNames);
-		out->addEnum("BottomAlign", AlignBottom, GUIAlignmentNames);
-		out->addBool("Visible", IsVisible);
-		out->addBool("Enabled", IsEnabled);
-		out->addBool("TabStop", IsTabStop);
-		out->addBool("TabGroup", IsTabGroup);
-		out->addInt("TabOrder", TabOrder);
-		out->addBool("NoClip", NoClip);
-	}
-
-
-	//! Reads attributes of the scene node.
-	/** Implement this to set the attributes of your scene node for
-	scripting languages, editors, debuggers or xml deserialization purposes. */
-	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_
-	{
-		setName(in->getAttributeAsString("Name", Name));
-		setID(in->getAttributeAsInt("Id", ID));
-		setText(in->getAttributeAsStringW("Caption", Text).c_str());
-		setToolTipText(in->getAttributeAsStringW("ToolTip").c_str());
-		setVisible(in->getAttributeAsBool("Visible", IsVisible));
-		setEnabled(in->getAttributeAsBool("Enabled", IsEnabled));
-		IsTabStop = in->getAttributeAsBool("TabStop", IsTabStop);
-		IsTabGroup = in->getAttributeAsBool("TabGroup", IsTabGroup);
-		TabOrder = in->getAttributeAsInt("TabOrder", TabOrder);
-
-		core::position2di p = in->getAttributeAsPosition2d("MaxSize", core::position2di(MaxSize.Width, MaxSize.Height));
-		setMaxSize(core::dimension2du(p.X,p.Y));
-
-		p = in->getAttributeAsPosition2d("MinSize", core::position2di(MinSize.Width, MinSize.Height));
-		setMinSize(core::dimension2du(p.X,p.Y));
-
-		setAlignment((EGUI_ALIGNMENT) in->getAttributeAsEnumeration("LeftAlign", GUIAlignmentNames, AlignLeft),
-			(EGUI_ALIGNMENT)in->getAttributeAsEnumeration("RightAlign", GUIAlignmentNames, AlignRight),
-			(EGUI_ALIGNMENT)in->getAttributeAsEnumeration("TopAlign", GUIAlignmentNames, AlignTop),
-			(EGUI_ALIGNMENT)in->getAttributeAsEnumeration("BottomAlign", GUIAlignmentNames, AlignBottom));
-
-		setRelativePosition(in->getAttributeAsRect("Rect", DesiredRect));
-
-		setNotClipped(in->getAttributeAsBool("NoClip", NoClip));
-	}
 
 protected:
 	// not virtual because needed in constructor
