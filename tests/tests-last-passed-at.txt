@@ -1,4 +1,4 @@
 Tests finished. 72 tests of 72 passed.
-Compiled as RELEASE
-Test suite pass at GMT Wed May  4 10:25:42 2022
+Compiled as DEBUG
+Test suite pass at GMT Sun May 08 15:37:29 2022
 

@@ -62,7 +62,7 @@ bool CImageWriterBMP::writeImage(io::IWriteFile* file, IImage* image, u32 param)
 	imageHeader.FileSize = imageHeader.BitmapDataOffset + imageHeader.BitmapDataSize;
 
 	// bitmaps are stored upside down and padded so we always do this
-	void (*CColorConverter_convertFORMATtoFORMAT)(const void*, s32, void*) = 0;
+	void (*CColorConverter_convertFORMATtoFORMAT)(const void*, u32, void*) = 0;
 	switch(image->getColorFormat())
 	{
 	case ECF_R8G8B8:

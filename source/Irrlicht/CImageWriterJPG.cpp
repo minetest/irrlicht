@@ -107,7 +107,7 @@ static void jpeg_file_dest(j_compress_ptr cinfo, io::IWriteFile* file)
 */
 static bool writeJPEGFile(io::IWriteFile* file, IImage* image, u32 quality)
 {
-	void (*format)(const void*, s32, void*) = 0;
+	void (*format)(const void*, u32, void*) = 0;
 	switch( image->getColorFormat () )
 	{
 		case ECF_R8G8B8:
