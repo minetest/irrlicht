@@ -232,9 +232,11 @@ IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
 	u32 width = cinfo.image_width;
 	u32 height = cinfo.image_height;
 
-	if ( width > JPEG_MAX_DIMENSION || height > JPEG_MAX_DIMENSION )
+	if (	width > JPEG_MAX_DIMENSION || height > JPEG_MAX_DIMENSION 
+		|| !IImage::checkDataSizeLimit(IImage::getDataSizeFromFormat(ECF_R8G8B8, width, height))
+		)
 	{
-		os::Printer::log("Image dimensions too large for JPG in file", filename, ELL_WARNING);
+		os::Printer::log("Image dimensions too large in file", filename, ELL_ERROR);
 		longjmp(jerr.setjmp_buffer, 1);
 	}
 
