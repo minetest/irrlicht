@@ -113,7 +113,6 @@
 #include "IRenderTarget.h"
 #include "IrrlichtDevice.h"
 #include "irrList.h"
-#include "irrMap.h"
 #include "irrMath.h"
 #include "irrString.h"
 #include "irrTypes.h"

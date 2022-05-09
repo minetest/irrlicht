@@ -165,7 +165,7 @@ bool CGUIFont::load(io::IXMLReader* xml, const io::path& directory)
 				}
 				rectangle.LowerRightCorner.Y = val;
 
-				CharacterMap.insert(ch,Areas.size());
+				CharacterMap.emplace(ch, Areas.size());
 
 				// make frame
 				f.rectNumber = SpriteBank->getPositions().size();
@@ -374,7 +374,7 @@ void CGUIFont::readPositions(video::IImage* image, s32& lowerRightPositions)
 				Areas.push_back(a);
 				// map letter to character
 				wchar_t ch = (wchar_t)(lowerRightPositions + 32);
-				CharacterMap.set(ch, lowerRightPositions);
+				CharacterMap[ch] = lowerRightPositions;
 
 				++lowerRightPositions;
 			}
@@ -435,9 +435,9 @@ u32 CGUIFont::getSpriteNoFromChar(const wchar_t *c) const
 
 s32 CGUIFont::getAreaFromCharacter(const wchar_t c) const
 {
-	core::map<wchar_t, s32>::Node* n = CharacterMap.find(c);
-	if (n)
-		return n->getValue();
+	auto n = CharacterMap.find(c);
+	if (n != CharacterMap.end())
+		return n->second;
 	else
 		return WrongCharacter;
 }

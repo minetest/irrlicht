@@ -10,9 +10,9 @@
 
 #include "IGUIFontBitmap.h"
 #include "irrString.h"
-#include "irrMap.h"
 #include "IReadFile.h"
 #include "irrArray.h"
+#include <map>
 
 namespace irr
 {
@@ -97,7 +97,7 @@ private:
 	void popTextureCreationFlags(const bool(&flags)[3]);
 
 	core::array<SFontArea>		Areas;
-	core::map<wchar_t, s32>		CharacterMap;
+	std::map<wchar_t, s32>		CharacterMap;
 	video::IVideoDriver*		Driver;
 	IGUISpriteBank*			SpriteBank;
 	IGUIEnvironment*		Environment;
