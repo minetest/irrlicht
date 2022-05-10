@@ -231,6 +231,8 @@ namespace gui
 		IReferenceCounted*		Data2;
 		bool				Expanded;
 		std::list<CGUITreeViewNode*>	Children;
+		// Position of this node in Parent->Children.
+		// Only valid when Parent != NULL
 		std::list<CGUITreeViewNode*>::iterator ParentPos;
 	};
 
