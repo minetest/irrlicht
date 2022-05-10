@@ -431,5 +431,6 @@ struct hash<irr::core::vector2d<T> >
 };
 
 }
+
 #endif
 
