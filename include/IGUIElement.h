@@ -53,7 +53,10 @@ public:
 	//! Destructor
 	virtual ~IGUIElement()
 	{
-		removeAllChildren();
+		for (auto child : Children) {
+			child->Parent = nullptr;
+			child->drop();
+		}
 	}
 
 
