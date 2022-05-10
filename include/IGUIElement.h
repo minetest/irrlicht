@@ -306,9 +306,7 @@ public:
 	//! Removes a child.
 	virtual void removeChild(IGUIElement* child)
 	{
-		// Can this just be an assert?
-		if (child->Parent != this)
-			return;
+		assert(child->Parent == this);
 		Children.erase(child->ParentPos);
 		child->Parent = nullptr;
 		child->drop();
@@ -559,7 +557,7 @@ public:
 	{
 		if (child->Parent != this)
 			return false;
-		if (std::next(child->ParentPos, 1) == Children.end()) // already there
+		if (std::next(child->ParentPos) == Children.end()) // already there
 			return true;
 		Children.erase(child->ParentPos);
 		child->ParentPos = Children.insert(Children.end(), child);
@@ -797,8 +795,9 @@ protected:
 		}
 	}
 
+#ifndef NDEBUG
 	template<typename Iterator>
-	static size_t fastSetChecksum(Iterator begin, Iterator end) {
+	static size_t _fastSetChecksum(Iterator begin, Iterator end) {
 		std::hash<typename Iterator::value_type> hasher;
 		size_t checksum = 0;
 		for (Iterator it = begin; it != end; ++it) {
@@ -807,6 +806,7 @@ protected:
 		}
 		return checksum;
 	}
+#endif
 
 	// Reorder children [from, to) to the order given by `neworder`
 	void reorderChildren(
@@ -814,7 +814,7 @@ protected:
 		std::list<IGUIElement*>::iterator to,
 		const std::vector<IGUIElement*> &neworder)
 	{
-		assert(fastSetChecksum(from, to) == fastSetChecksum(neworder.begin(), neworder.end()));
+		assert(_fastSetChecksum(from, to) == _fastSetChecksum(neworder.begin(), neworder.end()));
 		for (auto e : neworder)
 		{
 			*from = e;
@@ -961,7 +961,7 @@ protected:
 	//! Pointer to the parent
 	IGUIElement* Parent;
 
-	//! Our node in the parent list. Only valid while Parent != nullptr
+	//! Our position in the parent list. Only valid when Parent != nullptr
 	std::list<IGUIElement*>::iterator ParentPos;
 
 	//! relative rect of element
