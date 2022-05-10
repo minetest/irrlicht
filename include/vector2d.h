@@ -5,9 +5,10 @@
 #ifndef __IRR_POINT_2D_H_INCLUDED__
 #define __IRR_POINT_2D_H_INCLUDED__
 
-#include <functional>
 #include "irrMath.h"
 #include "dimension2d.h"
+
+#include <functional>
 
 namespace irr
 {
