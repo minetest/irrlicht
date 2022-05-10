@@ -57,17 +57,12 @@ bool CGUIModalScreen::isVisible() const
     }
 
     // any child visible?
-    bool visible = false;
-    core::list<IGUIElement*>::ConstIterator it = Children.begin();
-    for (; it != Children.end(); ++it)
+    for (const auto& child : Children)
     {
-        if ( (*it)->isVisible() )
-        {
-            visible = true;
-            break;
-        }
+        if ( child->isVisible() )
+            return true;
     }
-    return visible;
+    return false;
 }
 
 bool CGUIModalScreen::isPointInside(const core::position2d<s32>& point) const
@@ -98,7 +93,7 @@ bool CGUIModalScreen::OnEvent(const SEvent& event)
 			if ( !canTakeFocus(event.GUIEvent.Caller))
 			{
 				if ( !Children.empty() )
-					Environment->setFocus(*(Children.begin()));
+					Environment->setFocus(Children.front());
 				else
 					Environment->setFocus(this);
 			}
@@ -110,7 +105,7 @@ bool CGUIModalScreen::OnEvent(const SEvent& event)
             	if ( isMyChild(event.GUIEvent.Caller) )
 				{
 					if ( !Children.empty() )
-						Environment->setFocus(*(Children.begin()));
+						Environment->setFocus(Children.front());
 					else
 						Environment->setFocus(this);
 				}
@@ -171,15 +166,14 @@ void CGUIModalScreen::draw()
 	u32 now = os::Timer::getTime();
 	if (BlinkMode && now - MouseDownTime < 300 && (now / 70)%2)
 	{
-		core::list<IGUIElement*>::Iterator it = Children.begin();
 		core::rect<s32> r;
 		video::SColor c = Environment->getSkin()->getColor(gui::EGDC_3D_HIGH_LIGHT);
 
-		for (; it != Children.end(); ++it)
+		for (auto child : Children)
 		{
-			if ((*it)->isVisible())
+			if (child->isVisible())
 			{
-				r = (*it)->getAbsolutePosition();
+				r = child->getAbsolutePosition();
 				r.LowerRightCorner.X += 1;
 				r.LowerRightCorner.Y += 1;
 				r.UpperLeftCorner.X -= 1;

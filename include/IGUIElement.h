@@ -6,7 +6,6 @@
 #define __I_GUI_ELEMENT_H_INCLUDED__
 
 #include "IReferenceCounted.h"
-#include "irrList.h"
 #include "rect.h"
 #include "irrString.h"
 #include "IEventReceiver.h"
@@ -14,6 +13,10 @@
 #include "EGUIAlignment.h"
 #include "IAttributes.h"
 #include "IGUIEnvironment.h"
+#include <cassert>
+#include <algorithm>
+#include <list>
+#include <vector>
 
 namespace irr
 {
@@ -50,13 +53,7 @@ public:
 	//! Destructor
 	virtual ~IGUIElement()
 	{
-		// delete all children
-		core::list<IGUIElement*>::Iterator it = Children.begin();
-		for (; it != Children.end(); ++it)
-		{
-			(*it)->Parent = 0;
-			(*it)->drop();
-		}
+		removeAllChildren();
 	}
 
 
@@ -239,10 +236,9 @@ public:
 		recalculateAbsolutePosition(false);
 
 		// update all children
-		core::list<IGUIElement*>::Iterator it = Children.begin();
-		for (; it != Children.end(); ++it)
+		for (auto child : Children)
 		{
-			(*it)->updateAbsolutePosition();
+			child->updateAbsolutePosition();
 		}
 	}
 
@@ -263,20 +259,19 @@ public:
 	{
 		IGUIElement* target = 0;
 
-		// we have to search from back to front, because later children
-		// might be drawn over the top of earlier ones.
-
-		core::list<IGUIElement*>::ConstIterator it = Children.getLast();
-
 		if (isVisible())
 		{
-			while(it != Children.end())
+			// we have to search from back to front, because later children
+			// might be drawn over the top of earlier ones.
+			auto it = Children.rbegin();
+			auto ie = Children.rend();
+			while (it != ie)
 			{
 				target = (*it)->getElementFromPoint(point);
 				if (target)
 					return target;
 
-				--it;
+				++it;
 			}
 		}
 
@@ -308,17 +303,21 @@ public:
 	//! Removes a child.
 	virtual void removeChild(IGUIElement* child)
 	{
-		core::list<IGUIElement*>::Iterator it = Children.begin();
-		for (; it != Children.end(); ++it)
-			if ((*it) == child)
-			{
-				(*it)->Parent = 0;
-				(*it)->drop();
-				Children.erase(it);
-				return;
-			}
+		// Can this just be an assert?
+		if (child->Parent != this)
+			return;
+		Children.erase(child->ParentPos);
+		child->Parent = nullptr;
+		child->drop();
 	}
 
+	//! Removes all children.
+	virtual void removeAllChildren() {
+		while (!Children.empty()) {
+			auto child = Children.back();
+			child->remove();
+		}
+	}
 
 	//! Removes this element from its parent.
 	virtual void remove()
@@ -333,9 +332,8 @@ public:
 	{
 		if ( isVisible() )
 		{
-			core::list<IGUIElement*>::Iterator it = Children.begin();
-			for (; it != Children.end(); ++it)
-				(*it)->draw();
+			for (auto child : Children)
+				child->draw();
 		}
 	}
 
@@ -345,9 +343,8 @@ public:
 	{
 		if ( isVisible() )
 		{
-			core::list<IGUIElement*>::Iterator it = Children.begin();
-			for (; it != Children.end(); ++it)
-				(*it)->OnPostRender( timeMs );
+			for (auto child : Children)
+				child->OnPostRender( timeMs );
 		}
 	}
 
@@ -555,20 +552,15 @@ public:
 
 	//! Brings a child to front
 	/** \return True if successful, false if not. */
-	virtual bool bringToFront(IGUIElement* element)
+	virtual bool bringToFront(IGUIElement* child)
 	{
-		core::list<IGUIElement*>::Iterator it = Children.begin();
-		for (; it != Children.end(); ++it)
-		{
-			if (element == (*it))
-			{
-				Children.erase(it);
-				Children.push_back(element);
-				return true;
-			}
-		}
-
-		return false;
+		if (child->Parent != this)
+			return false;
+		if (std::next(child->ParentPos, 1) == Children.end()) // already there
+			return true;
+		Children.erase(child->ParentPos);
+		child->ParentPos = Children.insert(Children.end(), child);
+		return true;
 	}
 
 
@@ -576,24 +568,17 @@ public:
 	/** \return True if successful, false if not. */
 	virtual bool sendToBack(IGUIElement* child)
 	{
-		core::list<IGUIElement*>::Iterator it = Children.begin();
-		if (child == (*it)) // already there
+		if (child->Parent != this)
+			return false;
+		if (child->ParentPos == Children.begin()) // already there
 			return true;
-		for (; it != Children.end(); ++it)
-		{
-			if (child == (*it))
-			{
-				Children.erase(it);
-				Children.push_front(child);
-				return true;
-			}
-		}
-
-		return false;
+		Children.erase(child->ParentPos);
+		child->ParentPos = Children.insert(Children.begin(), child);
+		return true;
 	}
 
 	//! Returns list with children of this element
-	virtual const core::list<IGUIElement*>& getChildren() const
+	virtual const std::list<IGUIElement*>& getChildren() const
 	{
 		return Children;
 	}
@@ -610,14 +595,13 @@ public:
 	{
 		IGUIElement* e = 0;
 
-		core::list<IGUIElement*>::ConstIterator it = Children.begin();
-		for (; it != Children.end(); ++it)
+		for (auto child : Children)
 		{
-			if ((*it)->getID() == id)
-				return (*it);
+			if (child->getID() == id)
+				return child;
 
 			if (searchchildren)
-				e = (*it)->getElementFromId(id, true);
+				e = child->getElementFromId(id, true);
 
 			if (e)
 				return e;
@@ -663,7 +647,7 @@ public:
 		if (wanted==-2)
 			wanted = 1073741824; // maximum s32
 
-		core::list<IGUIElement*>::ConstIterator it = Children.begin();
+		auto it = Children.begin();
 
 		s32 closestOrder, currentOrder;
 
@@ -806,9 +790,37 @@ protected:
 			child->remove(); // remove from old parent
 			child->LastParentRect = getAbsolutePosition();
 			child->Parent = this;
-			Children.push_back(child);
+			child->ParentPos = Children.insert(Children.end(), child);
 		}
 	}
+
+	template<typename Iterator>
+	static size_t fastSetChecksum(Iterator begin, Iterator end) {
+		std::hash<typename Iterator::value_type> hasher;
+		size_t checksum = 0;
+		for (Iterator it = begin; it != end; ++it) {
+			size_t h = hasher(*it);
+			checksum ^= 966073049 + (h * 3432918353) + ((h >> 16) * 461845907);
+		}
+		return checksum;
+	}
+
+	// Reorder children [from, to) to the order given by `neworder`
+	void reorderChildren(
+		std::list<IGUIElement*>::iterator from,
+		std::list<IGUIElement*>::iterator to,
+		const std::vector<IGUIElement*> &neworder)
+	{
+		assert(fastSetChecksum(from, to) == fastSetChecksum(neworder.begin(), neworder.end()));
+		for (auto e : neworder)
+		{
+			*from = e;
+			e->ParentPos = from;
+			++from;
+		}
+		assert(from == to);
+	}
+
 
 	// not virtual because needed in constructor
 	void recalculateAbsolutePosition(bool recursive)
@@ -931,10 +943,9 @@ protected:
 		if ( recursive )
 		{
 			// update all children
-			core::list<IGUIElement*>::Iterator it = Children.begin();
-			for (; it != Children.end(); ++it)
+			for (auto child : Children)
 			{
-				(*it)->recalculateAbsolutePosition(recursive);
+				child->recalculateAbsolutePosition(recursive);
 			}
 		}
 	}
@@ -942,10 +953,13 @@ protected:
 protected:
 
 	//! List of all children of this element
-	core::list<IGUIElement*> Children;
+	std::list<IGUIElement*> Children;
 
 	//! Pointer to the parent
 	IGUIElement* Parent;
+
+	//! Our node in the parent list. Only valid while Parent != nullptr
+	std::list<IGUIElement*>::iterator ParentPos;
 
 	//! relative rect of element
 	core::rect<s32> RelativeRect;
