@@ -855,7 +855,7 @@ ISceneNode* CSceneManager::getSceneNodeFromName(const char* name, ISceneNode* st
 	ISceneNode* node = 0;
 
 	const ISceneNodeList& list = start->getChildren();
-	ISceneNodeList::ConstIterator it = list.begin();
+	ISceneNodeList::const_iterator it = list.begin();
 	for (; it!=list.end(); ++it)
 	{
 		node = getSceneNodeFromName(name, *it);
@@ -879,7 +879,7 @@ ISceneNode* CSceneManager::getSceneNodeFromId(s32 id, ISceneNode* start)
 	ISceneNode* node = 0;
 
 	const ISceneNodeList& list = start->getChildren();
-	ISceneNodeList::ConstIterator it = list.begin();
+	ISceneNodeList::const_iterator it = list.begin();
 	for (; it!=list.end(); ++it)
 	{
 		node = getSceneNodeFromId(id, *it);
@@ -903,7 +903,7 @@ ISceneNode* CSceneManager::getSceneNodeFromType(scene::ESCENE_NODE_TYPE type, IS
 	ISceneNode* node = 0;
 
 	const ISceneNodeList& list = start->getChildren();
-	ISceneNodeList::ConstIterator it = list.begin();
+	ISceneNodeList::const_iterator it = list.begin();
 	for (; it!=list.end(); ++it)
 	{
 		node = getSceneNodeFromType(type, *it);
@@ -925,7 +925,7 @@ void CSceneManager::getSceneNodesFromType(ESCENE_NODE_TYPE type, core::array<sce
 		outNodes.push_back(start);
 
 	const ISceneNodeList& list = start->getChildren();
-	ISceneNodeList::ConstIterator it = list.begin();
+	ISceneNodeList::const_iterator it = list.begin();
 
 	for (; it!=list.end(); ++it)
 	{

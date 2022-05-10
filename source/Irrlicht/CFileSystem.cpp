@@ -16,7 +16,7 @@
 #include "CMemoryFile.h"
 #include "CLimitReadFile.h"
 #include "CWriteFile.h"
-#include "irrList.h"
+#include <list>
 
 #if defined (__STRICT_ANSI__)
     #error Compiling with __STRICT_ANSI__ not supported. g++ does set this when compiling with -std=c++11 or -std=c++0x. Use instead -std=gnu++11 or -std=gnu++0x. Or use -U__STRICT_ANSI__ to disable strict ansi.
@@ -714,11 +714,10 @@ path CFileSystem::getRelativeFilename(const path& filename, const path& director
 	io::path path1, file, ext;
 	core::splitFilename(getAbsolutePath(filename), &path1, &file, &ext);
 	io::path path2(getAbsolutePath(directory));
-	core::list<io::path> list1, list2;
+	std::list<io::path> list1, list2;
 	path1.split(list1, _IRR_TEXT("/\\"), 2);
 	path2.split(list2, _IRR_TEXT("/\\"), 2);
-	u32 i=0;
-	core::list<io::path>::ConstIterator it1,it2;
+	std::list<io::path>::const_iterator it1,it2;
 	it1=list1.begin();
 	it2=list2.begin();
 
@@ -742,19 +741,19 @@ path CFileSystem::getRelativeFilename(const path& filename, const path& director
 	#endif
 
 
-	for (; i<list1.size() && i<list2.size()
+	for (; it1 != list1.end() && it2 != list2.end()
 #if defined (_IRR_WINDOWS_API_)
 		&& (io::path(*it1).make_lower()==io::path(*it2).make_lower())
 #else
 		&& (*it1==*it2)
 #endif
-		; ++i)
+		;)
 	{
 		++it1;
 		++it2;
 	}
 	path1=_IRR_TEXT("");
-	for (; i<list2.size(); ++i)
+	for (; it2 != list2.end(); ++it2)
 		path1 += _IRR_TEXT("../");
 	while (it1 != list1.end())
 	{
