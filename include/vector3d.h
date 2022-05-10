@@ -7,6 +7,8 @@
 
 #include "irrMath.h"
 
+#include <functional>
+
 namespace irr
 {
 namespace core
@@ -465,6 +467,23 @@ namespace core
 
 } // end namespace core
 } // end namespace irr
+
+namespace std
+{
+
+template<class T>
+struct hash<irr::core::vector3d<T> >
+{
+	size_t operator()(const irr::core::vector3d<T>& vec) const
+	{
+		size_t h1 = hash<T>()(vec.X);
+		size_t h2 = hash<T>()(vec.Y);
+		size_t h3 = hash<T>()(vec.Z);
+		return (h1 << (5 * sizeof(h1)) | h1 >> (3 * sizeof(h1))) ^ (h2 << (2 * sizeof(h2)) | h2 >> (6 * sizeof(h2))) ^ h3;
+	}
+};
+
+}
 
 #endif
 

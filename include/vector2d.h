@@ -8,6 +8,8 @@
 #include "irrMath.h"
 #include "dimension2d.h"
 
+#include <functional>
+
 namespace irr
 {
 namespace core
@@ -413,6 +415,22 @@ public:
 
 } // end namespace core
 } // end namespace irr
+
+namespace std
+{
+
+template<class T>
+struct hash<irr::core::vector2d<T> >
+{
+	size_t operator()(const irr::core::vector2d<T>& vec) const
+	{
+		size_t h1 = hash<T>()(vec.X);
+		size_t h2 = hash<T>()(vec.Y);
+		return (h1 << (4 * sizeof(h1)) | h1 >> (4 * sizeof(h1))) ^ h2;
+	}
+};
+
+}
 
 #endif
 
