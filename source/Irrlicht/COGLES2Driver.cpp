@@ -441,7 +441,6 @@ COGLES2Driver::~COGLES2Driver()
 		const E_VERTEX_TYPE vType = mb->getVertexType();
 		const u32 vertexSize = getVertexPitchFromType(vType);
 
-		//buffer vertex data, and convert colours...
 		const void *buffer = vertices;
 		size_t bufferSize = vertexSize * vertexCount;
 
