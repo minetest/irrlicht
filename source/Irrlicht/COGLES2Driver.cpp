@@ -441,9 +441,8 @@ COGLES2Driver::~COGLES2Driver()
 		const E_VERTEX_TYPE vType = mb->getVertexType();
 		const u32 vertexSize = getVertexPitchFromType(vType);
 
-		//buffer vertex data, and convert colours...
-		core::array<c8> buffer(vertexSize * vertexCount);
-		memcpy(buffer.pointer(), vertices, vertexSize * vertexCount);
+		const void *buffer = vertices;
+		size_t bufferSize = vertexSize * vertexCount;
 
 		//get or create buffer
 		bool newBuffer = false;
@@ -453,7 +452,7 @@ COGLES2Driver::~COGLES2Driver()
 			if (!HWBuffer->vbo_verticesID) return false;
 			newBuffer = true;
 		}
-		else if (HWBuffer->vbo_verticesSize < vertexCount*vertexSize)
+		else if (HWBuffer->vbo_verticesSize < bufferSize)
 		{
 			newBuffer = true;
 		}
@@ -462,15 +461,15 @@ COGLES2Driver::~COGLES2Driver()
 
 		// copy data to graphics card
 		if (!newBuffer)
-			glBufferSubData(GL_ARRAY_BUFFER, 0, vertexCount * vertexSize, buffer.const_pointer());
+			glBufferSubData(GL_ARRAY_BUFFER, 0, bufferSize, buffer);
 		else
 		{
-			HWBuffer->vbo_verticesSize = vertexCount * vertexSize;
+			HWBuffer->vbo_verticesSize = bufferSize;
 
 			if (HWBuffer->Mapped_Vertex == scene::EHM_STATIC)
-				glBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize, buffer.const_pointer(), GL_STATIC_DRAW);
+				glBufferData(GL_ARRAY_BUFFER, bufferSize, buffer, GL_STATIC_DRAW);
 			else
-				glBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize, buffer.const_pointer(), GL_DYNAMIC_DRAW);
+				glBufferData(GL_ARRAY_BUFFER, bufferSize, buffer, GL_DYNAMIC_DRAW);
 		}
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
