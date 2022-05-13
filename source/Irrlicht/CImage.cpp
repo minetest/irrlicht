@@ -194,7 +194,7 @@ void CImage::copyToScaling(void* target, u32 width, u32 height, ECOLOR_FORMAT fo
 	{
 		if (pitch==Pitch)
 		{
-			memcpy(target, Data, height*pitch);
+			memcpy(target, Data, (size_t)height*pitch);
 			return;
 		}
 		else
