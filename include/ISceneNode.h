@@ -736,7 +736,7 @@ namespace scene
 			IsVisible = in->getAttributeAsBool("Visible", IsVisible);
 			if (in->existsAttribute("AutomaticCulling"))
 			{
-				s32 tmpState = in->getAttributeAsEnumeration("AutomaticCulling",
+				const s32 tmpState = in->getAttributeAsEnumeration("AutomaticCulling",
 						scene::AutomaticCullingNames);
 				if (tmpState != -1)
 					AutomaticCullingState = (u32)tmpState;

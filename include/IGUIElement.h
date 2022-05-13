@@ -81,7 +81,7 @@ public:
 		{
 			const core::rect<s32>& r2 = Parent->getAbsolutePosition();
 
-			core::dimension2df d((f32)(r2.getSize().Width), (f32)(r2.getSize().Height));
+			const core::dimension2df d((f32)(r2.getSize().Width), (f32)(r2.getSize().Height));
 
 			if (AlignLeft   == EGUIA_SCALE)
 				ScaleRect.UpperLeftCorner.X = (f32)r.UpperLeftCorner.X / d.Width;
@@ -194,9 +194,8 @@ public:
 
 		if (Parent)
 		{
-			core::rect<s32> r(Parent->getAbsolutePosition());
-
-			core::dimension2df d((f32)r.getSize().Width, (f32)r.getSize().Height);
+			const core::rect<s32> r(Parent->getAbsolutePosition());
+			const core::dimension2df d((f32)r.getSize().Width, (f32)r.getSize().Height);
 
 			if (AlignLeft   == EGUIA_SCALE)
 				ScaleRect.UpperLeftCorner.X = (f32)DesiredRect.UpperLeftCorner.X / d.Width;

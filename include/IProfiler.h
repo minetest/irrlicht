@@ -293,8 +293,8 @@ void IProfiler::stop(s32 id)
 {
 	if ( Timer )
 	{
-		u32 timeNow = Timer->getRealTime();
-		s32 idx = ProfileDatas.binary_search(SProfileData(id));
+		const u32 timeNow = Timer->getRealTime();
+		const s32 idx = ProfileDatas.binary_search(SProfileData(id));
 		if ( idx >= 0 )
 		{
 			SProfileData &data = ProfileDatas[idx];
@@ -303,7 +303,7 @@ void IProfiler::stop(s32 id)
 			{
 				// update data for this id
 				++data.CountCalls;
-				u32 diffTime = timeNow - data.LastTimeStarted;
+				const u32 diffTime = timeNow - data.LastTimeStarted;
 				data.TimeSum += diffTime;
 				if ( diffTime > data.LongestTime )
 					data.LongestTime = diffTime;
@@ -336,7 +336,7 @@ s32 IProfiler::add(const core::stringw &name, const core::stringw &groupName)
 	}
 	else
 	{
-		s32 id = NextAutoId;
+		const s32 id = NextAutoId;
 		--NextAutoId;
 		add( id, name, groupName );
 		return id;
@@ -400,7 +400,7 @@ bool IProfiler::findDataIndex(u32 & result, const core::stringw &name) const
 const SProfileData* IProfiler::getProfileDataById(u32 id)
 {
 	SProfileData data(id);
-    s32 idx = ProfileDatas.binary_search(data);
+    const s32 idx = ProfileDatas.binary_search(data);
 	if ( idx >= 0 )
 		return &ProfileDatas[idx];
 	return NULL;
