@@ -1529,7 +1529,6 @@ typedef BOOL (WINAPI *PGPI)(DWORD, DWORD, DWORD, DWORD, PDWORD);
 void CIrrDeviceWin32::getWindowsVersion(core::stringc& out)
 {
 	OSVERSIONINFOEX osvi;
-	PGPI pGPI;
 	BOOL bOsVersionInfoEx;
 
 	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
@@ -1581,9 +1580,14 @@ void CIrrDeviceWin32::getWindowsVersion(core::stringc& out)
 		{
 			if (osvi.dwMajorVersion == 6)
 			{
-				DWORD dwType;
-				pGPI = (PGPI)GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "GetProductInfo");
-				pGPI(osvi.dwMajorVersion, osvi.dwMinorVersion, 0, 0, &dwType);
+				DWORD dwType = PRODUCT_UNDEFINED;
+				HMODULE hmKernel32 = GetModuleHandle(TEXT("kernel32.dll"));
+				if ( hmKernel32 )
+				{
+					PGPI pGPI = (PGPI)GetProcAddress(hmKernel32, "GetProductInfo");
+					if ( pGPI )
+						pGPI(osvi.dwMajorVersion, osvi.dwMinorVersion, 0, 0, &dwType);
+				}
 
 				switch (dwType)
 				{
