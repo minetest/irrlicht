@@ -1580,7 +1580,7 @@ void CIrrDeviceWin32::getWindowsVersion(core::stringc& out)
 		{
 			if (osvi.dwMajorVersion == 6)
 			{
-				DWORD dwType = PRODUCT_UNDEFINED;
+				DWORD dwType = 0; // (PRODUCT_UNDEFINED not available on MinGW)
 				HMODULE hmKernel32 = GetModuleHandle(TEXT("kernel32.dll"));
 				if ( hmKernel32 )
 				{
