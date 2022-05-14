@@ -180,7 +180,7 @@ void COctreeTriangleSelector::getTriangles(core::triangle3df* triangles,
 	{
 		SCollisionTriangleRange triRange;
 		triRange.RangeSize = trianglesWritten;
-		triRange.Selector = const_cast<COctreeTriangleSelector*>(this);
+		triRange.Selector = this;
 		triRange.SceneNode = SceneNode;
 		triRange.MeshBuffer = MeshBuffer;
 		triRange.MaterialIndex = MaterialIndex;
@@ -272,7 +272,7 @@ void COctreeTriangleSelector::getTriangles(core::triangle3df* triangles, s32 arr
 	{
 		SCollisionTriangleRange triRange;
 		triRange.RangeSize = trianglesWritten;
-		triRange.Selector = const_cast<COctreeTriangleSelector*>(this);
+		triRange.Selector = this;
 		triRange.SceneNode = SceneNode;
 		triRange.MeshBuffer = MeshBuffer;
 		triRange.MaterialIndex = MaterialIndex;

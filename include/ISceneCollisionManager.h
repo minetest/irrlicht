@@ -30,7 +30,7 @@ namespace scene
 		core::triangle3df Triangle;
 
 		//! Triangle selector which contained the colliding triangle (useful when having MetaTriangleSelector)
-		ITriangleSelector* TriangleSelector;
+		const ITriangleSelector* TriangleSelector;
 
 		//! Node which contained the triangle (is 0 when selector doesn't have that information)
 		ISceneNode* Node;
