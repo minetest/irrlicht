@@ -432,12 +432,10 @@ public:
 	/** The array will be sorted before the binary search if it is not
 	already sorted. Caution is advised! Be careful not to call this on
 	unsorted const arrays, or the slower method will be used.
-	Only works if corresponding operator< is implemented.
 	\param element Element to search for.
 	\return Position of the searched element if it was found,
 	otherwise -1 is returned. */
-	template <class E>
-	s32 binary_search(const E& element)
+	s32 binary_search(const T& element)
 	{
 		sort();
 		return binary_search(element, 0, used-1);
@@ -447,12 +445,10 @@ public:
 	//! Performs a binary search for an element if possible, returns -1 if not found.
 	/** This method is for const arrays and so cannot call sort(), if the array is
 	not sorted then linear_search will be used instead. Potentially very slow!
-	Only works if corresponding operator< is implemented.
 	\param element Element to search for.
 	\return Position of the searched element if it was found,
 	otherwise -1 is returned. */
-	template <class E>
-	s32 binary_search(const E& element) const
+	s32 binary_search(const T& element) const
 	{
 		if (is_sorted)
 			return binary_search(element, 0, used-1);
@@ -462,14 +458,12 @@ public:
 
 
 	//! Performs a binary search for an element, returns -1 if not found.
-	/** Only works if corresponding operator< is implemented.
-	\param element: Element to search for.
+	/** \param element: Element to search for.
 	\param left First left index
 	\param right Last right index.
 	\return Position of the searched element if it was found, otherwise -1
 	is returned. */
-	template <class E>
-	s32 binary_search(const E& element, s32 left, s32 right) const
+	s32 binary_search(const T& element, s32 left, s32 right) const
 	{
 		if (!used)
 			return -1;
@@ -503,13 +497,11 @@ public:
 	//! it is used for searching a multiset
 	/** The array will be sorted before the binary search if it is not
 	already sorted.
-	Only works if corresponding operator< is implemented.
 	\param element Element to search for.
 	\param &last return lastIndex of equal elements
 	\return Position of the first searched element if it was found,
 	otherwise -1 is returned. */
-	template <class E>
-	s32 binary_search_multi(const E& element, s32 &last)
+	s32 binary_search_multi(const T& element, s32 &last)
 	{
 		sort();
 		s32 index = binary_search(element, 0, used-1);
