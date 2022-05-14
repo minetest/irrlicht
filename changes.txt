@@ -1,7 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
-- core::array::linear_search and linear_reverse_search can now work with any types as long as corresponding operator= is implemented.
+- core::array::linear_search and linear_reverse_search can now work with any types as long as corresponding operator== is implemented.
 - Add checks for sane image sizes in some image loaders (so far: bmp, jpg, tga, png).
   Thanks @sfan5 for the original patch (got modified a bit): https://github.com/minetest/irrlicht/commit/dbd39120e7ed8c0c97e48e2df62347627f3c1d42
 - Add IImage::checkDataSizeLimit and make IImage getDataSizeFromFormat return size_t so image loaders can check if sizes are sane.
