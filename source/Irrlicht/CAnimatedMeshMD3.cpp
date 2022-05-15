@@ -211,7 +211,7 @@ IMesh* CAnimatedMeshMD3::getMesh(s32 frame, s32 detailLevel, s32 startFrameLoop,
 
 //! create a Irrlicht MeshBuffer for a MD3 MeshBuffer
 IMeshBuffer * CAnimatedMeshMD3::createMeshBuffer(const SMD3MeshBuffer* source,
-							 io::IFileSystem* fs, video::IVideoDriver * driver)
+							 const io::IFileSystem* fs, video::IVideoDriver * driver)
 {
 	SMeshBufferLightMap * dest = new SMeshBufferLightMap();
 	dest->Vertices.set_used(source->MeshHeader.numVertices);

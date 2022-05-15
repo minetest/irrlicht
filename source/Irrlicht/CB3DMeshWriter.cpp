@@ -498,7 +498,7 @@ core::array<ISkinnedMesh::SJoint*> CB3DMeshWriter::getRootJoints(const ISkinnedM
     return roots;
 }
 
-u32 CB3DMeshWriter::getUVlayerCount(IMesh* mesh)
+u32 CB3DMeshWriter::getUVlayerCount(const IMesh* mesh)
 {
     const u32 numBeshBuffers = mesh->getMeshBufferCount();
     for (u32 i = 0; i < numBeshBuffers; i++)
