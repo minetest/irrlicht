@@ -1253,13 +1253,10 @@ void CD3D9Driver::updateOcclusionQuery(scene::ISceneNode* node, bool block)
 /** Return value is the number of visible pixels/fragments.
 The value is a safe approximation, i.e. can be larger than the
 actual value of pixels. */
-u32 CD3D9Driver::getOcclusionQueryResult(scene::ISceneNode* node) const
+u32 CD3D9Driver::getOcclusionQueryResult(const scene::ISceneNode* node) const
 {
-	const s32 index = OcclusionQueries.linear_search(SOccQuery(node));
-	if (index != -1)
-		return OcclusionQueries[index].Result;
-	else
-		return ~0;
+	const s32 index = OcclusionQueries.linear_search(node);
+	return index < 0 ? ~0 : OcclusionQueries[index].Result;
 }
 
 
