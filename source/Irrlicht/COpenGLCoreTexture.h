@@ -639,7 +639,7 @@ protected:
 	GLint InternalFormat;
 	GLenum PixelFormat;
 	GLenum PixelType;
-	void (*Converter)(const void*, s32, void*);
+	void (*Converter)(const void*, u32, void*);
 
 	bool LockReadOnly;
 	IImage* LockImage;

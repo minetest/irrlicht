@@ -404,7 +404,7 @@ namespace video
 		GLenum getZBufferBits() const;
 
 		bool getColorFormatParameters(ECOLOR_FORMAT format, GLint& internalFormat, GLenum& pixelFormat,
-			GLenum& pixelType, void(**converter)(const void*, s32, void*)) const;
+			GLenum& pixelType, void(**converter)(const void*, u32, void*)) const;
 
 		//! Return info about fixed pipeline state.
 		E_OPENGL_FIXED_PIPELINE_STATE getFixedPipelineState() const;
