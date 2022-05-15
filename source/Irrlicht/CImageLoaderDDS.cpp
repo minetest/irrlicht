@@ -693,8 +693,8 @@ IImage* CImageLoaderDDS::loadImage(io::IReadFile* file) const
 	s32 width, height;
 	eDDSPixelFormat pixelFormat;
 	ECOLOR_FORMAT format = ECF_UNKNOWN;
-	u32 dataSize = 0;
-	u32 mipMapsDataSize = 0;
+	size_t dataSize = 0;
+	size_t mipMapsDataSize = 0;
 	bool is3D = false;
 	bool useAlpha = false;
 	u32 mipMapCount = 0;

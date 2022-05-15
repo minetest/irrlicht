@@ -49,14 +49,18 @@ namespace gui
 		//! returns string of a list item. the may id be a value from 0 to itemCount-1
 		virtual const wchar_t* getListItem(u32 id) const = 0;
 
-		//! adds an list item, returns id of item
-		virtual u32 addItem(const wchar_t* text) = 0;
-
 		//! adds an list item with an icon
 		/** \param text Text of list entry
 		\param icon Sprite index of the Icon within the current sprite bank. Set it to -1 if you want no icon
 		\return The id of the new created item */
-		virtual u32 addItem(const wchar_t* text, s32 icon) = 0;
+		virtual u32 addItem(const wchar_t* text, s32 icon=-1) = 0;
+
+		//! Insert the item at the given index
+		/** \return The index on success or -1 on failure. */
+		virtual s32 insertItem(u32 index, const wchar_t* text, s32 icon=-1) = 0;
+
+		//! set the item at the given index
+		virtual void setItem(u32 index, const wchar_t* text, s32 icon=-1) = 0;
 
 		//! Removes an item from the list
 		virtual void removeItem(u32 index) = 0;
@@ -113,13 +117,6 @@ namespace gui
 
 		//! return the default color which is used for the given colorType
 		virtual video::SColor getItemDefaultColor(EGUI_LISTBOX_COLOR colorType) const = 0;
-
-		//! set the item at the given index
-		virtual void setItem(u32 index, const wchar_t* text, s32 icon) = 0;
-
-		//! Insert the item at the given index
-		/** \return The index on success or -1 on failure. */
-		virtual s32 insertItem(u32 index, const wchar_t* text, s32 icon) = 0;
 
 		//! Swap the items at the given indices
 		virtual void swapItems(u32 index1, u32 index2) = 0;

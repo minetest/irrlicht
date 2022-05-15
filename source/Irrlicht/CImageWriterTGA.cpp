@@ -55,10 +55,10 @@ bool CImageWriterTGA::writeImage(io::IWriteFile *file, IImage *image,u32 param) 
 	// be fixed to only swap/flip
 	imageHeader.ImageDescriptor = (1 << 5);
 
-   // chances are good we'll need to swizzle data, so i'm going
+   // chances are good we'll need to swizzle data, so I'm going
 	// to convert and write one scan line at a time. it's also
 	// a bit cleaner this way
-	void (*CColorConverter_convertFORMATtoFORMAT)(const void*, s32, void*) = 0;
+	void (*CColorConverter_convertFORMATtoFORMAT)(const void*, u32, void*) = 0;
 	switch(image->getColorFormat())
 	{
 	case ECF_A8R8G8B8:

@@ -111,7 +111,7 @@ namespace video
 		/** Return value is the number of visible pixels/fragments.
 		The value is a safe approximation, i.e. can be larger then the
 		actual value of pixels. */
-		virtual u32 getOcclusionQueryResult(scene::ISceneNode* node) const IRR_OVERRIDE;
+		virtual u32 getOcclusionQueryResult(const scene::ISceneNode* node) const IRR_OVERRIDE;
 
 		//! Create render target.
 		virtual IRenderTarget* addRenderTarget() IRR_OVERRIDE;
@@ -405,7 +405,7 @@ namespace video
 		GLenum getZBufferBits() const;
 
 		bool getColorFormatParameters(ECOLOR_FORMAT format, GLint& internalFormat, GLenum& pixelFormat,
-			GLenum& pixelType, void(**converter)(const void*, s32, void*)) const;
+			GLenum& pixelType, void(**converter)(const void*, u32, void*)) const;
 
 		//! Return info about fixed pipeline state.
 		E_OPENGL_FIXED_PIPELINE_STATE getFixedPipelineState() const;

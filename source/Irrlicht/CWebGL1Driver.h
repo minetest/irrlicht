@@ -118,7 +118,7 @@ namespace video
 		virtual GLenum getZBufferBits() const IRR_OVERRIDE;
 
 		virtual bool getColorFormatParameters(ECOLOR_FORMAT format, GLint& internalFormat, GLenum& pixelFormat,
-			GLenum& pixelType, void(**converter)(const void*, s32, void*)) const IRR_OVERRIDE;
+			GLenum& pixelType, void(**converter)(const void*, u32, void*)) const IRR_OVERRIDE;
 
 	protected:
 		// create a meshbuffer which has as many vertices as indices

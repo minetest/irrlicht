@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="Rules for Irrlicht" Description="Code analysis rules for Irrlicht15.0.vcxproj." ToolsVersion="15.0">
+<RuleSet Name="Rules for Irrlicht" Description="Code analysis rules for Irrlicht15.0.vcxproj." ToolsVersion="17.0">
   <IncludeAll Action="Warning" />
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
     <Rule Id="CA1000" Action="None" />
@@ -273,6 +273,7 @@
     <Rule Id="C26495" Action="None" />
     <Rule Id="C26496" Action="Warning" />
     <Rule Id="C26497" Action="None" />
+    <Rule Id="C26814" Action="None" />
     <Rule Id="C28204" Action="None" />
     <Rule Id="C28205" Action="None" />
     <Rule Id="C28209" Action="None" />

@@ -1247,7 +1247,7 @@ bool CSceneManager::isCulled(const ISceneNode* node) const
 	// has occlusion query information
 	if (node->getAutomaticCulling() & scene::EAC_OCC_QUERY)
 	{
-		result = (Driver->getOcclusionQueryResult(const_cast<ISceneNode*>(node))==0);
+		result = (Driver->getOcclusionQueryResult(node)==0);
 	}
 
 	// can be seen by a bounding box ?

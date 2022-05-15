@@ -4810,9 +4810,9 @@ void CBurningVideoDriver::updateOcclusionQuery(scene::ISceneNode* node, bool blo
 /** Return value is the number of visible pixels/fragments.
 The value is a safe approximation, i.e. can be larger than the
 actual value of pixels. */
-u32 CBurningVideoDriver::getOcclusionQueryResult(scene::ISceneNode* node) const
+u32 CBurningVideoDriver::getOcclusionQueryResult(const scene::ISceneNode* node) const
 {
-	const s32 index = OcclusionQueries.linear_search(SOccQuery(node));
+	const s32 index = OcclusionQueries.linear_search(node);
 	return index < 0 ? ~0 : OcclusionQueries[index].Result;
 }
 

@@ -750,7 +750,7 @@ GLenum CWebGL1Driver::getZBufferBits() const
 }
 
 bool CWebGL1Driver::getColorFormatParameters(ECOLOR_FORMAT format, GLint& internalFormat, GLenum& pixelFormat,
-	GLenum& pixelType, void(**converter)(const void*, s32, void*)) const
+	GLenum& pixelType, void(**converter)(const void*, u32, void*)) const
 {
 		bool supported = false;
 		pixelFormat = GL_RGBA;

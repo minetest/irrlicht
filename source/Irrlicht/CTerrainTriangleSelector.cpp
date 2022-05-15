@@ -115,7 +115,7 @@ void CTerrainTriangleSelector::getTriangles(core::triangle3df* triangles,
 	{
 		SCollisionTriangleRange triRange;
 		triRange.RangeSize = tIndex;
-		triRange.Selector = const_cast<CTerrainTriangleSelector*>(this);
+		triRange.Selector = this;
 		triRange.SceneNode = SceneNode;
 		outTriangleInfo->push_back(triRange);
 	}
@@ -163,7 +163,7 @@ void CTerrainTriangleSelector::getTriangles(core::triangle3df* triangles,
 	{
 		SCollisionTriangleRange triRange;
 		triRange.RangeSize = tIndex;
-		triRange.Selector = const_cast<CTerrainTriangleSelector*>(this);
+		triRange.Selector = this;
 		triRange.SceneNode = SceneNode;
 		outTriangleInfo->push_back(triRange);
 	}
@@ -209,7 +209,7 @@ void CTerrainTriangleSelector::getTriangles(core::triangle3df* triangles,
 	{
 		SCollisionTriangleRange triRange;
 		triRange.RangeSize = tIndex;
-		triRange.Selector = const_cast<CTerrainTriangleSelector*>(this);
+		triRange.Selector = this;
 		triRange.SceneNode = SceneNode;
 		outTriangleInfo->push_back(triRange);
 	}

@@ -293,7 +293,7 @@ void CTriangleSelector::getTriangles(core::triangle3df* triangles,
 
 			triRange.RangeStart = 0;
 			triRange.RangeSize = cnt;
-			triRange.Selector = const_cast<CTriangleSelector*>(this);
+			triRange.Selector = this;
 			triRange.SceneNode = SceneNode;
 			triRange.MeshBuffer = MeshBuffer;
 			triRange.MaterialIndex = MaterialIndex;
@@ -313,7 +313,7 @@ void CTriangleSelector::getTriangles(core::triangle3df* triangles,
 				triRange.MeshBuffer = BufferRanges[rangeIndex].MeshBuffer;
 				triRange.RangeStart = BufferRanges[rangeIndex].RangeStart;
 				triRange.RangeSize = core::min_( cnt-BufferRanges[rangeIndex].RangeStart, BufferRanges[rangeIndex].RangeSize);
-				triRange.Selector = const_cast<CTriangleSelector*>(this);
+				triRange.Selector = this;
 				triRange.SceneNode = SceneNode;
 				outTriangleInfo->push_back(triRange);
 
@@ -370,7 +370,7 @@ void CTriangleSelector::getTriangles(core::triangle3df* triangles,
 	{
 		irr::u32 activeRange = 0;
 		SCollisionTriangleRange triRange;
-		triRange.Selector = const_cast<CTriangleSelector*>(this);
+		triRange.Selector = this;
 		triRange.SceneNode = SceneNode;
 		triRange.RangeStart = triangleCount;
 		triRange.MeshBuffer = BufferRanges[activeRange].MeshBuffer;
@@ -433,7 +433,7 @@ void CTriangleSelector::getTriangles(core::triangle3df* triangles,
 		{
 			SCollisionTriangleRange triRange;
 			triRange.RangeSize = triangleCount;
-			triRange.Selector = const_cast<CTriangleSelector*>(this);
+			triRange.Selector = this;
 			triRange.SceneNode = SceneNode;
 			triRange.MeshBuffer = MeshBuffer;
 			triRange.MaterialIndex = MaterialIndex;

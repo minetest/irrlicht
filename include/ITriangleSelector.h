@@ -49,7 +49,7 @@ struct SCollisionTriangleRange
 	irr::u32 RangeSize;
 
 	//! Real selector which contained those triangles (useful when working with MetaTriangleSelector)
-	ITriangleSelector* Selector;
+	const ITriangleSelector* Selector;
 
 	//! SceneNode from which the triangles are from
 	ISceneNode* SceneNode;

@@ -2715,7 +2715,7 @@ COGLES2Driver::~COGLES2Driver()
 	}
 
 	bool COGLES2Driver::getColorFormatParameters(ECOLOR_FORMAT format, GLint& internalFormat, GLenum& pixelFormat,
-		GLenum& pixelType, void(**converter)(const void*, s32, void*)) const
+		GLenum& pixelType, void(**converter)(const void*, u32, void*)) const
 	{
 		bool supported = false;
 		pixelFormat = GL_RGBA;
@@ -2981,7 +2981,7 @@ COGLES2Driver::~COGLES2Driver()
 		GLint dummyInternalFormat;
 		GLenum dummyPixelFormat;
 		GLenum dummyPixelType;
-		void (*dummyConverter)(const void*, s32, void*);
+		void (*dummyConverter)(const void*, u32, void*);
 		return getColorFormatParameters(format, dummyInternalFormat, dummyPixelFormat, dummyPixelType, &dummyConverter);
 	}
 

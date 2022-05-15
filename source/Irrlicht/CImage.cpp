@@ -24,8 +24,7 @@ CImage::CImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size, void* d
 	}
 	else
 	{
-		const u32 dataSize = getDataSizeFromFormat(Format, Size.Width, Size.Height);
-
+		const size_t dataSize = getDataSizeFromFormat(Format, Size.Width, Size.Height);
 		Data = new u8[align_next(dataSize,16)];
 		memcpy(Data, data, dataSize);
 		DeleteMemory = true;
@@ -36,7 +35,8 @@ CImage::CImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size, void* d
 //! Constructor of empty image
 CImage::CImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size) : IImage(format, size, true)
 {
-	Data = new u8[align_next(getDataSizeFromFormat(Format, Size.Width, Size.Height),16)];
+	const size_t dataSize = getDataSizeFromFormat(Format, Size.Width, Size.Height);
+	Data = new u8[align_next(dataSize,16)];
 	DeleteMemory = true;
 }
 
@@ -194,7 +194,7 @@ void CImage::copyToScaling(void* target, u32 width, u32 height, ECOLOR_FORMAT fo
 	{
 		if (pitch==Pitch)
 		{
-			memcpy(target, Data, height*pitch);
+			memcpy(target, Data, (size_t)height*pitch);
 			return;
 		}
 		else
@@ -332,8 +332,8 @@ void CImage::fill(const SColor &color)
 		{
 			u8 rgb[3];
 			CColorConverter::convert_A8R8G8B8toR8G8B8(&color, 1, rgb);
-			const u32 size = getImageDataSizeInBytes();
-			for (u32 i=0; i<size; i+=3)
+			const size_t size = getImageDataSizeInBytes();
+			for (size_t i=0; i<size; i+=3)
 			{
 				memcpy(Data+i, rgb, 3);
 			}

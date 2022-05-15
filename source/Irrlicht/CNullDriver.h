@@ -480,7 +480,7 @@ namespace video
 		/** Return value is the number of visible pixels/fragments.
 		The value is a safe approximation, i.e. can be larger than the
 		actual value of pixels. */
-		virtual u32 getOcclusionQueryResult(scene::ISceneNode* node) const IRR_OVERRIDE;
+		virtual u32 getOcclusionQueryResult(const scene::ISceneNode* node) const IRR_OVERRIDE;
 
 		//! Create render target.
 		virtual IRenderTarget* addRenderTarget() IRR_OVERRIDE;
@@ -833,6 +833,11 @@ namespace video
 			bool operator==(const SOccQuery& other) const
 			{
 				return other.Node==Node;
+			}
+
+			bool operator==(const scene::ISceneNode* other) const
+			{
+				return other==Node;
 			}
 
 			scene::ISceneNode* Node;

@@ -276,13 +276,13 @@ void CIrrMeshFileLoader::readIndices(io::IXMLReader* reader, int indexCount, IIn
 
 void CIrrMeshFileLoader::readMeshBuffer(io::IXMLReader* reader, int vertexCount, CDynamicMeshBuffer* sbuffer)
 {
-	core::stringc data = reader->getNodeData();
-	const c8* p = &data[0];
-	scene::IVertexBuffer& Vertices = sbuffer->getVertexBuffer();
-	video::E_VERTEX_TYPE vType = Vertices.getType();
-
 	if (sbuffer)
 	{
+		core::stringc data = reader->getNodeData();
+		const c8* p = &data[0];
+		scene::IVertexBuffer& Vertices = sbuffer->getVertexBuffer();
+		video::E_VERTEX_TYPE vType = Vertices.getType();
+
 		for (int i=0; i<vertexCount && *p; ++i)
 		{
 			switch(vType)

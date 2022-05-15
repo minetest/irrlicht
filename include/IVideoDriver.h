@@ -460,7 +460,7 @@ namespace video
 		/** Return value is the number of visible pixels/fragments.
 		The value is a safe approximation, i.e. can be larger than the
 		actual value of pixels. */
-		virtual u32 getOcclusionQueryResult(scene::ISceneNode* node) const =0;
+		virtual u32 getOcclusionQueryResult(const scene::ISceneNode* node) const =0;
 
 		//! Create render target.
 		virtual IRenderTarget* addRenderTarget() = 0;

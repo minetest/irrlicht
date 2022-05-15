@@ -215,9 +215,18 @@ void CBillboardTextSceneNode::setText(const wchar_t* text)
 		u32 rectno = sprites[spriteno].Frames[0].rectNumber;
 		u32 texno = sprites[spriteno].Frames[0].textureNumber;
 
-		const core::dimension2d<u32>& texSize = Font->getSpriteBank()->getTexture(texno)->getOriginalSize();
-		dim[0] = core::reciprocal((f32)texSize.Width);
-		dim[1] = core::reciprocal((f32)texSize.Height);
+		video::ITexture* texture = Font->getSpriteBank()->getTexture(texno);
+		if (texture)
+		{
+			const core::dimension2d<u32>& texSize = texture->getOriginalSize();
+			dim[0] = core::reciprocal((f32)texSize.Width);
+			dim[1] = core::reciprocal((f32)texSize.Height);
+		}
+		else
+		{
+			dim[0] = 0;
+			dim[1] = 0;
+		}
 
 		const core::rect<s32>& s = sourceRects[rectno];
 

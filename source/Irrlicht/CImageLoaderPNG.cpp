@@ -158,6 +158,9 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 		Height=h;
 	}
 
+	if (!IImage::checkDataSizeLimit((size_t)Width* Height * (BitDepth/8)))
+		png_cpexcept_error(png_ptr, "Image dimensions too large");
+
 	// Convert palette color to true color
 	if (ColorType==PNG_COLOR_TYPE_PALETTE)
 		png_set_palette_to_rgb(png_ptr);

@@ -335,7 +335,7 @@ void CD3D9Texture::regenerateMipMapLevels(void* data, u32 layer)
 		u32 width = Size.Width;
 		u32 height = Size.Height;
 		u8* tmpData = static_cast<u8*>(data);
-		u32 dataSize = 0;
+		size_t dataSize = 0;
 		u32 level = 0;
 
 		do
@@ -714,7 +714,7 @@ void CD3D9Texture::uploadTexture(void* data, u32 mipmapLevel, u32 layer)
 	u32 width = Size.Width >> mipmapLevel;
 	u32 height = Size.Height >> mipmapLevel;
 
-	u32 dataSize = IImage::getDataSizeFromFormat(ColorFormat, width, height);
+	size_t dataSize = IImage::getDataSizeFromFormat(ColorFormat, width, height);
 
 	HRESULT hr = 0;
 

@@ -788,13 +788,10 @@ void COpenGLDriver::updateOcclusionQuery(scene::ISceneNode* node, bool block)
 /** Return value is the number of visible pixels/fragments.
 The value is a safe approximation, i.e. can be larger than the
 actual value of pixels. */
-u32 COpenGLDriver::getOcclusionQueryResult(scene::ISceneNode* node) const
+u32 COpenGLDriver::getOcclusionQueryResult(const scene::ISceneNode* node) const
 {
-	const s32 index = OcclusionQueries.linear_search(SOccQuery(node));
-	if (index != -1)
-		return OcclusionQueries[index].Result;
-	else
-		return ~0;
+	const s32 index = OcclusionQueries.linear_search(node);
+	return index < 0 ? ~0 : OcclusionQueries[index].Result;
 }
 
 
@@ -3618,7 +3615,7 @@ bool COpenGLDriver::queryTextureFormat(ECOLOR_FORMAT format) const
 	GLint dummyInternalFormat;
 	GLenum dummyPixelFormat;
 	GLenum dummyPixelType;
-	void (*dummyConverter)(const void*, s32, void*);
+	void (*dummyConverter)(const void*, u32, void*);
 	return getColorFormatParameters(format, dummyInternalFormat, dummyPixelFormat, dummyPixelType, &dummyConverter);
 }
 
@@ -4208,7 +4205,7 @@ GLenum COpenGLDriver::getZBufferBits() const
 }
 
 bool COpenGLDriver::getColorFormatParameters(ECOLOR_FORMAT format, GLint& internalFormat, GLenum& pixelFormat,
-	GLenum& pixelType, void(**converter)(const void*, s32, void*)) const
+	GLenum& pixelType, void(**converter)(const void*, u32, void*)) const
 {
 	// NOTE: Converter variable not used here, but don't remove, it's used in the OGL-ES drivers.
 

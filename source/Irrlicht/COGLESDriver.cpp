@@ -3049,7 +3049,7 @@ GLenum COGLES1Driver::getZBufferBits() const
 }
 
 bool COGLES1Driver::getColorFormatParameters(ECOLOR_FORMAT format, GLint& internalFormat, GLenum& pixelFormat,
-	GLenum& pixelType, void(**converter)(const void*, s32, void*)) const
+	GLenum& pixelType, void(**converter)(const void*, u32, void*)) const
 {
 	bool supported = false;
 	internalFormat = GL_RGBA;
@@ -3258,7 +3258,7 @@ bool COGLES1Driver::queryTextureFormat(ECOLOR_FORMAT format) const
 	GLint dummyInternalFormat;
 	GLenum dummyPixelFormat;
 	GLenum dummyPixelType;
-	void (*dummyConverter)(const void*, s32, void*);
+	void (*dummyConverter)(const void*, u32, void*);
 	return getColorFormatParameters(format, dummyInternalFormat, dummyPixelFormat, dummyPixelType, &dummyConverter);
 }
 

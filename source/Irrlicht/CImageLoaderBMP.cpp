@@ -313,6 +313,13 @@ IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
 	dim.Height = header.Height;
 
 	IImage* image = 0;
+
+	if ( !IImage::checkDataSizeLimit( (size_t)header.Width*header.Height*header.BPP) )
+	{
+		os::Printer::log("Image dimensions too large for file", file->getFileName(), ELL_WARNING);
+		goto cleanup;
+	}
+
 	switch(header.BPP)
 	{
 	case 1:
@@ -348,7 +355,7 @@ IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
 	};
 
 	// clean up
-
+cleanup:
 	delete [] paletteData;
 	delete [] bmpData;
 

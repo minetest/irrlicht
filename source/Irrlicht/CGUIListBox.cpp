@@ -98,13 +98,6 @@ s32 CGUIListBox::getIcon(u32 id) const
 
 
 //! adds a list item, returns id of item
-u32 CGUIListBox::addItem(const wchar_t* text)
-{
-	return addItem(text, -1);
-}
-
-
-//! adds a list item, returns id of item
 void CGUIListBox::removeItem(u32 id)
 {
 	if (id >= Items.size())

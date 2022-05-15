@@ -145,10 +145,13 @@ IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
 		return 0;
 
 	core::stringc filename = file->getFileName();
+	long fileSize = file->getSize();
+	if ( fileSize < 3 )
+		return 0;
 
 	u8 **rowPtr=0;
-	u8* input = new u8[file->getSize()];
-	file->read(input, file->getSize());
+	u8* input = new u8[fileSize];
+	file->read(input, fileSize);
 
 	// allocate and initialize JPEG decompression object
 	struct jpeg_decompress_struct cinfo;
@@ -188,7 +191,7 @@ IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
 	jpeg_source_mgr jsrc;
 
 	// Set up data pointer
-	jsrc.bytes_in_buffer = file->getSize();
+	jsrc.bytes_in_buffer = fileSize;
 	jsrc.next_input_byte = (JOCTET*)input;
 	cinfo.src = &jsrc;
 
@@ -225,9 +228,18 @@ IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
 	jpeg_start_decompress(&cinfo);
 
 	// Get image data
-	u16 rowspan = cinfo.image_width * cinfo.out_color_components;
+	u32 rowspan = cinfo.image_width * cinfo.out_color_components;
 	u32 width = cinfo.image_width;
 	u32 height = cinfo.image_height;
+
+	if (	width > JPEG_MAX_DIMENSION || height > JPEG_MAX_DIMENSION 
+		|| !IImage::checkDataSizeLimit(IImage::getDataSizeFromFormat(ECF_R8G8B8, width, height))
+		)
+	{
+		os::Printer::log("Image dimensions too large in file", filename, ELL_ERROR);
+		longjmp(jerr.setjmp_buffer, 1);
+	}
+
 
 	// Allocate memory for buffer
 	u8* output = new u8[rowspan * height];
@@ -237,7 +249,7 @@ IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
 	// Create array of row pointers for lib
 	rowPtr = new u8* [height];
 
-	for( u32 i = 0; i < height; i++ )
+	for( size_t i = 0; i < height; i++ )
 		rowPtr[i] = &output[ i * rowspan ];
 
 	u32 rowsRead = 0;
@@ -246,6 +258,7 @@ IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
 		rowsRead += jpeg_read_scanlines( &cinfo, &rowPtr[rowsRead], cinfo.output_height - rowsRead );
 
 	delete [] rowPtr;
+	rowPtr = 0;
 	// Finish decompression
 
 	jpeg_finish_decompress(&cinfo);

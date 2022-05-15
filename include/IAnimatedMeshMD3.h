@@ -186,7 +186,7 @@ namespace scene
 		SMD3QuaternionTag* get(const core::stringc& name)
 		{
 			SMD3QuaternionTag search ( name );
-			s32 index = Container.linear_search ( search );
+			const s32 index = Container.linear_search ( search );
 			if ( index >= 0 )
 				return &Container[index];
 			return 0;
@@ -199,7 +199,7 @@ namespace scene
 
 		void set_used(u32 new_size)
 		{
-			s32 diff = (s32) new_size - (s32) Container.allocated_size();
+			const s32 diff = (s32) new_size - (s32) Container.allocated_size();
 			if ( diff > 0 )
 			{
 				SMD3QuaternionTag e("");

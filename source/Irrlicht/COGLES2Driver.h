@@ -327,7 +327,7 @@ namespace video
 		virtual GLenum getZBufferBits() const;
 
 		virtual bool getColorFormatParameters(ECOLOR_FORMAT format, GLint& internalFormat, GLenum& pixelFormat,
-			GLenum& pixelType, void(**converter)(const void*, s32, void*)) const;
+			GLenum& pixelType, void(**converter)(const void*, u32, void*)) const;
 
 		//! Get current material.
 		const SMaterial& getCurrentMaterial() const;

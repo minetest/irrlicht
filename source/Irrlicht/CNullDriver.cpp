@@ -1998,7 +1998,7 @@ void CNullDriver::updateAllOcclusionQueries(bool block)
 /** Return value is the number of visible pixels/fragments.
 The value is a safe approximation, i.e. can be larger then the
 actual value of pixels. */
-u32 CNullDriver::getOcclusionQueryResult(scene::ISceneNode* node) const
+u32 CNullDriver::getOcclusionQueryResult(const scene::ISceneNode* node) const
 {
 	return ~0;
 }

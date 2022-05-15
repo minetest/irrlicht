@@ -69,7 +69,7 @@ core::array<IImage*> CImageLoaderPVR::loadImages(io::IReadFile* file, E_TEXTURE_
 	core::array<u8*> mipMapsDataArray;
 
 	ECOLOR_FORMAT format = ECF_UNKNOWN;
-	u32 dataSize = 0;
+	size_t dataSize = 0;
 
 	file->seek(0);
 	file->read(&header, sizeof(SPVRHeader));
@@ -216,7 +216,7 @@ core::array<IImage*> CImageLoaderPVR::loadImages(io::IReadFile* file, E_TEXTURE_
 		// read texture
 
 		dataSize = 0;
-		long offset = 0;
+		size_t offset = 0;
 
 		for (u32 i = 0; i < header.MipMapCount; ++i)
 		{

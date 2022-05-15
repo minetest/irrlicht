@@ -526,29 +526,31 @@ public:
 	}
 
 
-	//! Finds an element in linear time, which is very slow.
-	/** Use binary_search for faster finding. Only works if ==operator is
-	implemented.
-	\param element Element to search for.
+	//! Finds an element by searching linearly from array start to end
+	/** Can be slow with large arrays, try binary_search for those.
+	Only works if corresponding operator== is implemented.
+	\param element Element to search for. 
 	\return Position of the searched element if it was found, otherwise -1
 	is returned. */
-	s32 linear_search(const T& element) const
+	template <class E>
+	s32 linear_search(const E& element) const
 	{
 		for (u32 i=0; i<used; ++i)
-			if (element == data[i])
+			if (data[i] == element)
 				return (s32)i;
 
 		return -1;
 	}
 
 
-	//! Finds an element in linear time, which is very slow.
-	/** Use binary_search for faster finding. Only works if ==operator is
-	implemented.
-	\param element: Element to search for.
+	//! Finds an element by searching linearly from array end to start.
+	/** Can be slow with large arrays, try binary_search for those.
+	Only works if corresponding operator== is implemented.
+	\param element Element to search for.
 	\return Position of the searched element if it was found, otherwise -1
 	is returned. */
-	s32 linear_reverse_search(const T& element) const
+	template <class E>
+	s32 linear_reverse_search(const E& element) const
 	{
 		for (s32 i=used-1; i>=0; --i)
 			if (data[i] == element)
