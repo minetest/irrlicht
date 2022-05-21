@@ -50,7 +50,6 @@
 #include "EMessageBoxFlags.h"
 #include "ESceneNodeTypes.h"
 #include "fast_atof.h"
-#include "heapsort.h"
 #include "IAnimatedMesh.h"
 #include "IAnimatedMeshSceneNode.h"
 #include "IAttributes.h"

@@ -112,12 +112,12 @@ bool COGLES1Driver::genericDriverInit(const core::dimension2d<u32>& screenSize, 
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
 	UserClipPlane.reallocate(MaxUserClipPlanes);
-	UserClipPlaneEnabled.reallocate(MaxUserClipPlanes);
+	UserClipPlaneEnabled.resize(MaxUserClipPlanes);
 
 	for (s32 i = 0; i < MaxUserClipPlanes; ++i)
 	{
 		UserClipPlane.push_back(core::plane3df());
-		UserClipPlaneEnabled.push_back(false);
+		UserClipPlaneEnabled[i] = false;
 	}
 
 	for (s32 i = 0; i < ETS_COUNT; ++i)

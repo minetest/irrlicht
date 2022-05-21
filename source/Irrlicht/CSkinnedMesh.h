@@ -196,7 +196,9 @@ private:
 		core::array<SJoint*> AllJoints;
 		core::array<SJoint*> RootJoints;
 
-		core::array< core::array<bool> > Vertices_Moved;
+		// bool can't be used here because std::vector<bool>
+		// doesn't allow taking a reference to individual elements.
+		core::array< core::array<char> > Vertices_Moved;
 
 		core::aabbox3d<f32> BoundingBox;
 

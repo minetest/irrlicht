@@ -100,7 +100,7 @@ namespace scene
 		private:
 			//! Internal members used by CSkinnedMesh
 			friend class CSkinnedMesh;
-			bool *Moved;
+			char *Moved;
 			core::vector3df StaticPos;
 			core::vector3df StaticNormal;
 		};

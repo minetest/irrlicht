@@ -5,9 +5,11 @@
 #ifndef __IRR_ARRAY_H_INCLUDED__
 #define __IRR_ARRAY_H_INCLUDED__
 
+#include <algorithm>
+#include <iterator>
+#include <vector>
+
 #include "irrTypes.h"
-#include "heapsort.h"
-#include "irrAllocator.h"
 #include "irrMath.h"
 
 namespace irr
@@ -18,44 +20,27 @@ namespace core
 //! Self reallocating template array (like stl vector) with additional features.
 /** Some features are: Heap sorting, binary search methods, easier debugging.
 */
-template <class T, typename TAlloc = irrAllocator<T> >
+template <class T>
 class array
 {
-
 public:
+	static_assert(!std::is_same<T, bool>::value,
+		"irr::core::array<T> with T = bool not supported. Use std::vector instead.");
 
 	//! Default constructor for empty array.
-	array() : data(0), allocated(0), used(0),
-			strategy(ALLOC_STRATEGY_DOUBLE), free_when_destroyed(true), is_sorted(true)
-	{
-	}
-
+	array() : m_data(), is_sorted(true)
+	{ }
 
 	//! Constructs an array and allocates an initial chunk of memory.
 	/** \param start_count Amount of elements to pre-allocate. */
-	explicit array(u32 start_count) : data(0), allocated(0), used(0),
-			strategy(ALLOC_STRATEGY_DOUBLE),
-			free_when_destroyed(true), is_sorted(true)
+	explicit array(u32 start_count) : m_data(), is_sorted(true)
 	{
-		reallocate(start_count);
+		m_data.reserve(start_count);
 	}
-
 
 	//! Copy constructor
-	array(const array<T, TAlloc>& other) : data(0)
-	{
-		*this = other;
-	}
-
-
-	//! Destructor.
-	/** Frees allocated memory, if set_free_when_destroyed was not set to
-	false by the user before. */
-	~array()
-	{
-		clear();
-	}
-
+	array(const array<T>& other) : m_data(other.m_data), is_sorted(other.is_sorted)
+	{ }
 
 	//! Reallocates the array, make it bigger or smaller.
 	/** \param new_size New size of array.
@@ -65,52 +50,28 @@ public:
 	*/
 	void reallocate(u32 new_size, bool canShrink=true)
 	{
-		if (allocated==new_size)
-			return;
-		if (!canShrink && (new_size < allocated))
-			return;
-
-		T* old_data = data;
-
-		data = allocator.allocate(new_size); //new T[new_size];
-		allocated = new_size;
-
-		// copy old data
-		const s32 end = used < new_size ? used : new_size;
-
-		for (s32 i=0; i<end; ++i)
-		{
-			// data[i] = old_data[i];
-			allocator.construct(&data[i], old_data[i]);
+		size_t allocated = m_data.capacity();
+		if (new_size < allocated) {
+			if (canShrink)
+				m_data.resize(new_size);
+		} else {
+			m_data.reserve(new_size);
 		}
-
-		// destruct old data
-		for (u32 j=0; j<used; ++j)
-			allocator.destruct(&old_data[j]);
-
-		if (allocated < used)
-			used = allocated;
-
-		allocator.deallocate(old_data); //delete [] old_data;
 	}
-
-
-	//! set a new allocation strategy
-	/** if the maximum size of the array is unknown, you can define how big the
-	allocation should happen.
-	\param newStrategy New strategy to apply to this array. */
-	void setAllocStrategy ( eAllocStrategy newStrategy = ALLOC_STRATEGY_DOUBLE )
-	{
-		strategy = newStrategy;
-	}
-
 
 	//! Adds an element at back of array.
 	/** If the array is too small to add this new element it is made bigger.
 	\param element: Element to add at the back of the array. */
 	void push_back(const T& element)
 	{
-		insert(element, used);
+		m_data.push_back(element);
+		is_sorted = false;
+	}
+
+	void push_back(T&& element)
+	{
+		m_data.push_back(std::move(element));
+		is_sorted = false;
 	}
 
 
@@ -121,7 +82,14 @@ public:
 	\param element Element to add at the back of the array. */
 	void push_front(const T& element)
 	{
-		insert(element);
+		m_data.insert(m_data.begin(), element);
+		is_sorted = false;
+	}
+
+	void push_front(T&& element)
+	{
+		m_data.insert(m_data.begin(), std::move(element));
+		is_sorted = false;
 	}
 
 
@@ -131,104 +99,19 @@ public:
 	\param index: Where position to insert the new element. */
 	void insert(const T& element, u32 index=0)
 	{
-		_IRR_DEBUG_BREAK_IF(index>used) // access violation
-
-		if (used + 1 > allocated)
-		{
-			// this doesn't work if the element is in the same
-			// array. So we'll copy the element first to be sure
-			// we'll get no data corruption
-			const T e(element);
-
-			// increase data block
-			u32 newAlloc;
-			switch ( strategy )
-			{
-				case ALLOC_STRATEGY_DOUBLE:
-					newAlloc = used + 5 + (allocated < 500 ? used : used >> 2);
-					break;
-				default:
-				case ALLOC_STRATEGY_SAFE:
-					newAlloc = used + 1;
-					break;
-			}
-			reallocate( newAlloc);
-
-			// move array content and construct new element
-			// first move end one up
-			for (u32 i=used; i>index; --i)
-			{
-				if (i<used)
-					allocator.destruct(&data[i]);
-				allocator.construct(&data[i], data[i-1]); // data[i] = data[i-1];
-			}
-			// then add new element
-			if (used > index)
-				allocator.destruct(&data[index]);
-			allocator.construct(&data[index], e); // data[index] = e;
-		}
-		else
-		{
-			// element inserted not at end
-			if ( used > index )
-			{
-				// create one new element at the end
-				allocator.construct(&data[used], data[used-1]);
-
-				// move the rest of the array content
-				for (u32 i=used-1; i>index; --i)
-				{
-					data[i] = data[i-1];
-				}
-				// insert the new element
-				data[index] = element;
-			}
-			else
-			{
-				// insert the new element to the end
-				allocator.construct(&data[index], element);
-			}
-		}
-		// set to false as we don't know if we have the comparison operators
+		_IRR_DEBUG_BREAK_IF(index > m_data.size()) // access violation
+		auto pos = std::next(m_data.begin(), index);
+		m_data.insert(pos, element);
 		is_sorted = false;
-		++used;
 	}
-
 
 	//! Clears the array and deletes all allocated memory.
 	void clear()
 	{
-		if (free_when_destroyed)
-		{
-			for (u32 i=0; i<used; ++i)
-				allocator.destruct(&data[i]);
-
-			allocator.deallocate(data); // delete [] data;
-		}
-		data = 0;
-		used = 0;
-		allocated = 0;
+		// vector::clear() reduces the size to 0, but doesn't free memory.
+		// This swap is guaranteed to delete the allocated memory.
+		std::vector<T>().swap(m_data);
 		is_sorted = true;
-	}
-
-
-	//! Sets pointer to new array, using this as new workspace.
-	/** Make sure that set_free_when_destroyed is used properly.
-	\param newPointer: Pointer to new array of elements.
-	\param size: Size of the new array.
-	\param _is_sorted Flag which tells whether the new array is already
-	sorted.
-	\param _free_when_destroyed Sets whether the new memory area shall be
-	freed by the array upon destruction, or if this will be up to the user
-	application. */
-	void set_pointer(T* newPointer, u32 size, bool _is_sorted=false, bool _free_when_destroyed=true)
-	{
-		clear();
-		data = newPointer;
-		allocated = size;
-		used = size;
-		is_sorted = _is_sorted;
-		free_when_destroyed=_free_when_destroyed;
 	}
 
 	//! Set (copy) data from given memory block
@@ -240,12 +123,11 @@ public:
 	*/
 	void set_data(const T* newData, u32 newSize, bool newDataIsSorted=false, bool canShrink=false)
 	{
-		reallocate(newSize, canShrink);
-		set_used(newSize);
-		for ( u32 i=0; i<newSize; ++i)
-		{
-			data[i] = newData[i];
+		m_data.resize(newSize);
+		if (canShrink) {
+			m_data.shrink_to_fit();
 		}
+		std::copy(newData, newData + newSize, m_data.begin());
 		is_sorted = newDataIsSorted;
 	}
 
@@ -255,85 +137,51 @@ public:
 	\param size Amount of elements in otherData	*/
 	bool equals(const T* otherData, u32 size) const
 	{
-		if (used != size)
+		if (m_data.size() != size)
 			return false;
-
-		for (u32 i=0; i<size; ++i)
-			if (data[i] != otherData[i])
-				return false;
-		return true;
+		return std::equal(m_data.begin(), m_data.end(), otherData);
 	}
-
-
-
-	//! Sets if the array should delete the memory it uses upon destruction.
-	/** Also clear and set_pointer will only delete the (original) memory
-	area if this flag is set to true, which is also the default. The
-	methods reallocate, set_used, push_back, push_front, insert, and erase
-	will still try to deallocate the original memory, which might cause
-	troubles depending on the intended use of the memory area.
-	\param f If true, the array frees the allocated memory in its
-	destructor, otherwise not. The default is true. */
-	void set_free_when_destroyed(bool f)
-	{
-		free_when_destroyed = f;
-	}
-
 
 	//! Sets the size of the array and allocates new elements if necessary.
-	/** Please note: This is only secure when using it with simple types,
-	because no default constructor will be called for the added elements.
-	\param usedNow Amount of elements now used. */
+	/** \param usedNow Amount of elements now used. */
 	void set_used(u32 usedNow)
 	{
-		if (allocated < usedNow)
-			reallocate(usedNow);
-
-		used = usedNow;
+		m_data.resize(usedNow);
 	}
 
 	//! Assignment operator
-	const array<T, TAlloc>& operator=(const array<T, TAlloc>& other)
+	const array<T>& operator=(const array<T>& other)
 	{
 		if (this == &other)
 			return *this;
-		strategy = other.strategy;
-
-		// (TODO: we could probably avoid re-allocations of data when (allocated < other.allocated)
-
-		if (data)
-			clear();
-
-		used = other.used;
-		free_when_destroyed = true;
+		m_data = other.m_data;
 		is_sorted = other.is_sorted;
-		allocated = other.allocated;
-
-		if (other.allocated == 0)
-		{
-			data = 0;
-		}
-		else
-		{
-			data = allocator.allocate(other.allocated); // new T[other.allocated];
-
-			for (u32 i=0; i<other.used; ++i)
-				allocator.construct(&data[i], other.data[i]); // data[i] = other.data[i];
-		}
-
 		return *this;
 	}
 
+	array<T>& operator=(const std::vector<T> &other)
+	{
+		m_data = other;
+		is_sorted = false;
+		return *this;
+	}
+
+	array<T>& operator=(std::vector<T> &&other)
+	{
+		m_data = std::move(other);
+		is_sorted = false;
+		return *this;
+	}
 
 	//! Equality operator
-	bool operator == (const array<T, TAlloc>& other) const
+	bool operator == (const array<T>& other) const
 	{
 		return equals(other.const_pointer(), other.size());
 	}
 
 
 	//! Inequality operator
-	bool operator != (const array<T, TAlloc>& other) const
+	bool operator != (const array<T>& other) const
 	{
 		return !(*this==other);
 	}
@@ -342,36 +190,36 @@ public:
 	//! Direct access operator
 	T& operator [](u32 index)
 	{
-		_IRR_DEBUG_BREAK_IF(index>=used) // access violation
+		_IRR_DEBUG_BREAK_IF(index >= m_data.size()) // access violation
 
-		return data[index];
+		return m_data[index];
 	}
 
 
 	//! Direct const access operator
 	const T& operator [](u32 index) const
 	{
-		_IRR_DEBUG_BREAK_IF(index>=used) // access violation
+		_IRR_DEBUG_BREAK_IF(index >= m_data.size()) // access violation
 
-		return data[index];
+		return m_data[index];
 	}
 
 
 	//! Gets last element.
 	T& getLast()
 	{
-		_IRR_DEBUG_BREAK_IF(!used) // access violation
+		_IRR_DEBUG_BREAK_IF(m_data.empty()) // access violation
 
-		return data[used-1];
+		return m_data.back();
 	}
 
 
 	//! Gets last element
 	const T& getLast() const
 	{
-		_IRR_DEBUG_BREAK_IF(!used) // access violation
+		_IRR_DEBUG_BREAK_IF(m_data.empty()) // access violation
 
-		return data[used-1];
+		return m_data.back();
 	}
 
 
@@ -379,7 +227,7 @@ public:
 	/** \return Pointer to the array. */
 	T* pointer()
 	{
-		return data;
+		return &m_data[0];
 	}
 
 
@@ -387,7 +235,7 @@ public:
 	/** \return Pointer to the array. */
 	const T* const_pointer() const
 	{
-		return data;
+		return &m_data[0];
 	}
 
 
@@ -395,7 +243,7 @@ public:
 	/** \return Size of elements in the array which are actually occupied. */
 	u32 size() const
 	{
-		return used;
+		return m_data.size();
 	}
 
 
@@ -404,7 +252,7 @@ public:
 	allocated would be allocated_size() * sizeof(ElementTypeUsed); */
 	u32 allocated_size() const
 	{
-		return allocated;
+		return m_data.capacity();
 	}
 
 
@@ -412,7 +260,7 @@ public:
 	/** \return True if the array is empty false if not. */
 	bool empty() const
 	{
-		return used == 0;
+		return m_data.empty();
 	}
 
 
@@ -421,9 +269,10 @@ public:
 	O(n*log n) in worst case. */
 	void sort()
 	{
-		if (!is_sorted && used>1)
-			heapsort(data, used);
-		is_sorted = true;
+		if (!is_sorted) {
+			std::sort(m_data.begin(), m_data.end());
+			is_sorted = true;
+		}
 	}
 
 
@@ -437,9 +286,8 @@ public:
 	s32 binary_search(const T& element)
 	{
 		sort();
-		return binary_search(element, 0, used-1);
+		return binary_search(element, 0, (s32)m_data.size() - 1);
 	}
-
 
 	//! Performs a binary search for an element if possible, returns -1 if not found.
 	/** This method is for const arrays and so cannot call sort(), if the array is
@@ -450,11 +298,10 @@ public:
 	s32 binary_search(const T& element) const
 	{
 		if (is_sorted)
-			return binary_search(element, 0, used-1);
+			return binary_search(element, 0, (s32)m_data.size() - 1);
 		else
 			return linear_search(element);
 	}
-
 
 	//! Performs a binary search for an element, returns -1 if not found.
 	/** \param element: Element to search for.
@@ -464,31 +311,15 @@ public:
 	is returned. */
 	s32 binary_search(const T& element, s32 left, s32 right) const
 	{
-		if (!used)
+		if (left > right)
 			return -1;
-
-		s32 m;
-
-		do
-		{
-			m = (left+right)>>1;
-
-			if (element < data[m])
-				right = m - 1;
-			else
-				left = m + 1;
-
-		} while((element < data[m] || data[m] < element) && left<=right);
-		// this last line equals to:
-		// " while((element != array[m]) && left<=right);"
-		// but we only want to use the '<' operator.
-		// the same in next line, it is "(element == array[m])"
-
-
-		if (!(element < data[m]) && !(data[m] < element))
-			return m;
-
-		return -1;
+		auto lpos = std::next(m_data.begin(), left);
+		auto rpos = std::next(m_data.begin(), right);
+		auto it = std::lower_bound(lpos, rpos, element);
+		// *it = first element in [first, last) that is >= element, or last if not found.
+		if (*it < element || element < *it)
+			return -1;
+		return it - m_data.begin();
 	}
 
 
@@ -503,25 +334,11 @@ public:
 	s32 binary_search_multi(const T& element, s32 &last)
 	{
 		sort();
-		s32 index = binary_search(element, 0, used-1);
-		if ( index < 0 )
-			return index;
-
-		// The search can be somewhere in the middle of the set
-		// look linear previous and past the index
-		last = index;
-
-		while ( index > 0 && !(element < data[index - 1]) && !(data[index - 1] < element) )
-		{
-			index -= 1;
-		}
-		// look linear up
-		while ( last < (s32) used - 1 && !(element < data[last + 1]) && !(data[last + 1] < element) )
-		{
-			last += 1;
-		}
-
-		return index;
+		auto iters = std::equal_range(m_data.begin(), m_data.end(), element);
+		if (iters.first == iters.second)
+			return -1;
+		last = (iters.second - m_data.begin()) - 1;
+		return iters.first - m_data.begin();
 	}
 
 
@@ -533,11 +350,10 @@ public:
 	is returned. */
 	s32 linear_search(const T& element) const
 	{
-		for (u32 i=0; i<used; ++i)
-			if (element == data[i])
-				return (s32)i;
-
-		return -1;
+		auto it = std::find(m_data.begin(), m_data.end(), element);
+		if (it == m_data.end())
+			return -1;
+		return it - m_data.begin();
 	}
 
 
@@ -549,11 +365,11 @@ public:
 	is returned. */
 	s32 linear_reverse_search(const T& element) const
 	{
-		for (s32 i=used-1; i>=0; --i)
-			if (data[i] == element)
-				return i;
-
-		return -1;
+		auto it = std::find(m_data.rbegin(), m_data.rend(), element);
+		if (it == m_data.rend())
+			return -1;
+		size_t offset = it - m_data.rbegin();
+		return m_data.size() - offset - 1;
 	}
 
 
@@ -563,17 +379,9 @@ public:
 	\param index: Index of element to be erased. */
 	void erase(u32 index)
 	{
-		_IRR_DEBUG_BREAK_IF(index>=used) // access violation
-
-		for (u32 i=index+1; i<used; ++i)
-		{
-			allocator.destruct(&data[i-1]);
-			allocator.construct(&data[i-1], data[i]); // data[i-1] = data[i];
-		}
-
-		allocator.destruct(&data[used-1]);
-
-		--used;
+		_IRR_DEBUG_BREAK_IF(index >= m_data.size()) // access violation
+		auto it = std::next(m_data.begin(), index);
+		m_data.erase(it);
 	}
 
 
@@ -584,29 +392,13 @@ public:
 	\param count: Amount of elements to be erased. */
 	void erase(u32 index, s32 count)
 	{
-		if (index>=used || count<1)
+		if (index >= m_data.size() || count < 1)
 			return;
-		if (index+count>used)
-			count = used-index;
-
-		u32 i;
-		for (i=index; i<index+count; ++i)
-			allocator.destruct(&data[i]);
-
-		for (i=index+count; i<used; ++i)
-		{
-			if (i-count >= index+count) // not already destructed before loop
-				allocator.destruct(&data[i-count]);
-
-			allocator.construct(&data[i-count], data[i]); // data[i-count] = data[i];
-
-			if (i >= used-count) // those which are not overwritten
-				allocator.destruct(&data[i]);
-		}
-
-		used-= count;
+		count = std::min(count, (s32)m_data.size() - (s32)index);
+		auto first = std::next(m_data.begin(), index);
+		auto last = std::next(first, count);
+		m_data.erase(first, last);
 	}
-
 
 	//! Sets if the array is sorted
 	void set_sorted(bool _is_sorted)
@@ -619,37 +411,29 @@ public:
 	/** Afterward this object will contain the content of the other object and the other
 	object will contain the content of this object.
 	\param other Swap content with this object */
-	void swap(array<T, TAlloc>& other)
+	void swap(array<T>& other)
 	{
-		core::swap(data, other.data);
-		core::swap(allocated, other.allocated);
-		core::swap(used, other.used);
-		core::swap(allocator, other.allocator); // memory is still released by the same allocator used for allocation
-		eAllocStrategy helper_strategy(strategy); // can't use core::swap with bitfields
-		strategy = other.strategy;
-		other.strategy = helper_strategy;
-		bool helper_free_when_destroyed(free_when_destroyed);
-		free_when_destroyed = other.free_when_destroyed;
-		other.free_when_destroyed = helper_free_when_destroyed;
-		bool helper_is_sorted(is_sorted);
-		is_sorted = other.is_sorted;
-		other.is_sorted = helper_is_sorted;
+		m_data.swap(other.m_data);
+		std::swap(is_sorted, other.is_sorted);
 	}
 
-	typedef TAlloc allocator_type;
+	//! Pull the contents of this array as a vector.
+	// The array is left empty.
+	std::vector<T> steal()
+	{
+		std::vector<T> ret = std::move(m_data);
+		m_data.clear();
+		is_sorted = true;
+		return ret;
+	}
+
 	typedef T value_type;
 	typedef u32 size_type;
 
 private:
-	T* data;
-	u32 allocated;
-	u32 used;
-	TAlloc allocator;
-	eAllocStrategy strategy:4;
-	bool free_when_destroyed:1;
-	bool is_sorted:1;
+	std::vector<T> m_data;
+	bool is_sorted;
 };
-
 
 } // end namespace core
 } // end namespace irr
