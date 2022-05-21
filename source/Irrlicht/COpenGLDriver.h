@@ -44,13 +44,7 @@ namespace video
 			EOFPS_DISABLE_TO_ENABLE // switch from programmable to fixed pipeline.
 		};
 
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) || defined(_IRR_COMPILE_WITH_X11_DEVICE_) || defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
 		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
-#endif
-
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceSDL* device);
-#endif
 
 		bool initDriver();
 
@@ -519,10 +513,6 @@ namespace video
 		//! Built-in 2D quad for 2D rendering.
 		S3DVertex Quad2DVertices[4];
 		static const u16 Quad2DIndices[4];
-
-		#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-			CIrrDeviceSDL *SDLDevice;
-		#endif
 
 		IContextManager* ContextManager;
 	};

@@ -188,6 +188,7 @@ set(IRRDRVROBJ
 	CGLXManager.cpp
 	CWGLManager.cpp
 	CEGLManager.cpp
+	CSDLManager.cpp
 	mt_opengl_loader.cpp
 )
 

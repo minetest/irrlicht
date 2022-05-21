@@ -26,28 +26,26 @@
 #include <emscripten.h>
 #endif
 
+#ifdef _IRR_COMPILE_WITH_OPENGL_
+#include "CSDLManager.h"
+#endif
+
 static int SDLDeviceInstances = 0;
 
 namespace irr
 {
 	namespace video
 	{
-		#ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
-		IVideoDriver* createDirectX9Driver(const irr::SIrrlichtCreationParameters& params,
-			io::IFileSystem* io, HWND window);
-		#endif
-
 		#ifdef _IRR_COMPILE_WITH_OPENGL_
-		IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
-				io::IFileSystem* io, CIrrDeviceSDL* device);
+		IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
 		#endif
 
-		#if defined(_IRR_COMPILE_WITH_OGLES2_) && defined(_IRR_EMSCRIPTEN_PLATFORM_)
-		IVideoDriver* createOGLES2Driver(const irr::SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
+		#ifdef _IRR_COMPILE_WITH_OGLES2_
+		IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
 		#endif
 
-		#if defined(_IRR_COMPILE_WITH_WEBGL1_) && defined(_IRR_EMSCRIPTEN_PLATFORM_)
-		IVideoDriver* createWebGL1Driver(const irr::SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
+		#ifdef _IRR_COMPILE_WITH_WEBGL1_
+		IVideoDriver* createWebGL1Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
 		#endif
 	} // end namespace video
 
@@ -461,7 +459,8 @@ void CIrrDeviceSDL::createDriver()
 
 	case video::EDT_OPENGL:
 		#ifdef _IRR_COMPILE_WITH_OPENGL_
-		VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, this);
+		ContextManager = new video::CSDLManager(this);
+		VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, ContextManager);
 		#else
 		os::Printer::log("No OpenGL support compiled in.", ELL_ERROR);
 		#endif
