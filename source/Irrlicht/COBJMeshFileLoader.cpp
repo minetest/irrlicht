@@ -70,9 +70,9 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 
 	const u32 WORD_BUFFER_LENGTH = 512;
 
-	core::array<core::vector3df, core::irrAllocatorFast<core::vector3df> > vertexBuffer(1000);
-	core::array<core::vector3df, core::irrAllocatorFast<core::vector3df> > normalsBuffer(1000);
-	core::array<core::vector2df, core::irrAllocatorFast<core::vector2df> > textureCoordBuffer(1000);
+	core::array<core::vector3df> vertexBuffer(1000);
+	core::array<core::vector3df> normalsBuffer(1000);
+	core::array<core::vector2df> textureCoordBuffer(1000);
 
 	SObjMtl * currMtl = new SObjMtl();
 	Materials.push_back(currMtl);
@@ -250,16 +250,16 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 				}
 
 				int vertLocation;
-				core::map<video::S3DVertex, int>::Node* n = currMtl->VertMap.find(v);
-				if (n)
+				auto n = currMtl->VertMap.find(v);
+				if (n != currMtl->VertMap.end())
 				{
-					vertLocation = n->getValue();
+					vertLocation = n->second;
 				}
 				else
 				{
 					currMtl->Meshbuffer->Vertices.push_back(v);
 					vertLocation = currMtl->Meshbuffer->Vertices.size() -1;
-					currMtl->VertMap.insert(v, vertLocation);
+					currMtl->VertMap.emplace(v, vertLocation);
 				}
 
 				faceCorners.push_back(vertLocation);

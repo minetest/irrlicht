@@ -231,6 +231,9 @@ namespace scene
 
 		struct DefaultNodeEntry
 		{
+			DefaultNodeEntry()
+			{ }
+
 			DefaultNodeEntry(ISceneNode* n) :
 				Node(n), TextureValue(0)
 			{
@@ -251,6 +254,9 @@ namespace scene
 		//! sort on distance (center) to camera
 		struct TransparentNodeEntry
 		{
+			TransparentNodeEntry()
+			{ }
+
 			TransparentNodeEntry(ISceneNode* n, const core::vector3df& camera)
 				: Node(n)
 			{

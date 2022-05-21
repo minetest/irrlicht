@@ -20,10 +20,6 @@
 
 #include "mt_opengl.h"
 
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-#include "CIrrDeviceSDL.h"
-#endif
-
 namespace irr
 {
 namespace video
@@ -32,7 +28,6 @@ namespace video
 // Statics variables
 const u16 COpenGLDriver::Quad2DIndices[4] = { 0, 1, 2, 3 };
 
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) || defined(_IRR_COMPILE_WITH_X11_DEVICE_) || defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
 COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
 	: CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(), CacheHandler(0), CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
 	Transformation3DChanged(true), AntiAlias(params.AntiAlias), ColorFormat(ECF_R8G8B8), FixedPipelineState(EOFPS_ENABLE), Params(params),
@@ -42,23 +37,6 @@ COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFil
 	setDebugName("COpenGLDriver");
 #endif
 }
-#endif
-
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceSDL* device)
-	: CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(), CacheHandler(0),
-	CurrentRenderMode(ERM_NONE), ResetRenderStates(true), Transformation3DChanged(true),
-	AntiAlias(params.AntiAlias), ColorFormat(ECF_R8G8B8), FixedPipelineState(EOFPS_ENABLE),
-	Params(params), SDLDevice(device), ContextManager(0)
-{
-#ifdef _DEBUG
-	setDebugName("COpenGLDriver");
-#endif
-
-	genericDriverInit();
-}
-
-#endif
 
 bool COpenGLDriver::initDriver()
 {
@@ -267,11 +245,6 @@ bool COpenGLDriver::beginScene(u16 clearFlag, SColor clearColor, f32 clearDepth,
 	if (ContextManager)
 		ContextManager->activateContext(videoData, true);
 
-#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-	if (SDLDevice)
-		glFrontFace(GL_CW);
-#endif
-
 	clearBuffers(clearFlag, clearColor, clearDepth, clearStencil);
 
 	return true;
@@ -287,14 +260,6 @@ bool COpenGLDriver::endScene()
 
 	if (ContextManager)
 		status = ContextManager->swapBuffers();
-
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-	if (SDLDevice)
-	{
-		SDLDevice->SwapWindow();
-		status = true;
-	}
-#endif
 
 	// todo: console device present
 
@@ -4437,7 +4402,6 @@ namespace irr
 namespace video
 {
 
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) || defined(_IRR_COMPILE_WITH_X11_DEVICE_) || defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
 	IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
 	{
 #ifdef _IRR_COMPILE_WITH_OPENGL_
@@ -4454,22 +4418,6 @@ namespace video
 		return 0;
 #endif
 	}
-#endif
-
-// -----------------------------------
-// SDL VERSION
-// -----------------------------------
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
-		io::IFileSystem* io, CIrrDeviceSDL* device)
-{
-#ifdef _IRR_COMPILE_WITH_OPENGL_
-	return new COpenGLDriver(params, io, device);
-#else
-	return 0;
-#endif //  _IRR_COMPILE_WITH_OPENGL_
-}
-#endif // _IRR_COMPILE_WITH_SDL_DEVICE_
 
 } // end namespace
 } // end namespace

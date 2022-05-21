@@ -363,7 +363,7 @@ namespace video
 
 		SMaterial Material, LastMaterial;
 		core::array<core::plane3df> UserClipPlane;
-		core::array<bool> UserClipPlaneEnabled;
+		std::vector<bool> UserClipPlaneEnabled;
 
 		core::stringc VendorName;
 

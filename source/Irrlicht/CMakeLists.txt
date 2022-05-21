@@ -48,8 +48,7 @@ find_package(ZLIB REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(PNG REQUIRED)
 
-# To configure the features available in this Irrlicht build please edit
-# include/IrrCompileConfig.h and re-run CMake from a clean state
+# To configure the features available in this Irrlicht build please edit include/IrrCompileConfig.h.
 include(CheckSymbolExists)
 set(CMAKE_REQUIRED_INCLUDES ${PROJECT_SOURCE_DIR}/include)
 unset(OGLES1_ENABLED CACHE)
@@ -57,6 +56,9 @@ unset(OGLES2_ENABLED CACHE)
 unset(OGL_ENABLED CACHE)
 unset(XINPUT2_ENABLED CACHE)
 unset(SDL_ENABLED CACHE)
+
+# tell cmake about the dependency
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${CMAKE_REQUIRED_INCLUDES}/IrrCompileConfig.h)
 
 check_symbol_exists(_IRR_COMPILE_WITH_OGLES1_ "IrrCompileConfig.h" OGLES1_ENABLED)
 if(OGLES1_ENABLED)
@@ -75,11 +77,12 @@ if(OGL_ENABLED)
 	set(OpenGL_GL_PREFERENCE "LEGACY")
 	find_package(OpenGL REQUIRED)
 endif()
-check_symbol_exists(_IRR_LINUX_X11_XINPUT2_ "IrrCompileConfig.h" XINPUT2_ENABLED)
-if(XINPUT2_ENABLED)
-	find_library(XINPUT_LIBRARY Xi REQUIRED)
+if(NOT ANDROID AND NOT APPLE)
+	check_symbol_exists(_IRR_LINUX_X11_XINPUT2_ "IrrCompileConfig.h" XINPUT2_ENABLED)
+	if(XINPUT2_ENABLED)
+		find_library(XINPUT_LIBRARY Xi REQUIRED)
+	endif()
 endif()
-
 check_symbol_exists(_IRR_COMPILE_WITH_SDL_DEVICE_ "IrrCompileConfig.h" SDL_ENABLED)
 if(SDL_ENABLED)
 	find_package(SDL2 CONFIG REQUIRED)
@@ -185,6 +188,7 @@ set(IRRDRVROBJ
 	CGLXManager.cpp
 	CWGLManager.cpp
 	CEGLManager.cpp
+	CSDLManager.cpp
 	mt_opengl_loader.cpp
 )
 
