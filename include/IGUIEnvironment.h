@@ -58,7 +58,6 @@ class IGUIToolBar;
 class IGUIButton;
 class IGUIWindow;
 class IGUIProfiler;
-class IGUIElementFactory;
 
 //! GUI Environment. Used as factory and manager of all other GUI elements.
 /** \par This element can create the following events of type EGUI_EVENT_TYPE (which are passed on to focused sub-elements):
@@ -557,36 +556,6 @@ public:
 	\param id An identifier for the element. */
 	virtual IGUIProfiler* addProfilerDisplay(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1) = 0;
-
-	//! Get the default element factory which can create all built-in elements
-	/** \return Pointer to the factory.
-	This pointer should not be dropped. See IReferenceCounted::drop() for
-	more information. */
-	virtual IGUIElementFactory* getDefaultGUIElementFactory() const = 0;
-
-	//! Adds an element factory to the gui environment.
-	/** Use this to extend the gui environment with new element types which
-	it should be able to create automatically, for example when loading
-	data from xml files.
-	\param factoryToAdd Pointer to new factory. */
-	virtual void registerGUIElementFactory(IGUIElementFactory* factoryToAdd) = 0;
-
-	//! Get amount of registered gui element factories.
-	/** \return Amount of registered gui element factories. */
-	virtual u32 getRegisteredGUIElementFactoryCount() const = 0;
-
-	//! Get a gui element factory by index
-	/** \param index Index of the factory.
-	\return Factory at given index, or 0 if no such factory exists. */
-	virtual IGUIElementFactory* getGUIElementFactory(u32 index) const = 0;
-
-	//! Adds a GUI element by its name
-	/** Each factory is checked if it can create an element of the given
-	name. The first match will be created.
-	\param elementName Name of the element to be created.
-	\param parent Parent of the new element, if not 0.
-	\return New GUI element, or 0 if no such element exists. */
-	virtual IGUIElement* addGUIElement(const c8* elementName, IGUIElement* parent=0) = 0;
 
 	//! Saves the current gui into a file.
 	/** \param filename Name of the file.

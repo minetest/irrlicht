@@ -743,8 +743,7 @@ public:
 
 
 	//! Returns the type name of the gui element.
-	/** This is needed serializing elements. For serializing your own elements, override this function
-	and return your own type name which is created by your IGUIElementFactory */
+	/** This is needed serializing elements. */
 	virtual const c8* getTypeName() const
 	{
 		return GUIElementTypeNames[Type];

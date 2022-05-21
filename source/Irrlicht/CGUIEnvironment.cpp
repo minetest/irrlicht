@@ -37,7 +37,6 @@
 #include "CGUITable.h"
 #include "CGUIProfiler.h"
 
-#include "CDefaultGUIElementFactory.h"
 #include "IWriteFile.h"
 
 #include "BuiltInFont.h"
@@ -68,11 +67,6 @@ CGUIEnvironment::CGUIEnvironment(io::IFileSystem* fs, video::IVideoDriver* drive
 	#ifdef _DEBUG
 	IGUIEnvironment::setDebugName("CGUIEnvironment");
 	#endif
-
-	// gui factory
-	IGUIElementFactory* factory = new CDefaultGUIElementFactory(this);
-	registerGUIElementFactory(factory);
-	factory->drop();
 
 	loadBuiltInFont();
 
@@ -139,10 +133,6 @@ CGUIEnvironment::~CGUIEnvironment()
 	// delete all fonts
 	for (i=0; i<Fonts.size(); ++i)
 		Fonts[i].Font->drop();
-
-	// remove all factories
-	for (i=0; i<GUIElementFactoryList.size(); ++i)
-		GUIElementFactoryList[i]->drop();
 
 	if (Operator)
 	{
@@ -704,59 +694,6 @@ IGUISkin* CGUIEnvironment::createSkin(EGUI_SKIN_TYPE type)
 	skin->setSpriteBank(bank);
 
 	return skin;
-}
-
-
-//! Returns the default element factory which can create all built in elements
-IGUIElementFactory* CGUIEnvironment::getDefaultGUIElementFactory() const
-{
-	return getGUIElementFactory(0);
-}
-
-
-//! Adds an element factory to the gui environment.
-/** Use this to extend the gui environment with new element types which it should be
-able to create automatically, for example when loading data from xml files. */
-void CGUIEnvironment::registerGUIElementFactory(IGUIElementFactory* factoryToAdd)
-{
-	if (factoryToAdd)
-	{
-		factoryToAdd->grab();
-		GUIElementFactoryList.push_back(factoryToAdd);
-	}
-}
-
-
-//! Returns amount of registered scene node factories.
-u32 CGUIEnvironment::getRegisteredGUIElementFactoryCount() const
-{
-	return GUIElementFactoryList.size();
-}
-
-
-//! Returns a scene node factory by index
-IGUIElementFactory* CGUIEnvironment::getGUIElementFactory(u32 index) const
-{
-	if (index < GUIElementFactoryList.size())
-		return GUIElementFactoryList[index];
-	else
-		return 0;
-}
-
-
-//! adds a GUI Element using its name
-IGUIElement* CGUIEnvironment::addGUIElement(const c8* elementName, IGUIElement* parent)
-{
-	IGUIElement* node=0;
-
-	if (!parent)
-		parent = this;
-
-	for (s32 i=GUIElementFactoryList.size()-1; i>=0 && !node; --i)
-		node = GUIElementFactoryList[i]->addGUIElement(elementName, parent);
-
-
-	return node;
 }
 
 

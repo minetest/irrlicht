@@ -207,23 +207,6 @@ public:
 
 	virtual void OnPostRender( u32 time ) _IRR_OVERRIDE_;
 
-	//! Returns the default element factory which can create all built in elements
-	virtual IGUIElementFactory* getDefaultGUIElementFactory() const _IRR_OVERRIDE_;
-
-	//! Adds an element factory to the gui environment.
-	/** Use this to extend the gui environment with new element types which it should be
-	able to create automatically, for example when loading data from xml files. */
-	virtual void registerGUIElementFactory(IGUIElementFactory* factoryToAdd) _IRR_OVERRIDE_;
-
-	//! Returns amount of registered scene node factories.
-	virtual u32 getRegisteredGUIElementFactoryCount() const _IRR_OVERRIDE_;
-
-	//! Returns a scene node factory by index
-	virtual IGUIElementFactory* getGUIElementFactory(u32 index) const _IRR_OVERRIDE_;
-
-	//! Adds a GUI Element by its name
-	virtual IGUIElement* addGUIElement(const c8* elementName, IGUIElement* parent=0) _IRR_OVERRIDE_;
-
 	//! Saves the current gui into a file.
 	/** \param filename: Name of the file.
 	\param start: The element to start saving from.
@@ -301,8 +284,6 @@ private:
 	};
 
 	SToolTip ToolTip;
-
-	core::array<IGUIElementFactory*> GUIElementFactoryList;
 
 	core::array<SFont> Fonts;
 	core::array<SSpriteBank> Banks;

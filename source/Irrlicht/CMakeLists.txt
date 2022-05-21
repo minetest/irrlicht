@@ -278,7 +278,6 @@ add_library(IRRGUIOBJ OBJECT
 	CGUIToolBar.cpp
 	CGUIWindow.cpp
 	CGUIColorSelectDialog.cpp
-	CDefaultGUIElementFactory.cpp
 	CGUISpriteBank.cpp
 	CGUIImageList.cpp
 	CGUITreeView.cpp
