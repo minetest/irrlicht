@@ -387,11 +387,7 @@ void CGUIEnvironment::clear()
 		HoveredNoSubelement = 0;
 	}
 
-	// get the root's children in case the root changes in future
-	const core::list<IGUIElement*>& children = getRootGUIElement()->getChildren();
-
-	while (!children.empty())
-		(*children.getLast())->remove();
+	getRootGUIElement()->removeAllChildren();
 }
 
 

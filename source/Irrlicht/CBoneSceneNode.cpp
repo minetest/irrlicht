@@ -71,7 +71,7 @@ void CBoneSceneNode::OnAnimate(u32 timeMs)
 		//updateAbsolutePosition();
 
 		// perform the post render process on all children
-		ISceneNodeList::Iterator it = Children.begin();
+		ISceneNodeList::iterator it = Children.begin();
 		for (; it != Children.end(); ++it)
 			(*it)->OnAnimate(timeMs);
 	}
@@ -82,7 +82,7 @@ void CBoneSceneNode::helper_updateAbsolutePositionOfAllChildren(ISceneNode *Node
 {
 	Node->updateAbsolutePosition();
 
-	ISceneNodeList::ConstIterator it = Node->getChildren().begin();
+	ISceneNodeList::const_iterator it = Node->getChildren().begin();
 	for (; it != Node->getChildren().end(); ++it)
 	{
 		helper_updateAbsolutePositionOfAllChildren( (*it) );

@@ -12,7 +12,6 @@
 
 #include "CIrrDeviceWin32.h"
 #include "IEventReceiver.h"
-#include "irrList.h"
 #include "os.h"
 
 #include "CTimer.h"
