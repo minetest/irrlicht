@@ -265,15 +265,12 @@ add_library(IRRGUIOBJ OBJECT
 	CGUIImage.cpp
 	CGUIListBox.cpp
 	CGUIMenu.cpp
-	CGUIMessageBox.cpp
-	CGUIModalScreen.cpp
 	CGUIScrollBar.cpp
 	CGUISpinBox.cpp
 	CGUISkin.cpp
 	CGUIStaticText.cpp
 	CGUITabControl.cpp
 	CGUIToolBar.cpp
-	CGUIWindow.cpp
 	CGUISpriteBank.cpp
 	CGUIImageList.cpp
 )

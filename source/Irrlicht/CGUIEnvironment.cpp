@@ -11,7 +11,6 @@
 
 #include "CGUISkin.h"
 #include "CGUIButton.h"
-#include "CGUIWindow.h"
 #include "CGUIScrollBar.h"
 #include "CGUIFont.h"
 #include "CGUISpriteBank.h"
@@ -23,8 +22,6 @@
 #include "CGUIStaticText.h"
 #include "CGUIEditBox.h"
 #include "CGUISpinBox.h"
-#include "CGUIMessageBox.h"
-#include "CGUIModalScreen.h"
 #include "CGUITabControl.h"
 #include "CGUIContextMenu.h"
 #include "CGUIComboBox.h"
@@ -706,83 +703,6 @@ IGUIButton* CGUIEnvironment::addButton(const core::rect<s32>& rectangle, IGUIEle
 }
 
 
-//! adds a window. The returned pointer must not be dropped.
-IGUIWindow* CGUIEnvironment::addWindow(const core::rect<s32>& rectangle, bool modal,
-		const wchar_t* text, IGUIElement* parent, s32 id)
-{
-	parent = parent ? parent : this;
-
-	IGUIWindow* win = new CGUIWindow(this, parent, id, rectangle);
-	if (text)
-		win->setText(text);
-	win->drop();
-
-	if (modal)
-	{
-		// Careful, don't just set the modal as parent above. That will mess up the focus (and is hard to change because we have to be very
-		// careful not to get virtual function call, like OnEvent, in the window.
-		CGUIModalScreen * modalScreen = new CGUIModalScreen(this, parent, -1);
-		modalScreen->drop();
-		modalScreen->addChild(win);
-	}
-
-	return win;
-}
-
-
-//! adds a modal screen. The returned pointer must not be dropped.
-IGUIElement* CGUIEnvironment::addModalScreen(IGUIElement* parent, int blinkMode)
-{
-	parent = parent ? parent : this;
-
-	CGUIModalScreen *win = new CGUIModalScreen(this, parent, -1);
-	win->setBlinkMode(blinkMode);
-	win->drop();
-
-	return win;
-}
-
-
-//! Adds a message box.
-IGUIWindow* CGUIEnvironment::addMessageBox(const wchar_t* caption, const wchar_t* text,
-	bool modal, s32 flag, IGUIElement* parent, s32 id, video::ITexture* image)
-{
-	if (!CurrentSkin)
-		return 0;
-
-	parent = parent ? parent : this;
-
-	core::rect<s32> rect;
-	core::dimension2d<u32> screenDim, msgBoxDim;
-
-	screenDim.Width = parent->getAbsolutePosition().getWidth();
-	screenDim.Height = parent->getAbsolutePosition().getHeight();
-	msgBoxDim.Width = 2;
-	msgBoxDim.Height = 2;
-
-	rect.UpperLeftCorner.X = (screenDim.Width - msgBoxDim.Width) / 2;
-	rect.UpperLeftCorner.Y = (screenDim.Height - msgBoxDim.Height) / 2;
-	rect.LowerRightCorner.X = rect.UpperLeftCorner.X + msgBoxDim.Width;
-	rect.LowerRightCorner.Y = rect.UpperLeftCorner.Y + msgBoxDim.Height;
-
-	IGUIWindow* win = new CGUIMessageBox(this, caption, text, flag,
-		parent, id, rect, image);
-	win->drop();
-
-	if (modal)
-	{
-		// Careful, don't just set the modal as parent above. That will mess up the focus (and is hard to change because we have to be very
-		// careful not to get virtual function call, like OnEvent, in the CGUIMessageBox.
-		CGUIModalScreen * modalScreen = new CGUIModalScreen(this, parent, -1);
-		modalScreen->drop();
-		modalScreen->addChild( win );
-	}
-
-
-	return win;
-}
-
-
 //! adds a scrollbar. The returned pointer must not be dropped.
 IGUIScrollBar* CGUIEnvironment::addScrollBar(bool horizontal, const core::rect<s32>& rectangle, IGUIElement* parent, s32 id)
 {
@@ -876,18 +796,12 @@ IGUIFileOpenDialog* CGUIEnvironment::addFileOpenDialog(const wchar_t* title,
 {
 	parent = parent ? parent : this;
 
+	if (modal)
+		return nullptr;
+
 	IGUIFileOpenDialog* d = new CGUIFileOpenDialog(title, this, parent, id,
 			restoreCWD, startDir);
 	d->drop();
-
-	if (modal)
-	{
-		// Careful, don't just set the modal as parent above. That will mess up the focus (and is hard to change because we have to be very
-		// careful not to get virtual function call, like OnEvent, in the window.
-		CGUIModalScreen * modalScreen = new CGUIModalScreen(this, parent, -1);
-		modalScreen->drop();
-		modalScreen->addChild(d);
-	}
 
 	return d;
 }

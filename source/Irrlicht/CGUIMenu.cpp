@@ -9,7 +9,6 @@
 #include "IGUIEnvironment.h"
 #include "IVideoDriver.h"
 #include "IGUIFont.h"
-#include "IGUIWindow.h"
 
 #include "os.h"
 
@@ -183,11 +182,7 @@ bool CGUIMenu::OnEvent(const SEvent& event)
 void CGUIMenu::recalculateSize()
 {
 	core::rect<s32> clientRect; // client rect of parent
-	if ( Parent && Parent->hasType(EGUIET_WINDOW) )
-	{
-		clientRect = static_cast<IGUIWindow*>(Parent)->getClientRect();
-	}
-	else if ( Parent )
+	if ( Parent )
 	{
 		clientRect = core::rect<s32>(0,0, Parent->getAbsolutePosition().getWidth(),
 					Parent->getAbsolutePosition().getHeight());

@@ -280,18 +280,6 @@ namespace irr
 			//! A file open dialog has been closed without choosing a file
 			EGET_FILE_CHOOSE_DIALOG_CANCELLED,
 
-			//! 'Yes' was clicked on a messagebox
-			EGET_MESSAGEBOX_YES,
-
-			//! 'No' was clicked on a messagebox
-			EGET_MESSAGEBOX_NO,
-
-			//! 'OK' was clicked on a messagebox
-			EGET_MESSAGEBOX_OK,
-
-			//! 'Cancel' was clicked on a messagebox
-			EGET_MESSAGEBOX_CANCEL,
-
 			//! In an editbox 'ENTER' was pressed
 			EGET_EDITBOX_ENTER,
 

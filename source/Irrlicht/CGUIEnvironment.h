@@ -92,17 +92,6 @@ public:
 	//! adds an button. The returned pointer must not be dropped.
 	virtual IGUIButton* addButton(const core::rect<s32>& rectangle, IGUIElement* parent=0, s32 id=-1, const wchar_t* text=0,const wchar_t* tooltiptext = 0) _IRR_OVERRIDE_;
 
-	//! adds a window. The returned pointer must not be dropped.
-	virtual IGUIWindow* addWindow(const core::rect<s32>& rectangle, bool modal = false,
-		const wchar_t* text=0, IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
-
-	//! adds a modal screen. The returned pointer must not be dropped.
-	virtual IGUIElement* addModalScreen(IGUIElement* parent, int blinkMode) _IRR_OVERRIDE_;
-
-	//! Adds a message box.
-	virtual IGUIWindow* addMessageBox(const wchar_t* caption, const wchar_t* text=0,
-		bool modal = true, s32 flag = EMBF_OK, IGUIElement* parent=0, s32 id=-1, video::ITexture* image=0) _IRR_OVERRIDE_;
-
 	//! adds a scrollbar. The returned pointer must not be dropped.
 	virtual IGUIScrollBar* addScrollBar(bool horizontal, const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;

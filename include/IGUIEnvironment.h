@@ -8,7 +8,6 @@
 #include "IReferenceCounted.h"
 #include "IGUISkin.h"
 #include "rect.h"
-#include "EMessageBoxFlags.h"
 #include "EFocusFlags.h"
 #include "IEventReceiver.h"
 #include "path.h"
@@ -227,55 +226,6 @@ public:
 	more information. */
 	virtual IGUIButton* addButton(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1, const wchar_t* text=0, const wchar_t* tooltiptext = 0) = 0;
-
-	//! Adds an empty window element.
-	/** \param rectangle Rectangle specifying the borders of the window.
-	\param modal Defines if the dialog is modal. This means, that all other
-	gui elements which were created before the window cannot be used until
-	it is removed.
-	\param text Text displayed as the window title.
-	\param parent Parent gui element of the window.
-	\param id Id with which the gui element can be identified.
-	\return Pointer to the created window. Returns 0 if an error occurred.
-	This pointer should not be dropped. See IReferenceCounted::drop() for
-	more information. */
-	virtual IGUIWindow* addWindow(const core::rect<s32>& rectangle, bool modal = false,
-		const wchar_t* text=0, IGUIElement* parent=0, s32 id=-1) = 0;
-
-	//! Adds a modal screen.
-	/** Input focus stays with children of the modal screen. 
-	If you have some window x which should keep the input focus you 
-	do something like: addModalScreen()->addChild(x). And x will then get the focus 
-	and not lose it anymore. 
-	The  modal screen removes itself when it no longer has any children.
-	Note that it usually works badly to pass the modal screen already as parent when creating
-	a new element. It's better to add that new element later to the modal screen with addChild.
-	\param parent Parent gui element of the modal.
-	\param blinkMode Bitset of when to blink (can be combined)
-		0 = never
-		1 = focus changes
-		2 = Left mouse button pressed down
-	\return Pointer to the created modal. Returns 0 if an error occurred.
-	This pointer should not be dropped. See IReferenceCounted::drop() for
-	more information. */
-	virtual IGUIElement* addModalScreen(IGUIElement* parent, int blinkMode = 3) = 0;
-
-	//! Adds a message box.
-	/** \param caption Text to be displayed the title of the message box.
-	\param text Text to be displayed in the body of the message box.
-	\param modal Defines if the dialog is modal. This means, that all other
-	gui elements which were created before the message box cannot be used
-	until this messagebox is removed.
-	\param flags Flags specifying the layout of the message box using ::EMESSAGE_BOX_FLAG.
-	Create a message box with an OK and CANCEL button for example with (EMBF_OK | EMBF_CANCEL).
-	\param parent Parent gui element of the message box.
-	\param id Id with which the gui element can be identified.
-	\param image Optional texture which will be displayed beside the text as an image
-	\return Pointer to the created message box. Returns 0 if an error
-	occurred. This pointer should not be dropped. See
-	IReferenceCounted::drop() for more information. */
-	virtual IGUIWindow* addMessageBox(const wchar_t* caption, const wchar_t* text=0,
-		bool modal = true, s32 flags = EMBF_OK, IGUIElement* parent=0, s32 id=-1, video::ITexture* image=0) = 0;
 
 	//! Adds a scrollbar.
 	/** \param horizontal Specifies if the scroll bar is drawn horizontal
