@@ -46,9 +46,7 @@ class IGUIEditBox;
 class IGUISpinBox;
 class IGUITabControl;
 class IGUITab;
-class IGUIContextMenu;
 class IGUIComboBox;
-class IGUIToolBar;
 class IGUIButton;
 class IGUIWindow;
 
@@ -387,40 +385,6 @@ public:
 	IReferenceCounted::drop() for more information. */
 	virtual IGUITab* addTab(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1) = 0;
-
-	//! Adds a context menu to the environment.
-	/** \param rectangle Rectangle specifying the borders of the menu.
-	Note that the menu is resizing itself based on what items you add.
-	\param parent Parent item of the element, e.g. a window.
-	Set it to 0 to place the menu directly in the environment.
-	\param id An identifier for the menu.
-	\return Pointer to the created context menu. Returns 0 if an
-	error occurred. This pointer should not be dropped. See
-	IReferenceCounted::drop() for more information. */
-	virtual IGUIContextMenu* addContextMenu(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1) = 0;
-
-	//! Adds a menu to the environment.
-	/** This is like the menu you can find on top of most windows in modern
-	graphical user interfaces.
-	\param parent Parent item of the element, e.g. a window.
-	Set it to 0 to place the menu directly in the environment.
-	\param id An identifier for the menu.
-	\return Pointer to the created menu. Returns 0 if an
-	error occurred. This pointer should not be dropped. See
-	IReferenceCounted::drop() for more information. */
-	virtual IGUIContextMenu* addMenu(IGUIElement* parent=0, s32 id=-1) = 0;
-
-	//! Adds a toolbar to the environment.
-	/** It is like a menu that is always placed on top of its parent, and
-	contains buttons.
-	\param parent Parent item of the element, e.g. a window.
-	Set it to 0 to place the tool bar directly in the environment.
-	\param id An identifier for the tool bar.
-	\return Pointer to the created tool bar. Returns 0 if an
-	error occurred. This pointer should not be dropped. See
-	IReferenceCounted::drop() for more information. */
-	virtual IGUIToolBar* addToolBar(IGUIElement* parent=0, s32 id=-1) = 0;
 
 	//! Adds a combo box to the environment.
 	/** \param rectangle Rectangle specifying the borders of the combo box.

@@ -257,20 +257,17 @@ add_library(IRRGUIOBJ OBJECT
 	CGUIButton.cpp
 	CGUICheckBox.cpp
 	CGUIComboBox.cpp
-	CGUIContextMenu.cpp
 	CGUIEditBox.cpp
 	CGUIEnvironment.cpp
 	CGUIFileOpenDialog.cpp
 	CGUIFont.cpp
 	CGUIImage.cpp
 	CGUIListBox.cpp
-	CGUIMenu.cpp
 	CGUIScrollBar.cpp
 	CGUISpinBox.cpp
 	CGUISkin.cpp
 	CGUIStaticText.cpp
 	CGUITabControl.cpp
-	CGUIToolBar.cpp
 	CGUISpriteBank.cpp
 	CGUIImageList.cpp
 )

@@ -23,10 +23,7 @@
 #include "CGUIEditBox.h"
 #include "CGUISpinBox.h"
 #include "CGUITabControl.h"
-#include "CGUIContextMenu.h"
 #include "CGUIComboBox.h"
-#include "CGUIMenu.h"
-#include "CGUIToolBar.h"
 
 #include "IWriteFile.h"
 
@@ -868,46 +865,6 @@ IGUITab* CGUIEnvironment::addTab(const core::rect<s32>& rectangle,
 		rectangle, id);
 	t->drop();
 	return t;
-}
-
-
-//! Adds a context menu to the environment.
-IGUIContextMenu* CGUIEnvironment::addContextMenu(const core::rect<s32>& rectangle,
-	IGUIElement* parent, s32 id)
-{
-	IGUIContextMenu* c = new CGUIContextMenu(this,
-		parent ? parent : this, id, rectangle, true);
-	c->drop();
-	return c;
-}
-
-
-//! Adds a menu to the environment.
-IGUIContextMenu* CGUIEnvironment::addMenu(IGUIElement* parent, s32 id)
-{
-	if (!parent)
-		parent = this;
-
-	IGUIContextMenu* c = new CGUIMenu(this,
-		parent, id, core::rect<s32>(0,0,
-				parent->getAbsolutePosition().getWidth(),
-				parent->getAbsolutePosition().getHeight()));
-
-	c->drop();
-	return c;
-}
-
-
-//! Adds a toolbar to the environment. It is like a menu is always placed on top
-//! in its parent, and contains buttons.
-IGUIToolBar* CGUIEnvironment::addToolBar(IGUIElement* parent, s32 id)
-{
-	if (!parent)
-		parent = this;
-
-	IGUIToolBar* b = new CGUIToolBar(this, parent, id, core::rect<s32>(0,0,10,10));
-	b->drop();
-	return b;
 }
 
 

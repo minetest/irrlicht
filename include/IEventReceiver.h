@@ -292,9 +292,6 @@ namespace irr
 			//! The tab was changed in an tab control
 			EGET_TAB_CHANGED,
 
-			//! A menu item was selected in a (context) menu
-			EGET_MENU_ITEM_SELECTED,
-
 			//! The selection in a combo box has been changed
 			EGET_COMBO_BOX_CHANGED,
 

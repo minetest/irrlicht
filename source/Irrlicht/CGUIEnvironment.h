@@ -137,17 +137,6 @@ public:
 	virtual IGUITab* addTab(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
 
-	//! Adds a context menu to the environment.
-	virtual IGUIContextMenu* addContextMenu(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
-
-	//! Adds a menu to the environment.
-	virtual IGUIContextMenu* addMenu(IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
-
-	//! Adds a toolbar to the environment. It is like a menu is always placed on top
-	//! in its parent, and contains buttons.
-	virtual IGUIToolBar* addToolBar(IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
-
 	//! Adds a combo box to the environment.
 	virtual IGUIComboBox* addComboBox(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
