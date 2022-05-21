@@ -289,40 +289,6 @@ namespace os
 			Logger->log(message, hint.c_str(), ll);
 	}
 
-	// our Randomizer is not really os specific, so we
-	// code one for all, which should work on every platform the same,
-	// which is desirable.
-
-	s32 Randomizer::seed = 0x0f0f0f0f;
-
-	//! generates a pseudo random number
-	s32 Randomizer::rand()
-	{
-		// (a*seed)%m with Schrage's method
-		seed = a * (seed%q) - r* (seed/q);
-		if (seed<1)
-			seed += m;
-
-		return seed-1;	// -1 because we want it to start at 0
-	}
-
-	s32 Randomizer::randMax()
-	{
-		return rMax;
-	}
-
-	//! resets the randomizer
-	void Randomizer::reset(s32 value)
-	{
-		if (value<0)
-			seed = value+m;
-		else if ( value == 0 || value == m)
-			seed = 1;
-		else
-			seed = value;
-	}
-
-
 	// ------------------------------------------------------
 	// virtual timer implementation
 

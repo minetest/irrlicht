@@ -16,7 +16,6 @@ namespace irr
 	// lots of prototypes:
 	class ILogger;
 	class CLogger;
-	class IRandomizer;
 
 	namespace gui
 	{
@@ -101,15 +100,6 @@ namespace irr
 
 		//! Returns a pointer to the logger.
 		virtual ILogger* getLogger() _IRR_OVERRIDE_;
-
-		//! Provides access to the engine's currently set randomizer.
-		virtual IRandomizer* getRandomizer() const _IRR_OVERRIDE_;
-
-		//! Sets a new randomizer.
-		virtual void setRandomizer(IRandomizer* r) _IRR_OVERRIDE_;
-
-		//! Creates a new default randomizer.
-		virtual IRandomizer* createDefaultRandomizer() const _IRR_OVERRIDE_;
 
 		//! Returns the operation system opertator object.
 		virtual IOSOperator* getOSOperator() _IRR_OVERRIDE_;
@@ -205,7 +195,6 @@ namespace irr
 		IEventReceiver* UserReceiver;
 		CLogger* Logger;
 		IOSOperator* Operator;
-		IRandomizer* Randomizer;
 		io::IFileSystem* FileSystem;
 		scene::ISceneManager* InputReceivingSceneManager;
 
