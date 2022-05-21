@@ -38,13 +38,10 @@ class IGUIFont;
 class IGUISpriteBank;
 class IGUIScrollBar;
 class IGUIImage;
-class IGUIMeshViewer;
 class IGUICheckBox;
 class IGUIListBox;
-class IGUITreeView;
 class IGUIImageList;
 class IGUIFileOpenDialog;
-class IGUIColorSelectDialog;
 class IGUIInOutFader;
 class IGUIStaticText;
 class IGUIEditBox;
@@ -347,31 +344,6 @@ public:
 	virtual IGUIListBox* addListBox(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1, bool drawBackground=false) = 0;
 
-	//! Adds a tree view element.
-	/** \param rectangle Position and dimension of list box.
-	\param parent Parent gui element of the list box.
-	\param id Id to identify the gui element.
-	\param drawBackground Flag whether the background should be drawn.
-	\param scrollBarVertical Flag whether a vertical scrollbar should be used
-	\param scrollBarHorizontal Flag whether a horizontal scrollbar should be used
-	\return Pointer to the created list box. Returns 0 if an error occurred.
-	This pointer should not be dropped. See IReferenceCounted::drop() for
-	more information. */
-	virtual IGUITreeView* addTreeView(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1, bool drawBackground=false,
-		bool scrollBarVertical = true, bool scrollBarHorizontal = false) = 0;
-
-	//! Adds a mesh viewer. Not 100% implemented yet.
-	/** \param rectangle Rectangle specifying the borders of the mesh viewer.
-	\param parent Parent gui element of the mesh viewer.
-	\param id Id to identify the gui element.
-	\param text Title text of the mesh viewer.
-	\return Pointer to the created mesh viewer. Returns 0 if an error
-	occurred. This pointer should not be dropped. See
-	IReferenceCounted::drop() for more information. */
-	virtual IGUIMeshViewer* addMeshViewer(const core::rect<s32>& rectangle,
-			IGUIElement* parent=0, s32 id=-1, const wchar_t* text=0) = 0;
-
 	//! Adds a file open dialog.
 	/** \param title Text to be displayed as the title of the dialog.
 	\param modal Defines if the dialog is modal. This means, that all other
@@ -389,19 +361,6 @@ public:
 	virtual IGUIFileOpenDialog* addFileOpenDialog(const wchar_t* title=0,
 		bool modal=true, IGUIElement* parent=0, s32 id=-1,
 		bool restoreCWD=false, io::path::char_type* startDir=0) = 0;
-
-	//! Adds a color select dialog.
-	/** \param title The title of the dialog.
-	\param modal Defines if the dialog is modal. This means, that all other
-	gui elements which were created before the dialog cannot be used
-	until it is removed.
-	\param parent The parent of the dialog.
-	\param id The ID of the dialog.
-	\return Pointer to the created file open dialog. Returns 0 if an error
-	occurred. This pointer should not be dropped. See
-	IReferenceCounted::drop() for more information. */
-	virtual IGUIColorSelectDialog* addColorSelectDialog(const wchar_t* title = 0,
-		bool modal=true, IGUIElement* parent=0, s32 id=-1) = 0;
 
 	//! Adds a static text.
 	/** \param text Text to be displayed. Can be altered after creation by SetText().

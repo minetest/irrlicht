@@ -318,22 +318,6 @@ namespace irr
 			EGET_TABLE_HEADER_CHANGED,
 			EGET_TABLE_SELECTED_AGAIN,
 
-			//! A tree view node lost selection. See IGUITreeView::getLastEventNode().
-			EGET_TREEVIEW_NODE_DESELECT,
-
-			//! A tree view node was selected. See IGUITreeView::getLastEventNode().
-			EGET_TREEVIEW_NODE_SELECT,
-
-			//! A tree view node was expanded. See IGUITreeView::getLastEventNode().
-			EGET_TREEVIEW_NODE_EXPAND,
-
-			//! A tree view node was collapsed. See IGUITreeView::getLastEventNode().
-			EGET_TREEVIEW_NODE_COLLAPSE,
-
-			//! deprecated - use EGET_TREEVIEW_NODE_COLLAPSE instead. This
-			//! may be removed by Irrlicht 1.9
-			EGET_TREEVIEW_NODE_COLLAPS = EGET_TREEVIEW_NODE_COLLAPSE,
-
 			//! No real event. Just for convenience to get number of events
 			EGET_COUNT
 		};

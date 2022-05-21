@@ -266,7 +266,6 @@ add_library(IRRGUIOBJ OBJECT
 	CGUIInOutFader.cpp
 	CGUIListBox.cpp
 	CGUIMenu.cpp
-	CGUIMeshViewer.cpp
 	CGUIMessageBox.cpp
 	CGUIModalScreen.cpp
 	CGUIScrollBar.cpp
@@ -277,10 +276,8 @@ add_library(IRRGUIOBJ OBJECT
 	CGUITable.cpp
 	CGUIToolBar.cpp
 	CGUIWindow.cpp
-	CGUIColorSelectDialog.cpp
 	CGUISpriteBank.cpp
 	CGUIImageList.cpp
-	CGUITreeView.cpp
 	CGUIProfiler.cpp
 )
 

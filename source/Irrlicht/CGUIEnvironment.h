@@ -123,23 +123,10 @@ public:
 	virtual IGUIListBox* addListBox(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1, bool drawBackground=false) _IRR_OVERRIDE_;
 
-	//! adds a tree view
-	virtual IGUITreeView* addTreeView(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1, bool drawBackground=false,
-		bool scrollBarVertical = true, bool scrollBarHorizontal = false) _IRR_OVERRIDE_;
-
-	//! adds an mesh viewer. The returned pointer must not be dropped.
-	virtual IGUIMeshViewer* addMeshViewer(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1, const wchar_t* text=0) _IRR_OVERRIDE_;
-
 	//! Adds a file open dialog.
 	virtual IGUIFileOpenDialog* addFileOpenDialog(const wchar_t* title = 0,
 			bool modal=true, IGUIElement* parent=0, s32 id=-1,
 			bool restoreCWD=false, io::path::char_type* startDir=0) _IRR_OVERRIDE_;
-
-	//! Adds a color select dialog.
-	virtual IGUIColorSelectDialog* addColorSelectDialog(const wchar_t* title = 0,
-		bool modal=true, IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
 
 	//! adds a static text. The returned pointer must not be dropped.
 	virtual IGUIStaticText* addStaticText(const wchar_t* text, const core::rect<s32>& rectangle,

@@ -16,13 +16,10 @@
 #include "CGUIFont.h"
 #include "CGUISpriteBank.h"
 #include "CGUIImage.h"
-#include "CGUIMeshViewer.h"
 #include "CGUICheckBox.h"
 #include "CGUIListBox.h"
-#include "CGUITreeView.h"
 #include "CGUIImageList.h"
 #include "CGUIFileOpenDialog.h"
-#include "CGUIColorSelectDialog.h"
 #include "CGUIStaticText.h"
 #include "CGUIEditBox.h"
 #include "CGUISpinBox.h"
@@ -855,20 +852,6 @@ IGUIImage* CGUIEnvironment::addImage(const core::rect<s32>& rectangle, IGUIEleme
 }
 
 
-//! adds an mesh viewer. The returned pointer must not be dropped.
-IGUIMeshViewer* CGUIEnvironment::addMeshViewer(const core::rect<s32>& rectangle, IGUIElement* parent, s32 id, const wchar_t* text)
-{
-	IGUIMeshViewer* v = new CGUIMeshViewer(this, parent ? parent : this,
-		id, rectangle);
-
-	if (text)
-		v->setText(text);
-
-	v->drop();
-	return v;
-}
-
-
 //! adds a checkbox
 IGUICheckBox* CGUIEnvironment::addCheckBox(bool checked, const core::rect<s32>& rectangle, IGUIElement* parent, s32 id, const wchar_t* text)
 {
@@ -903,19 +886,6 @@ IGUIListBox* CGUIEnvironment::addListBox(const core::rect<s32>& rectangle,
 	return b;
 }
 
-//! adds a tree view
-IGUITreeView* CGUIEnvironment::addTreeView(const core::rect<s32>& rectangle,
-					 IGUIElement* parent, s32 id,
-					 bool drawBackground,
-					 bool scrollBarVertical, bool scrollBarHorizontal)
-{
-	IGUITreeView* b = new CGUITreeView(this, parent ? parent : this, id, rectangle,
-		true, drawBackground, scrollBarVertical, scrollBarHorizontal);
-
-	b->setIconFont ( getBuiltInFont () );
-	b->drop();
-	return b;
-}
 
 //! adds a file open dialog. The returned pointer must not be dropped.
 IGUIFileOpenDialog* CGUIEnvironment::addFileOpenDialog(const wchar_t* title,
@@ -926,29 +896,6 @@ IGUIFileOpenDialog* CGUIEnvironment::addFileOpenDialog(const wchar_t* title,
 
 	IGUIFileOpenDialog* d = new CGUIFileOpenDialog(title, this, parent, id,
 			restoreCWD, startDir);
-	d->drop();
-
-	if (modal)
-	{
-		// Careful, don't just set the modal as parent above. That will mess up the focus (and is hard to change because we have to be very
-		// careful not to get virtual function call, like OnEvent, in the window.
-		CGUIModalScreen * modalScreen = new CGUIModalScreen(this, parent, -1);
-		modalScreen->drop();
-		modalScreen->addChild(d);
-	}
-
-	return d;
-}
-
-
-//! adds a color select dialog. The returned pointer must not be dropped.
-IGUIColorSelectDialog* CGUIEnvironment::addColorSelectDialog(const wchar_t* title,
-				bool modal, IGUIElement* parent, s32 id)
-{
-	parent = parent ? parent : this;
-
-	IGUIColorSelectDialog* d = new CGUIColorSelectDialog( title,
-			this, parent, id);
 	d->drop();
 
 	if (modal)
