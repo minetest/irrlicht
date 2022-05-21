@@ -295,9 +295,6 @@ namespace irr
 			//! The selection in a combo box has been changed
 			EGET_COMBO_BOX_CHANGED,
 
-			//! The value of a spin box has changed
-			EGET_SPINBOX_CHANGED,
-
 			//! A table has changed
 			EGET_TABLE_CHANGED,
 			EGET_TABLE_HEADER_CHANGED,

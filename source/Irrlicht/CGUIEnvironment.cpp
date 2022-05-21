@@ -21,7 +21,6 @@
 #include "CGUIFileOpenDialog.h"
 #include "CGUIStaticText.h"
 #include "CGUIEditBox.h"
-#include "CGUISpinBox.h"
 #include "CGUITabControl.h"
 #include "CGUIComboBox.h"
 
@@ -827,19 +826,6 @@ IGUIEditBox* CGUIEnvironment::addEditBox(const wchar_t* text,
 {
 	IGUIEditBox* d = new CGUIEditBox(text, border, this,
 			parent ? parent : this, id, rectangle);
-
-	d->drop();
-	return d;
-}
-
-
-//! Adds a spin box to the environment
-IGUISpinBox* CGUIEnvironment::addSpinBox(const wchar_t* text,
-					 const core::rect<s32> &rectangle,
-					 bool border,IGUIElement* parent, s32 id)
-{
-	IGUISpinBox* d = new CGUISpinBox(text, border,this,
-		parent ? parent : this, id, rectangle);
 
 	d->drop();
 	return d;

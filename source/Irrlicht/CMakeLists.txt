@@ -264,7 +264,6 @@ add_library(IRRGUIOBJ OBJECT
 	CGUIImage.cpp
 	CGUIListBox.cpp
 	CGUIScrollBar.cpp
-	CGUISpinBox.cpp
 	CGUISkin.cpp
 	CGUIStaticText.cpp
 	CGUITabControl.cpp

@@ -75,7 +75,6 @@
 #include "IGUIListBox.h"
 #include "IGUIScrollBar.h"
 #include "IGUISkin.h"
-#include "IGUISpinBox.h"
 #include "IGUISpriteBank.h"
 #include "IGUIStaticText.h"
 #include "IGUITabControl.h"

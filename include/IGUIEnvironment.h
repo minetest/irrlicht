@@ -43,7 +43,6 @@ class IGUIImageList;
 class IGUIFileOpenDialog;
 class IGUIStaticText;
 class IGUIEditBox;
-class IGUISpinBox;
 class IGUITabControl;
 class IGUITab;
 class IGUIComboBox;
@@ -340,20 +339,6 @@ public:
 	more information. */
 	virtual IGUIEditBox* addEditBox(const wchar_t* text, const core::rect<s32>& rectangle,
 		bool border=true, IGUIElement* parent=0, s32 id=-1) = 0;
-
-	//! Adds a spin box.
-	/** An edit box with up and down buttons
-	\param text Text to be displayed. Can be altered after creation by setText().
-	\param rectangle Rectangle specifying the borders of the spin box.
-	\param border Set to true if the spin box should have a 3d border.
-	\param parent Parent item of the element, e.g. a window.
-	Set it to 0 to place the spin box directly in the environment.
-	\param id The ID of the element.
-	\return Pointer to the created spin box. Returns 0 if an error occurred.
-	This pointer should not be dropped. See IReferenceCounted::drop() for
-	more information. */
-	virtual IGUISpinBox* addSpinBox(const wchar_t* text, const core::rect<s32>& rectangle,
-		bool border=true,IGUIElement* parent=0, s32 id=-1) = 0;
 
 	//! Adds a tab control to the environment.
 	/** \param rectangle Rectangle specifying the borders of the tab control.
