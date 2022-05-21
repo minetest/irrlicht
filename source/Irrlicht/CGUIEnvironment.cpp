@@ -23,7 +23,6 @@
 #include "CGUIStaticText.h"
 #include "CGUIEditBox.h"
 #include "CGUISpinBox.h"
-#include "CGUIInOutFader.h"
 #include "CGUIMessageBox.h"
 #include "CGUIModalScreen.h"
 #include "CGUITabControl.h"
@@ -31,8 +30,6 @@
 #include "CGUIComboBox.h"
 #include "CGUIMenu.h"
 #include "CGUIToolBar.h"
-#include "CGUITable.h"
-#include "CGUIProfiler.h"
 
 #include "IWriteFile.h"
 
@@ -794,21 +791,6 @@ IGUIScrollBar* CGUIEnvironment::addScrollBar(bool horizontal, const core::rect<s
 	return bar;
 }
 
-//! Adds a table to the environment
-IGUITable* CGUIEnvironment::addTable(const core::rect<s32>& rectangle, IGUIElement* parent, s32 id, bool drawBackground)
-{
-	CGUITable* b = new CGUITable(this, parent ? parent : this, id, rectangle, true, drawBackground, false);
-	b->drop();
-	return b;
-}
-
-	//! Adds an element to display the information from the Irrlicht profiler
-IGUIProfiler* CGUIEnvironment::addProfilerDisplay(const core::rect<s32>& rectangle, IGUIElement* parent, s32 id)
-{
-	CGUIProfiler* p = new CGUIProfiler(this, parent ? parent : this, id, rectangle, NULL);
-	p->drop();
-	return p;
-}
 
 //! Adds an image element.
 IGUIImage* CGUIEnvironment::addImage(video::ITexture* image, core::position2d<s32> pos,
@@ -1012,25 +994,6 @@ IGUIToolBar* CGUIEnvironment::addToolBar(IGUIElement* parent, s32 id)
 	IGUIToolBar* b = new CGUIToolBar(this, parent, id, core::rect<s32>(0,0,10,10));
 	b->drop();
 	return b;
-}
-
-
-//! Adds an element for fading in or out.
-IGUIInOutFader* CGUIEnvironment::addInOutFader(const core::rect<s32>* rectangle, IGUIElement* parent, s32 id)
-{
-	core::rect<s32> rect;
-
-	if (rectangle)
-		rect = *rectangle;
-	else if (Driver)
-		rect = core::rect<s32>(core::dimension2di(Driver->getScreenSize()));
-
-	if (!parent)
-		parent = this;
-
-	IGUIInOutFader* fader = new CGUIInOutFader(this, parent, id, rect);
-	fader->drop();
-	return fader;
 }
 
 

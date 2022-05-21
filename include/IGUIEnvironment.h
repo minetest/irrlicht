@@ -42,19 +42,16 @@ class IGUICheckBox;
 class IGUIListBox;
 class IGUIImageList;
 class IGUIFileOpenDialog;
-class IGUIInOutFader;
 class IGUIStaticText;
 class IGUIEditBox;
 class IGUISpinBox;
 class IGUITabControl;
 class IGUITab;
-class IGUITable;
 class IGUIContextMenu;
 class IGUIComboBox;
 class IGUIToolBar;
 class IGUIButton;
 class IGUIWindow;
-class IGUIProfiler;
 
 //! GUI Environment. Used as factory and manager of all other GUI elements.
 /** \par This element can create the following events of type EGUI_EVENT_TYPE (which are passed on to focused sub-elements):
@@ -410,16 +407,6 @@ public:
 	virtual IGUISpinBox* addSpinBox(const wchar_t* text, const core::rect<s32>& rectangle,
 		bool border=true,IGUIElement* parent=0, s32 id=-1) = 0;
 
-	//! Adds an element for fading in or out.
-	/** \param rectangle Rectangle specifying the borders of the fader.
-	If the pointer is NULL, the whole screen is used.
-	\param parent Parent item of the element, e.g. a window.
-	\param id An identifier for the fader.
-	\return Pointer to the created in-out-fader. Returns 0 if an error
-	occurred. This pointer should not be dropped. See
-	IReferenceCounted::drop() for more information. */
-	virtual IGUIInOutFader* addInOutFader(const core::rect<s32>* rectangle=0, IGUIElement* parent=0, s32 id=-1) = 0;
-
 	//! Adds a tab control to the environment.
 	/** \param rectangle Rectangle specifying the borders of the tab control.
 	\param parent Parent item of the element, e.g. a window.
@@ -494,26 +481,6 @@ public:
 	error occurred. This pointer should not be dropped. See
 	IReferenceCounted::drop() for more information. */
 	virtual IGUIComboBox* addComboBox(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1) = 0;
-
-	//! Adds a table to the environment
-	/** \param rectangle Rectangle specifying the borders of the table.
-	\param parent Parent item of the element, e.g. a window. Set it to 0
-	to place the element directly in the environment.
-	\param id An identifier for the table.
-	\param drawBackground Flag whether the background should be drawn.
-	\return Pointer to the created table. Returns 0 if an error occurred.
-	This pointer should not be dropped. See IReferenceCounted::drop() for
-	more information. */
-	virtual IGUITable* addTable(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1, bool drawBackground=false) =0;
-
-	//! Adds an element to display the information from the Irrlicht profiler
-	/** \param rectangle Rectangle specifying the borders of the element.
-	\param parent Parent of the element. When 0 the environment itself will
-	be the parent.
-	\param id An identifier for the element. */
-	virtual IGUIProfiler* addProfilerDisplay(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1) = 0;
 
 	//! Find the next element which would be selected when pressing the tab-key

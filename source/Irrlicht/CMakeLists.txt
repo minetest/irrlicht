@@ -263,7 +263,6 @@ add_library(IRRGUIOBJ OBJECT
 	CGUIFileOpenDialog.cpp
 	CGUIFont.cpp
 	CGUIImage.cpp
-	CGUIInOutFader.cpp
 	CGUIListBox.cpp
 	CGUIMenu.cpp
 	CGUIMessageBox.cpp
@@ -273,12 +272,10 @@ add_library(IRRGUIOBJ OBJECT
 	CGUISkin.cpp
 	CGUIStaticText.cpp
 	CGUITabControl.cpp
-	CGUITable.cpp
 	CGUIToolBar.cpp
 	CGUIWindow.cpp
 	CGUISpriteBank.cpp
 	CGUIImageList.cpp
-	CGUIProfiler.cpp
 )
 
 # Library
