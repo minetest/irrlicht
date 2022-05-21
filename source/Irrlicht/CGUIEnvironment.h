@@ -207,30 +207,6 @@ public:
 
 	virtual void OnPostRender( u32 time ) _IRR_OVERRIDE_;
 
-	//! Saves the current gui into a file.
-	/** \param filename: Name of the file.
-	\param start: The element to start saving from.
-	if not specified, the root element will be used */
-	virtual bool saveGUI( const io::path& filename, IGUIElement* start=0) _IRR_OVERRIDE_;
-
-	//! Saves the current gui into a file.
-	/** \param file: The file to save the GUI to.
-	\param start: The element to start saving from.
-	if not specified, the root element will be used */
-	virtual bool saveGUI(io::IWriteFile* file, IGUIElement* start=0) _IRR_OVERRIDE_;
-
-	//! Loads the gui. Note that the current gui is not cleared before.
-	/** \param filename: Name of the file.
-	\param parent: The parent of all loaded GUI elements,
-	if not specified, the root element will be used */
-	virtual bool loadGUI(const io::path& filename, IGUIElement* parent=0) _IRR_OVERRIDE_;
-
-	//! Loads the gui. Note that the current gui is not cleared before.
-	/** \param file: IReadFile to load the GUI from
-	\param parent: The parent of all loaded GUI elements,
-	if not specified, the root element will be used */
-	virtual bool loadGUI(io::IReadFile* file, IGUIElement* parent=0) _IRR_OVERRIDE_;
-
 	//! Find the next element which would be selected when pressing the tab-key
 	virtual IGUIElement* getNextElement(bool reverse=false, bool group=false) _IRR_OVERRIDE_;
 

@@ -697,53 +697,6 @@ IGUISkin* CGUIEnvironment::createSkin(EGUI_SKIN_TYPE type)
 }
 
 
-//! Saves the current gui into a file.
-//! \param filename: Name of the file .
-bool CGUIEnvironment::saveGUI(const io::path& filename, IGUIElement* start)
-{
-	io::IWriteFile* file = FileSystem->createAndWriteFile(filename);
-	if (!file)
-	{
-		return false;
-	}
-
-	bool ret = saveGUI(file, start);
-	file->drop();
-	return ret;
-}
-
-
-//! Saves the current gui into a file.
-bool CGUIEnvironment::saveGUI(io::IWriteFile* file, IGUIElement* start)
-{
-	return false;
-}
-
-
-//! Loads the gui. Note that the current gui is not cleared before.
-//! \param filename: Name of the file.
-bool CGUIEnvironment::loadGUI(const io::path& filename, IGUIElement* parent)
-{
-	io::IReadFile* read = FileSystem->createAndOpenFile(filename);
-	if (!read)
-	{
-		os::Printer::log("Unable to open gui file", filename, ELL_ERROR);
-		return false;
-	}
-
-	bool ret = loadGUI(read, parent);
-	read->drop();
-
-	return ret;
-}
-
-
-//! Loads the gui. Note that the current gui is not cleared before.
-bool CGUIEnvironment::loadGUI(io::IReadFile* file, IGUIElement* parent)
-{
-	return false;
-}
-
 //! adds a button. The returned pointer must not be dropped.
 IGUIButton* CGUIEnvironment::addButton(const core::rect<s32>& rectangle, IGUIElement* parent, s32 id, const wchar_t* text, const wchar_t *tooltiptext)
 {
