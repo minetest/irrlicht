@@ -130,7 +130,6 @@
 #include "SColor.h"
 #include "SExposedVideoData.h"
 #include "SIrrCreationParameters.h"
-#include "SLight.h"
 #include "SMaterial.h"
 #include "SMesh.h"
 #include "SMeshBuffer.h"

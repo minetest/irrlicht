@@ -19,14 +19,6 @@
 #include "COGLES2ExtensionHandler.h"
 #include "IContextManager.h"
 
-#if defined(_IRR_WINDOWS_API_)
-// include windows headers for HWND
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#include <windows.h>
-#endif
-
 namespace irr
 {
 namespace video
@@ -157,20 +149,6 @@ namespace video
 
 		//! Returns the name of the video driver.
 		virtual const wchar_t* getName() const _IRR_OVERRIDE_;
-
-		//! deletes all dynamic lights there are
-		virtual void deleteAllDynamicLights() _IRR_OVERRIDE_;
-
-		//! adds a dynamic light
-		virtual s32 addDynamicLight(const SLight& light) _IRR_OVERRIDE_;
-
-		//! Turns a dynamic light on or off
-		/** \param lightIndex: the index returned by addDynamicLight
-		\param turnOn: true to turn the light on, false to turn it off */
-		virtual void turnLightOn(s32 lightIndex, bool turnOn) _IRR_OVERRIDE_;
-
-		//! returns the maximal amount of dynamic lights the device can handle
-		virtual u32 getMaximalDynamicLightAmount() const _IRR_OVERRIDE_;
 
 		//! Returns the maximum texture size supported.
 		virtual core::dimension2du getMaxTextureSize() const _IRR_OVERRIDE_;
@@ -420,19 +398,6 @@ private:
 
 		//! Color buffer format
 		ECOLOR_FORMAT ColorFormat;
-
-		//! All the lights that have been requested; a hardware limited
-		//! number of them will be used at once.
-		struct RequestedLight
-		{
-			RequestedLight(SLight const & lightData)
-					: LightData(lightData), DesireToBeOn(true) { }
-
-			SLight LightData;
-			bool DesireToBeOn;
-		};
-
-		core::array<RequestedLight> RequestedLights;
 
 		IContextManager* ContextManager;
 	};
