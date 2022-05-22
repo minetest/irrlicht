@@ -130,23 +130,23 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {
-              arch: x86,
-              generator: "-G'Visual Studio 16 2019' -A Win32",
-              vcpkg_triplet: x86-windows
-            }
-          - {
-              arch: x64,
-              generator: "-G'Visual Studio 16 2019' -A x64",
-              vcpkg_triplet: x64-windows
-            }
+          -
+            arch: x86
+            generator: "-G'Visual Studio 16 2019' -A Win32"
+            vcpkg_triplet: x86-windows
+          -
+            arch: x64
+            generator: "-G'Visual Studio 16 2019' -A x64"
+            vcpkg_triplet: x64-windows
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       
-      - name: Download nasm
-        run: New-Item -ItemType container '${{ github.workspace }}\vcpkg\downloads\'
-        run: Invoke-WebRequest -Uri "https://github.com/microsoft/vcpkg/files/7075269/nasm-2.15.05-win32.zip" -OutFile '${{ github.workspace }}\vcpkg\downloads\nasm-2.15.05-win32.zip'
+      - name: Download nasm from site that isnt down
+        run: |
+          New-Item -ItemType container '${{ github.workspace }}\vcpkg\downloads\'
+          Invoke-WebRequest -Uri "https://github.com/microsoft/vcpkg/files/7075269/nasm-2.15.05-win32.zip" -OutFile '${{ github.workspace }}\vcpkg\downloads\nasm-2.15.05-win32.zip'
 
       - name: Restore from cache and run vcpkg
         uses: lukka/run-vcpkg@v7
