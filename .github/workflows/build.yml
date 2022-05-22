@@ -147,6 +147,7 @@ jobs:
         run: |
           New-Item -ItemType container '${{ github.workspace }}\vcpkg\downloads\'
           Invoke-WebRequest -Uri "https://github.com/microsoft/vcpkg/files/7075269/nasm-2.15.05-win32.zip" -OutFile '${{ github.workspace }}\vcpkg\downloads\nasm-2.15.05-win32.zip'
+          dir '${{ github.workspace }}\vcpkg\downloads\'
 
       - name: Restore from cache and run vcpkg
         uses: lukka/run-vcpkg@v7
