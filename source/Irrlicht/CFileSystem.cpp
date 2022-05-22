@@ -12,23 +12,20 @@
 #include "CFileList.h"
 #include "stdio.h"
 #include "os.h"
-#include "CAttributes.h"
 #include "CReadFile.h"
 #include "CMemoryFile.h"
 #include "CLimitReadFile.h"
 #include "CWriteFile.h"
-#include "irrList.h"
+#include <list>
 
 #if defined (__STRICT_ANSI__)
     #error Compiling with __STRICT_ANSI__ not supported. g++ does set this when compiling with -std=c++11 or -std=c++0x. Use instead -std=gnu++11 or -std=gnu++0x. Or use -U__STRICT_ANSI__ to disable strict ansi.
 #endif
 
 #if defined (_IRR_WINDOWS_API_)
-	#if !defined ( _WIN32_WCE )
-		#include <direct.h> // for _chdir
-		#include <io.h> // for _access
-		#include <tchar.h>
-	#endif
+	#include <direct.h> // for _chdir
+	#include <io.h> // for _access
+	#include <tchar.h>
 #elif (defined(_IRR_POSIX_API_) || defined(_IRR_OSX_PLATFORM_) || defined(_IRR_IOS_PLATFORM_) || defined(_IRR_ANDROID_PLATFORM_))
 		#include <stdio.h>
 		#include <stdlib.h>
@@ -717,11 +714,10 @@ path CFileSystem::getRelativeFilename(const path& filename, const path& director
 	io::path path1, file, ext;
 	core::splitFilename(getAbsolutePath(filename), &path1, &file, &ext);
 	io::path path2(getAbsolutePath(directory));
-	core::list<io::path> list1, list2;
+	std::list<io::path> list1, list2;
 	path1.split(list1, _IRR_TEXT("/\\"), 2);
 	path2.split(list2, _IRR_TEXT("/\\"), 2);
-	u32 i=0;
-	core::list<io::path>::ConstIterator it1,it2;
+	std::list<io::path>::const_iterator it1,it2;
 	it1=list1.begin();
 	it2=list2.begin();
 
@@ -745,19 +741,19 @@ path CFileSystem::getRelativeFilename(const path& filename, const path& director
 	#endif
 
 
-	for (; i<list1.size() && i<list2.size()
+	for (; it1 != list1.end() && it2 != list2.end()
 #if defined (_IRR_WINDOWS_API_)
 		&& (io::path(*it1).make_lower()==io::path(*it2).make_lower())
 #else
 		&& (*it1==*it2)
 #endif
-		; ++i)
+		;)
 	{
 		++it1;
 		++it2;
 	}
 	path1=_IRR_TEXT("");
-	for (; i<list2.size(); ++i)
+	for (; it2 != list2.end(); ++it2)
 		path1 += _IRR_TEXT("../");
 	while (it1 != list1.end())
 	{
@@ -798,7 +794,6 @@ IFileList* CFileSystem::createFileList()
 		// --------------------------------------------
 		//! Windows version
 		#ifdef _IRR_WINDOWS_API_
-		#if !defined ( _WIN32_WCE )
 
 		r = new CFileList(Path, true, false);
 
@@ -820,12 +815,7 @@ IFileList* CFileSystem::createFileList()
 
 			_findclose( hFile );
 		}
-		#endif
 
-		//TODO add drives
-		//entry.Name = "E:\\";
-		//entry.isDirectory = true;
-		//Files.push_back(entry);
 		#endif
 
 		// --------------------------------------------
@@ -936,13 +926,6 @@ bool CFileSystem::existFile(const io::path& filename) const
 IFileSystem* createFileSystem()
 {
 	return new CFileSystem();
-}
-
-
-//! Creates a new empty collection of attributes, usable for serialization and more.
-IAttributes* CFileSystem::createEmptyAttributes(video::IVideoDriver* driver)
-{
-	return new CAttributes(driver);
 }
 
 

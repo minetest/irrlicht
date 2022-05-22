@@ -159,9 +159,6 @@ private:
 	bool readRGB(video::SColor& color);
 	bool readRGBA(video::SColor& color);
 
-	ISceneManager* SceneManager;
-	io::IFileSystem* FileSystem;
-
 	CSkinnedMesh* AnimatedMesh;
 
 	c8* Buffer;

@@ -47,7 +47,6 @@ namespace video
 		glGetFloatv(GL_ALIASED_POINT_SIZE_RANGE, DimAliasedPoint);
 
 		Feature.MaxTextureUnits = core::min_(Feature.MaxTextureUnits, static_cast<u8>(MATERIAL_MAX_TEXTURES));
-		Feature.MaxTextureUnits = core::min_(Feature.MaxTextureUnits, static_cast<u8>(MATERIAL_MAX_TEXTURES_USED));
 		Feature.ColorAttachment = 1;
 	}
 

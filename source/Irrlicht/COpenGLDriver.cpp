@@ -14,17 +14,11 @@
 #include "COpenGLMaterialRenderer.h"
 #include "COpenGLShaderMaterialRenderer.h"
 #include "COpenGLSLMaterialRenderer.h"
-#include "COpenGLNormalMapRenderer.h"
-#include "COpenGLParallaxMapRenderer.h"
 
 #include "COpenGLCoreTexture.h"
 #include "COpenGLCoreRenderTarget.h"
 
 #include "mt_opengl.h"
-
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-#include <SDL/SDL.h>
-#endif
 
 namespace irr
 {
@@ -34,40 +28,15 @@ namespace video
 // Statics variables
 const u16 COpenGLDriver::Quad2DIndices[4] = { 0, 1, 2, 3 };
 
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) || defined(_IRR_COMPILE_WITH_X11_DEVICE_) || defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
 COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
 	: CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(), CacheHandler(0), CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
 	Transformation3DChanged(true), AntiAlias(params.AntiAlias), ColorFormat(ECF_R8G8B8), FixedPipelineState(EOFPS_ENABLE), Params(params),
-	ContextManager(contextManager),
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
-	DeviceType(EIDT_WIN32)
-#elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
-	DeviceType(EIDT_X11)
-#else
-	DeviceType(EIDT_OSX)
-#endif
+	ContextManager(contextManager)
 {
 #ifdef _DEBUG
 	setDebugName("COpenGLDriver");
 #endif
 }
-#endif
-
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceSDL* device)
-	: CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(), CacheHandler(0),
-	CurrentRenderMode(ERM_NONE), ResetRenderStates(true), Transformation3DChanged(true),
-	AntiAlias(params.AntiAlias), ColorFormat(ECF_R8G8B8), FixedPipelineState(EOFPS_ENABLE),
-	Params(params), SDLDevice(device), ContextManager(0), DeviceType(EIDT_SDL)
-{
-#ifdef _DEBUG
-	setDebugName("COpenGLDriver");
-#endif
-
-	genericDriverInit();
-}
-
-#endif
 
 bool COpenGLDriver::initDriver()
 {
@@ -265,24 +234,6 @@ void COpenGLDriver::createMaterialRenderers()
 	addAndDropMaterialRenderer(new COpenGLMaterialRenderer_TRANSPARENT_VERTEX_ALPHA(this));
 	addAndDropMaterialRenderer(new COpenGLMaterialRenderer_TRANSPARENT_REFLECTION_2_LAYER(this));
 
-	// add normal map renderers
-	s32 tmp = 0;
-	video::IMaterialRenderer* renderer = 0;
-	renderer = new COpenGLNormalMapRenderer(this, tmp, EMT_SOLID);
-	renderer->drop();
-	renderer = new COpenGLNormalMapRenderer(this, tmp, EMT_TRANSPARENT_ADD_COLOR);
-	renderer->drop();
-	renderer = new COpenGLNormalMapRenderer(this, tmp, EMT_TRANSPARENT_VERTEX_ALPHA);
-	renderer->drop();
-
-	// add parallax map renderers
-	renderer = new COpenGLParallaxMapRenderer(this, tmp, EMT_SOLID);
-	renderer->drop();
-	renderer = new COpenGLParallaxMapRenderer(this, tmp, EMT_TRANSPARENT_ADD_COLOR);
-	renderer->drop();
-	renderer = new COpenGLParallaxMapRenderer(this, tmp, EMT_TRANSPARENT_VERTEX_ALPHA);
-	renderer->drop();
-
 	// add basic 1 texture blending
 	addAndDropMaterialRenderer(new COpenGLMaterialRenderer_ONETEXTURE_BLEND(this));
 }
@@ -293,11 +244,6 @@ bool COpenGLDriver::beginScene(u16 clearFlag, SColor clearColor, f32 clearDepth,
 
 	if (ContextManager)
 		ContextManager->activateContext(videoData, true);
-
-#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-	if ( DeviceType == EIDT_SDL )
-		glFrontFace(GL_CW);
-#endif
 
 	clearBuffers(clearFlag, clearColor, clearDepth, clearStencil);
 
@@ -314,14 +260,6 @@ bool COpenGLDriver::endScene()
 
 	if (ContextManager)
 		status = ContextManager->swapBuffers();
-
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-	if ( DeviceType == EIDT_SDL )
-	{
-		SDL_GL_SwapBuffers();
-		status = true;
-	}
-#endif
 
 	// todo: console device present
 
@@ -598,13 +536,12 @@ COpenGLDriver::SHWBufferLink *COpenGLDriver::createHardwareBuffer(const scene::I
 	SHWBufferLink_opengl *HWBuffer=new SHWBufferLink_opengl(mb);
 
 	//add to map
-	HWBufferMap.insert(HWBuffer->MeshBuffer, HWBuffer);
+	HWBuffer->listPosition = HWBufferList.insert(HWBufferList.end(), HWBuffer);
 
 	HWBuffer->ChangedID_Vertex=HWBuffer->MeshBuffer->getChangedID_Vertex();
 	HWBuffer->ChangedID_Index=HWBuffer->MeshBuffer->getChangedID_Index();
 	HWBuffer->Mapped_Vertex=mb->getHardwareMappingHint_Vertex();
 	HWBuffer->Mapped_Index=mb->getHardwareMappingHint_Index();
-	HWBuffer->LastUsed=0;
 	HWBuffer->vbo_verticesID=0;
 	HWBuffer->vbo_indicesID=0;
 	HWBuffer->vbo_verticesSize=0;
@@ -653,7 +590,6 @@ void COpenGLDriver::drawHardwareBuffer(SHWBufferLink *_HWBuffer)
 		return;
 
 	updateHardwareBuffer(_HWBuffer); //check if update is needed
-	_HWBuffer->LastUsed=0; //reset count
 
 #if defined(GL_ARB_vertex_buffer_object)
 	SHWBufferLink_opengl *HWBuffer=(SHWBufferLink_opengl*)_HWBuffer;
@@ -2730,7 +2666,8 @@ void COpenGLDriver::setTextureRenderStates(const SMaterial& material, bool reset
 		{
 			CacheHandler->setActiveTexture(GL_TEXTURE0 + i);
 
-			if (fixedPipeline)
+			// Minetest uses the first texture matrix even with the programmable pipeline
+			if (fixedPipeline || i == 0)
 			{
 				const bool isRTT = tmpTexture->isRenderTarget();
 
@@ -4465,7 +4402,6 @@ namespace irr
 namespace video
 {
 
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) || defined(_IRR_COMPILE_WITH_X11_DEVICE_) || defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
 	IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
 	{
 #ifdef _IRR_COMPILE_WITH_OPENGL_
@@ -4482,22 +4418,6 @@ namespace video
 		return 0;
 #endif
 	}
-#endif
-
-// -----------------------------------
-// SDL VERSION
-// -----------------------------------
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
-		io::IFileSystem* io, CIrrDeviceSDL* device)
-{
-#ifdef _IRR_COMPILE_WITH_OPENGL_
-	return new COpenGLDriver(params, io, device);
-#else
-	return 0;
-#endif //  _IRR_COMPILE_WITH_OPENGL_
-}
-#endif // _IRR_COMPILE_WITH_SDL_DEVICE_
 
 } // end namespace
 } // end namespace

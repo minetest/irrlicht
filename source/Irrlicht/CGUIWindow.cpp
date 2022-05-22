@@ -356,47 +356,6 @@ core::rect<s32> CGUIWindow::getClientRect() const
 	return ClientRect;
 }
 
-
-//! Writes attributes of the element.
-void CGUIWindow::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const
-{
-	IGUIWindow::serializeAttributes(out,options);
-
-	out->addBool("IsDraggable", IsDraggable);
-	out->addBool("DrawBackground", DrawBackground);
-	out->addBool("DrawTitlebar", DrawTitlebar);
-
-	// Currently we can't just serialize attributes of sub-elements.
-	// To do this we either
-	// a) allow further serialization after attribute serialiation (second function, callback or event)
-	// b) add an IGUIElement attribute
-	// c) extend the attribute system to allow attributes to have sub-attributes
-	// We just serialize the most important info for now until we can do one of the above solutions.
-	out->addBool("IsCloseVisible", CloseButton->isVisible());
-	out->addBool("IsMinVisible", MinButton->isVisible());
-	out->addBool("IsRestoreVisible", RestoreButton->isVisible());
-}
-
-
-//! Reads attributes of the element
-void CGUIWindow::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)
-{
-IGUIWindow::deserializeAttributes(in,options);
-
-	Dragging = false;
-	IsActive = false;
-	IsDraggable = in->getAttributeAsBool("IsDraggable");
-	DrawBackground = in->getAttributeAsBool("DrawBackground");
-	DrawTitlebar = in->getAttributeAsBool("DrawTitlebar");
-
-	CloseButton->setVisible(in->getAttributeAsBool("IsCloseVisible"));
-	MinButton->setVisible(in->getAttributeAsBool("IsMinVisible"));
-	RestoreButton->setVisible(in->getAttributeAsBool("IsRestoreVisible"));
-
-	updateClientRect();
-}
-
-
 } // end namespace gui
 } // end namespace irr
 

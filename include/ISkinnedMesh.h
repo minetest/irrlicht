@@ -79,6 +79,12 @@ namespace scene
 		/* This feature is not implemented in Irrlicht yet */
 		virtual bool setHardwareSkinning(bool on) = 0;
 
+		//! Refreshes vertex data cached in joints such as positions and normals
+		virtual void refreshJointCache() = 0;
+
+		//! Moves the mesh into static position.
+		virtual void resetAnimation() = 0;
+
 		//! A vertex weight
 		struct SWeight
 		{
@@ -94,7 +100,7 @@ namespace scene
 		private:
 			//! Internal members used by CSkinnedMesh
 			friend class CSkinnedMesh;
-			bool *Moved;
+			char *Moved;
 			core::vector3df StaticPos;
 			core::vector3df StaticNormal;
 		};

@@ -18,9 +18,7 @@
 
 #ifdef _IRR_WINDOWS_API_
 #define WIN32_LEAN_AND_MEAN
-#if !defined(_IRR_XBOX_PLATFORM_)
-	#include <windows.h>
-#endif
+#include <windows.h>
 #define _IRR_WINDOWS_NT_CONSOLE_
 #else
 #include <time.h>

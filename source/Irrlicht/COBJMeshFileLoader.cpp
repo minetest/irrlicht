@@ -26,8 +26,6 @@ namespace scene
 #define _IRR_DEBUG_OBJ_LOADER_
 #endif
 
-static const u32 WORD_BUFFER_LENGTH = 512;
-
 //! Constructor
 COBJMeshFileLoader::COBJMeshFileLoader(scene::ISceneManager* smgr, io::IFileSystem* fs)
 : SceneManager(smgr), FileSystem(fs)
@@ -72,9 +70,9 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 
 	const u32 WORD_BUFFER_LENGTH = 512;
 
-	core::array<core::vector3df, core::irrAllocatorFast<core::vector3df> > vertexBuffer(1000);
-	core::array<core::vector3df, core::irrAllocatorFast<core::vector3df> > normalsBuffer(1000);
-	core::array<core::vector2df, core::irrAllocatorFast<core::vector2df> > textureCoordBuffer(1000);
+	core::array<core::vector3df> vertexBuffer(1000);
+	core::array<core::vector3df> normalsBuffer(1000);
+	core::array<core::vector2df> textureCoordBuffer(1000);
 
 	SObjMtl * currMtl = new SObjMtl();
 	Materials.push_back(currMtl);
@@ -252,16 +250,16 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 				}
 
 				int vertLocation;
-				core::map<video::S3DVertex, int>::Node* n = currMtl->VertMap.find(v);
-				if (n)
+				auto n = currMtl->VertMap.find(v);
+				if (n != currMtl->VertMap.end())
 				{
-					vertLocation = n->getValue();
+					vertLocation = n->second;
 				}
 				else
 				{
 					currMtl->Meshbuffer->Vertices.push_back(v);
 					vertLocation = currMtl->Meshbuffer->Vertices.size() -1;
-					currMtl->VertMap.insert(v, vertLocation);
+					currMtl->VertMap.emplace(v, vertLocation);
 				}
 
 				faceCorners.push_back(vertLocation);
@@ -318,16 +316,7 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 			Materials[m]->Meshbuffer->recalculateBoundingBox();
 			if (Materials[m]->RecalculateNormals)
 				SceneManager->getMeshManipulator()->recalculateNormals(Materials[m]->Meshbuffer);
-			if (Materials[m]->Meshbuffer->Material.MaterialType == video::EMT_PARALLAX_MAP_SOLID)
-			{
-				SMesh tmp;
-				tmp.addMeshBuffer(Materials[m]->Meshbuffer);
-				IMesh* tangentMesh = SceneManager->getMeshManipulator()->createMeshWithTangents(&tmp);
-				mesh->addMeshBuffer(tangentMesh->getMeshBuffer(0));
-				tangentMesh->drop();
-			}
-			else
-				mesh->addMeshBuffer( Materials[m]->Meshbuffer );
+			mesh->addMeshBuffer( Materials[m]->Meshbuffer );
 		}
 	}
 

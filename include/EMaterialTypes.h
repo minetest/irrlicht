@@ -121,71 +121,6 @@ namespace video
 		texture which will not reflect can be set as second texture.*/
 		EMT_TRANSPARENT_REFLECTION_2_LAYER,
 
-		//! A solid normal map renderer.
-		/** First texture is the color map, the second should be the
-		normal map. Note that you should use this material only when
-		drawing geometry consisting of vertices of type
-		S3DVertexTangents (EVT_TANGENTS). You can convert any mesh into
-		this format using IMeshManipulator::createMeshWithTangents()
-		(See SpecialFX2 Tutorial). This shader runs on vertex shader
-		1.1 and pixel shader 1.1 capable hardware and falls back to a
-		fixed function lighted material if this hardware is not
-		available. Only two lights are supported by this shader, if
-		there are more, the nearest two are chosen. */
-		EMT_NORMAL_MAP_SOLID,
-
-		//! A transparent normal map renderer.
-		/** First texture is the color map, the second should be the
-		normal map. Note that you should use this material only when
-		drawing geometry consisting of vertices of type
-		S3DVertexTangents (EVT_TANGENTS). You can convert any mesh into
-		this format using IMeshManipulator::createMeshWithTangents()
-		(See SpecialFX2 Tutorial). This shader runs on vertex shader
-		1.1 and pixel shader 1.1 capable hardware and falls back to a
-		fixed function lighted material if this hardware is not
-		available. Only two lights are supported by this shader, if
-		there are more, the nearest two are chosen. */
-		EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR,
-
-		//! A transparent (based on the vertex alpha value) normal map renderer.
-		/** First texture is the color map, the second should be the
-		normal map. Note that you should use this material only when
-		drawing geometry consisting of vertices of type
-		S3DVertexTangents (EVT_TANGENTS). You can convert any mesh into
-		this format using IMeshManipulator::createMeshWithTangents()
-		(See SpecialFX2 Tutorial). This shader runs on vertex shader
-		1.1 and pixel shader 1.1 capable hardware and falls back to a
-		fixed function lighted material if this hardware is not
-		available.  Only two lights are supported by this shader, if
-		there are more, the nearest two are chosen. */
-		EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA,
-
-		//! Just like EMT_NORMAL_MAP_SOLID, but uses parallax mapping.
-		/** Looks a lot more realistic. This only works when the
-		hardware supports at least vertex shader 1.1 and pixel shader
-		1.4. First texture is the color map, the second should be the
-		normal map. The normal map texture should contain the height
-		value in the alpha component. The
-		IVideoDriver::makeNormalMapTexture() method writes this value
-		automatically when creating normal maps from a heightmap when
-		using a 32 bit texture. The height scale of the material
-		(affecting the bumpiness) is being controlled by the
-		SMaterial::MaterialTypeParam member. If set to zero, the
-		default value (0.02f) will be applied. Otherwise the value set
-		in SMaterial::MaterialTypeParam is taken. This value depends on
-		with which scale the texture is mapped on the material. Too
-		high or low values of MaterialTypeParam can result in strange
-		artifacts. */
-		EMT_PARALLAX_MAP_SOLID,
-
-		//! A material like EMT_PARALLAX_MAP_SOLID, but transparent.
-		/** Using EMT_TRANSPARENT_ADD_COLOR as base material. */
-		EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR,
-
-		//! A material like EMT_PARALLAX_MAP_SOLID, but transparent.
-		/** Using EMT_TRANSPARENT_VERTEX_ALPHA as base material. */
-		EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA,
-
 		//! BlendFunc = source * sourceFactor + dest * destFactor ( E_BLEND_FUNC )
 		/** Using only first texture. Generic blending method. 
 		The blend function is set to SMaterial::MaterialTypeParam with 
@@ -216,12 +151,6 @@ namespace video
 		"trans_alphach_ref",
 		"trans_vertex_alpha",
 		"trans_reflection_2layer",
-		"normalmap_solid",
-		"normalmap_trans_add",
-		"normalmap_trans_vertexalpha",
-		"parallaxmap_solid",
-		"parallaxmap_trans_add",
-		"parallaxmap_trans_vertexalpha",
 		"onetexture_blend",
 		0
 	};

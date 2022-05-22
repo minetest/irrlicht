@@ -192,7 +192,7 @@ IMesh * CAnimatedMeshSceneNode::getMeshForCurrentFrame()
 		// As multiple scene nodes may be sharing the same skinned mesh, we have to
 		// re-animate it every frame to ensure that this node gets the mesh that it needs.
 
-		CSkinnedMesh* skinnedMesh = reinterpret_cast<CSkinnedMesh*>(Mesh);
+		CSkinnedMesh* skinnedMesh = static_cast<CSkinnedMesh*>(Mesh);
 
 		if (JointMode == EJUOR_CONTROL)//write to mesh
 			skinnedMesh->transferJointsToMesh(JointChildSceneNodes);
@@ -343,8 +343,8 @@ void CAnimatedMeshSceneNode::render()
 		// show normals
 		if (DebugDataVisible & scene::EDS_NORMALS)
 		{
-			const f32 debugNormalLength = SceneManager->getParameters()->getAttributeAsFloat(DEBUG_NORMAL_LENGTH);
-			const video::SColor debugNormalColor = SceneManager->getParameters()->getAttributeAsColor(DEBUG_NORMAL_COLOR);
+			const f32 debugNormalLength = 1.f;
+			const video::SColor debugNormalColor = video::SColor(255, 34, 221, 221);
 			const u32 count = m->getMeshBufferCount();
 
 			// draw normals
@@ -652,54 +652,6 @@ bool CAnimatedMeshSceneNode::isReadOnlyMaterials() const
 }
 
 
-//! Writes attributes of the scene node.
-void CAnimatedMeshSceneNode::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
-{
-	IAnimatedMeshSceneNode::serializeAttributes(out, options);
-
-	if (options && (options->Flags&io::EARWF_USE_RELATIVE_PATHS) && options->Filename)
-	{
-		const io::path path = SceneManager->getFileSystem()->getRelativeFilename(
-				SceneManager->getFileSystem()->getAbsolutePath(SceneManager->getMeshCache()->getMeshName(Mesh).getPath()),
-				options->Filename);
-		out->addString("Mesh", path.c_str());
-	}
-	else
-		out->addString("Mesh", SceneManager->getMeshCache()->getMeshName(Mesh).getPath().c_str());
-	out->addBool("Looping", Looping);
-	out->addBool("ReadOnlyMaterials", ReadOnlyMaterials);
-	out->addFloat("FramesPerSecond", FramesPerSecond);
-	out->addInt("StartFrame", StartFrame);
-	out->addInt("EndFrame", EndFrame);
-}
-
-
-//! Reads attributes of the scene node.
-void CAnimatedMeshSceneNode::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
-{
-	IAnimatedMeshSceneNode::deserializeAttributes(in, options);
-
-	io::path oldMeshStr = SceneManager->getMeshCache()->getMeshName(Mesh);
-	io::path newMeshStr = in->getAttributeAsString("Mesh");
-
-	Looping = in->getAttributeAsBool("Looping");
-	ReadOnlyMaterials = in->getAttributeAsBool("ReadOnlyMaterials");
-	FramesPerSecond = in->getAttributeAsFloat("FramesPerSecond");
-	StartFrame = in->getAttributeAsInt("StartFrame");
-	EndFrame = in->getAttributeAsInt("EndFrame");
-
-	if (newMeshStr != "" && oldMeshStr != newMeshStr)
-	{
-		IAnimatedMesh* newAnimatedMesh = SceneManager->getMesh(newMeshStr.c_str());
-
-		if (newAnimatedMesh)
-			setMesh(newAnimatedMesh);
-	}
-
-	// TODO: read animation names instead of frame begin and ends
-}
-
-
 //! Sets a new mesh
 void CAnimatedMeshSceneNode::setMesh(IAnimatedMesh* mesh)
 {
@@ -795,7 +747,7 @@ void CAnimatedMeshSceneNode::animateJoints(bool CalculateAbsolutePositions)
 		checkJoints();
 		const f32 frame = getFrameNr(); //old?
 
-		CSkinnedMesh* skinnedMesh=reinterpret_cast<CSkinnedMesh*>(Mesh);
+		CSkinnedMesh* skinnedMesh=static_cast<CSkinnedMesh*>(Mesh);
 
 		skinnedMesh->transferOnlyJointsHintsToMesh( JointChildSceneNodes );
 		skinnedMesh->animateMesh(frame, 1.0f);

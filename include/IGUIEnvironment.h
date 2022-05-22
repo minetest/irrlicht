@@ -618,12 +618,6 @@ public:
 	\return True if loading succeeded, else false. */
 	virtual bool loadGUI(io::IReadFile* file, IGUIElement* parent=0) = 0;
 
-	//! Writes attributes of the gui environment
-	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const =0;
-
-	//! Reads attributes of the gui environment
-	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)=0;
-
 	//! Find the next element which would be selected when pressing the tab-key
 	/** If you set the focus for the result you can manually force focus-changes like they
 	would happen otherwise by the tab-keys.

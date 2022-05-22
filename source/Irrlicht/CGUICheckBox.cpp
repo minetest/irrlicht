@@ -225,28 +225,6 @@ bool CGUICheckBox::isDrawBorderEnabled() const
 }
 
 
-//! Writes attributes of the element.
-void CGUICheckBox::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const
-{
-	IGUICheckBox::serializeAttributes(out,options);
-
-	out->addBool("Checked",	Checked);
-	out->addBool("Border",  Border);
-	out->addBool("Background", Background);
-}
-
-
-//! Reads attributes of the element
-void CGUICheckBox::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)
-{
-	Checked = in->getAttributeAsBool ("Checked");
-	Border = in->getAttributeAsBool ("Border", Border);
-	Background = in->getAttributeAsBool ("Background", Background);
-
-	IGUICheckBox::deserializeAttributes(in,options);
-}
-
-
 } // end namespace gui
 } // end namespace irr
 

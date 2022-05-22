@@ -26,10 +26,6 @@
 #include <windows.h>
 #endif
 
-#ifdef _MSC_VER
-#pragma comment(lib, "libGLES_CM.lib")
-#endif
-
 namespace irr
 {
 namespace video
@@ -367,7 +363,7 @@ namespace video
 
 		SMaterial Material, LastMaterial;
 		core::array<core::plane3df> UserClipPlane;
-		core::array<bool> UserClipPlaneEnabled;
+		std::vector<bool> UserClipPlaneEnabled;
 
 		core::stringc VendorName;
 

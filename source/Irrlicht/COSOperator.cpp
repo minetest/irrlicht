@@ -5,9 +5,7 @@
 #include "COSOperator.h"
 
 #ifdef _IRR_WINDOWS_API_
-#ifndef _IRR_XBOX_PLATFORM_
 #include <windows.h>
-#endif
 #else
 #include <string.h>
 #include <unistd.h>
@@ -63,8 +61,7 @@ void COSOperator::copyToClipboard(const c8 *text) const
 		return;
 
 // Windows version
-#if defined(_IRR_XBOX_PLATFORM_)
-#elif defined(_IRR_WINDOWS_API_)
+#if defined(_IRR_WINDOWS_API_)
 	if (!OpenClipboard(NULL) || text == 0)
 		return;
 
@@ -101,8 +98,6 @@ void COSOperator::copyToClipboard(const c8 *text) const
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
     if ( IrrDeviceLinux )
         IrrDeviceLinux->copyToClipboard(text);
-#else
-
 #endif
 }
 
@@ -111,9 +106,7 @@ void COSOperator::copyToClipboard(const c8 *text) const
 //! \return Returns 0 if no string is in there, otherwise an utf-8 string.
 const c8* COSOperator::getTextFromClipboard() const
 {
-#if defined(_IRR_XBOX_PLATFORM_)
-		return 0;
-#elif defined(_IRR_WINDOWS_API_)
+#if defined(_IRR_WINDOWS_API_)
 	if (!OpenClipboard(NULL))
 		return 0;
 
@@ -156,7 +149,7 @@ const c8* COSOperator::getTextFromClipboard() const
 
 bool COSOperator::getSystemMemory(u32* Total, u32* Avail) const
 {
-#if defined(_IRR_WINDOWS_API_) && !defined (_IRR_XBOX_PLATFORM_)
+#if defined(_IRR_WINDOWS_API_)
 
 	MEMORYSTATUSEX MemoryStatusEx;
  	MemoryStatusEx.dwLength = sizeof(MEMORYSTATUSEX);
@@ -170,24 +163,19 @@ bool COSOperator::getSystemMemory(u32* Total, u32* Avail) const
 		*Avail = (u32)(MemoryStatusEx.ullAvailPhys>>10);
 	return true;
 
-#elif defined(_IRR_POSIX_API_) && !defined(__FreeBSD__)
-#if defined(_SC_PHYS_PAGES) && defined(_SC_AVPHYS_PAGES)
+#elif defined(_IRR_POSIX_API_) && defined(_SC_PHYS_PAGES) && defined(_SC_AVPHYS_PAGES)
         long ps = sysconf(_SC_PAGESIZE);
         long pp = sysconf(_SC_PHYS_PAGES);
         long ap = sysconf(_SC_AVPHYS_PAGES);
 
-	if ((ps==-1)||(pp==-1)||(ap==-1))
+	if (ps == -1 || (Total && pp == -1) || (Avail && ap == -1))
 		return false;
 
 	if (Total)
-		*Total = (u32)((ps*(long long)pp)>>10);
+		*Total = (u32)((pp>>10)*ps);
 	if (Avail)
-		*Avail = (u32)((ps*(long long)ap)>>10);
+		*Avail = (u32)((ap>>10)*ps);
 	return true;
-#else
-	// TODO: implement for non-availability of symbols/features
-	return false;
-#endif
 #elif defined(_IRR_OSX_PLATFORM_)
 	int mib[2];
 	int64_t physical_memory;
@@ -198,6 +186,11 @@ bool COSOperator::getSystemMemory(u32* Total, u32* Avail) const
 	mib[1] = HW_MEMSIZE;
 	length = sizeof(int64_t);
 	sysctl(mib, 2, &physical_memory, &length, NULL, 0);
+
+	if (Total)
+		*Total = (u32)(physical_memory>>10);
+	if (Avail)
+		*Avail = (u32)(physical_memory>>10); // we don't know better
 	return true;
 #else
 	// TODO: implement for others

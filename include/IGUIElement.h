@@ -5,8 +5,7 @@
 #ifndef __I_GUI_ELEMENT_H_INCLUDED__
 #define __I_GUI_ELEMENT_H_INCLUDED__
 
-#include "IAttributeExchangingObject.h"
-#include "irrList.h"
+#include "IReferenceCounted.h"
 #include "rect.h"
 #include "irrString.h"
 #include "IEventReceiver.h"
@@ -14,13 +13,17 @@
 #include "EGUIAlignment.h"
 #include "IAttributes.h"
 #include "IGUIEnvironment.h"
+#include <cassert>
+#include <algorithm>
+#include <list>
+#include <vector>
 
 namespace irr
 {
 namespace gui
 {
 //! Base class of all GUI elements.
-class IGUIElement : public virtual io::IAttributeExchangingObject, public IEventReceiver
+class IGUIElement : virtual public IReferenceCounted, public IEventReceiver
 {
 public:
 
@@ -50,12 +53,9 @@ public:
 	//! Destructor
 	virtual ~IGUIElement()
 	{
-		// delete all children
-		core::list<IGUIElement*>::Iterator it = Children.begin();
-		for (; it != Children.end(); ++it)
-		{
-			(*it)->Parent = 0;
-			(*it)->drop();
+		for (auto child : Children) {
+			child->Parent = nullptr;
+			child->drop();
 		}
 	}
 
@@ -210,25 +210,25 @@ public:
 	}
 
 	//! How left element border is aligned when parent is resized
-	EGUI_ALIGNMENT getAlignLeft() const 
+	EGUI_ALIGNMENT getAlignLeft() const
 	{
 		return AlignLeft;
 	}
 
 	//! How right element border is aligned when parent is resized
-	EGUI_ALIGNMENT getAlignRight() const 
+	EGUI_ALIGNMENT getAlignRight() const
 	{
 		return AlignRight;
 	}
 
 	//! How top element border is aligned when parent is resized
-	EGUI_ALIGNMENT getAlignTop() const 
+	EGUI_ALIGNMENT getAlignTop() const
 	{
 		return AlignTop;
 	}
 
 	//! How bottom element border is aligned when parent is resized
-	EGUI_ALIGNMENT getAlignBottom() const 
+	EGUI_ALIGNMENT getAlignBottom() const
 	{
 		return AlignBottom;
 	}
@@ -239,10 +239,9 @@ public:
 		recalculateAbsolutePosition(false);
 
 		// update all children
-		core::list<IGUIElement*>::Iterator it = Children.begin();
-		for (; it != Children.end(); ++it)
+		for (auto child : Children)
 		{
-			(*it)->updateAbsolutePosition();
+			child->updateAbsolutePosition();
 		}
 	}
 
@@ -263,20 +262,19 @@ public:
 	{
 		IGUIElement* target = 0;
 
-		// we have to search from back to front, because later children
-		// might be drawn over the top of earlier ones.
-
-		core::list<IGUIElement*>::ConstIterator it = Children.getLast();
-
 		if (isVisible())
 		{
-			while(it != Children.end())
+			// we have to search from back to front, because later children
+			// might be drawn over the top of earlier ones.
+			auto it = Children.rbegin();
+			auto ie = Children.rend();
+			while (it != ie)
 			{
 				target = (*it)->getElementFromPoint(point);
 				if (target)
 					return target;
 
-				--it;
+				++it;
 			}
 		}
 
@@ -308,17 +306,19 @@ public:
 	//! Removes a child.
 	virtual void removeChild(IGUIElement* child)
 	{
-		core::list<IGUIElement*>::Iterator it = Children.begin();
-		for (; it != Children.end(); ++it)
-			if ((*it) == child)
-			{
-				(*it)->Parent = 0;
-				(*it)->drop();
-				Children.erase(it);
-				return;
-			}
+		assert(child->Parent == this);
+		Children.erase(child->ParentPos);
+		child->Parent = nullptr;
+		child->drop();
 	}
 
+	//! Removes all children.
+	virtual void removeAllChildren() {
+		while (!Children.empty()) {
+			auto child = Children.back();
+			child->remove();
+		}
+	}
 
 	//! Removes this element from its parent.
 	virtual void remove()
@@ -333,9 +333,8 @@ public:
 	{
 		if ( isVisible() )
 		{
-			core::list<IGUIElement*>::Iterator it = Children.begin();
-			for (; it != Children.end(); ++it)
-				(*it)->draw();
+			for (auto child : Children)
+				child->draw();
 		}
 	}
 
@@ -345,9 +344,8 @@ public:
 	{
 		if ( isVisible() )
 		{
-			core::list<IGUIElement*>::Iterator it = Children.begin();
-			for (; it != Children.end(); ++it)
-				(*it)->OnPostRender( timeMs );
+			for (auto child : Children)
+				child->OnPostRender( timeMs );
 		}
 	}
 
@@ -555,20 +553,15 @@ public:
 
 	//! Brings a child to front
 	/** \return True if successful, false if not. */
-	virtual bool bringToFront(IGUIElement* element)
+	virtual bool bringToFront(IGUIElement* child)
 	{
-		core::list<IGUIElement*>::Iterator it = Children.begin();
-		for (; it != Children.end(); ++it)
-		{
-			if (element == (*it))
-			{
-				Children.erase(it);
-				Children.push_back(element);
-				return true;
-			}
-		}
-
-		return false;
+		if (child->Parent != this)
+			return false;
+		if (std::next(child->ParentPos) == Children.end()) // already there
+			return true;
+		Children.erase(child->ParentPos);
+		child->ParentPos = Children.insert(Children.end(), child);
+		return true;
 	}
 
 
@@ -576,24 +569,17 @@ public:
 	/** \return True if successful, false if not. */
 	virtual bool sendToBack(IGUIElement* child)
 	{
-		core::list<IGUIElement*>::Iterator it = Children.begin();
-		if (child == (*it)) // already there
+		if (child->Parent != this)
+			return false;
+		if (child->ParentPos == Children.begin()) // already there
 			return true;
-		for (; it != Children.end(); ++it)
-		{
-			if (child == (*it))
-			{
-				Children.erase(it);
-				Children.push_front(child);
-				return true;
-			}
-		}
-
-		return false;
+		Children.erase(child->ParentPos);
+		child->ParentPos = Children.insert(Children.begin(), child);
+		return true;
 	}
 
 	//! Returns list with children of this element
-	virtual const core::list<IGUIElement*>& getChildren() const
+	virtual const std::list<IGUIElement*>& getChildren() const
 	{
 		return Children;
 	}
@@ -610,14 +596,13 @@ public:
 	{
 		IGUIElement* e = 0;
 
-		core::list<IGUIElement*>::ConstIterator it = Children.begin();
-		for (; it != Children.end(); ++it)
+		for (auto child : Children)
 		{
-			if ((*it)->getID() == id)
-				return (*it);
+			if (child->getID() == id)
+				return child;
 
 			if (searchchildren)
-				e = (*it)->getElementFromId(id, true);
+				e = child->getElementFromId(id, true);
 
 			if (e)
 				return e;
@@ -663,7 +648,7 @@ public:
 		if (wanted==-2)
 			wanted = 1073741824; // maximum s32
 
-		core::list<IGUIElement*>::ConstIterator it = Children.begin();
+		auto it = Children.begin();
 
 		s32 closestOrder, currentOrder;
 
@@ -796,62 +781,6 @@ public:
 	}
 
 
-	//! Writes attributes of the scene node.
-	/** Implement this to expose the attributes of your scene node for
-	scripting languages, editors, debuggers or xml serialization purposes. */
-	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_
-	{
-		out->addString("Name", Name.c_str());
-		out->addInt("Id", ID );
-		out->addString("Caption", getText());
-		out->addString("ToolTip", getToolTipText().c_str());
-		out->addRect("Rect", DesiredRect);
-		out->addPosition2d("MinSize", core::position2di(MinSize.Width, MinSize.Height));
-		out->addPosition2d("MaxSize", core::position2di(MaxSize.Width, MaxSize.Height));
-		out->addEnum("LeftAlign", AlignLeft, GUIAlignmentNames);
-		out->addEnum("RightAlign", AlignRight, GUIAlignmentNames);
-		out->addEnum("TopAlign", AlignTop, GUIAlignmentNames);
-		out->addEnum("BottomAlign", AlignBottom, GUIAlignmentNames);
-		out->addBool("Visible", IsVisible);
-		out->addBool("Enabled", IsEnabled);
-		out->addBool("TabStop", IsTabStop);
-		out->addBool("TabGroup", IsTabGroup);
-		out->addInt("TabOrder", TabOrder);
-		out->addBool("NoClip", NoClip);
-	}
-
-
-	//! Reads attributes of the scene node.
-	/** Implement this to set the attributes of your scene node for
-	scripting languages, editors, debuggers or xml deserialization purposes. */
-	virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_
-	{
-		setName(in->getAttributeAsString("Name", Name));
-		setID(in->getAttributeAsInt("Id", ID));
-		setText(in->getAttributeAsStringW("Caption", Text).c_str());
-		setToolTipText(in->getAttributeAsStringW("ToolTip").c_str());
-		setVisible(in->getAttributeAsBool("Visible", IsVisible));
-		setEnabled(in->getAttributeAsBool("Enabled", IsEnabled));
-		IsTabStop = in->getAttributeAsBool("TabStop", IsTabStop);
-		IsTabGroup = in->getAttributeAsBool("TabGroup", IsTabGroup);
-		TabOrder = in->getAttributeAsInt("TabOrder", TabOrder);
-
-		core::position2di p = in->getAttributeAsPosition2d("MaxSize", core::position2di(MaxSize.Width, MaxSize.Height));
-		setMaxSize(core::dimension2du(p.X,p.Y));
-
-		p = in->getAttributeAsPosition2d("MinSize", core::position2di(MinSize.Width, MinSize.Height));
-		setMinSize(core::dimension2du(p.X,p.Y));
-
-		setAlignment((EGUI_ALIGNMENT) in->getAttributeAsEnumeration("LeftAlign", GUIAlignmentNames, AlignLeft),
-			(EGUI_ALIGNMENT)in->getAttributeAsEnumeration("RightAlign", GUIAlignmentNames, AlignRight),
-			(EGUI_ALIGNMENT)in->getAttributeAsEnumeration("TopAlign", GUIAlignmentNames, AlignTop),
-			(EGUI_ALIGNMENT)in->getAttributeAsEnumeration("BottomAlign", GUIAlignmentNames, AlignBottom));
-
-		setRelativePosition(in->getAttributeAsRect("Rect", DesiredRect));
-
-		setNotClipped(in->getAttributeAsBool("NoClip", NoClip));
-	}
-
 protected:
 	// not virtual because needed in constructor
 	void addChildToEnd(IGUIElement* child)
@@ -862,9 +791,39 @@ protected:
 			child->remove(); // remove from old parent
 			child->LastParentRect = getAbsolutePosition();
 			child->Parent = this;
-			Children.push_back(child);
+			child->ParentPos = Children.insert(Children.end(), child);
 		}
 	}
+
+#ifndef NDEBUG
+	template<typename Iterator>
+	static size_t _fastSetChecksum(Iterator begin, Iterator end) {
+		std::hash<typename Iterator::value_type> hasher;
+		size_t checksum = 0;
+		for (Iterator it = begin; it != end; ++it) {
+			size_t h = hasher(*it);
+			checksum ^= 966073049 + (h * 3432918353) + ((h >> 16) * 461845907);
+		}
+		return checksum;
+	}
+#endif
+
+	// Reorder children [from, to) to the order given by `neworder`
+	void reorderChildren(
+		std::list<IGUIElement*>::iterator from,
+		std::list<IGUIElement*>::iterator to,
+		const std::vector<IGUIElement*> &neworder)
+	{
+		assert(_fastSetChecksum(from, to) == _fastSetChecksum(neworder.begin(), neworder.end()));
+		for (auto e : neworder)
+		{
+			*from = e;
+			e->ParentPos = from;
+			++from;
+		}
+		assert(from == to);
+	}
+
 
 	// not virtual because needed in constructor
 	void recalculateAbsolutePosition(bool recursive)
@@ -987,10 +946,9 @@ protected:
 		if ( recursive )
 		{
 			// update all children
-			core::list<IGUIElement*>::Iterator it = Children.begin();
-			for (; it != Children.end(); ++it)
+			for (auto child : Children)
 			{
-				(*it)->recalculateAbsolutePosition(recursive);
+				child->recalculateAbsolutePosition(recursive);
 			}
 		}
 	}
@@ -998,10 +956,13 @@ protected:
 protected:
 
 	//! List of all children of this element
-	core::list<IGUIElement*> Children;
+	std::list<IGUIElement*> Children;
 
 	//! Pointer to the parent
 	IGUIElement* Parent;
+
+	//! Our position in the parent list. Only valid when Parent != nullptr
+	std::list<IGUIElement*>::iterator ParentPos;
 
 	//! relative rect of element
 	core::rect<s32> RelativeRect;

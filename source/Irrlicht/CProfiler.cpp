@@ -73,21 +73,12 @@ core::stringw CProfiler::getAsString(const SProfileData& data) const
 {
 	if ( data.getCallsCounter() > 0 )
 	{
-#ifdef _MSC_VER
-#pragma warning(disable:4996)	// 'sprintf' was declared deprecated
-#endif
-		// Can't use swprintf as it fails on some platforms (especially mobile platforms)
-		// Can't use Irrlicht functions because we have no string formatting.
-		char dummy[1023];
-		sprintf(dummy, "%-15.15s%-12u%-12u%-12u%-12u",
-			core::stringc(data.getName()).c_str(), data.getCallsCounter(), data.getTimeSum(),
+		wchar_t dummy[512];
+		swprintf_irr(dummy, 512, L"%-15.15s%-12u%-12u%-12u%-12u",
+			data.getName().c_str(), data.getCallsCounter(), data.getTimeSum(),
 			data.getTimeSum() / data.getCallsCounter(), data.getLongestTime());
-		dummy[1022] = 0;
 
 		return core::stringw(dummy);
-#ifdef _MSC_VER
-#pragma warning(default :4996)	// 'sprintf' was declared deprecated
-#endif
 	}
 	else
 	{

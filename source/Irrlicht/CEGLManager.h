@@ -15,10 +15,6 @@
 #include "SExposedVideoData.h"
 #include "IContextManager.h"
 
-#ifdef _MSC_VER
-#pragma comment(lib, "libEGL.lib")
-#endif
-
 namespace irr
 {
 namespace video

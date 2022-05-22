@@ -102,7 +102,7 @@ namespace
 #if defined(_IRR_LINUX_X11_XINPUT2_)
 	int XI_EXTENSIONS_OPCODE;
 #endif
-};
+}
 
 namespace irr
 {
@@ -1701,7 +1701,7 @@ bool CIrrDeviceLinux::activateJoysticks(core::array<SJoystickInfo> & joystickInf
 	for (joystick = 0; joystick < joystickInfo.size(); ++joystick)
 	{
 		char logString[256];
-		(void)sprintf(logString, "Found joystick %u, %u axes, %u buttons '%s'",
+		snprintf_irr(logString, sizeof(logString), "Found joystick %d, %d axes, %d buttons '%s'",
 			joystick, joystickInfo[joystick].Axes,
 			joystickInfo[joystick].Buttons, joystickInfo[joystick].Name.c_str());
 		os::Printer::log(logString, ELL_INFORMATION);

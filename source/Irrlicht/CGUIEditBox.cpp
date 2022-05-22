@@ -1650,60 +1650,6 @@ bool CGUIEditBox::acceptsIME()
 	return isEnabled();
 }
 
-//! Writes attributes of the element.
-void CGUIEditBox::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const
-{
-	// IGUIEditBox::serializeAttributes(out,options);
-
-	out->addBool  ("Border", Border);
-	out->addBool  ("Background", Background);
-	out->addBool  ("OverrideColorEnabled", OverrideColorEnabled );
-	out->addColor ("OverrideColor", OverrideColor);
-	// out->addFont("OverrideFont", OverrideFont);
-	out->addInt   ("MaxChars", Max);
-	out->addBool  ("WordWrap", WordWrap);
-	out->addBool  ("MultiLine", MultiLine);
-	out->addBool  ("AutoScroll", AutoScroll);
-	out->addBool  ("PasswordBox", PasswordBox);
-	core::stringw ch = L" ";
-	ch[0] = PasswordChar;
-	out->addString("PasswordChar", ch.c_str());
-	out->addEnum  ("HTextAlign", HAlign, GUIAlignmentNames);
-	out->addEnum  ("VTextAlign", VAlign, GUIAlignmentNames);
-
-	IGUIEditBox::serializeAttributes(out,options);
-}
-
-
-//! Reads attributes of the element
-void CGUIEditBox::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)
-{
-	IGUIEditBox::deserializeAttributes(in,options);
-
-	setDrawBorder( in->getAttributeAsBool("Border", Border) );
-	setDrawBackground( in->getAttributeAsBool("Background", Background) );
-	setOverrideColor(in->getAttributeAsColor("OverrideColor", OverrideColor));
-	enableOverrideColor(in->getAttributeAsBool("OverrideColorEnabled", OverrideColorEnabled));
-	setMax(in->getAttributeAsInt("MaxChars", Max));
-	setWordWrap(in->getAttributeAsBool("WordWrap", WordWrap));
-	setMultiLine(in->getAttributeAsBool("MultiLine", MultiLine));
-	setAutoScroll(in->getAttributeAsBool("AutoScroll", AutoScroll));
-	core::stringw ch = L" ";
-	ch[0] = PasswordChar;
-	ch = in->getAttributeAsStringW("PasswordChar", ch);
-
-	if (!ch.size())
-		setPasswordBox(in->getAttributeAsBool("PasswordBox", PasswordBox));
-	else
-		setPasswordBox(in->getAttributeAsBool("PasswordBox", PasswordBox), ch[0]);
-
-	setTextAlignment( (EGUI_ALIGNMENT) in->getAttributeAsEnumeration("HTextAlign", GUIAlignmentNames, (s32)HAlign),
-			(EGUI_ALIGNMENT) in->getAttributeAsEnumeration("VTextAlign", GUIAlignmentNames, (s32)VAlign));
-
-	// setOverrideFont(in->getAttributeAsFont("OverrideFont"));
-}
-
-
 } // end namespace gui
 } // end namespace irr
 

@@ -8,18 +8,16 @@
 #include "irrMath.h"
 
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-	#include <SDL/SDL_endian.h>
+	#include <SDL_endian.h>
 	#define bswap_16(X) SDL_Swap16(X)
 	#define bswap_32(X) SDL_Swap32(X)
 	#define bswap_64(X) SDL_Swap64(X)
-#elif defined(_IRR_WINDOWS_API_) && defined(_MSC_VER) && (_MSC_VER > 1298)
+#elif defined(_IRR_WINDOWS_API_) && defined(_MSC_VER)
 	#include <stdlib.h>
 	#define bswap_16(X) _byteswap_ushort(X)
 	#define bswap_32(X) _byteswap_ulong(X)
 	#define bswap_64(X) _byteswap_uint64(X)
-#if (_MSC_VER >= 1400)
 	#define localtime _localtime_s
-#endif
 #elif defined(_IRR_OSX_PLATFORM_) || defined(_IRR_IOS_PLATFORM_)
 	#include <libkern/OSByteOrder.h>
 	#define bswap_16(X) OSReadSwapInt16(&X,0)
@@ -65,13 +63,9 @@ namespace os
 // Windows specific functions
 // ----------------------------------------------------------------
 
-#ifdef _IRR_XBOX_PLATFORM_
-#include <xtl.h>
-#else
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <time.h>
-#endif
 
 namespace irr
 {
@@ -80,30 +74,17 @@ namespace os
 	//! prints a debuginfo string
 	void Printer::print(const c8* message, ELOG_LEVEL ll)
 	{
-#if defined (_WIN32_WCE )
-		core::stringw tmp(message);
-		tmp += L"\n";
-		OutputDebugStringW(tmp.c_str());
-#else
 		core::stringc tmp(message);
 		tmp += "\n";
 		OutputDebugStringA(tmp.c_str());
 		printf("%s", tmp.c_str());
-#endif
 	}
 
 	static LARGE_INTEGER HighPerformanceFreq;
 	static BOOL HighPerformanceTimerSupport = FALSE;
-	static BOOL MultiCore = FALSE;
 
 	void Timer::initTimer(bool usePerformanceTimer)
 	{
-#if !defined(_WIN32_WCE) && !defined (_IRR_XBOX_PLATFORM_)
-		// workaround for hires timer on multiple core systems, bios bugs result in bad hires timers.
-		SYSTEM_INFO sysinfo;
-		GetSystemInfo(&sysinfo);
-		MultiCore = (sysinfo.dwNumberOfProcessors > 1);
-#endif
 		if (usePerformanceTimer)
 			HighPerformanceTimerSupport = QueryPerformanceFrequency(&HighPerformanceFreq);
 		else
@@ -115,24 +96,11 @@ namespace os
 	{
 		if (HighPerformanceTimerSupport)
 		{
-#if !defined(_WIN32_WCE) && !defined (_IRR_XBOX_PLATFORM_)
-			// Avoid potential timing inaccuracies across multiple cores by
-			// temporarily setting the affinity of this process to one core.
-			DWORD_PTR affinityMask=0;
-			if(MultiCore)
-				affinityMask = SetThreadAffinityMask(GetCurrentThread(), 1);
-#endif
 			LARGE_INTEGER nTime;
 			BOOL queriedOK = QueryPerformanceCounter(&nTime);
 
-#if !defined(_WIN32_WCE)  && !defined (_IRR_XBOX_PLATFORM_)
-			// Restore the true affinity.
-			if(MultiCore)
-				(void)SetThreadAffinityMask(GetCurrentThread(), affinityMask);
-#endif
 			if(queriedOK)
 				return u32((nTime.QuadPart) * 1000 / HighPerformanceFreq.QuadPart);
-
 		}
 
 		return GetTickCount();
@@ -336,12 +304,6 @@ namespace os
 			seed += m;
 
 		return seed-1;	// -1 because we want it to start at 0
-	}
-
-	//! generates a pseudo random number
-	f32 Randomizer::frand()
-	{
-		return rand()*(1.f/rMax);
 	}
 
 	s32 Randomizer::randMax()

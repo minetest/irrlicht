@@ -66,11 +66,10 @@ void CGUITreeViewNode::setIcon( const wchar_t* icon )
 
 void CGUITreeViewNode::clearChildren()
 {
-	core::list<CGUITreeViewNode*>::Iterator	it;
-
-	for( it = Children.begin(); it != Children.end(); it++ )
+	for (auto child : Children)
 	{
-		( *it )->drop();
+		child->Parent = nullptr;
+		child->drop();
 	}
 	Children.clear();
 }
@@ -83,9 +82,8 @@ IGUITreeViewNode* CGUITreeViewNode::addChildBack(
 	void*					data /*= 0*/,
 	IReferenceCounted*			data2 /*= 0*/ )
 {
-	CGUITreeViewNode*	newChild = new CGUITreeViewNode( Owner, this );
-
-	Children.push_back( newChild );
+	auto newChild = new CGUITreeViewNode( Owner, this );
+	newChild->ParentPos = Children.insert(Children.end(), newChild);
 	newChild->Text = text;
 	newChild->Icon = icon;
 	newChild->ImageIndex = imageIndex;
@@ -107,9 +105,8 @@ IGUITreeViewNode* CGUITreeViewNode::addChildFront(
 	void*					data /*= 0*/,
 	IReferenceCounted*			data2 /*= 0*/ )
 {
-	CGUITreeViewNode*	newChild = new CGUITreeViewNode( Owner, this );
-
-	Children.push_front( newChild );
+	auto newChild = new CGUITreeViewNode( Owner, this );
+	newChild->ParentPos = Children.insert(Children.begin(), newChild);
 	newChild->Text = text;
 	newChild->Icon = icon;
 	newChild->ImageIndex = imageIndex;
@@ -124,7 +121,7 @@ IGUITreeViewNode* CGUITreeViewNode::addChildFront(
 }
 
 IGUITreeViewNode* CGUITreeViewNode::insertChildAfter(
-	IGUITreeViewNode*	other,
+	IGUITreeViewNode*	iother,
 	const wchar_t*		text,
 	const wchar_t*		icon /*= 0*/,
 	s32					imageIndex /*= -1*/,
@@ -132,33 +129,27 @@ IGUITreeViewNode* CGUITreeViewNode::insertChildAfter(
 	void*					data /*= 0*/,
 	IReferenceCounted*			data2/* = 0*/ )
 {
-	core::list<CGUITreeViewNode*>::Iterator	itOther;
-	CGUITreeViewNode*									newChild = 0;
-
-	for( itOther = Children.begin(); itOther != Children.end(); itOther++ )
-	{
-		if( other == *itOther )
-		{
-			newChild = new CGUITreeViewNode( Owner, this );
-			newChild->Text = text;
-			newChild->Icon = icon;
-			newChild->ImageIndex = imageIndex;
-			newChild->SelectedImageIndex = selectedImageIndex;
-			newChild->Data = data;
-			newChild->Data2 = data2;
-			if( data2 )
-			{
-				data2->grab();
-			}
-			Children.insert_after( itOther, newChild );
-			break;
-		}
-	}
+	// This cast is needed to access the ParentPos member of `other`.
+	// The abstraction was already broken, because Children is a list of
+	// CGUITreeViewNode, not IGUITreeViewNode. The existing code was
+	// implicitly casting through pointer comparison.
+	auto other = static_cast<CGUITreeViewNode*>(iother);
+	assert(other->Parent == this);
+	auto newChild = new CGUITreeViewNode( Owner, this );
+	newChild->ParentPos = Children.insert(std::next(other->ParentPos), newChild);
+	newChild->Text = text;
+	newChild->Icon = icon;
+	newChild->ImageIndex = imageIndex;
+	newChild->SelectedImageIndex = selectedImageIndex;
+	newChild->Data = data;
+	newChild->Data2 = data2;
+	if( data2 )
+		data2->grab();
 	return newChild;
 }
 
 IGUITreeViewNode* CGUITreeViewNode::insertChildBefore(
-	IGUITreeViewNode*	other,
+	IGUITreeViewNode*	iother,
 	const wchar_t*		text,
 	const wchar_t*		icon /*= 0*/,
 	s32					imageIndex /*= -1*/,
@@ -166,28 +157,18 @@ IGUITreeViewNode* CGUITreeViewNode::insertChildBefore(
 	void*					data /*= 0*/,
 	IReferenceCounted*			data2/* = 0*/ )
 {
-	core::list<CGUITreeViewNode*>::Iterator	itOther;
-	CGUITreeViewNode*									newChild = 0;
-
-	for( itOther = Children.begin(); itOther != Children.end(); itOther++ )
-	{
-		if( other == *itOther )
-		{
-			newChild = new CGUITreeViewNode( Owner, this );
-			newChild->Text = text;
-			newChild->Icon = icon;
-			newChild->ImageIndex = imageIndex;
-			newChild->SelectedImageIndex = selectedImageIndex;
-			newChild->Data = data;
-			newChild->Data2 = data2;
-			if( data2 )
-			{
-				data2->grab();
-			}
-			Children.insert_before( itOther, newChild );
-			break;
-		}
-	}
+	auto other = static_cast<CGUITreeViewNode*>(iother);
+	assert(other->Parent == this);
+	auto newChild = new CGUITreeViewNode( Owner, this );
+	newChild->ParentPos = Children.insert(other->ParentPos, newChild);
+	newChild->Text = text;
+	newChild->Icon = icon;
+	newChild->ImageIndex = imageIndex;
+	newChild->SelectedImageIndex = selectedImageIndex;
+	newChild->Data = data;
+	newChild->Data2 = data2;
+	if( data2 )
+		data2->grab();
 	return newChild;
 }
 
@@ -199,7 +180,7 @@ IGUITreeViewNode* CGUITreeViewNode::getFirstChild() const
 	}
 	else
 	{
-		return *( Children.begin() );
+		return Children.front();
 	}
 }
 
@@ -211,54 +192,25 @@ IGUITreeViewNode* CGUITreeViewNode::getLastChild() const
 	}
 	else
 	{
-		return *( Children.getLast() );
+		return Children.back();
 	}
 }
 
 IGUITreeViewNode* CGUITreeViewNode::getPrevSibling() const
 {
-	core::list<CGUITreeViewNode*>::Iterator	itThis;
-	core::list<CGUITreeViewNode*>::Iterator	itOther;
-	CGUITreeViewNode*									other = 0;
-
-	if( Parent )
-	{
-		for( itThis = Parent->Children.begin(); itThis != Parent->Children.end(); itThis++ )
-		{
-			if( this == *itThis )
-			{
-				if( itThis != Parent->Children.begin() )
-				{
-					other = *itOther;
-				}
-				break;
-			}
-			itOther = itThis;
-		}
-	}
-	return other;
+	if (!Parent || ParentPos == Parent->Children.begin())
+		return nullptr;
+	return *std::prev(ParentPos);
 }
 
 IGUITreeViewNode* CGUITreeViewNode::getNextSibling() const
 {
-	core::list<CGUITreeViewNode*>::Iterator	itThis;
-	CGUITreeViewNode*									other = 0;
-
-	if( Parent )
-	{
-		for( itThis = Parent->Children.begin(); itThis != Parent->Children.end(); itThis++ )
-		{
-			if( this == *itThis )
-			{
-				if( itThis != Parent->Children.getLast() )
-				{
-					other = *( ++itThis );
-				}
-				break;
-			}
-		}
-	}
-	return other;
+	if (!Parent)
+		return nullptr;
+	auto nextIt = std::next(ParentPos);
+	if (nextIt == Parent->Children.end())
+		return nullptr;
+	return *nextIt;
 }
 
 IGUITreeViewNode* CGUITreeViewNode::getNextVisible() const
@@ -286,73 +238,40 @@ IGUITreeViewNode* CGUITreeViewNode::getNextVisible() const
 	return next;
 }
 
-bool CGUITreeViewNode::deleteChild( IGUITreeViewNode* child )
+bool CGUITreeViewNode::deleteChild( IGUITreeViewNode* ichild )
 {
-	core::list<CGUITreeViewNode*>::Iterator	itChild;
-	bool	deleted = false;
-
-	for( itChild = Children.begin(); itChild != Children.end(); itChild++ )
-	{
-		if( child == *itChild )
-		{
-			child->drop();
-			Children.erase( itChild );
-			deleted = true;
-			break;
-		}
-	}
-	return deleted;
+	auto child = static_cast<CGUITreeViewNode*>(ichild);
+	assert(child->Parent == this);
+	Children.erase(child->ParentPos);
+	child->Parent = nullptr;
+	child->drop();
+	return true;
 }
 
-bool CGUITreeViewNode::moveChildUp( IGUITreeViewNode* child )
+bool CGUITreeViewNode::moveChildUp( IGUITreeViewNode* ichild )
 {
-	core::list<CGUITreeViewNode*>::Iterator	itChild;
-	core::list<CGUITreeViewNode*>::Iterator	itOther;
-	CGUITreeViewNode*									nodeTmp;
-	bool													moved = false;
-
-	for( itChild = Children.begin(); itChild != Children.end(); itChild++ )
-	{
-		if( child == *itChild )
-		{
-			if( itChild != Children.begin() )
-			{
-				nodeTmp = *itChild;
-				*itChild = *itOther;
-				*itOther = nodeTmp;
-				moved = true;
-			}
-			break;
-		}
-		itOther = itChild;
-	}
-	return moved;
+	auto child = static_cast<CGUITreeViewNode*>(ichild);
+	assert(child->Parent == this);
+	if (child->ParentPos == Children.begin())
+		return false;
+	auto curPos = child->ParentPos;
+	auto prevPos = std::prev(child->ParentPos);
+	std::swap(*curPos, *prevPos);
+	std::swap((*curPos)->ParentPos, (*prevPos)->ParentPos);
+	return true;
 }
 
-bool CGUITreeViewNode::moveChildDown( IGUITreeViewNode* child )
+bool CGUITreeViewNode::moveChildDown( IGUITreeViewNode* ichild )
 {
-	core::list<CGUITreeViewNode*>::Iterator	itChild;
-	core::list<CGUITreeViewNode*>::Iterator	itOther;
-	CGUITreeViewNode*									nodeTmp;
-	bool													moved = false;
-
-	for( itChild = Children.begin(); itChild != Children.end(); itChild++ )
-	{
-		if( child == *itChild )
-		{
-			if( itChild != Children.getLast() )
-			{
-				itOther = itChild;
-				++itOther;
-				nodeTmp = *itChild;
-				*itChild = *itOther;
-				*itOther = nodeTmp;
-				moved = true;
-			}
-			break;
-		}
-	}
-	return moved;
+	auto child = static_cast<CGUITreeViewNode*>(ichild);
+	assert(child->Parent == this);
+	auto nextPos = std::next(child->ParentPos);
+	if (nextPos == Children.end())
+		return false;
+	auto curPos = child->ParentPos;
+	std::swap(*curPos, *nextPos);
+	std::swap((*curPos)->ParentPos, (*nextPos)->ParentPos);
+	return true;
 }
 
 void CGUITreeViewNode::setExpanded( bool expanded )

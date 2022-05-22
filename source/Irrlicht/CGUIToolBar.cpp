@@ -34,11 +34,8 @@ CGUIToolBar::CGUIToolBar(IGUIEnvironment* environment, IGUIElement* parent, s32 
 		parentwidth = Parent->getAbsolutePosition().getWidth();
 		s32 parentheight = Parent->getAbsolutePosition().getHeight();
 
-		const core::list<IGUIElement*>& children = parent->getChildren();
-		core::list<IGUIElement*>::ConstIterator it = children.begin();
-		for (; it != children.end(); ++it)
+		for (const auto& e : parent->getChildren())
 		{
-			const IGUIElement* e = *it;
 			if (	e->hasType(EGUIET_CONTEXT_MENU) 
 				||	e->hasType(EGUIET_MENU) 
 				||	e->hasType(EGUIET_TOOL_BAR)  )

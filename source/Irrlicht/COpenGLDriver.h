@@ -44,13 +44,7 @@ namespace video
 			EOFPS_DISABLE_TO_ENABLE // switch from programmable to fixed pipeline.
 		};
 
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) || defined(_IRR_COMPILE_WITH_X11_DEVICE_) || defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
 		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
-#endif
-
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceSDL* device);
-#endif
 
 		bool initDriver();
 
@@ -148,6 +142,9 @@ namespace video
 			const core::rect<s32>& sourceRect, const core::rect<s32>* clipRect = 0,
 			const video::SColor* const colors = 0, bool useAlphaChannelOfTexture = false) _IRR_OVERRIDE_;
 
+		// Explicitly bring in base class methods, otherwise
+		// this overload would hide them.
+		using CNullDriver::draw2DImage;
 		virtual void draw2DImage(const video::ITexture* texture, u32 layer, bool flip);
 
 		//! draws a set of 2d images, using a color and the alpha channel of the
@@ -517,13 +514,7 @@ namespace video
 		S3DVertex Quad2DVertices[4];
 		static const u16 Quad2DIndices[4];
 
-		#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-			CIrrDeviceSDL *SDLDevice;
-		#endif
-
 		IContextManager* ContextManager;
-
-		E_DEVICE_TYPE DeviceType;
 	};
 
 } // end namespace video

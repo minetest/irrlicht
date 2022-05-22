@@ -532,39 +532,6 @@ void CGUIScrollBar::refreshControls()
 	}
 }
 
-
-//! Writes attributes of the element.
-void CGUIScrollBar::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const
-{
-	IGUIScrollBar::serializeAttributes(out,options);
-
-	out->addBool("Horizontal",	Horizontal);
-	out->addInt ("Value",		Pos);
-	out->addInt ("Min",			Min);
-	out->addInt ("Max",			Max);
-	out->addInt ("SmallStep",	SmallStep);
-	out->addInt ("LargeStep",	LargeStep);
-	// CurrentIconColor - not serialized as continuously updated
-}
-
-
-//! Reads attributes of the element
-void CGUIScrollBar::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)
-{
-	IGUIScrollBar::deserializeAttributes(in,options);
-
-	Horizontal = in->getAttributeAsBool("Horizontal", Horizontal);
-	setMin(in->getAttributeAsInt("Min", Min));
-	setMax(in->getAttributeAsInt("Max", Max));
-	setPos(in->getAttributeAsInt("Value", Pos));
-	setSmallStep(in->getAttributeAsInt("SmallStep", SmallStep));
-	setLargeStep(in->getAttributeAsInt("LargeStep", LargeStep));
-	// CurrentIconColor - not serialized as continuously updated
-
-	refreshControls();
-}
-
-
 } // end namespace gui
 } // end namespace irr
 

@@ -14,7 +14,6 @@
 #include "IMeshBuffer.h"
 #include "IWriteFile.h"
 #include "ITexture.h"
-#include "irrMap.h"
 
 
 namespace irr
@@ -60,7 +59,7 @@ bool CB3DMeshWriter::writeMesh(io::IWriteFile* file, IMesh* const mesh, s32 flag
 
     const u32 numMeshBuffers = mesh->getMeshBufferCount();
     array<SB3dTexture> texs;
-    map<ITexture *, u32> tex2id;	// TODO: texture pointer as key not sufficient as same texture can have several id's
+    std::map<ITexture *, u32> tex2id;	// TODO: texture pointer as key not sufficient as same texture can have several id's
     u32 texsizes = 0;
     for (u32 i = 0; i < numMeshBuffers; i++)
 	{

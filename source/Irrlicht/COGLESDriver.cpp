@@ -112,12 +112,12 @@ bool COGLES1Driver::genericDriverInit(const core::dimension2d<u32>& screenSize, 
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
 	UserClipPlane.reallocate(MaxUserClipPlanes);
-	UserClipPlaneEnabled.reallocate(MaxUserClipPlanes);
+	UserClipPlaneEnabled.resize(MaxUserClipPlanes);
 
 	for (s32 i = 0; i < MaxUserClipPlanes; ++i)
 	{
 		UserClipPlane.push_back(core::plane3df());
-		UserClipPlaneEnabled.push_back(false);
+		UserClipPlaneEnabled[i] = false;
 	}
 
 	for (s32 i = 0; i < ETS_COUNT; ++i)
@@ -183,17 +183,6 @@ void COGLES1Driver::createMaterialRenderers()
 	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_TRANSPARENT_ALPHA_CHANNEL_REF(this));
 	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_TRANSPARENT_VERTEX_ALPHA(this));
 	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_TRANSPARENT_REFLECTION_2_LAYER(this));
-
-	// add normal map renderers
-// TODO ogl-es
-	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_SOLID(this));
-	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_SOLID(this));
-	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_SOLID(this));
-
-	// add parallax map renderers
-	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_SOLID(this));
-	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_SOLID(this));
-	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_SOLID(this));
 
 	// add basic 1 texture blending
 	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_ONETEXTURE_BLEND(this));
@@ -467,13 +456,12 @@ COGLES1Driver::SHWBufferLink *COGLES1Driver::createHardwareBuffer(const scene::I
 	SHWBufferLink_opengl *HWBuffer=new SHWBufferLink_opengl(mb);
 
 	//add to map
-	HWBufferMap.insert(HWBuffer->MeshBuffer, HWBuffer);
+	HWBuffer->listPosition = HWBufferList.insert(HWBufferList.end(), HWBuffer);
 
 	HWBuffer->ChangedID_Vertex=HWBuffer->MeshBuffer->getChangedID_Vertex();
 	HWBuffer->ChangedID_Index=HWBuffer->MeshBuffer->getChangedID_Index();
 	HWBuffer->Mapped_Vertex=mb->getHardwareMappingHint_Vertex();
 	HWBuffer->Mapped_Index=mb->getHardwareMappingHint_Index();
-	HWBuffer->LastUsed=0;
 	HWBuffer->vbo_verticesID=0;
 	HWBuffer->vbo_indicesID=0;
 	HWBuffer->vbo_verticesSize=0;
@@ -519,8 +507,6 @@ void COGLES1Driver::drawHardwareBuffer(SHWBufferLink *_HWBuffer)
 	SHWBufferLink_opengl *HWBuffer=static_cast<SHWBufferLink_opengl*>(_HWBuffer);
 
 	updateHardwareBuffer(HWBuffer); //check if update is needed
-
-	HWBuffer->LastUsed=0;//reset count
 
 	const scene::IMeshBuffer* mb = HWBuffer->MeshBuffer;
 	const void *vertices=mb->getVertices();

@@ -7,6 +7,8 @@
 
 #include "irrMath.h"
 
+#include <functional>
+
 namespace irr
 {
 namespace core
@@ -50,8 +52,8 @@ namespace core
 
 		vector3d<T> operator/(const vector3d<T>& other) const { return vector3d<T>(X / other.X, Y / other.Y, Z / other.Z); }
 		vector3d<T>& operator/=(const vector3d<T>& other) { X/=other.X; Y/=other.Y; Z/=other.Z; return *this; }
-		vector3d<T> operator/(const T v) const { T i=(T)1.0/v; return vector3d<T>(X * i, Y * i, Z * i); }
-		vector3d<T>& operator/=(const T v) { T i=(T)1.0/v; X*=i; Y*=i; Z*=i; return *this; }
+		vector3d<T> operator/(const T v) const { return vector3d<T>(X/v, Y/v, Z/v); }
+		vector3d<T>& operator/=(const T v) { X/=v; Y/=v; Z/=v; return *this; }
 
 		T& operator [](u32 index)
 		{
@@ -465,6 +467,23 @@ namespace core
 
 } // end namespace core
 } // end namespace irr
+
+namespace std
+{
+
+template<class T>
+struct hash<irr::core::vector3d<T> >
+{
+	size_t operator()(const irr::core::vector3d<T>& vec) const
+	{
+		size_t h1 = hash<T>()(vec.X);
+		size_t h2 = hash<T>()(vec.Y);
+		size_t h3 = hash<T>()(vec.Z);
+		return (h1 << (5 * sizeof(h1)) | h1 >> (3 * sizeof(h1))) ^ (h2 << (2 * sizeof(h2)) | h2 >> (6 * sizeof(h2))) ^ h3;
+	}
+};
+
+}
 
 #endif
 

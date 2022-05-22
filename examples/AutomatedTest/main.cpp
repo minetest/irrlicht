@@ -1,7 +1,13 @@
+#include <iostream>
 #include <irrlicht.h>
 #include "exampleHelper.h"
 
 using namespace irr;
+
+static IrrlichtDevice *device = nullptr;
+static int test_fail = 0;
+
+extern void test_irr_array();
 
 static video::E_DRIVER_TYPE chooseDriver(const char *arg_)
 {
@@ -15,17 +21,41 @@ static video::E_DRIVER_TYPE chooseDriver(const char *arg_)
 	return video::EDT_OPENGL;
 }
 
+static inline void check(bool ok, const char *msg)
+{
+	if (!ok)
+	{
+		test_fail++;
+		device->getLogger()->log((core::stringc("FAILED TEST: ") + msg).c_str(), ELL_ERROR);
+	}
+}
+
+void run_unit_tests() {
+	std::cout << "Running unit tests:" << std::endl;
+	test_irr_array();
+}
+
 int main(int argc, char *argv[])
 {
+	run_unit_tests();
+
 	SIrrlichtCreationParameters p;
 	p.DriverType = chooseDriver(argc > 1 ? argv[1] : "");
 	p.WindowSize = core::dimension2du(640, 480);
 	p.Vsync = true;
 	p.LoggingLevel = ELL_DEBUG;
 
-	IrrlichtDevice *device = createDeviceEx(p);
+	device = createDeviceEx(p);
 	if (!device)
 		return 1;
+
+	{
+		u32 total = 0;
+		device->getOSOperator()->getSystemMemory(&total, nullptr);
+		core::stringc message = core::stringc("Total RAM in MiB: ") + core::stringc(total >> 10);
+		device->getLogger()->log(message.c_str(), ELL_INFORMATION);
+		check(total > 130 * 1024, "RAM amount");
+	}
 
 	device->setWindowCaption(L"Hello World!");
 	device->setResizable(true);
@@ -46,15 +76,19 @@ int main(int argc, char *argv[])
 	const io::path mediaPath = getExampleMediaPath();
 
 	scene::IAnimatedMesh* mesh = smgr->getMesh(mediaPath + "coolguy_opt.x");
-	if (!mesh)
-		return 1;
-	scene::IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode(mesh);
-	if (node)
+	check(mesh, "mesh loading");
+	if (mesh)
 	{
-		node->setMaterialFlag(video::EMF_LIGHTING, false);
-		node->setFrameLoop(0, 29);
-		node->setAnimationSpeed(30);
-		node->setMaterialTexture(0, driver->getTexture(mediaPath + "cooltexture.png"));
+		video::ITexture* tex = driver->getTexture(mediaPath + "cooltexture.png");
+		check(tex, "texture loading");
+		scene::IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode(mesh);
+		if (node)
+		{
+			node->setMaterialFlag(video::EMF_LIGHTING, false);
+			node->setFrameLoop(0, 29);
+			node->setAnimationSpeed(30);
+			node->setMaterialTexture(0, tex);
+		}
 	}
 
 	smgr->addCameraSceneNode(0, core::vector3df(0,4,5), core::vector3df(0,2,0));
@@ -102,12 +136,9 @@ int main(int argc, char *argv[])
 		driver->endScene();
 	}
 
-	if (core::stringw(L"a") != editbox->getText()) {
-		device->getLogger()->log("EditBox text mismatch", ELL_INFORMATION);
-		return 1;
-	}
+	check(core::stringw(L"a") == editbox->getText(), "EditBox text");
 
 	device->getLogger()->log("Done.", ELL_INFORMATION);
 	device->drop();
-	return 0;
+	return test_fail > 0 ? 1 : 0;
 }

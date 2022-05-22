@@ -5,7 +5,7 @@
 #ifndef __I_SCENE_NODE_H_INCLUDED__
 #define __I_SCENE_NODE_H_INCLUDED__
 
-#include "IAttributeExchangingObject.h"
+#include "IReferenceCounted.h"
 #include "ESceneNodeTypes.h"
 #include "ECullingTypes.h"
 #include "EDebugSceneTypes.h"
@@ -13,8 +13,8 @@
 #include "irrString.h"
 #include "aabbox3d.h"
 #include "matrix4.h"
-#include "irrList.h"
 #include "IAttributes.h"
+#include <list>
 
 namespace irr
 {
@@ -24,7 +24,7 @@ namespace scene
 	class ISceneManager;
 
 	//! Typedef for list of scene nodes
-	typedef core::list<ISceneNode*> ISceneNodeList;
+	typedef std::list<ISceneNode*> ISceneNodeList;
 
 	//! Scene node interface.
 	/** A scene node is a node in the hierarchical scene graph. Every scene
@@ -34,7 +34,7 @@ namespace scene
 	example easily possible to attach a light to a moving car, or to place
 	a walking character on a moving platform on a moving ship.
 	*/
-	class ISceneNode : virtual public io::IAttributeExchangingObject
+	class ISceneNode : virtual public IReferenceCounted
 	{
 	public:
 
@@ -81,7 +81,7 @@ namespace scene
 		{
 			if (IsVisible)
 			{
-				ISceneNodeList::Iterator it = Children.begin();
+				ISceneNodeList::iterator it = Children.begin();
 				for (; it != Children.end(); ++it)
 					(*it)->OnRegisterSceneNode();
 			}
@@ -103,7 +103,7 @@ namespace scene
 
 				// perform the post render process on all children
 
-				ISceneNodeList::Iterator it = Children.begin();
+				ISceneNodeList::iterator it = Children.begin();
 				for (; it != Children.end(); ++it)
 					(*it)->OnAnimate(timeMs);
 			}
@@ -289,7 +289,7 @@ namespace scene
 		e.g. because it couldn't be found in the children list. */
 		virtual bool removeChild(ISceneNode* child)
 		{
-			ISceneNodeList::Iterator it = Children.begin();
+			ISceneNodeList::iterator it = Children.begin();
 			for (; it != Children.end(); ++it)
 				if ((*it) == child)
 				{
@@ -309,7 +309,7 @@ namespace scene
 		*/
 		virtual void removeAll()
 		{
-			ISceneNodeList::Iterator it = Children.begin();
+			ISceneNodeList::iterator it = Children.begin();
 			for (; it != Children.end(); ++it)
 			{
 				(*it)->Parent = 0;
@@ -519,7 +519,7 @@ namespace scene
 
 		//! Returns a const reference to the list of all children.
 		/** \return The list of all children of this node. */
-		const core::list<ISceneNode*>& getChildren() const
+		const std::list<ISceneNode*>& getChildren() const
 		{
 			return Children;
 		}
@@ -571,67 +571,6 @@ namespace scene
 			return ESNT_UNKNOWN;
 		}
 
-
-		//! Writes attributes of the scene node.
-		/** Implement this to expose the attributes of your scene node
-		for scripting languages, editors, debuggers or xml
-		serialization purposes.
-		\param out The attribute container to write into.
-		\param options Additional options which might influence the
-		serialization. */
-		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const _IRR_OVERRIDE_
-		{
-			if (!out)
-				return;
-			out->addString("Name", Name.c_str());
-			out->addInt("Id", ID );
-
-			out->addVector3d("Position", getPosition() );
-			out->addVector3d("Rotation", getRotation() );
-			out->addVector3d("Scale", getScale() );
-
-			out->addBool("Visible", IsVisible );
-			out->addInt("AutomaticCulling", AutomaticCullingState);
-			out->addInt("DebugDataVisible", DebugDataVisible );
-			out->addBool("IsDebugObject", IsDebugObject );
-		}
-
-
-		//! Reads attributes of the scene node.
-		/** Implement this to set the attributes of your scene node for
-		scripting languages, editors, debuggers or xml deserialization
-		purposes.
-		\param in The attribute container to read from.
-		\param options Additional options which might influence the
-		deserialization. */
-		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) _IRR_OVERRIDE_
-		{
-			if (!in)
-				return;
-			Name = in->getAttributeAsString("Name", Name);
-			ID = in->getAttributeAsInt("Id", ID);
-
-			setPosition(in->getAttributeAsVector3d("Position", RelativeTranslation));
-			setRotation(in->getAttributeAsVector3d("Rotation", RelativeRotation));
-			setScale(in->getAttributeAsVector3d("Scale", RelativeScale));
-
-			IsVisible = in->getAttributeAsBool("Visible", IsVisible);
-			if (in->existsAttribute("AutomaticCulling"))
-			{
-				s32 tmpState = in->getAttributeAsEnumeration("AutomaticCulling",
-						scene::AutomaticCullingNames);
-				if (tmpState != -1)
-					AutomaticCullingState = (u32)tmpState;
-				else
-					AutomaticCullingState = in->getAttributeAsInt("AutomaticCulling");
-			}
-
-			DebugDataVisible = in->getAttributeAsInt("DebugDataVisible", DebugDataVisible);
-			IsDebugObject = in->getAttributeAsBool("IsDebugObject", IsDebugObject);
-
-			updateAbsolutePosition();
-		}
-
 		//! Creates a clone of this scene node and its children.
 		/** \param newParent An optional new parent.
 		\param newManager An optional new scene manager.
@@ -672,7 +611,7 @@ namespace scene
 
 			// clone children
 
-			ISceneNodeList::Iterator it = toCopyFrom->Children.begin();
+			ISceneNodeList::iterator it = toCopyFrom->Children.begin();
 			for (; it != toCopyFrom->Children.end(); ++it)
 				(*it)->clone(this, newManager);
 		}
@@ -683,7 +622,7 @@ namespace scene
 		{
 			SceneManager = newManager;
 
-			ISceneNodeList::Iterator it = Children.begin();
+			ISceneNodeList::iterator it = Children.begin();
 			for (; it != Children.end(); ++it)
 				(*it)->setSceneManager(newManager);
 		}
@@ -707,7 +646,7 @@ namespace scene
 		ISceneNode* Parent;
 
 		//! List of all children of this node
-		core::list<ISceneNode*> Children;
+		std::list<ISceneNode*> Children;
 
 		//! Pointer to the scene manager
 		ISceneManager* SceneManager;

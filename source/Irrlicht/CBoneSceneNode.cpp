@@ -71,7 +71,7 @@ void CBoneSceneNode::OnAnimate(u32 timeMs)
 		//updateAbsolutePosition();
 
 		// perform the post render process on all children
-		ISceneNodeList::Iterator it = Children.begin();
+		ISceneNodeList::iterator it = Children.begin();
 		for (; it != Children.end(); ++it)
 			(*it)->OnAnimate(timeMs);
 	}
@@ -82,7 +82,7 @@ void CBoneSceneNode::helper_updateAbsolutePositionOfAllChildren(ISceneNode *Node
 {
 	Node->updateAbsolutePosition();
 
-	ISceneNodeList::ConstIterator it = Node->getChildren().begin();
+	ISceneNodeList::const_iterator it = Node->getChildren().begin();
 	for (; it != Node->getChildren().end(); ++it)
 	{
 		helper_updateAbsolutePositionOfAllChildren( (*it) );
@@ -93,26 +93,6 @@ void CBoneSceneNode::helper_updateAbsolutePositionOfAllChildren(ISceneNode *Node
 void CBoneSceneNode::updateAbsolutePositionOfAllChildren()
 {
 	helper_updateAbsolutePositionOfAllChildren( this );
-}
-
-
-void CBoneSceneNode::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
-{
-	IBoneSceneNode::serializeAttributes(out, options);
-	out->addInt("BoneIndex", BoneIndex);
-	out->addEnum("AnimationMode", AnimationMode, BoneAnimationModeNames);
-}
-
-
-void CBoneSceneNode::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
-{
-	BoneIndex = in->getAttributeAsInt("BoneIndex");
-	AnimationMode = (E_BONE_ANIMATION_MODE)in->getAttributeAsEnumeration("AnimationMode", BoneAnimationModeNames);
-	// for legacy files (before 1.5)
-	const core::stringc boneName = in->getAttributeAsString("BoneName");
-	setName(boneName);
-	IBoneSceneNode::deserializeAttributes(in, options);
-	// TODO: add/replace bone in parent with bone from mesh
 }
 
 

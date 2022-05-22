@@ -5,12 +5,12 @@
 #ifndef __C_OBJ_MESH_FILE_LOADER_H_INCLUDED__
 #define __C_OBJ_MESH_FILE_LOADER_H_INCLUDED__
 
+#include <map>
 #include "IMeshLoader.h"
 #include "IFileSystem.h"
 #include "ISceneManager.h"
 #include "irrString.h"
 #include "SMeshBuffer.h"
-#include "irrMap.h"
 
 namespace irr
 {
@@ -61,7 +61,7 @@ private:
 			Meshbuffer->Material = o.Meshbuffer->Material;
 		}
 
-		core::map<video::S3DVertex, int> VertMap;
+		std::map<video::S3DVertex, int> VertMap;
 		scene::SMeshBuffer *Meshbuffer;
 		core::stringc Name;
 		core::stringc Group;
