@@ -602,32 +602,6 @@ namespace scene
 		pass currently is active they can render the correct part of their geometry. */
 		virtual E_SCENE_NODE_RENDER_PASS getSceneNodeRenderPass() const = 0;
 
-		//! Get the default scene node factory which can create all built in scene nodes
-		/** \return Pointer to the default scene node factory
-		This pointer should not be dropped. See IReferenceCounted::drop() for more information. */
-		virtual ISceneNodeFactory* getDefaultSceneNodeFactory() = 0;
-
-		//! Adds a scene node factory to the scene manager.
-		/** Use this to extend the scene manager with new scene node types which it should be
-		able to create automatically, for example when loading data from xml files. */
-		virtual void registerSceneNodeFactory(ISceneNodeFactory* factoryToAdd) = 0;
-
-		//! Get amount of registered scene node factories.
-		virtual u32 getRegisteredSceneNodeFactoryCount() const = 0;
-
-		//! Get a scene node factory by index
-		/** \return Pointer to the requested scene node factory, or 0 if it does not exist.
-		This pointer should not be dropped. See IReferenceCounted::drop() for more information. */
-		virtual ISceneNodeFactory* getSceneNodeFactory(u32 index) = 0;
-
-		//! Get typename from a scene node type or null if not found
-		virtual const c8* getSceneNodeTypeName(ESCENE_NODE_TYPE type) = 0;
-
-		//! Adds a scene node to the scene by name
-		/** \return Pointer to the scene node added by a factory
-		This pointer should not be dropped. See IReferenceCounted::drop() for more information. */
-		virtual ISceneNode* addSceneNode(const char* sceneNodeTypeName, ISceneNode* parent=0) = 0;
-
 		//! Creates a new scene manager.
 		/** This can be used to easily draw and/or store two
 		independent scenes at the same time. The mesh cache will be

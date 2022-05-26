@@ -106,7 +106,6 @@
 #include "ISceneCollisionManager.h"
 #include "ISceneManager.h"
 #include "ISceneNode.h"
-#include "ISceneNodeFactory.h"
 #include "IShaderConstantSetCallBack.h"
 #include "ISkinnedMesh.h"
 #include "ITexture.h"

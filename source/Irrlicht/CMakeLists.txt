@@ -167,7 +167,6 @@ add_library(IRROBJ OBJECT
 	CSceneCollisionManager.cpp
 	CSceneManager.cpp
 	CMeshCache.cpp
-	CDefaultSceneNodeFactory.cpp
 )
 
 set(IRRDRVROBJ
