@@ -8,7 +8,6 @@
 #include "IrrlichtDevice.h"
 #include "IImagePresenter.h"
 #include "SIrrCreationParameters.h"
-#include "CVideoModeList.h"
 #include "IContextManager.h"
 
 namespace irr
@@ -72,9 +71,6 @@ namespace irr
 
 		//! \return Returns a pointer to the mouse cursor control interface.
 		virtual gui::ICursorControl* getCursorControl() _IRR_OVERRIDE_;
-
-		//! Returns a pointer to a list with all video modes supported by the gfx adapter.
-		virtual video::IVideoModeList* getVideoModeList() _IRR_OVERRIDE_;
 
 		//! return the context manager
 		virtual video::IContextManager* getContextManager() _IRR_OVERRIDE_;
@@ -211,7 +207,6 @@ namespace irr
 			EMOUSE_INPUT_EVENT LastMouseInputEvent;
 		};
 		SMouseMultiClicks MouseMultiClicks;
-		video::CVideoModeList* VideoModeList;
 		video::IContextManager* ContextManager;
 		SIrrlichtCreationParameters CreationParams;
 		bool Close;

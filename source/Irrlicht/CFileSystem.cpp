@@ -8,7 +8,6 @@
 #include "IReadFile.h"
 #include "IWriteFile.h"
 #include "CZipReader.h"
-#include "CMountPointReader.h"
 #include "CFileList.h"
 #include "stdio.h"
 #include "os.h"
@@ -54,26 +53,6 @@ CFileSystem::CFileSystem()
 	setFileListSystem(FILESYSTEM_NATIVE);
 	//! reset current working directory
 	getWorkingDirectory();
-
-#ifdef __IRR_COMPILE_WITH_PAK_ARCHIVE_LOADER_
-	ArchiveLoader.push_back(new CArchiveLoaderPAK(this));
-#endif
-
-#ifdef __IRR_COMPILE_WITH_NPK_ARCHIVE_LOADER_
-	ArchiveLoader.push_back(new CArchiveLoaderNPK(this));
-#endif
-
-#ifdef __IRR_COMPILE_WITH_TAR_ARCHIVE_LOADER_
-	ArchiveLoader.push_back(new CArchiveLoaderTAR(this));
-#endif
-
-#ifdef __IRR_COMPILE_WITH_WAD_ARCHIVE_LOADER_
-	ArchiveLoader.push_back(new CArchiveLoaderWAD(this));
-#endif
-
-#ifdef __IRR_COMPILE_WITH_MOUNT_ARCHIVE_LOADER_
-	ArchiveLoader.push_back(new CArchiveLoaderMount(this));
-#endif
 
 #ifdef __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_
 	ArchiveLoader.push_back(new CArchiveLoaderZIP(this));
@@ -219,8 +198,6 @@ bool CFileSystem::addFileArchive(const io::path& filename, bool ignoreCase,
 	bool ret = false;
 
 	// see if archive is already added
-	if (changeArchivePassword(filename, password, retArchive))
-		return true;
 
 	s32 i;
 
@@ -316,29 +293,6 @@ bool CFileSystem::addFileArchive(const io::path& filename, bool ignoreCase,
 	return ret;
 }
 
-// don't expose!
-bool CFileSystem::changeArchivePassword(const path& filename,
-		const core::stringc& password,
-		IFileArchive** archive)
-{
-	for (s32 idx = 0; idx < (s32)FileArchives.size(); ++idx)
-	{
-		// TODO: This should go into a path normalization method
-		// We need to check for directory names with trailing slash and without
-		const path absPath = getAbsolutePath(filename);
-		const path arcPath = FileArchives[idx]->getFileList()->getPath();
-		if ((absPath == arcPath) || ((absPath+_IRR_TEXT("/")) == arcPath))
-		{
-			if (password.size())
-				FileArchives[idx]->Password=password;
-			if (archive)
-				*archive = FileArchives[idx];
-			return true;
-		}
-	}
-
-	return false;
-}
 
 bool CFileSystem::addFileArchive(IReadFile* file, bool ignoreCase,
 		bool ignorePaths, E_FILE_ARCHIVE_TYPE archiveType,
@@ -349,9 +303,6 @@ bool CFileSystem::addFileArchive(IReadFile* file, bool ignoreCase,
 
 	if (file)
 	{
-		if (changeArchivePassword(file->getFileName(), password, retArchive))
-			return true;
-
 		IFileArchive* archive = 0;
 		s32 i;
 

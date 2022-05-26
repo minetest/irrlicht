@@ -112,7 +112,6 @@
 #include "ITimer.h"
 #include "IVertexBuffer.h"
 #include "IVideoDriver.h"
-#include "IVideoModeList.h"
 #include "IWriteFile.h"
 #include "Keycodes.h"
 #include "line2d.h"

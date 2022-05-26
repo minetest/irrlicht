@@ -203,7 +203,6 @@ set(IRRIMAGEOBJ
 )
 
 add_library(IRRVIDEOOBJ OBJECT
-	CVideoModeList.cpp
 	CFPSCounter.cpp
 	${IRRDRVROBJ}
 	${IRRIMAGEOBJ}
@@ -217,7 +216,6 @@ add_library(IRRIOOBJ OBJECT
 	CReadFile.cpp
 	CWriteFile.cpp
 	CZipReader.cpp
-	CMountPointReader.cpp
 	CAttributes.cpp
 )
 
