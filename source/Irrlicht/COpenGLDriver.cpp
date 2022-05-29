@@ -1862,7 +1862,9 @@ void COpenGLDriver::draw2DLine(const core::position2d<s32>& start,
 
 		glDrawElements(GL_LINES, 2, GL_UNSIGNED_SHORT, Quad2DIndices);
 
-		// Draw non-drawn last pixel (search for "diamond exit rule")
+		// Draw sometimes non-drawn first & last pixel (search for "diamond exit rule")
+		// HACK this messes with alpha blending
+		glDrawArrays(GL_POINTS, 0, 0);
 		glDrawArrays(GL_POINTS, 1, 1);
 	}
 }
