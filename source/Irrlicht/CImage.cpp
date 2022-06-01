@@ -183,7 +183,7 @@ void CImage::copyToScaling(void* target, u32 width, u32 height, ECOLOR_FORMAT fo
 		return;
 	}
 
-	if (!target || !width || !height)
+	if (!target || !width || !height || !Size.Width || !Size.Height)
 		return;
 
 	const u32 bpp=getBitsPerPixelFromFormat(format)/8;
