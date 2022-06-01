@@ -11,33 +11,19 @@
 
 #include "CGUISkin.h"
 #include "CGUIButton.h"
-#include "CGUIWindow.h"
 #include "CGUIScrollBar.h"
 #include "CGUIFont.h"
 #include "CGUISpriteBank.h"
 #include "CGUIImage.h"
-#include "CGUIMeshViewer.h"
 #include "CGUICheckBox.h"
 #include "CGUIListBox.h"
-#include "CGUITreeView.h"
 #include "CGUIImageList.h"
 #include "CGUIFileOpenDialog.h"
-#include "CGUIColorSelectDialog.h"
 #include "CGUIStaticText.h"
 #include "CGUIEditBox.h"
-#include "CGUISpinBox.h"
-#include "CGUIInOutFader.h"
-#include "CGUIMessageBox.h"
-#include "CGUIModalScreen.h"
 #include "CGUITabControl.h"
-#include "CGUIContextMenu.h"
 #include "CGUIComboBox.h"
-#include "CGUIMenu.h"
-#include "CGUIToolBar.h"
-#include "CGUITable.h"
-#include "CGUIProfiler.h"
 
-#include "CDefaultGUIElementFactory.h"
 #include "IWriteFile.h"
 
 #include "BuiltInFont.h"
@@ -68,11 +54,6 @@ CGUIEnvironment::CGUIEnvironment(io::IFileSystem* fs, video::IVideoDriver* drive
 	#ifdef _DEBUG
 	IGUIEnvironment::setDebugName("CGUIEnvironment");
 	#endif
-
-	// gui factory
-	IGUIElementFactory* factory = new CDefaultGUIElementFactory(this);
-	registerGUIElementFactory(factory);
-	factory->drop();
 
 	loadBuiltInFont();
 
@@ -139,10 +120,6 @@ CGUIEnvironment::~CGUIEnvironment()
 	// delete all fonts
 	for (i=0; i<Fonts.size(); ++i)
 		Fonts[i].Font->drop();
-
-	// remove all factories
-	for (i=0; i<GUIElementFactoryList.size(); ++i)
-		GUIElementFactoryList[i]->drop();
 
 	if (Operator)
 	{
@@ -707,106 +684,6 @@ IGUISkin* CGUIEnvironment::createSkin(EGUI_SKIN_TYPE type)
 }
 
 
-//! Returns the default element factory which can create all built in elements
-IGUIElementFactory* CGUIEnvironment::getDefaultGUIElementFactory() const
-{
-	return getGUIElementFactory(0);
-}
-
-
-//! Adds an element factory to the gui environment.
-/** Use this to extend the gui environment with new element types which it should be
-able to create automatically, for example when loading data from xml files. */
-void CGUIEnvironment::registerGUIElementFactory(IGUIElementFactory* factoryToAdd)
-{
-	if (factoryToAdd)
-	{
-		factoryToAdd->grab();
-		GUIElementFactoryList.push_back(factoryToAdd);
-	}
-}
-
-
-//! Returns amount of registered scene node factories.
-u32 CGUIEnvironment::getRegisteredGUIElementFactoryCount() const
-{
-	return GUIElementFactoryList.size();
-}
-
-
-//! Returns a scene node factory by index
-IGUIElementFactory* CGUIEnvironment::getGUIElementFactory(u32 index) const
-{
-	if (index < GUIElementFactoryList.size())
-		return GUIElementFactoryList[index];
-	else
-		return 0;
-}
-
-
-//! adds a GUI Element using its name
-IGUIElement* CGUIEnvironment::addGUIElement(const c8* elementName, IGUIElement* parent)
-{
-	IGUIElement* node=0;
-
-	if (!parent)
-		parent = this;
-
-	for (s32 i=GUIElementFactoryList.size()-1; i>=0 && !node; --i)
-		node = GUIElementFactoryList[i]->addGUIElement(elementName, parent);
-
-
-	return node;
-}
-
-
-//! Saves the current gui into a file.
-//! \param filename: Name of the file .
-bool CGUIEnvironment::saveGUI(const io::path& filename, IGUIElement* start)
-{
-	io::IWriteFile* file = FileSystem->createAndWriteFile(filename);
-	if (!file)
-	{
-		return false;
-	}
-
-	bool ret = saveGUI(file, start);
-	file->drop();
-	return ret;
-}
-
-
-//! Saves the current gui into a file.
-bool CGUIEnvironment::saveGUI(io::IWriteFile* file, IGUIElement* start)
-{
-	return false;
-}
-
-
-//! Loads the gui. Note that the current gui is not cleared before.
-//! \param filename: Name of the file.
-bool CGUIEnvironment::loadGUI(const io::path& filename, IGUIElement* parent)
-{
-	io::IReadFile* read = FileSystem->createAndOpenFile(filename);
-	if (!read)
-	{
-		os::Printer::log("Unable to open gui file", filename, ELL_ERROR);
-		return false;
-	}
-
-	bool ret = loadGUI(read, parent);
-	read->drop();
-
-	return ret;
-}
-
-
-//! Loads the gui. Note that the current gui is not cleared before.
-bool CGUIEnvironment::loadGUI(io::IReadFile* file, IGUIElement* parent)
-{
-	return false;
-}
-
 //! adds a button. The returned pointer must not be dropped.
 IGUIButton* CGUIEnvironment::addButton(const core::rect<s32>& rectangle, IGUIElement* parent, s32 id, const wchar_t* text, const wchar_t *tooltiptext)
 {
@@ -822,83 +699,6 @@ IGUIButton* CGUIEnvironment::addButton(const core::rect<s32>& rectangle, IGUIEle
 }
 
 
-//! adds a window. The returned pointer must not be dropped.
-IGUIWindow* CGUIEnvironment::addWindow(const core::rect<s32>& rectangle, bool modal,
-		const wchar_t* text, IGUIElement* parent, s32 id)
-{
-	parent = parent ? parent : this;
-
-	IGUIWindow* win = new CGUIWindow(this, parent, id, rectangle);
-	if (text)
-		win->setText(text);
-	win->drop();
-
-	if (modal)
-	{
-		// Careful, don't just set the modal as parent above. That will mess up the focus (and is hard to change because we have to be very
-		// careful not to get virtual function call, like OnEvent, in the window.
-		CGUIModalScreen * modalScreen = new CGUIModalScreen(this, parent, -1);
-		modalScreen->drop();
-		modalScreen->addChild(win);
-	}
-
-	return win;
-}
-
-
-//! adds a modal screen. The returned pointer must not be dropped.
-IGUIElement* CGUIEnvironment::addModalScreen(IGUIElement* parent, int blinkMode)
-{
-	parent = parent ? parent : this;
-
-	CGUIModalScreen *win = new CGUIModalScreen(this, parent, -1);
-	win->setBlinkMode(blinkMode);
-	win->drop();
-
-	return win;
-}
-
-
-//! Adds a message box.
-IGUIWindow* CGUIEnvironment::addMessageBox(const wchar_t* caption, const wchar_t* text,
-	bool modal, s32 flag, IGUIElement* parent, s32 id, video::ITexture* image)
-{
-	if (!CurrentSkin)
-		return 0;
-
-	parent = parent ? parent : this;
-
-	core::rect<s32> rect;
-	core::dimension2d<u32> screenDim, msgBoxDim;
-
-	screenDim.Width = parent->getAbsolutePosition().getWidth();
-	screenDim.Height = parent->getAbsolutePosition().getHeight();
-	msgBoxDim.Width = 2;
-	msgBoxDim.Height = 2;
-
-	rect.UpperLeftCorner.X = (screenDim.Width - msgBoxDim.Width) / 2;
-	rect.UpperLeftCorner.Y = (screenDim.Height - msgBoxDim.Height) / 2;
-	rect.LowerRightCorner.X = rect.UpperLeftCorner.X + msgBoxDim.Width;
-	rect.LowerRightCorner.Y = rect.UpperLeftCorner.Y + msgBoxDim.Height;
-
-	IGUIWindow* win = new CGUIMessageBox(this, caption, text, flag,
-		parent, id, rect, image);
-	win->drop();
-
-	if (modal)
-	{
-		// Careful, don't just set the modal as parent above. That will mess up the focus (and is hard to change because we have to be very
-		// careful not to get virtual function call, like OnEvent, in the CGUIMessageBox.
-		CGUIModalScreen * modalScreen = new CGUIModalScreen(this, parent, -1);
-		modalScreen->drop();
-		modalScreen->addChild( win );
-	}
-
-
-	return win;
-}
-
-
 //! adds a scrollbar. The returned pointer must not be dropped.
 IGUIScrollBar* CGUIEnvironment::addScrollBar(bool horizontal, const core::rect<s32>& rectangle, IGUIElement* parent, s32 id)
 {
@@ -907,21 +707,6 @@ IGUIScrollBar* CGUIEnvironment::addScrollBar(bool horizontal, const core::rect<s
 	return bar;
 }
 
-//! Adds a table to the environment
-IGUITable* CGUIEnvironment::addTable(const core::rect<s32>& rectangle, IGUIElement* parent, s32 id, bool drawBackground)
-{
-	CGUITable* b = new CGUITable(this, parent ? parent : this, id, rectangle, true, drawBackground, false);
-	b->drop();
-	return b;
-}
-
-	//! Adds an element to display the information from the Irrlicht profiler
-IGUIProfiler* CGUIEnvironment::addProfilerDisplay(const core::rect<s32>& rectangle, IGUIElement* parent, s32 id)
-{
-	CGUIProfiler* p = new CGUIProfiler(this, parent ? parent : this, id, rectangle, NULL);
-	p->drop();
-	return p;
-}
 
 //! Adds an image element.
 IGUIImage* CGUIEnvironment::addImage(video::ITexture* image, core::position2d<s32> pos,
@@ -965,20 +750,6 @@ IGUIImage* CGUIEnvironment::addImage(const core::rect<s32>& rectangle, IGUIEleme
 }
 
 
-//! adds an mesh viewer. The returned pointer must not be dropped.
-IGUIMeshViewer* CGUIEnvironment::addMeshViewer(const core::rect<s32>& rectangle, IGUIElement* parent, s32 id, const wchar_t* text)
-{
-	IGUIMeshViewer* v = new CGUIMeshViewer(this, parent ? parent : this,
-		id, rectangle);
-
-	if (text)
-		v->setText(text);
-
-	v->drop();
-	return v;
-}
-
-
 //! adds a checkbox
 IGUICheckBox* CGUIEnvironment::addCheckBox(bool checked, const core::rect<s32>& rectangle, IGUIElement* parent, s32 id, const wchar_t* text)
 {
@@ -1013,19 +784,6 @@ IGUIListBox* CGUIEnvironment::addListBox(const core::rect<s32>& rectangle,
 	return b;
 }
 
-//! adds a tree view
-IGUITreeView* CGUIEnvironment::addTreeView(const core::rect<s32>& rectangle,
-					 IGUIElement* parent, s32 id,
-					 bool drawBackground,
-					 bool scrollBarVertical, bool scrollBarHorizontal)
-{
-	IGUITreeView* b = new CGUITreeView(this, parent ? parent : this, id, rectangle,
-		true, drawBackground, scrollBarVertical, scrollBarHorizontal);
-
-	b->setIconFont ( getBuiltInFont () );
-	b->drop();
-	return b;
-}
 
 //! adds a file open dialog. The returned pointer must not be dropped.
 IGUIFileOpenDialog* CGUIEnvironment::addFileOpenDialog(const wchar_t* title,
@@ -1034,41 +792,12 @@ IGUIFileOpenDialog* CGUIEnvironment::addFileOpenDialog(const wchar_t* title,
 {
 	parent = parent ? parent : this;
 
+	if (modal)
+		return nullptr;
+
 	IGUIFileOpenDialog* d = new CGUIFileOpenDialog(title, this, parent, id,
 			restoreCWD, startDir);
 	d->drop();
-
-	if (modal)
-	{
-		// Careful, don't just set the modal as parent above. That will mess up the focus (and is hard to change because we have to be very
-		// careful not to get virtual function call, like OnEvent, in the window.
-		CGUIModalScreen * modalScreen = new CGUIModalScreen(this, parent, -1);
-		modalScreen->drop();
-		modalScreen->addChild(d);
-	}
-
-	return d;
-}
-
-
-//! adds a color select dialog. The returned pointer must not be dropped.
-IGUIColorSelectDialog* CGUIEnvironment::addColorSelectDialog(const wchar_t* title,
-				bool modal, IGUIElement* parent, s32 id)
-{
-	parent = parent ? parent : this;
-
-	IGUIColorSelectDialog* d = new CGUIColorSelectDialog( title,
-			this, parent, id);
-	d->drop();
-
-	if (modal)
-	{
-		// Careful, don't just set the modal as parent above. That will mess up the focus (and is hard to change because we have to be very
-		// careful not to get virtual function call, like OnEvent, in the window.
-		CGUIModalScreen * modalScreen = new CGUIModalScreen(this, parent, -1);
-		modalScreen->drop();
-		modalScreen->addChild(d);
-	}
 
 	return d;
 }
@@ -1103,19 +832,6 @@ IGUIEditBox* CGUIEnvironment::addEditBox(const wchar_t* text,
 }
 
 
-//! Adds a spin box to the environment
-IGUISpinBox* CGUIEnvironment::addSpinBox(const wchar_t* text,
-					 const core::rect<s32> &rectangle,
-					 bool border,IGUIElement* parent, s32 id)
-{
-	IGUISpinBox* d = new CGUISpinBox(text, border,this,
-		parent ? parent : this, id, rectangle);
-
-	d->drop();
-	return d;
-}
-
-
 //! Adds a tab control to the environment.
 IGUITabControl* CGUIEnvironment::addTabControl(const core::rect<s32>& rectangle,
 	IGUIElement* parent, bool fillbackground, bool border, s32 id)
@@ -1135,65 +851,6 @@ IGUITab* CGUIEnvironment::addTab(const core::rect<s32>& rectangle,
 		rectangle, id);
 	t->drop();
 	return t;
-}
-
-
-//! Adds a context menu to the environment.
-IGUIContextMenu* CGUIEnvironment::addContextMenu(const core::rect<s32>& rectangle,
-	IGUIElement* parent, s32 id)
-{
-	IGUIContextMenu* c = new CGUIContextMenu(this,
-		parent ? parent : this, id, rectangle, true);
-	c->drop();
-	return c;
-}
-
-
-//! Adds a menu to the environment.
-IGUIContextMenu* CGUIEnvironment::addMenu(IGUIElement* parent, s32 id)
-{
-	if (!parent)
-		parent = this;
-
-	IGUIContextMenu* c = new CGUIMenu(this,
-		parent, id, core::rect<s32>(0,0,
-				parent->getAbsolutePosition().getWidth(),
-				parent->getAbsolutePosition().getHeight()));
-
-	c->drop();
-	return c;
-}
-
-
-//! Adds a toolbar to the environment. It is like a menu is always placed on top
-//! in its parent, and contains buttons.
-IGUIToolBar* CGUIEnvironment::addToolBar(IGUIElement* parent, s32 id)
-{
-	if (!parent)
-		parent = this;
-
-	IGUIToolBar* b = new CGUIToolBar(this, parent, id, core::rect<s32>(0,0,10,10));
-	b->drop();
-	return b;
-}
-
-
-//! Adds an element for fading in or out.
-IGUIInOutFader* CGUIEnvironment::addInOutFader(const core::rect<s32>* rectangle, IGUIElement* parent, s32 id)
-{
-	core::rect<s32> rect;
-
-	if (rectangle)
-		rect = *rectangle;
-	else if (Driver)
-		rect = core::rect<s32>(core::dimension2di(Driver->getScreenSize()));
-
-	if (!parent)
-		parent = this;
-
-	IGUIInOutFader* fader = new CGUIInOutFader(this, parent, id, rect);
-	fader->drop();
-	return fader;
 }
 
 

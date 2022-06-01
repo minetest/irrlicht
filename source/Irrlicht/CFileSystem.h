@@ -14,8 +14,6 @@ namespace io
 {
 
 	class CZipReader;
-	class CPakReader;
-	class CMountPointReader;
 
 /*!
 	FileSystem which uses normal files and one zipfile
@@ -128,11 +126,6 @@ public:
 	virtual bool existFile(const io::path& filename) const _IRR_OVERRIDE_;
 
 private:
-
-	// don't expose, needs refactoring
-	bool changeArchivePassword(const path& filename,
-			const core::stringc& password,
-			IFileArchive** archive = 0);
 
 	//! Currently used FileSystemType
 	EFileSystemType FileSystemType;

@@ -39,15 +39,6 @@ protected:
 	s32 MaterialSpecularID;
 	s32 MaterialShininessID;
 
-	s32 LightCountID;
-	s32 LightTypeID;
-	s32 LightPositionID;
-	s32 LightDirectionID;
-	s32 LightAttenuationID;
-	s32 LightAmbientID;
-	s32 LightDiffuseID;
-	s32 LightSpecularID;
-
 	s32 FogEnableID;
 	s32 FogTypeID;
 	s32 FogColorID;
@@ -64,14 +55,6 @@ protected:
 	SColorf MaterialEmissive;
 	SColorf MaterialSpecular;
 	f32 MaterialShininess;
-
-	s32 LightType[8];
-	core::vector3df LightPosition[8];
-	core::vector3df LightDirection[8];
-	core::vector3df LightAttenuation[8];
-	SColorf LightAmbient[8];
-	SColorf LightDiffuse[8];
-	SColorf LightSpecular[8];
 
 	s32 FogEnable;
 	s32 FogType;

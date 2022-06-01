@@ -12,7 +12,6 @@
 #include "EDeviceTypes.h"
 #include "IEventReceiver.h"
 #include "ICursorControl.h"
-#include "IVideoModeList.h"
 #include "ITimer.h"
 #include "IOSOperator.h"
 
@@ -20,7 +19,6 @@ namespace irr
 {
 	class ILogger;
 	class IEventReceiver;
-	class IRandomizer;
 
 	namespace io {
 		class IFileSystem;
@@ -111,14 +109,6 @@ namespace irr
 		/** \return Pointer to the logger. */
 		virtual ILogger* getLogger() = 0;
 
-		//! Gets a list with all video modes available.
-		/** You only need a null driver (ED_NULL) to access
-		those video modes. So you can get the available modes
-		before starting any other video driver.
-		\return Pointer to a list with all video modes supported
-		by the gfx adapter. */
-		virtual video::IVideoModeList* getVideoModeList() = 0;
-
 		//! Get context manager
 		virtual video::IContextManager* getContextManager() = 0;
 
@@ -135,22 +125,6 @@ namespace irr
 		well as the virtual time, which also can be manipulated.
 		\return Pointer to the ITimer object. */
 		virtual ITimer* getTimer() = 0;
-
-		//! Provides access to the engine's currently set randomizer.
-		/** \return Pointer to the IRandomizer object. */
-		virtual IRandomizer* getRandomizer() const =0;
-
-		//! Sets a new randomizer.
-		/** \param r Pointer to the new IRandomizer object. This object is
-		grab()'ed by the engine and will be released upon the next setRandomizer
-		call or upon device destruction. */
-		virtual void setRandomizer(IRandomizer* r) =0;
-
-		//! Creates a new default randomizer.
-		/** The default randomizer provides the random sequence known from previous
-		Irrlicht versions and is the initial randomizer set on device creation.
-		\return Pointer to the default IRandomizer object. */
-		virtual IRandomizer* createDefaultRandomizer() const =0;
 
 		//! Sets the caption of the window.
 		/** \param text: New text of the window caption. */
@@ -342,24 +316,6 @@ namespace irr
 			{
 				case video::EDT_NULL:
 					return true;
-				case video::EDT_SOFTWARE:
-#ifdef _IRR_COMPILE_WITH_SOFTWARE_
-					return true;
-#else
-					return false;
-#endif
-				case video::EDT_BURNINGSVIDEO:
-#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
-					return true;
-#else
-					return false;
-#endif
-				case video::EDT_DIRECT3D9:
-#ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
-					return true;
-#else
-					return false;
-#endif
 				case video::EDT_OPENGL:
 #ifdef _IRR_COMPILE_WITH_OPENGL_
 					return true;

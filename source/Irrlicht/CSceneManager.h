@@ -180,26 +180,6 @@ namespace scene
 		//! Returns type of the scene node
 		virtual ESCENE_NODE_TYPE getType() const _IRR_OVERRIDE_ { return ESNT_SCENE_MANAGER; }
 
-		//! Returns the default scene node factory which can create all built in scene nodes
-		virtual ISceneNodeFactory* getDefaultSceneNodeFactory() _IRR_OVERRIDE_;
-
-		//! Adds a scene node factory to the scene manager.
-		/** Use this to extend the scene manager with new scene node types which it should be
-		able to create automatically, for example when loading data from xml files. */
-		virtual void registerSceneNodeFactory(ISceneNodeFactory* factoryToAdd) _IRR_OVERRIDE_;
-
-		//! Returns amount of registered scene node factories.
-		virtual u32 getRegisteredSceneNodeFactoryCount() const _IRR_OVERRIDE_;
-
-		//! Returns a scene node factory by index
-		virtual ISceneNodeFactory* getSceneNodeFactory(u32 index) _IRR_OVERRIDE_;
-
-		//! Returns a typename from a scene node type or null if not found
-		virtual const c8* getSceneNodeTypeName(ESCENE_NODE_TYPE type) _IRR_OVERRIDE_;
-
-		//! Adds a scene node to the scene by name
-		virtual ISceneNode* addSceneNode(const char* sceneNodeTypeName, ISceneNode* parent=0) _IRR_OVERRIDE_;
-
 		//! Returns a mesh writer implementation if available
 		virtual IMeshWriter* createMeshWriter(EMESH_WRITER_TYPE type) _IRR_OVERRIDE_;
 
@@ -324,7 +304,6 @@ namespace scene
 
 		core::array<IMeshLoader*> MeshLoaderList;
 		core::array<ISceneNode*> DeletionList;
-		core::array<ISceneNodeFactory*> SceneNodeFactoryList;
 
 		//! current active camera
 		ICameraSceneNode* ActiveCamera;

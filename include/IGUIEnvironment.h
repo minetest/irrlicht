@@ -8,7 +8,6 @@
 #include "IReferenceCounted.h"
 #include "IGUISkin.h"
 #include "rect.h"
-#include "EMessageBoxFlags.h"
 #include "EFocusFlags.h"
 #include "IEventReceiver.h"
 #include "path.h"
@@ -38,27 +37,17 @@ class IGUIFont;
 class IGUISpriteBank;
 class IGUIScrollBar;
 class IGUIImage;
-class IGUIMeshViewer;
 class IGUICheckBox;
 class IGUIListBox;
-class IGUITreeView;
 class IGUIImageList;
 class IGUIFileOpenDialog;
-class IGUIColorSelectDialog;
-class IGUIInOutFader;
 class IGUIStaticText;
 class IGUIEditBox;
-class IGUISpinBox;
 class IGUITabControl;
 class IGUITab;
-class IGUITable;
-class IGUIContextMenu;
 class IGUIComboBox;
-class IGUIToolBar;
 class IGUIButton;
 class IGUIWindow;
-class IGUIProfiler;
-class IGUIElementFactory;
 
 //! GUI Environment. Used as factory and manager of all other GUI elements.
 /** \par This element can create the following events of type EGUI_EVENT_TYPE (which are passed on to focused sub-elements):
@@ -235,55 +224,6 @@ public:
 	virtual IGUIButton* addButton(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1, const wchar_t* text=0, const wchar_t* tooltiptext = 0) = 0;
 
-	//! Adds an empty window element.
-	/** \param rectangle Rectangle specifying the borders of the window.
-	\param modal Defines if the dialog is modal. This means, that all other
-	gui elements which were created before the window cannot be used until
-	it is removed.
-	\param text Text displayed as the window title.
-	\param parent Parent gui element of the window.
-	\param id Id with which the gui element can be identified.
-	\return Pointer to the created window. Returns 0 if an error occurred.
-	This pointer should not be dropped. See IReferenceCounted::drop() for
-	more information. */
-	virtual IGUIWindow* addWindow(const core::rect<s32>& rectangle, bool modal = false,
-		const wchar_t* text=0, IGUIElement* parent=0, s32 id=-1) = 0;
-
-	//! Adds a modal screen.
-	/** Input focus stays with children of the modal screen. 
-	If you have some window x which should keep the input focus you 
-	do something like: addModalScreen()->addChild(x). And x will then get the focus 
-	and not lose it anymore. 
-	The  modal screen removes itself when it no longer has any children.
-	Note that it usually works badly to pass the modal screen already as parent when creating
-	a new element. It's better to add that new element later to the modal screen with addChild.
-	\param parent Parent gui element of the modal.
-	\param blinkMode Bitset of when to blink (can be combined)
-		0 = never
-		1 = focus changes
-		2 = Left mouse button pressed down
-	\return Pointer to the created modal. Returns 0 if an error occurred.
-	This pointer should not be dropped. See IReferenceCounted::drop() for
-	more information. */
-	virtual IGUIElement* addModalScreen(IGUIElement* parent, int blinkMode = 3) = 0;
-
-	//! Adds a message box.
-	/** \param caption Text to be displayed the title of the message box.
-	\param text Text to be displayed in the body of the message box.
-	\param modal Defines if the dialog is modal. This means, that all other
-	gui elements which were created before the message box cannot be used
-	until this messagebox is removed.
-	\param flags Flags specifying the layout of the message box using ::EMESSAGE_BOX_FLAG.
-	Create a message box with an OK and CANCEL button for example with (EMBF_OK | EMBF_CANCEL).
-	\param parent Parent gui element of the message box.
-	\param id Id with which the gui element can be identified.
-	\param image Optional texture which will be displayed beside the text as an image
-	\return Pointer to the created message box. Returns 0 if an error
-	occurred. This pointer should not be dropped. See
-	IReferenceCounted::drop() for more information. */
-	virtual IGUIWindow* addMessageBox(const wchar_t* caption, const wchar_t* text=0,
-		bool modal = true, s32 flags = EMBF_OK, IGUIElement* parent=0, s32 id=-1, video::ITexture* image=0) = 0;
-
 	//! Adds a scrollbar.
 	/** \param horizontal Specifies if the scroll bar is drawn horizontal
 	or vertical.
@@ -348,31 +288,6 @@ public:
 	virtual IGUIListBox* addListBox(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1, bool drawBackground=false) = 0;
 
-	//! Adds a tree view element.
-	/** \param rectangle Position and dimension of list box.
-	\param parent Parent gui element of the list box.
-	\param id Id to identify the gui element.
-	\param drawBackground Flag whether the background should be drawn.
-	\param scrollBarVertical Flag whether a vertical scrollbar should be used
-	\param scrollBarHorizontal Flag whether a horizontal scrollbar should be used
-	\return Pointer to the created list box. Returns 0 if an error occurred.
-	This pointer should not be dropped. See IReferenceCounted::drop() for
-	more information. */
-	virtual IGUITreeView* addTreeView(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1, bool drawBackground=false,
-		bool scrollBarVertical = true, bool scrollBarHorizontal = false) = 0;
-
-	//! Adds a mesh viewer. Not 100% implemented yet.
-	/** \param rectangle Rectangle specifying the borders of the mesh viewer.
-	\param parent Parent gui element of the mesh viewer.
-	\param id Id to identify the gui element.
-	\param text Title text of the mesh viewer.
-	\return Pointer to the created mesh viewer. Returns 0 if an error
-	occurred. This pointer should not be dropped. See
-	IReferenceCounted::drop() for more information. */
-	virtual IGUIMeshViewer* addMeshViewer(const core::rect<s32>& rectangle,
-			IGUIElement* parent=0, s32 id=-1, const wchar_t* text=0) = 0;
-
 	//! Adds a file open dialog.
 	/** \param title Text to be displayed as the title of the dialog.
 	\param modal Defines if the dialog is modal. This means, that all other
@@ -390,19 +305,6 @@ public:
 	virtual IGUIFileOpenDialog* addFileOpenDialog(const wchar_t* title=0,
 		bool modal=true, IGUIElement* parent=0, s32 id=-1,
 		bool restoreCWD=false, io::path::char_type* startDir=0) = 0;
-
-	//! Adds a color select dialog.
-	/** \param title The title of the dialog.
-	\param modal Defines if the dialog is modal. This means, that all other
-	gui elements which were created before the dialog cannot be used
-	until it is removed.
-	\param parent The parent of the dialog.
-	\param id The ID of the dialog.
-	\return Pointer to the created file open dialog. Returns 0 if an error
-	occurred. This pointer should not be dropped. See
-	IReferenceCounted::drop() for more information. */
-	virtual IGUIColorSelectDialog* addColorSelectDialog(const wchar_t* title = 0,
-		bool modal=true, IGUIElement* parent=0, s32 id=-1) = 0;
 
 	//! Adds a static text.
 	/** \param text Text to be displayed. Can be altered after creation by SetText().
@@ -438,30 +340,6 @@ public:
 	virtual IGUIEditBox* addEditBox(const wchar_t* text, const core::rect<s32>& rectangle,
 		bool border=true, IGUIElement* parent=0, s32 id=-1) = 0;
 
-	//! Adds a spin box.
-	/** An edit box with up and down buttons
-	\param text Text to be displayed. Can be altered after creation by setText().
-	\param rectangle Rectangle specifying the borders of the spin box.
-	\param border Set to true if the spin box should have a 3d border.
-	\param parent Parent item of the element, e.g. a window.
-	Set it to 0 to place the spin box directly in the environment.
-	\param id The ID of the element.
-	\return Pointer to the created spin box. Returns 0 if an error occurred.
-	This pointer should not be dropped. See IReferenceCounted::drop() for
-	more information. */
-	virtual IGUISpinBox* addSpinBox(const wchar_t* text, const core::rect<s32>& rectangle,
-		bool border=true,IGUIElement* parent=0, s32 id=-1) = 0;
-
-	//! Adds an element for fading in or out.
-	/** \param rectangle Rectangle specifying the borders of the fader.
-	If the pointer is NULL, the whole screen is used.
-	\param parent Parent item of the element, e.g. a window.
-	\param id An identifier for the fader.
-	\return Pointer to the created in-out-fader. Returns 0 if an error
-	occurred. This pointer should not be dropped. See
-	IReferenceCounted::drop() for more information. */
-	virtual IGUIInOutFader* addInOutFader(const core::rect<s32>* rectangle=0, IGUIElement* parent=0, s32 id=-1) = 0;
-
 	//! Adds a tab control to the environment.
 	/** \param rectangle Rectangle specifying the borders of the tab control.
 	\param parent Parent item of the element, e.g. a window.
@@ -493,40 +371,6 @@ public:
 	virtual IGUITab* addTab(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1) = 0;
 
-	//! Adds a context menu to the environment.
-	/** \param rectangle Rectangle specifying the borders of the menu.
-	Note that the menu is resizing itself based on what items you add.
-	\param parent Parent item of the element, e.g. a window.
-	Set it to 0 to place the menu directly in the environment.
-	\param id An identifier for the menu.
-	\return Pointer to the created context menu. Returns 0 if an
-	error occurred. This pointer should not be dropped. See
-	IReferenceCounted::drop() for more information. */
-	virtual IGUIContextMenu* addContextMenu(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1) = 0;
-
-	//! Adds a menu to the environment.
-	/** This is like the menu you can find on top of most windows in modern
-	graphical user interfaces.
-	\param parent Parent item of the element, e.g. a window.
-	Set it to 0 to place the menu directly in the environment.
-	\param id An identifier for the menu.
-	\return Pointer to the created menu. Returns 0 if an
-	error occurred. This pointer should not be dropped. See
-	IReferenceCounted::drop() for more information. */
-	virtual IGUIContextMenu* addMenu(IGUIElement* parent=0, s32 id=-1) = 0;
-
-	//! Adds a toolbar to the environment.
-	/** It is like a menu that is always placed on top of its parent, and
-	contains buttons.
-	\param parent Parent item of the element, e.g. a window.
-	Set it to 0 to place the tool bar directly in the environment.
-	\param id An identifier for the tool bar.
-	\return Pointer to the created tool bar. Returns 0 if an
-	error occurred. This pointer should not be dropped. See
-	IReferenceCounted::drop() for more information. */
-	virtual IGUIToolBar* addToolBar(IGUIElement* parent=0, s32 id=-1) = 0;
-
 	//! Adds a combo box to the environment.
 	/** \param rectangle Rectangle specifying the borders of the combo box.
 	\param parent Parent item of the element, e.g. a window.
@@ -537,86 +381,6 @@ public:
 	IReferenceCounted::drop() for more information. */
 	virtual IGUIComboBox* addComboBox(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1) = 0;
-
-	//! Adds a table to the environment
-	/** \param rectangle Rectangle specifying the borders of the table.
-	\param parent Parent item of the element, e.g. a window. Set it to 0
-	to place the element directly in the environment.
-	\param id An identifier for the table.
-	\param drawBackground Flag whether the background should be drawn.
-	\return Pointer to the created table. Returns 0 if an error occurred.
-	This pointer should not be dropped. See IReferenceCounted::drop() for
-	more information. */
-	virtual IGUITable* addTable(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1, bool drawBackground=false) =0;
-
-	//! Adds an element to display the information from the Irrlicht profiler
-	/** \param rectangle Rectangle specifying the borders of the element.
-	\param parent Parent of the element. When 0 the environment itself will
-	be the parent.
-	\param id An identifier for the element. */
-	virtual IGUIProfiler* addProfilerDisplay(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1) = 0;
-
-	//! Get the default element factory which can create all built-in elements
-	/** \return Pointer to the factory.
-	This pointer should not be dropped. See IReferenceCounted::drop() for
-	more information. */
-	virtual IGUIElementFactory* getDefaultGUIElementFactory() const = 0;
-
-	//! Adds an element factory to the gui environment.
-	/** Use this to extend the gui environment with new element types which
-	it should be able to create automatically, for example when loading
-	data from xml files.
-	\param factoryToAdd Pointer to new factory. */
-	virtual void registerGUIElementFactory(IGUIElementFactory* factoryToAdd) = 0;
-
-	//! Get amount of registered gui element factories.
-	/** \return Amount of registered gui element factories. */
-	virtual u32 getRegisteredGUIElementFactoryCount() const = 0;
-
-	//! Get a gui element factory by index
-	/** \param index Index of the factory.
-	\return Factory at given index, or 0 if no such factory exists. */
-	virtual IGUIElementFactory* getGUIElementFactory(u32 index) const = 0;
-
-	//! Adds a GUI element by its name
-	/** Each factory is checked if it can create an element of the given
-	name. The first match will be created.
-	\param elementName Name of the element to be created.
-	\param parent Parent of the new element, if not 0.
-	\return New GUI element, or 0 if no such element exists. */
-	virtual IGUIElement* addGUIElement(const c8* elementName, IGUIElement* parent=0) = 0;
-
-	//! Saves the current gui into a file.
-	/** \param filename Name of the file.
-	\param start The GUIElement to start with. Root if 0.
-	\return True if saving succeeded, else false. */
-	virtual bool saveGUI(const io::path& filename, IGUIElement* start=0) = 0;
-
-	//! Saves the current gui into a file.
-	/** \param file The file to write to.
-	\param start The GUIElement to start with. Root if 0.
-	\return True if saving succeeded, else false. */
-	virtual bool saveGUI(io::IWriteFile* file, IGUIElement* start=0) = 0;
-
-	//! Loads the gui. Note that the current gui is not cleared before.
-	/** When a parent is set the elements will be added below the parent, the parent itself does not deserialize.
-	When the file contains skin-settings from the gui-environment those are always serialized into the
-	guienvironment independent of the parent setting.
-	\param filename Name of the file.
-	\param parent Parent for the loaded GUI, root if 0.
-	\return True if loading succeeded, else false. */
-	virtual bool loadGUI(const io::path& filename, IGUIElement* parent=0) = 0;
-
-	//! Loads the gui. Note that the current gui is not cleared before.
-	/** When a parent is set the elements will be added below the parent, the parent itself does not deserialize.
-	When the file contains skin-settings from the gui-environment those are always serialized into the
-	guienvironment independent of the parent setting.
-	\param file The file to load from.
-	\param parent Parent for the loaded GUI, root if 0.
-	\return True if loading succeeded, else false. */
-	virtual bool loadGUI(io::IReadFile* file, IGUIElement* parent=0) = 0;
 
 	//! Find the next element which would be selected when pressing the tab-key
 	/** If you set the focus for the result you can manually force focus-changes like they

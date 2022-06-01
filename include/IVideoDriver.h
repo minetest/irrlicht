@@ -41,7 +41,6 @@ namespace video
 	struct S3DVertex;
 	struct S3DVertex2TCoords;
 	struct S3DVertexTangents;
-	struct SLight;
 	class IImageLoader;
 	class IImageWriter;
 	class IMaterialRenderer;
@@ -1052,33 +1051,6 @@ namespace video
 		counted per frame.
 		\return Amount of primitives drawn in the last frame. */
 		virtual u32 getPrimitiveCountDrawn( u32 mode =0 ) const =0;
-
-		//! Deletes all dynamic lights which were previously added with addDynamicLight().
-		virtual void deleteAllDynamicLights() =0;
-
-		//! adds a dynamic light, returning an index to the light
-		//! \param light: the light data to use to create the light
-		//! \return An index to the light, or -1 if an error occurs
-		virtual s32 addDynamicLight(const SLight& light) =0;
-
-		//! Returns the maximal amount of dynamic lights the device can handle
-		/** \return Maximal amount of dynamic lights. */
-		virtual u32 getMaximalDynamicLightAmount() const =0;
-
-		//! Returns amount of dynamic lights currently set
-		/** \return Amount of dynamic lights currently set */
-		virtual u32 getDynamicLightCount() const =0;
-
-		//! Returns light data which was previously set by IVideoDriver::addDynamicLight().
-		/** \param idx Zero based index of the light. Must be 0 or
-		greater and smaller than IVideoDriver::getDynamicLightCount.
-		\return Light data. */
-		virtual const SLight& getDynamicLight(u32 idx) const =0;
-
-		//! Turns a dynamic light on or off
-		//! \param lightIndex: the index returned by addDynamicLight
-		//! \param turnOn: true to turn the light on, false to turn it off
-		virtual void turnLightOn(s32 lightIndex, bool turnOn) =0;
 
 		//! Gets name of this video driver.
 		/** \return Returns the name of the video driver, e.g. in case

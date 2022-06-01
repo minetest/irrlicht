@@ -44,8 +44,6 @@
 #include "CDummyTransformationSceneNode.h"
 #include "CEmptySceneNode.h"
 
-#include "CDefaultSceneNodeFactory.h"
-
 #include "CSceneCollisionManager.h"
 
 namespace irr
@@ -110,11 +108,6 @@ CSceneManager::CSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs,
 	MeshLoaderList.push_back(new CB3DMeshFileLoader(this));
 	#endif
 
-	// factories
-	ISceneNodeFactory* factory = new CDefaultSceneNodeFactory(this);
-	registerSceneNodeFactory(factory);
-	factory->drop();
-
 	IRR_PROFILE(
 		static bool initProfile = false;
 		if (!initProfile )
@@ -172,9 +165,6 @@ CSceneManager::~CSceneManager()
 
 	if (Parameters)
 		Parameters->drop();
-
-	for (i=0; i<SceneNodeFactoryList.size(); ++i)
-		SceneNodeFactoryList[i]->drop();
 
 	// remove all nodes before dropping the driver
 	// as render targets may be destroyed twice
@@ -997,62 +987,6 @@ ISceneManager* CSceneManager::createNewSceneManager(bool cloneContent)
 	return manager;
 }
 
-
-//! Returns the default scene node factory which can create all built in scene nodes
-ISceneNodeFactory* CSceneManager::getDefaultSceneNodeFactory()
-{
-	return getSceneNodeFactory(0);
-}
-
-
-//! Adds a scene node factory to the scene manager.
-void CSceneManager::registerSceneNodeFactory(ISceneNodeFactory* factoryToAdd)
-{
-	if (factoryToAdd)
-	{
-		factoryToAdd->grab();
-		SceneNodeFactoryList.push_back(factoryToAdd);
-	}
-}
-
-
-//! Returns amount of registered scene node factories.
-u32 CSceneManager::getRegisteredSceneNodeFactoryCount() const
-{
-	return SceneNodeFactoryList.size();
-}
-
-
-//! Returns a scene node factory by index
-ISceneNodeFactory* CSceneManager::getSceneNodeFactory(u32 index)
-{
-	if (index < SceneNodeFactoryList.size())
-		return SceneNodeFactoryList[index];
-
-	return 0;
-}
-
-//! Returns a typename from a scene node type or null if not found
-const c8* CSceneManager::getSceneNodeTypeName(ESCENE_NODE_TYPE type)
-{
-	const char* name = 0;
-
-	for (s32 i=(s32)SceneNodeFactoryList.size()-1; !name && i>=0; --i)
-		name = SceneNodeFactoryList[i]->getCreateableSceneNodeTypeName(type);
-
-	return name;
-}
-
-//! Adds a scene node to the scene by name
-ISceneNode* CSceneManager::addSceneNode(const char* sceneNodeTypeName, ISceneNode* parent)
-{
-	ISceneNode* node = 0;
-
-	for (s32 i=(s32)SceneNodeFactoryList.size()-1; i>=0 && !node; --i)
-			node = SceneNodeFactoryList[i]->addSceneNode(sceneNodeTypeName, parent);
-
-	return node;
-}
 
 //! Sets ambient color of the scene
 void CSceneManager::setAmbientLight(const video::SColorf &ambientColor)

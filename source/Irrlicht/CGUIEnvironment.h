@@ -92,17 +92,6 @@ public:
 	//! adds an button. The returned pointer must not be dropped.
 	virtual IGUIButton* addButton(const core::rect<s32>& rectangle, IGUIElement* parent=0, s32 id=-1, const wchar_t* text=0,const wchar_t* tooltiptext = 0) _IRR_OVERRIDE_;
 
-	//! adds a window. The returned pointer must not be dropped.
-	virtual IGUIWindow* addWindow(const core::rect<s32>& rectangle, bool modal = false,
-		const wchar_t* text=0, IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
-
-	//! adds a modal screen. The returned pointer must not be dropped.
-	virtual IGUIElement* addModalScreen(IGUIElement* parent, int blinkMode) _IRR_OVERRIDE_;
-
-	//! Adds a message box.
-	virtual IGUIWindow* addMessageBox(const wchar_t* caption, const wchar_t* text=0,
-		bool modal = true, s32 flag = EMBF_OK, IGUIElement* parent=0, s32 id=-1, video::ITexture* image=0) _IRR_OVERRIDE_;
-
 	//! adds a scrollbar. The returned pointer must not be dropped.
 	virtual IGUIScrollBar* addScrollBar(bool horizontal, const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
@@ -123,23 +112,10 @@ public:
 	virtual IGUIListBox* addListBox(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1, bool drawBackground=false) _IRR_OVERRIDE_;
 
-	//! adds a tree view
-	virtual IGUITreeView* addTreeView(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1, bool drawBackground=false,
-		bool scrollBarVertical = true, bool scrollBarHorizontal = false) _IRR_OVERRIDE_;
-
-	//! adds an mesh viewer. The returned pointer must not be dropped.
-	virtual IGUIMeshViewer* addMeshViewer(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1, const wchar_t* text=0) _IRR_OVERRIDE_;
-
 	//! Adds a file open dialog.
 	virtual IGUIFileOpenDialog* addFileOpenDialog(const wchar_t* title = 0,
 			bool modal=true, IGUIElement* parent=0, s32 id=-1,
 			bool restoreCWD=false, io::path::char_type* startDir=0) _IRR_OVERRIDE_;
-
-	//! Adds a color select dialog.
-	virtual IGUIColorSelectDialog* addColorSelectDialog(const wchar_t* title = 0,
-		bool modal=true, IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
 
 	//! adds a static text. The returned pointer must not be dropped.
 	virtual IGUIStaticText* addStaticText(const wchar_t* text, const core::rect<s32>& rectangle,
@@ -149,10 +125,6 @@ public:
 	virtual IGUIEditBox* addEditBox(const wchar_t* text, const core::rect<s32>& rectangle,
 		bool border=false, IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
 
-	//! Adds a spin box to the environment
-	virtual IGUISpinBox* addSpinBox(const wchar_t* text, const core::rect<s32>& rectangle,
-		bool border=false,IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
-
 	//! Adds a tab control to the environment.
 	virtual IGUITabControl* addTabControl(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, bool fillbackground=false, bool border=true, s32 id=-1) _IRR_OVERRIDE_;
@@ -161,27 +133,8 @@ public:
 	virtual IGUITab* addTab(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
 
-	//! Adds a context menu to the environment.
-	virtual IGUIContextMenu* addContextMenu(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
-
-	//! Adds a menu to the environment.
-	virtual IGUIContextMenu* addMenu(IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
-
-	//! Adds a toolbar to the environment. It is like a menu is always placed on top
-	//! in its parent, and contains buttons.
-	virtual IGUIToolBar* addToolBar(IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
-
 	//! Adds a combo box to the environment.
 	virtual IGUIComboBox* addComboBox(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
-
-	//! Adds a table element.
-	virtual IGUITable* addTable(const core::rect<s32>& rectangle,
-		IGUIElement* parent=0, s32 id=-1, bool drawBackground=false) _IRR_OVERRIDE_;
-
-	//! Adds an element to display the information from the Irrlicht profiler
-	virtual IGUIProfiler* addProfilerDisplay(const core::rect<s32>& rectangle,
 		IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
 
 	//! sets the focus to an element
@@ -199,54 +152,10 @@ public:
 	//! Returns the element last known to be under the mouse
 	virtual IGUIElement* getHovered() const _IRR_OVERRIDE_;
 
-	//! Adds an element for fading in or out.
-	virtual IGUIInOutFader* addInOutFader(const core::rect<s32>* rectangle=0, IGUIElement* parent=0, s32 id=-1) _IRR_OVERRIDE_;
-
 	//! Returns the root gui element.
 	virtual IGUIElement* getRootGUIElement() _IRR_OVERRIDE_;
 
 	virtual void OnPostRender( u32 time ) _IRR_OVERRIDE_;
-
-	//! Returns the default element factory which can create all built in elements
-	virtual IGUIElementFactory* getDefaultGUIElementFactory() const _IRR_OVERRIDE_;
-
-	//! Adds an element factory to the gui environment.
-	/** Use this to extend the gui environment with new element types which it should be
-	able to create automatically, for example when loading data from xml files. */
-	virtual void registerGUIElementFactory(IGUIElementFactory* factoryToAdd) _IRR_OVERRIDE_;
-
-	//! Returns amount of registered scene node factories.
-	virtual u32 getRegisteredGUIElementFactoryCount() const _IRR_OVERRIDE_;
-
-	//! Returns a scene node factory by index
-	virtual IGUIElementFactory* getGUIElementFactory(u32 index) const _IRR_OVERRIDE_;
-
-	//! Adds a GUI Element by its name
-	virtual IGUIElement* addGUIElement(const c8* elementName, IGUIElement* parent=0) _IRR_OVERRIDE_;
-
-	//! Saves the current gui into a file.
-	/** \param filename: Name of the file.
-	\param start: The element to start saving from.
-	if not specified, the root element will be used */
-	virtual bool saveGUI( const io::path& filename, IGUIElement* start=0) _IRR_OVERRIDE_;
-
-	//! Saves the current gui into a file.
-	/** \param file: The file to save the GUI to.
-	\param start: The element to start saving from.
-	if not specified, the root element will be used */
-	virtual bool saveGUI(io::IWriteFile* file, IGUIElement* start=0) _IRR_OVERRIDE_;
-
-	//! Loads the gui. Note that the current gui is not cleared before.
-	/** \param filename: Name of the file.
-	\param parent: The parent of all loaded GUI elements,
-	if not specified, the root element will be used */
-	virtual bool loadGUI(const io::path& filename, IGUIElement* parent=0) _IRR_OVERRIDE_;
-
-	//! Loads the gui. Note that the current gui is not cleared before.
-	/** \param file: IReadFile to load the GUI from
-	\param parent: The parent of all loaded GUI elements,
-	if not specified, the root element will be used */
-	virtual bool loadGUI(io::IReadFile* file, IGUIElement* parent=0) _IRR_OVERRIDE_;
 
 	//! Find the next element which would be selected when pressing the tab-key
 	virtual IGUIElement* getNextElement(bool reverse=false, bool group=false) _IRR_OVERRIDE_;
@@ -301,8 +210,6 @@ private:
 	};
 
 	SToolTip ToolTip;
-
-	core::array<IGUIElementFactory*> GUIElementFactoryList;
 
 	core::array<SFont> Fonts;
 	core::array<SSpriteBank> Banks;

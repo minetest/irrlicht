@@ -280,18 +280,6 @@ namespace irr
 			//! A file open dialog has been closed without choosing a file
 			EGET_FILE_CHOOSE_DIALOG_CANCELLED,
 
-			//! 'Yes' was clicked on a messagebox
-			EGET_MESSAGEBOX_YES,
-
-			//! 'No' was clicked on a messagebox
-			EGET_MESSAGEBOX_NO,
-
-			//! 'OK' was clicked on a messagebox
-			EGET_MESSAGEBOX_OK,
-
-			//! 'Cancel' was clicked on a messagebox
-			EGET_MESSAGEBOX_CANCEL,
-
 			//! In an editbox 'ENTER' was pressed
 			EGET_EDITBOX_ENTER,
 
@@ -304,35 +292,13 @@ namespace irr
 			//! The tab was changed in an tab control
 			EGET_TAB_CHANGED,
 
-			//! A menu item was selected in a (context) menu
-			EGET_MENU_ITEM_SELECTED,
-
 			//! The selection in a combo box has been changed
 			EGET_COMBO_BOX_CHANGED,
-
-			//! The value of a spin box has changed
-			EGET_SPINBOX_CHANGED,
 
 			//! A table has changed
 			EGET_TABLE_CHANGED,
 			EGET_TABLE_HEADER_CHANGED,
 			EGET_TABLE_SELECTED_AGAIN,
-
-			//! A tree view node lost selection. See IGUITreeView::getLastEventNode().
-			EGET_TREEVIEW_NODE_DESELECT,
-
-			//! A tree view node was selected. See IGUITreeView::getLastEventNode().
-			EGET_TREEVIEW_NODE_SELECT,
-
-			//! A tree view node was expanded. See IGUITreeView::getLastEventNode().
-			EGET_TREEVIEW_NODE_EXPAND,
-
-			//! A tree view node was collapsed. See IGUITreeView::getLastEventNode().
-			EGET_TREEVIEW_NODE_COLLAPSE,
-
-			//! deprecated - use EGET_TREEVIEW_NODE_COLLAPSE instead. This
-			//! may be removed by Irrlicht 1.9
-			EGET_TREEVIEW_NODE_COLLAPS = EGET_TREEVIEW_NODE_COLLAPSE,
 
 			//! No real event. Just for convenience to get number of events
 			EGET_COUNT

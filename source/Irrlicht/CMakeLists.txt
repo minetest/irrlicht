@@ -167,7 +167,6 @@ add_library(IRROBJ OBJECT
 	CSceneCollisionManager.cpp
 	CSceneManager.cpp
 	CMeshCache.cpp
-	CDefaultSceneNodeFactory.cpp
 )
 
 set(IRRDRVROBJ
@@ -204,7 +203,6 @@ set(IRRIMAGEOBJ
 )
 
 add_library(IRRVIDEOOBJ OBJECT
-	CVideoModeList.cpp
 	CFPSCounter.cpp
 	${IRRDRVROBJ}
 	${IRRIMAGEOBJ}
@@ -218,7 +216,6 @@ add_library(IRRIOOBJ OBJECT
 	CReadFile.cpp
 	CWriteFile.cpp
 	CZipReader.cpp
-	CMountPointReader.cpp
 	CAttributes.cpp
 )
 
@@ -257,32 +254,18 @@ add_library(IRRGUIOBJ OBJECT
 	CGUIButton.cpp
 	CGUICheckBox.cpp
 	CGUIComboBox.cpp
-	CGUIContextMenu.cpp
 	CGUIEditBox.cpp
 	CGUIEnvironment.cpp
 	CGUIFileOpenDialog.cpp
 	CGUIFont.cpp
 	CGUIImage.cpp
-	CGUIInOutFader.cpp
 	CGUIListBox.cpp
-	CGUIMenu.cpp
-	CGUIMeshViewer.cpp
-	CGUIMessageBox.cpp
-	CGUIModalScreen.cpp
 	CGUIScrollBar.cpp
-	CGUISpinBox.cpp
 	CGUISkin.cpp
 	CGUIStaticText.cpp
 	CGUITabControl.cpp
-	CGUITable.cpp
-	CGUIToolBar.cpp
-	CGUIWindow.cpp
-	CGUIColorSelectDialog.cpp
-	CDefaultGUIElementFactory.cpp
 	CGUISpriteBank.cpp
 	CGUIImageList.cpp
-	CGUITreeView.cpp
-	CGUIProfiler.cpp
 )
 
 # Library

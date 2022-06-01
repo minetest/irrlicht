@@ -81,8 +81,6 @@ COGLES2Driver::COGLES2Driver(const SIrrlichtCreationParameters& params, io::IFil
 
 COGLES2Driver::~COGLES2Driver()
 {
-	RequestedLights.clear();
-
 	deleteMaterialRenders();
 
 	CacheHandler->getTextureCache().clear();
@@ -2005,46 +2003,6 @@ COGLES2Driver::~COGLES2Driver()
 	const wchar_t* COGLES2Driver::getName() const
 	{
 		return Name.c_str();
-	}
-
-
-	//! deletes all dynamic lights there are
-	void COGLES2Driver::deleteAllDynamicLights()
-	{
-		RequestedLights.clear();
-		CNullDriver::deleteAllDynamicLights();
-	}
-
-
-	//! adds a dynamic light
-	s32 COGLES2Driver::addDynamicLight(const SLight& light)
-	{
-		CNullDriver::addDynamicLight(light);
-
-		RequestedLights.push_back(RequestedLight(light));
-
-		u32 newLightIndex = RequestedLights.size() - 1;
-
-		return (s32)newLightIndex;
-	}
-
-	//! Turns a dynamic light on or off
-	//! \param lightIndex: the index returned by addDynamicLight
-	//! \param turnOn: true to turn the light on, false to turn it off
-	void COGLES2Driver::turnLightOn(s32 lightIndex, bool turnOn)
-	{
-		if (lightIndex < 0 || lightIndex >= (s32)RequestedLights.size())
-			return;
-
-		RequestedLight & requestedLight = RequestedLights[lightIndex];
-		requestedLight.DesireToBeOn = turnOn;
-	}
-
-
-	//! returns the maximal amount of dynamic lights the device can handle
-	u32 COGLES2Driver::getMaximalDynamicLightAmount() const
-	{
-		return 8;
 	}
 
 	void COGLES2Driver::setViewPort(const core::rect<s32>& area)
