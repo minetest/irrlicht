@@ -1172,9 +1172,8 @@ void CIrrDeviceMacOSX::setMouseLocation(int x,int y)
 	c.x = p.x;
 	c.y = p.y;
 
-    CGEventRef ev = CGEventCreateMouseEvent(NULL, kCGEventMouseMoved, c, kCGMouseButtonLeft);
-    CGEventPost(kCGHIDEventTap, ev);
-    CFRelease(ev);
+	CGWarpMouseCursorPosition(c);
+	CGAssociateMouseAndMouseCursorPosition(YES);
 }
 
 
