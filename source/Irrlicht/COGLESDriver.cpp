@@ -2057,6 +2057,7 @@ void COGLES1Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaCh
 	{
 		CacheHandler->setBlend(true);
 		CacheHandler->setBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		CacheHandler->setBlendEquation(GL_FUNC_ADD);
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER, 0.f);
 	}
