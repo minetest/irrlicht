@@ -252,6 +252,7 @@ void CCameraSceneNode::OnRegisterSceneNode()
 //! render
 void CCameraSceneNode::render()
 {
+	updateAbsolutePosition();	// depending on that call in onAnimate is risky (might not be in SceneManager or it or it's parent might be invisible and still should render)
 	updateMatrices();
 
 	video::IVideoDriver* driver = SceneManager->getVideoDriver();

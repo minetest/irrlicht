@@ -121,19 +121,23 @@ namespace scene
 		virtual f32 getFOV() const =0;
 
 		//! Sets the value of the near clipping plane. (default: 1.0f)
-		/** \param zn: New z near value. */
+		/** Also changes projection matrix and resets IsOrthogonal flag.
+		\param zn: New z near value. */
 		virtual void setNearValue(f32 zn) =0;
 
 		//! Sets the value of the far clipping plane (default: 2000.0f)
-		/** \param zf: New z far value. */
+		/** Also changes projection matrix and resets IsOrthogonal flag.
+		\param zf: New z far value. */
 		virtual void setFarValue(f32 zf) =0;
 
 		//! Sets the aspect ratio (default: 4.0f / 3.0f)
-		/** \param aspect: New aspect ratio. */
+		/** Also changes projection matrix and resets IsOrthogonal flag.
+		\param aspect: New aspect ratio. */
 		virtual void setAspectRatio(f32 aspect) =0;
 
 		//! Sets the field of view (Default: PI / 2.5f)
-		/** \param fovy: New field of view in radians. */
+		/** Also changes projection matrix and resets IsOrthogonal flag.
+		\param fovy: New field of view in radians. */
 		virtual void setFOV(f32 fovy) =0;
 
 		//! Get the view frustum.
@@ -165,7 +169,10 @@ namespace scene
 		@see getTargetAndRotationBinding() */
 		virtual void bindTargetAndRotation(bool bound) =0;
 
-		//! Updates the matrices without uploading them to the driver
+		//! Updates the view matrix and frustum without uploading the matrix to the driver.
+		/** You need this when you want an up-to-date camera view matrix & frustum before the render() call.
+		Usually you should call updateAbsolutePosition() before calling this.
+		Despite it's function name, the projection matrix is not touched. */
 		virtual void updateMatrices() = 0;
 
 		//! Queries if the camera scene node's rotation and its target position are bound together.
