@@ -648,6 +648,7 @@ bool CIrrDeviceSDL::run()
 			}
 			break;
 
+		case SDL_TEXTINPUT:
 		case SDL_KEYDOWN:
 		case SDL_KEYUP:
 			{
@@ -675,9 +676,8 @@ bool CIrrDeviceSDL::run()
 					irrevent.KeyInput.Char = 0;
 				else
 					irrevent.KeyInput.Char = SDL_event.key.keysym.sym;
-
 				irrevent.KeyInput.Key = key;
-				irrevent.KeyInput.PressedDown = (SDL_event.type == SDL_KEYDOWN);
+				irrevent.KeyInput.PressedDown = (SDL_event.type == (SDL_KEYDOWN | SDL_TEXTINPUT));
 				irrevent.KeyInput.Shift = (SDL_event.key.keysym.mod & KMOD_SHIFT) != 0;
 				irrevent.KeyInput.Control = (SDL_event.key.keysym.mod & KMOD_CTRL ) != 0;
 
@@ -688,7 +688,9 @@ bool CIrrDeviceSDL::run()
 
 				if (convertCharToUppercase)
 					irrevent.KeyInput.Char = irr::core::locale_upper(irrevent.KeyInput.Char);
-
+				if (SDL_event.type == SDL_TEXTINPUT) {
+					irrevent.KeyInput.Char = (wchar_t) SDL_event.text.text[0];
+				}
 				postEventFromUser(irrevent);
 			}
 			break;
