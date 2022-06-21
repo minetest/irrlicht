@@ -139,8 +139,11 @@ public:
 		// set the material of screen quad
 		Driver->setMaterial(Material);
 
-		// set world matrix to fit the quad to full viewport (we only use ETS_WORLD in the shader, so view, projection currently don't matter)
+		// set world matrix to fit the quad to full viewport 
 		Driver->setTransform(video::ETS_WORLD, core::IdentityMatrix);
+		// view & projection not used in shader, but matter to burnings driver
+		Driver->setTransform(video::ETS_VIEW, core::IdentityMatrix);
+		Driver->setTransform(video::ETS_PROJECTION, core::IdentityMatrix);
 
 		// draw screen quad
 		Driver->drawVertexPrimitiveList(Vertices, 4, Indices, 2);
