@@ -316,7 +316,7 @@ private:
  Irrlicht internally uses textures with left-top origin and then corrects the texture-matrices in the fixed-function pipeline.
  For shader materials it's left to the users to handle those UV-flips for the texture-matrix.
  Render target textures (RTT's) in OpenGL are rendered with left-bottom origin and Irrlicht can't change that, so all RTT textures
- in memory are upside-down (unlike all other Irrlicht textures).
+ in memory are upside-down (compared to other Irrlicht textures).
  In the fixed function pipeline Irrlicht handles this by flipping the RTT's texture matrix once more and for shaders it's again
  left to the users to handle it.
  Cubemap textures are different from other textures in OpenGL. Each cube side has left-top as the origin. So not flipping Irrlicht textures for those would be fine.
@@ -325,7 +325,7 @@ private:
 
  So... the following 2 defines are two different workarounds I found. Both are ugly, which one is better in reality depends probably on the scene.
  Only use one of those:
-	CUBEMAP_UPSIDE_DOWN_GL_PROJECTION is relatively fast as it just changes the project matrix. The problem is that changing the projection matrix
+	CUBEMAP_UPSIDE_DOWN_GL_PROJECTION is relatively fast as it just changes the projection matrix. The problem is that changing the projection matrix
 	means changing front/backside culling. So every node rendered has to flip the material flags for those.
 
 	CUBEMAP_USPIDE_DOWN_RTT will change the texture memory itself and flip the image upside-down.
@@ -591,7 +591,7 @@ int main()
 	}
 
 	/* Add some background which will show up in the environment maps.
-	   For first one we use the same textures as used in the spheres.
+	   For the first background we use the same textures as used in the spheres.
 	   Note the difference between a skybox and a cubemap is that the skybox really uses 6 different
 	   textures. While the cubemap uses a single texture created from 6 images. */
 	eventReceiver.BackgroundSkybox = smgr->addSkyBoxSceneNode(
@@ -639,7 +639,7 @@ int main()
 #endif
 
 	/*
-		Add some moving node to show the difference between static/dynamic environment maps
+		Add a moving node to show the difference between static/dynamic environment maps
 	*/
 	scene::IMeshSceneNode * movingNode = smgr->addCubeSceneNode(30.f);
 	movingNode->getMaterial(0).Lighting = false;
@@ -692,7 +692,7 @@ int main()
 			driver->beginScene(true, true, video::SColor(255, 127, 127, 255));
 
 			/* Check if we want to update the environment maps.
-			   Usually not something you'll do every frame, but either once at the star
+			   Usually not something you'll do every frame, but either once at the start
 			   or maybe updating an environment map once in a while.
 			*/
 			int updateCubemaps = eventReceiver.checkCubemapUpdate();
@@ -704,7 +704,7 @@ int main()
 				{
 					/*
 						Flipping projection matrix flips front/backface culling.
-						We only have a skybox so in this case this still would be fast, with more objects it's getting more ugly.
+						We only have a skybox so in this case it's fast, with more objects it's getting more ugly.
 					*/
 					smgr->getSceneNodesFromType(scene::ESNT_ANY, allNodes);
 					flipCullingFlags(allNodes);
