@@ -143,10 +143,10 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 
 	png_read_info(png_ptr, info_ptr); // Read the info section of the png file
 
-	u32 Width;
-	u32 Height;
-	s32 BitDepth;
-	s32 ColorType;
+	u32 Width=0;
+	u32 Height=0;
+	s32 BitDepth=0;
+	s32 ColorType=0;
 	{
 		// Use temporary variables to avoid passing cast pointers
 		png_uint_32 w,h;
@@ -157,9 +157,6 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 		Width=w;
 		Height=h;
 	}
-
-	if (!IImage::checkDataSizeLimit((size_t)Width* Height * (BitDepth/8)))
-		png_cpexcept_error(png_ptr, "Image dimensions too large");
 
 	// Convert palette color to true color
 	if (ColorType==PNG_COLOR_TYPE_PALETTE)
@@ -223,12 +220,13 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 #endif
 	}
 
+	ECOLOR_FORMAT colorFormat = ColorType==PNG_COLOR_TYPE_RGB_ALPHA ? ECF_A8R8G8B8  : ECF_R8G8B8;
+	
+	if (!IImage::checkDataSizeLimit(IImage::getDataSizeFromFormat(colorFormat, Width, Height)))
+		png_cpexcept_error(png_ptr, "Image dimensions too large");
+
 	// Create the image structure to be filled by png data
-	video::IImage* image = 0;
-	if (ColorType==PNG_COLOR_TYPE_RGB_ALPHA)
-		image = new CImage(ECF_A8R8G8B8, core::dimension2d<u32>(Width, Height));
-	else
-		image = new CImage(ECF_R8G8B8, core::dimension2d<u32>(Width, Height));
+	video::IImage* image = new CImage(colorFormat, core::dimension2du(Width, Height));
 	if (!image)
 	{
 		os::Printer::log("LOAD PNG: Internal PNG create image struct failure\n", file->getFileName(), ELL_ERROR);
