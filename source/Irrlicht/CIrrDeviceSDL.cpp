@@ -677,7 +677,7 @@ bool CIrrDeviceSDL::run()
 				else
 					irrevent.KeyInput.Char = SDL_event.key.keysym.sym;
 				irrevent.KeyInput.Key = key;
-				irrevent.KeyInput.PressedDown = (SDL_event.type == (SDL_KEYDOWN | SDL_TEXTINPUT));
+				irrevent.KeyInput.PressedDown = (SDL_event.type & (SDL_KEYDOWN | SDL_TEXTINPUT)) != 0;
 				irrevent.KeyInput.Shift = (SDL_event.key.keysym.mod & KMOD_SHIFT) != 0;
 				irrevent.KeyInput.Control = (SDL_event.key.keysym.mod & KMOD_CTRL ) != 0;
 
