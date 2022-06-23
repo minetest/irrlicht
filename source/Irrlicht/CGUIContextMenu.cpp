@@ -339,7 +339,7 @@ bool CGUIContextMenu::OnEvent(const SEvent& event)
 			case EMIE_MOUSE_MOVED:
 				if (Environment->hasFocus(this))
 					highlight(core::position2d<s32>(event.MouseInput.X, event.MouseInput.Y), true);
-				return true;
+				break;
 			default:
 				break;
 			}
@@ -423,7 +423,7 @@ u32 CGUIContextMenu::sendClick(const core::position2d<s32>& p)
 }
 
 
-//! returns true, if an element was highligted
+//! returns true, if an element was highlighted
 bool CGUIContextMenu::highlight(const core::position2d<s32>& p, bool canOpenSubMenu)
 {
 	if (!isEnabled())
