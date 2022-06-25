@@ -303,6 +303,9 @@ int main()
 	screenQuadMaterial.setFlag(video::EMF_USE_MIP_MAPS, false);
 	screenQuadMaterial.setFlag(video::EMF_BILINEAR_FILTER, false);
 
+	// turn off depth buffer, because our full screen 2D overlay doesn't process depth
+	screenQuadMaterial.setFlag(video::EMF_ZBUFFER, false);
+
 	// set quad texture to RTT we just create
 	screenQuadMaterial.setTexture(0, rt);
 
