@@ -671,11 +671,11 @@ bool CIrrDeviceSDL::run()
 				}
 #endif
 				irrevent.EventType = irr::EET_KEY_INPUT_EVENT;
-
-				if (isNoUnicodeKey(key))
-					irrevent.KeyInput.Char = 0;
-				else
-					irrevent.KeyInput.Char = SDL_event.key.keysym.sym;
+				irrevent.KeyInput.Char = 0;
+				//if (isNoUnicodeKey(key))
+				//	irrevent.KeyInput.Char = 0;
+				//else
+				//	irrevent.KeyInput.Char = SDL_event.key.keysym.sym;
 				irrevent.KeyInput.Key = key;
 				irrevent.KeyInput.PressedDown = (SDL_event.type & (SDL_KEYDOWN | SDL_TEXTINPUT)) != 0;
 				irrevent.KeyInput.Shift = (SDL_event.key.keysym.mod & KMOD_SHIFT) != 0;
@@ -683,13 +683,21 @@ bool CIrrDeviceSDL::run()
 
 				// SDL2 no longer provides unicode character in the key event so we ensure the character is in the correct case
 				// TODO: Unicode input doesn't work like this, should probably use SDL_TextInputEvent
-				bool convertCharToUppercase =
-					irrevent.KeyInput.Shift != !!(SDL_event.key.keysym.mod & KMOD_CAPS);
+				//bool convertCharToUppercase =
+				//	irrevent.KeyInput.Shift != !!(SDL_event.key.keysym.mod & KMOD_CAPS);
 
-				if (convertCharToUppercase)
-					irrevent.KeyInput.Char = irr::core::locale_upper(irrevent.KeyInput.Char);
+				//if (convertCharToUppercase)
+				//	irrevent.KeyInput.Char = irr::core::locale_upper(irrevent.KeyInput.Char);
 				if (SDL_event.type == SDL_TEXTINPUT) {
-					irrevent.KeyInput.Char = (wchar_t) SDL_event.text.text[0];
+					irrevent.EventType = irr::EET_STRING_INPUT_EVENT;
+					size_t size = strlen(SDL_event.text.text);
+					wchar_t tmp[size*2];
+					mbstowcs(tmp, SDL_event.text.text, size*2);
+					irrevent.StringInput.Str = new core::stringw(tmp);
+					postEventFromUser(irrevent);
+					delete irrevent.StringInput.Str;
+					irrevent.StringInput.Str = NULL;
+					break;
 				}
 				postEventFromUser(irrevent);
 			}
