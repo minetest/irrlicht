@@ -4001,22 +4001,7 @@ IImage* COpenGLDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RE
 		pixels = static_cast<u8*>(newImage->getData());
 	if (pixels)
 	{
-		GLenum tgt=GL_FRONT;
-		switch (target)
-		{
-		case video::ERT_FRAME_BUFFER:
-			break;
-		case video::ERT_STEREO_LEFT_BUFFER:
-			tgt=GL_FRONT_LEFT;
-			break;
-		case video::ERT_STEREO_RIGHT_BUFFER:
-			tgt=GL_FRONT_RIGHT;
-			break;
-		default:
-			tgt=GL_AUX0+(target-video::ERT_AUX_BUFFER0);
-			break;
-		}
-		glReadBuffer(tgt);
+		glReadBuffer(GL_FRONT);
 		glReadPixels(0, 0, ScreenSize.Width, ScreenSize.Height, fmt, type, pixels);
 		testGLError(__LINE__);
 		glReadBuffer(GL_BACK);
