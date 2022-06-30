@@ -220,7 +220,7 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 #endif
 		if (SDL_Init(flags) < 0)
 		{
-			os::Printer::log( "Unable to initialize SDL!", SDL_GetError());
+			os::Printer::log("Unable to initialize SDL!", SDL_GetError());
 			Close = true;
 		}
 		else
@@ -447,7 +447,7 @@ bool CIrrDeviceSDL::createWindow()
 	}
 	if ( !Window )
 	{
-		os::Printer::log( "Could not initialize display!" );
+		os::Printer::log("Could not initialize display!" );
 		return false;
 	}
 
