@@ -810,7 +810,7 @@ bool CGUIEnvironment::loadGUI(const io::path& filename, IGUIElement* parent)
 	io::IReadFile* read = FileSystem->createAndOpenFile(filename);
 	if (!read)
 	{
-		os::Printer::log("Unable to open gui file", filename, ELL_ERROR);
+		os::Printer::log("Unable to open GUI file", filename, ELL_ERROR);
 		return false;
 	}
 

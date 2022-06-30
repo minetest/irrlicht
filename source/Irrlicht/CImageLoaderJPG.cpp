@@ -137,7 +137,7 @@ bool CImageLoaderJPG::isALoadableFileFormat(io::IReadFile* file) const
 IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
 {
 	#ifndef _IRR_COMPILE_WITH_LIBJPEG_
-	os::Printer::log("Can't load as not compiled with _IRR_COMPILE_WITH_LIBJPEG_:", file->getFileName(), ELL_DEBUG);
+	os::Printer::log("Can't load as not compiled with _IRR_COMPILE_WITH_LIBJPEG_", file->getFileName(), ELL_DEBUG);
 	return 0;
 	#else
 

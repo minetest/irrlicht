@@ -491,7 +491,7 @@ bool CXMeshFileLoader::parseDataObject()
 
 	// parse specific object
 #ifdef _XREADER_DEBUG
-	os::Printer::log("debug DataObject:", objectName.c_str(), ELL_DEBUG);
+	os::Printer::log("debug DataObject", objectName.c_str(), ELL_DEBUG);
 #endif
 
 	if (objectName == "template")
@@ -848,7 +848,7 @@ bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 		}
 
 #ifdef _XREADER_DEBUG
-		os::Printer::log("debug DataObject in mesh:", objectName.c_str(), ELL_DEBUG);
+		os::Printer::log("debug DataObject in mesh", objectName.c_str(), ELL_DEBUG);
 #endif
 
 		if (objectName == "MeshNormals")

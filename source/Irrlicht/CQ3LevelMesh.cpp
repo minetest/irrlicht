@@ -112,7 +112,7 @@ bool CQ3LevelMesh::loadFile(io::IReadFile* file)
 			( header.strID != 0x50534252 || header.version != 1 ) // RBSP, starwars jedi, sof
 		)
 	{
-		os::Printer::log("Could not load .bsp file, unknown header.", file->getFileName(), ELL_ERROR);
+		os::Printer::log("Could not load .bsp file, unknown header", file->getFileName(), ELL_ERROR);
 		return false;
 	}
 

@@ -458,7 +458,7 @@ void CIrrMeshFileLoader::skipSection(io::IXMLReader* reader, bool reportSkipping
 		{
 			#ifdef _DEBUG
 			if (reportSkipping)
-				os::Printer::log("irrMesh unknown element:", core::stringc(reader->getNodeName()).c_str());
+				os::Printer::log("irrMesh unknown element", core::stringc(reader->getNodeName()).c_str());
 			#endif
 
 			++tagCounter;

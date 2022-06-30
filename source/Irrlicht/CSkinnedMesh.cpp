@@ -1104,27 +1104,27 @@ void CSkinnedMesh::finalize()
 
 		if ( redundantPosKeys > 0 )
 		{
-			os::Printer::log("Skinned Mesh - redundant position frames kicked:", core::stringc(redundantPosKeys).c_str(), ELL_DEBUG);
+			os::Printer::log("Skinned Mesh - redundant position frames kicked", core::stringc(redundantPosKeys).c_str(), ELL_DEBUG);
 		}
 		if ( unorderedPosKeys > 0 )
 		{
-			irr::os::Printer::log("Skinned Mesh - unsorted position frames kicked:", irr::core::stringc(unorderedPosKeys).c_str(), irr::ELL_DEBUG);
+			irr::os::Printer::log("Skinned Mesh - unsorted position frames kicked", irr::core::stringc(unorderedPosKeys).c_str(), irr::ELL_DEBUG);
 		}
 		if ( redundantScaleKeys > 0 )
 		{
-			os::Printer::log("Skinned Mesh - redundant scale frames kicked:", core::stringc(redundantScaleKeys).c_str(), ELL_DEBUG);
+			os::Printer::log("Skinned Mesh - redundant scale frames kicked", core::stringc(redundantScaleKeys).c_str(), ELL_DEBUG);
 		}
 		if ( unorderedScaleKeys > 0 )
 		{
-			irr::os::Printer::log("Skinned Mesh - unsorted scale frames kicked:", irr::core::stringc(unorderedScaleKeys).c_str(), irr::ELL_DEBUG);
+			irr::os::Printer::log("Skinned Mesh - unsorted scale frames kicked", irr::core::stringc(unorderedScaleKeys).c_str(), irr::ELL_DEBUG);
 		}
 		if ( redundantRotationKeys > 0 )
 		{
-			os::Printer::log("Skinned Mesh - redundant rotation frames kicked:", core::stringc(redundantRotationKeys).c_str(), ELL_DEBUG);
+			os::Printer::log("Skinned Mesh - redundant rotation frames kicked", core::stringc(redundantRotationKeys).c_str(), ELL_DEBUG);
 		}
 		if ( unorderedRotationKeys > 0 )
 		{
-			irr::os::Printer::log("Skinned Mesh - unsorted rotation frames kicked:", irr::core::stringc(unorderedRotationKeys).c_str(), irr::ELL_DEBUG);
+			irr::os::Printer::log("Skinned Mesh - unsorted rotation frames kicked", irr::core::stringc(unorderedRotationKeys).c_str(), irr::ELL_DEBUG);
 		}
 	}
 

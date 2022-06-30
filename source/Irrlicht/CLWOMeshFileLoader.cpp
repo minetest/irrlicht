@@ -1945,7 +1945,7 @@ void CLWOMeshFileLoader::readMat(u32 size)
 			default:
 				{
 #ifdef LWO_READER_DEBUG
-					os::Printer::log("LWO loader: skipping ", core::stringc((char*)&uiType, 4));
+					os::Printer::log("LWO loader: skipping", core::stringc((char*)&uiType, 4));
 #endif
 					File->seek(subsize, true);
 					size -= subsize;

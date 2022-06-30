@@ -1827,7 +1827,7 @@ void CColladaMeshWriter::writeMeshGeometry(const irr::core::stringc& meshname, s
 
 		if ( buffer->getPrimitiveType() != EPT_TRIANGLES )
 		{
-			os::Printer::log("Collada writer does not support non-triangle meshbuffers. Mesh: ", meshname.c_str(), ELL_WARNING);
+			os::Printer::log("Collada writer does not support non-triangle meshbuffers. Mesh", meshname.c_str(), ELL_WARNING);
 			continue;
 		}
 
