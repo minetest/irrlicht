@@ -287,26 +287,26 @@ void IrrPrintXGrabError(int grabResult, const c8 * grabCommand )
 {
 	if ( grabResult == GrabSuccess )
 	{
-//		os::Printer::log(grabCommand, ": GrabSuccess", ELL_INFORMATION);
+//		os::Printer::log(grabCommand, "GrabSuccess", ELL_INFORMATION);
 		return;
 	}
 
 	switch ( grabResult )
 	{
 		case AlreadyGrabbed:
-			os::Printer::log(grabCommand, ": AlreadyGrabbed", ELL_WARNING);
+			os::Printer::log(grabCommand, "AlreadyGrabbed", ELL_WARNING);
 			break;
 		case GrabNotViewable:
-			os::Printer::log(grabCommand, ": GrabNotViewable", ELL_WARNING);
+			os::Printer::log(grabCommand, "GrabNotViewable", ELL_WARNING);
 			break;
 		case GrabFrozen:
-			os::Printer::log(grabCommand, ": GrabFrozen", ELL_WARNING);
+			os::Printer::log(grabCommand, "GrabFrozen", ELL_WARNING);
 			break;
 		case GrabInvalidTime:
-			os::Printer::log(grabCommand, ": GrabInvalidTime", ELL_WARNING);
+			os::Printer::log(grabCommand, "GrabInvalidTime", ELL_WARNING);
 			break;
 		default:
-			os::Printer::log(grabCommand, ": grab failed with unknown problem", ELL_WARNING);
+			os::Printer::log(grabCommand, "grab failed with unknown problem", ELL_WARNING);
 			break;
 	}
 }
@@ -380,7 +380,7 @@ bool CIrrDeviceLinux::createWindow()
 	}
 #ifdef _DEBUG
 	else
-		os::Printer::log("Visual chosen: ", core::stringc(static_cast<u32>(VisualInfo->visualid)).c_str(), ELL_DEBUG);
+		os::Printer::log("Visual chosen", core::stringc(static_cast<u32>(VisualInfo->visualid)).c_str(), ELL_DEBUG);
 #endif
 
 	// create color map
@@ -1796,7 +1796,7 @@ Bool PredicateIsEventType(Display *display, XEvent *event, XPointer arg)
 {
 	if ( event && event->type == *(int*)arg )
 	{
-//		os::Printer::log("remove event:", core::stringc((int)arg).c_str(), ELL_INFORMATION);
+//		os::Printer::log("remove event", core::stringc((int)arg).c_str(), ELL_INFORMATION);
 		return True;
 	}
 	return False;
