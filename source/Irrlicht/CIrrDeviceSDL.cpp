@@ -675,6 +675,9 @@ bool CIrrDeviceSDL::run()
 				irrevent.EventType = irr::EET_KEY_INPUT_EVENT;
 				irrevent.KeyInput.Char = 0;
 				irrevent.KeyInput.Key = key;
+				// TODO: why is only key 8 (backspace) not working in start menu?
+				if (SDL_event.key.keysym.sym == 8)
+					irrevent.KeyInput.Char = 8;
 				irrevent.KeyInput.PressedDown = (SDL_event.type == SDL_KEYDOWN);
 				irrevent.KeyInput.Shift = (SDL_event.key.keysym.mod & KMOD_SHIFT) != 0;
 				irrevent.KeyInput.Control = (SDL_event.key.keysym.mod & KMOD_CTRL ) != 0;
