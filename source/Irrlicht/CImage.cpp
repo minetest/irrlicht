@@ -298,8 +298,6 @@ void CImage::copyToScalingBoxFilter(IImage* target, s32 bias, bool blend)
 	const f32 sourceXStep = (f32) Size.Width / (f32) destSize.Width;
 	const f32 sourceYStep = (f32) Size.Height / (f32) destSize.Height;
 
-	target->getData();
-
 	s32 fx = core::ceil32( sourceXStep );
 	s32 fy = core::ceil32( sourceYStep );
 	f32 sx;
