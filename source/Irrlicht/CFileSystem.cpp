@@ -783,7 +783,7 @@ EFileSystemType CFileSystem::setFileListSystem(EFileSystemType listType)
 //! Creates a list of files and directories in the current working directory
 IFileList* CFileSystem::createFileList()
 {
-	CFileList* r = nullptr;
+	CFileList* r = 0;
 	io::path Path = getWorkingDirectory();
 	Path.replace('\\', '/');
 	if (!Path.empty() && Path.lastChar() != '/')
@@ -817,9 +817,11 @@ IFileList* CFileSystem::createFileList()
 			_findclose( hFile );
 		}
 
+		#endif
+
 		// --------------------------------------------
 		//! Linux version
-		#elif (defined(_IRR_POSIX_API_) || defined(_IRR_OSX_PLATFORM_))
+		#if (defined(_IRR_POSIX_API_) || defined(_IRR_OSX_PLATFORM_))
 
 
 		r = new CFileList(Path, false, false);
@@ -859,9 +861,6 @@ IFileList* CFileSystem::createFileList()
 			}
 			closedir(dirHandle);
 		}
-		#else
-			// no native filesystem enabled
-			return nullptr;
 		#endif
 	}
 	else
@@ -894,7 +893,8 @@ IFileList* CFileSystem::createFileList()
 		}
 	}
 
-	r->sort();
+	if (r)
+		r->sort();
 	return r;
 }
 
