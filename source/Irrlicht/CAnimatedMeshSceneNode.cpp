@@ -276,6 +276,7 @@ void CAnimatedMeshSceneNode::render()
 		#ifdef _DEBUG
 			os::Printer::log("Animated Mesh returned no mesh to render.", Mesh->getDebugName(), ELL_WARNING);
 		#endif
+		return;
 	}
 
 	driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
