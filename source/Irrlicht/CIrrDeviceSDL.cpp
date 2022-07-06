@@ -649,6 +649,18 @@ bool CIrrDeviceSDL::run()
 			break;
 
 		case SDL_TEXTINPUT:
+			{
+				irrevent.EventType = irr::EET_STRING_INPUT_EVENT;
+				size_t size = strlen(SDL_event.text.text);
+				wchar_t tmp[size*2];
+				mbstowcs(tmp, SDL_event.text.text, size*2);
+				irrevent.StringInput.Str = new core::stringw(tmp);
+				postEventFromUser(irrevent);
+				delete irrevent.StringInput.Str;
+				irrevent.StringInput.Str = NULL;
+			}
+			break;
+
 		case SDL_KEYDOWN:
 		case SDL_KEYUP:
 			{
@@ -670,32 +682,18 @@ bool CIrrDeviceSDL::run()
 					break;
 				}
 #endif
-				if (SDL_event.type != SDL_TEXTINPUT)
-				{
-					irrevent.EventType = irr::EET_KEY_INPUT_EVENT;
-					irrevent.KeyInput.Key = key;
-					irrevent.KeyInput.PressedDown = (SDL_event.type == SDL_KEYDOWN);
-					irrevent.KeyInput.Shift = (SDL_event.key.keysym.mod & KMOD_SHIFT) != 0;
-					irrevent.KeyInput.Control = (SDL_event.key.keysym.mod & KMOD_CTRL ) != 0;
-					// These keys are handled differently in CGUIEditBox.cpp (may become out of date!)
-					// Control key is used in special character combinations, so keep that too
-					// Pass through the keysym only then so no extra texts gets input
-					irrevent.KeyInput.Char = 0;
-					if (mp.SDLKey == KEY_DELETE || mp.SDLKey == KEY_RETURN || mp.SDLKey == KEY_BACK || irrevent.KeyInput.Control)
-						irrevent.KeyInput.Char = mp.SDLKey;
-					postEventFromUser(irrevent);
-				}
-
-				if (SDL_event.type == SDL_TEXTINPUT) {
-					irrevent.EventType = irr::EET_STRING_INPUT_EVENT;
-					size_t size = strlen(SDL_event.text.text);
-					wchar_t tmp[size*2];
-					mbstowcs(tmp, SDL_event.text.text, size*2);
-					irrevent.StringInput.Str = new core::stringw(tmp);
-					postEventFromUser(irrevent);
-					delete irrevent.StringInput.Str;
-					irrevent.StringInput.Str = NULL;
-				}
+				irrevent.EventType = irr::EET_KEY_INPUT_EVENT;
+				irrevent.KeyInput.Key = key;
+				irrevent.KeyInput.PressedDown = (SDL_event.type == SDL_KEYDOWN);
+				irrevent.KeyInput.Shift = (SDL_event.key.keysym.mod & KMOD_SHIFT) != 0;
+				irrevent.KeyInput.Control = (SDL_event.key.keysym.mod & KMOD_CTRL ) != 0;
+				// These keys are handled differently in CGUIEditBox.cpp (may become out of date!)
+				// Control key is used in special character combinations, so keep that too
+				// Pass through the keysym only then so no extra text gets input
+				irrevent.KeyInput.Char = 0;
+				if (mp.SDLKey == KEY_DELETE || mp.SDLKey == KEY_RETURN || mp.SDLKey == KEY_BACK || irrevent.KeyInput.Control)
+					irrevent.KeyInput.Char = mp.SDLKey;
+				postEventFromUser(irrevent);
 			}
 			break;
 
