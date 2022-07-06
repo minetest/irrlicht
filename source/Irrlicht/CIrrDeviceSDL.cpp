@@ -673,14 +673,16 @@ bool CIrrDeviceSDL::run()
 				if (SDL_event.type != SDL_TEXTINPUT)
 				{
 					irrevent.EventType = irr::EET_KEY_INPUT_EVENT;
-					irrevent.KeyInput.Char = 0;
 					irrevent.KeyInput.Key = key;
-					// TODO: why is only key 8 (backspace) not working in start menu?
-					if (SDL_event.key.keysym.sym == 8)
-						irrevent.KeyInput.Char = 8;
 					irrevent.KeyInput.PressedDown = (SDL_event.type == SDL_KEYDOWN);
 					irrevent.KeyInput.Shift = (SDL_event.key.keysym.mod & KMOD_SHIFT) != 0;
 					irrevent.KeyInput.Control = (SDL_event.key.keysym.mod & KMOD_CTRL ) != 0;
+					// These keys are handled differently in CGUIEditBox.cpp (may become out of date!)
+					// Control key is used in special character combinations, so keep that too
+					// Pass through the keysym only then so no extra texts gets input
+					irrevent.KeyInput.Char = 0;
+					if (mp.SDLKey == KEY_DELETE || mp.SDLKey == KEY_RETURN || mp.SDLKey == KEY_BACK || irrevent.KeyInput.Control)
+						irrevent.KeyInput.Char = mp.SDLKey;
 					postEventFromUser(irrevent);
 				}
 
