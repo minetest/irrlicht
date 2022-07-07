@@ -132,20 +132,16 @@ namespace gui
 
 		struct ListItem
 		{
-			ListItem() : Icon(-1)
-			{}
-
 			core::stringw Text;
-			s32 Icon;
+			s32 Icon = -1;
 
 			// A multicolor extension
 			struct ListItemOverrideColor
 			{
-				ListItemOverrideColor() : Use(false) {}
-				bool Use;
+				bool Use = false;
 				video::SColor Color;
 			};
-			ListItemOverrideColor OverrideColors[EGUI_LBC_COUNT];
+			ListItemOverrideColor OverrideColors[EGUI_LBC_COUNT]{};
 		};
 
 		void recalculateItemHeight();
