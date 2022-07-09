@@ -72,7 +72,6 @@ namespace video
         XVisualInfo* VisualInfo;
         void* glxFBConfig; // GLXFBConfig
         XID GlxWin; // GLXWindow
-		void* libHandle; // handle to libGL.so
 	};
 }
 }

@@ -111,8 +111,6 @@ namespace video
 
 		EGLint MajorVersion;
 		EGLint MinorVersion;
-
-		void* libHandle;
 	};
 }
 }

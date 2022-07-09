@@ -7,7 +7,6 @@
 #ifdef _IRR_COMPILE_WITH_GLX_MANAGER_
 
 #include "os.h"
-#include <dlfcn.h>
 
 #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 	#define GL_GLEXT_LEGACY 1
@@ -29,7 +28,7 @@ namespace video
 {
 
 CGLXManager::CGLXManager(const SIrrlichtCreationParameters& params, const SExposedVideoData& videodata, int screennr)
-	: Params(params), PrimaryContext(videodata), VisualInfo(0), glxFBConfig(0), GlxWin(0), libHandle(NULL)
+	: Params(params), PrimaryContext(videodata), VisualInfo(0), glxFBConfig(0), GlxWin(0)
 {
 	#ifdef _DEBUG
 	setDebugName("CGLXManager");
@@ -280,8 +279,6 @@ bool CGLXManager::initialize(const SIrrlichtCreationParameters& params, const SE
 
 void CGLXManager::terminate()
 {
-	if (libHandle)
-		dlclose(libHandle);
 	memset((void*)&CurrentContext, 0, sizeof(CurrentContext));
 }
 
@@ -469,15 +466,7 @@ void CGLXManager::destroyContext()
 
 void* CGLXManager::getProcAddress(const std::string &procName)
 {
-	void* proc = NULL;
-	proc = (void*)glXGetProcAddressARB(reinterpret_cast<const GLubyte*>(procName.c_str()));
-	if (!proc) {
-		if (!libHandle)
-			libHandle = dlopen("libGL.so", RTLD_LAZY);
-		if (libHandle)
-			proc = dlsym(libHandle, procName.c_str());
-	}
-	return proc;
+	return (void*)glXGetProcAddressARB(reinterpret_cast<const GLubyte*>(procName.c_str()));
 }
 
 bool CGLXManager::swapBuffers()
