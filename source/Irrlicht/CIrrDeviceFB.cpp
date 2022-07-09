@@ -300,6 +300,13 @@ bool CIrrDeviceFB::run()
 				case KEY_LEFTSHIFT:
 					irrevent.KeyInput.Shift = true;
 				break;
+				case KEY_RIGHTALT:
+				case KEY_LEFTALT:
+					irrevent.KeyInput.Alt = true;
+				break;
+				case KEY_CAPSLOCK:
+					irrevent.KeyInput.CapsLock = true;
+				break;
 				case KEY_ESC:
 					irrevent.KeyInput.Key = (EKEY_CODE)0x1B;
 				break;
