@@ -222,10 +222,8 @@ add_library(IRRIOOBJ OBJECT
 add_library(IRROTHEROBJ OBJECT
 	CIrrDeviceSDL.cpp
 	CIrrDeviceLinux.cpp
-	CIrrDeviceConsole.cpp
 	CIrrDeviceStub.cpp
 	CIrrDeviceWin32.cpp
-	CIrrDeviceFB.cpp
 	CLogger.cpp
 	COSOperator.cpp
 	Irrlicht.cpp
