@@ -381,6 +381,12 @@ struct SEvent
 
 		//! True if ctrl was also pressed
 		bool Control:1;
+
+		//! True if alt was also pressed
+		bool Alt:1;
+
+		//! True if caps lock is toggled
+		bool CapsLock:1;
 	};
 
 	//! String input event.
