@@ -227,6 +227,8 @@ bool CIrrDeviceConsole::run()
 			e.KeyInput.PressedDown = (in.Event.KeyEvent.bKeyDown == TRUE);
 			e.KeyInput.Control     = (in.Event.KeyEvent.dwControlKeyState & (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)) != 0;
 			e.KeyInput.Shift       = (in.Event.KeyEvent.dwControlKeyState & SHIFT_PRESSED) != 0;
+			e.KeyInput.Alt         = (in.Event.KeyEvent.dwControlKeyState & (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED)) != 0;
+			e.KeyInput.CapsLock    = (in.Event.KeyEvent.dwControlKeyState & CAPSLOCK_ON) != 0;
 			e.KeyInput.Key         = EKEY_CODE(in.Event.KeyEvent.wVirtualKeyCode);
 			e.KeyInput.Char        = in.Event.KeyEvent.uChar.UnicodeChar;
 			postEventFromUser(e);
