@@ -1063,6 +1063,8 @@ void CIrrDeviceMacOSX::postKeyEvent(void *event,irr::SEvent &ievent,bool pressed
 		ievent.KeyInput.PressedDown = pressed;
 		ievent.KeyInput.Shift = ([(NSEvent *)event modifierFlags] & NSShiftKeyMask) != 0;
 		ievent.KeyInput.Control = ([(NSEvent *)event modifierFlags] & NSControlKeyMask) != 0;
+		ievent.KeyInput.Alt = ([(NSEvent *)event modifierFlags] & NSAlternateKeyMask) != 0;
+		ievent.KeyInput.CapsLock = ([(NSEvent *)event modifierFlags] & NSAlphaShiftKeyMask) != 0;
 		ievent.KeyInput.Char = mchar;
 
 		if (skipCommand)

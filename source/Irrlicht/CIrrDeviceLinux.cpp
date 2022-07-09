@@ -920,6 +920,8 @@ bool CIrrDeviceLinux::run()
 				irrevent.KeyInput.Char = 0;	// on release that's undefined
 				irrevent.KeyInput.Control = (event.xkey.state & ControlMask) != 0;
 				irrevent.KeyInput.Shift = (event.xkey.state & ShiftMask) != 0;
+				irrevent.KeyInput.Alt = (event.xkey.state & Mod1Mask) != 0;
+				irrevent.KeyInput.CapsLock = (event.xkey.state & LockMask) != 0;
 				irrevent.KeyInput.Key = getKeyCode(event);
 
 				postEventFromUser(irrevent);
@@ -986,6 +988,8 @@ bool CIrrDeviceLinux::run()
 					irrevent.KeyInput.PressedDown = true;
 					irrevent.KeyInput.Control = (event.xkey.state & ControlMask) != 0;
 					irrevent.KeyInput.Shift = (event.xkey.state & ShiftMask) != 0;
+					irrevent.KeyInput.Alt = (event.xkey.state & Mod1Mask) != 0;
+					irrevent.KeyInput.CapsLock = (event.xkey.state & LockMask) != 0;
 					irrevent.KeyInput.Key = getKeyCode(event);
 					postEventFromUser(irrevent);
 				}

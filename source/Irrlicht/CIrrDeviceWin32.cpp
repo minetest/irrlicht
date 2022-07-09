@@ -701,6 +701,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			event.KeyInput.Shift = ((allKeys[VK_SHIFT] & 0x80)!=0);
 			event.KeyInput.Control = ((allKeys[VK_CONTROL] & 0x80)!=0);
+			event.KeyInput.Alt = ((allKeys[VK_MENU] & 0x80)!=0);
+			event.KeyInput.CapsLock = (GetKeyState(VK_CAPITAL) & 0x0001)!=0;
 
 			// Handle unicode and deadkeys
 			WCHAR keyChars[2];
