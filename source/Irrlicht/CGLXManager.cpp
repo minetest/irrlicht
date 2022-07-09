@@ -311,6 +311,16 @@ void CGLXManager::destroySurface()
 		glXDestroyWindow((Display*)CurrentContext.OpenGLLinux.X11Display, GlxWin);
 }
 
+#if defined(GLX_ARB_create_context)
+static int IrrIgnoreError(Display *display, XErrorEvent *event)
+{
+	char msg[256];
+	XGetErrorText(display, event->error_code, msg, 256);
+	os::Printer::log("Ignoring an X error", msg, ELL_DEBUG);
+	return 0;
+}
+#endif
+
 bool CGLXManager::generateContext()
 {
 	GLXContext context = 0;
@@ -329,13 +339,16 @@ bool CGLXManager::generateContext()
 
 			if (glxCreateContextAttribsARB)
 			{
+				os::Printer::log("GLX with GLX_ARB_create_context", ELL_DEBUG);
 				int contextAttrBuffer[] = {
 					GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
 					GLX_CONTEXT_MINOR_VERSION_ARB, 0,
 					// GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
 					None
 				};
+				XErrorHandler old = XSetErrorHandler(IrrIgnoreError);
 				context = glxCreateContextAttribsARB((Display*)CurrentContext.OpenGLLinux.X11Display, (GLXFBConfig)glxFBConfig, NULL, True, contextAttrBuffer);
+				XSetErrorHandler(old);
 				// transparently fall back to legacy call
 			}
 			if (!context)
