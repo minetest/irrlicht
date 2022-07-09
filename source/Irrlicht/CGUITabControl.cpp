@@ -454,7 +454,7 @@ void CGUITabControl::scrollRight()
 	recalculateScrollBar();
 }
 
-s32 CGUITabControl::calcTabWidth(s32 pos, IGUIFont* font, const wchar_t* text, bool withScrollControl) const
+s32 CGUITabControl::calcTabWidth(IGUIFont* font, const wchar_t* text) const
 {
 	if ( !font )
 		return 0;
@@ -463,26 +463,11 @@ s32 CGUITabControl::calcTabWidth(s32 pos, IGUIFont* font, const wchar_t* text, b
 	if ( TabMaxWidth > 0 && len > TabMaxWidth )
 		len = TabMaxWidth;
 
-	// check if we miss the place to draw the tab-button
-	if ( withScrollControl && ScrollControl && pos+len > UpButton->getAbsolutePosition().UpperLeftCorner.X - 2 )
-	{
-		s32 tabMinWidth = font->getDimension(L"A").Width;
-		if ( TabExtraWidth > 0 && TabExtraWidth > tabMinWidth )
-			tabMinWidth = TabExtraWidth;
-
-		if ( ScrollControl && pos+tabMinWidth <= UpButton->getAbsolutePosition().UpperLeftCorner.X - 2 )
-		{
-			len = UpButton->getAbsolutePosition().UpperLeftCorner.X - 2 - pos;
-		}
-	}
 	return len;
 }
 
-bool CGUITabControl::needScrollControl(s32 startIndex, bool withScrollControl)
+bool CGUITabControl::needScrollControl(s32 startIndex, bool withScrollControl, s32 *pos_rightmost)
 {
-	if ( startIndex >= (s32)Tabs.size() )
-		startIndex -= 1;
-
 	if ( startIndex < 0 )
 		startIndex = 0;
 
@@ -492,17 +477,18 @@ bool CGUITabControl::needScrollControl(s32 startIndex, bool withScrollControl)
 
 	IGUIFont* font = skin->getFont();
 
-	core::rect<s32> frameRect(AbsoluteRect);
-
 	if (Tabs.empty())
 		return false;
 
 	if (!font)
 		return false;
 
-	s32 pos = frameRect.UpperLeftCorner.X + 2;
+	s32 pos = AbsoluteRect.UpperLeftCorner.X + 2;
+	const s32 pos_right = withScrollControl ?
+		UpButton->getAbsolutePosition().UpperLeftCorner.X - 2 :
+		AbsoluteRect.LowerRightCorner.X;
 
-	for (s32 i=startIndex; i<(s32)Tabs.size(); ++i)
+	for (s32 i = startIndex; i < (s32)Tabs.size(); ++i)
 	{
 		// get Text
 		const wchar_t* text = 0;
@@ -511,25 +497,70 @@ bool CGUITabControl::needScrollControl(s32 startIndex, bool withScrollControl)
 			text = Tabs[i]->getText();
 
 			// get text length
-			s32 len = calcTabWidth(pos, font, text, false);	// always without withScrollControl here or len would be shortened
-
-			frameRect.LowerRightCorner.X += len;
-
-			frameRect.UpperLeftCorner.X = pos;
-			frameRect.LowerRightCorner.X = frameRect.UpperLeftCorner.X + len;
+			s32 len = calcTabWidth(font, text);	// always without withScrollControl here or len would be shortened
 			pos += len;
 		}
 
-		if ( withScrollControl && pos > UpButton->getAbsolutePosition().UpperLeftCorner.X - 2)
-			return true;
-
-		if ( !withScrollControl && pos > AbsoluteRect.LowerRightCorner.X )
+		if (pos > pos_right)
 			return true;
 	}
 
+	if (pos_rightmost)
+		*pos_rightmost = pos;
 	return false;
 }
 
+
+s32 CGUITabControl::calculateScrollIndexFromActive()
+{
+	if (!ScrollControl || Tabs.empty())
+		return 0;
+
+	IGUISkin *skin = Environment->getSkin();
+	if (!skin)
+		return false;
+
+	IGUIFont *font = skin->getFont();
+	if (!font)
+		return false;
+
+	const s32 pos_left = AbsoluteRect.UpperLeftCorner.X + 2;
+	const s32 pos_right = UpButton->getAbsolutePosition().UpperLeftCorner.X - 2;
+
+	// Move from center to the left border left until it is reached
+	s32 pos_cl = (pos_left + pos_right) / 2;
+	s32 i = ActiveTabIndex;
+	for (; i > 0; --i) {
+		if (!Tabs[i])
+			continue;
+
+		s32 len = calcTabWidth(font, Tabs[i]->getText());
+		if (i == ActiveTabIndex)
+			len /= 2;
+		if (pos_cl - len < pos_left)
+			break;
+
+		pos_cl -= len;
+	}
+	if (i == 0)
+		return i;
+
+	// Is scrolling to right still possible?
+	s32 pos_rr = 0;
+	if (needScrollControl(i, true, &pos_rr))
+		return i; // Yes? -> OK
+
+	// No? -> Decrease "i" more. Append tabs until scrolling becomes necessary
+	for (--i; i > 0; --i) {
+		if (!Tabs[i])
+			continue;
+
+		pos_rr += calcTabWidth(font, Tabs[i]->getText());
+		if (pos_rr > pos_right)
+			break;
+	}
+	return i + 1;
+}
 
 core::rect<s32> CGUITabControl::calcTabPos()
 {
@@ -613,7 +644,7 @@ void CGUITabControl::draw()
 	IGUITab *activeTab = 0;
 
 	// Draw all tab-buttons except the active one
-	for (u32 i=CurrentScrollTabIndex; i<Tabs.size(); ++i)
+	for (u32 i = CurrentScrollTabIndex; i < Tabs.size() && !needRightScroll; ++i)
 	{
 		// get Text
 		const wchar_t* text = 0;
@@ -621,11 +652,13 @@ void CGUITabControl::draw()
 			text = Tabs[i]->getText();
 
 		// get text length
-		s32 len = calcTabWidth(pos, font, text, true);
-		if ( ScrollControl && pos+len > UpButton->getAbsolutePosition().UpperLeftCorner.X - 2 )
-		{
-			needRightScroll = true;
-			break;
+		s32 len = calcTabWidth(font, text);
+		if (ScrollControl) {
+			s32 space = UpButton->getAbsolutePosition().UpperLeftCorner.X - 2 - pos;
+			if (space < len) {
+				needRightScroll = true;
+				len = space;
+			}
 		}
 
 		frameRect.LowerRightCorner.X += len;
@@ -794,6 +827,7 @@ s32 CGUITabControl::getTabExtraWidth() const
 
 void CGUITabControl::recalculateScrollBar()
 {
+	// Down: to right, Up: to left
 	if (!UpButton || !DownButton)
 		return;
 
@@ -894,7 +928,8 @@ s32 CGUITabControl::getTabAt(s32 xpos, s32 ypos) const
 	if (!frameRect.isPointInside(p))
 		return -1;
 
-	for (s32 i=CurrentScrollTabIndex; i<(s32)Tabs.size(); ++i)
+	bool abort = false;
+	for (s32 i = CurrentScrollTabIndex; i < (s32)Tabs.size() && !abort; ++i)
 	{
 		// get Text
 		const wchar_t* text = 0;
@@ -902,9 +937,15 @@ s32 CGUITabControl::getTabAt(s32 xpos, s32 ypos) const
 			text = Tabs[i]->getText();
 
 		// get text length
-		s32 len = calcTabWidth(pos, font, text, true);
-		if ( ScrollControl && pos+len > UpButton->getAbsolutePosition().UpperLeftCorner.X - 2 )
-			return -1;
+		s32 len = calcTabWidth(font, text);
+		if (ScrollControl) {
+			// TODO: merge this with draw() ?
+			s32 space = UpButton->getAbsolutePosition().UpperLeftCorner.X - 2 - pos;
+			if (space < len) {
+				abort = true;
+				len = space;
+			}
+		}
 
 		frameRect.UpperLeftCorner.X = pos;
 		frameRect.LowerRightCorner.X = frameRect.UpperLeftCorner.X + len;
@@ -915,6 +956,7 @@ s32 CGUITabControl::getTabAt(s32 xpos, s32 ypos) const
 		{
 			return i;
 		}
+
 	}
 	return -1;
 }
@@ -946,6 +988,11 @@ bool CGUITabControl::setActiveTab(s32 idx)
 		event.GUIEvent.Element = 0;
 		event.GUIEvent.EventType = EGET_TAB_CHANGED;
 		Parent->OnEvent(event);
+	}
+
+	if (ScrollControl) {
+		CurrentScrollTabIndex = calculateScrollIndexFromActive();
+		recalculateScrollBar();
 	}
 
 	return true;
