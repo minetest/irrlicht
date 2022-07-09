@@ -679,7 +679,9 @@ bool CIrrDeviceSDL::run()
 				irrevent.KeyInput.Key = key;
 				irrevent.KeyInput.PressedDown = (SDL_event.type == SDL_KEYDOWN);
 				irrevent.KeyInput.Shift = (SDL_event.key.keysym.mod & KMOD_SHIFT) != 0;
-				irrevent.KeyInput.Control = (SDL_event.key.keysym.mod & KMOD_CTRL ) != 0;
+				irrevent.KeyInput.Control = (SDL_event.key.keysym.mod & KMOD_CTRL) != 0;
+				irrevent.KeyInput.Alt = (SDL_event.key.keysym.mod & KMOD_ALT) != 0;
+				irrevent.KeyInput.CapsLock = (SDL_event.key.keysym.mod & KMOD_CAPS) != 0;
 
 				// SDL2 no longer provides unicode character in the key event so we ensure the character is in the correct case
 				// TODO: Unicode input doesn't work like this, should probably use SDL_TextInputEvent
