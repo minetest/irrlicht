@@ -583,10 +583,8 @@ bool CIrrDeviceSDL::run()
 		case SDL_TEXTINPUT:
 			{
 				irrevent.EventType = irr::EET_STRING_INPUT_EVENT;
-				size_t size = strlen(SDL_event.text.text);
-				wchar_t tmp[size*2];
-				mbstowcs(tmp, SDL_event.text.text, size*2);
-				irrevent.StringInput.Str = new core::stringw(tmp);
+				irrevent.StringInput.Str = new core::stringw();
+				irr::core::multibyteToWString(*irrevent.StringInput.Str, SDL_event.text.text);
 				postEventFromUser(irrevent);
 				delete irrevent.StringInput.Str;
 				irrevent.StringInput.Str = NULL;
