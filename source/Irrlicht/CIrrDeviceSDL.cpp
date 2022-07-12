@@ -623,7 +623,7 @@ bool CIrrDeviceSDL::run()
 				// Control key is used in special character combinations, so keep that too
 				// Pass through the keysym only then so no extra text gets input
 				irrevent.KeyInput.Char = 0;
-				if (mp.SDLKey == KEY_DELETE || mp.SDLKey == KEY_RETURN || mp.SDLKey == KEY_BACK || irrevent.KeyInput.Control)
+				if (mp.SDLKey == SDLK_DELETE || mp.SDLKey == SDLK_RETURN || mp.SDLKey == SDLK_BACKSPACE || irrevent.KeyInput.Control)
 					irrevent.KeyInput.Char = mp.SDLKey;
 				postEventFromUser(irrevent);
 			}
