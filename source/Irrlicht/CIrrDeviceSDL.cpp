@@ -105,74 +105,6 @@ EM_BOOL CIrrDeviceSDL::MouseLeaveCallback(int eventType, const EmscriptenMouseEv
 }
 #endif
 
-bool CIrrDeviceSDL::isNoUnicodeKey(EKEY_CODE key) const
-{
-	switch ( key )
-	{
-		// keys which  should not be mapped to a Unicode char
-		case KEY_UNKNOWN:
-		case KEY_SHIFT:
-		case KEY_CONTROL:
-		case KEY_MENU:
-		case KEY_PAUSE:
-		case KEY_CAPITAL:
-		case KEY_ESCAPE:
-		case KEY_PRIOR:
-		case KEY_NEXT:
-		case KEY_END:
-		case KEY_HOME:
-		case KEY_LEFT:
-		case KEY_UP:
-		case KEY_RIGHT:
-		case KEY_DOWN:
-		case KEY_PRINT:
-		case KEY_SNAPSHOT:
-		case KEY_INSERT:
-		case KEY_DELETE:
-		case KEY_HELP:
-		case KEY_LWIN:
-		case KEY_RWIN:
-		case KEY_APPS:
-		case KEY_SLEEP:
-		case KEY_F1:
-		case KEY_F2:
-		case KEY_F3:
-		case KEY_F4:
-		case KEY_F5:
-		case KEY_F6:
-		case KEY_F7:
-		case KEY_F8:
-		case KEY_F9:
-		case KEY_F10:
-		case KEY_F11:
-		case KEY_F12:
-		case KEY_F13:
-		case KEY_F14:
-		case KEY_F15:
-		case KEY_F16:
-		case KEY_F17:
-		case KEY_F18:
-		case KEY_F19:
-		case KEY_F20:
-		case KEY_F21:
-		case KEY_F22:
-		case KEY_F23:
-		case KEY_F24:
-		case KEY_NUMLOCK:
-		case KEY_SCROLL:
-		case KEY_LSHIFT:
-		case KEY_RSHIFT:
-		case KEY_LCONTROL:
-		case KEY_RCONTROL:
-		case KEY_LMENU:
-		case KEY_RMENU:
-		return true;
-
-	default:
-		return false;
-	}
-}
-
 //! constructor
 CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	: CIrrDeviceStub(param),
@@ -648,6 +580,17 @@ bool CIrrDeviceSDL::run()
 			}
 			break;
 
+		case SDL_TEXTINPUT:
+			{
+				irrevent.EventType = irr::EET_STRING_INPUT_EVENT;
+				irrevent.StringInput.Str = new core::stringw();
+				irr::core::multibyteToWString(*irrevent.StringInput.Str, SDL_event.text.text);
+				postEventFromUser(irrevent);
+				delete irrevent.StringInput.Str;
+				irrevent.StringInput.Str = NULL;
+			}
+			break;
+
 		case SDL_KEYDOWN:
 		case SDL_KEYUP:
 			{
@@ -670,25 +613,16 @@ bool CIrrDeviceSDL::run()
 				}
 #endif
 				irrevent.EventType = irr::EET_KEY_INPUT_EVENT;
-
-				if (isNoUnicodeKey(key))
-					irrevent.KeyInput.Char = 0;
-				else
-					irrevent.KeyInput.Char = SDL_event.key.keysym.sym;
-
 				irrevent.KeyInput.Key = key;
 				irrevent.KeyInput.PressedDown = (SDL_event.type == SDL_KEYDOWN);
 				irrevent.KeyInput.Shift = (SDL_event.key.keysym.mod & KMOD_SHIFT) != 0;
 				irrevent.KeyInput.Control = (SDL_event.key.keysym.mod & KMOD_CTRL ) != 0;
-
-				// SDL2 no longer provides unicode character in the key event so we ensure the character is in the correct case
-				// TODO: Unicode input doesn't work like this, should probably use SDL_TextInputEvent
-				bool convertCharToUppercase =
-					irrevent.KeyInput.Shift != !!(SDL_event.key.keysym.mod & KMOD_CAPS);
-
-				if (convertCharToUppercase)
-					irrevent.KeyInput.Char = irr::core::locale_upper(irrevent.KeyInput.Char);
-
+				// These keys are handled differently in CGUIEditBox.cpp (may become out of date!)
+				// Control key is used in special character combinations, so keep that too
+				// Pass through the keysym only then so no extra text gets input
+				irrevent.KeyInput.Char = 0;
+				if (mp.SDLKey == SDLK_DELETE || mp.SDLKey == SDLK_RETURN || mp.SDLKey == SDLK_BACKSPACE || irrevent.KeyInput.Control)
+					irrevent.KeyInput.Char = mp.SDLKey;
 				postEventFromUser(irrevent);
 			}
 			break;
