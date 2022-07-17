@@ -227,7 +227,7 @@ public:
 	/** \return Pointer to the array. */
 	T* pointer()
 	{
-		return &m_data[0];
+		return m_data.empty() ? nullptr : &m_data[0];
 	}
 
 
@@ -235,7 +235,7 @@ public:
 	/** \return Pointer to the array. */
 	const T* const_pointer() const
 	{
-		return &m_data[0];
+		return m_data.empty() ? nullptr : &m_data[0];
 	}
 
 
