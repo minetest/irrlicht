@@ -77,11 +77,8 @@ if(OGL_ENABLED)
 	set(OpenGL_GL_PREFERENCE "LEGACY")
 	find_package(OpenGL REQUIRED)
 endif()
-if(NOT ANDROID AND NOT APPLE)
+if(UNIX AND NOT ANDROID AND NOT APPLE)
 	check_symbol_exists(_IRR_LINUX_X11_XINPUT2_ "IrrCompileConfig.h" XINPUT2_ENABLED)
-	if(XINPUT2_ENABLED)
-		find_library(XINPUT_LIBRARY Xi REQUIRED)
-	endif()
 endif()
 check_symbol_exists(_IRR_COMPILE_WITH_SDL_DEVICE_ "IrrCompileConfig.h" SDL_ENABLED)
 if(SDL_ENABLED)
@@ -102,6 +99,9 @@ elseif(APPLE)
 else()
 	# Unix probably
 	find_package(X11 REQUIRED)
+	if(XINPUT2_ENABLED AND NOT X11_Xi_FOUND)
+		message(FATAL_ERROR "XInput not found")
+	endif()
 endif()
 
 set(link_includes
@@ -131,7 +131,6 @@ set(link_libs
 	${OPENGLES_LIBRARY}
 	${OPENGLES2_LIBRARIES}
 	${EGL_LIBRARY}
-	${XINPUT_LIBRARY}
 
 	"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
 	${COCOA_LIB}
@@ -139,6 +138,7 @@ set(link_libs
 	"$<$<PLATFORM_ID:Windows>:gdi32>"
 	"$<$<PLATFORM_ID:Windows>:winmm>"
 	${X11_X11_LIB}
+	${X11_Xi_LIB}
 )
 
 # Source files

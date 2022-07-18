@@ -274,6 +274,7 @@ define out. */
 
 #if defined(_IRR_LINUX_PLATFORM_) && defined(_IRR_COMPILE_WITH_X11_)
 //! XInput2 (library called Xi) is currently only used to support touch-input.
+#define _IRR_LINUX_X11_XINPUT2_
 #ifdef NO_IRR_LINUX_X11_XINPUT2_
 #undef _IRR_LINUX_X11_XINPUT2_
 #endif
