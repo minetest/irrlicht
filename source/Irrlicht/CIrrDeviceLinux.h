@@ -20,12 +20,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
-#ifdef _IRR_LINUX_X11_VIDMODE_
-#include <X11/extensions/xf86vmode.h>
-#endif
-#ifdef _IRR_LINUX_X11_RANDR_
-#include <X11/extensions/Xrandr.h>
-#endif
 #include <X11/keysym.h>
 
 #ifdef _IRR_LINUX_X11_XINPUT2_
@@ -100,12 +94,6 @@ namespace irr
 
 		//! Activate any joysticks, and generate events for them.
 		virtual bool activateJoysticks(core::array<SJoystickInfo> & joystickInfo) _IRR_OVERRIDE_;
-
-		//! Set the current Gamma Value for the Display
-		virtual bool setGammaRamp( f32 red, f32 green, f32 blue, f32 brightness, f32 contrast ) _IRR_OVERRIDE_;
-
-		//! Get the current Gamma Value for the Display
-		virtual bool getGammaRamp( f32 &red, f32 &green, f32 &blue, f32 &brightness, f32 &contrast ) _IRR_OVERRIDE_;
 
 		//! gets text from the clipboard
 		//! \return Returns 0 if no string is in there, otherwise utf-8 text.

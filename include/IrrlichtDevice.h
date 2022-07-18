@@ -270,14 +270,6 @@ namespace irr
         //! Is device motion available.
         virtual bool isDeviceMotionAvailable() = 0;
 
-		//! Set the current Gamma Value for the Display
-		virtual bool setGammaRamp(f32 red, f32 green, f32 blue,
-					f32 relativebrightness, f32 relativecontrast) =0;
-
-		//! Get the current Gamma Value for the Display
-		virtual bool getGammaRamp(f32 &red, f32 &green, f32 &blue,
-					f32 &brightness, f32 &contrast) =0;
-
 		//! Set the maximal elapsed time between 2 clicks to generate doubleclicks for the mouse. It also affects tripleclick behavior.
 		/** When set to 0 no double- and tripleclicks will be generated.
 		\param timeMs maximal time in milliseconds for two consecutive clicks to be recognized as double click

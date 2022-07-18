@@ -272,19 +272,8 @@ define out. */
 #undef _IRR_COMPILE_WITH_X11_
 #endif
 
-//! On some Linux systems the XF86 vidmode extension, X11 RandR, or XInput2 are missing.
-//! Use these defines to add/remove support for those dependencies as needed.
-//! XInput2 (library called Xi) is currently only used to support touch-input.
 #if defined(_IRR_LINUX_PLATFORM_) && defined(_IRR_COMPILE_WITH_X11_)
-#define _IRR_LINUX_X11_VIDMODE_
-//#define _IRR_LINUX_X11_RANDR_
-//#define _IRR_LINUX_X11_XINPUT2_
-#ifdef NO_IRR_LINUX_X11_VIDMODE_
-#undef _IRR_LINUX_X11_VIDMODE_
-#endif
-#ifdef NO_IRR_LINUX_X11_RANDR_
-#undef _IRR_LINUX_X11_RANDR_
-#endif
+//! XInput2 (library called Xi) is currently only used to support touch-input.
 #ifdef NO_IRR_LINUX_X11_XINPUT2_
 #undef _IRR_LINUX_X11_XINPUT2_
 #endif

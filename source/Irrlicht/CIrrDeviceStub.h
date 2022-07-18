@@ -145,12 +145,6 @@ namespace irr
         //! Is device motion available.
         virtual bool isDeviceMotionAvailable() _IRR_OVERRIDE_;
 
-		//! Set the current Gamma Value for the Display
-		virtual bool setGammaRamp( f32 red, f32 green, f32 blue, f32 brightness, f32 contrast ) _IRR_OVERRIDE_;
-
-		//! Get the current Gamma Value for the Display
-		virtual bool getGammaRamp( f32 &red, f32 &green, f32 &blue, f32 &brightness, f32 &contrast ) _IRR_OVERRIDE_;
-
 		//! Set the maximal elapsed time between 2 clicks to generate doubleclicks for the mouse. It also affects tripleclick behavior.
 		//! When set to 0 no double- and tripleclicks will be generated.
 		virtual void setDoubleClickTime( u32 timeMs ) _IRR_OVERRIDE_;
@@ -176,9 +170,6 @@ namespace irr
 		\return Returns only 1,2 or 3. A 4th click will start with 1 again.
 		*/
 		virtual u32 checkSuccessiveClicks(s32 mouseX, s32 mouseY, EMOUSE_INPUT_EVENT inputEvent);
-
-		void calculateGammaRamp ( u16 *ramp, f32 gamma, f32 relativebrightness, f32 relativecontrast );
-		void calculateGammaFromRamp ( f32 &gamma, const u16 *ramp );
 
 		//! Checks whether the input device should take input from the IME
 		bool acceptsIME();
