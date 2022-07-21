@@ -42,6 +42,20 @@ elseif(MSVC)
 	endif()
 endif()
 
+# Sanity-check version
+
+include(CheckCXXSourceCompiles)
+set(CMAKE_REQUIRED_INCLUDES ${PROJECT_SOURCE_DIR}/include)
+unset(REVISION_SANITY_CHECK CACHE)
+check_cxx_source_compiles("#include <IrrCompileConfig.h>\n\
+#if IRRLICHT_VERSION_MT_REVISION != ${IRRLICHTMT_REVISION}\n\
+#error\n\
+#endif\n\
+int main() {}" REVISION_SANITY_CHECK)
+if(NOT REVISION_SANITY_CHECK)
+	message(FATAL_ERROR "IrrlichtMt revision number mismatches between CMake and headers.")
+endif()
+
 # Required libs
 
 find_package(ZLIB REQUIRED)
@@ -298,7 +312,6 @@ endif()
 
 set_target_properties(IrrlichtMt PROPERTIES
 	VERSION ${PROJECT_VERSION}
-	SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
 
 if(WIN32)
