@@ -7,7 +7,7 @@ else()
 	cmake_policy(VERSION 3.9)
 endif()
 
-set(IRRLICHTMT_REVISION 6)
+set(IRRLICHTMT_REVISION 7)
 
 project(Irrlicht
 	VERSION 1.9.0.${IRRLICHTMT_REVISION}
