@@ -146,6 +146,12 @@ namespace irr
 			void setPosition(s32 x, s32 y) override
 			{
 				SDL_WarpMouseInWindow(Device->Window, x, y);
+
+				if (SDL_GetRelativeMouseMode()) {
+					// There won't be an event for this warp (details on libsdl-org/SDL/issues/6034)
+					Device->MouseX = x;
+					Device->MouseY = y;
+				}
 			}
 
 			//! Returns the current position of the mouse cursor.
@@ -167,6 +173,17 @@ namespace irr
 
 			void setReferenceRect(core::rect<s32>* rect=0) override
 			{
+			}
+
+			virtual void setRelativeMode(bool relative) _IRR_OVERRIDE_
+			{
+				// Only change it when necessary, as it flushes mouse motion when enabled
+				if ( relative != SDL_GetRelativeMouseMode()) {
+					if ( relative )
+						SDL_SetRelativeMouseMode( SDL_TRUE );
+					else
+						SDL_SetRelativeMouseMode( SDL_FALSE );
+				}
 			}
 
 		private:

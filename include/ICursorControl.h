@@ -160,6 +160,9 @@ namespace gui
 		\param rect: A pointer to an reference rectangle or 0 to disable the reference rectangle.*/
 		virtual void setReferenceRect(core::rect<s32>* rect=0) = 0;
 
+		//! Internally fixes the mouse position, and reports relative mouse movement compared to the old position 
+		/** Specific to SDL */
+		virtual void setRelativeMode(bool relative) {};
 
 		//! Sets the active cursor icon
 		/** Setting cursor icons is so far only supported on Win32 and Linux */
