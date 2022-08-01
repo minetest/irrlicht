@@ -169,6 +169,17 @@ namespace irr
 			{
 			}
 
+			virtual void setRelativeMode(bool relative) _IRR_OVERRIDE_
+			{
+				// Only change it when necessary, as it flushes mouse motion when enabled
+				if ( relative != SDL_GetRelativeMouseMode()) {
+					if ( relative )
+						SDL_SetRelativeMouseMode( SDL_TRUE );
+					else
+						SDL_SetRelativeMouseMode( SDL_FALSE );
+				}
+			}
+
 		private:
 
 			void updateCursorPos()
