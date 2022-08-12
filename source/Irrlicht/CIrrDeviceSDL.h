@@ -146,6 +146,12 @@ namespace irr
 			virtual void setPosition(s32 x, s32 y) _IRR_OVERRIDE_
 			{
 				SDL_WarpMouseInWindow(Device->Window, x, y);
+
+				if (SDL_GetRelativeMouseMode()) {
+					// There won't be an event for this warp (details on libsdl-org/SDL/issues/6034)
+					Device->MouseX = x;
+					Device->MouseY = y;
+				}
 			}
 
 			//! Returns the current position of the mouse cursor.
