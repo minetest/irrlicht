@@ -270,6 +270,7 @@ bool COGLES1Driver::updateVertexHardwareBuffer(SHWBufferLink_opengl *HWBuffer)
 
 	//buffer vertex data, and convert colours...
 	core::array<c8> buffer(vertexSize * vertexCount);
+	buffer.set_used(vertexSize * vertexCount);
 	memcpy(buffer.pointer(), vertices, vertexSize * vertexCount);
 
 	// in order to convert the colors into opengl format (RGBA)
