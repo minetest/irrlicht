@@ -166,6 +166,18 @@ namespace scene
 		{
 			return getVertexBuffer()[i].Normal;
 		}
+
+		//! returns color of vertex i
+		virtual video::SColor& getColor(u32 i) IRR_OVERRIDE
+		{
+			return getVertexBuffer()[i].Color;
+		}
+
+		//! returns color of vertex i
+		virtual const video::SColor& getColor(u32 i) const IRR_OVERRIDE
+		{
+			return getVertexBuffer()[i].Color;
+		}
 	};
 
 
