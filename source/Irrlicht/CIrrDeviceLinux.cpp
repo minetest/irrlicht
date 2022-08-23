@@ -1000,12 +1000,15 @@ bool CIrrDeviceLinux::run()
 						send_response(req->property);
 					};
 
-					if (req->selection != X_ATOM_CLIPBOARD ||
+					if ((req->selection != X_ATOM_CLIPBOARD &&
+							req->selection != XA_PRIMARY) ||
 							req->owner != XWindow) {
 						// we are not the owner, refuse request
 						send_response_refuse();
 						break;
 					}
+					const core::stringc &text_buffer = req->selection == X_ATOM_CLIPBOARD ?
+							Clipboard : PrimarySelection;
 
 					// for debugging:
 					//~ {
@@ -1026,8 +1029,8 @@ bool CIrrDeviceLinux::run()
 								req->target, X_ATOM_UTF8_STRING,
 								8, // format = 8-bit
 								PropModeReplace,
-								(unsigned char *)Clipboard.c_str(),
-								Clipboard.size());
+								(unsigned char *)text_buffer.c_str(),
+								text_buffer.size());
 						send_response(req->target);
 						break;
 					}
@@ -1052,8 +1055,8 @@ bool CIrrDeviceLinux::run()
 						set_property_and_notify(
 								X_ATOM_UTF8_STRING,
 								8,
-								Clipboard.c_str(),
-								Clipboard.size()
+								text_buffer.c_str(),
+								text_buffer.size()
 							);
 
 					} else {
@@ -1676,47 +1679,49 @@ void CIrrDeviceLinux::pollJoysticks()
 }
 
 
+#if defined(_IRR_COMPILE_WITH_X11_)
 //! gets text from the clipboard
 //! \return Returns 0 if no string is in there, otherwise utf-8 text.
-const c8 *CIrrDeviceLinux::getTextFromClipboard() const
+const c8 *CIrrDeviceLinux::getTextFromSelection(Atom selection, core::stringc &text_buffer) const
 {
-#if defined(_IRR_COMPILE_WITH_X11_)
-	Window ownerWindow = XGetSelectionOwner(XDisplay, X_ATOM_CLIPBOARD);
+	Window ownerWindow = XGetSelectionOwner(XDisplay, selection);
 	if (ownerWindow == XWindow) {
-		return Clipboard.c_str();
+		return text_buffer.c_str();
 	}
 
-	Clipboard = "";
+	text_buffer = "";
 
 	if (ownerWindow == None) {
-		return Clipboard.c_str();
+		return text_buffer.c_str();
 	}
 
 	// delete the property to be set beforehand
 	XDeleteProperty(XDisplay, XWindow, XA_PRIMARY);
 
-	XConvertSelection(XDisplay, X_ATOM_CLIPBOARD, X_ATOM_UTF8_STRING, XA_PRIMARY,
+	XConvertSelection(XDisplay, selection, X_ATOM_UTF8_STRING, XA_PRIMARY,
 			XWindow, CurrentTime);
 	XFlush(XDisplay);
 
 	// wait for event via a blocking call
 	XEvent event_ret;
+	std::pair<Window, Atom> args(XWindow, selection);
 	XIfEvent(XDisplay, &event_ret, [](Display *_display, XEvent *event, XPointer arg) {
+		auto p = reinterpret_cast<std::pair<Window, Atom> *>(arg);
 		return (Bool) (event->type == SelectionNotify &&
-				event->xselection.requestor == *(Window *)arg &&
-				event->xselection.selection == X_ATOM_CLIPBOARD &&
+				event->xselection.requestor == p->first &&
+				event->xselection.selection == p->second &&
 				event->xselection.target == X_ATOM_UTF8_STRING);
-	}, (XPointer)&XWindow);
+	}, (XPointer)&args);
 
 	_IRR_DEBUG_BREAK_IF(!(event_ret.type == SelectionNotify &&
 			event_ret.xselection.requestor == XWindow &&
-			event_ret.xselection.selection == X_ATOM_CLIPBOARD &&
+			event_ret.xselection.selection == selection &&
 			event_ret.xselection.target == X_ATOM_UTF8_STRING));
 
 	Atom property_set = event_ret.xselection.property;
 	if (event_ret.xselection.property == None) {
 		// request failed => empty string
-		return Clipboard.c_str();
+		return text_buffer.c_str();
 	}
 
 	// check for data
@@ -1743,15 +1748,15 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 	// for debugging:
 	//~ {
 		//~ char *type_name = XGetAtomName(XDisplay, type);
-		//~ fprintf(stderr, "CIrrDeviceLinux::getTextFromClipboard: actual type: %s (=%ld)\n",
+		//~ fprintf(stderr, "CIrrDeviceLinux::getTextFromSelection: actual type: %s (=%ld)\n",
 				//~ type_name, type);
 		//~ XFree(type_name);
 	//~ }
 
 	if (type != X_ATOM_UTF8_STRING && type != X_ATOM_UTF8_MIME_TYPE) {
-		os::Printer::log("CIrrDeviceLinux::getTextFromClipboard: did not get utf-8 string",
+		os::Printer::log("CIrrDeviceLinux::getTextFromSelection: did not get utf-8 string",
 				ELL_WARNING);
-		return Clipboard.c_str();
+		return text_buffer.c_str();
 	}
 
 	if (bytesLeft > 0) {
@@ -1760,19 +1765,48 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 									bytesLeft, 0, AnyPropertyType, &type, &format,
 									&numItems, &dummy, &data);
 		if (result == Success)
-			Clipboard = (irr::c8 *)data;
+			text_buffer = (irr::c8 *)data;
 		XFree (data);
 	}
 
 	// delete the property again, to inform the owner about the successful transfer
 	XDeleteProperty(XDisplay, XWindow, property_set);
 
-	return Clipboard.c_str();
+	return text_buffer.c_str();
+}
+#endif
 
+//! gets text from the clipboard
+//! \return Returns 0 if no string is in there, otherwise utf-8 text.
+const c8 *CIrrDeviceLinux::getTextFromClipboard() const
+{
+#if defined(_IRR_COMPILE_WITH_X11_)
+	return getTextFromSelection(X_ATOM_CLIPBOARD, Clipboard);
 #else
 	return nullptr;
 #endif
 }
+
+//! gets text from the primary selection
+//! \return Returns 0 if no string is in there, otherwise utf-8 text.
+const c8 *CIrrDeviceLinux::getTextFromPrimarySelection() const
+{
+#if defined(_IRR_COMPILE_WITH_X11_)
+	return getTextFromSelection(XA_PRIMARY, PrimarySelection);
+#else
+	return nullptr;
+#endif
+}
+
+#if defined(_IRR_COMPILE_WITH_X11_)
+bool CIrrDeviceLinux::becomeSelectionOwner(Atom selection) const
+{
+	XSetSelectionOwner (XDisplay, selection, XWindow, CurrentTime);
+	XFlush (XDisplay);
+	Window owner = XGetSelectionOwner(XDisplay, selection);
+	return owner == XWindow;
+}
+#endif
 
 //! copies text to the clipboard
 void CIrrDeviceLinux::copyToClipboard(const c8 *text) const
@@ -1781,11 +1815,19 @@ void CIrrDeviceLinux::copyToClipboard(const c8 *text) const
 	// Actually there is no clipboard on X but applications just say they own the clipboard and return text when asked.
 	// Which btw. also means that on X you lose clipboard content when closing applications.
 	Clipboard = text;
-	XSetSelectionOwner (XDisplay, X_ATOM_CLIPBOARD, XWindow, CurrentTime);
-	XFlush (XDisplay);
-	Window owner = XGetSelectionOwner(XDisplay, X_ATOM_CLIPBOARD);
-	if (owner != XWindow) {
+	if (!becomeSelectionOwner(X_ATOM_CLIPBOARD)) {
 		os::Printer::log("CIrrDeviceLinux::copyToClipboard: failed to set owner", ELL_WARNING);
+	}
+#endif
+}
+
+//! copies text to the primary selection
+void CIrrDeviceLinux::copyToPrimarySelection(const c8 *text) const
+{
+#if defined(_IRR_COMPILE_WITH_X11_)
+	PrimarySelection = text;
+	if (!becomeSelectionOwner(XA_PRIMARY)) {
+		os::Printer::log("CIrrDeviceLinux::copyToPrimarySelection: failed to set owner", ELL_WARNING);
 	}
 #endif
 }

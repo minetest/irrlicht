@@ -54,7 +54,6 @@ const core::stringc& COSOperator::getOperatingSystemVersion() const
 
 
 //! copies text to the clipboard
-//! \param text: text in utf-8
 void COSOperator::copyToClipboard(const c8 *text) const
 {
 	if (strlen(text)==0)
@@ -102,8 +101,20 @@ void COSOperator::copyToClipboard(const c8 *text) const
 }
 
 
+//! copies text to the primary selection
+void COSOperator::copyToPrimarySelection(const c8 *text) const
+{
+	if (strlen(text)==0)
+		return;
+
+#if defined(_IRR_COMPILE_WITH_X11_DEVICE_)
+    if ( IrrDeviceLinux )
+        IrrDeviceLinux->copyToPrimarySelection(text);
+#endif
+}
+
+
 //! gets text from the clipboard
-//! \return Returns 0 if no string is in there, otherwise an utf-8 string.
 const c8* COSOperator::getTextFromClipboard() const
 {
 #if defined(_IRR_WINDOWS_API_)
@@ -138,6 +149,21 @@ const c8* COSOperator::getTextFromClipboard() const
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
     if ( IrrDeviceLinux )
         return IrrDeviceLinux->getTextFromClipboard();
+    return 0;
+
+#else
+
+	return 0;
+#endif
+}
+
+
+//! gets text from the primary selection
+const c8* COSOperator::getTextFromPrimarySelection() const
+{
+#if defined(_IRR_COMPILE_WITH_X11_DEVICE_)
+    if ( IrrDeviceLinux )
+        return IrrDeviceLinux->getTextFromPrimarySelection();
     return 0;
 
 #else
