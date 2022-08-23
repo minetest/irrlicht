@@ -1135,6 +1135,34 @@ bool CGUIEditBox::processMouse(const SEvent& event)
 				return true;
 			}
 		}
+	case EMIE_MMOUSE_PRESSED_DOWN: {
+		if (!AbsoluteClippingRect.isPointInside(core::position2d<s32>(
+					event.MouseInput.X, event.MouseInput.Y)))
+			return false;
+
+		if (!Environment->hasFocus(this)) {
+			BlinkStartTime = os::Timer::getTime();
+		}
+
+		// move cursor and disable marking
+		CursorPos = getCursorPos(event.MouseInput.X, event.MouseInput.Y);
+		MouseMarking = false;
+		setTextMarkers(CursorPos, CursorPos);
+
+		// paste from the primary selection
+		inputString([&] {
+			irr::core::stringw inserted_text;
+			if (!Operator)
+				return inserted_text;
+			const c8 *inserted_text_utf8 = Operator->getTextFromPrimarySelection();
+			if (!inserted_text_utf8)
+				return inserted_text;
+			core::multibyteToWString(inserted_text, inserted_text_utf8);
+			return inserted_text;
+		}());
+
+		return true;
+	}
 	default:
 		break;
 	}
@@ -1624,6 +1652,17 @@ void CGUIEditBox::setTextMarkers(s32 begin, s32 end)
 	{
 		MarkBegin = begin;
 		MarkEnd = end;
+
+		if (!PasswordBox && Operator && MarkBegin != MarkEnd) {
+			// copy to primary selection
+			const s32 realmbgn = MarkBegin < MarkEnd ? MarkBegin : MarkEnd;
+			const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
+
+			core::stringc s;
+			wStringToMultibyte(s, Text.subString(realmbgn, realmend - realmbgn));
+			Operator->copyToPrimarySelection(s.c_str());
+		}
+
 		sendGuiEvent(EGET_EDITBOX_MARKING_CHANGED);
 	}
 }
