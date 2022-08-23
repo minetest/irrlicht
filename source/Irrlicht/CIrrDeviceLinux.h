@@ -99,10 +99,19 @@ namespace irr
 		//! \return Returns 0 if no string is in there, otherwise utf-8 text.
 		virtual const c8 *getTextFromClipboard() const;
 
+		//! gets text from the primary selection
+		//! \return Returns 0 if no string is in there, otherwise utf-8 text.
+		virtual const c8 *getTextFromPrimarySelection() const;
+
 		//! copies text to the clipboard
-		//! This sets the clipboard selection and _not_ the primary selection which you have on X on the middle mouse button.
+		//! This sets the clipboard selection and _not_ the primary selection.
 		//! @param text The text in utf-8
 		virtual void copyToClipboard(const c8 *text) const;
+
+		//! copies text to the primary selection
+		//! This sets the primary selection which you have on X on the middle mouse button.
+		//! @param text The text in utf-8
+		virtual void copyToPrimarySelection(const c8 *text) const;
 
 		//! Remove all messages pending in the system message loop
 		void clearSystemMessages() override;
@@ -143,6 +152,9 @@ namespace irr
 		bool createInputContext();
 		void destroyInputContext();
 		EKEY_CODE getKeyCode(XEvent &event);
+
+		const c8 *getTextFromSelection(Atom selection, core::stringc &text_buffer) const;
+		bool becomeSelectionOwner(Atom selection) const;
 #endif
 
 		//! Implementation of the linux cursor control
@@ -416,6 +428,7 @@ namespace irr
 		bool HasNetWM;
 		// text is utf-8
 		mutable core::stringc Clipboard;
+		mutable core::stringc PrimarySelection;
 #endif
 		u32 Width, Height;
 		bool WindowHasFocus;

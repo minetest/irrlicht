@@ -27,12 +27,16 @@ public:
 	const core::stringc& getOperatingSystemVersion() const override;
 
 	//! copies text to the clipboard
-	//! \param text: text in utf-8
 	void copyToClipboard(const c8 *text) const override;
 
+	//! copies text to the primary selection
+	void copyToPrimarySelection(const c8 *text) const override;
+
 	//! gets text from the clipboard
-	//! \return Returns 0 if no string is in there, otherwise an utf-8 string.
 	const c8* getTextFromClipboard() const override;
+
+	//! gets text from the primary selection
+	const c8* getTextFromPrimarySelection() const override;
 
 	//! gets the total and available system RAM in kB
 	//! \param Total: will contain the total system memory
