@@ -239,6 +239,7 @@ namespace scene
 		/** This is useful if you want to draw tangent space normal
 		mapped geometry because it calculates the tangent and binormal
 		data which is needed there.
+		Note: Only 16-bit meshbuffers supported so far
 		\param mesh Input mesh
 		\param recalculateNormals The normals are recalculated if set,
 		otherwise the original ones are kept. Note that keeping the
@@ -257,7 +258,8 @@ namespace scene
 				bool angleWeighted=false, bool recalculateTangents=true) const=0;
 
 		//! Creates a copy of the mesh, which will only consist of S3DVertex2TCoord vertices.
-		/** \param mesh Input mesh
+		/** Note: Only 16-bit meshbuffers supported so far
+		\param mesh Input mesh
 		\return Mesh consisting only of S3DVertex2TCoord vertices. If
 		you no longer need the cloned mesh, you should call
 		IMesh::drop(). See IReferenceCounted::drop() for more
@@ -265,7 +267,8 @@ namespace scene
 		virtual IMesh* createMeshWith2TCoords(IMesh* mesh) const = 0;
 
 		//! Creates a copy of the mesh, which will only consist of S3DVertex vertices.
-		/** \param mesh Input mesh
+		/** Note: Only 16-bit meshbuffers supported so far
+		\param mesh Input mesh
 		\return Mesh consisting only of S3DVertex vertices. If
 		you no longer need the cloned mesh, you should call
 		IMesh::drop(). See IReferenceCounted::drop() for more
@@ -273,15 +276,17 @@ namespace scene
 		virtual IMesh* createMeshWith1TCoords(IMesh* mesh) const = 0;
 
 		//! Creates a copy of a mesh with all vertices unwelded
-		/** \param mesh Input mesh
+		/** Note: Only 16-bit meshbuffers supported so far
+		\param mesh Input mesh
 		\return Mesh consisting only of unique faces. All vertices
 		which were previously shared are now duplicated. If you no
 		longer need the cloned mesh, you should call IMesh::drop(). See
 		IReferenceCounted::drop() for more information. */
 		virtual IMesh* createMeshUniquePrimitives(IMesh* mesh) const = 0;
 
-		//! Creates a copy of a mesh with vertices welded
-		/** \param mesh Input mesh
+		//! Creates a copy of a mesh with vertices welded 
+		/** Note: Only 16-bit meshbuffers supported so far, 32-bit buffer are cloned
+		\param mesh Input mesh
 		\param tolerance The threshold for vertex comparisons.
 		\return Mesh without redundant vertices. If you no longer need
 		the cloned mesh, you should call IMesh::drop(). See
