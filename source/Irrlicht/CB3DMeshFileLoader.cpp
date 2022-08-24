@@ -26,7 +26,7 @@ namespace scene
 
 //! Constructor
 CB3DMeshFileLoader::CB3DMeshFileLoader(scene::ISceneManager* smgr)
-: AnimatedMesh(0), B3DFile(0), NormalsInFile(false),
+: AnimatedMesh(0), B3DFile(0), VerticesStart(0), NormalsInFile(false),
 	HasVertexColors(false), ShowWarning(true)
 {
 	#ifdef _DEBUG

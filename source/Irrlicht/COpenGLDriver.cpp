@@ -2615,7 +2615,7 @@ void COpenGLDriver::setBasicRenderStates(const SMaterial& material, const SMater
 					if ((material.AntiAliasing & EAAM_QUALITY) == EAAM_QUALITY)
 						glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
 					else
-						glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
+						glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_FASTEST);
 				}
 #endif
 			}
@@ -3805,10 +3805,10 @@ IImage* COpenGLDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RE
 		glPixelStorei(GL_PACK_INVERT_MESA, GL_FALSE);
 	else
 #endif
-	if (pixels)
+	if (pixels && newImage)
 	{
 		// opengl images are horizontally flipped, so we have to fix that here.
-		const s32 pitch=newImage->getPitch();
+		const s32 pitch = newImage->getPitch();
 		u8* p2 = pixels + (ScreenSize.Height - 1) * pitch;
 		u8* tmpBuffer = new u8[pitch];
 		for (u32 i=0; i < ScreenSize.Height; i += 2)

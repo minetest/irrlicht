@@ -74,7 +74,7 @@ CGUIFileOpenDialog::CGUIFileOpenDialog(const wchar_t* title,
 		L"", skin ? skin->getDefaultText(EGDT_WINDOW_CLOSE) : L"Close");
 	CloseButton->setSubElement(true);
 	CloseButton->setTabStop(false);
-	if (sprites)
+	if (sprites && skin)
 	{
 		CloseButton->setSpriteBank(sprites);
 		CloseButton->setSprite(EGBS_BUTTON_UP, skin->getIcon(EGDI_WINDOW_CLOSE), color);

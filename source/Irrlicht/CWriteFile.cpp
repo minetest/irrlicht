@@ -12,13 +12,12 @@ namespace io
 
 
 CWriteFile::CWriteFile(const io::path& fileName, bool append)
-: FileSize(0)
+: FileSize(0), Filename(fileName)
 {
 	#ifdef _DEBUG
 	setDebugName("CWriteFile");
 	#endif
 
-	Filename = fileName;
 	openFile(append);
 }
 
