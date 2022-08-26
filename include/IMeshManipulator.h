@@ -151,9 +151,9 @@ namespace scene
 		\param m transformation matrix. 
 		\param normalsUpdate When 0 - don't update normals. 
 		                     When 1 - update normals with inner 3x3 matrix of the inverse transposed of the transformation matrix
-							          should be set when the matrix has some non-uniform scaling
+							          should be set when the matrix has rotation or non-uniform scaling
 		\param normalizeNormals When true it normalizes all normals again. 
-		                        Usually makes sense to set this as well when normalsUpdate is 1
+		                        Recommended to set this when normalsUpdate is 1 and there is any scaling
 		*/
 		void transform(IMesh* mesh, const core::matrix4& m, u32 normalsUpdate = 0, bool normalizeNormals=false) const
 		{
@@ -179,9 +179,9 @@ namespace scene
 		\param m transformation matrix. 
 		\param normalsUpdate When 0 - don't update normals. 
 		                     When 1 - update normals with inner 3x3 matrix of the inverse transposed of the transformation matrix
-							          should be set when the matrix has some non-uniform scaling
+							          should be set when the matrix has rotation or non-uniform scaling
 		\param normalizeNormals When true it normalizes all normals again. 
-		                        Usually makes sense to set this as well when normalsUpdate is 1
+		                        Recommended to set this when normalsUpdate is 1 and there is any scaling
 		*/
 		void transform(IMeshBuffer* buffer, const core::matrix4& m, u32 normalsUpdate = 0, bool normalizeNormals=false) const
 		{
