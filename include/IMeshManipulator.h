@@ -103,7 +103,9 @@ namespace scene
 				bool angleWeighted=false) const=0;
 
 		//! Scales the actual mesh, not a scene node.
-		/** \param mesh Mesh on which the operation is performed.
+		/** Note: When your scale are not uniform then
+		prefer the transform function to have correct normals.
+		\param mesh Mesh on which the operation is performed.
 		\param factor Scale factor for each axis. */
 		void scale(IMesh* mesh, const core::vector3df& factor) const
 		{
@@ -111,7 +113,9 @@ namespace scene
 		}
 
 		//! Scales the actual meshbuffer, not a scene node.
-		/** \param buffer Meshbuffer on which the operation is performed.
+		/** Note: When your scale are not uniform then
+		prefer the transform function to have correct normals.
+		\param buffer Meshbuffer on which the operation is performed.
 		\param factor Scale factor for each axis. */
 		void scale(IMeshBuffer* buffer, const core::vector3df& factor) const
 		{
@@ -146,9 +150,12 @@ namespace scene
 		/** \param mesh Mesh on which the operation is performed.
 		\param m transformation matrix. 
 		\param normalsUpdate When 0 - don't update normals. 
-		                     When 1 - update normals with inverse transposed of the transformation matrix
+		                     When 1 - update normals with inner 3x3 matrix of the inverse transposed of the transformation matrix
+							          should be set when the matrix has some non-uniform scaling
+		\param normalizeNormals When true it normalizes all normals again. 
+		                        Usually makes sense to set this as well when normalsUpdate is 1
 		*/
-		void transform(IMesh* mesh, const core::matrix4& m, u32 normalsUpdate = 0) const
+		void transform(IMesh* mesh, const core::matrix4& m, u32 normalsUpdate = 0, bool normalizeNormals=false) const
 		{
 			apply(SVertexPositionTransformManipulator(m), mesh, true);
 
@@ -158,8 +165,12 @@ namespace scene
 				if ( m.getInverse(invT) )
 				{
 					invT = invT.getTransposed();
-					apply(SVertexNormalTransformManipulator(invT), mesh, false);
+					apply(SVertexNormalRotateScaleManipulator(invT), mesh, false);
 				}
+			}
+			if ( normalizeNormals )
+			{
+				apply(SVertexNormalizeNormalManipulator(), mesh, false);
 			}
 		}
 
@@ -167,9 +178,12 @@ namespace scene
 		/** \param buffer Meshbuffer on which the operation is performed.
 		\param m transformation matrix. 
 		\param normalsUpdate When 0 - don't update normals. 
-		                     When 1 - update normals with inverse transposed of the transformation matrix
+		                     When 1 - update normals with inner 3x3 matrix of the inverse transposed of the transformation matrix
+							          should be set when the matrix has some non-uniform scaling
+		\param normalizeNormals When true it normalizes all normals again. 
+		                        Usually makes sense to set this as well when normalsUpdate is 1
 		*/
-		void transform(IMeshBuffer* buffer, const core::matrix4& m, u32 normalsUpdate = 0) const
+		void transform(IMeshBuffer* buffer, const core::matrix4& m, u32 normalsUpdate = 0, bool normalizeNormals=false) const
 		{
 			apply(SVertexPositionTransformManipulator(m), buffer, true);
 
@@ -179,8 +193,12 @@ namespace scene
 				if ( m.getInverse(invT) )
 				{
 					invT = invT.getTransposed();
-					apply(SVertexNormalTransformManipulator(invT), buffer, false);
+					apply(SVertexNormalRotateScaleManipulator(invT), buffer, false);
 				}
+			}
+			if ( normalizeNormals )
+			{
+				apply(SVertexNormalizeNormalManipulator(), buffer, false);
 			}
 		}
 

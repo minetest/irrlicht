@@ -221,10 +221,10 @@ namespace core
 			//! Translate a vector by the inverse of the translation part of this matrix.
 			void inverseTranslateVect( vector3df& vect ) const;
 
-			//! Rotate a vector by the inverse of the rotation part of this matrix.
+			//! Tranform (rotate/scale) a vector by the inverse of the rotation part this matrix
 			void inverseRotateVect( vector3df& vect ) const;
 
-			//! Rotate a vector by the rotation part of this matrix.
+			//! Transform (rotate/scale) a vector by the rotation part of this matrix.
 			void rotateVect( vector3df& vect ) const;
 
 			//! An alternate transform vector method, writing into a second vector
