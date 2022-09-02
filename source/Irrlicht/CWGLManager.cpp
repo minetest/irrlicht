@@ -46,13 +46,12 @@ bool CWGLManager::initialize(const SIrrlichtCreationParameters& params, const SE
 	wcex.cbClsExtra    = 0;
 	wcex.cbWndExtra    = 0;
 	wcex.hInstance     = lhInstance;
-	wcex.hIcon         = NULL;
+	wcex.hIcon         = 0;
 	wcex.hCursor       = LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
 	wcex.lpszMenuName  = 0;
 	wcex.lpszClassName = ClassName;
 	wcex.hIconSm       = 0;
-	wcex.hIcon         = 0;
 	RegisterClassEx(&wcex);
 
 	RECT clientSize;
