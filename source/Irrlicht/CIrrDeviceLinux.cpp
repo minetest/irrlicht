@@ -2118,7 +2118,17 @@ CIrrDeviceLinux::CCursorControl::CCursorControl(CIrrDeviceLinux* dev, bool null)
 	if (!Null)
 	{
 #ifdef _IRR_LINUX_X11_XINPUT2_
-		XIGetClientPointer(Device->XDisplay, Device->XWindow, &DeviceId);
+		// XIWarpPointer is entirely broken on multi-head setups (see also [1]),
+		// but behaves better in other cases so we can't just disable it outright.
+		// [1] https://developer.blender.org/rB165caafb99c6846e53d11c4e966990aaffc06cea
+		if (XScreenCount(Device->XDisplay) > 1)
+		{
+			os::Printer::log("Detected classic multi-head setup, not using XIWarpPointer");
+		}
+		else
+		{
+			XIGetClientPointer(Device->XDisplay, Device->XWindow, &DeviceId);
+		}
 #endif
 
 		XGCValues values;
