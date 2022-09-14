@@ -17,7 +17,9 @@
 #endif
 #endif
 
-#if defined(_IRR_COMPILE_WITH_X11_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
+#include <SDL_clipboard.h>
+#elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
 #include "CIrrDeviceLinux.h"
 #endif
 #if defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
@@ -59,8 +61,10 @@ void COSOperator::copyToClipboard(const c8 *text) const
 	if (strlen(text)==0)
 		return;
 
-// Windows version
-#if defined(_IRR_WINDOWS_API_)
+#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
+	SDL_SetClipboardText(text);
+
+#elif defined(_IRR_WINDOWS_API_)
 	if (!OpenClipboard(NULL) || text == 0)
 		return;
 
@@ -117,7 +121,14 @@ void COSOperator::copyToPrimarySelection(const c8 *text) const
 //! gets text from the clipboard
 const c8* COSOperator::getTextFromClipboard() const
 {
-#if defined(_IRR_WINDOWS_API_)
+#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
+	static char *text = nullptr;
+	if (text)
+		SDL_free(text);
+	text = SDL_GetClipboardText();
+	return text;
+
+#elif defined(_IRR_WINDOWS_API_)
 	if (!OpenClipboard(NULL))
 		return 0;
 
