@@ -42,7 +42,7 @@ Run the following script in PowerShell:
 
 	git clone https://github.com/minetest/irrlicht
 	cd irrlicht
-	cmake -B build -G "Visual Studio 17 2022" -A "Win64" -DCMAKE_TOOLCHAIN_FILE=D:/vcpkg/scripts/buildsystems/vcpkg.cmake -DBUILD_SHARED_LIBS=OFF
+	cmake -B build -G "Visual Studio 17 2022" -A "Win64" -DCMAKE_TOOLCHAIN_FILE=[vcpkg-root]/scripts/buildsystems/vcpkg.cmake -DBUILD_SHARED_LIBS=OFF
 	cmake --build build --config Release
 	
 Platforms
