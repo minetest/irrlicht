@@ -265,7 +265,7 @@ namespace scene
 		{
 			if ((filesize-file->getPos())/bytesPerPixel>(size_t)(width*width))
 			{
-				os::Printer::log("Error reading heightmap RAW file", "File is too small.");
+				os::Printer::log("Error reading heightmap RAW file: File is too small.");
 				return false;
 			}
 			TerrainData.Size = width;

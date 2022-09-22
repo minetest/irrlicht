@@ -119,6 +119,12 @@ namespace scene
 		//! returns texture coord of vertex i
 		virtual core::vector2df& getTCoords(u32 i) = 0;
 
+		//! returns color of vertex i
+		virtual video::SColor& getColor(u32 i) = 0;
+
+		//! returns color of vertex i
+		virtual const video::SColor& getColor(u32 i) const = 0;
+
 		//! Append the vertices and indices to the current buffer
 		/** Only works for compatible vertex types
 		and not implemented for most buffers for now.

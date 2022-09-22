@@ -28,16 +28,16 @@ CCameraSceneNode::CCameraSceneNode(ISceneNode* parent, ISceneManager* mgr, s32 i
 
 	// set default projection
 	Fovy = core::PI / 2.5f;	// Field of view, in radians.
+	Aspect = 4.0f / 3.0f;	// Aspect ratio.
 
 	const video::IVideoDriver* const d = mgr?mgr->getVideoDriver():0;
 	if (d)
 	{
-		Aspect = (f32)d->getCurrentRenderTargetSize().Width /
-			(f32)d->getCurrentRenderTargetSize().Height;
+		if ( d->getCurrentRenderTargetSize().Height )
+			Aspect = (f32)d->getCurrentRenderTargetSize().Width /
+				(f32)d->getCurrentRenderTargetSize().Height;
 		HasD3DStyleProjectionMatrix = d->getDriverType() != video::EDT_OPENGL;
 	}
-	else
-		Aspect = 4.0f / 3.0f;	// Aspect ratio.
 
 	ViewArea.setFarNearDistance(ZFar - ZNear);
 	recalculateProjectionMatrix();
@@ -252,6 +252,7 @@ void CCameraSceneNode::OnRegisterSceneNode()
 //! render
 void CCameraSceneNode::render()
 {
+	updateAbsolutePosition();	// depending on that call in onAnimate is risky (might not be in SceneManager or it or it's parent might be invisible and still should render)
 	updateMatrices();
 
 	video::IVideoDriver* driver = SceneManager->getVideoDriver();

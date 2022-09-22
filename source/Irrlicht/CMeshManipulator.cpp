@@ -708,38 +708,45 @@ IMesh* CMeshManipulator::createMeshUniquePrimitives(IMesh* mesh) const
 // not yet 32bit
 IMesh* CMeshManipulator::createMeshWelded(IMesh *mesh, f32 tolerance) const
 {
-	SMesh* clone = new SMesh();
-	clone->BoundingBox = mesh->getBoundingBox();
+	SMesh* meshClone = new SMesh();
+	meshClone->BoundingBox = mesh->getBoundingBox();
 
 	core::array<u16> redirects;
 
 	for (u32 b=0; b<mesh->getMeshBufferCount(); ++b)
 	{
 		const IMeshBuffer* const mb = mesh->getMeshBuffer(b);
+		const u32 vertexCount = mb->getVertexCount();
 		// reset redirect list
-		redirects.set_used(mb->getVertexCount());
+		redirects.set_used(vertexCount);
 
-		const u16* indices = 0;
-		u32 indexCount = 0;
+		const video::E_INDEX_TYPE indexType = mb->getIndexType();
+		const u16* indices = mb->getIndices();
+		const u32 indexCount = mb->getIndexCount();
 		core::array<u16>* outIdx = 0;
+
+		if ( indexType == video::EIT_32BIT )
+		{
+			IMeshBuffer* buffer = mb->createClone();
+			buffer->setBoundingBox(mb->getBoundingBox());
+			buffer->getMaterial() = mb->getMaterial();
+			meshClone->addMeshBuffer(buffer);
+			buffer->drop();
+			continue;	// TODO: handle 32-bit buffers beside copying them
+		}
 
 		switch(mb->getVertexType())
 		{
 		case video::EVT_STANDARD:
 		{
 			SMeshBuffer* buffer = new SMeshBuffer();
-			buffer->BoundingBox = mb->getBoundingBox();
+			buffer->setBoundingBox(mb->getBoundingBox());
 			buffer->Material = mb->getMaterial();
-			clone->addMeshBuffer(buffer);
+			meshClone->addMeshBuffer(buffer);
 			buffer->drop();
 
-			video::S3DVertex* v =
-					(video::S3DVertex*)mb->getVertices();
+			video::S3DVertex* v = (video::S3DVertex*)mb->getVertices();
 
-			u32 vertexCount = mb->getVertexCount();
-
-			indices = mb->getIndices();
-			indexCount = mb->getIndexCount();
 			outIdx = &buffer->Indices;
 
 			buffer->Vertices.reallocate(vertexCount);
@@ -771,18 +778,14 @@ IMesh* CMeshManipulator::createMeshWelded(IMesh *mesh, f32 tolerance) const
 		case video::EVT_2TCOORDS:
 		{
 			SMeshBufferLightMap* buffer = new SMeshBufferLightMap();
-			buffer->BoundingBox = mb->getBoundingBox();
+			buffer->setBoundingBox(mb->getBoundingBox());
 			buffer->Material = mb->getMaterial();
-			clone->addMeshBuffer(buffer);
+			meshClone->addMeshBuffer(buffer);
 			buffer->drop();
 
 			video::S3DVertex2TCoords* v =
 					(video::S3DVertex2TCoords*)mb->getVertices();
 
-			u32 vertexCount = mb->getVertexCount();
-
-			indices = mb->getIndices();
-			indexCount = mb->getIndexCount();
 			outIdx = &buffer->Indices;
 
 			buffer->Vertices.reallocate(vertexCount);
@@ -814,18 +817,13 @@ IMesh* CMeshManipulator::createMeshWelded(IMesh *mesh, f32 tolerance) const
 		case video::EVT_TANGENTS:
 		{
 			SMeshBufferTangents* buffer = new SMeshBufferTangents();
-			buffer->BoundingBox = mb->getBoundingBox();
+			buffer->setBoundingBox(mb->getBoundingBox());
 			buffer->Material = mb->getMaterial();
-			clone->addMeshBuffer(buffer);
+			meshClone->addMeshBuffer(buffer);
 			buffer->drop();
 
-			video::S3DVertexTangents* v =
-					(video::S3DVertexTangents*)mb->getVertices();
+			video::S3DVertexTangents* v = (video::S3DVertexTangents*)mb->getVertices();
 
-			u32 vertexCount = mb->getVertexCount();
-
-			indices = mb->getIndices();
-			indexCount = mb->getIndexCount();
 			outIdx = &buffer->Indices;
 
 			buffer->Vertices.reallocate(vertexCount);
@@ -860,7 +858,7 @@ IMesh* CMeshManipulator::createMeshWelded(IMesh *mesh, f32 tolerance) const
 			break;
 		}
 
-		// Clean up any degenerate tris
+		// set indices for new buffer
  		core::array<u16> &Indices = *outIdx;
 		Indices.clear();
 		Indices.reallocate(indexCount);
@@ -873,6 +871,7 @@ IMesh* CMeshManipulator::createMeshWelded(IMesh *mesh, f32 tolerance) const
 
 			bool drop = false;
 
+			// Clean up any degenerate tris
 			if (a == b || b == c || a == c)
 				drop = true;
 
@@ -885,8 +884,9 @@ IMesh* CMeshManipulator::createMeshWelded(IMesh *mesh, f32 tolerance) const
 				Indices.push_back(c);
 			}
 		}
+		// indexCount-Indices.size() vertices got welded for this meshbuffer
 	}
-	return clone;
+	return meshClone;
 }
 
 

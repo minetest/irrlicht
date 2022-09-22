@@ -80,7 +80,7 @@ IImage* CImageLoaderPSD::loadImage(io::IReadFile* file) const
 
 	if (header.mode != 3 || header.depth != 8)
 	{
-		os::Printer::log("Unsupported PSD color mode or depth.\n", file->getFileName(), ELL_ERROR);
+		os::Printer::log("Unsupported PSD color mode or depth", file->getFileName(), ELL_ERROR);
 		return 0;
 	}
 
@@ -93,7 +93,7 @@ IImage* CImageLoaderPSD::loadImage(io::IReadFile* file) const
 #endif
 	if (!file->seek(l, true))
 	{
-		os::Printer::log("Error seeking file pos to image resources.\n", file->getFileName(), ELL_ERROR);
+		os::Printer::log("Error seeking file pos to image resources", file->getFileName(), ELL_ERROR);
 		return 0;
 	}
 
@@ -105,7 +105,7 @@ IImage* CImageLoaderPSD::loadImage(io::IReadFile* file) const
 #endif
 	if (!file->seek(l, true))
 	{
-		os::Printer::log("Error seeking file pos to layer and mask.\n", file->getFileName(), ELL_ERROR);
+		os::Printer::log("Error seeking file pos to layer and mask", file->getFileName(), ELL_ERROR);
 		return 0;
 	}
 
@@ -117,7 +117,7 @@ IImage* CImageLoaderPSD::loadImage(io::IReadFile* file) const
 #endif
 	if (!file->seek(l, true))
 	{
-		os::Printer::log("Error seeking file pos to image data section.\n", file->getFileName(), ELL_ERROR);
+		os::Printer::log("Error seeking file pos to image data section", file->getFileName(), ELL_ERROR);
 		return 0;
 	}
 
@@ -131,7 +131,7 @@ IImage* CImageLoaderPSD::loadImage(io::IReadFile* file) const
 
 	if (compressionType != 1 && compressionType != 0)
 	{
-		os::Printer::log("Unsupported psd compression mode.\n", file->getFileName(), ELL_ERROR);
+		os::Printer::log("Unsupported psd compression mode", file->getFileName(), ELL_ERROR);
 		return 0;
 	}
 
@@ -171,7 +171,7 @@ bool CImageLoaderPSD::readRawImageData(io::IReadFile* file, const PsdHeader& hea
 	{
 		if (!file->read(tmpData, sizeof(c8) * header.width * header.height))
 		{
-			os::Printer::log("Error reading color channel\n", file->getFileName(), ELL_ERROR);
+			os::Printer::log("Error reading color channel", file->getFileName(), ELL_ERROR);
 			break;
 		}
 
@@ -247,7 +247,7 @@ bool CImageLoaderPSD::readRLEImageData(io::IReadFile* file, const PsdHeader& hea
 		{
 			delete [] tmpData;
 			delete [] rleCount;
-			os::Printer::log("Error reading rle rows\n", file->getFileName(), ELL_ERROR);
+			os::Printer::log("Error reading rle rows", file->getFileName(), ELL_ERROR);
 			return false;
 		}
 
@@ -263,7 +263,7 @@ bool CImageLoaderPSD::readRLEImageData(io::IReadFile* file, const PsdHeader& hea
 		delete [] rleCount;
 		delete [] buf;
 		delete [] tmpData;
-		os::Printer::log("Error reading rle rows\n", file->getFileName(), ELL_ERROR);
+		os::Printer::log("Error reading rle rows", file->getFileName(), ELL_ERROR);
 		return false;
 	}
 

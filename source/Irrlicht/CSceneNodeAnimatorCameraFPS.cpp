@@ -117,7 +117,6 @@ void CSceneNodeAnimatorCameraFPS::animateNode(ISceneNode* node, u32 timeMs)
 
 	if (firstUpdate)
 	{
-		camera->updateAbsolutePosition();
 		if (CursorControl )
 		{
 			CursorControl->setPosition(0.5f, 0.5f);
@@ -151,6 +150,7 @@ void CSceneNodeAnimatorCameraFPS::animateNode(ISceneNode* node, u32 timeMs)
 	LastAnimationTime = timeMs;
 
 	// Update rotation
+	camera->updateAbsolutePosition();
 	core::vector3df target = (camera->getTarget() - camera->getAbsolutePosition());
 	core::vector3df relativeRotation = target.getHorizontalAngle();
 

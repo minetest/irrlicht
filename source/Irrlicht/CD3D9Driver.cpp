@@ -3001,7 +3001,7 @@ bool CD3D9Driver::reset()
 		}
 		else
 		{
-			os::Printer::log("Resetting failed due to unknown reason.", core::stringc((int)hr).c_str(), ELL_WARNING);
+			os::Printer::log("Resetting failed due to unknown reason", core::stringc((int)hr).c_str(), ELL_WARNING);
 		}
 		return false;
 	}

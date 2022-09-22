@@ -35,8 +35,6 @@ of the objects and camera.
 */
 
 #ifdef _MSC_VER
-// We'll also define this to stop MSVC complaining about sprintf().
-#define _CRT_SECURE_NO_WARNINGS
 #pragma comment(lib, "Irrlicht.lib")
 #endif
 
@@ -150,6 +148,7 @@ int main()
 	*/
 	smgr->addCameraSceneNode();
 	int lastFPS = -1;
+	u32 lastPrimitives = 0;
 	u32 timeNow = device->getTimer()->getTime();
 	bool nodeVisible=true;
 
@@ -190,16 +189,20 @@ int main()
 		driver->endScene();
 
 		int fps = driver->getFPS();
+		u32 numPrimitives = driver->getPrimitiveCountDrawn();
 
-		if (lastFPS != fps)
+		if (lastFPS != fps || lastPrimitives != numPrimitives)
 		{
 			core::stringw tmp(L"OcclusionQuery Example [");
 			tmp += driver->getName();
 			tmp += L"] fps: ";
 			tmp += fps;
+			tmp += L" polygons: ";
+			tmp += numPrimitives;
 
 			device->setWindowCaption(tmp.c_str());
 			lastFPS = fps;
+			lastPrimitives = numPrimitives;
 		}
 	}
 

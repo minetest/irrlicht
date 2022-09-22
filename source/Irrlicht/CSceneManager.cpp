@@ -438,7 +438,7 @@ IAnimatedMesh* CSceneManager::getMesh(const io::path& filename, const io::path& 
 	io::IReadFile* file = FileSystem->createAndOpenFile(filename);
 	if (!file)
 	{
-		os::Printer::log("Could not load mesh, because file could not be opened: ", filename, ELL_ERROR);
+		os::Printer::log("Could not load mesh, because file could not be opened", filename, ELL_ERROR);
 		return 0;
 	}
 
@@ -2377,7 +2377,7 @@ bool CSceneManager::loadScene(io::IReadFile* file, ISceneUserDataSerializer* use
 			ret = SceneLoaderList[i]->loadScene(file, userDataSerializer, rootNode);
 
 	if (!ret)
-		os::Printer::log("Could not load scene file, perhaps the format is unsupported: ", file->getFileName().c_str(), ELL_ERROR);
+		os::Printer::log("Could not load scene file, perhaps the format is unsupported", file->getFileName().c_str(), ELL_ERROR);
 
 	return ret;
 }

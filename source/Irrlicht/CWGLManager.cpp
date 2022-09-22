@@ -463,7 +463,7 @@ bool CWGLManager::activateContext(const SExposedVideoData& videoData, bool resto
 	{
 		if (!wglMakeCurrent((HDC)PrimaryContext.OpenGLWin32.HDc, (HGLRC)PrimaryContext.OpenGLWin32.HRc))
 		{
-			os::Printer::log("Render Context switch failed.");
+			os::Printer::log("Render Context switch (back to main) failed.");
 			return false;
 		}
 		CurrentContext=PrimaryContext;

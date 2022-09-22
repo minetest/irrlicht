@@ -242,7 +242,7 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 	if (pPtr + ((sizeof(MS3DVertex) - MS3DVERTEX_NUM_PAD_BYTES) * numVertices) > buffer+fileSize)
 	{
 		delete [] buffer;
-		os::Printer::log("Loading failed. Corrupted data found.", file->getFileName(), ELL_ERROR);
+		os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 		return false;
 	}
 	for (u16 tmp=0; tmp<numVertices; ++tmp)
@@ -273,7 +273,7 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 	if (pPtr + ((sizeof(MS3DTriangle) - MS3DTRIANGLE_NUM_PAD_BYTES) * numTriangles) > buffer+fileSize)
 	{
 		delete [] buffer;
-		os::Printer::log("Loading failed. Corrupted data found.", file->getFileName(), ELL_ERROR);
+		os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 		return false;
 	}
 	for (u16 tmp=0; tmp<numTriangles; ++tmp)
@@ -349,7 +349,7 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 		if (pPtr > buffer+fileSize)
 		{
 			delete [] buffer;
-			os::Printer::log("Loading failed. Corrupted data found.", file->getFileName(), ELL_ERROR);
+			os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 			return false;
 		}
 	}
@@ -390,7 +390,7 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 		if (pPtr > buffer+fileSize)
 		{
 			delete [] buffer;
-			os::Printer::log("Loading failed. Corrupted data found.", file->getFileName(), ELL_ERROR);
+			os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 			return false;
 		}
 
@@ -452,7 +452,7 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 	if (pPtr > buffer+fileSize)
 	{
 		delete [] buffer;
-		os::Printer::log("Loading failed. Corrupted data found.", file->getFileName(), ELL_ERROR);
+		os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 		return false;
 	}
 
@@ -479,7 +479,7 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 		if (pPtr > buffer+fileSize)
 		{
 			delete [] buffer;
-			os::Printer::log("Loading failed. Corrupted data found.", file->getFileName(), ELL_ERROR);
+			os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 			return false;
 		}
 
@@ -529,7 +529,7 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 			if (pPtr > buffer+fileSize)
 			{
 				delete [] buffer;
-				os::Printer::log("Loading failed. Corrupted data found.", file->getFileName(), ELL_ERROR);
+				os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 				return false;
 			}
 
@@ -569,7 +569,7 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 			if (pPtr > buffer+fileSize)
 			{
 				delete [] buffer;
-				os::Printer::log("Loading failed. Corrupted data found.", file->getFileName(), ELL_ERROR);
+				os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 				return false;
 			}
 
@@ -625,7 +625,7 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 			if (pPtr > buffer+fileSize)
 			{
 				delete [] buffer;
-				os::Printer::log("Loading failed. Corrupted data found.", file->getFileName(), ELL_ERROR);
+				os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 				return false;
 			}
 		}
@@ -657,7 +657,7 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 			if (pPtr > buffer+fileSize)
 			{
 				delete [] buffer;
-				os::Printer::log("Loading failed. Corrupted data found.", file->getFileName(), ELL_ERROR);
+				os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 				return false;
 			}
 		}

@@ -42,7 +42,7 @@ public:
 		/*
 		Always return false by default. If you return true you tell the engine
 		that you handled this event completely and the Irrlicht should not
-		process it any further. So for example if you return true for all 
+		process it any further. So for example if you return true for all
 		EET_KEY_INPUT_EVENT events then Irrlicht would not pass on key-events
 		to it's GUI system.
 		*/
@@ -54,7 +54,7 @@ public:
 	{
 		return KeyIsDown[keyCode];
 	}
-	
+
 	MyEventReceiver()
 	{
 		for (u32 i=0; i<KEY_KEY_CODES_COUNT; ++i)
@@ -71,7 +71,7 @@ private:
 The event receiver for keeping the pressed keys is ready, the actual responses
 will be made inside the render loop, right before drawing the scene. So lets
 create an irr::IrrlichtDevice and the scene node we want to move. We also
-create some additional scene nodes to show different possibilities to move and 
+create some additional scene nodes to show different possibilities to move and
 animate scene nodes.
 */
 int main()
@@ -82,7 +82,7 @@ int main()
 		return 1;
 
 	/*
-	Create the event receiver. Take care that the pointer to it has to 
+	Create the event receiver. Take care that the pointer to it has to
 	stay valid as long as the IrrlichtDevice uses it. Event receivers are not
 	reference counted.
 	*/
@@ -139,7 +139,7 @@ int main()
 	}
 
 	/*
-	The last scene node we add is a b3d model of a walking ninja. Is shows the 
+	The last scene node we add is a b3d model of a walking ninja. Is shows the
 	use of a 'fly straight' animator to move the node between two points.
 	*/
 	scene::IAnimatedMeshSceneNode* ninjaNode =
@@ -196,7 +196,7 @@ int main()
 		core::position2d<s32>(10,20));
 
 	/*
-	Lets draw the scene and also write the current frames per second and the 
+	Lets draw the scene and also write the current frames per second and the
 	name of the driver to the caption of the window.
 	*/
 	int lastFPS = -1;
@@ -259,7 +259,7 @@ int main()
 	In the end, delete the Irrlicht device.
 	*/
 	device->drop();
-	
+
 	return 0;
 }
 

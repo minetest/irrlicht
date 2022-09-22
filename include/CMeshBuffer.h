@@ -176,6 +176,17 @@ namespace scene
 			return Vertices[i].TCoords;
 		}
 
+		//! returns color of vertex i
+		virtual video::SColor& getColor(u32 i) IRR_OVERRIDE
+		{
+			return Vertices[i].Color;
+		}
+
+		//! returns color of vertex i
+		virtual const video::SColor& getColor(u32 i) const IRR_OVERRIDE
+		{
+			return Vertices[i].Color;
+		}
 
 		//! Append the vertices and indices to the current buffer
 		/** Only works for compatible types, i.e. either the same type

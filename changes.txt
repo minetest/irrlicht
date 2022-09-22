@@ -11,6 +11,8 @@ Changes in ogl-es (not yet released - will be merged with trunk at some point)
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Fix MouseButtonStates for mouse events in CIrrDeviceSDL when middle or right button are released.
+- CGUIContextMenu no longer marks EMIE_MOUSE_MOVED as handled
 - core::array::linear_search and linear_reverse_search can now work with any types as long as corresponding operator== is implemented.
 - Add checks for sane image sizes in some image loaders (so far: bmp, jpg, tga, png).
   Thanks @sfan5 for the original patch (got modified a bit): https://github.com/minetest/irrlicht/commit/dbd39120e7ed8c0c97e48e2df62347627f3c1d42
@@ -383,6 +385,7 @@ Changes in 1.9 (not yet released)
 
 --------------------------
 Changes in 1.8.6 
+- Avoid warning about stringop-overflow in string<T>::subString when compiling in release with newer gcc
 - Update library zlib to 1.2.11 (from 1.2.8)
 - Update library bzip2 to 1.0.8 (from 1.0.6)
 - Security: Fix buffer overflow caused by malformed md2 files. Thanks @procfs for reporting (https://irrlicht.sourceforge.io/forum/viewtopic.php?f=7&t=52785)

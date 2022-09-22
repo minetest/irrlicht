@@ -1827,7 +1827,7 @@ void CColladaMeshWriter::writeMeshGeometry(const irr::core::stringc& meshname, s
 
 		if ( buffer->getPrimitiveType() != EPT_TRIANGLES )
 		{
-			os::Printer::log("Collada writer does not support non-triangle meshbuffers. Mesh: ", meshname.c_str(), ELL_WARNING);
+			os::Printer::log("Collada writer does not support non-triangle meshbuffers. Mesh", meshname.c_str(), ELL_WARNING);
 			continue;
 		}
 
@@ -1865,12 +1865,16 @@ void CColladaMeshWriter::writeMeshGeometry(const irr::core::stringc& meshname, s
 
 		Writer->writeElement("p", false);
 
+		const video::E_INDEX_TYPE iType = buffer->getIndexType();
+		const u16* idx16 = buffer->getIndices();
+		const u32* idx32 = (u32*)buffer->getIndices();
+
 		core::stringc strP;
 		strP.reserve(100);
 		for (u32 p=0; p<polyCount; ++p)
 		{
 			// Irrlicht uses clockwise, Collada uses counter-clockwise to define front-face
-			u32 irrIdx = buffer->getIndices()[(p*3) + 2];
+			u32 irrIdx = iType == video::EIT_16BIT ? idx16[p*3 + 2] : idx32[p*3 + 2];
 			strP = "";
 			strP += irrIdx + posIdx;
 			strP += " ";
@@ -1884,7 +1888,7 @@ void CColladaMeshWriter::writeMeshGeometry(const irr::core::stringc& meshname, s
 				strP += " ";
 			}
 
-			irrIdx = buffer->getIndices()[(p*3) + 1];
+			irrIdx = iType == video::EIT_16BIT ? idx16[p*3 + 1] : idx32[p*3 + 1];
 			strP += irrIdx + posIdx;
 			strP += " ";
 			strP += irrIdx + tCoordIdx;
@@ -1897,7 +1901,7 @@ void CColladaMeshWriter::writeMeshGeometry(const irr::core::stringc& meshname, s
 				strP += " ";
 			}
 
-			irrIdx = buffer->getIndices()[(p*3) + 0];
+			irrIdx = iType == video::EIT_16BIT ? idx16[p*3] : idx32[p*3];
 			strP += irrIdx + posIdx;
 			strP += " ";
 			strP += irrIdx + tCoordIdx;

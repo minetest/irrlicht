@@ -199,7 +199,7 @@ bool CMD2MeshFileLoader::loadFile(io::IReadFile* file, CAnimatedMeshMD2* mesh)
 	if (!file->read(textureCoords, sizeof(SMD2TextureCoordinate)*header.numTexcoords))
 	{
 		delete[] textureCoords;
-		os::Printer::log("MD2 Loader: Error reading TextureCoords.", file->getFileName(), ELL_ERROR);
+		os::Printer::log("MD2 Loader: Error reading TextureCoords", file->getFileName(), ELL_ERROR);
 		return false;
 	}
 
@@ -221,7 +221,7 @@ bool CMD2MeshFileLoader::loadFile(io::IReadFile* file, CAnimatedMeshMD2* mesh)
 		delete[] triangles;
 		delete[] textureCoords;
 
-		os::Printer::log("MD2 Loader: Error reading triangles.", file->getFileName(), ELL_ERROR);
+		os::Printer::log("MD2 Loader: Error reading triangles", file->getFileName(), ELL_ERROR);
 		return false;
 	}
 

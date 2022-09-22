@@ -171,6 +171,21 @@ namespace scene
 			return (*Vertices)[Indices[i]].TCoords;
 		}
 
+		//! returns color of vertex i
+		virtual video::SColor& getColor(u32 i) IRR_OVERRIDE
+		{
+			IRR_DEBUG_BREAK_IF(!Vertices);
+			return (*Vertices)[Indices[i]].Color;
+		}
+
+		//! returns color of vertex i
+		virtual const video::SColor& getColor(u32 i) const IRR_OVERRIDE
+		{
+			IRR_DEBUG_BREAK_IF(!Vertices);
+			return (*Vertices)[Indices[i]].Color;
+		}
+
+
 		//! append the vertices and indices to the current buffer
 		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices)  IRR_OVERRIDE 
 		{
