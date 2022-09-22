@@ -1,6 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Fix MouseButtonStates for mouse events in CIrrDeviceSDL when middle or right button are released.
 - CGUIContextMenu no longer marks EMIE_MOUSE_MOVED as handled
 - core::array::linear_search and linear_reverse_search can now work with any types as long as corresponding operator== is implemented.
 - Add checks for sane image sizes in some image loaders (so far: bmp, jpg, tga, png).
