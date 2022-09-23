@@ -23,6 +23,8 @@
 #include <SDL.h>
 #include <SDL_syswm.h>
 
+#include <memory>
+
 namespace irr
 {
 
@@ -104,6 +106,7 @@ namespace irr
 			CCursorControl(CIrrDeviceSDL* dev)
 				: Device(dev), IsVisible(true)
 			{
+				initCursors();
 			}
 
 			//! Changes the visible state of the mouse cursor.
@@ -186,6 +189,22 @@ namespace irr
 				}
 			}
 
+			void setActiveIcon(gui::ECURSOR_ICON iconId) override
+			{
+				ActiveIcon = iconId;
+				if (iconId > Cursors.size() || !Cursors[iconId]) {
+					iconId = gui::ECI_NORMAL;
+					if (iconId > Cursors.size() || !Cursors[iconId])
+						return;
+				}
+				SDL_SetCursor(Cursors[iconId].get());
+			}
+
+			gui::ECURSOR_ICON getActiveIcon() const override
+			{
+				return ActiveIcon;
+			}
+
 		private:
 
 			void updateCursorPos()
@@ -222,9 +241,20 @@ namespace irr
 #endif
 			}
 
+			void initCursors();
+
 			CIrrDeviceSDL* Device;
 			core::position2d<s32> CursorPos;
 			bool IsVisible;
+
+			struct CursorDeleter {
+				void operator()(SDL_Cursor *ptr) {
+					if (ptr)
+						SDL_FreeCursor(ptr);
+				}
+			};
+			std::vector<std::unique_ptr<SDL_Cursor, CursorDeleter>> Cursors;
+			gui::ECURSOR_ICON ActiveIcon;
 		};
 
 	private:
