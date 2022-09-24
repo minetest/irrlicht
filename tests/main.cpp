@@ -246,7 +246,10 @@ int main(int argumentCount, char * arguments[])
 #ifdef _IRR_WINDOWS_
 		(void)system("tests.log");
 #else
-		(void)system("$PAGER tests.log");
+		if ( getenv("PAGER") )
+			(void)system("$PAGER tests.log");
+		else
+			printf("See tests.log for results. Or set $PAGER environment variable to show it directly.\n");
 #endif
 		return fails;
 	}
