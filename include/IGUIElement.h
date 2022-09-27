@@ -434,7 +434,7 @@ public:
 			if (el)
 			{
 				// find the highest element number
-				el->getNextElement(-1, true, IsTabGroup, first, closest, true);
+				el->getNextElement(-1, true, IsTabGroup, first, closest, true, true);
 				if (first)
 				{
 					TabOrder = first->getTabOrder() + 1;
@@ -720,7 +720,7 @@ public:
 					}
 				}
 				// search within children
-				if ((*it)->getNextElement(startOrder, reverse, group, first, closest))
+				if ((*it)->getNextElement(startOrder, reverse, group, first, closest, includeInvisible, includeDisabled))
 				{
 					return true;
 				}
