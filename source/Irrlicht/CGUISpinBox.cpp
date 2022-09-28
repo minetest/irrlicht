@@ -56,8 +56,6 @@ CGUISpinBox::CGUISpinBox(const wchar_t* text, bool border,IGUIEnvironment* envir
 	EditBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
 
 	refreshSprites();
-
-	OldValue = getValue();
 }
 
 
@@ -106,8 +104,6 @@ IGUIEditBox* CGUISpinBox::getEditBox() const
 
 void CGUISpinBox::setValue(f32 val)
 {
-	OldValue = val;
-
 	wchar_t str[100];
 	swprintf_irr(str, 99, FormatString.c_str(), val);
 	EditBox->setText(str);
@@ -201,7 +197,6 @@ bool CGUISpinBox::OnEvent(const SEvent& event)
 {
 	if (IsEnabled)
 	{
-		f32 oldValue = OldValue;
 		bool changeEvent = false;
 		bool eatEvent = false;
 		switch(event.EventType)
@@ -211,7 +206,8 @@ bool CGUISpinBox::OnEvent(const SEvent& event)
 			{
 			case EMIE_MOUSE_WHEEL:
 				{
-					f32 val = getValue() + (StepSize * (event.MouseInput.Wheel < 0 ? -1.f : 1.f));
+					OldValue = getValue();
+					f32 val = OldValue + (StepSize * (event.MouseInput.Wheel < 0 ? -1.f : 1.f));
 					setValue(val);
 					changeEvent = true;
 					eatEvent = true;
@@ -228,15 +224,15 @@ bool CGUISpinBox::OnEvent(const SEvent& event)
 			{
 				if (event.GUIEvent.Caller == ButtonSpinUp)
 				{
-					f32 val = getValue();
-					val += StepSize;
+					OldValue = getValue();
+					f32 val = OldValue + StepSize;
 					setValue(val);
 					changeEvent = true;
 				}
 				else if ( event.GUIEvent.Caller == ButtonSpinDown)
 				{
-					f32 val = getValue();
-					val -= StepSize;
+					OldValue = getValue();
+					f32 val = OldValue - StepSize;
 					setValue(val);
 					changeEvent = true;
 				}
@@ -268,9 +264,7 @@ bool CGUISpinBox::OnEvent(const SEvent& event)
 				e.GUIEvent.Element = 0;
 				e.GUIEvent.EventType = EGET_SPINBOX_CHANGED;
 			
-				core::swap(oldValue, OldValue);
 				Parent->OnEvent(e);
-				core::swap(oldValue, OldValue);
 			}
 			if ( eatEvent )
 				return true;
