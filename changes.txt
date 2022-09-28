@@ -1,6 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Add IGUISpinBox functions getValueFor and getOldValue
 - Bugfix: IGUIElement::getNextElement now passing includeInvisible and includeDisabled flags recursively instead of disabling those for children.
   This fixes problems that elements sometimes didn't get a tab order because some parent was invisible and so tab'ing for them failed completely.
   Also setTabOrder(-1) now also checks for disabled elements for the same reason (disabled parent causing children to not get a tab-order).

@@ -23,7 +23,8 @@ CGUISpinBox::CGUISpinBox(const wchar_t* text, bool border,IGUIEnvironment* envir
 : IGUISpinBox(environment, parent, id, rectangle),
 	EditBox(0), ButtonSpinUp(0), ButtonSpinDown(0), StepSize(1.f),
 	RangeMin(-FLT_MAX), RangeMax(FLT_MAX), FormatString(L"%f"),
-	DecimalPlaces(-1), ValidateOn(EGUI_SBV_ENTER|EGUI_SBV_LOSE_FOCUS)
+	DecimalPlaces(-1), ValidateOn(EGUI_SBV_ENTER|EGUI_SBV_LOSE_FOCUS),
+	OldValue(0.f)
 {
 	#ifdef _DEBUG
 	setDebugName("CGUISpinBox");
@@ -55,6 +56,8 @@ CGUISpinBox::CGUISpinBox(const wchar_t* text, bool border,IGUIEnvironment* envir
 	EditBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
 
 	refreshSprites();
+
+	OldValue = getValue();
 }
 
 
@@ -103,23 +106,27 @@ IGUIEditBox* CGUISpinBox::getEditBox() const
 
 void CGUISpinBox::setValue(f32 val)
 {
-	wchar_t str[100];
+	OldValue = val;
 
+	wchar_t str[100];
 	swprintf_irr(str, 99, FormatString.c_str(), val);
 	EditBox->setText(str);
-	verifyValueRange();
+	verifyValueRange(getValue());
 }
 
 
 f32 CGUISpinBox::getValue() const
 {
-	const wchar_t* val = EditBox->getText();
+	return getValueFor(EditBox->getText());
+}
+
+f32 CGUISpinBox::getValueFor(const wchar_t* val) const
+{
 	if ( !val )
 		return 0.f;
 	core::stringc tmp(val);
 	return core::fast_atof(tmp.c_str());
 }
-
 
 void CGUISpinBox::setRange(f32 min, f32 max)
 {
@@ -135,7 +142,7 @@ void CGUISpinBox::setRange(f32 min, f32 max)
 	swprintf_irr(str, 99, FormatString.c_str(), RangeMax);
 	RangeMax = core::fast_atof(core::stringc(str).c_str());
 
-	verifyValueRange();
+	verifyValueRange(getValue());
 }
 
 
@@ -194,6 +201,7 @@ bool CGUISpinBox::OnEvent(const SEvent& event)
 {
 	if (IsEnabled)
 	{
+		f32 oldValue = OldValue;
 		bool changeEvent = false;
 		bool eatEvent = false;
 		switch(event.EventType)
@@ -240,7 +248,8 @@ bool CGUISpinBox::OnEvent(const SEvent& event)
 					||	(event.GUIEvent.EventType == EGET_ELEMENT_FOCUS_LOST && ValidateOn & EGUI_SBV_LOSE_FOCUS)
 					)
 				{
-					verifyValueRange();
+					OldValue = getValue();	// no call to setValue when text was changed without setText call
+					verifyValueRange(OldValue);
 					changeEvent = true;
 				}
 			}
@@ -251,14 +260,18 @@ bool CGUISpinBox::OnEvent(const SEvent& event)
 
 		if ( changeEvent )
 		{
-			SEvent e;
-			e.EventType = EET_GUI_EVENT;
-			e.GUIEvent.Caller = this;
-			e.GUIEvent.Element = 0;
-
-			e.GUIEvent.EventType = EGET_SPINBOX_CHANGED;
 			if ( Parent )
+			{
+				SEvent e;
+				e.EventType = EET_GUI_EVENT;
+				e.GUIEvent.Caller = this;
+				e.GUIEvent.Element = 0;
+				e.GUIEvent.EventType = EGET_SPINBOX_CHANGED;
+			
+				core::swap(oldValue, OldValue);
 				Parent->OnEvent(e);
+				core::swap(oldValue, OldValue);
+			}
 			if ( eatEvent )
 				return true;
 		}
@@ -286,17 +299,12 @@ void CGUISpinBox::draw()
 	IGUISpinBox::draw();
 }
 
-void CGUISpinBox::verifyValueRange()
+void CGUISpinBox::verifyValueRange(f32 val)
 {
-	f32 val = getValue();
 	if ( val+core::ROUNDING_ERROR_f32 < RangeMin )
-		val = RangeMin;
+		setValue(RangeMin);
 	else if ( val-core::ROUNDING_ERROR_f32 > RangeMax )
-		val = RangeMax;
-	else
-		return;
-
-	setValue(val);
+		setValue(RangeMax);
 }
 
 
@@ -305,7 +313,6 @@ void CGUISpinBox::setText(const wchar_t* text)
 {
 	EditBox->setText(text);
 	setValue(getValue());
-	verifyValueRange();
 }
 
 

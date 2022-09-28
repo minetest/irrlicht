@@ -41,6 +41,9 @@ namespace gui
 		//! Get the current value of the spinbox
 		virtual f32 getValue() const IRR_OVERRIDE;
 
+		//! Get the value the spinbox would have for the given text
+		virtual f32 getValueFor(const wchar_t* text) const IRR_OVERRIDE;
+
 		//! set the range of values which can be used in the spinbox
 		/** \param min: minimum value
 		\param max: maximum value */
@@ -83,6 +86,12 @@ namespace gui
 		//! Gets when the spinbox has to validate entered text.
 		virtual u32 getValidateOn() const IRR_OVERRIDE;
 
+		//! Gets previous value in EGET_SPINBOX_CHANGED events
+		virtual f32 getOldValue() const IRR_OVERRIDE
+		{
+			return OldValue;
+		}
+
 		//! Writes attributes of the element.
 		virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const IRR_OVERRIDE;
 
@@ -90,7 +99,7 @@ namespace gui
 		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options) IRR_OVERRIDE;
 
 	protected:
-		virtual void verifyValueRange();
+		void verifyValueRange(f32 val);
 		void refreshSprites();
 
 		IGUIEditBox * EditBox;
@@ -104,6 +113,7 @@ namespace gui
 		core::stringw FormatString;
 		s32 DecimalPlaces;
 		u32 ValidateOn;	// combination of EGUI_SPINBOX_VALIDATION bit-flags
+		f32 OldValue;
 	};
 
 
