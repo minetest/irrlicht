@@ -50,7 +50,7 @@ namespace scene
 				const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f))
 			: RelativeTranslation(position), RelativeRotation(rotation), RelativeScale(scale),
 				Parent(0), SceneManager(mgr), TriangleSelector(0), ID(id),
-				AutomaticCullingState(EAC_BOX), UpdateAbsolutePosBehavior(ESNUA_TRANSFORM_MATRIX),
+				UpdateAbsolutePosBehavior(ESNUA_TRANSFORM_MATRIX), AutomaticCullingState(EAC_BOX),
 				DebugDataVisible(EDS_OFF),
 				IsVisible(true), IsDebugObject(false)
 		{
@@ -769,7 +769,7 @@ namespace scene
 						scene::AutomaticCullingNames);
 				if (tmpState != -1)
 					AutomaticCullingState = (u32)tmpState;
-				else 
+				else
 					AutomaticCullingState = in->getAttributeAsInt("AutomaticCulling");
 			}
 
