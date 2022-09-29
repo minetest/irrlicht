@@ -1,6 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Add ISceneNode::UpdateAbsolutePosBehavior variable to allow nodes to ignore the scale/rotation parts of their parents transformation.
 - Add IGUISpinBox functions getValueFor and getOldValue
 - Bugfix: IGUIElement::getNextElement now passing includeInvisible and includeDisabled flags recursively instead of disabling those for children.
   This fixes problems that elements sometimes didn't get a tab order because some parent was invisible and so tab'ing for them failed completely.
