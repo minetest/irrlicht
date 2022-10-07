@@ -7,7 +7,7 @@ surface scene node.
 We start like in some tutorials before. Please note that this time, the
 'shadows' flag in createDevice() is set to true, for we want to have a dynamic
 shadow cast from an animated character. If this example runs too slow,
-set it to false. The Irrlicht Engine also checks if your hardware doesn't 
+set it to false. The Irrlicht Engine also checks if your hardware doesn't
 support the stencil buffer, and then disables shadows by itself.
 */
 
@@ -70,6 +70,11 @@ int main()
 	*/
 
 	scene::IAnimatedMesh* mesh = smgr->getMesh(mediaPath + "room.3ds");
+	if ( !mesh )
+	{
+		printf("Can't find model room.3ds in media path");
+		return 1;
+	}
 
 	smgr->getMeshManipulator()->makePlanarTextureMapping(mesh->getMesh(0), 0.004f);
 
@@ -252,17 +257,22 @@ int main()
 	// add animated character
 
 	mesh = smgr->getMesh(mediaPath + "dwarf.x");
+	if (!mesh)	// some Linux distributions might not have dwarf due to license
+	{
+		mesh = smgr->addArrowMesh("no_dwarf", video::SColor(0xFFFFFFFF), video::SColor(0xFFFFFFFF), 4, 8, 80.f, 50.f, 5.f, 15.f);
+	}
+
 	scene::IAnimatedMeshSceneNode* anode = 0;
 
 	anode = smgr->addAnimatedMeshSceneNode(mesh);
 	anode->setPosition(core::vector3df(-50,20,-60));
 	anode->setAnimationSpeed(15);
 
-	/* 
+	/*
 	Shadows still have to be drawn even then the node causing them is not visible itself.
 	We have to disable culling if the node is animated or it's transformations change
 	as otherwise the shadow is not updated correctly.
-	If you have many objects and this becomes a speed problem you will have to figure 
+	If you have many objects and this becomes a speed problem you will have to figure
 	out some manual culling (for exampling hiding all objects beyond a certain distance).
 	*/
 	anode->setAutomaticCulling(scene::EAC_OFF);
@@ -271,7 +281,7 @@ int main()
 	anode->addShadowVolumeSceneNode();
 	smgr->setShadowColor(video::SColor(150,0,0,0));
 
-	// make the model a bit bigger 
+	// make the model a bit bigger
 	anode->setScale(core::vector3df(2,2,2));
 	// because of the scaling we have to normalize its normals for correct lighting
 	anode->setMaterialFlag(video::EMF_NORMALIZE_NORMALS, true);
