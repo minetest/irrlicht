@@ -27,10 +27,10 @@ public:
 	CB3DMeshWriter();
 
 	//! Returns the type of the mesh writer
-    virtual EMESH_WRITER_TYPE getType() const _IRR_OVERRIDE_;
+    EMESH_WRITER_TYPE getType() const override;
 
 	//! writes a mesh
-    virtual bool writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 flags=EMWF_NONE) _IRR_OVERRIDE_;
+    bool writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 flags=EMWF_NONE) override;
 
 private:
     void writeJointChunk(io::IWriteFile* file, ISkinnedMesh* mesh , ISkinnedMesh::SJoint* joint, f32 animationSpeedMultiplier);

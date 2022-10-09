@@ -44,20 +44,20 @@ namespace scene
 
 
 		//! returns amount of mesh buffers.
-		virtual u32 getMeshBufferCount() const _IRR_OVERRIDE_
+		u32 getMeshBufferCount() const override
 		{
 			return MeshBuffers.size();
 		}
 
 		//! returns pointer to a mesh buffer
-		virtual IMeshBuffer* getMeshBuffer(u32 nr) const _IRR_OVERRIDE_
+		IMeshBuffer* getMeshBuffer(u32 nr) const override
 		{
 			return MeshBuffers[nr];
 		}
 
 		//! returns a meshbuffer which fits a material
 		/** reverse search */
-		virtual IMeshBuffer* getMeshBuffer( const video::SMaterial & material) const _IRR_OVERRIDE_
+		IMeshBuffer* getMeshBuffer( const video::SMaterial & material) const override
 		{
 			for (s32 i = (s32)MeshBuffers.size()-1; i >= 0; --i)
 			{
@@ -69,13 +69,13 @@ namespace scene
 		}
 
 		//! returns an axis aligned bounding box
-		virtual const core::aabbox3d<f32>& getBoundingBox() const _IRR_OVERRIDE_
+		const core::aabbox3d<f32>& getBoundingBox() const override
 		{
 			return BoundingBox;
 		}
 
 		//! set user axis aligned bounding box
-		virtual void setBoundingBox( const core::aabbox3df& box) _IRR_OVERRIDE_
+		void setBoundingBox( const core::aabbox3df& box) override
 		{
 			BoundingBox = box;
 		}
@@ -118,21 +118,21 @@ namespace scene
 		}
 
 		//! sets a flag of all contained materials to a new value
-		virtual void setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue) _IRR_OVERRIDE_
+		void setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue) override
 		{
 			for (u32 i=0; i<MeshBuffers.size(); ++i)
 				MeshBuffers[i]->getMaterial().setFlag(flag, newvalue);
 		}
 
 		//! set the hardware mapping hint, for driver
-		virtual void setHardwareMappingHint( E_HARDWARE_MAPPING newMappingHint, E_BUFFER_TYPE buffer=EBT_VERTEX_AND_INDEX ) _IRR_OVERRIDE_
+		void setHardwareMappingHint( E_HARDWARE_MAPPING newMappingHint, E_BUFFER_TYPE buffer=EBT_VERTEX_AND_INDEX ) override
 		{
 			for (u32 i=0; i<MeshBuffers.size(); ++i)
 				MeshBuffers[i]->setHardwareMappingHint(newMappingHint, buffer);
 		}
 
 		//! flags the meshbuffer as changed, reloads hardware buffers
-		virtual void setDirty(E_BUFFER_TYPE buffer=EBT_VERTEX_AND_INDEX) _IRR_OVERRIDE_
+		void setDirty(E_BUFFER_TYPE buffer=EBT_VERTEX_AND_INDEX) override
 		{
 			for (u32 i=0; i<MeshBuffers.size(); ++i)
 				MeshBuffers[i]->setDirty(buffer);

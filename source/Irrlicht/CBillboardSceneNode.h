@@ -28,58 +28,58 @@ public:
 	virtual ~CBillboardSceneNode();
 
 	//! pre render event
-	virtual void OnRegisterSceneNode() _IRR_OVERRIDE_;
+	void OnRegisterSceneNode() override;
 
 	//! render
-	virtual void render() _IRR_OVERRIDE_;
+	void render() override;
 
 	//! returns the axis aligned bounding box of this node
-	virtual const core::aabbox3d<f32>& getBoundingBox() const _IRR_OVERRIDE_;
+	const core::aabbox3d<f32>& getBoundingBox() const override;
 
 	//! sets the size of the billboard
-	virtual void setSize(const core::dimension2d<f32>& size) _IRR_OVERRIDE_;
+	void setSize(const core::dimension2d<f32>& size) override;
 
 	//! Sets the widths of the top and bottom edges of the billboard independently.
-	virtual void setSize(f32 height, f32 bottomEdgeWidth, f32 topEdgeWidth) _IRR_OVERRIDE_;
+	void setSize(f32 height, f32 bottomEdgeWidth, f32 topEdgeWidth) override;
 
 	//! gets the size of the billboard
-	virtual const core::dimension2d<f32>& getSize() const _IRR_OVERRIDE_;
+	const core::dimension2d<f32>& getSize() const override;
 
 	//! Gets the widths of the top and bottom edges of the billboard.
-	virtual void getSize(f32& height, f32& bottomEdgeWidth, f32& topEdgeWidth) const _IRR_OVERRIDE_;
+	void getSize(f32& height, f32& bottomEdgeWidth, f32& topEdgeWidth) const override;
 
-	virtual video::SMaterial& getMaterial(u32 i) _IRR_OVERRIDE_;
+	video::SMaterial& getMaterial(u32 i) override;
 
 	//! returns amount of materials used by this scene node.
-	virtual u32 getMaterialCount() const _IRR_OVERRIDE_;
+	u32 getMaterialCount() const override;
 
 	//! Set the color of all vertices of the billboard
 	//! \param overallColor: the color to set
-	virtual void setColor(const video::SColor& overallColor) _IRR_OVERRIDE_;
+	void setColor(const video::SColor& overallColor) override;
 
 	//! Set the color of the top and bottom vertices of the billboard
 	//! \param topColor: the color to set the top vertices
 	//! \param bottomColor: the color to set the bottom vertices
 	virtual void setColor(const video::SColor& topColor,
-			const video::SColor& bottomColor) _IRR_OVERRIDE_;
+			const video::SColor& bottomColor) override;
 
 	//! Gets the color of the top and bottom vertices of the billboard
 	//! \param[out] topColor: stores the color of the top vertices
 	//! \param[out] bottomColor: stores the color of the bottom vertices
 	virtual void getColor(video::SColor& topColor,
-			video::SColor& bottomColor) const _IRR_OVERRIDE_;
+			video::SColor& bottomColor) const override;
 
 	//! Get the real boundingbox used by the billboard (which depends on the active camera)
-	virtual const core::aabbox3d<f32>& getTransformedBillboardBoundingBox(const irr::scene::ICameraSceneNode* camera) _IRR_OVERRIDE_;
+	const core::aabbox3d<f32>& getTransformedBillboardBoundingBox(const irr::scene::ICameraSceneNode* camera) override;
 
 	//! Get the amount of mesh buffers.
-	virtual u32 getMeshBufferCount() const _IRR_OVERRIDE_
+	u32 getMeshBufferCount() const override
 	{
 		return Buffer ? 1 : 0;
 	}
 
 	//! Get pointer to the mesh buffer.
-	virtual IMeshBuffer* getMeshBuffer(u32 nr) const _IRR_OVERRIDE_
+	IMeshBuffer* getMeshBuffer(u32 nr) const override
 	{
 		if ( nr == 0 )
 			return Buffer;
@@ -87,10 +87,10 @@ public:
 	}
 
 	//! Returns type of the scene node
-	virtual ESCENE_NODE_TYPE getType() const _IRR_OVERRIDE_ { return ESNT_BILLBOARD; }
+	ESCENE_NODE_TYPE getType() const override { return ESNT_BILLBOARD; }
 
 	//! Creates a clone of this scene node and its children.
-	virtual ISceneNode* clone(ISceneNode* newParent=0, ISceneManager* newManager=0) _IRR_OVERRIDE_;
+	ISceneNode* clone(ISceneNode* newParent=0, ISceneManager* newManager=0) override;
 
 protected:
 	void updateMesh(const irr::scene::ICameraSceneNode* camera);

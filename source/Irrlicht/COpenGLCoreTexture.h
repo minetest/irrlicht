@@ -234,7 +234,7 @@ public:
 			Images[i]->drop();
 	}
 
-	virtual void* lock(E_TEXTURE_LOCK_MODE mode = ETLM_READ_WRITE, u32 mipmapLevel=0, u32 layer = 0, E_TEXTURE_LOCK_FLAGS lockFlags = ETLF_FLIP_Y_UP_RTT) _IRR_OVERRIDE_
+	void* lock(E_TEXTURE_LOCK_MODE mode = ETLM_READ_WRITE, u32 mipmapLevel=0, u32 layer = 0, E_TEXTURE_LOCK_FLAGS lockFlags = ETLF_FLIP_Y_UP_RTT) override
 	{
 		if (LockImage)
 			return getLockImageData(MipLevelStored);
@@ -376,7 +376,7 @@ public:
 		return (LockImage) ? getLockImageData(MipLevelStored) : 0;
 	}
 
-	virtual void unlock() _IRR_OVERRIDE_
+	void unlock() override
 	{
 		if (!LockImage)
 			return;
@@ -398,7 +398,7 @@ public:
 		LockLayer = 0;
 	}
 
-	virtual void regenerateMipMapLevels(void* data = 0, u32 layer = 0) _IRR_OVERRIDE_
+	void regenerateMipMapLevels(void* data = 0, u32 layer = 0) override
 	{
 		if (!HasMipMaps || LegacyAutoGenerateMipMaps || (Size.Width <= 1 && Size.Height <= 1))
 			return;

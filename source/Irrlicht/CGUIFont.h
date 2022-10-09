@@ -47,32 +47,32 @@ public:
 	//! draws an text and clips it to the specified rectangle if wanted
 	virtual void draw(const core::stringw& text, const core::rect<s32>& position,
 			video::SColor color, bool hcenter=false,
-			bool vcenter=false, const core::rect<s32>* clip=0) _IRR_OVERRIDE_;
+			bool vcenter=false, const core::rect<s32>* clip=0) override;
 
 	//! returns the dimension of a text
-	virtual core::dimension2d<u32> getDimension(const wchar_t* text) const _IRR_OVERRIDE_;
+	core::dimension2d<u32> getDimension(const wchar_t* text) const override;
 
 	//! Calculates the index of the character in the text which is on a specific position.
-	virtual s32 getCharacterFromPos(const wchar_t* text, s32 pixel_x) const _IRR_OVERRIDE_;
+	s32 getCharacterFromPos(const wchar_t* text, s32 pixel_x) const override;
 
 	//! Returns the type of this font
-	virtual EGUI_FONT_TYPE getType() const _IRR_OVERRIDE_ { return EGFT_BITMAP; }
+	EGUI_FONT_TYPE getType() const override { return EGFT_BITMAP; }
 
 	//! set an Pixel Offset on Drawing ( scale position on width )
-	virtual void setKerningWidth (s32 kerning) _IRR_OVERRIDE_;
-	virtual void setKerningHeight (s32 kerning) _IRR_OVERRIDE_;
+	void setKerningWidth (s32 kerning) override;
+	void setKerningHeight (s32 kerning) override;
 
 	//! set an Pixel Offset on Drawing ( scale position on width )
-	virtual s32 getKerningWidth(const wchar_t* thisLetter=0, const wchar_t* previousLetter=0) const _IRR_OVERRIDE_;
-	virtual s32 getKerningHeight() const _IRR_OVERRIDE_;
+	s32 getKerningWidth(const wchar_t* thisLetter=0, const wchar_t* previousLetter=0) const override;
+	s32 getKerningHeight() const override;
 
 	//! gets the sprite bank
-	virtual IGUISpriteBank* getSpriteBank() const _IRR_OVERRIDE_;
+	IGUISpriteBank* getSpriteBank() const override;
 
 	//! returns the sprite number from a given character
-	virtual u32 getSpriteNoFromChar(const wchar_t *c) const _IRR_OVERRIDE_;
+	u32 getSpriteNoFromChar(const wchar_t *c) const override;
 
-	virtual void setInvisibleCharacters( const wchar_t *s ) _IRR_OVERRIDE_;
+	void setInvisibleCharacters( const wchar_t *s ) override;
 
 private:
 

@@ -58,105 +58,105 @@ namespace irr
 		virtual ~CIrrDeviceStub();
 
 		//! returns the video driver
-		virtual video::IVideoDriver* getVideoDriver() _IRR_OVERRIDE_;
+		video::IVideoDriver* getVideoDriver() override;
 
 		//! return file system
-		virtual io::IFileSystem* getFileSystem() _IRR_OVERRIDE_;
+		io::IFileSystem* getFileSystem() override;
 
 		//! returns the gui environment
-		virtual gui::IGUIEnvironment* getGUIEnvironment() _IRR_OVERRIDE_;
+		gui::IGUIEnvironment* getGUIEnvironment() override;
 
 		//! returns the scene manager
-		virtual scene::ISceneManager* getSceneManager() _IRR_OVERRIDE_;
+		scene::ISceneManager* getSceneManager() override;
 
 		//! \return Returns a pointer to the mouse cursor control interface.
-		virtual gui::ICursorControl* getCursorControl() _IRR_OVERRIDE_;
+		gui::ICursorControl* getCursorControl() override;
 
 		//! return the context manager
-		virtual video::IContextManager* getContextManager() _IRR_OVERRIDE_;
+		video::IContextManager* getContextManager() override;
 
 		//! Returns a pointer to the ITimer object. With it the current Time can be received.
-		virtual ITimer* getTimer() _IRR_OVERRIDE_;
+		ITimer* getTimer() override;
 
 		//! Returns the version of the engine.
-		virtual const char* getVersion() const _IRR_OVERRIDE_;
+		const char* getVersion() const override;
 
 		//! send the event to the right receiver
-		virtual bool postEventFromUser(const SEvent& event) _IRR_OVERRIDE_;
+		bool postEventFromUser(const SEvent& event) override;
 
 		//! Sets a new event receiver to receive events
-		virtual void setEventReceiver(IEventReceiver* receiver) _IRR_OVERRIDE_;
+		void setEventReceiver(IEventReceiver* receiver) override;
 
 		//! Returns pointer to the current event receiver. Returns 0 if there is none.
-		virtual IEventReceiver* getEventReceiver() _IRR_OVERRIDE_;
+		IEventReceiver* getEventReceiver() override;
 
 		//! Sets the input receiving scene manager.
 		/** If set to null, the main scene manager (returned by GetSceneManager()) will receive the input */
-		virtual void setInputReceivingSceneManager(scene::ISceneManager* sceneManager) _IRR_OVERRIDE_;
+		void setInputReceivingSceneManager(scene::ISceneManager* sceneManager) override;
 
 		//! Returns a pointer to the logger.
-		virtual ILogger* getLogger() _IRR_OVERRIDE_;
+		ILogger* getLogger() override;
 
 		//! Returns the operation system opertator object.
-		virtual IOSOperator* getOSOperator() _IRR_OVERRIDE_;
+		IOSOperator* getOSOperator() override;
 
 		//! Checks if the window is running in fullscreen mode.
-		virtual bool isFullscreen() const _IRR_OVERRIDE_;
+		bool isFullscreen() const override;
 
 		//! get color format of the current window
-		virtual video::ECOLOR_FORMAT getColorFormat() const _IRR_OVERRIDE_;
+		video::ECOLOR_FORMAT getColorFormat() const override;
 
 		//! Activate any joysticks, and generate events for them.
-		virtual bool activateJoysticks(core::array<SJoystickInfo> & joystickInfo) _IRR_OVERRIDE_;
+		bool activateJoysticks(core::array<SJoystickInfo> & joystickInfo) override;
 
         //! Activate accelerometer.
-        virtual bool activateAccelerometer(float updateInterval = 0.016666f) _IRR_OVERRIDE_;
+        bool activateAccelerometer(float updateInterval = 0.016666f) override;
         
         //! Deactivate accelerometer.
-        virtual bool deactivateAccelerometer() _IRR_OVERRIDE_;
+        bool deactivateAccelerometer() override;
         
         //! Is accelerometer active.
-        virtual bool isAccelerometerActive() _IRR_OVERRIDE_;
+        bool isAccelerometerActive() override;
         
         //! Is accelerometer available.
-        virtual bool isAccelerometerAvailable() _IRR_OVERRIDE_;
+        bool isAccelerometerAvailable() override;
         
         //! Activate gyroscope.
-        virtual bool activateGyroscope(float updateInterval = 0.016666f) _IRR_OVERRIDE_;
+        bool activateGyroscope(float updateInterval = 0.016666f) override;
         
         //! Deactivate gyroscope.
-        virtual bool deactivateGyroscope() _IRR_OVERRIDE_;
+        bool deactivateGyroscope() override;
         
         //! Is gyroscope active.
-        virtual bool isGyroscopeActive() _IRR_OVERRIDE_;
+        bool isGyroscopeActive() override;
         
         //! Is gyroscope available.
-        virtual bool isGyroscopeAvailable() _IRR_OVERRIDE_;
+        bool isGyroscopeAvailable() override;
         
         //! Activate device motion.
-        virtual bool activateDeviceMotion(float updateInterval = 0.016666f) _IRR_OVERRIDE_;
+        bool activateDeviceMotion(float updateInterval = 0.016666f) override;
         
         //! Deactivate device motion.
-        virtual bool deactivateDeviceMotion() _IRR_OVERRIDE_;
+        bool deactivateDeviceMotion() override;
         
         //! Is device motion active.
-        virtual bool isDeviceMotionActive() _IRR_OVERRIDE_;
+        bool isDeviceMotionActive() override;
         
         //! Is device motion available.
-        virtual bool isDeviceMotionAvailable() _IRR_OVERRIDE_;
+        bool isDeviceMotionAvailable() override;
 
 		//! Set the maximal elapsed time between 2 clicks to generate doubleclicks for the mouse. It also affects tripleclick behavior.
 		//! When set to 0 no double- and tripleclicks will be generated.
-		virtual void setDoubleClickTime( u32 timeMs ) _IRR_OVERRIDE_;
+		void setDoubleClickTime( u32 timeMs ) override;
 
 		//! Get the maximal elapsed time between 2 clicks to generate double- and tripleclicks for the mouse.
-		virtual u32 getDoubleClickTime() const _IRR_OVERRIDE_;
+		u32 getDoubleClickTime() const override;
 
 		//! Remove all messages pending in the system message loop
-		virtual void clearSystemMessages() _IRR_OVERRIDE_;
+		void clearSystemMessages() override;
 
 		//! Resize the render window.
-		virtual void setWindowSize(const irr::core::dimension2d<u32>& size) _IRR_OVERRIDE_ {}
+		void setWindowSize(const irr::core::dimension2d<u32>& size) override {}
 
 	protected:
 

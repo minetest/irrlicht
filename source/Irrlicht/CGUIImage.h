@@ -26,52 +26,52 @@ namespace gui
 		virtual ~CGUIImage();
 
 		//! sets an image
-		virtual void setImage(video::ITexture* image) _IRR_OVERRIDE_;
+		void setImage(video::ITexture* image) override;
 
 		//! Gets the image texture
-		virtual video::ITexture* getImage() const _IRR_OVERRIDE_;
+		video::ITexture* getImage() const override;
 
 		//! sets the color of the image
-		virtual void setColor(video::SColor color) _IRR_OVERRIDE_;
+		void setColor(video::SColor color) override;
 
 		//! sets if the image should scale to fit the element
-		virtual void setScaleImage(bool scale) _IRR_OVERRIDE_;
+		void setScaleImage(bool scale) override;
 
 		//! draws the element and its children
-		virtual void draw() _IRR_OVERRIDE_;
+		void draw() override;
 
 		//! sets if the image should use its alpha channel to draw itself
-		virtual void setUseAlphaChannel(bool use) _IRR_OVERRIDE_;
+		void setUseAlphaChannel(bool use) override;
 
 		//! Gets the color of the image
-		virtual video::SColor getColor() const _IRR_OVERRIDE_;
+		video::SColor getColor() const override;
 
 		//! Returns true if the image is scaled to fit, false if not
-		virtual bool isImageScaled() const _IRR_OVERRIDE_;
+		bool isImageScaled() const override;
 
 		//! Returns true if the image is using the alpha channel, false if not
-		virtual bool isAlphaChannelUsed() const _IRR_OVERRIDE_;
+		bool isAlphaChannelUsed() const override;
 
 		//! Sets the source rectangle of the image. By default the full image is used.
-		virtual void setSourceRect(const core::rect<s32>& sourceRect) _IRR_OVERRIDE_;
+		void setSourceRect(const core::rect<s32>& sourceRect) override;
 
 		//! Returns the customized source rectangle of the image to be used.
-		virtual core::rect<s32> getSourceRect() const _IRR_OVERRIDE_;
+		core::rect<s32> getSourceRect() const override;
 
 		//! Restrict drawing-area.
-		virtual void setDrawBounds(const core::rect<f32>& drawBoundUVs) _IRR_OVERRIDE_;
+		void setDrawBounds(const core::rect<f32>& drawBoundUVs) override;
 
 		//! Get drawing-area restrictions.
-		virtual core::rect<f32> getDrawBounds() const _IRR_OVERRIDE_;
+		core::rect<f32> getDrawBounds() const override;
 
 		//! Sets whether to draw a background color (EGDC_3D_DARK_SHADOW) when no texture is set
-		virtual void setDrawBackground(bool draw) _IRR_OVERRIDE_
+		void setDrawBackground(bool draw) override
 		{
 			DrawBackground = draw;
 		}
 
 		//! Checks if a background is drawn when no texture is set
-		virtual bool isDrawBackgroundEnabled() const  _IRR_OVERRIDE_
+		bool isDrawBackgroundEnabled() const  override
 		{
 			return DrawBackground;
 		}

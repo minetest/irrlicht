@@ -26,21 +26,21 @@ namespace video
 
 		virtual ~CSDLManager() {}
 
-		virtual bool initialize(const SIrrlichtCreationParameters& params, const SExposedVideoData& data) _IRR_OVERRIDE_;
+		bool initialize(const SIrrlichtCreationParameters& params, const SExposedVideoData& data) override;
 
-		virtual void terminate() _IRR_OVERRIDE_ {};
-		virtual bool generateSurface() _IRR_OVERRIDE_ { return true; };
-		virtual void destroySurface() _IRR_OVERRIDE_ {};
-		virtual bool generateContext() _IRR_OVERRIDE_ { return true; };
-		virtual void destroyContext() _IRR_OVERRIDE_ {};
+		void terminate() override {};
+		bool generateSurface() override { return true; };
+		void destroySurface() override {};
+		bool generateContext() override { return true; };
+		void destroyContext() override {};
 
-		virtual const SExposedVideoData& getContext() const _IRR_OVERRIDE_;
+		const SExposedVideoData& getContext() const override;
 
-		virtual bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero=false) _IRR_OVERRIDE_;
+		bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero=false) override;
 
-		virtual void* getProcAddress(const std::string &procName) _IRR_OVERRIDE_;
+		void* getProcAddress(const std::string &procName) override;
 
-		virtual bool swapBuffers() _IRR_OVERRIDE_;
+		bool swapBuffers() override;
 
 	private:
 		SExposedVideoData Data;

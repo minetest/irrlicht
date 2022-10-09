@@ -33,13 +33,13 @@ public:
 
 	//! returns true if the file maybe is able to be loaded by this class
 	//! based on the file extension (e.g. ".bsp")
-	virtual bool isALoadableFileExtension(const io::path& filename) const _IRR_OVERRIDE_;
+	bool isALoadableFileExtension(const io::path& filename) const override;
 
 	//! creates/loads an animated mesh from the file.
 	//! \return Pointer to the created mesh. Returns 0 if loading failed.
 	//! If you no longer need the mesh, you should call IAnimatedMesh::drop().
 	//! See IReferenceCounted::drop() for more information.
-	virtual IAnimatedMesh* createMesh(io::IReadFile* file) _IRR_OVERRIDE_;
+	IAnimatedMesh* createMesh(io::IReadFile* file) override;
 
 private:
 

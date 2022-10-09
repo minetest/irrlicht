@@ -31,34 +31,34 @@ namespace video
 		~CNSOGLManager();
 
         // Initialize
-        bool initialize(const SIrrlichtCreationParameters& params, const SExposedVideoData& data) _IRR_OVERRIDE_;
+        bool initialize(const SIrrlichtCreationParameters& params, const SExposedVideoData& data) override;
 
         // Terminate
-        void terminate() _IRR_OVERRIDE_;
+        void terminate() override;
 
         // Create surface.
-        bool generateSurface() _IRR_OVERRIDE_;
+        bool generateSurface() override;
 
         // Destroy surface.
-        void destroySurface() _IRR_OVERRIDE_;
+        void destroySurface() override;
 
         // Create context.
-        bool generateContext() _IRR_OVERRIDE_;
+        bool generateContext() override;
 
         // Destroy EGL context.
-        void destroyContext() _IRR_OVERRIDE_;
+        void destroyContext() override;
 
 		//! Get current context
 		const SExposedVideoData& getContext() const;
 
 		//! Change render context, disable old and activate new defined by videoData
-		bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero) _IRR_OVERRIDE_;
+		bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero) override;
 
 		// Get procedure address.
-		virtual void* getProcAddress(const std::string &procName) _IRR_OVERRIDE_;
+		void* getProcAddress(const std::string &procName) override;
 
         // Swap buffers.
-        bool swapBuffers() _IRR_OVERRIDE_;
+        bool swapBuffers() override;
 
     private:
         SIrrlichtCreationParameters Params;
