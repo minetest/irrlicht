@@ -44,56 +44,56 @@ namespace irr
 		virtual ~CIrrDeviceLinux();
 
 		//! runs the device. Returns false if device wants to be deleted
-		virtual bool run() _IRR_OVERRIDE_;
+		bool run() override;
 
 		//! Cause the device to temporarily pause execution and let other processes to run
 		// This should bring down processor usage without major performance loss for Irrlicht
-		virtual void yield() _IRR_OVERRIDE_;
+		void yield() override;
 
 		//! Pause execution and let other processes to run for a specified amount of time.
-		virtual void sleep(u32 timeMs, bool pauseTimer) _IRR_OVERRIDE_;
+		void sleep(u32 timeMs, bool pauseTimer) override;
 
 		//! sets the caption of the window
-		virtual void setWindowCaption(const wchar_t* text) _IRR_OVERRIDE_;
+		void setWindowCaption(const wchar_t* text) override;
 
 		//! returns if window is active. if not, nothing need to be drawn
-		virtual bool isWindowActive() const _IRR_OVERRIDE_;
+		bool isWindowActive() const override;
 
 		//! returns if window has focus.
-		virtual bool isWindowFocused() const _IRR_OVERRIDE_;
+		bool isWindowFocused() const override;
 
 		//! returns if window is minimized.
-		virtual bool isWindowMinimized() const _IRR_OVERRIDE_;
+		bool isWindowMinimized() const override;
 
 		//! returns color format of the window.
-		virtual video::ECOLOR_FORMAT getColorFormat() const _IRR_OVERRIDE_;
+		video::ECOLOR_FORMAT getColorFormat() const override;
 
 		//! presents a surface in the client area
-		virtual bool present(video::IImage* surface, void* windowId=0, core::rect<s32>* src=0 ) _IRR_OVERRIDE_;
+		bool present(video::IImage* surface, void* windowId=0, core::rect<s32>* src=0 ) override;
 
 		//! notifies the device that it should close itself
-		virtual void closeDevice() _IRR_OVERRIDE_;
+		void closeDevice() override;
 
 		//! Sets if the window should be resizable in windowed mode.
-		virtual void setResizable(bool resize=false) _IRR_OVERRIDE_;
+		void setResizable(bool resize=false) override;
 
 		//! Resize the render window.
-		virtual void setWindowSize(const irr::core::dimension2d<u32>& size) _IRR_OVERRIDE_;
+		void setWindowSize(const irr::core::dimension2d<u32>& size) override;
 
 		//! Minimizes the window.
-		virtual void minimizeWindow() _IRR_OVERRIDE_;
+		void minimizeWindow() override;
 
 		//! Maximizes the window.
-		virtual void maximizeWindow() _IRR_OVERRIDE_;
+		void maximizeWindow() override;
 
 		//! Restores the window size.
-		virtual void restoreWindow() _IRR_OVERRIDE_;
+		void restoreWindow() override;
 
 		//! Get the position of this window on screen
-		virtual core::position2di getWindowPosition() _IRR_OVERRIDE_;
+		core::position2di getWindowPosition() override;
 
 		//! Activate any joysticks, and generate events for them.
-		virtual bool activateJoysticks(core::array<SJoystickInfo> & joystickInfo) _IRR_OVERRIDE_;
+		bool activateJoysticks(core::array<SJoystickInfo> & joystickInfo) override;
 
 		//! gets text from the clipboard
 		//! \return Returns 0 if no string is in there, otherwise utf-8 text.
@@ -105,10 +105,10 @@ namespace irr
 		virtual void copyToClipboard(const c8 *text) const;
 
 		//! Remove all messages pending in the system message loop
-		virtual void clearSystemMessages() _IRR_OVERRIDE_;
+		void clearSystemMessages() override;
 
 		//! Get the device type
-		virtual E_DEVICE_TYPE getType() const _IRR_OVERRIDE_
+		E_DEVICE_TYPE getType() const override
 		{
 			return EIDT_X11;
 		}
@@ -155,7 +155,7 @@ namespace irr
 			~CCursorControl();
 
 			//! Changes the visible state of the mouse cursor.
-			virtual void setVisible(bool visible) _IRR_OVERRIDE_
+			void setVisible(bool visible) override
 			{
 				if (visible==IsVisible)
 					return;
@@ -172,31 +172,31 @@ namespace irr
 			}
 
 			//! Returns if the cursor is currently visible.
-			virtual bool isVisible() const _IRR_OVERRIDE_
+			bool isVisible() const override
 			{
 				return IsVisible;
 			}
 
 			//! Sets the new position of the cursor.
-			virtual void setPosition(const core::position2d<f32> &pos) _IRR_OVERRIDE_
+			void setPosition(const core::position2d<f32> &pos) override
 			{
 				setPosition(pos.X, pos.Y);
 			}
 
 			//! Sets the new position of the cursor.
-			virtual void setPosition(f32 x, f32 y) _IRR_OVERRIDE_
+			void setPosition(f32 x, f32 y) override
 			{
 				setPosition((s32)(x*Device->Width), (s32)(y*Device->Height));
 			}
 
 			//! Sets the new position of the cursor.
-			virtual void setPosition(const core::position2d<s32> &pos) _IRR_OVERRIDE_
+			void setPosition(const core::position2d<s32> &pos) override
 			{
 				setPosition(pos.X, pos.Y);
 			}
 
 			//! Sets the new position of the cursor.
-			virtual void setPosition(s32 x, s32 y) _IRR_OVERRIDE_
+			void setPosition(s32 x, s32 y) override
 			{
 #ifdef _IRR_COMPILE_WITH_X11_
 
@@ -261,7 +261,7 @@ namespace irr
 			}
 
 			//! Returns the current position of the mouse cursor.
-			virtual const core::position2d<s32>& getPosition(bool updateCursor) _IRR_OVERRIDE_
+			const core::position2d<s32>& getPosition(bool updateCursor) override
 			{
 				if ( updateCursor )
 					updateCursorPos();
@@ -269,7 +269,7 @@ namespace irr
 			}
 
 			//! Returns the current position of the mouse cursor.
-			virtual core::position2d<f32> getRelativePosition(bool updateCursor) _IRR_OVERRIDE_
+			core::position2d<f32> getRelativePosition(bool updateCursor) override
 			{
 				if ( updateCursor )
 					updateCursorPos();
@@ -284,7 +284,7 @@ namespace irr
 						CursorPos.Y / (f32)ReferenceRect.getHeight());
 			}
 
-			virtual void setReferenceRect(core::rect<s32>* rect=0) _IRR_OVERRIDE_
+			void setReferenceRect(core::rect<s32>* rect=0) override
 			{
 				if (rect)
 				{
@@ -304,29 +304,29 @@ namespace irr
 			}
 
 			//! Sets the active cursor icon
-			virtual void setActiveIcon(gui::ECURSOR_ICON iconId) _IRR_OVERRIDE_;
+			void setActiveIcon(gui::ECURSOR_ICON iconId) override;
 
 			//! Gets the currently active icon
-			virtual gui::ECURSOR_ICON getActiveIcon() const _IRR_OVERRIDE_
+			gui::ECURSOR_ICON getActiveIcon() const override
 			{
 				return ActiveIcon;
 			}
 
 			//! Add a custom sprite as cursor icon.
-			virtual gui::ECURSOR_ICON addIcon(const gui::SCursorSprite& icon) _IRR_OVERRIDE_;
+			gui::ECURSOR_ICON addIcon(const gui::SCursorSprite& icon) override;
 
 			//! replace the given cursor icon.
-			virtual void changeIcon(gui::ECURSOR_ICON iconId, const gui::SCursorSprite& icon) _IRR_OVERRIDE_;
+			void changeIcon(gui::ECURSOR_ICON iconId, const gui::SCursorSprite& icon) override;
 
 			//! Return a system-specific size which is supported for cursors. Larger icons will fail, smaller icons might work.
-			virtual core::dimension2di getSupportedIconSize() const _IRR_OVERRIDE_;
+			core::dimension2di getSupportedIconSize() const override;
 
 #ifdef _IRR_COMPILE_WITH_X11_
 			//! Set platform specific behavior flags.
-			virtual void setPlatformBehavior(gui::ECURSOR_PLATFORM_BEHAVIOR behavior) _IRR_OVERRIDE_ {PlatformBehavior = behavior; }
+			void setPlatformBehavior(gui::ECURSOR_PLATFORM_BEHAVIOR behavior) override {PlatformBehavior = behavior; }
 
 			//! Return platform specific behavior.
-			virtual gui::ECURSOR_PLATFORM_BEHAVIOR getPlatformBehavior() const _IRR_OVERRIDE_ { return PlatformBehavior; }
+			gui::ECURSOR_PLATFORM_BEHAVIOR getPlatformBehavior() const override { return PlatformBehavior; }
 
 			void update();
 			void clearCursors();

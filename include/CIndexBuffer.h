@@ -39,46 +39,46 @@ namespace scene
 		public:
 			core::array<T> Indices;
 
-			virtual u32 stride() const _IRR_OVERRIDE_ {return sizeof(T);}
+			u32 stride() const override {return sizeof(T);}
 
-			virtual u32 size() const _IRR_OVERRIDE_ {return Indices.size();}
+			u32 size() const override {return Indices.size();}
 
-			virtual void push_back(const u32 &element) _IRR_OVERRIDE_
+			void push_back(const u32 &element) override
 			{
 				// push const ref due to compiler problem with gcc 4.6, big endian
 				Indices.push_back((const T&)element);
 			}
 
-			virtual u32 operator [](u32 index) const _IRR_OVERRIDE_
+			u32 operator [](u32 index) const override
 			{
 				return (u32)(Indices[index]);
 			}
 
-			virtual u32 getLast() _IRR_OVERRIDE_ {return (u32)Indices.getLast();}
+			u32 getLast() override {return (u32)Indices.getLast();}
 
-			virtual void setValue(u32 index, u32 value) _IRR_OVERRIDE_
+			void setValue(u32 index, u32 value) override
 			{
 				Indices[index]=(T)value;
 			}
 
-			virtual void set_used(u32 usedNow) _IRR_OVERRIDE_
+			void set_used(u32 usedNow) override
 			{
 				Indices.set_used(usedNow);
 			}
 
-			virtual void reallocate(u32 new_size) _IRR_OVERRIDE_
+			void reallocate(u32 new_size) override
 			{
 				Indices.reallocate(new_size);
 			}
 
-			virtual u32 allocated_size() const _IRR_OVERRIDE_
+			u32 allocated_size() const override
 			{
 				return Indices.allocated_size();
 			}
 
-			virtual void* pointer() _IRR_OVERRIDE_  {return Indices.pointer();}
+			void* pointer() override  {return Indices.pointer();}
 
-			virtual video::E_INDEX_TYPE getType() const _IRR_OVERRIDE_
+			video::E_INDEX_TYPE getType() const override
 			{
 				if (sizeof(T)==sizeof(u16))
 					return video::EIT_16BIT;
@@ -110,7 +110,7 @@ namespace scene
 		}
 
 		//virtual void setType(video::E_INDEX_TYPE IndexType);
-		virtual void setType(video::E_INDEX_TYPE IndexType) _IRR_OVERRIDE_
+		void setType(video::E_INDEX_TYPE IndexType) override
 		{
 			IIndexList *NewIndices=0;
 
@@ -141,78 +141,78 @@ namespace scene
 			Indices=NewIndices;
 		}
 
-		virtual void* getData() _IRR_OVERRIDE_ {return Indices->pointer();}
+		void* getData() override {return Indices->pointer();}
 
-		virtual video::E_INDEX_TYPE getType() const _IRR_OVERRIDE_ {return Indices->getType();}
+		video::E_INDEX_TYPE getType() const override {return Indices->getType();}
 
-		virtual u32 stride() const _IRR_OVERRIDE_ {return Indices->stride();}
+		u32 stride() const override {return Indices->stride();}
 
-		virtual u32 size() const _IRR_OVERRIDE_
+		u32 size() const override
 		{
 			return Indices->size();
 		}
 
-		virtual void push_back(const u32 &element) _IRR_OVERRIDE_
+		void push_back(const u32 &element) override
 		{
 			Indices->push_back(element);
 		}
 
-		virtual u32 operator [](u32 index) const _IRR_OVERRIDE_
+		u32 operator [](u32 index) const override
 		{
 			return (*Indices)[index];
 		}
 
-		virtual u32 getLast() _IRR_OVERRIDE_
+		u32 getLast() override
 		{
 			return Indices->getLast();
 		}
 
-		virtual void setValue(u32 index, u32 value) _IRR_OVERRIDE_
+		void setValue(u32 index, u32 value) override
 		{
 			Indices->setValue(index, value);
 		}
 
-		virtual void set_used(u32 usedNow) _IRR_OVERRIDE_
+		void set_used(u32 usedNow) override
 		{
 			Indices->set_used(usedNow);
 		}
 
-		virtual void reallocate(u32 new_size) _IRR_OVERRIDE_
+		void reallocate(u32 new_size) override
 		{
 			Indices->reallocate(new_size);
 		}
 
-		virtual u32 allocated_size() const _IRR_OVERRIDE_
+		u32 allocated_size() const override
 		{
 			return Indices->allocated_size();
 		}
 
-		virtual void* pointer() _IRR_OVERRIDE_
+		void* pointer() override
 		{
 			return Indices->pointer();
 		}
 
 		//! get the current hardware mapping hint
-		virtual E_HARDWARE_MAPPING getHardwareMappingHint() const _IRR_OVERRIDE_
+		E_HARDWARE_MAPPING getHardwareMappingHint() const override
 		{
 			return MappingHint;
 		}
 
 		//! set the hardware mapping hint, for driver
-		virtual void setHardwareMappingHint( E_HARDWARE_MAPPING NewMappingHint ) _IRR_OVERRIDE_
+		void setHardwareMappingHint( E_HARDWARE_MAPPING NewMappingHint ) override
 		{
 			MappingHint=NewMappingHint;
 		}
 
 		//! flags the mesh as changed, reloads hardware buffers
-		virtual void setDirty() _IRR_OVERRIDE_
+		void setDirty() override
 		{
 			++ChangedID;
 		}
 
 		//! Get the currently used ID for identification of changes.
 		/** This shouldn't be used for anything outside the VideoDriver. */
-		virtual u32 getChangedID() const _IRR_OVERRIDE_ {return ChangedID;}
+		u32 getChangedID() const override {return ChangedID;}
 
 		E_HARDWARE_MAPPING MappingHint;
 		u32 ChangedID;

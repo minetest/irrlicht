@@ -32,22 +32,22 @@ namespace gui
 		virtual ~CGUIFileOpenDialog();
 
 		//! returns the filename of the selected file. Returns NULL, if no file was selected.
-		virtual const wchar_t* getFileName() const _IRR_OVERRIDE_;
+		const wchar_t* getFileName() const override;
 
 		//! Returns the filename of the selected file. Is empty if no file was selected.
-		virtual const io::path& getFileNameP() const _IRR_OVERRIDE_;
+		const io::path& getFileNameP() const override;
 
 		//! Returns the directory of the selected file. Returns NULL, if no directory was selected.
-		virtual const io::path& getDirectoryName() const _IRR_OVERRIDE_;
+		const io::path& getDirectoryName() const override;
 
 		//! Returns the directory of the selected file converted to wide characters. Returns NULL if no directory was selected.
-		virtual const wchar_t* getDirectoryNameW() const _IRR_OVERRIDE_;
+		const wchar_t* getDirectoryNameW() const override;
 
 		//! called if an event happened.
-		virtual bool OnEvent(const SEvent& event) _IRR_OVERRIDE_;
+		bool OnEvent(const SEvent& event) override;
 
 		//! draws the element and its children
-		virtual void draw() _IRR_OVERRIDE_;
+		void draw() override;
 
 	protected:
 

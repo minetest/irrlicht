@@ -30,42 +30,42 @@ namespace scene
 		\param filename: Filename of the mesh. When called ISceneManager::getMesh() with this
 		parameter, the method will return the mesh parameter given with this method.
 		\param mesh: Pointer to a mesh which will now be referenced by this name. */
-		virtual void addMesh(const io::path& filename, IAnimatedMesh* mesh) _IRR_OVERRIDE_;
+		void addMesh(const io::path& filename, IAnimatedMesh* mesh) override;
 
 		//! Removes a mesh from the cache.
 		/** After loading a mesh with getMesh(), the mesh can be removed from the cache
 		using this method, freeing a lot of memory. */
-		virtual void removeMesh(const IMesh* const mesh) _IRR_OVERRIDE_;
+		void removeMesh(const IMesh* const mesh) override;
 
 		//! Returns amount of loaded meshes in the cache.
 		/** You can load new meshes into the cache using getMesh() and addMesh().
 		If you ever need to access the internal mesh cache, you can do this using
 		removeMesh(), getMeshNumber(), getMeshByIndex() and getMeshFilename() */
-		virtual u32 getMeshCount() const _IRR_OVERRIDE_;
+		u32 getMeshCount() const override;
 
 		//! Returns current index number of the mesh, and -1 if it is not in the cache.
-		virtual s32 getMeshIndex(const IMesh* const mesh) const _IRR_OVERRIDE_;
+		s32 getMeshIndex(const IMesh* const mesh) const override;
 
 		//! Returns a mesh based on its index number.
 		/** \param index: Index of the mesh, number between 0 and getMeshCount()-1.
 		Note that this number is only valid until a new mesh is loaded or removed *
 		\return Returns pointer to the mesh or 0 if there is none with this number. */
-		virtual IAnimatedMesh* getMeshByIndex(u32 index) _IRR_OVERRIDE_;
+		IAnimatedMesh* getMeshByIndex(u32 index) override;
 
 		//! Returns a mesh based on its name.
 		/** \param name Name of the mesh. Usually a filename.
 		\return Pointer to the mesh or 0 if there is none with this number. */
-		virtual IAnimatedMesh* getMeshByName(const io::path& name) _IRR_OVERRIDE_;
+		IAnimatedMesh* getMeshByName(const io::path& name) override;
 
 		//! Get the name of a loaded mesh, based on its index.
 		/** \param index: Index of the mesh, number between 0 and getMeshCount()-1.
 		\return The name if mesh was found and has a name, else	the path is empty. */
-		virtual const io::SNamedPath& getMeshName(u32 index) const _IRR_OVERRIDE_;
+		const io::SNamedPath& getMeshName(u32 index) const override;
 
 		//! Get the name of a loaded mesh, if there is any.
 		/** \param mesh Pointer to mesh to query.
 		\return The name if mesh was found and has a name, else	the path is empty. */
-		virtual const io::SNamedPath& getMeshName(const IMesh* const mesh) const _IRR_OVERRIDE_;
+		const io::SNamedPath& getMeshName(const IMesh* const mesh) const override;
 
 		//! Renames a loaded mesh.
 		/** Note that renaming meshes might change the ordering of the
@@ -74,7 +74,7 @@ namespace scene
 		\param index The index of the mesh in the cache.
 		\param name New name for the mesh.
 		\return True if mesh was renamed. */
-		virtual bool renameMesh(u32 index, const io::path& name) _IRR_OVERRIDE_;
+		bool renameMesh(u32 index, const io::path& name) override;
 
 		//! Renames a loaded mesh.
 		/** Note that renaming meshes might change the ordering of the
@@ -83,16 +83,16 @@ namespace scene
 		\param mesh Mesh to be renamed.
 		\param name New name for the mesh.
 		\return True if mesh was renamed. */
-		virtual bool renameMesh(const IMesh* const mesh, const io::path& name) _IRR_OVERRIDE_;
+		bool renameMesh(const IMesh* const mesh, const io::path& name) override;
 
 		//! returns if a mesh already was loaded
-		virtual bool isMeshLoaded(const io::path& name) _IRR_OVERRIDE_;
+		bool isMeshLoaded(const io::path& name) override;
 
 		//! Clears the whole mesh cache, removing all meshes.
-		virtual void clear() _IRR_OVERRIDE_;
+		void clear() override;
 
 		//! Clears all meshes that are held in the mesh cache but not used anywhere else.
-		virtual void clearUnusedMeshes() _IRR_OVERRIDE_;
+		void clearUnusedMeshes() override;
 
 	protected:
 

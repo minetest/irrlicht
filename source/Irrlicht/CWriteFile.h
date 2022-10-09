@@ -27,19 +27,19 @@ namespace io
 		virtual ~CWriteFile();
 
 		//! Reads an amount of bytes from the file.
-		virtual size_t write(const void* buffer, size_t sizeToWrite) _IRR_OVERRIDE_;
+		size_t write(const void* buffer, size_t sizeToWrite) override;
 
 		//! Changes position in file, returns true if successful.
-		virtual bool seek(long finalPos, bool relativeMovement = false) _IRR_OVERRIDE_;
+		bool seek(long finalPos, bool relativeMovement = false) override;
 
 		//! Returns the current position in the file.
-		virtual long getPos() const _IRR_OVERRIDE_;
+		long getPos() const override;
 
 		//! Returns name of file.
-		virtual const io::path& getFileName() const _IRR_OVERRIDE_;
+		const io::path& getFileName() const override;
 
 		//! Flush the content of the buffer in the file
-		virtual bool flush() _IRR_OVERRIDE_;
+		bool flush() override;
 
 		//! returns if file is open
 		bool isOpen() const;

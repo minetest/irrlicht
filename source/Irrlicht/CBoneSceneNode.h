@@ -23,33 +23,33 @@ namespace scene
 			s32 id=-1, u32 boneIndex=0, const c8* boneName=0);
 
 		//! Returns the index of the bone
-		virtual u32 getBoneIndex() const _IRR_OVERRIDE_;
+		u32 getBoneIndex() const override;
 
 		//! Sets the animation mode of the bone. Returns true if successful.
-		virtual bool setAnimationMode(E_BONE_ANIMATION_MODE mode) _IRR_OVERRIDE_;
+		bool setAnimationMode(E_BONE_ANIMATION_MODE mode) override;
 
 		//! Gets the current animation mode of the bone
-		virtual E_BONE_ANIMATION_MODE getAnimationMode() const _IRR_OVERRIDE_;
+		E_BONE_ANIMATION_MODE getAnimationMode() const override;
 
 		//! returns the axis aligned bounding box of this node
-		virtual const core::aabbox3d<f32>& getBoundingBox() const _IRR_OVERRIDE_;
+		const core::aabbox3d<f32>& getBoundingBox() const override;
 
 		/*
 		//! Returns the relative transformation of the scene node.
-		//virtual core::matrix4 getRelativeTransformation() const _IRR_OVERRIDE_;
+		//core::matrix4 getRelativeTransformation() const override;
 		*/
 
-		virtual void OnAnimate(u32 timeMs) _IRR_OVERRIDE_;
+		void OnAnimate(u32 timeMs) override;
 
-		virtual void updateAbsolutePositionOfAllChildren() _IRR_OVERRIDE_;
+		void updateAbsolutePositionOfAllChildren() override;
 
 		//! How the relative transformation of the bone is used
-		virtual void setSkinningSpace(E_BONE_SKINNING_SPACE space) _IRR_OVERRIDE_
+		void setSkinningSpace(E_BONE_SKINNING_SPACE space) override
 		{
 			SkinningSpace=space;
 		}
 
-		virtual E_BONE_SKINNING_SPACE getSkinningSpace() const _IRR_OVERRIDE_
+		E_BONE_SKINNING_SPACE getSkinningSpace() const override
 		{
 			return SkinningSpace;
 		}

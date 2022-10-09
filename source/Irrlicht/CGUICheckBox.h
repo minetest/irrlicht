@@ -23,30 +23,30 @@ namespace gui
 		CGUICheckBox(bool checked, IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle);
 
 		//! set if box is checked
-		virtual void setChecked(bool checked) _IRR_OVERRIDE_;
+		void setChecked(bool checked) override;
 
 		//! returns if box is checked
-		virtual bool isChecked() const _IRR_OVERRIDE_;
+		bool isChecked() const override;
 
 		//! Sets whether to draw the background
-		virtual void setDrawBackground(bool draw) _IRR_OVERRIDE_;
+		void setDrawBackground(bool draw) override;
 
 		//! Checks if background drawing is enabled
 		/** \return true if background drawing is enabled, false otherwise */
-		virtual bool isDrawBackgroundEnabled() const _IRR_OVERRIDE_;
+		bool isDrawBackgroundEnabled() const override;
 
 		//! Sets whether to draw the border
-		virtual void setDrawBorder(bool draw) _IRR_OVERRIDE_;
+		void setDrawBorder(bool draw) override;
 
 		//! Checks if border drawing is enabled
 		/** \return true if border drawing is enabled, false otherwise */
-		virtual bool isDrawBorderEnabled() const _IRR_OVERRIDE_;
+		bool isDrawBorderEnabled() const override;
 
 		//! called if an event happened.
-		virtual bool OnEvent(const SEvent& event) _IRR_OVERRIDE_;
+		bool OnEvent(const SEvent& event) override;
 
 		//! draws the element and its children
-		virtual void draw() _IRR_OVERRIDE_;
+		void draw() override;
 
 	private:
 

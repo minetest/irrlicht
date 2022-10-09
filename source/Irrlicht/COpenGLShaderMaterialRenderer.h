@@ -35,17 +35,17 @@ public:
 	virtual ~COpenGLShaderMaterialRenderer();
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) _IRR_OVERRIDE_;
+		bool resetAllRenderstates, IMaterialRendererServices* services) override;
 
-	virtual bool OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype) _IRR_OVERRIDE_;
+	bool OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype) override;
 
-	virtual void OnUnsetMaterial() _IRR_OVERRIDE_;
+	void OnUnsetMaterial() override;
 
 	//! Returns if the material is transparent.
-	virtual bool isTransparent() const _IRR_OVERRIDE_;
+	bool isTransparent() const override;
 
 	//! Access the callback provided by the users when creating shader materials
-	virtual IShaderConstantSetCallBack* getShaderConstantSetCallBack() const _IRR_OVERRIDE_
+	IShaderConstantSetCallBack* getShaderConstantSetCallBack() const override
 	{ 
 		return CallBack;
 	}

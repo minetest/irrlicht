@@ -28,78 +28,78 @@ namespace gui
 		virtual ~CGUIStaticText();
 
 		//! draws the element and its children
-		virtual void draw() _IRR_OVERRIDE_;
+		void draw() override;
 
 		//! Sets another skin independent font.
-		virtual void setOverrideFont(IGUIFont* font=0) _IRR_OVERRIDE_;
+		void setOverrideFont(IGUIFont* font=0) override;
 
 		//! Gets the override font (if any)
-		virtual IGUIFont* getOverrideFont() const _IRR_OVERRIDE_;
+		IGUIFont* getOverrideFont() const override;
 
 		//! Get the font which is used right now for drawing
-		virtual IGUIFont* getActiveFont() const _IRR_OVERRIDE_;
+		IGUIFont* getActiveFont() const override;
 
 		//! Sets another color for the text.
-		virtual void setOverrideColor(video::SColor color) _IRR_OVERRIDE_;
+		void setOverrideColor(video::SColor color) override;
 
 		//! Sets another color for the background.
-		virtual void setBackgroundColor(video::SColor color) _IRR_OVERRIDE_;
+		void setBackgroundColor(video::SColor color) override;
 
 		//! Sets whether to draw the background
-		virtual void setDrawBackground(bool draw) _IRR_OVERRIDE_;
+		void setDrawBackground(bool draw) override;
 
 		//! Gets the background color
-		virtual video::SColor getBackgroundColor() const _IRR_OVERRIDE_;
+		video::SColor getBackgroundColor() const override;
 
 		//! Checks if background drawing is enabled
-		virtual bool isDrawBackgroundEnabled() const _IRR_OVERRIDE_;
+		bool isDrawBackgroundEnabled() const override;
 
 		//! Sets whether to draw the border
-		virtual void setDrawBorder(bool draw) _IRR_OVERRIDE_;
+		void setDrawBorder(bool draw) override;
 
 		//! Checks if border drawing is enabled
-		virtual bool isDrawBorderEnabled() const _IRR_OVERRIDE_;
+		bool isDrawBorderEnabled() const override;
 
 		//! Sets alignment mode for text
-		virtual void setTextAlignment(EGUI_ALIGNMENT horizontal, EGUI_ALIGNMENT vertical) _IRR_OVERRIDE_;
+		void setTextAlignment(EGUI_ALIGNMENT horizontal, EGUI_ALIGNMENT vertical) override;
 
 		//! Gets the override color
-		virtual video::SColor getOverrideColor() const _IRR_OVERRIDE_;
+		video::SColor getOverrideColor() const override;
 
 		//! Gets the currently used text color
-		virtual video::SColor getActiveColor() const _IRR_OVERRIDE_;
+		video::SColor getActiveColor() const override;
 
 		//! Sets if the static text should use the override color or the
 		//! color in the gui skin.
-		virtual void enableOverrideColor(bool enable) _IRR_OVERRIDE_;
+		void enableOverrideColor(bool enable) override;
 
 		//! Checks if an override color is enabled
-		virtual bool isOverrideColorEnabled() const _IRR_OVERRIDE_;
+		bool isOverrideColorEnabled() const override;
 
 		//! Set whether the text in this label should be clipped if it goes outside bounds
-		virtual void setTextRestrainedInside(bool restrainedInside) _IRR_OVERRIDE_;
+		void setTextRestrainedInside(bool restrainedInside) override;
 
 		//! Checks if the text in this label should be clipped if it goes outside bounds
-		virtual bool isTextRestrainedInside() const _IRR_OVERRIDE_;
+		bool isTextRestrainedInside() const override;
 
 		//! Enables or disables word wrap for using the static text as
 		//! multiline text control.
-		virtual void setWordWrap(bool enable) _IRR_OVERRIDE_;
+		void setWordWrap(bool enable) override;
 
 		//! Checks if word wrap is enabled
-		virtual bool isWordWrapEnabled() const _IRR_OVERRIDE_;
+		bool isWordWrapEnabled() const override;
 
 		//! Sets the new caption of this element.
-		virtual void setText(const wchar_t* text) _IRR_OVERRIDE_;
+		void setText(const wchar_t* text) override;
 
 		//! Returns the height of the text in pixels when it is drawn.
-		virtual s32 getTextHeight() const _IRR_OVERRIDE_;
+		s32 getTextHeight() const override;
 
 		//! Returns the width of the current text, in the current font
-		virtual s32 getTextWidth() const _IRR_OVERRIDE_;
+		s32 getTextWidth() const override;
 
 		//! Updates the absolute position, splits text if word wrap is enabled
-		virtual void updateAbsolutePosition() _IRR_OVERRIDE_;
+		void updateAbsolutePosition() override;
 
 		//! Set whether the string should be interpreted as right-to-left (RTL) text
 		/** \note This component does not implement the Unicode bidi standard, the
@@ -107,10 +107,10 @@ namespace gui
 		main difference when RTL is enabled is that the linebreaks for multiline
 		elements are performed starting from the end.
 		*/
-		virtual void setRightToLeft(bool rtl) _IRR_OVERRIDE_;
+		void setRightToLeft(bool rtl) override;
 
 		//! Checks if the text should be interpreted as right-to-left text
-		virtual bool isRightToLeft() const _IRR_OVERRIDE_;
+		bool isRightToLeft() const override;
 
 	private:
 

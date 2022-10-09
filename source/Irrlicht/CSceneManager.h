@@ -39,29 +39,29 @@ namespace scene
 		virtual ~CSceneManager();
 
 		//! gets an animateable mesh. loads it if needed. returned pointer must not be dropped.
-		virtual IAnimatedMesh* getMesh(const io::path& filename, const io::path& alternativeCacheName) _IRR_OVERRIDE_;
+		IAnimatedMesh* getMesh(const io::path& filename, const io::path& alternativeCacheName) override;
 
 		//! gets an animateable mesh. loads it if needed. returned pointer must not be dropped.
-		virtual IAnimatedMesh* getMesh(io::IReadFile* file) _IRR_OVERRIDE_;
+		IAnimatedMesh* getMesh(io::IReadFile* file) override;
 
 		//! Returns an interface to the mesh cache which is shared between all existing scene managers.
-		virtual IMeshCache* getMeshCache() _IRR_OVERRIDE_;
+		IMeshCache* getMeshCache() override;
 
 		//! returns the video driver
-		virtual video::IVideoDriver* getVideoDriver() _IRR_OVERRIDE_;
+		video::IVideoDriver* getVideoDriver() override;
 
 		//! return the gui environment
-		virtual gui::IGUIEnvironment* getGUIEnvironment() _IRR_OVERRIDE_;
+		gui::IGUIEnvironment* getGUIEnvironment() override;
 
 		//! return the filesystem
-		virtual io::IFileSystem* getFileSystem() _IRR_OVERRIDE_;
+		io::IFileSystem* getFileSystem() override;
 
 		//! adds a scene node for rendering an animated mesh model
 		virtual IAnimatedMeshSceneNode* addAnimatedMeshSceneNode(IAnimatedMesh* mesh, ISceneNode* parent=0, s32 id=-1,
 			const core::vector3df& position = core::vector3df(0,0,0),
 			const core::vector3df& rotation = core::vector3df(0,0,0),
 			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f),
-			bool alsoAddIfMeshPointerZero=false) _IRR_OVERRIDE_;
+			bool alsoAddIfMeshPointerZero=false) override;
 
 		//! adds a scene node for rendering a static mesh
 		//! the returned pointer must not be dropped.
@@ -69,22 +69,22 @@ namespace scene
 			const core::vector3df& position = core::vector3df(0,0,0),
 			const core::vector3df& rotation = core::vector3df(0,0,0),
 			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f),
-			bool alsoAddIfMeshPointerZero=false) _IRR_OVERRIDE_;
+			bool alsoAddIfMeshPointerZero=false) override;
 
 		//! renders the node.
-		virtual void render() _IRR_OVERRIDE_;
+		void render() override;
 
 		//! returns the axis aligned bounding box of this node
-		virtual const core::aabbox3d<f32>& getBoundingBox() const _IRR_OVERRIDE_;
+		const core::aabbox3d<f32>& getBoundingBox() const override;
 
 		//! registers a node for rendering it at a specific time.
-		virtual u32 registerNodeForRendering(ISceneNode* node, E_SCENE_NODE_RENDER_PASS pass = ESNRP_AUTOMATIC) _IRR_OVERRIDE_;
+		u32 registerNodeForRendering(ISceneNode* node, E_SCENE_NODE_RENDER_PASS pass = ESNRP_AUTOMATIC) override;
 
 		//! Clear all nodes which are currently registered for rendering
-		virtual void clearAllRegisteredNodesForRendering() _IRR_OVERRIDE_;
+		void clearAllRegisteredNodesForRendering() override;
 
 		//! draws all scene nodes
-		virtual void drawAll() _IRR_OVERRIDE_;
+		void drawAll() override;
 
 		//! Adds a camera scene node to the tree and sets it as active camera.
 		//! \param position: Position of the space relative to its parent where the camera will be placed.
@@ -95,7 +95,7 @@ namespace scene
 		virtual ICameraSceneNode* addCameraSceneNode(ISceneNode* parent = 0,
 			const core::vector3df& position = core::vector3df(0,0,0),
 			const core::vector3df& lookat = core::vector3df(0,0,100),
-			s32 id=-1, bool makeActive=true) _IRR_OVERRIDE_;
+			s32 id=-1, bool makeActive=true) override;
 
 		//! Adds a billboard scene node to the scene. A billboard is like a 3d sprite: A 2d element,
 		//! which always looks to the camera. It is usually used for things like explosions, fire,
@@ -103,103 +103,103 @@ namespace scene
 		virtual IBillboardSceneNode* addBillboardSceneNode(ISceneNode* parent = 0,
 			const core::dimension2d<f32>& size = core::dimension2d<f32>(10.0f, 10.0f),
 			const core::vector3df& position = core::vector3df(0,0,0), s32 id=-1,
-			video::SColor shadeTop = 0xFFFFFFFF, video::SColor shadeBottom = 0xFFFFFFFF) _IRR_OVERRIDE_;
+			video::SColor shadeTop = 0xFFFFFFFF, video::SColor shadeBottom = 0xFFFFFFFF) override;
 
 		//! Adds a dummy transformation scene node to the scene graph.
 		virtual IDummyTransformationSceneNode* addDummyTransformationSceneNode(
-			ISceneNode* parent=0, s32 id=-1) _IRR_OVERRIDE_;
+			ISceneNode* parent=0, s32 id=-1) override;
 
 		//! Adds an empty scene node.
-		virtual ISceneNode* addEmptySceneNode(ISceneNode* parent, s32 id=-1) _IRR_OVERRIDE_;
+		ISceneNode* addEmptySceneNode(ISceneNode* parent, s32 id=-1) override;
 
 		//! Returns the root scene node. This is the scene node which is parent
 		//! of all scene nodes. The root scene node is a special scene node which
 		//! only exists to manage all scene nodes. It is not rendered and cannot
 		//! be removed from the scene.
 		//! \return Pointer to the root scene node.
-		virtual ISceneNode* getRootSceneNode() _IRR_OVERRIDE_;
+		ISceneNode* getRootSceneNode() override;
 
 		//! Returns the current active camera.
 		//! \return The active camera is returned. Note that this can be NULL, if there
 		//! was no camera created yet.
-		virtual ICameraSceneNode* getActiveCamera() const _IRR_OVERRIDE_;
+		ICameraSceneNode* getActiveCamera() const override;
 
 		//! Sets the active camera. The previous active camera will be deactivated.
 		//! \param camera: The new camera which should be active.
-		virtual void setActiveCamera(ICameraSceneNode* camera) _IRR_OVERRIDE_;
+		void setActiveCamera(ICameraSceneNode* camera) override;
 
 		//! Adds an external mesh loader.
-		virtual void addExternalMeshLoader(IMeshLoader* externalLoader) _IRR_OVERRIDE_;
+		void addExternalMeshLoader(IMeshLoader* externalLoader) override;
 
 		//! Returns the number of mesh loaders supported by Irrlicht at this time
-		virtual u32 getMeshLoaderCount() const _IRR_OVERRIDE_;
+		u32 getMeshLoaderCount() const override;
 
 		//! Retrieve the given mesh loader
-		virtual IMeshLoader* getMeshLoader(u32 index) const _IRR_OVERRIDE_;
+		IMeshLoader* getMeshLoader(u32 index) const override;
 
 		//! Returns a pointer to the scene collision manager.
-		virtual ISceneCollisionManager* getSceneCollisionManager() _IRR_OVERRIDE_;
+		ISceneCollisionManager* getSceneCollisionManager() override;
 
 		//! Returns a pointer to the mesh manipulator.
-		virtual IMeshManipulator* getMeshManipulator() _IRR_OVERRIDE_;
+		IMeshManipulator* getMeshManipulator() override;
 
 		//! Adds a scene node to the deletion queue.
-		virtual void addToDeletionQueue(ISceneNode* node) _IRR_OVERRIDE_;
+		void addToDeletionQueue(ISceneNode* node) override;
 
 		//! Returns the first scene node with the specified id.
-		virtual ISceneNode* getSceneNodeFromId(s32 id, ISceneNode* start=0) _IRR_OVERRIDE_;
+		ISceneNode* getSceneNodeFromId(s32 id, ISceneNode* start=0) override;
 
 		//! Returns the first scene node with the specified name.
-		virtual ISceneNode* getSceneNodeFromName(const c8* name, ISceneNode* start=0) _IRR_OVERRIDE_;
+		ISceneNode* getSceneNodeFromName(const c8* name, ISceneNode* start=0) override;
 
 		//! Returns the first scene node with the specified type.
-		virtual ISceneNode* getSceneNodeFromType(scene::ESCENE_NODE_TYPE type, ISceneNode* start=0) _IRR_OVERRIDE_;
+		ISceneNode* getSceneNodeFromType(scene::ESCENE_NODE_TYPE type, ISceneNode* start=0) override;
 
 		//! returns scene nodes by type.
-		virtual void getSceneNodesFromType(ESCENE_NODE_TYPE type, core::array<scene::ISceneNode*>& outNodes, ISceneNode* start=0) _IRR_OVERRIDE_;
+		void getSceneNodesFromType(ESCENE_NODE_TYPE type, core::array<scene::ISceneNode*>& outNodes, ISceneNode* start=0) override;
 
 		//! Posts an input event to the environment. Usually you do not have to
 		//! use this method, it is used by the internal engine.
-		virtual bool postEventFromUser(const SEvent& event) _IRR_OVERRIDE_;
+		bool postEventFromUser(const SEvent& event) override;
 
 		//! Clears the whole scene. All scene nodes are removed.
-		virtual void clear() _IRR_OVERRIDE_;
+		void clear() override;
 
 		//! Removes all children of this scene node
-		virtual void removeAll() _IRR_OVERRIDE_;
+		void removeAll() override;
 
 		//! Returns interface to the parameters set in this scene.
-		virtual io::IAttributes* getParameters() _IRR_OVERRIDE_;
+		io::IAttributes* getParameters() override;
 
 		//! Returns current render pass.
-		virtual E_SCENE_NODE_RENDER_PASS getSceneNodeRenderPass() const _IRR_OVERRIDE_;
+		E_SCENE_NODE_RENDER_PASS getSceneNodeRenderPass() const override;
 
 		//! Creates a new scene manager.
-		virtual ISceneManager* createNewSceneManager(bool cloneContent) _IRR_OVERRIDE_;
+		ISceneManager* createNewSceneManager(bool cloneContent) override;
 
 		//! Returns type of the scene node
-		virtual ESCENE_NODE_TYPE getType() const _IRR_OVERRIDE_ { return ESNT_SCENE_MANAGER; }
+		ESCENE_NODE_TYPE getType() const override { return ESNT_SCENE_MANAGER; }
 
 		//! Returns a mesh writer implementation if available
-		virtual IMeshWriter* createMeshWriter(EMESH_WRITER_TYPE type) _IRR_OVERRIDE_;
+		IMeshWriter* createMeshWriter(EMESH_WRITER_TYPE type) override;
 
 		//! Get a skinned mesh, which is not available as header-only code
-		virtual ISkinnedMesh* createSkinnedMesh() _IRR_OVERRIDE_;
+		ISkinnedMesh* createSkinnedMesh() override;
 
 		//! Sets ambient color of the scene
-		virtual void setAmbientLight(const video::SColorf &ambientColor) _IRR_OVERRIDE_;
+		void setAmbientLight(const video::SColorf &ambientColor) override;
 
 		//! Returns ambient color of the scene
-		virtual const video::SColorf& getAmbientLight() const _IRR_OVERRIDE_;
+		const video::SColorf& getAmbientLight() const override;
 
 		//! Get current render time.
-		virtual E_SCENE_NODE_RENDER_PASS getCurrentRenderPass() const _IRR_OVERRIDE_ { return CurrentRenderPass; }
+		E_SCENE_NODE_RENDER_PASS getCurrentRenderPass() const override { return CurrentRenderPass; }
 
 		//! Set current render time.
-		virtual void setCurrentRenderPass(E_SCENE_NODE_RENDER_PASS nextPass) _IRR_OVERRIDE_ { CurrentRenderPass = nextPass; }
+		void setCurrentRenderPass(E_SCENE_NODE_RENDER_PASS nextPass) override { CurrentRenderPass = nextPass; }
 
 		//! returns if node is culled
-		virtual bool isCulled(const ISceneNode* node) const _IRR_OVERRIDE_;
+		bool isCulled(const ISceneNode* node) const override;
 
 	private:
 

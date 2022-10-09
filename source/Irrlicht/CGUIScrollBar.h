@@ -29,46 +29,46 @@ namespace gui
 		virtual ~CGUIScrollBar();
 
 		//! called if an event happened.
-		virtual bool OnEvent(const SEvent& event) _IRR_OVERRIDE_;
+		bool OnEvent(const SEvent& event) override;
 
 		//! draws the element and its children
-		virtual void draw() _IRR_OVERRIDE_;
+		void draw() override;
 
-		virtual void OnPostRender(u32 timeMs) _IRR_OVERRIDE_;
+		void OnPostRender(u32 timeMs) override;
 
 
 		//! gets the maximum value of the scrollbar.
-		virtual s32 getMax() const _IRR_OVERRIDE_;
+		s32 getMax() const override;
 
 		//! sets the maximum value of the scrollbar.
-		virtual void setMax(s32 max) _IRR_OVERRIDE_;
+		void setMax(s32 max) override;
 
 		//! gets the minimum value of the scrollbar.
-		virtual s32 getMin() const _IRR_OVERRIDE_;
+		s32 getMin() const override;
 
 		//! sets the minimum value of the scrollbar.
-		virtual void setMin(s32 min) _IRR_OVERRIDE_;
+		void setMin(s32 min) override;
 
 		//! gets the small step value
-		virtual s32 getSmallStep() const _IRR_OVERRIDE_;
+		s32 getSmallStep() const override;
 
 		//! sets the small step value
-		virtual void setSmallStep(s32 step) _IRR_OVERRIDE_;
+		void setSmallStep(s32 step) override;
 
 		//! gets the large step value
-		virtual s32 getLargeStep() const _IRR_OVERRIDE_;
+		s32 getLargeStep() const override;
 
 		//! sets the large step value
-		virtual void setLargeStep(s32 step) _IRR_OVERRIDE_;
+		void setLargeStep(s32 step) override;
 
 		//! gets the current position of the scrollbar
-		virtual s32 getPos() const _IRR_OVERRIDE_;
+		s32 getPos() const override;
 
 		//! sets the position of the scrollbar
-		virtual void setPos(s32 pos) _IRR_OVERRIDE_;
+		void setPos(s32 pos) override;
 
 		//! updates the rectangle
-		virtual void updateAbsolutePosition() _IRR_OVERRIDE_;
+		void updateAbsolutePosition() override;
 
 	private:
 

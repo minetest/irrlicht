@@ -74,17 +74,17 @@ namespace scene
 		virtual E_BONE_ANIMATION_MODE getAnimationMode() const = 0;
 
 		//! Get the axis aligned bounding box of this node
-		virtual const core::aabbox3d<f32>& getBoundingBox() const _IRR_OVERRIDE_ = 0;
+		const core::aabbox3d<f32>& getBoundingBox() const override = 0;
 
 		//! Returns the relative transformation of the scene node.
 		//virtual core::matrix4 getRelativeTransformation() const = 0;
 
 		//! The animation method.
-		virtual void OnAnimate(u32 timeMs) _IRR_OVERRIDE_ =0;
+		void OnAnimate(u32 timeMs) override =0;
 
 		//! The render method.
 		/** Does nothing as bones are not visible. */
-		virtual void render() _IRR_OVERRIDE_ { }
+		void render() override { }
 
 		//! How the relative transformation of the bone is used
 		virtual void setSkinningSpace( E_BONE_SKINNING_SPACE space ) =0;

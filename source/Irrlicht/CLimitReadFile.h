@@ -30,24 +30,24 @@ namespace io
 		virtual ~CLimitReadFile();
 
 		//! returns how much was read
-		virtual size_t read(void* buffer, size_t sizeToRead) _IRR_OVERRIDE_;
+		size_t read(void* buffer, size_t sizeToRead) override;
 
 		//! changes position in file, returns true if successful
 		//! if relativeMovement==true, the pos is changed relative to current pos,
 		//! otherwise from begin of file
-		virtual bool seek(long finalPos, bool relativeMovement = false) _IRR_OVERRIDE_;
+		bool seek(long finalPos, bool relativeMovement = false) override;
 
 		//! returns size of file
-		virtual long getSize() const _IRR_OVERRIDE_;
+		long getSize() const override;
 
 		//! returns where in the file we are.
-		virtual long getPos() const _IRR_OVERRIDE_;
+		long getPos() const override;
 
 		//! returns name of file
-		virtual const io::path& getFileName() const _IRR_OVERRIDE_;
+		const io::path& getFileName() const override;
 
 		//! Get the type of the class implementing this interface
-		virtual EREAD_FILE_TYPE getType() const _IRR_OVERRIDE_
+		EREAD_FILE_TYPE getType() const override
 		{
 			return ERFT_LIMIT_READ_FILE;
 		}
