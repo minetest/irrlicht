@@ -1317,9 +1317,24 @@ void CSkinnedMesh::recoverJointsFromMesh(core::array<IBoneSceneNode*> &jointChil
 	{
 		IBoneSceneNode* node=jointChildSceneNodes[i];
 		SJoint *joint=AllJoints[i];
-		node->setPosition(joint->LocalAnimatedMatrix.getTranslation());
-		node->setRotation(joint->LocalAnimatedMatrix.getRotationDegrees());
-		node->setScale(joint->LocalAnimatedMatrix.getScale());
+
+		if ( joint->UseAnimationFrom )	// Seems to work better (else solution seems to mess up sometimes) and would be faster. Any disadvantage?
+		{
+			node->setPosition(joint->Animatedposition);
+			core::quaternion qrot = joint->Animatedrotation;
+			qrot.W *= -1.f;	// Animation system uses right-handed rotations? Argh... 
+			irr::core::vector3df euler;
+			qrot.toEuler(euler);
+			euler *= core::RADTODEG;
+			node->setRotation(euler);
+			node->setScale(joint->Animatedscale);
+		}
+		else
+		{
+			node->setPosition(joint->LocalAnimatedMatrix.getTranslation());
+			node->setRotation(joint->LocalAnimatedMatrix.getRotationDegrees());
+			node->setScale(joint->LocalAnimatedMatrix.getScale());
+		}
 
 		node->positionHint=joint->positionHint;
 		node->scaleHint=joint->scaleHint;
