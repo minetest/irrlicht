@@ -107,19 +107,24 @@ void COSOperator::copyToClipboard(const c8 *text) const
 const c8* COSOperator::getTextFromClipboard() const
 {
 #if defined(_IRR_WINDOWS_API_)
+	if (!IsClipboardFormatAvailable(CF_TEXT))
+		return 0;
 	if (!OpenClipboard(NULL))
 		return 0;
 
-	wchar_t * buffer = 0;
+	char * buffer = 0;
 
-	HANDLE hData = GetClipboardData( CF_UNICODETEXT );
-	buffer = (wchar_t*) GlobalLock( hData );
-
-	core::wStringToMultibyte(ClipboardBuf, buffer);
-
-	GlobalUnlock( hData );
+	HANDLE hData = GetClipboardData( CF_TEXT );
+	if (hData != NULL) {
+		buffer = (char*) GlobalLock( hData );
+		if (buffer != NULL) {
+			ClipboardBuf = buffer;
+			GlobalUnlock( hData );
+		}
+	}
 	CloseClipboard();
 
+	if (buffer == NULL) return 0;
 	return ClipboardBuf.c_str();
 
 #elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
