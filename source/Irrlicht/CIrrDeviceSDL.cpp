@@ -270,7 +270,7 @@ bool CIrrDeviceSDL::createWindow()
 	{
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
-	}	
+	}
 
 	SDL_CreateWindowAndRenderer(0, 0, SDL_Flags, &Window, &Renderer); // 0,0 will use the canvas size
 
@@ -471,6 +471,8 @@ bool CIrrDeviceSDL::run()
 			MouseXRel = SDL_event.motion.xrel;
 			MouseYRel = SDL_event.motion.yrel;
 			irrevent.MouseInput.ButtonStates = MouseButtonStates;
+			irrevent.MouseInput.Shift = IsShiftDown;
+			irrevent.MouseInput.Control = IsControlDown;
 
 			postEventFromUser(irrevent);
 			break;
@@ -478,6 +480,11 @@ bool CIrrDeviceSDL::run()
 			irrevent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 			irrevent.MouseInput.Event = irr::EMIE_MOUSE_WHEEL;
 			irrevent.MouseInput.Wheel = static_cast<float>(SDL_event.wheel.y);
+			irrevent.MouseInput.Shift = IsShiftDown;
+			irrevent.MouseInput.Control = IsControlDown;
+			irrevent.MouseInput.X = MouseX;
+			irrevent.MouseInput.Y = MouseY;
+
 			postEventFromUser(irrevent);
 			break;
 		case SDL_MOUSEBUTTONDOWN:
@@ -485,6 +492,8 @@ bool CIrrDeviceSDL::run()
 			irrevent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 			irrevent.MouseInput.X = SDL_event.button.x;
 			irrevent.MouseInput.Y = SDL_event.button.y;
+			irrevent.MouseInput.Shift = IsShiftDown;
+			irrevent.MouseInput.Control = IsControlDown;
 
 			irrevent.MouseInput.Event = irr::EMIE_MOUSE_MOVED;
 
@@ -623,6 +632,10 @@ bool CIrrDeviceSDL::run()
 				irrevent.KeyInput.Char = 0;
 				if (mp.SDLKey == SDLK_DELETE || mp.SDLKey == SDLK_RETURN || mp.SDLKey == SDLK_BACKSPACE || irrevent.KeyInput.Control)
 					irrevent.KeyInput.Char = mp.SDLKey;
+				if (mp.SDLKey == SDLK_LSHIFT || mp.SDLKey == SDLK_RSHIFT)
+					IsShiftDown = (SDL_event.type == SDL_KEYDOWN);
+				if (mp.SDLKey == SDLK_LCTRL || mp.SDLKey == SDLK_RCTRL)
+					IsControlDown = (SDL_event.type == SDL_KEYDOWN);
 				postEventFromUser(irrevent);
 			}
 			break;
@@ -926,7 +939,7 @@ void CIrrDeviceSDL::setResizable(bool resize)
 	os::Printer::log("Resizable not available on the web." , ELL_WARNING);
 	return;
 #else // !_IRR_EMSCRIPTEN_PLATFORM_
-	if (resize != Resizable) { 
+	if (resize != Resizable) {
 		if (resize)
 			SDL_Flags |= SDL_WINDOW_RESIZABLE;
 		else
