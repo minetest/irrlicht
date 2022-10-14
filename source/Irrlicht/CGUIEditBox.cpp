@@ -13,6 +13,10 @@
 #include "os.h"
 #include "Keycodes.h"
 
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
+#include "CIrrWin32IME.h"
+#endif
+
 /*
 	todo:
 	optional scrollbars
@@ -242,8 +246,27 @@ bool CGUIEditBox::OnEvent(const SEvent& event)
 					MouseMarking = false;
 					setTextMarkers(0,0);
 				}
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
+				irr::cancelImeEdit();
+				irr::enableIME(false, nullptr);
+#endif
 			}
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
+			else if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUSED) {
+				irr::enableIME(!PasswordBox, nullptr);
+				if (!PasswordBox) {
+					core::position2di pos = calculateImePos();
+					irr::updateCompositionWindow(nullptr, pos.X,pos.Y, 0);
+				}
+			}
+#endif
 			break;
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
+		case EET_IMPUT_METHOD_EVENT:
+			if (processIMEEvent(event))
+				return true;
+			break;
+#endif
 		case EET_KEY_INPUT_EVENT:
 			if (processKey(event))
 				return true;
@@ -772,6 +795,58 @@ bool CGUIEditBox::keyDelete()
 
 	return false;
 }
+
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
+bool CGUIEditBox::processIMEEvent(const SEvent& event)
+{
+	switch(event.InputMethodEvent.Event)
+	{
+		case EIME_CHANGE_POS:
+			{
+				core::position2di pos = calculateImePos();
+
+				IGUIFont* font = OverrideFont;
+				IGUISkin* skin = Environment->getSkin();
+
+				if (!OverrideFont)
+					font = skin->getFont();
+
+				irr::updateCompositionWindow(event.InputMethodEvent.Handle, pos.X,pos.Y, font->getDimension(L"|").Height);
+
+				return true;
+			}
+		default:
+			break;
+	}
+
+	return false;
+}
+
+//! calculate the position of input composition window
+irr::core::position2di CGUIEditBox::calculateImePos()
+{
+	irr::core::position2di pos;
+	IGUIFont* font = OverrideFont;
+	IGUISkin* skin = Environment->getSkin();
+	if (!OverrideFont)
+		font = skin->getFont();
+
+	//drop the text that clipping on the right side
+	if(WordWrap | MultiLine)
+	{
+		// todo : It looks like a heavy drinker. Strange!!
+		pos.X = CurrentTextRect.LowerRightCorner.X - font->getDimension(Text.subString(CursorPos, BrokenTextPositions[getLineFromPos(CursorPos)] + BrokenText[getLineFromPos(CursorPos)].size() - CursorPos).c_str()).Width;
+		pos.Y = CurrentTextRect.UpperLeftCorner.Y + font->getDimension(L"|").Height + (Border ? 3 : 0) - ((MultiLine | WordWrap) ? 3 : 0);
+	}
+	else
+	{
+		pos.X = CurrentTextRect.LowerRightCorner.X - font->getDimension(Text.subString(CursorPos, Text.size() - CursorPos).c_str()).Width;
+		pos.Y = AbsoluteRect.getCenter().Y + (Border ? 3 : 0); //bug? The text is always drawn in the height of the center. SetTextAlignment() doesn't influence.
+	}
+
+	return pos;
+}
+#endif
 
 //! draws the element and its children
 void CGUIEditBox::draw()
@@ -1647,7 +1722,7 @@ void CGUIEditBox::sendGuiEvent(EGUI_EVENT_TYPE type)
 //! Returns whether the element takes input from the IME
 bool CGUIEditBox::acceptsIME()
 {
-	return isEnabled();
+	return isEnabled() && !PasswordBox;
 }
 
 } // end namespace gui

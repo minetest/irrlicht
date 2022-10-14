@@ -140,6 +140,7 @@ set(link_libs
 	"${JPEG_LIBRARY}"
 	"${PNG_LIBRARY}"
 	"${SDL2_LIBRARIES}"
+	"${IMM32_LIBRARY}"
 
 	${OPENGL_LIBRARIES}
 	${OPENGLES_LIBRARY}
@@ -237,6 +238,7 @@ add_library(IRROTHEROBJ OBJECT
 	CIrrDeviceLinux.cpp
 	CIrrDeviceStub.cpp
 	CIrrDeviceWin32.cpp
+	CIrrWin32IME.cpp
 	CLogger.cpp
 	COSOperator.cpp
 	Irrlicht.cpp

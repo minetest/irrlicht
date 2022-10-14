@@ -297,6 +297,11 @@ you will not be able to use anything provided by the GUI Environment, including 
 #undef _IRR_COMPILE_WITH_GUI_
 #endif
 
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
+/** This enables the engine to intercept input method messages on Win32. */
+#define _IRR_USE_WIN32_IME
+#endif
+
 //! Define _IRR_COMPILE_WITH_LIBJPEG_ to enable compiling the engine using libjpeg.
 /** This enables the engine to read jpeg images. If you comment this out,
 the engine will no longer read .jpeg images. */

@@ -20,6 +20,12 @@ tmp=
 	wget "http://minetest.kitsunemimi.pw/${tmp}libpng-$libpng_version-$variant.zip" -O libpng.zip
 [ -e zlib.zip ] || \
 	wget "http://minetest.kitsunemimi.pw/${tmp}zlib-$zlib_version-$variant.zip" -O zlib.zip
+[ -e imm32_32.lib ] || \
+	wget "https://github.com/tpn/winsdk-7/raw/master/v7.1A/Lib/Imm32.Lib" -O imm32_32.lib
+[ -e imm32_64.lib ] || \
+	wget "https://github.com/tpn/winsdk-7/raw/master/v7.1A/Lib/x64/Imm32.Lib" -O imm32_64.lib
+[ "$variant" == win64 ] && cp imm32_64.lib imm32.lib
+[ "$variant" != win64 ] && cp imm32_32.lib imm32.lib
 [ -d libjpeg ] || unzip -o libjpeg.zip -d libjpeg
 [ -d libpng ] || unzip -o libpng.zip -d libpng
 [ -d zlib ] || unzip -o zlib.zip -d zlib
@@ -27,6 +33,7 @@ popd
 
 tmp=(
 	-DCMAKE_SYSTEM_NAME=Windows \
+	-DIMM32_LIBRARY=$libs/imm32.lib \
 	-DPNG_LIBRARY=$libs/libpng/lib/libpng.dll.a \
 	-DPNG_PNG_INCLUDE_DIR=$libs/libpng/include \
 	-DJPEG_LIBRARY=$libs/libjpeg/lib/libjpeg.dll.a \

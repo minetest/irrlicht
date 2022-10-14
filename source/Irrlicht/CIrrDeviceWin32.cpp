@@ -20,6 +20,7 @@
 #include "dimension2d.h"
 #include "IGUISpriteBank.h"
 #include <winuser.h>
+#include <msctf.h>
 #include "SExposedVideoData.h"
 
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
@@ -37,6 +38,14 @@
 
 #if defined(_IRR_COMPILE_WITH_OPENGL_)
 #include "CWGLManager.h"
+#endif
+
+#if defined (_IRR_USE_WIN32_IME)
+#include <imm.h>
+#ifdef _MSC_VER
+#pragma comment(lib, "imm32")
+#endif
+#include "CIrrWin32IME.h"
 #endif
 
 namespace irr
@@ -533,6 +542,20 @@ namespace
 	HKL KEYBOARD_INPUT_HKL=0;
 }
 
+void initKeyboardLayout(HWND hWnd)
+{
+	// get the new codepage used for keyboard input
+	KEYBOARD_INPUT_HKL = GetKeyboardLayout(0);
+
+#if defined (_IRR_USE_WIN32_IME)
+	HIMC hIMC = ImmGetContext( hWnd );
+	if (hIMC) {
+		ImmSetOpenStatus( hIMC, false );
+		ImmReleaseContext( hWnd, hIMC );
+	}
+#endif
+}
+
 irr::CIrrDeviceWin32* getDeviceFromHWnd(HWND hWnd)
 {
 	const irr::u32 end = EnvMap.size();
@@ -651,7 +674,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					dev->postEventFromUser(event);
 				}
 			}
+#if defined (_IRR_USE_WIN32_IME)
+			if(m->irrMessage == irr::EMIE_LMOUSE_PRESSED_DOWN || m->irrMessage == irr::EMIE_LMOUSE_LEFT_UP)
+			{
+				event.EventType = irr::EET_IMPUT_METHOD_EVENT;
+				event.InputMethodEvent.Event = irr::EIME_CHANGE_POS;
+				event.InputMethodEvent.Handle = hWnd;
+
+				dev->postEventFromUser(event);
+			}
+#endif
 		}
+
 		return 0;
 	}
 
@@ -667,6 +701,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_ERASEBKGND:
 		return 0;
+
+#if defined (_IRR_USE_WIN32_IME)
+	case WM_IME_CHAR:
+		{
+			dev = getDeviceFromHWnd(hWnd);
+			if (dev) {
+				event.EventType = irr::EET_STRING_INPUT_EVENT;
+				wchar_t c[2];
+				c[0] = (wchar_t)wParam;
+				c[1] = 0;
+				event.StringInput.Str = new irr::core::stringw(c);
+				dev->postEventFromUser(event);
+				delete event.StringInput.Str;
+				event.StringInput.Str = NULL;
+			}
+			return 0;
+		}
+#endif
 
 	case WM_SYSKEYDOWN:
 	case WM_SYSKEYUP:
@@ -719,6 +771,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if (dev)
 				dev->postEventFromUser(event);
 
+#if defined (_IRR_USE_WIN32_IME)
+			if (dev) {
+				event.EventType = irr::EET_IMPUT_METHOD_EVENT;
+				event.InputMethodEvent.Event = irr::EIME_CHANGE_POS;
+				event.InputMethodEvent.Handle = hWnd;
+				dev->postEventFromUser(event);
+			}
+#endif
 			if (message == WM_SYSKEYDOWN || message == WM_SYSKEYUP)
 				return DefWindowProcW(hWnd, message, wParam, lParam);
 			else
@@ -735,6 +795,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_DESTROY:
+		irr::enableIME(false, nullptr);
 		PostQuitMessage(0);
 		return 0;
 
@@ -748,6 +809,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		break;
 
+#if defined (_IRR_USE_WIN32_IME)
+	case WM_ACTIVATE:
+		dev = getDeviceFromHWnd(hWnd);
+		if (dev) {
+			event.EventType = irr::EET_IMPUT_METHOD_EVENT;
+			event.InputMethodEvent.Event = irr::EIME_CHANGE_POS;
+			event.InputMethodEvent.Handle = hWnd;
+			dev->postEventFromUser(event);
+		}
+		break;
+#endif
 	case WM_USER:
 		event.EventType = irr::EET_USER_EVENT;
 		event.UserEvent.UserData1 = static_cast<size_t>(wParam);
@@ -769,9 +841,39 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 
+#if defined (_IRR_USE_WIN32_IME)
+	case WM_IME_COMPOSITION:
+		dev = getDeviceFromHWnd(hWnd);
+		if (dev && irr::isImeEnabled()) {
+			HIMC hIMC = ImmGetContext(hWnd);
+			bool done = false;
+			if (hIMC) {
+				LONG str_size = irr::getResultFromIme(hIMC, lParam, NULL, 0);
+				if (str_size > 0) {
+					LONG length_with_null = (str_size / sizeof(wchar_t)) + 1;
+					wchar_t wBuf[length_with_null];
+					if (irr::getResultFromIme(hIMC, lParam, wBuf, str_size)) {
+						wBuf[length_with_null-1] = 0;
+						// Multiple characters: send string event
+						event.EventType = irr::EET_STRING_INPUT_EVENT;
+						event.StringInput.Str = new irr::core::stringw(wBuf);
+						dev->postEventFromUser(event);
+						delete event.StringInput.Str;
+						event.StringInput.Str = NULL;
+						done = true;
+					}
+				}
+				ImmReleaseContext(hWnd, hIMC);
+
+				if (done) return 0;
+			}
+		}
+		break;
+#endif
 	case WM_INPUTLANGCHANGE:
-		// get the new codepage used for keyboard input
-		KEYBOARD_INPUT_HKL = GetKeyboardLayout(0);
+		initKeyboardLayout(hWnd);
+		irr::clearIMEContent();
+		irr::createIMEContent(hWnd);
 		return 0;
 	}
 	return DefWindowProcW(hWnd, message, wParam, lParam);
@@ -919,7 +1021,11 @@ CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params)
 		SetForegroundWindow(HWnd);
 	}
 
-	KEYBOARD_INPUT_HKL = GetKeyboardLayout(0);
+#if defined (_IRR_USE_WIN32_IME)
+	irr::initIme(HWnd);
+#endif
+
+	initKeyboardLayout(HWnd);
 
 	// inform driver about the window size etc.
 	resizeIfNecessary();
@@ -1390,6 +1496,28 @@ void CIrrDeviceWin32::handleSystemMessages()
 
 	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 	{
+#if defined (_IRR_USE_WIN32_IME)
+		MSG msg1 = msg;
+		// MUST TranslateMessage if wanna use the IME
+		TranslateMessage(&msg1);
+		if (ExternalWindow || msg.hwnd == HWnd)
+		{
+			if (msg.hwnd == HWnd)
+			{
+				WndProc(HWnd, msg1.message, msg1.wParam, msg1.lParam);
+			}
+			else
+			{
+				DispatchMessage(&msg1);
+			}
+		}
+		else
+		{
+			// No message translation because we don't use WM_CHAR and it would conflict with our
+			// deadkey handling.
+			DispatchMessage(&msg);
+		}
+#else
 		if (ExternalWindow && msg.hwnd == HWnd)
 		{
 			if (msg.hwnd == HWnd)
@@ -1408,6 +1536,7 @@ void CIrrDeviceWin32::handleSystemMessages()
 			// deadkey handling.
 			DispatchMessage(&msg);
 		}
+#endif
 
 		if (msg.message == WM_QUIT)
 			Close = true;
