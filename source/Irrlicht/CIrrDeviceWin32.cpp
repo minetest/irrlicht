@@ -853,7 +853,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					LONG length_with_null = (str_size / sizeof(wchar_t)) + 1;
 					wchar_t wBuf[length_with_null];
 					if (irr::getResultFromIme(hIMC, lParam, wBuf, str_size)) {
-						wBuf[length_with_null-1] = 0;
+						wBuf[length_with_null-1] = (wchar_t) 0;
 						// Multiple characters: send string event
 						event.EventType = irr::EET_STRING_INPUT_EVENT;
 						event.StringInput.Str = new irr::core::stringw(wBuf);
