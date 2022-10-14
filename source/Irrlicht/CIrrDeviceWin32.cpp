@@ -1185,9 +1185,9 @@ void CIrrDeviceWin32::closeDevice()
 		PostQuitMessage(0);
 		PeekMessage(&msg, NULL, WM_QUIT, WM_QUIT, PM_REMOVE);
 		DestroyWindow(HWnd);
-		const fschar_t* ClassName = __TEXT("CIrrDeviceWin32");
+		const wchar_t* ClassName = L"CIrrDeviceWin32";
 		HINSTANCE hInstance = GetModuleHandle(0);
-		UnregisterClass(ClassName, hInstance);
+		UnregisterClassW(ClassName, hInstance);
 	}
 	Close=true;
 }
