@@ -720,7 +720,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				dev->postEventFromUser(event);
 
 			if (message == WM_SYSKEYDOWN || message == WM_SYSKEYUP)
-				return DefWindowProc(hWnd, message, wParam, lParam);
+				return DefWindowProcW(hWnd, message, wParam, lParam);
 			else
 				return 0;
 		}
@@ -774,7 +774,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		KEYBOARD_INPUT_HKL = GetKeyboardLayout(0);
 		return 0;
 	}
-	return DefWindowProc(hWnd, message, wParam, lParam);
+	return DefWindowProcW(hWnd, message, wParam, lParam);
 }
 
 
@@ -802,11 +802,11 @@ CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params)
 	// create the window if we need to and we do not use the null device
 	if (!CreationParams.WindowId && CreationParams.DriverType != video::EDT_NULL)
 	{
-		const fschar_t* ClassName = __TEXT("CIrrDeviceWin32");
+		const wchar_t* ClassName = L"CIrrDeviceWin32";
 
 		// Register Class
-		WNDCLASSEX wcex;
-		wcex.cbSize			= sizeof(WNDCLASSEX);
+		WNDCLASSEXW wcex;
+		wcex.cbSize			= sizeof(WNDCLASSEXW);
 		wcex.style			= CS_HREDRAW | CS_VREDRAW;
 		wcex.lpfnWndProc	= WndProc;
 		wcex.cbClsExtra		= 0;
@@ -820,9 +820,9 @@ CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params)
 		wcex.hIconSm		= 0;
 
 		// if there is an icon, load it
-		wcex.hIcon = (HICON)LoadImage(hInstance, __TEXT("irrlicht.ico"), IMAGE_ICON, 0,0, LR_LOADFROMFILE | LR_DEFAULTSIZE);
+		wcex.hIcon = (HICON)LoadImageW(hInstance, L"irrlicht.ico", IMAGE_ICON, 0,0, LR_LOADFROMFILE | LR_DEFAULTSIZE);
 
-		RegisterClassEx(&wcex);
+		RegisterClassExW(&wcex);
 
 		// calculate client size
 
@@ -857,7 +857,7 @@ CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params)
 		}
 
 		// create window
-		HWnd = CreateWindow( ClassName, __TEXT(""), style, windowLeft, windowTop,
+		HWnd = CreateWindowW( ClassName, L"", style, windowLeft, windowTop,
 					realWidth, realHeight, NULL, NULL, hInstance, NULL);
 		if (!HWnd)
 		{
@@ -1185,9 +1185,9 @@ void CIrrDeviceWin32::closeDevice()
 		PostQuitMessage(0);
 		PeekMessage(&msg, NULL, WM_QUIT, WM_QUIT, PM_REMOVE);
 		DestroyWindow(HWnd);
-		const fschar_t* ClassName = __TEXT("CIrrDeviceWin32");
+		const wchar_t* ClassName = L"CIrrDeviceWin32";
 		HINSTANCE hInstance = GetModuleHandle(0);
-		UnregisterClass(ClassName, hInstance);
+		UnregisterClassW(ClassName, hInstance);
 	}
 	Close=true;
 }
