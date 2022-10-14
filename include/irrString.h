@@ -1503,12 +1503,12 @@ static size_t wStringToMultibyte(string<c8>& destination, const wchar_t* source,
 {
 	if ( sourceSize )
 	{
-		destination.reserve(sourceSize+1);
+		destination.reserve(sizeof(wchar_t)*sourceSize+1);
 #if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4996)	// 'wcstombs': This function or variable may be unsafe. Consider using wcstombs_s instead.
 #endif
-		const size_t written = wcstombs(destination.array, source, (size_t)sourceSize);
+		const size_t written = wcstombs(destination.array, source, destination.allocated-1);
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
