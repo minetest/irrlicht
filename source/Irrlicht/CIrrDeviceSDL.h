@@ -76,6 +76,9 @@ namespace irr
 		//! Restores the window size.
 		void restoreWindow() override;
 
+		//! Checks if the window is maximized.
+		virtual bool isWindowMaximized() const _IRR_OVERRIDE_;
+
 		//! Checks if the Irrlicht window is running in fullscreen mode
 		/** \return True if window is fullscreen. */
 		bool isFullscreen() const override;
@@ -283,7 +286,6 @@ namespace irr
 		u32 Width, Height;
 
 		bool Resizable;
-		bool WindowMinimized;
 
 		struct SKeyMap
 		{
