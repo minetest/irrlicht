@@ -63,6 +63,29 @@ jobs:
           cd bin/Linux
           LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest
 
+  linux-sdl:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:jammy
+      env: { LANG: "C.UTF-8" }
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install deps
+        run: |
+          apt-get update
+          apt-get install g++ cmake libsdl2-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
+
+      - name: Build
+        run: |
+          sed '/#define _IRR_COMPILE_WITH_SDL_DEVICE_/ s|^//||g' -i include/IrrCompileConfig.h
+          cmake . -DBUILD_EXAMPLES=1
+          make -j2
+
+      - name: Test (headless)
+        run: |
+          cd bin/Linux
+          ./AutomatedTest null
+
   win32:
     runs-on: ubuntu-20.04
     steps:
