@@ -77,7 +77,7 @@ namespace irr
 		void restoreWindow() override;
 
 		//! Checks if the window is maximized.
-		virtual bool isWindowMaximized() const _IRR_OVERRIDE_;
+		bool isWindowMaximized() const override;
 
 		//! Checks if the Irrlicht window is running in fullscreen mode
 		/** \return True if window is fullscreen. */
