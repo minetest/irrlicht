@@ -119,13 +119,13 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 
 	if ( ++SDLDeviceInstances == 1 )
 	{
-		// Initialize SDL... Timer for sleep, video for the obvious, and
-		// noparachute prevents SDL from catching fatal errors.
-		if (SDL_Init( SDL_INIT_TIMER|SDL_INIT_VIDEO|
+		u32 flags = SDL_INIT_TIMER | SDL_INIT_EVENTS;
+		if (CreationParams.DriverType != video::EDT_NULL)
+			flags |= SDL_INIT_VIDEO;
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
-					SDL_INIT_JOYSTICK|
+		flags |= SDL_INIT_JOYSTICK;
 #endif
-					SDL_INIT_NOPARACHUTE ) < 0)
+		if (SDL_Init(flags) < 0)
 		{
 			os::Printer::log( "Unable to initialize SDL!", SDL_GetError());
 			Close = true;
