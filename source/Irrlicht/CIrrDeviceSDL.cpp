@@ -463,7 +463,9 @@ bool CIrrDeviceSDL::run()
 
 		switch ( SDL_event.type )
 		{
-		case SDL_MOUSEMOTION:
+		case SDL_MOUSEMOTION: {
+			SDL_Keymod keymod = SDL_GetModState();
+
 			irrevent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 			irrevent.MouseInput.Event = irr::EMIE_MOUSE_MOVED;
 			MouseX = irrevent.MouseInput.X = SDL_event.motion.x;
@@ -471,29 +473,35 @@ bool CIrrDeviceSDL::run()
 			MouseXRel = SDL_event.motion.xrel;
 			MouseYRel = SDL_event.motion.yrel;
 			irrevent.MouseInput.ButtonStates = MouseButtonStates;
-			irrevent.MouseInput.Shift = IsShiftDown;
-			irrevent.MouseInput.Control = IsControlDown;
+			irrevent.MouseInput.Shift = (keymod & KMOD_SHIFT) != 0;
+			irrevent.MouseInput.Control = (keymod & KMOD_CTRL) != 0;
 
 			postEventFromUser(irrevent);
 			break;
-		case SDL_MOUSEWHEEL:
+		}
+		case SDL_MOUSEWHEEL: {
+			SDL_Keymod keymod = SDL_GetModState();
+
 			irrevent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 			irrevent.MouseInput.Event = irr::EMIE_MOUSE_WHEEL;
 			irrevent.MouseInput.Wheel = static_cast<float>(SDL_event.wheel.y);
-			irrevent.MouseInput.Shift = IsShiftDown;
-			irrevent.MouseInput.Control = IsControlDown;
+			irrevent.MouseInput.Shift = (keymod & KMOD_SHIFT) != 0;
+			irrevent.MouseInput.Control = (keymod & KMOD_CTRL) != 0;
 			irrevent.MouseInput.X = MouseX;
 			irrevent.MouseInput.Y = MouseY;
 
 			postEventFromUser(irrevent);
 			break;
+		}
 		case SDL_MOUSEBUTTONDOWN:
-		case SDL_MOUSEBUTTONUP:
+		case SDL_MOUSEBUTTONUP: {
+			SDL_Keymod keymod = SDL_GetModState();
+
 			irrevent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 			irrevent.MouseInput.X = SDL_event.button.x;
 			irrevent.MouseInput.Y = SDL_event.button.y;
-			irrevent.MouseInput.Shift = IsShiftDown;
-			irrevent.MouseInput.Control = IsControlDown;
+			irrevent.MouseInput.Shift = (keymod & KMOD_SHIFT) != 0;
+			irrevent.MouseInput.Control = (keymod & KMOD_CTRL) != 0;
 
 			irrevent.MouseInput.Event = irr::EMIE_MOUSE_MOVED;
 
@@ -588,6 +596,7 @@ bool CIrrDeviceSDL::run()
 				}
 			}
 			break;
+		}
 
 		case SDL_TEXTINPUT:
 			{
@@ -632,10 +641,6 @@ bool CIrrDeviceSDL::run()
 				irrevent.KeyInput.Char = 0;
 				if (mp.SDLKey == SDLK_DELETE || mp.SDLKey == SDLK_RETURN || mp.SDLKey == SDLK_BACKSPACE || irrevent.KeyInput.Control)
 					irrevent.KeyInput.Char = mp.SDLKey;
-				if (mp.SDLKey == SDLK_LSHIFT || mp.SDLKey == SDLK_RSHIFT)
-					IsShiftDown = (SDL_event.type == SDL_KEYDOWN);
-				if (mp.SDLKey == SDLK_LCTRL || mp.SDLKey == SDLK_RCTRL)
-					IsControlDown = (SDL_event.type == SDL_KEYDOWN);
 				postEventFromUser(irrevent);
 			}
 			break;

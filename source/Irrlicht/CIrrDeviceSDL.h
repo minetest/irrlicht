@@ -239,10 +239,6 @@ namespace irr
 
 		u32 Width, Height;
 
-		// Need to be stored to send in mouse events
-		bool IsShiftDown = false;
-		bool IsControlDown = false;
-
 		bool Resizable;
 		bool WindowMinimized;
 
