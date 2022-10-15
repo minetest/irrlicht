@@ -354,6 +354,118 @@ bool setRotationAxis()
 	return true;
 }
 
+// Note: pretty high tolerance needed
+bool check_getRotationDegreesWithScale2(const core::matrix4& m, const irr::core::vector3df& scale, irr::f32 tolerance = 0.01f)
+{
+	core::vector3df rot = m.getRotationDegrees(scale);
+
+	core::matrix4 m2;
+	m2.setRotationDegrees(rot);
+
+	core::matrix4 smat;
+	smat.setScale(scale);
+	m2 *= smat;
+
+	core::vector3df v1(5,10,15);
+	core::vector3df v2 = v1;
+	m.transformVect(v1);
+	m2.transformVect(v2);
+
+	if ( v1.equals(v2, tolerance) )
+		return true;
+
+	logTestString("v1: %.3f %.3f %.3f\nv2: %.3f %.3f %.3f\n", v1.X, v1.Y, v1.Z, v2.X, v2.Y, v2.Z);
+	//logTestString("matrix (3x3): ");
+	//for ( int k=0; k<3; ++k)
+	//	for ( int i=0; i<3; ++i )
+	//		logTestString("%.3f ", m[k*4+i]);
+	//logTestString("\n");	
+	return false;
+}
+
+// This can only work if the matrix is pure scale or pure rotation
+bool check_getRotationDegreesWithScale(const core::matrix4& m, irr::f32 tolerance = 0.001f)
+{
+	core::vector3df scale = m.getScale();
+	return check_getRotationDegreesWithScale2(m, scale, tolerance);
+}
+
+// Lazy macro only to be used inside the loop where it is used 
+// (can't use lambda yet, still testing on older compilers)
+#define log_check_getRotationDegreesWithScaleIJK \
+do { \
+	smat.setScale(scale); \
+	m2 = m1*smat; \
+	if ( !check_getRotationDegreesWithScale2(m2, scale) ) { \
+		logTestString("%s:%d i:%f j:%f k:%f\n", __FILE__, __LINE__, i, j, k); \
+		result = false;	} \
+} while (false)
+
+bool decompose()
+{
+	bool result = true;
+	core::matrix4 m1;
+	result &= check_getRotationDegreesWithScale(m1);
+
+	// check pure scaling/90° rotations and 0 values
+	for ( irr::f32 i = -2.f; i <= 2.f; i += 1.f )
+		for ( irr::f32 j = -2.f; j <= 2.f; j += 1.f )
+			for ( irr::f32 k = -2.f; k <= 2.f; k += 1.f )
+			{
+				m1 = core::matrix4();
+				m1[0] = i;
+				m1[5] =	j;
+				m1[10] = k;
+				if ( !check_getRotationDegreesWithScale(m1) )
+				{
+					logTestString("%s:%d i:%f j:%f k:%f\n", __FILE__, __LINE__, i, j, k);
+					result = false;
+				}
+			}
+
+	// check some rotations (note that we avoid the 0 case - which won't work)
+	for ( irr::f32 i = -180.f; i <= 360.f; i += 30.1f )
+		for ( irr::f32 j = -120.f; j <= 200.f; j += 44.4f )
+			for ( irr::f32 k = -10.f; k <= 180.f; k += 33.3f )
+			{
+				m1 = core::matrix4();
+				m1.setRotationDegrees(core::vector3df(i,j,k));
+				result &= check_getRotationDegreesWithScale(m1);	// pure rotation
+
+				// rotation + scaling tests
+				// We can't use check_getRotationDegreesWithScale as we have no way so far to decompose a combined matrix
+				core::matrix4 smat, m2;
+				core::vector3df scale;
+
+				scale = core::vector3df(2.f, 2.f, 2.f);	// simple uniform scaling
+				log_check_getRotationDegreesWithScaleIJK;
+
+				scale = core::vector3df(-2.f, 2.f, 2.f);	// simple uniform scaling which swaps handedness 
+				log_check_getRotationDegreesWithScaleIJK;	// (TODO: can't decompose this yet)
+
+				scale = core::vector3df(i, i, i);	// flexible uniform scaling
+				log_check_getRotationDegreesWithScaleIJK;	// (TODO: can't decompose this yet)
+
+				scale = core::vector3df(1, 2, 3);	// simple non-uniform scaling
+				log_check_getRotationDegreesWithScaleIJK;
+
+				scale = core::vector3df(-1, -2, -3);	// negative non-uniform scaling with swap of handedness
+				log_check_getRotationDegreesWithScaleIJK;	// (TODO: can't decompose this yet)
+
+				scale = core::vector3df(-1, 2, -3);	// +- non-uniform scaling
+				log_check_getRotationDegreesWithScaleIJK;
+
+				scale = core::vector3df(i,k,j);	// non-uniform scaling
+				log_check_getRotationDegreesWithScaleIJK;	// (TODO: can't decompose this yet)
+			}
+
+	if ( !result )
+		logTestString("decomposing matrix failed\n");
+
+	return result;
+}
+
+
 // just calling each function once to find compile problems
 void calltest()
 {
@@ -460,6 +572,7 @@ bool matrixOps(void)
 	result &= isOrthogonal();
 	result &= transformations();
 	result &= setRotationAxis();
+	result &= decompose();
 	return result;
 }
 
