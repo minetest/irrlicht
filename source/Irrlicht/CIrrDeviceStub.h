@@ -139,6 +139,9 @@ namespace irr
 		//! Is device motion active.
 		bool isDeviceMotionActive() override;
 
+		//! Is device motion available.
+		bool isDeviceMotionAvailable() override;
+
 		//! Set the maximal elapsed time between 2 clicks to generate doubleclicks for the mouse. It also affects tripleclick behavior.
 		//! When set to 0 no double- and tripleclicks will be generated.
 		void setDoubleClickTime( u32 timeMs ) override;
