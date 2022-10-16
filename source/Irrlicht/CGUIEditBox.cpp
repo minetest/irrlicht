@@ -252,14 +252,12 @@ bool CGUIEditBox::OnEvent(const SEvent& event)
 #endif
 			}
 			else if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUSED) {
+				bool isImeAccepted = acceptsIME();
 #if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
-				irr::enableIME(!PasswordBox, nullptr);
+				irr::enableIME(isImeAccepted, nullptr);
 #endif
-				if (!PasswordBox) {
-					core::position2di pos = updateImePosition();
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
-					// irr::updateCompositionWindow(nullptr, pos.X, pos.Y, 0);
-#endif
+				if (isImeAccepted) {
+					updateImePosition();
 				}
 			}
 			break;
