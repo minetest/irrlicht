@@ -237,12 +237,27 @@ public:
 	virtual void updateAbsolutePosition()
 	{
 		recalculateAbsolutePosition(false);
+		updateImePosition();
 
 		// update all children
 		for (auto child : Children)
 		{
 			child->updateAbsolutePosition();
 		}
+	}
+
+
+	//! Gets the position of this input composition window
+	core::position2di getImePosition() const
+	{
+		return ImePosition;
+	}
+
+	//! update the position of input composition window
+	virtual core::position2di updateImePosition()
+	{
+		ImePosition = AbsoluteRect.LowerRightCorner;
+		return ImePosition;
 	}
 
 
@@ -1026,6 +1041,8 @@ protected:
 
 	//! type of element
 	EGUI_ELEMENT_TYPE Type;
+
+	core::position2di ImePosition;
 };
 
 
