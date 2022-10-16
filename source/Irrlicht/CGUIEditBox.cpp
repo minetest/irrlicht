@@ -255,18 +255,12 @@ bool CGUIEditBox::OnEvent(const SEvent& event)
 			else if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUSED) {
 				irr::enableIME(!PasswordBox, nullptr);
 				if (!PasswordBox) {
-					core::position2di pos = calculateImePos();
-					irr::updateCompositionWindow(nullptr, pos.X,pos.Y, 0);
+					core::position2di pos = updateImePosition();
+					irr::updateCompositionWindow(nullptr, pos.X, pos.Y, 0);
 				}
 			}
 #endif
 			break;
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
-		case EET_IMPUT_METHOD_EVENT:
-			if (processIMEEvent(event))
-				return true;
-			break;
-#endif
 		case EET_KEY_INPUT_EVENT:
 			if (processKey(event))
 				return true;
@@ -797,33 +791,8 @@ bool CGUIEditBox::keyDelete()
 }
 
 #if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
-bool CGUIEditBox::processIMEEvent(const SEvent& event)
-{
-	switch(event.InputMethodEvent.Event)
-	{
-		case EIME_CHANGE_POS:
-			{
-				core::position2di pos = calculateImePos();
-
-				IGUIFont* font = OverrideFont;
-				IGUISkin* skin = Environment->getSkin();
-
-				if (!OverrideFont)
-					font = skin->getFont();
-
-				irr::updateCompositionWindow(event.InputMethodEvent.Handle, pos.X,pos.Y, font->getDimension(L"|").Height);
-
-				return true;
-			}
-		default:
-			break;
-	}
-
-	return false;
-}
-
 //! calculate the position of input composition window
-irr::core::position2di CGUIEditBox::calculateImePos()
+core::position2di CGUIEditBox::updateImePosition()
 {
 	irr::core::position2di pos;
 	IGUIFont* font = OverrideFont;
@@ -844,7 +813,10 @@ irr::core::position2di CGUIEditBox::calculateImePos()
 		pos.Y = AbsoluteRect.getCenter().Y + (Border ? 3 : 0); //bug? The text is always drawn in the height of the center. SetTextAlignment() doesn't influence.
 	}
 
-	return pos;
+	ImePosition = pos;
+	return ImePosition;
+
+	// return new irr::core::position2di(pos);
 }
 #endif
 

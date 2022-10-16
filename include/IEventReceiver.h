@@ -86,12 +86,6 @@ namespace irr
 		//! Application state events like a resume, pause etc.
 		EET_APPLICATION_EVENT,
 
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
-		//! A input method event
-		//! Input method events are created by the input method message and passed to IrrlichtDevice::postEventFromUser.
-		EET_IMPUT_METHOD_EVENT,
-#endif
-
 		//! This enum is never used, it only forces the compiler to
 		//! compile these enumeration values to 32 bit.
 		EGUIET_FORCE_32_BIT = 0x7fffffff
@@ -229,17 +223,6 @@ namespace irr
 		//! No real event, but to get number of event types.
 		EAET_COUNT
 	};
-
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
-	//! Enumeration for all input method events
-	enum EINPUT_METHOD_EVENT
-	{
-		//! change position of composition window
-		EIME_CHANGE_POS,
-
-		EIME_FORCE_32_BIT = 0x7fffffff
-	};
-#endif
 
 	namespace gui
 	{
@@ -544,17 +527,6 @@ struct SEvent
 		size_t UserData2;
 	};
 
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
-	struct SInputMethodEvent
-	{
-		//! Parent window handle for IMM functions (Windows only)
-		void* Handle;
-
-		//! Type of input method event
-		EINPUT_METHOD_EVENT Event;
-	};
-#endif
-
 	// Raw events from the OS
 	struct SSystemEvent
 	{
@@ -596,9 +568,6 @@ struct SEvent
 		struct SUserEvent UserEvent;
 		struct SSystemEvent SystemEvent;
 		struct SApplicationEvent ApplicationEvent;
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
-		struct SInputMethodEvent InputMethodEvent;
-#endif
 	};
 
 };

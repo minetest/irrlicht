@@ -13,7 +13,7 @@ namespace irr
 {
     static HWND                     gDefaultImeWnd = nullptr;
     static HIMC                     gDefaultIMC = nullptr;
-    static HIMC                     gPrevIMC = nullptr;
+    // static HIMC                     gPrevIMC = nullptr;
     static HWND                     gCurrentWnd;
     static bool                     gImeEnabled = false;
 

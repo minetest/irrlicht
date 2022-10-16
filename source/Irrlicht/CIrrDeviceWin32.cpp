@@ -41,6 +41,7 @@
 #endif
 
 #if defined (_IRR_USE_WIN32_IME)
+#include "IGUIElement.h"
 #include <imm.h>
 #ifdef _MSC_VER
 #pragma comment(lib, "imm32")
@@ -674,16 +675,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					dev->postEventFromUser(event);
 				}
 			}
-#if defined (_IRR_USE_WIN32_IME)
-			if(m->irrMessage == irr::EMIE_LMOUSE_PRESSED_DOWN || m->irrMessage == irr::EMIE_LMOUSE_LEFT_UP)
-			{
-				event.EventType = irr::EET_IMPUT_METHOD_EVENT;
-				event.InputMethodEvent.Event = irr::EIME_CHANGE_POS;
-				event.InputMethodEvent.Handle = hWnd;
-
-				dev->postEventFromUser(event);
-			}
-#endif
 		}
 
 		return 0;
@@ -771,14 +762,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if (dev)
 				dev->postEventFromUser(event);
 
-#if defined (_IRR_USE_WIN32_IME)
-			if (dev) {
-				event.EventType = irr::EET_IMPUT_METHOD_EVENT;
-				event.InputMethodEvent.Event = irr::EIME_CHANGE_POS;
-				event.InputMethodEvent.Handle = hWnd;
-				dev->postEventFromUser(event);
-			}
-#endif
 			if (message == WM_SYSKEYDOWN || message == WM_SYSKEYUP)
 				return DefWindowProcW(hWnd, message, wParam, lParam);
 			else
@@ -809,17 +792,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		break;
 
-#if defined (_IRR_USE_WIN32_IME)
-	case WM_ACTIVATE:
-		dev = getDeviceFromHWnd(hWnd);
-		if (dev) {
-			event.EventType = irr::EET_IMPUT_METHOD_EVENT;
-			event.InputMethodEvent.Event = irr::EIME_CHANGE_POS;
-			event.InputMethodEvent.Handle = hWnd;
-			dev->postEventFromUser(event);
-		}
-		break;
-#endif
 	case WM_USER:
 		event.EventType = irr::EET_USER_EVENT;
 		event.UserEvent.UserData1 = static_cast<size_t>(wParam);
@@ -851,9 +823,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				LONG str_size = irr::getResultFromIme(hIMC, lParam, NULL, 0);
 				if (str_size > 0) {
 					LONG length_with_null = (str_size / sizeof(wchar_t)) + 1;
-					wchar_t wBuf[length_with_null];
+					wchar_t* wBuf = new wchar_t[length_with_null];
 					if (irr::getResultFromIme(hIMC, lParam, wBuf, str_size)) {
-						wBuf[length_with_null-1] = (wchar_t) 0;
+						wBuf[length_with_null-1] = 0;
 						// Multiple characters: send string event
 						event.EventType = irr::EET_STRING_INPUT_EVENT;
 						event.StringInput.Str = new irr::core::stringw(wBuf);
@@ -862,6 +834,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						event.StringInput.Str = NULL;
 						done = true;
 					}
+					delete wBuf;
 				}
 				ImmReleaseContext(hWnd, hIMC);
 
@@ -1504,6 +1477,15 @@ void CIrrDeviceWin32::handleSystemMessages()
 		{
 			if (msg.hwnd == HWnd)
 			{
+//*
+	if (GUIEnvironment) {
+		gui::IGUIElement *elem = GUIEnvironment->getFocus();
+		if (elem && elem->acceptsIME()) {
+			const core::position2di pos = elem->updateImePosition();
+			updateCompositionWindow(HWnd, pos.X, pos.Y, 0);
+		}
+	}
+//*/
 				WndProc(HWnd, msg1.message, msg1.wParam, msg1.lParam);
 			}
 			else
