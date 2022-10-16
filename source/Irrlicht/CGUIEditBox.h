@@ -142,10 +142,8 @@ namespace gui
 		//! Returns whether the element takes input from the IME
 		bool acceptsIME() override;
 
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
 		//! calculates the input composition position
-		virtual core::position2di updateImePosition() _IRR_OVERRIDE_;
-#endif
+		core::position2di updateImePosition() override;
 
 	protected:
 		//! Breaks the single text line.

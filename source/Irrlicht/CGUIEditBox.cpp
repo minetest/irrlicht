@@ -251,15 +251,17 @@ bool CGUIEditBox::OnEvent(const SEvent& event)
 				irr::enableIME(false, nullptr);
 #endif
 			}
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
 			else if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUSED) {
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
 				irr::enableIME(!PasswordBox, nullptr);
+#endif
 				if (!PasswordBox) {
 					core::position2di pos = updateImePosition();
-					irr::updateCompositionWindow(nullptr, pos.X, pos.Y, 0);
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
+					// irr::updateCompositionWindow(nullptr, pos.X, pos.Y, 0);
+#endif
 				}
 			}
-#endif
 			break;
 		case EET_KEY_INPUT_EVENT:
 			if (processKey(event))
@@ -790,7 +792,6 @@ bool CGUIEditBox::keyDelete()
 	return false;
 }
 
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) && defined(_IRR_USE_WIN32_IME)
 //! calculate the position of input composition window
 core::position2di CGUIEditBox::updateImePosition()
 {
@@ -815,10 +816,7 @@ core::position2di CGUIEditBox::updateImePosition()
 
 	ImePosition = pos;
 	return ImePosition;
-
-	// return new irr::core::position2di(pos);
 }
-#endif
 
 //! draws the element and its children
 void CGUIEditBox::draw()

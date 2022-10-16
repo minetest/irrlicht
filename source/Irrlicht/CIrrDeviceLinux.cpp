@@ -1148,10 +1148,11 @@ bool CIrrDeviceLinux::run()
 				gui::IGUIElement *elem = GUIEnvironment->getFocus();
 				if (elem && elem->acceptsIME())
 				{
-					core::rect<s32> r = elem->getAbsolutePosition();
+					// core::rect<s32> r = elem->getAbsolutePosition();
+					core::position2di pos = elem->updateImePosition();
 					XPoint p;
-					p.x = (short)r.UpperLeftCorner.X;
-					p.y = (short)r.LowerRightCorner.Y;
+					p.x = (short)pos.X;
+					p.y = (short)pos.Y;
 					XSetICFocus(XInputContext);
 					XVaNestedList l = XVaCreateNestedList(0, XNSpotLocation, &p, NULL);
 					XSetICValues(XInputContext, XNPreeditAttributes, l, NULL);
