@@ -356,11 +356,6 @@ add_library(IRRMESHOBJ OBJECT
 	${IRRMESHLOADER}
 )
 
-target_link_libraries(IRRMESHOBJ
-	PRIVATE
-		tinygltf::tinygltf
-)
-
 add_library(IRROBJ OBJECT
 	CBillboardSceneNode.cpp
 	CCameraSceneNode.cpp
@@ -547,6 +542,7 @@ target_link_libraries(IrrlichtMt PRIVATE
 	${ZLIB_LIBRARY}
 	${JPEG_LIBRARY}
 	${PNG_LIBRARY}
+	tinygltf::tinygltf
 	"$<$<BOOL:${USE_SDL2}>:SDL2::SDL2>"
 
 	"$<$<BOOL:${OPENGL_DIRECT_LINK}>:${OPENGL_LIBRARIES}>"
@@ -579,7 +575,13 @@ if(WIN32)
 endif()
 
 # Installation of library
-install(TARGETS IrrlichtMt
+if(ANDROID)
+	set(INSTALL_TARGETS IrrlichtMt tinygltf native_app_glue)
+else()
+	set(INSTALL_TARGETS IrrlichtMt tinygltf)
+endif()
+
+install(TARGETS ${INSTALL_TARGETS}
 	EXPORT IrrlichtMt-export
 	DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 )

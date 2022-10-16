@@ -18,5 +18,6 @@ target_compile_definitions(tinygltf
 
 target_include_directories(tinygltf
   INTERFACE
-    "${CMAKE_CURRENT_SOURCE_DIR}"
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+    "$<INSTALL_INTERFACE:./>"
 )
