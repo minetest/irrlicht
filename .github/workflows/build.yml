@@ -20,6 +20,10 @@ jobs:
         run: |
           cmake . -DUSE_SDL2=OFF
           make VERBOSE=1 -j2
+    
+      - name: Test
+        run: |
+          ./bin/Linux/tests/tests
 
       - name: Test
         run: |
