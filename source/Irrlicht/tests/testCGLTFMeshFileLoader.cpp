@@ -29,8 +29,8 @@ TEST_CASE("minimal triangle has correct vertices") {
 		reinterpret_cast<irr::video::S3DVertex*>(
 			meshbuf->getVertices()) };
 	CHECK(vertices[0].Pos == irr::core::vector3df {0.0f, 0.0f, 0.0f});
-	CHECK(vertices[1].Pos == irr::core::vector3df {1.0f, 0.0f, 0.0f});
-	CHECK(vertices[2].Pos == irr::core::vector3df {1.0f, 1.0f, 0.0f});
+	CHECK(vertices[1].Pos == irr::core::vector3df {0.0f, 1.0f, 0.0f});
+	CHECK(vertices[2].Pos == irr::core::vector3df {-1.0f, 0.0f, 0.0f});
 
 	device->drop();
 }

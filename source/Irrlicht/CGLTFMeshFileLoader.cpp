@@ -7,7 +7,10 @@
 #include "path.h"
 #include "S3DVertex.h"
 #include "SAnimatedMesh.h"
+#include "SColor.h"
 #include "SMesh.h"
+
+#include <iostream>
 
 namespace irr
 {
@@ -35,10 +38,10 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 	SMeshBuffer* meshbuf { new SMeshBuffer {} };
 
 	const video::S3DVertex* vertices { new video::S3DVertex[3] {
-		{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, {}, 0.0f, 0.0f},
-		{1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, {}, 0.0f, 0.0f},
-		{1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, {}, 0.0f, 0.0f} } };
-	const u16* indices { new u16[3] {} };
+		{{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {}, {0.0f, 0.0f}},
+		{{0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {}, {1.0f, 0.0f}},
+		{{-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {}, {0.0f, 1.0f}} } };
+	const u16* indices { new u16[3] {0, 1, 2} };
 	meshbuf->append(vertices, 3, indices, 3);
 
 	SMesh* mesh { new SMesh {} };
