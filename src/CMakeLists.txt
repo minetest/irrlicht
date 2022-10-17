@@ -575,6 +575,8 @@ if(WIN32)
 	set_target_properties(IrrlichtMt PROPERTIES PREFIX "") # for DLL name
 endif()
 
+add_subdirectory(tests)
+
 # Installation of library
 if(ANDROID)
 	set(INSTALL_TARGETS IrrlichtMt tinygltf native_app_glue)
