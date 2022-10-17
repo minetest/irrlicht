@@ -35,3 +35,13 @@ TEST_CASE("minimal triangle has correct vertices") {
 	device->drop();
 }
 
+TEST_CASE("mesh loader returns nullptr when given null file pointer") {
+	irr::IrrlichtDevice* device { irr::createDevice(irr::video::EDT_NULL) };
+	irr::scene::ISceneManager* smgr { device->getSceneManager() };
+	auto* mesh { smgr->getMesh(nullptr) };
+
+	CHECK(mesh == nullptr);
+
+	device->drop();
+}
+
