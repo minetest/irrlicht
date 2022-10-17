@@ -1,9 +1,13 @@
 #include "CGLTFMeshFileLoader.h"
+#include "CMeshBuffer.h"
 #include "coreutil.h"
 #include "IAnimatedMesh.h"
 #include "IReadFile.h"
+#include "irrTypes.h"
 #include "path.h"
+#include "S3DVertex.h"
 #include "SAnimatedMesh.h"
+#include "SMesh.h"
 
 namespace irr
 {
@@ -28,9 +32,22 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 	}
 
 	// sorry Bjarne
-	SAnimatedMesh* mesh { new SAnimatedMesh {} };
+	SMeshBuffer* meshbuf { new SMeshBuffer {} };
 
-	return mesh;
+	const video::S3DVertex* vertices { new video::S3DVertex[3] {
+		{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, {}, 0.0f, 0.0f},
+		{1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, {}, 0.0f, 0.0f},
+		{1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, {}, 0.0f, 0.0f} } };
+	const u16* indices { new u16[3] {} };
+	meshbuf->append(vertices, 3, indices, 3);
+
+	SMesh* mesh { new SMesh {} };
+	mesh->addMeshBuffer(meshbuf);
+
+	SAnimatedMesh* animatedMesh { new SAnimatedMesh {} };
+	animatedMesh->addMesh(mesh);
+
+	return animatedMesh;
 }
 
 } // namespace irr
