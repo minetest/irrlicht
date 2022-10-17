@@ -23,7 +23,7 @@ jobs:
     
       - name: Test
         run: |
-          ./bin/Linux/tests/tests
+          ./bin/Linux/tests
 
       - name: Test
         run: |
