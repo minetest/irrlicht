@@ -344,9 +344,9 @@ set(link_includes
 
 set(IRRMESHLOADER
 	CB3DMeshFileLoader.cpp
+	CGLTFMeshFileLoader.cpp
 	COBJMeshFileLoader.cpp
 	CXMeshFileLoader.cpp
-	CGLTFMeshFileLoader.cpp
 )
 
 add_library(IRRMESHOBJ OBJECT
@@ -543,7 +543,6 @@ target_link_libraries(IrrlichtMt PRIVATE
 	${ZLIB_LIBRARY}
 	${JPEG_LIBRARY}
 	${PNG_LIBRARY}
-	tinygltf::tinygltf
 	"$<$<BOOL:${USE_SDL2}>:SDL2::SDL2>"
 
 	"$<$<BOOL:${OPENGL_DIRECT_LINK}>:${OPENGL_LIBRARIES}>"
@@ -575,16 +574,8 @@ if(WIN32)
 	set_target_properties(IrrlichtMt PROPERTIES PREFIX "") # for DLL name
 endif()
 
-add_subdirectory(tests)
-
 # Installation of library
-if(ANDROID)
-	set(INSTALL_TARGETS IrrlichtMt tinygltf native_app_glue)
-else()
-	set(INSTALL_TARGETS IrrlichtMt)
-endif()
-
-install(TARGETS ${INSTALL_TARGETS}
+install(TARGETS IrrlichtMt tinygltf
 	EXPORT IrrlichtMt-export
 	DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 )
