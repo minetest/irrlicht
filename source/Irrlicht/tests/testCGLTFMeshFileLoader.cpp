@@ -4,44 +4,78 @@
 #include <catch.hpp>
 #include <irrlicht.h>
 
+class ScopedMesh
+{
+public:
+	ScopedMesh(irr::io::IReadFile* file)
+		: m_device { irr::createDevice(irr::video::EDT_NULL) }
+		, m_mesh { nullptr }
+	{
+		auto* smgr = m_device->getSceneManager();
+		m_mesh = smgr->getMesh(file);
+	}
+
+	ScopedMesh(const irr::io::path& filepath)
+		: m_device { irr::createDevice(irr::video::EDT_NULL) }
+		, m_mesh { nullptr }
+	{
+		auto* smgr = m_device->getSceneManager();
+		m_mesh = smgr->getMesh(filepath, "");
+	}
+
+	~ScopedMesh()
+	{
+		m_device->drop();
+		m_mesh = nullptr;
+	}
+
+	const irr::scene::IAnimatedMesh* getMesh() const
+	{
+		return m_mesh;
+	}
+
+private:
+	irr::IrrlichtDevice* m_device;
+	irr::scene::IAnimatedMesh* m_mesh;
+};
+
 TEST_CASE("load empty gltf file") {
-	irr::IrrlichtDevice* device { irr::createDevice(irr::video::EDT_NULL) };
-	irr::scene::ISceneManager* smgr { device->getSceneManager() };
 	irr::io::InMemoryFile filebuf {"test.gltf", ""};
-	auto* mesh { smgr->getMesh(&filebuf) };
-
-	CHECK(mesh == nullptr);
-
-	device->drop();
+	ScopedMesh sm { &filebuf };
+	CHECK(sm.getMesh() == nullptr);
 }
 
 TEST_CASE("minimal triangle has correct vertices") {
-	irr::IrrlichtDevice* device { irr::createDevice(irr::video::EDT_NULL) };
-	irr::scene::ISceneManager* smgr { device->getSceneManager() };
-	auto* mesh { smgr->getMesh(
-		"source/Irrlicht/tests/assets/minimal_triangle.gltf", "") };
+	ScopedMesh sm { "source/Irrlicht/tests/assets/minimal_triangle.gltf" };
 
+	auto* mesh = sm.getMesh();
 	REQUIRE(mesh != nullptr);
 	REQUIRE(mesh->getMeshBufferCount() == 1);
-	auto* meshbuf { mesh->getMeshBuffer(0) };
+	auto* meshbuf = mesh->getMeshBuffer(0);
 	REQUIRE(meshbuf->getVertexCount() == 3);
-	irr::video::S3DVertex* vertices {
-		reinterpret_cast<irr::video::S3DVertex*>(
-			meshbuf->getVertices()) };
+	auto* vertices = reinterpret_cast<irr::video::S3DVertex*>(
+		meshbuf->getVertices());
 	CHECK(vertices[0].Pos == irr::core::vector3df {0.0f, 0.0f, 0.0f});
 	CHECK(vertices[1].Pos == irr::core::vector3df {0.0f, 1.0f, 0.0f});
 	CHECK(vertices[2].Pos == irr::core::vector3df {-1.0f, 0.0f, 0.0f});
-
-	device->drop();
 }
 
 TEST_CASE("mesh loader returns nullptr when given null file pointer") {
-	irr::IrrlichtDevice* device { irr::createDevice(irr::video::EDT_NULL) };
-	irr::scene::ISceneManager* smgr { device->getSceneManager() };
-	auto* mesh { smgr->getMesh(nullptr) };
+	ScopedMesh sm { nullptr };
+	CHECK(sm.getMesh() == nullptr);
+}
 
-	CHECK(mesh == nullptr);
+TEST_CASE("invalid JSON returns nullptr") {
+	SECTION("missing closing brace") {
+		irr::io::InMemoryFile filebuf {"test.gltf", "{"};
+		ScopedMesh sm { &filebuf };
+		CHECK(sm.getMesh() == nullptr);
+	}
 
-	device->drop();
+	SECTION("missing colon") {
+		irr::io::InMemoryFile filebuf {"test.gltf", "{\"a\" \"b\"}"};
+		ScopedMesh sm { &filebuf };
+		CHECK(sm.getMesh() == nullptr);
+	}
 }
 

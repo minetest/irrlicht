@@ -10,7 +10,11 @@
 #include "SColor.h"
 #include "SMesh.h"
 
-#include <iostream>
+#define TINYGLTF_IMPLEMENTATION
+#include <tiny_gltf.h>
+
+#include <memory>
+#include <string>
 
 namespace irr
 {
@@ -30,7 +34,7 @@ bool CGLTFMeshFileLoader::isALoadableFileExtension(
 
 IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 {
-	if (file->getSize() == 0) {
+	if (file->getSize() == 0 || !tryParseGLTF(file)) {
 		return nullptr;
 	}
 
@@ -51,6 +55,19 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 	animatedMesh->addMesh(mesh);
 
 	return animatedMesh;
+}
+
+bool CGLTFMeshFileLoader::tryParseGLTF(io::IReadFile* file) const
+{
+	tinygltf::Model model {};
+	tinygltf::TinyGLTF loader {};
+	std::string err {};
+	std::string warn {};
+
+	auto buf = std::make_unique<char[]>(file->getSize());
+	file->read(buf.get(), file->getSize());
+	return loader.LoadASCIIFromString(
+		&model, &err, &warn, buf.get(), file->getSize(), "", 1);
 }
 
 } // namespace irr
