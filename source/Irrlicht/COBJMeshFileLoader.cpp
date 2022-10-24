@@ -526,13 +526,18 @@ const c8* COBJMeshFileLoader::goAndCopyNextWord(c8* outBuf, const c8* inBuf, u32
 
 bool COBJMeshFileLoader::retrieveVertexIndices(c8* vertexData, s32* idx, const c8* bufEnd, u32 vbsize, u32 vtsize, u32 vnsize)
 {
-	c8 word[16] = "";
+	const u32 BUFFER_LENGTH = 16;
+	c8 word[BUFFER_LENGTH];
 	const c8* p = goFirstWord(vertexData, bufEnd);
 	u32 idxType = 0;	// 0 = posIdx, 1 = texcoordIdx, 2 = normalIdx
 
 	u32 i = 0;
 	while ( p != bufEnd )
 	{
+		if ( i >= BUFFER_LENGTH )
+		{
+			return false;
+		}
 		if ( ( core::isdigit(*p)) || (*p == '-') )
 		{
 			// build up the number
