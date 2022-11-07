@@ -28,8 +28,15 @@ class BufferOffset
 {
 public:
 	BufferOffset(const std::vector<unsigned char>& buf,
-			const std::size_t offset) noexcept
-		: m_buf(buf), m_offset(offset)
+			const std::size_t offset)
+		: m_buf(buf)
+		, m_offset(offset)
+	{
+	}
+
+	BufferOffset(const BufferOffset& other, const std::size_t fromOffset)
+		: m_buf(other.m_buf)
+		, m_offset(other.m_offset + fromOffset)
 	{
 	}
 
@@ -43,12 +50,20 @@ private:
 	std::size_t m_offset;
 };
 
-static constexpr float readFloat(const BufferOffset& readFrom) {
+static float readFloat(const BufferOffset& readFrom) {
 	unsigned char d[4]{};
 	for (int i = 0; i < 4; ++i) {
 		d[i] = readFrom.at(i);
 	}
 	return *reinterpret_cast<float*>(d);
+}
+
+static core::vector3df readVector(const BufferOffset& readFrom) {
+	// glTF coordinates are right-handed, minetest ones are left-handed
+	return core::vector3df(
+		-readFloat(readFrom),
+		readFloat(BufferOffset(readFrom, sizeof(float))),
+		readFloat(BufferOffset(readFrom, 2 * sizeof(float))));
 }
 
 CGLTFMeshFileLoader::CGLTFMeshFileLoader()
@@ -71,18 +86,12 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 
 	const auto& view = model.bufferViews[model.accessors[1].bufferView];
 	const auto& buffer = model.buffers[view.buffer];
-	const core::vector3df v1(
-		-readFloat(BufferOffset(buffer.data, view.byteOffset)),
-		readFloat(BufferOffset(buffer.data, view.byteOffset + 4)),
-		readFloat(BufferOffset(buffer.data, view.byteOffset + 8)));
-	const core::vector3df v2(
-		-readFloat(BufferOffset(buffer.data, view.byteOffset + 12)),
-		readFloat(BufferOffset(buffer.data, view.byteOffset + 16)),
-		readFloat(BufferOffset(buffer.data, view.byteOffset + 20)));
-	const core::vector3df v3(
-		-readFloat(BufferOffset(buffer.data, view.byteOffset + 24)),
-		readFloat(BufferOffset(buffer.data, view.byteOffset + 28)),
-		readFloat(BufferOffset(buffer.data, view.byteOffset + 32)));
+	const auto v1 = readVector(BufferOffset(
+		buffer.data, view.byteOffset));
+	const auto v2 = readVector(BufferOffset(
+		buffer.data, view.byteOffset + (3 * sizeof(float))));
+	const auto v3 = readVector(BufferOffset(
+		buffer.data, view.byteOffset + (6 * sizeof(float))));
 
 	// sorry Bjarne
 	SMeshBuffer* meshbuf { new SMeshBuffer {} };
