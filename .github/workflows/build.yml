@@ -142,17 +142,17 @@ jobs:
       - name: Install deps
         run: |
           apt-get update
-          apt-get install g++-5 ninja-build libidn11 libxi-dev libgl1-mesa-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
+          apt-get install unzip g++-5 libidn11 libxi-dev libgl1-mesa-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
 
       - name: Setup CMake
-        uses: jwlawson/actions-setup-cmake@v1.13
+        uses: lukka/get-cmake@latest
         with:
-          cmake-version: "3.5.x"
+          cmakeVersion: 3.5.2
 
       - name: Build
         run: |
-          cmake -G Ninja -DCMAKE_CXX_COMPILER=/usr/bin/g++-5 -DCMAKE_BUILD_TYPE=Release .
-          cmake --build .
+          cmake3.5.2 -G Ninja -DCMAKE_CXX_COMPILER=/usr/bin/g++-5 -DCMAKE_BUILD_TYPE=Release .
+          cmake3.5.2 --build .
 
       - name: Test
         run: |
