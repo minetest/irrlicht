@@ -63,7 +63,7 @@ static bool tryParseGLTF(io::IReadFile* file, tinygltf::Model& model)
 }
 
 template <class T>
-static T readPrimative(const BufferOffset& readFrom) {
+static T readPrimitive(const BufferOffset& readFrom) {
 	unsigned char d[sizeof(T)]{};
 	for (std::size_t i = 0; i < sizeof(T); ++i) {
 		d[i] = readFrom.at(i);
@@ -75,16 +75,16 @@ static core::vector3df readVector(const BufferOffset& readFrom) {
 	// glTF coordinates are right-handed, minetest ones are left-handed
 	// 1 glTF coordinate is equivalent to 10 Irrlicht coordinates
 	return core::vector3df(
-		-1.0 * readPrimative<float>(readFrom),
-		1.0 * readPrimative<float>(BufferOffset(readFrom, sizeof(float))),
-		1.0 * readPrimative<float>(BufferOffset(readFrom, 2 * sizeof(float))));
+		-1.0f * readPrimitive<float>(readFrom),
+		1.0f * readPrimitive<float>(BufferOffset(readFrom, sizeof(float))),
+		1.0 * readPrimitive<float>(BufferOffset(readFrom, 2 * sizeof(float))));
 }
 
 static u16* readIndices(const BufferOffset& readFrom, const std::size_t count)
 {
 	auto* indices = new u16[count]{};
 	for (std::size_t i = 0; i < count; ++i) {
-		indices[i] = readPrimative<u16>(BufferOffset(readFrom, i * sizeof(u16)));
+		indices[i] = readPrimitive<u16>(BufferOffset(readFrom, i * sizeof(u16)));
 	}
 	return indices;
 }
@@ -94,26 +94,25 @@ video::S3DVertex* getVertices(const tinygltf::Model& model, const std::size_t ac
 	const auto& view = model.bufferViews[
 		model.accessors[accessorId].bufferView];
 	const auto& buffer = model.buffers[view.buffer];
-	const auto v1 = readVector(BufferOffset(
-		buffer.data, view.byteOffset));
-	const auto v2 = readVector(BufferOffset(
-		buffer.data, view.byteOffset + (3 * sizeof(float))));
-	const auto v3 = readVector(BufferOffset(
-		buffer.data, view.byteOffset + (6 * sizeof(float))));
 
-	return (new video::S3DVertex[3] {
-		{v1, {0.0f, 0.0f, 1.0f}, {}, {0.0f, 0.0f}},
-		{v2, {0.0f, 0.0f, 1.0f}, {}, {1.0f, 0.0f}},
-		{v3, {0.0f, 0.0f, 1.0f}, {}, {0.0f, 1.0f}} } );
+	auto* vertices = new video::S3DVertex[model.accessors[accessorId].count];
+
+	for (std::size_t i = 0; i < model.accessors[accessorId].count; ++i) {
+		const auto v = readVector(BufferOffset(
+			buffer.data, view.byteOffset + 3 * sizeof(float) * i));
+		vertices[i] = {v, {0.0f, 0.0f, 0.0f}, {}, {0.0f, 0.0f}};
+	}
+
+	return vertices;
 }
 
 u16* getIndices(const tinygltf::Model& model, const std::size_t accessorId)
 {
-	const auto& indicesView = model.bufferViews[
+	const auto& view = model.bufferViews[
 		model.accessors[accessorId].bufferView];
-	const auto& indicesBuffer = model.buffers[indicesView.buffer];
+	const auto& indicesBuffer = model.buffers[view.buffer];
 	return readIndices(
-		BufferOffset(indicesBuffer.data, indicesView.byteOffset),
+		BufferOffset(indicesBuffer.data, view.byteOffset),
 		model.accessors[0].count);
 }
 
@@ -135,13 +134,18 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 		return nullptr;
 	}
 
-	auto* indices = getIndices(model, 0);
-	auto* vertices = getVertices(model, 1);
+	const auto indicesAccessorId =
+		model.meshes[0].primitives[0].indices;
+	const auto positionAccessorId =
+		model.meshes[0].primitives[0].attributes["POSITION"];
+
+	auto* indices = getIndices(model, indicesAccessorId);
+	auto* vertices = getVertices(model, positionAccessorId);
 
 	SMeshBuffer* meshbuf { new SMeshBuffer {} };
 
-	meshbuf->append(vertices, model.accessors[1].count,
-		indices, model.accessors[0].count);
+	meshbuf->append(vertices, model.accessors[positionAccessorId].count,
+		indices, model.accessors[indicesAccessorId].count);
 
 	SMesh* mesh { new SMesh {} };
 	mesh->addMeshBuffer(meshbuf);

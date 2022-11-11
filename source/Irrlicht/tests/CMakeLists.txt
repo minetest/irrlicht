@@ -1,5 +1,4 @@
 add_executable(tests
-	inMemoryFile.cpp inMemoryFile.h
 	testCGLTFMeshFileLoader.cpp
 )
 
