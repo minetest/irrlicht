@@ -145,14 +145,14 @@ jobs:
           apt-get install unzip g++-5 libidn11 libxi-dev libgl1-mesa-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
 
       - name: Setup CMake
-        uses: lukka/get-cmake@latest
+        uses: lukka/get-cmake@dev/fix_and_test_old_cmake_releases
         with:
           cmakeVersion: 3.5.2
 
       - name: Build
         run: |
-          cmake3.5.2 -G Ninja -DCMAKE_CXX_COMPILER=/usr/bin/g++-5 -DCMAKE_BUILD_TYPE=Release .
-          cmake3.5.2 --build .
+          cmake -G Ninja -DCMAKE_CXX_COMPILER=/usr/bin/g++-5 -DCMAKE_BUILD_TYPE=Release .
+          cmake --build .
 
       - name: Test
         run: |
