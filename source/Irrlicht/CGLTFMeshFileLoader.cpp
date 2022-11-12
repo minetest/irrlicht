@@ -18,6 +18,13 @@
 #include <memory>
 #include <string>
 
+template <class T>
+struct Span
+{
+	T* buffer = nullptr;
+	std::size_t size = 0;
+};
+
 class BufferOffset
 {
 public:
@@ -63,7 +70,8 @@ static bool tryParseGLTF(io::IReadFile* file, tinygltf::Model& model)
 }
 
 template <class T>
-static T readPrimitive(const BufferOffset& readFrom) {
+static T readPrimitive(const BufferOffset& readFrom)
+{
 	unsigned char d[sizeof(T)]{};
 	for (std::size_t i = 0; i < sizeof(T); ++i) {
 		d[i] = readFrom.at(i);
@@ -71,7 +79,16 @@ static T readPrimitive(const BufferOffset& readFrom) {
 	return *reinterpret_cast<T*>(d);
 }
 
-static core::vector3df readVector(const BufferOffset& readFrom, const float scale) {
+static core::vector2df readVec2DF(const BufferOffset& readFrom)
+{
+	return core::vector2df(
+		readPrimitive<float>(readFrom),
+		readPrimitive<float>(BufferOffset(readFrom, sizeof(float))));
+
+}
+
+static core::vector3df readVec3DF(const BufferOffset& readFrom, const float scale)
+{
 	// glTF coordinates are right-handed, minetest ones are left-handed
 	// 1 glTF coordinate is equivalent to 10 Irrlicht coordinates
 	return core::vector3df(
@@ -98,24 +115,55 @@ float getScale(const tinygltf::Model& model)
 	return 1.0f;
 }
 
-video::S3DVertex* getVertices(const tinygltf::Model& model, const std::size_t accessorId)
+static void copyPositions(const tinygltf::Model& model,
+		const Span<video::S3DVertex> vertices,
+		const std::size_t accessorId)
 {
 	const auto& view = model.bufferViews[
 		model.accessors[accessorId].bufferView];
 	const auto& buffer = model.buffers[view.buffer];
-
-	auto* vertices = new video::S3DVertex[model.accessors[accessorId].count];
-
 	for (std::size_t i = 0; i < model.accessors[accessorId].count; ++i) {
-		const auto v = readVector(BufferOffset(
-			buffer.data, view.byteOffset + 3 * sizeof(float) * i), getScale(model));
-		vertices[i] = {v, {0.0f, 0.0f, 0.0f}, {}, {0.0f, 0.0f}};
+		const auto v = readVec3DF(BufferOffset(
+			buffer.data, view.byteOffset + 3 * sizeof(float) * i),
+			getScale(model));
+		vertices.buffer[i].Pos = v;
 	}
-
-	return vertices;
 }
 
-u16* getIndices(const tinygltf::Model& model, const std::size_t accessorId)
+static void copyTCoords(const tinygltf::Model& model,
+		const Span<video::S3DVertex> vertices,
+		const std::size_t accessorId)
+{
+	const auto& view = model.bufferViews[
+		model.accessors[accessorId].bufferView];
+	const auto& buffer = model.buffers[view.buffer];
+	for (std::size_t i = 0; i < model.accessors[accessorId].count; ++i) {
+		const auto t = readVec2DF(BufferOffset(
+			buffer.data, view.byteOffset + 2 * sizeof(float) * i));
+		vertices.buffer[i].TCoords = t;
+	}
+}
+
+static video::S3DVertex* getVertices(const tinygltf::Model& model,
+		const std::size_t accessorId)
+{
+	auto* vertexBuffer = new video::S3DVertex[
+		model.accessors[accessorId].count]{};
+	Span<video::S3DVertex> vertices{
+		vertexBuffer, model.accessors[accessorId].count};
+	copyPositions(model, vertices, accessorId);
+
+	const auto tCoordsField
+		= model.meshes[0].primitives[0].attributes.find("TEXCOORD_0");
+	if (tCoordsField != model.meshes[0].primitives[0].attributes.end()) {
+		copyTCoords(model, vertices, tCoordsField->second);
+	}
+
+	return vertexBuffer;
+}
+
+static u16* getIndices(const tinygltf::Model& model,
+		const std::size_t accessorId)
 {
 	const auto& view = model.bufferViews[
 		model.accessors[accessorId].bufferView];

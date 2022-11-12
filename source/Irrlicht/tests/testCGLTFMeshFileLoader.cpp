@@ -84,14 +84,24 @@ TEST_CASE("blender cube") {
 		CHECK(vertices[21].Pos == irr::core::vector3df{-10.0f, 10.0f, -10.0f});
 	}
 
-	SECTION("vertex indices are correct")
-	{
+	SECTION("vertex indices are correct") {
 		REQUIRE(sm.getMesh()->getMeshBuffer(0)->getIndexCount() == 36);
 		const auto* indices = reinterpret_cast<irr::u16*>(
 			sm.getMesh()->getMeshBuffer(0)->getIndices());
 		CHECK(indices[0] == 0);
 		CHECK(indices[1] == 3);
 		CHECK(indices[2] == 9);
+	}
+
+	SECTION("texture coords are correct") {
+		REQUIRE(sm.getMesh()->getMeshBuffer(0)->getVertexCount() == 24);
+		const auto* vertices = reinterpret_cast<irr::video::S3DVertex*>(
+			sm.getMesh()->getMeshBuffer(0)->getVertices());
+		CHECK(vertices[0].TCoords == irr::core::vector2df{0.375f, 1.0f});
+		CHECK(vertices[1].TCoords == irr::core::vector2df{0.125f, 0.25f});
+		CHECK(vertices[2].TCoords == irr::core::vector2df{0.375f, 0.0f});
+		CHECK(vertices[3].TCoords == irr::core::vector2df{0.6250f, 1.0f});
+		CHECK(vertices[6].TCoords == irr::core::vector2df{0.375f, 0.75f});
 	}
 }
 
