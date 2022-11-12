@@ -87,7 +87,8 @@ static core::vector2df readVec2DF(const BufferOffset& readFrom)
 
 }
 
-static core::vector3df readVec3DF(const BufferOffset& readFrom, const float scale)
+static core::vector3df readVec3DF(const BufferOffset& readFrom,
+		const float scale = 1.0f)
 {
 	// glTF coordinates are right-handed, minetest ones are left-handed
 	// 1 glTF coordinate is equivalent to 10 Irrlicht coordinates
@@ -130,6 +131,20 @@ static void copyPositions(const tinygltf::Model& model,
 	}
 }
 
+static void copyNormals(const tinygltf::Model& model,
+		const Span<video::S3DVertex> vertices,
+		const std::size_t accessorId)
+{
+	const auto& view = model.bufferViews[
+		model.accessors[accessorId].bufferView];
+	const auto& buffer = model.buffers[view.buffer];
+	for (std::size_t i = 0; i < model.accessors[accessorId].count; ++i) {
+		const auto n = readVec3DF(BufferOffset(
+			buffer.data, view.byteOffset + 3 * sizeof(float) * i));
+		vertices.buffer[i].Normal = n;
+	}
+}
+
 static void copyTCoords(const tinygltf::Model& model,
 		const Span<video::S3DVertex> vertices,
 		const std::size_t accessorId)
@@ -152,6 +167,12 @@ static video::S3DVertex* getVertices(const tinygltf::Model& model,
 	Span<video::S3DVertex> vertices{
 		vertexBuffer, model.accessors[accessorId].count};
 	copyPositions(model, vertices, accessorId);
+
+	const auto normalsField
+		= model.meshes[0].primitives[0].attributes.find("NORMAL");
+	if (normalsField != model.meshes[0].primitives[0].attributes.end()) {
+		copyNormals(model, vertices, normalsField->second);
+	}
 
 	const auto tCoordsField
 		= model.meshes[0].primitives[0].attributes.find("TEXCOORD_0");

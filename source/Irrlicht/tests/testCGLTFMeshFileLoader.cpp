@@ -93,6 +93,19 @@ TEST_CASE("blender cube") {
 		CHECK(indices[2] == 9);
 	}
 
+	SECTION("vertex normals are correct") {
+		REQUIRE(sm.getMesh()->getMeshBuffer(0)->getVertexCount() == 24);
+		const auto* vertices = reinterpret_cast<irr::video::S3DVertex*>(
+			sm.getMesh()->getMeshBuffer(0)->getVertices());
+		CHECK(vertices[0].Normal == irr::core::vector3df{1.0f, 0.0f, 0.0f});
+		CHECK(vertices[1].Normal == irr::core::vector3df{0.0f, -1.0f, 0.0f});
+		CHECK(vertices[2].Normal == irr::core::vector3df{0.0f, 0.0f, 1.0f});
+		CHECK(vertices[3].Normal == irr::core::vector3df{1.0f, 0.0f, 0.0f});
+		CHECK(vertices[6].Normal == irr::core::vector3df{1.0f, 0.0f, 0.0f});
+		CHECK(vertices[23].Normal == irr::core::vector3df{-1.0f, 0.0f, 0.0f});
+
+	}
+
 	SECTION("texture coords are correct") {
 		REQUIRE(sm.getMesh()->getMeshBuffer(0)->getVertexCount() == 24);
 		const auto* vertices = reinterpret_cast<irr::video::S3DVertex*>(
