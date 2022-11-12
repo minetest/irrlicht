@@ -71,13 +71,13 @@ static T readPrimitive(const BufferOffset& readFrom) {
 	return *reinterpret_cast<T*>(d);
 }
 
-static core::vector3df readVector(const BufferOffset& readFrom) {
+static core::vector3df readVector(const BufferOffset& readFrom, const float scale) {
 	// glTF coordinates are right-handed, minetest ones are left-handed
 	// 1 glTF coordinate is equivalent to 10 Irrlicht coordinates
 	return core::vector3df(
-		-1.0f * readPrimitive<float>(readFrom),
-		1.0f * readPrimitive<float>(BufferOffset(readFrom, sizeof(float))),
-		1.0 * readPrimitive<float>(BufferOffset(readFrom, 2 * sizeof(float))));
+		-scale * readPrimitive<float>(readFrom),
+		scale * readPrimitive<float>(BufferOffset(readFrom, sizeof(float))),
+		scale * readPrimitive<float>(BufferOffset(readFrom, 2 * sizeof(float))));
 }
 
 static u16* readIndices(const BufferOffset& readFrom, const std::size_t count)
@@ -87,6 +87,15 @@ static u16* readIndices(const BufferOffset& readFrom, const std::size_t count)
 		indices[i] = readPrimitive<u16>(BufferOffset(readFrom, i * sizeof(u16)));
 	}
 	return indices;
+}
+
+
+float getScale(const tinygltf::Model& model)
+{
+	if (model.nodes[0].scale.size() > 0) {
+		return static_cast<float>(model.nodes[0].scale[0]);
+	}
+	return 1.0f;
 }
 
 video::S3DVertex* getVertices(const tinygltf::Model& model, const std::size_t accessorId)
@@ -99,7 +108,7 @@ video::S3DVertex* getVertices(const tinygltf::Model& model, const std::size_t ac
 
 	for (std::size_t i = 0; i < model.accessors[accessorId].count; ++i) {
 		const auto v = readVector(BufferOffset(
-			buffer.data, view.byteOffset + 3 * sizeof(float) * i));
+			buffer.data, view.byteOffset + 3 * sizeof(float) * i), getScale(model));
 		vertices[i] = {v, {0.0f, 0.0f, 0.0f}, {}, {0.0f, 0.0f}};
 	}
 
