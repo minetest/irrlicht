@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 
 project(tinygltf
   VERSION 2.6.3
-  DESCRIPTION "Header only C++11 tiny glTF 2.0 library"
   LANGUAGES CXX
 )
 
