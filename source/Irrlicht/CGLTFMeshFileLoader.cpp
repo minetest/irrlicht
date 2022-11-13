@@ -15,6 +15,7 @@
 #include <tiny_gltf.h>
 
 #include <cstddef>
+#include <cstring>
 #include <memory>
 #include <string>
 
@@ -76,7 +77,9 @@ static T readPrimitive(const BufferOffset& readFrom)
 	for (std::size_t i = 0; i < sizeof(T); ++i) {
 		d[i] = readFrom.at(i);
 	}
-	return *reinterpret_cast<T*>(d);
+	T dest;
+	std::memcpy(&dest, d, sizeof(dest));
+	return dest;
 }
 
 static core::vector2df readVec2DF(const BufferOffset& readFrom)
