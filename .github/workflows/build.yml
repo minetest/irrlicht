@@ -145,7 +145,7 @@ jobs:
           apt-get install unzip g++-5 libidn11 libxi-dev libgl1-mesa-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
 
       - name: Setup CMake
-        uses: lukka/get-cmake@dev/fix_and_test_old_cmake_releases
+        uses: lukka/get-cmake@latest
         with:
           cmakeVersion: 3.5.2
 
