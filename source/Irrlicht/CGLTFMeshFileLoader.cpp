@@ -93,12 +93,12 @@ static core::vector2df readVec2DF(const BufferOffset& readFrom)
 static core::vector3df readVec3DF(const BufferOffset& readFrom,
 		const float scale = 1.0f)
 {
-	// glTF coordinates are right-handed, minetest ones are left-handed
-	// 1 glTF coordinate is equivalent to 10 Irrlicht coordinates
+	// glTF's coordinate system is right-handed, Irrlicht's is left-handed
+	// glTF's +Z axis corresponds to Irrlicht's -Z axis
 	return core::vector3df(
-		-scale * readPrimitive<float>(readFrom),
+		scale * readPrimitive<float>(readFrom),
 		scale * readPrimitive<float>(BufferOffset(readFrom, sizeof(float))),
-		scale * readPrimitive<float>(BufferOffset(readFrom, 2 * sizeof(float))));
+		-scale * readPrimitive<float>(BufferOffset(readFrom, 2 * sizeof(float))));
 }
 
 static u16* readIndices(const BufferOffset& readFrom, const std::size_t count)

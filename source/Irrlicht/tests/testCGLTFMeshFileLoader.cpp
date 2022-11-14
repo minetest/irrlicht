@@ -52,7 +52,7 @@ TEST_CASE("minimal triangle") {
 		const auto* vertices = reinterpret_cast<irr::video::S3DVertex*>(
 			sm.getMesh()->getMeshBuffer(0)->getVertices());
 		CHECK(vertices[0].Pos == irr::core::vector3df {0.0f, 0.0f, 0.0f});
-		CHECK(vertices[1].Pos == irr::core::vector3df {-1.0f, 0.0f, 0.0f});
+		CHECK(vertices[1].Pos == irr::core::vector3df {1.0f, 0.0f, 0.0f});
 		CHECK(vertices[2].Pos == irr::core::vector3df {0.0f, 1.0f, 0.0f});
 	}
 
@@ -74,14 +74,14 @@ TEST_CASE("blender cube") {
 		REQUIRE(sm.getMesh()->getMeshBuffer(0)->getVertexCount() == 24);
 		const auto* vertices = reinterpret_cast<irr::video::S3DVertex*>(
 			sm.getMesh()->getMeshBuffer(0)->getVertices());
-		CHECK(vertices[0].Pos == irr::core::vector3df{10.0f, -10.0f, 10.0f});
-		CHECK(vertices[3].Pos == irr::core::vector3df{10.0f, 10.0f, 10.0f});
-		CHECK(vertices[6].Pos == irr::core::vector3df{10.0f, -10.0f, -10.0f});
-		CHECK(vertices[9].Pos == irr::core::vector3df{10.0f, 10.0f, -10.0f});
-		CHECK(vertices[12].Pos == irr::core::vector3df{-10.0f, -10.0f, 10.0f});
-		CHECK(vertices[15].Pos == irr::core::vector3df{-10.0f, 10.0f, 10.0f});
-		CHECK(vertices[18].Pos == irr::core::vector3df{-10.0f, -10.0f, -10.0f});
-		CHECK(vertices[21].Pos == irr::core::vector3df{-10.0f, 10.0f, -10.0f});
+		CHECK(vertices[0].Pos == irr::core::vector3df{-10.0f, -10.0f, -10.0f});
+		CHECK(vertices[3].Pos == irr::core::vector3df{-10.0f, 10.0f, -10.0f});
+		CHECK(vertices[6].Pos == irr::core::vector3df{-10.0f, -10.0f, 10.0f});
+		CHECK(vertices[9].Pos == irr::core::vector3df{-10.0f, 10.0f, 10.0f});
+		CHECK(vertices[12].Pos == irr::core::vector3df{10.0f, -10.0f, -10.0f});
+		CHECK(vertices[15].Pos == irr::core::vector3df{10.0f, 10.0f, -10.0f});
+		CHECK(vertices[18].Pos == irr::core::vector3df{10.0f, -10.0f, 10.0f});
+		CHECK(vertices[21].Pos == irr::core::vector3df{10.0f, 10.0f, 10.0f});
 	}
 
 	SECTION("vertex indices are correct") {
@@ -97,12 +97,12 @@ TEST_CASE("blender cube") {
 		REQUIRE(sm.getMesh()->getMeshBuffer(0)->getVertexCount() == 24);
 		const auto* vertices = reinterpret_cast<irr::video::S3DVertex*>(
 			sm.getMesh()->getMeshBuffer(0)->getVertices());
-		CHECK(vertices[0].Normal == irr::core::vector3df{1.0f, 0.0f, 0.0f});
+		CHECK(vertices[0].Normal == irr::core::vector3df{-1.0f, 0.0f, 0.0f});
 		CHECK(vertices[1].Normal == irr::core::vector3df{0.0f, -1.0f, 0.0f});
-		CHECK(vertices[2].Normal == irr::core::vector3df{0.0f, 0.0f, 1.0f});
-		CHECK(vertices[3].Normal == irr::core::vector3df{1.0f, 0.0f, 0.0f});
-		CHECK(vertices[6].Normal == irr::core::vector3df{1.0f, 0.0f, 0.0f});
-		CHECK(vertices[23].Normal == irr::core::vector3df{-1.0f, 0.0f, 0.0f});
+		CHECK(vertices[2].Normal == irr::core::vector3df{0.0f, 0.0f, -1.0f});
+		CHECK(vertices[3].Normal == irr::core::vector3df{-1.0f, 0.0f, 0.0f});
+		CHECK(vertices[6].Normal == irr::core::vector3df{-1.0f, 0.0f, 0.0f});
+		CHECK(vertices[23].Normal == irr::core::vector3df{1.0f, 0.0f, 0.0f});
 
 	}
 
