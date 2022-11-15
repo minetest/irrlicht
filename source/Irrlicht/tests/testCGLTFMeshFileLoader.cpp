@@ -91,6 +91,7 @@ TEST_CASE("blender cube") {
 		CHECK(indices[0] == 0);
 		CHECK(indices[1] == 3);
 		CHECK(indices[2] == 9);
+		CHECK(indices[35] == 16);
 	}
 
 	SECTION("vertex normals are correct") {

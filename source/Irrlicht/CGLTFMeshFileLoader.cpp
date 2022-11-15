@@ -194,7 +194,7 @@ static u16* getIndices(const tinygltf::Model& model,
 	const auto& indicesBuffer = model.buffers[view.buffer];
 	return readIndices(
 		BufferOffset(indicesBuffer.data, view.byteOffset),
-		model.accessors[0].count);
+		model.accessors[accessorId].count);
 }
 
 CGLTFMeshFileLoader::CGLTFMeshFileLoader()
