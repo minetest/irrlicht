@@ -117,8 +117,8 @@ namespace irr
 			if (dev)
 			{
 				dev->Unacquire();
+				dev->Release();
 			}
-			dev->Release();
 		}
 
 		if (DirectInputDevice)
