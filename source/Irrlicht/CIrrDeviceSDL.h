@@ -265,6 +265,15 @@ namespace irr
 	static EM_BOOL MouseLeaveCallback(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData);
 
 #endif
+		// Check if a key is a known special character with no side effects on text boxes.
+		bool keyIsKnownSpecial(EKEY_CODE key) const;
+
+		// Return the Char that should be sent to Irrlicht for the given key (either the one passed in or 0).
+		int findCharToPassToIrrlicht(int assumedChar, EKEY_CODE key);
+
+		// Check if a text box is in focus. Enable or disable SDL_TEXTINPUT events only if in focus.
+		void resetReceiveTextInputEvents();
+
 		//! create the driver
 		void createDriver();
 
