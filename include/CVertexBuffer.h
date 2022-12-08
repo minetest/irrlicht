@@ -40,33 +40,33 @@ namespace scene
 		public:
 			core::array<T> Vertices;
 
-			virtual u32 stride() const _IRR_OVERRIDE_ {return sizeof(T);}
+			u32 stride() const override {return sizeof(T);}
 
-			virtual u32 size() const _IRR_OVERRIDE_ {return Vertices.size();}
+			u32 size() const override {return Vertices.size();}
 
-			virtual void push_back (const video::S3DVertex &element) _IRR_OVERRIDE_
+			void push_back (const video::S3DVertex &element) override
 			{Vertices.push_back((T&)element);}
 
-			virtual video::S3DVertex& operator [](const u32 index) const _IRR_OVERRIDE_
+			video::S3DVertex& operator [](const u32 index) const override
 			{return (video::S3DVertex&)Vertices[index];}
 
-			virtual video::S3DVertex& getLast() _IRR_OVERRIDE_
+			video::S3DVertex& getLast() override
 			{return (video::S3DVertex&)Vertices.getLast();}
 
-			virtual void set_used(u32 usedNow) _IRR_OVERRIDE_
+			void set_used(u32 usedNow) override
 			{Vertices.set_used(usedNow);}
 
-			virtual void reallocate(u32 new_size) _IRR_OVERRIDE_
+			void reallocate(u32 new_size) override
 			{Vertices.reallocate(new_size);}
 
-			virtual u32 allocated_size() const _IRR_OVERRIDE_
+			u32 allocated_size() const override
 			{
 				return Vertices.allocated_size();
 			}
 
-			virtual video::S3DVertex* pointer() _IRR_OVERRIDE_ {return Vertices.pointer();}
+			video::S3DVertex* pointer() override {return Vertices.pointer();}
 
-			virtual video::E_VERTEX_TYPE getType() const _IRR_OVERRIDE_ {return T::getType();}
+			video::E_VERTEX_TYPE getType() const override {return T::getType();}
 		};
 
 	public:
@@ -95,7 +95,7 @@ namespace scene
 		}
 
 
-		virtual void setType(video::E_VERTEX_TYPE vertexType) _IRR_OVERRIDE_
+		void setType(video::E_VERTEX_TYPE vertexType) override
 		{
 			IVertexList *NewVertices=0;
 
@@ -130,73 +130,73 @@ namespace scene
 			Vertices=NewVertices;
 		}
 
-		virtual void* getData() _IRR_OVERRIDE_ {return Vertices->pointer();}
+		void* getData() override {return Vertices->pointer();}
 
-		virtual video::E_VERTEX_TYPE getType() const _IRR_OVERRIDE_ {return Vertices->getType();}
+		video::E_VERTEX_TYPE getType() const override {return Vertices->getType();}
 
-		virtual u32 stride() const _IRR_OVERRIDE_ {return Vertices->stride();}
+		u32 stride() const override {return Vertices->stride();}
 
-		virtual u32 size() const _IRR_OVERRIDE_
+		u32 size() const override
 		{
 			return Vertices->size();
 		}
 
-		virtual void push_back (const video::S3DVertex &element) _IRR_OVERRIDE_
+		void push_back (const video::S3DVertex &element) override
 		{
 			Vertices->push_back(element);
 		}
 
-		virtual video::S3DVertex& operator [](const u32 index) const _IRR_OVERRIDE_
+		video::S3DVertex& operator [](const u32 index) const override
 		{
 			return (*Vertices)[index];
 		}
 
-		virtual video::S3DVertex& getLast() _IRR_OVERRIDE_
+		video::S3DVertex& getLast() override
 		{
 			return Vertices->getLast();
 		}
 
-		virtual void set_used(u32 usedNow) _IRR_OVERRIDE_
+		void set_used(u32 usedNow) override
 		{
 			Vertices->set_used(usedNow);
 		}
 
-		virtual void reallocate(u32 new_size) _IRR_OVERRIDE_
+		void reallocate(u32 new_size) override
 		{
 			Vertices->reallocate(new_size);
 		}
 
-		virtual u32 allocated_size() const _IRR_OVERRIDE_
+		u32 allocated_size() const override
 		{
 			return Vertices->allocated_size();
 		}
 
-		virtual video::S3DVertex* pointer() _IRR_OVERRIDE_
+		video::S3DVertex* pointer() override
 		{
 			return Vertices->pointer();
 		}
 
 		//! get the current hardware mapping hint
-		virtual E_HARDWARE_MAPPING getHardwareMappingHint() const _IRR_OVERRIDE_
+		E_HARDWARE_MAPPING getHardwareMappingHint() const override
 		{
 			return MappingHint;
 		}
 
 		//! set the hardware mapping hint, for driver
-		virtual void setHardwareMappingHint( E_HARDWARE_MAPPING NewMappingHint ) _IRR_OVERRIDE_
+		void setHardwareMappingHint( E_HARDWARE_MAPPING NewMappingHint ) override
 		{
 			MappingHint=NewMappingHint;
 		}
 
 		//! flags the mesh as changed, reloads hardware buffers
-		virtual void setDirty() _IRR_OVERRIDE_
+		void setDirty() override
 		{
 			++ChangedID;
 		}
 
 		//! Get the currently used ID for identification of changes.
 		/** This shouldn't be used for anything outside the VideoDriver. */
-		virtual u32 getChangedID() const _IRR_OVERRIDE_  {return ChangedID;}
+		u32 getChangedID() const override  {return ChangedID;}
 
 		E_HARDWARE_MAPPING MappingHint;
 		u32 ChangedID;

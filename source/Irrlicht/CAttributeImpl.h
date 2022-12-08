@@ -27,42 +27,42 @@ public:
 		setBool(value);
 	}
 
-	virtual s32 getInt() const _IRR_OVERRIDE_
+	s32 getInt() const override
 	{
 		return BoolValue ? 1 : 0;
 	}
 
-	virtual f32 getFloat() const _IRR_OVERRIDE_
+	f32 getFloat() const override
 	{
 		return BoolValue ? 1.0f : 0.0f;
 	}
 
-	virtual bool getBool() const _IRR_OVERRIDE_
+	bool getBool() const override
 	{
 		return BoolValue;
 	}
 
-	virtual void setInt(s32 intValue) _IRR_OVERRIDE_
+	void setInt(s32 intValue) override
 	{
 		BoolValue = (intValue != 0);
 	}
 
-	virtual void setFloat(f32 floatValue) _IRR_OVERRIDE_
+	void setFloat(f32 floatValue) override
 	{
 		BoolValue = (floatValue != 0);
 	}
 
-	virtual void setBool(bool boolValue) _IRR_OVERRIDE_
+	void setBool(bool boolValue) override
 	{
 		BoolValue = boolValue;
 	}
 
-	virtual E_ATTRIBUTE_TYPE getType() const _IRR_OVERRIDE_
+	E_ATTRIBUTE_TYPE getType() const override
 	{
 		return EAT_BOOL;
 	}
 
-	virtual const wchar_t* getTypeString() const _IRR_OVERRIDE_
+	const wchar_t* getTypeString() const override
 	{
 		return L"bool";
 	}
@@ -81,32 +81,32 @@ public:
 		setInt(value);
 	}
 
-	virtual s32 getInt() const _IRR_OVERRIDE_
+	s32 getInt() const override
 	{
 		return Value;
 	}
 
-	virtual f32 getFloat() const _IRR_OVERRIDE_
+	f32 getFloat() const override
 	{
 		return (f32)Value;
 	}
 
-	virtual void setInt(s32 intValue) _IRR_OVERRIDE_
+	void setInt(s32 intValue) override
 	{
 		Value = intValue;
 	}
 
-	virtual void setFloat(f32 floatValue) _IRR_OVERRIDE_
+	void setFloat(f32 floatValue) override
 	{
 		Value = (s32)floatValue;
 	};
 
-	virtual E_ATTRIBUTE_TYPE getType() const _IRR_OVERRIDE_
+	E_ATTRIBUTE_TYPE getType() const override
 	{
 		return EAT_INT;
 	}
 
-	virtual const wchar_t* getTypeString() const _IRR_OVERRIDE_
+	const wchar_t* getTypeString() const override
 	{
 		return L"int";
 	}
@@ -125,32 +125,32 @@ public:
 		setFloat(value);
 	}
 
-	virtual s32 getInt() const _IRR_OVERRIDE_
+	s32 getInt() const override
 	{
 		return (s32)Value;
 	}
 
-	virtual f32 getFloat() const _IRR_OVERRIDE_
+	f32 getFloat() const override
 	{
 		return Value;
 	}
 
-	virtual void setInt(s32 intValue) _IRR_OVERRIDE_
+	void setInt(s32 intValue) override
 	{
 		Value = (f32)intValue;
 	}
 
-	virtual void setFloat(f32 floatValue) _IRR_OVERRIDE_
+	void setFloat(f32 floatValue) override
 	{
 		Value = floatValue;
 	}
 
-	virtual E_ATTRIBUTE_TYPE getType() const _IRR_OVERRIDE_
+	E_ATTRIBUTE_TYPE getType() const override
 	{
 		return EAT_FLOAT;
 	}
 
-	virtual const wchar_t* getTypeString() const _IRR_OVERRIDE_
+	const wchar_t* getTypeString() const override
 	{
 		return L"float";
 	}

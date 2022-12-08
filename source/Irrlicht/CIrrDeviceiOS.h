@@ -24,42 +24,42 @@ namespace irr
 		CIrrDeviceiOS(const SIrrlichtCreationParameters& params);
 		virtual ~CIrrDeviceiOS();
 
-		virtual bool run() _IRR_OVERRIDE_;
-		virtual void yield() _IRR_OVERRIDE_;
-		virtual void sleep(u32 timeMs, bool pauseTimer) _IRR_OVERRIDE_;
+		bool run() override;
+		void yield() override;
+		void sleep(u32 timeMs, bool pauseTimer) override;
 
-		virtual void setWindowCaption(const wchar_t* text) _IRR_OVERRIDE_;
+		void setWindowCaption(const wchar_t* text) override;
 
-		virtual bool isWindowActive() const _IRR_OVERRIDE_;
-		virtual bool isWindowFocused() const _IRR_OVERRIDE_;
-		virtual bool isWindowMinimized() const _IRR_OVERRIDE_;
+		bool isWindowActive() const override;
+		bool isWindowFocused() const override;
+		bool isWindowMinimized() const override;
 
-		virtual bool present(video::IImage* surface, void * windowId = 0, core::rect<s32>* src = 0) _IRR_OVERRIDE_;
+		bool present(video::IImage* surface, void * windowId = 0, core::rect<s32>* src = 0) override;
 
-		virtual void closeDevice() _IRR_OVERRIDE_;
+		void closeDevice() override;
 
-		virtual void setResizable(bool resize = false) _IRR_OVERRIDE_;
+		void setResizable(bool resize = false) override;
 
-		virtual void minimizeWindow() _IRR_OVERRIDE_;
-		virtual void maximizeWindow() _IRR_OVERRIDE_;
-		virtual void restoreWindow() _IRR_OVERRIDE_;
+		void minimizeWindow() override;
+		void maximizeWindow() override;
+		void restoreWindow() override;
 
-		virtual core::position2di getWindowPosition() _IRR_OVERRIDE_;
+		core::position2di getWindowPosition() override;
 
-        virtual bool activateAccelerometer(float updateInterval = 0.016666f) _IRR_OVERRIDE_;
-        virtual bool deactivateAccelerometer() _IRR_OVERRIDE_;
-        virtual bool isAccelerometerActive() _IRR_OVERRIDE_;
-        virtual bool isAccelerometerAvailable() _IRR_OVERRIDE_;
-        virtual bool activateGyroscope(float updateInterval = 0.016666f) _IRR_OVERRIDE_;
-        virtual bool deactivateGyroscope() _IRR_OVERRIDE_;
-        virtual bool isGyroscopeActive() _IRR_OVERRIDE_;
-        virtual bool isGyroscopeAvailable() _IRR_OVERRIDE_;
-        virtual bool activateDeviceMotion(float updateInterval = 0.016666f) _IRR_OVERRIDE_;
-        virtual bool deactivateDeviceMotion() _IRR_OVERRIDE_;
-        virtual bool isDeviceMotionActive() _IRR_OVERRIDE_;
-        virtual bool isDeviceMotionAvailable() _IRR_OVERRIDE_;
+        bool activateAccelerometer(float updateInterval = 0.016666f) override;
+        bool deactivateAccelerometer() override;
+        bool isAccelerometerActive() override;
+        bool isAccelerometerAvailable() override;
+        bool activateGyroscope(float updateInterval = 0.016666f) override;
+        bool deactivateGyroscope() override;
+        bool isGyroscopeActive() override;
+        bool isGyroscopeAvailable() override;
+        bool activateDeviceMotion(float updateInterval = 0.016666f) override;
+        bool deactivateDeviceMotion() override;
+        bool isDeviceMotionActive() override;
+        bool isDeviceMotionAvailable() override;
 
-        virtual E_DEVICE_TYPE getType() const _IRR_OVERRIDE_;
+        E_DEVICE_TYPE getType() const override;
 
 	private:
         void createWindow();

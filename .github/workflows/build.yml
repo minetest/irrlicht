@@ -8,13 +8,16 @@ on:
 jobs:
 
   linux-gl:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:bionic
+      env: { LANG: "C.UTF-8" }
     steps:
       - uses: actions/checkout@v2
       - name: Install deps
         run: |
-          sudo apt-get update
-          sudo apt-get install g++ cmake libxi-dev libgl1-mesa-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
+          apt-get update
+          apt-get install g++ cmake libxi-dev libgl1-mesa-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
 
       - name: Build
         run: |
@@ -26,19 +29,22 @@ jobs:
           make DESTDIR=$PWD/_install install
           tar -c -I "gzip -9" -f irrlicht-linux.tar.gz -C ./_install/usr/local .
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: irrlicht-linux
           path: ./irrlicht-linux.tar.gz
 
   linux-gles:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:bionic
+      env: { LANG: "C.UTF-8" }
     steps:
       - uses: actions/checkout@v2
       - name: Install deps
         run: |
-          sudo apt-get update
-          sudo apt-get install g++ cmake libxi-dev libgles2-mesa-dev libpng-dev libjpeg-dev zlib1g-dev xvfb -qyy
+          apt-get update
+          apt-get install g++ cmake libxi-dev libgles2-mesa-dev libpng-dev libjpeg-dev zlib1g-dev xvfb -qyy
 
       - name: Build
         run: |
@@ -57,6 +63,29 @@ jobs:
           cd bin/Linux
           LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest
 
+  linux-sdl:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:jammy
+      env: { LANG: "C.UTF-8" }
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install deps
+        run: |
+          apt-get update
+          apt-get install g++ cmake libsdl2-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
+
+      - name: Build
+        run: |
+          sed '/#define _IRR_COMPILE_WITH_SDL_DEVICE_/ s|^//||g' -i include/IrrCompileConfig.h
+          cmake . -DBUILD_EXAMPLES=1
+          make -j2
+
+      - name: Test (headless)
+        run: |
+          cd bin/Linux
+          ./AutomatedTest null
+
   win32:
     runs-on: ubuntu-20.04
     steps:
@@ -74,7 +103,7 @@ jobs:
           CC: i686-w64-mingw32-gcc
           CXX: i686-w64-mingw32-g++
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: irrlicht-win32
           path: ./irrlicht-win32.zip
@@ -96,7 +125,7 @@ jobs:
           CC: x86_64-w64-mingw32-gcc
           CXX: x86_64-w64-mingw32-g++
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: irrlicht-win64
           path: ./irrlicht-win64.zip

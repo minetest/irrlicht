@@ -7,7 +7,8 @@ using namespace irr;
 static IrrlichtDevice *device = nullptr;
 static int test_fail = 0;
 
-extern void test_irr_array();
+void test_irr_array();
+void test_irr_string();
 
 static video::E_DRIVER_TYPE chooseDriver(const char *arg_)
 {
@@ -32,7 +33,12 @@ static inline void check(bool ok, const char *msg)
 
 void run_unit_tests() {
 	std::cout << "Running unit tests:" << std::endl;
-	test_irr_array();
+	try {
+		test_irr_array();
+		test_irr_string();
+	} catch (const std::exception &e) {
+		test_fail++;
+	}
 }
 
 int main(int argc, char *argv[])
@@ -99,7 +105,7 @@ int main(int argc, char *argv[])
 
 	while (device->run())
 	{
-		if (device->getTimer()->getTime() >= 1300)
+		if (device->getTimer()->getTime() >= 1000)
 		{
 			device->getTimer()->setTime(0);
 			++n;

@@ -112,12 +112,9 @@ For functions:		template<class T> _IRR_DEPRECATED_ void test4(void) {}
 #define _IRR_DEPRECATED_
 #endif
 
-//! Defines an override macro, to protect virtual functions from typos and other mismatches
-/** Usage in a derived class:
-virtual void somefunc() _IRR_OVERRIDE_;
-*/
+//! deprecated macro for virtual function override
+/** prefer to use the override keyword for new code */
 #define _IRR_OVERRIDE_ override
-
 
 //! creates four CC codes used in Irrlicht for simple ids
 /** some compilers can create those by directly writing the

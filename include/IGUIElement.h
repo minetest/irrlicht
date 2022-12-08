@@ -545,7 +545,7 @@ public:
 
 
 	//! Called if an event happened.
-	virtual bool OnEvent(const SEvent& event) _IRR_OVERRIDE_
+	bool OnEvent(const SEvent& event) override
 	{
 		return Parent ? Parent->OnEvent(event) : false;
 	}

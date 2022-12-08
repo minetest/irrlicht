@@ -29,28 +29,28 @@ namespace io
 		virtual ~CMemoryReadFile();
 
 		//! returns how much was read
-		virtual size_t read(void* buffer, size_t sizeToRead) _IRR_OVERRIDE_;
+		size_t read(void* buffer, size_t sizeToRead) override;
 
 		//! changes position in file, returns true if successful
-		virtual bool seek(long finalPos, bool relativeMovement = false) _IRR_OVERRIDE_;
+		bool seek(long finalPos, bool relativeMovement = false) override;
 
 		//! returns size of file
-		virtual long getSize() const _IRR_OVERRIDE_;
+		long getSize() const override;
 
 		//! returns where in the file we are.
-		virtual long getPos() const _IRR_OVERRIDE_;
+		long getPos() const override;
 
 		//! returns name of file
-		virtual const io::path& getFileName() const _IRR_OVERRIDE_;
+		const io::path& getFileName() const override;
 
 		//! Get the type of the class implementing this interface
-		virtual EREAD_FILE_TYPE getType() const _IRR_OVERRIDE_
+		EREAD_FILE_TYPE getType() const override
 		{
 			return ERFT_MEMORY_READ_FILE;
 		}
 
 		//! Get direct access to internal buffer
-		virtual const void *getBuffer() const _IRR_OVERRIDE_
+		const void *getBuffer() const override
 		{
 			return Buffer;
 		}
@@ -78,18 +78,18 @@ namespace io
 		virtual ~CMemoryWriteFile();
 
 		//! returns how much was written
-		virtual size_t write(const void* buffer, size_t sizeToWrite) _IRR_OVERRIDE_;
+		size_t write(const void* buffer, size_t sizeToWrite) override;
 
 		//! changes position in file, returns true if successful
-		virtual bool seek(long finalPos, bool relativeMovement = false) _IRR_OVERRIDE_;
+		bool seek(long finalPos, bool relativeMovement = false) override;
 
 		//! returns where in the file we are.
-		virtual long getPos() const _IRR_OVERRIDE_;
+		long getPos() const override;
 
 		//! returns name of file
-		virtual const io::path& getFileName() const _IRR_OVERRIDE_;
+		const io::path& getFileName() const override;
 
-		virtual bool flush() _IRR_OVERRIDE_;
+		bool flush() override;
 
 	private:
 

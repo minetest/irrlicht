@@ -38,7 +38,7 @@ template <typename T, typename TAlloc = irrAllocator<T> >
 class string;
 static size_t multibyteToWString(string<wchar_t>& destination, const char* source, u32 sourceSize);
 static size_t wStringToMultibyte(string<c8>& destination, const wchar_t* source, u32 sourceSize);
-inline bool isdigit(s32 c);
+//inline bool isdigit(s32 c);
 
 //! Returns a character converted to lower case
 static inline u32 locale_lower ( u32 x )
@@ -638,6 +638,7 @@ public:
 			array[l+used] = *(other+l);
 
 		used += len;
+		array[used-1] = 0;
 
 		return *this;
 	}
@@ -1250,6 +1251,7 @@ public:
 		return (*this = subString(begin, (end +1) - begin));
 	}
 
+#if 0
 	//! Erase 0's at the end when a string ends with a floating point number
 	/** After generating strings from floats we often end up with strings
 		ending up with lots of zeros which don't add any value. Erase 'em all.
@@ -1285,6 +1287,7 @@ public:
 		}
 		return *this;
 	}
+#endif
 
 	//! Erases a character from the string.
 	/** May be slow, because all elements
@@ -1503,12 +1506,12 @@ static size_t wStringToMultibyte(string<c8>& destination, const wchar_t* source,
 {
 	if ( sourceSize )
 	{
-		destination.reserve(sourceSize+1);
+		destination.reserve(sizeof(wchar_t)*sourceSize+1);
 #if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4996)	// 'wcstombs': This function or variable may be unsafe. Consider using wcstombs_s instead.
 #endif
-		const size_t written = wcstombs(destination.array, source, (size_t)sourceSize);
+		const size_t written = wcstombs(destination.array, source, destination.allocated-1);
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif

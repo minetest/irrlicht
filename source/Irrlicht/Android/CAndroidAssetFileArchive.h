@@ -54,7 +54,7 @@ namespace io
 		virtual void addDirectoryToFileList(const io::path &filename);
 
 		//! return the name (id) of the file Archive
-		virtual const io::path& getArchiveName() const _IRR_OVERRIDE_ {return Path;}
+		const io::path& getArchiveName() const override {return Path;}
 
 	protected:
 		//! Android's asset manager

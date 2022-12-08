@@ -30,117 +30,117 @@ namespace scene
 		\param projection The new projection matrix of the camera.
 		\param isOrthogonal Set this to true if the matrix is an orthogonal one (e.g.
 		from matrix4::buildProjectionMatrixOrthoLH(). */
-		virtual void setProjectionMatrix(const core::matrix4& projection, bool isOrthogonal = false) _IRR_OVERRIDE_;
+		void setProjectionMatrix(const core::matrix4& projection, bool isOrthogonal = false) override;
 
 		//! Gets the current projection matrix of the camera
 		//! \return Returns the current projection matrix of the camera.
-		virtual const core::matrix4& getProjectionMatrix() const _IRR_OVERRIDE_;
+		const core::matrix4& getProjectionMatrix() const override;
 
 		//! Gets the current view matrix of the camera
 		//! \return Returns the current view matrix of the camera.
-		virtual const core::matrix4& getViewMatrix() const _IRR_OVERRIDE_;
+		const core::matrix4& getViewMatrix() const override;
 
 		//! Sets a custom view matrix affector.
 		/** \param affector: The affector matrix. */
-		virtual void setViewMatrixAffector(const core::matrix4& affector) _IRR_OVERRIDE_;
+		void setViewMatrixAffector(const core::matrix4& affector) override;
 
 		//! Gets the custom view matrix affector.
-		virtual const core::matrix4& getViewMatrixAffector() const _IRR_OVERRIDE_;
+		const core::matrix4& getViewMatrixAffector() const override;
 
 		//! It is possible to send mouse and key events to the camera. Most cameras
 		//! may ignore this input, but camera scene nodes which are created for
 		//! example with scene::ISceneManager::addMayaCameraSceneNode or
 		//! scene::ISceneManager::addMeshViewerCameraSceneNode, may want to get this input
 		//! for changing their position, look at target or whatever.
-		virtual bool OnEvent(const SEvent& event) _IRR_OVERRIDE_;
+		bool OnEvent(const SEvent& event) override;
 
 		//! Sets the look at target of the camera
 		/** If the camera's target and rotation are bound ( @see bindTargetAndRotation() )
 		then calling this will also change the camera's scene node rotation to match the target.
 		\param pos: Look at target of the camera. */
-		virtual void setTarget(const core::vector3df& pos) _IRR_OVERRIDE_;
+		void setTarget(const core::vector3df& pos) override;
 
 		//! Sets the rotation of the node.
 		/** This only modifies the relative rotation of the node.
 		If the camera's target and rotation are bound ( @see bindTargetAndRotation() )
 		then calling this will also change the camera's target to match the rotation.
 		\param rotation New rotation of the node in degrees. */
-		virtual void setRotation(const core::vector3df& rotation) _IRR_OVERRIDE_;
+		void setRotation(const core::vector3df& rotation) override;
 
 		//! Gets the current look at target of the camera
 		/** \return The current look at target of the camera */
-		virtual const core::vector3df& getTarget() const _IRR_OVERRIDE_;
+		const core::vector3df& getTarget() const override;
 
 		//! Sets the up vector of the camera.
 		//! \param pos: New upvector of the camera.
-		virtual void setUpVector(const core::vector3df& pos) _IRR_OVERRIDE_;
+		void setUpVector(const core::vector3df& pos) override;
 
 		//! Gets the up vector of the camera.
 		//! \return Returns the up vector of the camera.
-		virtual const core::vector3df& getUpVector() const _IRR_OVERRIDE_;
+		const core::vector3df& getUpVector() const override;
 
 		//! Gets distance from the camera to the near plane.
 		//! \return Value of the near plane of the camera.
-		virtual f32 getNearValue() const _IRR_OVERRIDE_;
+		f32 getNearValue() const override;
 
 		//! Gets the distance from the camera to the far plane.
 		//! \return Value of the far plane of the camera.
-		virtual f32 getFarValue() const _IRR_OVERRIDE_;
+		f32 getFarValue() const override;
 
 		//! Get the aspect ratio of the camera.
 		//! \return The aspect ratio of the camera.
-		virtual f32 getAspectRatio() const _IRR_OVERRIDE_;
+		f32 getAspectRatio() const override;
 
 		//! Gets the field of view of the camera.
 		//! \return Field of view of the camera
-		virtual f32 getFOV() const _IRR_OVERRIDE_;
+		f32 getFOV() const override;
 
 		//! Sets the value of the near clipping plane. (default: 1.0f)
-		virtual void setNearValue(f32 zn) _IRR_OVERRIDE_;
+		void setNearValue(f32 zn) override;
 
 		//! Sets the value of the far clipping plane (default: 2000.0f)
-		virtual void setFarValue(f32 zf) _IRR_OVERRIDE_;
+		void setFarValue(f32 zf) override;
 
 		//! Sets the aspect ratio (default: 4.0f / 3.0f)
-		virtual void setAspectRatio(f32 aspect) _IRR_OVERRIDE_;
+		void setAspectRatio(f32 aspect) override;
 
 		//! Sets the field of view (Default: PI / 3.5f)
-		virtual void setFOV(f32 fovy) _IRR_OVERRIDE_;
+		void setFOV(f32 fovy) override;
 
 		//! PreRender event
-		virtual void OnRegisterSceneNode() _IRR_OVERRIDE_;
+		void OnRegisterSceneNode() override;
 
 		//! Render
-		virtual void render() _IRR_OVERRIDE_;
+		void render() override;
 
 		//! Update
-		virtual void updateMatrices() _IRR_OVERRIDE_;
+		void updateMatrices() override;
 
 		//! Returns the axis aligned bounding box of this node
-		virtual const core::aabbox3d<f32>& getBoundingBox() const _IRR_OVERRIDE_;
+		const core::aabbox3d<f32>& getBoundingBox() const override;
 
 		//! Returns the view area.
-		virtual const SViewFrustum* getViewFrustum() const _IRR_OVERRIDE_;
+		const SViewFrustum* getViewFrustum() const override;
 
 		//! Disables or enables the camera to get key or mouse inputs.
 		//! If this is set to true, the camera will respond to key inputs
 		//! otherwise not.
-		virtual void setInputReceiverEnabled(bool enabled) _IRR_OVERRIDE_;
+		void setInputReceiverEnabled(bool enabled) override;
 
 		//! Returns if the input receiver of the camera is currently enabled.
-		virtual bool isInputReceiverEnabled() const _IRR_OVERRIDE_;
+		bool isInputReceiverEnabled() const override;
 
 		//! Returns type of the scene node
-		virtual ESCENE_NODE_TYPE getType() const _IRR_OVERRIDE_ { return ESNT_CAMERA; }
+		ESCENE_NODE_TYPE getType() const override { return ESNT_CAMERA; }
 
 		//! Binds the camera scene node's rotation to its target position and vice versa, or unbinds them.
-		virtual void bindTargetAndRotation(bool bound) _IRR_OVERRIDE_;
+		void bindTargetAndRotation(bool bound) override;
 
 		//! Queries if the camera scene node's rotation and its target position are bound together.
-		virtual bool getTargetAndRotationBinding(void) const _IRR_OVERRIDE_;
+		bool getTargetAndRotationBinding(void) const override;
 
 		//! Creates a clone of this scene node and its children.
-		virtual ISceneNode* clone(ISceneNode* newParent=0, ISceneManager* newManager=0) _IRR_OVERRIDE_;
+		ISceneNode* clone(ISceneNode* newParent=0, ISceneManager* newManager=0) override;
 
 	protected:
 

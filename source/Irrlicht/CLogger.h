@@ -21,25 +21,25 @@ public:
 	CLogger(IEventReceiver* r);
 
 	//! Returns the current set log level.
-	virtual ELOG_LEVEL getLogLevel() const _IRR_OVERRIDE_;
+	ELOG_LEVEL getLogLevel() const override;
 
-	//! Sets a new log level.	virtual void setLogLevel(ELOG_LEVEL ll) _IRR_OVERRIDE_;
-	virtual void setLogLevel(ELOG_LEVEL ll) _IRR_OVERRIDE_;
-
-	//! Prints out a text into the log
-	virtual void log(const c8* text, ELOG_LEVEL ll=ELL_INFORMATION) _IRR_OVERRIDE_;
+	//! Sets a new log level.	void setLogLevel(ELOG_LEVEL ll) override;
+	void setLogLevel(ELOG_LEVEL ll) override;
 
 	//! Prints out a text into the log
-	virtual void log(const wchar_t* text, ELOG_LEVEL ll=ELL_INFORMATION) _IRR_OVERRIDE_;
+	void log(const c8* text, ELOG_LEVEL ll=ELL_INFORMATION) override;
 
 	//! Prints out a text into the log
-	virtual void log(const c8* text, const c8* hint, ELOG_LEVEL ll=ELL_INFORMATION) _IRR_OVERRIDE_;
+	void log(const wchar_t* text, ELOG_LEVEL ll=ELL_INFORMATION) override;
 
 	//! Prints out a text into the log
-	virtual void log(const c8* text, const wchar_t* hint, ELOG_LEVEL ll=ELL_INFORMATION) _IRR_OVERRIDE_;
+	void log(const c8* text, const c8* hint, ELOG_LEVEL ll=ELL_INFORMATION) override;
 
 	//! Prints out a text into the log
-	virtual void log(const wchar_t* text, const wchar_t* hint, ELOG_LEVEL ll=ELL_INFORMATION) _IRR_OVERRIDE_;
+	void log(const c8* text, const wchar_t* hint, ELOG_LEVEL ll=ELL_INFORMATION) override;
+
+	//! Prints out a text into the log
+	void log(const wchar_t* text, const wchar_t* hint, ELOG_LEVEL ll=ELL_INFORMATION) override;
 
 	//! Sets a new event receiver
 	void setReceiver(IEventReceiver* r);

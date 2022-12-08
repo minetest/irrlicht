@@ -30,49 +30,49 @@ namespace gui
 			s32 id, core::rect<s32> rectangle);
 
 		//! Returns amount of items in box
-		virtual u32 getItemCount() const _IRR_OVERRIDE_;
+		u32 getItemCount() const override;
 
 		//! returns string of an item. the idx may be a value from 0 to itemCount-1
-		virtual const wchar_t* getItem(u32 idx) const _IRR_OVERRIDE_;
+		const wchar_t* getItem(u32 idx) const override;
 
 		//! Returns item data of an item. the idx may be a value from 0 to itemCount-1
-		virtual u32 getItemData(u32 idx) const _IRR_OVERRIDE_;
+		u32 getItemData(u32 idx) const override;
 
 		//! Returns index based on item data
-		virtual s32 getIndexForItemData( u32 data ) const _IRR_OVERRIDE_;
+		s32 getIndexForItemData( u32 data ) const override;
 
 		//! adds an item and returns the index of it
-		virtual u32 addItem(const wchar_t* text, u32 data) _IRR_OVERRIDE_;
+		u32 addItem(const wchar_t* text, u32 data) override;
 
 		//! Removes an item from the combo box.
-		virtual void removeItem(u32 id) _IRR_OVERRIDE_;
+		void removeItem(u32 id) override;
 
 		//! deletes all items in the combo box
-		virtual void clear() _IRR_OVERRIDE_;
+		void clear() override;
 
 		//! returns the text of the currently selected item
-		virtual const wchar_t* getText() const _IRR_OVERRIDE_;
+		const wchar_t* getText() const override;
 
 		//! returns id of selected item. returns -1 if no item is selected.
-		virtual s32 getSelected() const _IRR_OVERRIDE_;
+		s32 getSelected() const override;
 
 		//! sets the selected item. Set this to -1 if no item should be selected
-		virtual void setSelected(s32 idx) _IRR_OVERRIDE_;
+		void setSelected(s32 idx) override;
 
 		//! sets the text alignment of the text part
-		virtual void setTextAlignment(EGUI_ALIGNMENT horizontal, EGUI_ALIGNMENT vertical) _IRR_OVERRIDE_;
+		void setTextAlignment(EGUI_ALIGNMENT horizontal, EGUI_ALIGNMENT vertical) override;
 
 		//! Set the maximal number of rows for the selection listbox
-		virtual void setMaxSelectionRows(u32 max) _IRR_OVERRIDE_;
+		void setMaxSelectionRows(u32 max) override;
 
 		//! Get the maximal number of rows for the selection listbox
-		virtual u32 getMaxSelectionRows() const _IRR_OVERRIDE_;
+		u32 getMaxSelectionRows() const override;
 
 		//! called if an event happened.
-		virtual bool OnEvent(const SEvent& event) _IRR_OVERRIDE_;
+		bool OnEvent(const SEvent& event) override;
 
 		//! draws the element and its children
-		virtual void draw() _IRR_OVERRIDE_;
+		void draw() override;
 
 	private:
 

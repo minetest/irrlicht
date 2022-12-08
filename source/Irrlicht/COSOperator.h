@@ -24,21 +24,21 @@ public:
 	COSOperator(const core::stringc& osversion);
 
 	//! returns the current operation system version as string.
-	virtual const core::stringc& getOperatingSystemVersion() const _IRR_OVERRIDE_;
+	const core::stringc& getOperatingSystemVersion() const override;
 
 	//! copies text to the clipboard
 	//! \param text: text in utf-8
-	virtual void copyToClipboard(const c8 *text) const _IRR_OVERRIDE_;
+	void copyToClipboard(const c8 *text) const override;
 
 	//! gets text from the clipboard
 	//! \return Returns 0 if no string is in there, otherwise an utf-8 string.
-	virtual const c8* getTextFromClipboard() const _IRR_OVERRIDE_;
+	const c8* getTextFromClipboard() const override;
 
 	//! gets the total and available system RAM in kB
 	//! \param Total: will contain the total system memory
 	//! \param Avail: will contain the available memory
 	//! \return Returns true if successful, false if not
-	virtual bool getSystemMemory(u32* Total, u32* Avail) const _IRR_OVERRIDE_;
+	bool getSystemMemory(u32* Total, u32* Avail) const override;
 
 private:
 

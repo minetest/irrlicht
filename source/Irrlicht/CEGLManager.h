@@ -32,42 +32,42 @@ namespace video
 		// Initialize EGL.
 		/* This method initialize EGLand create EGL display, anyway surface and context
 		aren't create. */
-		virtual bool initialize(const SIrrlichtCreationParameters& params, const SExposedVideoData& data) _IRR_OVERRIDE_;
+		bool initialize(const SIrrlichtCreationParameters& params, const SExposedVideoData& data) override;
 
 		// Terminate EGL.
 		/* Terminate EGL context. This method break both existed surface and context. */
-		virtual void terminate() _IRR_OVERRIDE_;
+		void terminate() override;
 
 		// Create EGL surface.
 		/* This method create EGL surface. On some platforms eg. Android, we must
 		recreate surface on each resume, because WindowID may change, so existed
 		surface may not be valid. If EGL context already exist, this method
 		automatically activates it. */
-		virtual bool generateSurface() _IRR_OVERRIDE_;
+		bool generateSurface() override;
 
 		// Destroy EGL surface.
 		/* This method destroy EGL. On some platforms eg. Android, we should call
 		this method on each pause, because after resume this surface may not be valid.
 		Hovewer this method doesn'r break EGL context. */
-		virtual void destroySurface() _IRR_OVERRIDE_;
+		void destroySurface() override;
 
 		// Create EGL context.
 		/* This method create and activate EGL context. */
-		virtual bool generateContext() _IRR_OVERRIDE_;
+		bool generateContext() override;
 
 		// Destroy EGL context.
 		/* This method destroy EGL context. */
-		virtual void destroyContext() _IRR_OVERRIDE_;
+		void destroyContext() override;
 
-		virtual const SExposedVideoData& getContext() const _IRR_OVERRIDE_;
+		const SExposedVideoData& getContext() const override;
 
-		virtual bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero) _IRR_OVERRIDE_;
+		bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero) override;
 
 		// Get procedure address.
-		virtual void* getProcAddress(const std::string &procName) _IRR_OVERRIDE_;
+		void* getProcAddress(const std::string &procName) override;
 
 		// Swap buffers.
-		virtual bool swapBuffers() _IRR_OVERRIDE_;
+		bool swapBuffers() override;
 
 	protected:
 		enum EConfigStyle

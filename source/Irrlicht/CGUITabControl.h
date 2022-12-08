@@ -30,24 +30,24 @@ namespace gui
 			s32 id);
 
 		//! draws the element and its children
-		virtual void draw() _IRR_OVERRIDE_;
+		void draw() override;
 
 		//! sets if the tab should draw its background
-		virtual void setDrawBackground(bool draw=true) _IRR_OVERRIDE_;
+		void setDrawBackground(bool draw=true) override;
 
 		//! sets the color of the background, if it should be drawn.
-		virtual void setBackgroundColor(video::SColor c) _IRR_OVERRIDE_;
+		void setBackgroundColor(video::SColor c) override;
 
 		//! sets the color of the text
-		virtual void setTextColor(video::SColor c) _IRR_OVERRIDE_;
+		void setTextColor(video::SColor c) override;
 
 		//! returns true if the tab is drawing its background, false if not
-		virtual bool isDrawingBackground() const _IRR_OVERRIDE_;
+		bool isDrawingBackground() const override;
 
 		//! returns the color of the background
-		virtual video::SColor getBackgroundColor() const _IRR_OVERRIDE_;
+		video::SColor getBackgroundColor() const override;
 
-		virtual video::SColor getTextColor() const _IRR_OVERRIDE_;
+		video::SColor getTextColor() const override;
 
 	private:
 
@@ -72,82 +72,82 @@ namespace gui
 		virtual ~CGUITabControl();
 
 		//! Adds a tab
-		virtual IGUITab* addTab(const wchar_t* caption, s32 id=-1) _IRR_OVERRIDE_;
+		IGUITab* addTab(const wchar_t* caption, s32 id=-1) override;
 
 		//! Adds an existing tab
-		virtual s32 addTab(IGUITab* tab) _IRR_OVERRIDE_;
+		s32 addTab(IGUITab* tab) override;
 
 		//! Insert the tab at the given index
-		virtual IGUITab* insertTab(s32 idx, const wchar_t* caption, s32 id=-1) _IRR_OVERRIDE_;
+		IGUITab* insertTab(s32 idx, const wchar_t* caption, s32 id=-1) override;
 
 		//! Insert an existing tab
 		/** Note that it will also add the tab as a child of this TabControl.
 		\return Index of added tab (should be same as the one passed) or -1 for failure*/
-		virtual s32 insertTab(s32 idx, IGUITab* tab, bool serializationMode) _IRR_OVERRIDE_;
+		s32 insertTab(s32 idx, IGUITab* tab, bool serializationMode) override;
 
 		//! Removes a tab from the tabcontrol
-		virtual void removeTab(s32 idx) _IRR_OVERRIDE_;
+		void removeTab(s32 idx) override;
 
 		//! Clears the tabcontrol removing all tabs
-		virtual void clear() _IRR_OVERRIDE_;
+		void clear() override;
 
 		//! Returns amount of tabs in the tabcontrol
-		virtual s32 getTabCount() const _IRR_OVERRIDE_;
+		s32 getTabCount() const override;
 
 		//! Returns a tab based on zero based index
-		virtual IGUITab* getTab(s32 idx) const _IRR_OVERRIDE_;
+		IGUITab* getTab(s32 idx) const override;
 
 		//! Brings a tab to front.
-		virtual bool setActiveTab(s32 idx) _IRR_OVERRIDE_;
+		bool setActiveTab(s32 idx) override;
 
 		//! Brings a tab to front.
-		virtual bool setActiveTab(IGUITab *tab) _IRR_OVERRIDE_;
+		bool setActiveTab(IGUITab *tab) override;
 
 		//! For given given tab find it's zero-based index (or -1 for not found)
-		virtual s32 getTabIndex(const IGUIElement *tab) const _IRR_OVERRIDE_;
+		s32 getTabIndex(const IGUIElement *tab) const override;
 
 		//! Returns which tab is currently active
-		virtual s32 getActiveTab() const _IRR_OVERRIDE_;
+		s32 getActiveTab() const override;
 
 		//! get the the id of the tab at the given absolute coordinates
-		virtual s32 getTabAt(s32 xpos, s32 ypos) const _IRR_OVERRIDE_;
+		s32 getTabAt(s32 xpos, s32 ypos) const override;
 
 		//! called if an event happened.
-		virtual bool OnEvent(const SEvent& event) _IRR_OVERRIDE_;
+		bool OnEvent(const SEvent& event) override;
 
 		//! draws the element and its children
-		virtual void draw() _IRR_OVERRIDE_;
+		void draw() override;
 
 		//! Removes a child.
-		virtual void removeChild(IGUIElement* child) _IRR_OVERRIDE_;
+		void removeChild(IGUIElement* child) override;
 
 		//! Set the height of the tabs
-		virtual void setTabHeight( s32 height ) _IRR_OVERRIDE_;
+		void setTabHeight( s32 height ) override;
 
 		//! Get the height of the tabs
-		virtual s32 getTabHeight() const _IRR_OVERRIDE_;
+		s32 getTabHeight() const override;
 
 		//! set the maximal width of a tab. Per default width is 0 which means "no width restriction".
-		virtual void setTabMaxWidth(s32 width ) _IRR_OVERRIDE_;
+		void setTabMaxWidth(s32 width ) override;
 
 		//! get the maximal width of a tab
-		virtual s32 getTabMaxWidth() const _IRR_OVERRIDE_;
+		s32 getTabMaxWidth() const override;
 
 		//! Set the alignment of the tabs
 		//! note: EGUIA_CENTER is not an option
-		virtual void setTabVerticalAlignment( gui::EGUI_ALIGNMENT alignment ) _IRR_OVERRIDE_;
+		void setTabVerticalAlignment( gui::EGUI_ALIGNMENT alignment ) override;
 
 		//! Get the alignment of the tabs
-		virtual gui::EGUI_ALIGNMENT getTabVerticalAlignment() const _IRR_OVERRIDE_;
+		gui::EGUI_ALIGNMENT getTabVerticalAlignment() const override;
 
 		//! Set the extra width added to tabs on each side of the text
-		virtual void setTabExtraWidth( s32 extraWidth ) _IRR_OVERRIDE_;
+		void setTabExtraWidth( s32 extraWidth ) override;
 
 		//! Get the extra width added to tabs on each side of the text
-		virtual s32 getTabExtraWidth() const _IRR_OVERRIDE_;
+		s32 getTabExtraWidth() const override;
 
 		//! Update the position of the element, decides scroll button status
-		virtual void updateAbsolutePosition() _IRR_OVERRIDE_;
+		void updateAbsolutePosition() override;
 
 	private:
 

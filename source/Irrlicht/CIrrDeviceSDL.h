@@ -23,6 +23,8 @@
 #include <SDL.h>
 #include <SDL_syswm.h>
 
+#include <memory>
+
 namespace irr
 {
 
@@ -37,59 +39,59 @@ namespace irr
 		virtual ~CIrrDeviceSDL();
 
 		//! runs the device. Returns false if device wants to be deleted
-		virtual bool run() _IRR_OVERRIDE_;
+		bool run() override;
 
 		//! pause execution temporarily
-		virtual void yield() _IRR_OVERRIDE_;
+		void yield() override;
 
 		//! pause execution for a specified time
-		virtual void sleep(u32 timeMs, bool pauseTimer) _IRR_OVERRIDE_;
+		void sleep(u32 timeMs, bool pauseTimer) override;
 
 		//! sets the caption of the window
-		virtual void setWindowCaption(const wchar_t* text) _IRR_OVERRIDE_;
+		void setWindowCaption(const wchar_t* text) override;
 
 		//! returns if window is active. if not, nothing need to be drawn
-		virtual bool isWindowActive() const _IRR_OVERRIDE_;
+		bool isWindowActive() const override;
 
 		//! returns if window has focus.
-		bool isWindowFocused() const _IRR_OVERRIDE_;
+		bool isWindowFocused() const override;
 
 		//! returns if window is minimized.
-		bool isWindowMinimized() const _IRR_OVERRIDE_;
+		bool isWindowMinimized() const override;
 
 		//! returns color format of the window.
-		video::ECOLOR_FORMAT getColorFormat() const _IRR_OVERRIDE_;
+		video::ECOLOR_FORMAT getColorFormat() const override;
 
 		//! presents a surface in the client area
-		virtual bool present(video::IImage* surface, void* windowId=0, core::rect<s32>* src=0) _IRR_OVERRIDE_;
+		bool present(video::IImage* surface, void* windowId=0, core::rect<s32>* src=0) override;
 
 		//! notifies the device that it should close itself
-		virtual void closeDevice() _IRR_OVERRIDE_;
+		void closeDevice() override;
 
 		//! Sets if the window should be resizable in windowed mode.
-		virtual void setResizable(bool resize=false) _IRR_OVERRIDE_;
+		void setResizable(bool resize=false) override;
 
 		//! Minimizes the window.
-		virtual void minimizeWindow() _IRR_OVERRIDE_;
+		void minimizeWindow() override;
 
 		//! Maximizes the window.
-		virtual void maximizeWindow() _IRR_OVERRIDE_;
+		void maximizeWindow() override;
 
 		//! Restores the window size.
-		virtual void restoreWindow() _IRR_OVERRIDE_;
+		void restoreWindow() override;
 
 		//! Checks if the Irrlicht window is running in fullscreen mode
 		/** \return True if window is fullscreen. */
-		virtual bool isFullscreen() const _IRR_OVERRIDE_;
+		bool isFullscreen() const override;
 
 		//! Get the position of this window on screen
-		virtual core::position2di getWindowPosition() _IRR_OVERRIDE_;
+		core::position2di getWindowPosition() override;
 
 		//! Activate any joysticks, and generate events for them.
-		virtual bool activateJoysticks(core::array<SJoystickInfo> & joystickInfo) _IRR_OVERRIDE_;
+		bool activateJoysticks(core::array<SJoystickInfo> & joystickInfo) override;
 
 		//! Get the device type
-		virtual E_DEVICE_TYPE getType() const _IRR_OVERRIDE_
+		E_DEVICE_TYPE getType() const override
 		{
 			return EIDT_SDL;
 		}
@@ -104,10 +106,11 @@ namespace irr
 			CCursorControl(CIrrDeviceSDL* dev)
 				: Device(dev), IsVisible(true)
 			{
+				initCursors();
 			}
 
 			//! Changes the visible state of the mouse cursor.
-			virtual void setVisible(bool visible) _IRR_OVERRIDE_
+			void setVisible(bool visible) override
 			{
 				IsVisible = visible;
 				if ( visible )
@@ -119,37 +122,43 @@ namespace irr
 			}
 
 			//! Returns if the cursor is currently visible.
-			virtual bool isVisible() const _IRR_OVERRIDE_
+			bool isVisible() const override
 			{
 				return IsVisible;
 			}
 
 			//! Sets the new position of the cursor.
-			virtual void setPosition(const core::position2d<f32> &pos) _IRR_OVERRIDE_
+			void setPosition(const core::position2d<f32> &pos) override
 			{
 				setPosition(pos.X, pos.Y);
 			}
 
 			//! Sets the new position of the cursor.
-			virtual void setPosition(f32 x, f32 y) _IRR_OVERRIDE_
+			void setPosition(f32 x, f32 y) override
 			{
 				setPosition((s32)(x*Device->Width), (s32)(y*Device->Height));
 			}
 
 			//! Sets the new position of the cursor.
-			virtual void setPosition(const core::position2d<s32> &pos) _IRR_OVERRIDE_
+			void setPosition(const core::position2d<s32> &pos) override
 			{
 				setPosition(pos.X, pos.Y);
 			}
 
 			//! Sets the new position of the cursor.
-			virtual void setPosition(s32 x, s32 y) _IRR_OVERRIDE_
+			void setPosition(s32 x, s32 y) override
 			{
 				SDL_WarpMouseInWindow(Device->Window, x, y);
+
+				if (SDL_GetRelativeMouseMode()) {
+					// There won't be an event for this warp (details on libsdl-org/SDL/issues/6034)
+					Device->MouseX = x;
+					Device->MouseY = y;
+				}
 			}
 
 			//! Returns the current position of the mouse cursor.
-			virtual const core::position2d<s32>& getPosition(bool updateCursor) _IRR_OVERRIDE_
+			const core::position2d<s32>& getPosition(bool updateCursor) override
 			{
 				if ( updateCursor )
 					updateCursorPos();
@@ -157,7 +166,7 @@ namespace irr
 			}
 
 			//! Returns the current position of the mouse cursor.
-			virtual core::position2d<f32> getRelativePosition(bool updateCursor) _IRR_OVERRIDE_
+			core::position2d<f32> getRelativePosition(bool updateCursor) override
 			{
 				if ( updateCursor )
 					updateCursorPos();
@@ -165,8 +174,35 @@ namespace irr
 					CursorPos.Y / (f32)Device->Height);
 			}
 
-			virtual void setReferenceRect(core::rect<s32>* rect=0) _IRR_OVERRIDE_
+			void setReferenceRect(core::rect<s32>* rect=0) override
 			{
+			}
+
+			virtual void setRelativeMode(bool relative) _IRR_OVERRIDE_
+			{
+				// Only change it when necessary, as it flushes mouse motion when enabled
+				if ( relative != SDL_GetRelativeMouseMode()) {
+					if ( relative )
+						SDL_SetRelativeMouseMode( SDL_TRUE );
+					else
+						SDL_SetRelativeMouseMode( SDL_FALSE );
+				}
+			}
+
+			void setActiveIcon(gui::ECURSOR_ICON iconId) override
+			{
+				ActiveIcon = iconId;
+				if (iconId > Cursors.size() || !Cursors[iconId]) {
+					iconId = gui::ECI_NORMAL;
+					if (iconId > Cursors.size() || !Cursors[iconId])
+						return;
+				}
+				SDL_SetCursor(Cursors[iconId].get());
+			}
+
+			gui::ECURSOR_ICON getActiveIcon() const override
+			{
+				return ActiveIcon;
 			}
 
 		private:
@@ -205,9 +241,20 @@ namespace irr
 #endif
 			}
 
+			void initCursors();
+
 			CIrrDeviceSDL* Device;
 			core::position2d<s32> CursorPos;
 			bool IsVisible;
+
+			struct CursorDeleter {
+				void operator()(SDL_Cursor *ptr) {
+					if (ptr)
+						SDL_FreeCursor(ptr);
+				}
+			};
+			std::vector<std::unique_ptr<SDL_Cursor, CursorDeleter>> Cursors;
+			gui::ECURSOR_ICON ActiveIcon;
 		};
 
 	private:

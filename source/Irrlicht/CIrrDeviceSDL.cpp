@@ -119,13 +119,13 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 
 	if ( ++SDLDeviceInstances == 1 )
 	{
-		// Initialize SDL... Timer for sleep, video for the obvious, and
-		// noparachute prevents SDL from catching fatal errors.
-		if (SDL_Init( SDL_INIT_TIMER|SDL_INIT_VIDEO|
+		u32 flags = SDL_INIT_TIMER | SDL_INIT_EVENTS;
+		if (CreationParams.DriverType != video::EDT_NULL)
+			flags |= SDL_INIT_VIDEO;
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
-					SDL_INIT_JOYSTICK|
+		flags |= SDL_INIT_JOYSTICK;
 #endif
-					SDL_INIT_NOPARACHUTE ) < 0)
+		if (SDL_Init(flags) < 0)
 		{
 			os::Printer::log( "Unable to initialize SDL!", SDL_GetError());
 			Close = true;
@@ -270,7 +270,7 @@ bool CIrrDeviceSDL::createWindow()
 	{
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
-	}	
+	}
 
 	SDL_CreateWindowAndRenderer(0, 0, SDL_Flags, &Window, &Renderer); // 0,0 will use the canvas size
 
@@ -463,7 +463,9 @@ bool CIrrDeviceSDL::run()
 
 		switch ( SDL_event.type )
 		{
-		case SDL_MOUSEMOTION:
+		case SDL_MOUSEMOTION: {
+			SDL_Keymod keymod = SDL_GetModState();
+
 			irrevent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 			irrevent.MouseInput.Event = irr::EMIE_MOUSE_MOVED;
 			MouseX = irrevent.MouseInput.X = SDL_event.motion.x;
@@ -471,20 +473,35 @@ bool CIrrDeviceSDL::run()
 			MouseXRel = SDL_event.motion.xrel;
 			MouseYRel = SDL_event.motion.yrel;
 			irrevent.MouseInput.ButtonStates = MouseButtonStates;
+			irrevent.MouseInput.Shift = (keymod & KMOD_SHIFT) != 0;
+			irrevent.MouseInput.Control = (keymod & KMOD_CTRL) != 0;
 
 			postEventFromUser(irrevent);
 			break;
-		case SDL_MOUSEWHEEL:
+		}
+		case SDL_MOUSEWHEEL: {
+			SDL_Keymod keymod = SDL_GetModState();
+
 			irrevent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 			irrevent.MouseInput.Event = irr::EMIE_MOUSE_WHEEL;
 			irrevent.MouseInput.Wheel = static_cast<float>(SDL_event.wheel.y);
+			irrevent.MouseInput.Shift = (keymod & KMOD_SHIFT) != 0;
+			irrevent.MouseInput.Control = (keymod & KMOD_CTRL) != 0;
+			irrevent.MouseInput.X = MouseX;
+			irrevent.MouseInput.Y = MouseY;
+
 			postEventFromUser(irrevent);
 			break;
+		}
 		case SDL_MOUSEBUTTONDOWN:
-		case SDL_MOUSEBUTTONUP:
+		case SDL_MOUSEBUTTONUP: {
+			SDL_Keymod keymod = SDL_GetModState();
+
 			irrevent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 			irrevent.MouseInput.X = SDL_event.button.x;
 			irrevent.MouseInput.Y = SDL_event.button.y;
+			irrevent.MouseInput.Shift = (keymod & KMOD_SHIFT) != 0;
+			irrevent.MouseInput.Control = (keymod & KMOD_CTRL) != 0;
 
 			irrevent.MouseInput.Event = irr::EMIE_MOUSE_MOVED;
 
@@ -579,6 +596,7 @@ bool CIrrDeviceSDL::run()
 				}
 			}
 			break;
+		}
 
 		case SDL_TEXTINPUT:
 			{
@@ -926,7 +944,7 @@ void CIrrDeviceSDL::setResizable(bool resize)
 	os::Printer::log("Resizable not available on the web." , ELL_WARNING);
 	return;
 #else // !_IRR_EMSCRIPTEN_PLATFORM_
-	if (resize != Resizable) { 
+	if (resize != Resizable) {
 		if (resize)
 			SDL_Flags |= SDL_WINDOW_RESIZABLE;
 		else
@@ -1177,6 +1195,25 @@ void CIrrDeviceSDL::createKeyMap()
 	// some special keys missing
 
 	KeyMap.sort();
+}
+
+void CIrrDeviceSDL::CCursorControl::initCursors()
+{
+	Cursors.reserve(gui::ECI_COUNT);
+
+	Cursors.emplace_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW));     // ECI_NORMAL
+	Cursors.emplace_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_CROSSHAIR)); // ECI_CROSS
+	Cursors.emplace_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND));      // ECI_HAND
+	Cursors.emplace_back(nullptr);                                             // ECI_HELP
+	Cursors.emplace_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM));     // ECI_IBEAM
+	Cursors.emplace_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO));        // ECI_NO
+	Cursors.emplace_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT));      // ECI_WAIT
+	Cursors.emplace_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL));   // ECI_SIZEALL
+	Cursors.emplace_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENESW));  // ECI_SIZENESW
+	Cursors.emplace_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENWSE));  // ECI_SIZENWSE
+	Cursors.emplace_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS));    // ECI_SIZENS
+	Cursors.emplace_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE));    // ECI_SIZEWE
+	Cursors.emplace_back(nullptr);                                             // ECI_UP
 }
 
 } // end namespace irr

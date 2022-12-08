@@ -23,24 +23,24 @@ public:
 	//! Recalculates all normals of the mesh.
 	/** \param mesh: Mesh on which the operation is performed.
 	\param smooth: Whether to use smoothed normals. */
-	virtual void recalculateNormals(scene::IMesh* mesh, bool smooth = false, bool angleWeighted = false) const _IRR_OVERRIDE_;
+	void recalculateNormals(scene::IMesh* mesh, bool smooth = false, bool angleWeighted = false) const override;
 
 	//! Recalculates all normals of the mesh buffer.
 	/** \param buffer: Mesh buffer on which the operation is performed.
 	\param smooth: Whether to use smoothed normals. */
-	virtual void recalculateNormals(IMeshBuffer* buffer, bool smooth = false, bool angleWeighted = false) const _IRR_OVERRIDE_;
+	void recalculateNormals(IMeshBuffer* buffer, bool smooth = false, bool angleWeighted = false) const override;
 
 	//! Clones a static IMesh into a modifiable SMesh.
-	virtual SMesh* createMeshCopy(scene::IMesh* mesh) const _IRR_OVERRIDE_;
+	SMesh* createMeshCopy(scene::IMesh* mesh) const override;
 
 	//! Returns amount of polygons in mesh.
-	virtual s32 getPolyCount(scene::IMesh* mesh) const _IRR_OVERRIDE_;
+	s32 getPolyCount(scene::IMesh* mesh) const override;
 
 	//! Returns amount of polygons in mesh.
-	virtual s32 getPolyCount(scene::IAnimatedMesh* mesh) const _IRR_OVERRIDE_;
+	s32 getPolyCount(scene::IAnimatedMesh* mesh) const override;
 
 	//! create a new AnimatedMesh and adds the mesh to it
-	virtual IAnimatedMesh * createAnimatedMesh(scene::IMesh* mesh,scene::E_ANIMATED_MESH_TYPE type) const _IRR_OVERRIDE_;
+	IAnimatedMesh * createAnimatedMesh(scene::IMesh* mesh,scene::E_ANIMATED_MESH_TYPE type) const override;
 };
 
 } // end namespace scene
