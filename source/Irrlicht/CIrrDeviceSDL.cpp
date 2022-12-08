@@ -120,8 +120,8 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	if ( ++SDLDeviceInstances == 1 )
 	{
 		u32 flags = SDL_INIT_TIMER | SDL_INIT_EVENTS;
-		if (CreationParams.DriverType != video::EDT_NULL)
-			flags |= SDL_INIT_VIDEO;
+		// if (CreationParams.DriverType != video::EDT_NULL)
+			// flags |= SDL_INIT_VIDEO;
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
 		flags |= SDL_INIT_JOYSTICK;
 #endif
