@@ -299,6 +299,7 @@ target_include_directories(IrrlichtMt
 		"$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/>"
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
 		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt>"
+		${SDL2_INCLUDE_DIRS}
 	PRIVATE
 		${link_includes}
 )
