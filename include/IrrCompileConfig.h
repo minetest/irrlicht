@@ -44,8 +44,9 @@
 //! different library versions without having to change the sources.
 //! Example: NO_IRR_COMPILE_WITH_X11_ would disable X11
 
-//! Uncomment this line to compile with the SDL device
+#if BUILD_HEADLESS
 #define _IRR_COMPILE_WITH_SDL_DEVICE_
+#endif
 #ifdef NO_IRR_COMPILE_WITH_SDL_DEVICE_
 #undef _IRR_COMPILE_WITH_SDL_DEVICE_
 #endif
