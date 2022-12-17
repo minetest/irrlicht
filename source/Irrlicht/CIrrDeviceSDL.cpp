@@ -121,6 +121,7 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	{
 		u32 flags = SDL_INIT_TIMER | SDL_INIT_EVENTS;
 		#if BUILD_HEADLESS
+		#else
 		if (CreationParams.DriverType != video::EDT_NULL)
 			flags |= SDL_INIT_VIDEO;
 		#endif
