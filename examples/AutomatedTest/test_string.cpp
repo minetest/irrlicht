@@ -36,11 +36,6 @@ static void test_basics()
 	// operator=
 	s = stringw(L"abcdef");
 	UASSERTSTR(s, "abcdef");
-	s = stringc("test");
-	s = s.c_str();
-	UASSERTSTR(s, "test");
-	s = s.c_str() + 1;
-	UASSERTSTR(s, "est");
 	s = L"abcdef";
 	UASSERTSTR(s, "abcdef");
 	s = static_cast<const char*>(nullptr);

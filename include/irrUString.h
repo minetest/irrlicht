@@ -813,8 +813,8 @@ public:
 
 
 	//! Constructor from other string types
-	template <class B, class A>
-	ustring16(const string<B, A>& other)
+	template <class B>
+	ustring16(const string<B>& other)
 	: array(0), allocated(0), used(0)
 	{
 #if __BYTE_ORDER == __BIG_ENDIAN
@@ -1054,8 +1054,8 @@ public:
 	}
 
 	//! Assignment operator for other string types
-	template <class B, class A>
-	ustring16<TAlloc>& operator=(const string<B, A>& other)
+	template <class B>
+	ustring16<TAlloc>& operator=(const string<B>& other)
 	{
 		*this = other.c_str();
 		return *this;
@@ -3139,8 +3139,8 @@ inline ustring16<TAlloc> operator+(const B* const left, const ustring16<TAlloc>&
 
 
 //! Appends a ustring16 and an Irrlicht string.
-template <typename TAlloc, typename B, typename BAlloc>
-inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const string<B, BAlloc>& right)
+template <typename TAlloc, typename B>
+inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const string<B>& right)
 {
 	ustring16<TAlloc> ret(left);
 	ret += right;
@@ -3149,8 +3149,8 @@ inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const string<B
 
 
 //! Appends a ustring16 and an Irrlicht string.
-template <typename TAlloc, typename B, typename BAlloc>
-inline ustring16<TAlloc> operator+(const string<B, BAlloc>& left, const ustring16<TAlloc>& right)
+template <typename TAlloc, typename B>
+inline ustring16<TAlloc> operator+(const string<B>& left, const ustring16<TAlloc>& right)
 {
 	ustring16<TAlloc> ret(left);
 	ret += right;
@@ -3438,8 +3438,8 @@ inline ustring16<TAlloc>&& operator+(const B* const left, ustring16<TAlloc>&& ri
 
 
 //! Appends a ustring16 and an Irrlicht string.
-template <typename TAlloc, typename B, typename BAlloc>
-inline ustring16<TAlloc>&& operator+(const string<B, BAlloc>& left, ustring16<TAlloc>&& right)
+template <typename TAlloc, typename B>
+inline ustring16<TAlloc>&& operator+(const string<B>& left, ustring16<TAlloc>&& right)
 {
 	//std::cout << "MOVE operator+(&, &&)" << std::endl;
 	right.insert(left, 0);
@@ -3448,8 +3448,8 @@ inline ustring16<TAlloc>&& operator+(const string<B, BAlloc>& left, ustring16<TA
 
 
 //! Appends a ustring16 and an Irrlicht string.
-template <typename TAlloc, typename B, typename BAlloc>
-inline ustring16<TAlloc>&& operator+(ustring16<TAlloc>&& left, const string<B, BAlloc>& right)
+template <typename TAlloc, typename B>
+inline ustring16<TAlloc>&& operator+(ustring16<TAlloc>&& left, const string<B>& right)
 {
 	//std::cout << "MOVE operator+(&&, &)" << std::endl;
 	left.append(right);

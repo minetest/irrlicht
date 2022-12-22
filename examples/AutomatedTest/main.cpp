@@ -37,8 +37,10 @@ void run_unit_tests() {
 		test_irr_array();
 		test_irr_string();
 	} catch (const std::exception &e) {
+		std::cerr << e.what() << std::endl;
 		test_fail++;
 	}
+	std::cout << std::endl;
 }
 
 int main(int argc, char *argv[])
