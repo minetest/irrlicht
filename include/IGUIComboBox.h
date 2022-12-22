@@ -54,9 +54,9 @@ namespace gui
 
 		//! Sets text justification of the text area
 		/** \param horizontal: EGUIA_UPPERLEFT for left justified (default),
-		EGUIA_LOWEERRIGHT for right justified, or EGUIA_CENTER for centered text.
+		EGUIA_LOWERRIGHT for right justified, or EGUIA_CENTER for centered text.
 		\param vertical: EGUIA_UPPERLEFT to align with top edge,
-		EGUIA_LOWEERRIGHT for bottom edge, or EGUIA_CENTER for centered text (default). */
+		EGUIA_LOWERRIGHT for bottom edge, or EGUIA_CENTER for centered text (default). */
 		virtual void setTextAlignment(EGUI_ALIGNMENT horizontal, EGUI_ALIGNMENT vertical) = 0;
 
 		//! Set the maximal number of rows for the selection listbox
