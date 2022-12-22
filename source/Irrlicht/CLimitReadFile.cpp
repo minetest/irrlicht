@@ -3,6 +3,7 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
 #include "CLimitReadFile.h"
+#include "irrMath.h"
 #include "irrString.h"
 
 namespace irr

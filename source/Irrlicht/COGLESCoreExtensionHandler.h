@@ -11,6 +11,7 @@
 // (this is also the reason why this file is header-only as correct OGL ES headers have to be included first)
 #if defined(_IRR_COMPILE_WITH_OGLES2_) || defined(_IRR_COMPILE_WITH_OGLES1_)
 
+#include "irrMath.h"
 #include "COpenGLCoreFeature.h"
 
 namespace irr
