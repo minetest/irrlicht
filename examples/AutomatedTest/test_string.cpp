@@ -17,6 +17,8 @@ static void test_basics()
 	UASSERTEQ(s.c_str()[0], '\0');
 	s = stringc(0.1234567);
 	UASSERTSTR(s, "0.123457");
+	s = stringc(0x1p+53);
+	UASSERTSTR(s, "9007199254740992.000000");
 	s = stringc(static_cast<int>(-102400));
 	UASSERTSTR(s, "-102400");
 	s = stringc(static_cast<unsigned int>(102400));
@@ -27,6 +29,8 @@ static void test_basics()
 	UASSERTSTR(s, "1024000");
 	s = stringc("YESno", 3);
 	UASSERTSTR(s, "YES");
+	s = stringc(L"test", 4);
+	UASSERTSTR(s, "test");
 	s = stringc("Hello World!");
 	UASSERTSTR(s, "Hello World!");
 	// operator=
@@ -41,6 +45,11 @@ static void test_basics()
 	UASSERTSTR(s, "abcdef");
 	s = static_cast<const char*>(nullptr);
 	UASSERTSTR(s, "");
+	// operator+
+	s = s + stringc("foo");
+	UASSERTSTR(s, "foo");
+	s = s + L"bar";
+	UASSERTSTR(s, "foobar");
 	// the rest
 	s = "f";
 	UASSERTEQ(s[0], 'f');
@@ -53,6 +62,9 @@ static void test_basics()
 	UASSERT(sref < stringc("b"));
 	UASSERT(stringc("Z") < sref);
 	UASSERT(!(sref < stringc("a")));
+	UASSERT(sref.lower_ignore_case("AA"));
+	UASSERT(sref.lower_ignore_case("B"));
+	UASSERT(!sref.lower_ignore_case("A"));
 	s = "dog";
 	UASSERT(sref != "cat");
 	UASSERT(sref != stringc("cat"));
@@ -68,6 +80,7 @@ static void test_methods()
 	s.clear();
 	UASSERTEQ(sref.size(), 0);
 	UASSERT(sref.empty());
+	UASSERT(sref[0] == 0);
 	s = "\tAz#`";
 	s.make_lower();
 	UASSERTSTR(s, "\taz#`");
