@@ -82,7 +82,7 @@ public:
 				{
 					if ( OriginalSize == Size && OriginalColorFormat == ColorFormat )
 					{
-						Images[i]->setMipMapsData( images[i]->getMipMapsData(), false, true);
+						Images[i]->setMipMapsData( images[i]->getMipMapsData(), false);
 					}
 					else
 					{

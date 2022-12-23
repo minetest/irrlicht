@@ -54,7 +54,6 @@
 #include <ostream>
 
 #include "irrTypes.h"
-#include "irrAllocator.h"
 #include "irrArray.h"
 #include "irrMath.h"
 #include "irrString.h"
@@ -227,7 +226,6 @@ inline EUTF_ENCODE determineUnicodeBOM(const char* data)
 
 
 //! UTF-16 string class.
-template <typename TAlloc = irrAllocator<uchar16_t> >
 class ustring16
 {
 public:
@@ -240,7 +238,7 @@ public:
 	class _ustring16_iterator_access
 	{
 		public:
-			_ustring16_iterator_access(const ustring16<TAlloc>* s, u32 p) : ref(s), pos(p) {}
+			_ustring16_iterator_access(const ustring16* s, u32 p) : ref(s), pos(p) {}
 
 			//! Allow the class to be interpreted as a single UTF-32 character.
 			operator uchar32_t() const
@@ -395,7 +393,7 @@ public:
 			//! Sets a uchar32_t at our current position.
 			void _set(uchar32_t c)
 			{
-				ustring16<TAlloc>* ref2 = const_cast<ustring16<TAlloc>*>(ref);
+				ustring16* ref2 = const_cast<ustring16*>(ref);
 				const uchar16_t* a = ref2->c_str();
 				if (c > 0xFFFF)
 				{
@@ -424,10 +422,10 @@ public:
 				}
 			}
 
-			const ustring16<TAlloc>* ref;
+			const ustring16* ref;
 			u32 pos;
 	};
-	typedef typename ustring16<TAlloc>::_ustring16_iterator_access access;
+	typedef typename ustring16::_ustring16_iterator_access access;
 
 
 	//! Iterator to iterate through a UTF-16 string.
@@ -453,8 +451,8 @@ public:
 
 			//! Constructors.
 			_ustring16_const_iterator(const _Iter& i) : ref(i.ref), pos(i.pos) {}
-			_ustring16_const_iterator(const ustring16<TAlloc>& s) : ref(&s), pos(0) {}
-			_ustring16_const_iterator(const ustring16<TAlloc>& s, const u32 p) : ref(&s), pos(0)
+			_ustring16_const_iterator(const ustring16& s) : ref(&s), pos(0) {}
+			_ustring16_const_iterator(const ustring16& s, const u32 p) : ref(&s), pos(0)
 			{
 				if (ref->size_raw() == 0 || p == 0)
 					return;
@@ -705,7 +703,7 @@ public:
 			}
 
 		protected:
-			const ustring16<TAlloc>* ref;
+			const ustring16* ref;
 			u32 pos;
 	};
 
@@ -730,8 +728,8 @@ public:
 
 			//! Constructors.
 			_ustring16_iterator(const _Iter& i) : _ustring16_const_iterator(i) {}
-			_ustring16_iterator(const ustring16<TAlloc>& s) : _ustring16_const_iterator(s) {}
-			_ustring16_iterator(const ustring16<TAlloc>& s, const u32 p) : _ustring16_const_iterator(s, p) {}
+			_ustring16_iterator(const ustring16& s) : _ustring16_const_iterator(s) {}
+			_ustring16_iterator(const ustring16& s, const u32 p) : _ustring16_const_iterator(s, p) {}
 
 			//! Accesses the full character at the iterator's position.
 			reference operator*() const
@@ -778,8 +776,8 @@ public:
 			}
 	};
 
-	typedef typename ustring16<TAlloc>::_ustring16_iterator iterator;
-	typedef typename ustring16<TAlloc>::_ustring16_const_iterator const_iterator;
+	typedef typename ustring16::_ustring16_iterator iterator;
+	typedef typename ustring16::_ustring16_const_iterator const_iterator;
 
 	///----------------------///
 	/// end iterator classes ///
@@ -794,13 +792,13 @@ public:
 #else
 		encoding = unicode::EUTFE_UTF16_LE;
 #endif
-		array = allocator.allocate(1); // new u16[1];
+		array = new uchar16_t[1];
 		array[0] = 0x0;
 	}
 
 
 	//! Constructor
-	ustring16(const ustring16<TAlloc>& other)
+	ustring16(const ustring16& other)
 	: array(0), allocated(0), used(0)
 	{
 #if __BYTE_ORDER == __BIG_ENDIAN
@@ -993,10 +991,9 @@ public:
 
 
 	//! Constructor for moving a ustring16
-	ustring16(ustring16<TAlloc>&& other)
+	ustring16(ustring16&& other)
 	: array(other.array), encoding(other.encoding), allocated(other.allocated), used(other.used)
 	{
-		//std::cout << "MOVE constructor" << std::endl;
 		other.array = 0;
 		other.allocated = 0;
 		other.used = 0;
@@ -1005,12 +1002,12 @@ public:
 	//! Destructor
 	~ustring16()
 	{
-		allocator.deallocate(array); // delete [] array;
+		delete [] array;
 	}
 
 
 	//! Assignment operator
-	ustring16& operator=(const ustring16<TAlloc>& other)
+	ustring16& operator=(const ustring16& other)
 	{
 		if (this == &other)
 			return *this;
@@ -1018,9 +1015,9 @@ public:
 		used = other.size_raw();
 		if (used >= allocated)
 		{
-			allocator.deallocate(array); // delete [] array;
+			delete [] array;
 			allocated = used + 1;
-			array = allocator.allocate(used + 1); //new u16[used];
+			array = new uchar16_t[used + 1];
 		}
 
 		const uchar16_t* p = other.c_str();
@@ -1036,12 +1033,11 @@ public:
 	}
 
 	//! Move assignment operator
-	ustring16& operator=(ustring16<TAlloc>&& other)
+	ustring16& operator=(ustring16&& other)
 	{
 		if (this != &other)
 		{
-			//std::cout << "MOVE operator=" << std::endl;
-			allocator.deallocate(array);
+			delete [] array;
 
 			array = other.array;
 			allocated = other.allocated;
@@ -1055,7 +1051,7 @@ public:
 
 	//! Assignment operator for other string types
 	template <class B>
-	ustring16<TAlloc>& operator=(const string<B>& other)
+	ustring16& operator=(const string<B>& other)
 	{
 		*this = other.c_str();
 		return *this;
@@ -1063,54 +1059,51 @@ public:
 
 
 	//! Assignment operator for UTF-8 strings
-	ustring16<TAlloc>& operator=(const uchar8_t* const c)
+	ustring16& operator=(const uchar8_t* const c)
 	{
 		if (!array)
 		{
-			array = allocator.allocate(1); //new u16[1];
+			array = new uchar16_t[1];
 			allocated = 1;
 		}
 		used = 0;
 		array[used] = 0x0;
 		if (!c) return *this;
 
-		//! Append our string now.
 		append(c);
 		return *this;
 	}
 
 
 	//! Assignment operator for UTF-16 strings
-	ustring16<TAlloc>& operator=(const uchar16_t* const c)
+	ustring16& operator=(const uchar16_t* const c)
 	{
 		if (!array)
 		{
-			array = allocator.allocate(1); //new u16[1];
+			array = new uchar16_t[1];
 			allocated = 1;
 		}
 		used = 0;
 		array[used] = 0x0;
 		if (!c) return *this;
 
-		//! Append our string now.
 		append(c);
 		return *this;
 	}
 
 
 	//! Assignment operator for UTF-32 strings
-	ustring16<TAlloc>& operator=(const uchar32_t* const c)
+	ustring16& operator=(const uchar32_t* const c)
 	{
 		if (!array)
 		{
-			array = allocator.allocate(1); //new u16[1];
+			array = new uchar16_t[1];
 			allocated = 1;
 		}
 		used = 0;
 		array[used] = 0x0;
 		if (!c) return *this;
 
-		//! Append our string now.
 		append(c);
 		return *this;
 	}
@@ -1120,7 +1113,7 @@ public:
 	/** Note that this assumes that a correct unicode string is stored in the wchar_t string.
 		Since wchar_t changes depending on its platform, it could either be a UTF-8, -16, or -32 string.
 		This function assumes you are storing the correct unicode encoding inside the wchar_t string. **/
-	ustring16<TAlloc>& operator=(const wchar_t* const c)
+	ustring16& operator=(const wchar_t* const c)
 	{
 		if (sizeof(wchar_t) == 4)
 			*this = reinterpret_cast<const uchar32_t* const>(c);
@@ -1136,7 +1129,7 @@ public:
 	//! Assignment operator for other strings.
 	/** Note that this assumes that a correct unicode string is stored in the string. **/
 	template <class B>
-	ustring16<TAlloc>& operator=(const B* const c)
+	ustring16& operator=(const B* const c)
 	{
 		if (sizeof(B) == 4)
 			*this = reinterpret_cast<const uchar32_t* const>(c);
@@ -1183,7 +1176,7 @@ public:
 
 
 	//! Equality operator
-	bool operator ==(const ustring16<TAlloc>& other) const
+	bool operator ==(const ustring16& other) const
 	{
 		for(u32 i=0; array[i] && other.array[i]; ++i)
 			if (array[i] != other.array[i])
@@ -1194,7 +1187,7 @@ public:
 
 
 	//! Is smaller comparator
-	bool operator <(const ustring16<TAlloc>& other) const
+	bool operator <(const ustring16& other) const
 	{
 		for(u32 i=0; array[i] && other.array[i]; ++i)
 		{
@@ -1215,7 +1208,7 @@ public:
 
 
 	//! Inequality operator
-	bool operator !=(const ustring16<TAlloc>& other) const
+	bool operator !=(const ustring16& other) const
 	{
 		return !(*this == other);
 	}
@@ -1256,7 +1249,7 @@ public:
 	//! \param other Other string to compare to.
 	//! \param n Number of characters to compare.
 	//! \return True if the n first characters of both strings are equal.
-	bool equalsn(const ustring16<TAlloc>& other, u32 n) const
+	bool equalsn(const ustring16& other, u32 n) const
 	{
 		u32 i;
 		const uchar16_t* oa = other.c_str();
@@ -1292,7 +1285,7 @@ public:
 	//! Appends a character to this ustring16
 	//! \param character The character to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& append(uchar32_t character)
+	ustring16& append(uchar32_t character)
 	{
 		if (used + 2 >= allocated)
 			reallocate(used + 2);
@@ -1323,7 +1316,7 @@ public:
 	//! \param other The UTF-8 string to append.
 	//! \param length The length of the string to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& append(const uchar8_t* const other, u32 length=0xffffffff)
+	ustring16& append(const uchar8_t* const other, u32 length=0xffffffff)
 	{
 		if (!other)
 			return *this;
@@ -1499,7 +1492,7 @@ public:
 	//! \param other The UTF-16 string to append.
 	//! \param length The length of the string to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& append(const uchar16_t* const other, u32 length=0xffffffff)
+	ustring16& append(const uchar16_t* const other, u32 length=0xffffffff)
 	{
 		if (!other)
 			return *this;
@@ -1564,7 +1557,7 @@ public:
 	//! \param other The UTF-32 string to append.
 	//! \param length The length of the string to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& append(const uchar32_t* const other, u32 length=0xffffffff)
+	ustring16& append(const uchar32_t* const other, u32 length=0xffffffff)
 	{
 		if (!other)
 			return *this;
@@ -1640,7 +1633,7 @@ public:
 	//! Appends a ustring16 to this ustring16
 	//! \param other The string to append to this one.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& append(const ustring16<TAlloc>& other)
+	ustring16& append(const ustring16& other)
 	{
 		const uchar16_t* oa = other.c_str();
 
@@ -1663,7 +1656,7 @@ public:
 	//! \param other The string to append to this one.
 	//! \param length How many characters of the other string to add to this one.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& append(const ustring16<TAlloc>& other, u32 length)
+	ustring16& append(const ustring16& other, u32 length)
 	{
 		if (other.size() == 0)
 			return *this;
@@ -1883,7 +1876,7 @@ public:
 	//! \param str The string to find.
 	//! \param start The start position of the search.
 	//! \return Positions where the ustring16 has been found, or -1 if not found.
-	s32 find(const ustring16<TAlloc>& str, const u32 start = 0) const
+	s32 find(const ustring16& str, const u32 start = 0) const
 	{
 		u32 my_size = size();
 		u32 their_size = str.size();
@@ -1921,7 +1914,7 @@ public:
 	//! \param str The string to find.
 	//! \param start The start position of the search.
 	//! \return Positions where the string has been found, or -1 if not found.
-	s32 find_raw(const ustring16<TAlloc>& str, const u32 start = 0) const
+	s32 find_raw(const ustring16& str, const u32 start = 0) const
 	{
 		const uchar16_t* data = str.c_str();
 		if (data && *data)
@@ -1954,18 +1947,18 @@ public:
 	//! \param begin: Start of substring.
 	//! \param length: Length of substring.
 	//! \return A reference to our current string.
-	ustring16<TAlloc> subString(u32 begin, s32 length) const
+	ustring16 subString(u32 begin, s32 length) const
 	{
 		u32 len = size();
 		// if start after ustring16
 		// or no proper substring length
 		if ((length <= 0) || (begin>=len))
-			return ustring16<TAlloc>("");
+			return ustring16("");
 		// clamp length to maximal value
 		if ((length+begin) > len)
 			length = len-begin;
 
-		ustring16<TAlloc> o;
+		ustring16 o;
 		o.reserve((length+1) * 2);
 
 		const_iterator i(*this, begin);
@@ -1983,7 +1976,7 @@ public:
 	//! Appends a character to this ustring16.
 	//! \param c Character to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& operator += (char c)
+	ustring16& operator += (char c)
 	{
 		append((uchar32_t)c);
 		return *this;
@@ -1993,7 +1986,7 @@ public:
 	//! Appends a character to this ustring16.
 	//! \param c Character to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& operator += (uchar32_t c)
+	ustring16& operator += (uchar32_t c)
 	{
 		append(c);
 		return *this;
@@ -2003,7 +1996,7 @@ public:
 	//! Appends a number to this ustring16.
 	//! \param c Number to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& operator += (short c)
+	ustring16& operator += (short c)
 	{
 		append(core::stringc(c));
 		return *this;
@@ -2013,7 +2006,7 @@ public:
 	//! Appends a number to this ustring16.
 	//! \param c Number to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& operator += (unsigned short c)
+	ustring16& operator += (unsigned short c)
 	{
 		append(core::stringc(c));
 		return *this;
@@ -2023,7 +2016,7 @@ public:
 	//! Appends a number to this ustring16.
 	//! \param c Number to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& operator += (int c)
+	ustring16& operator += (int c)
 	{
 		append(core::stringc(c));
 		return *this;
@@ -2033,7 +2026,7 @@ public:
 	//! Appends a number to this ustring16.
 	//! \param c Number to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& operator += (unsigned int c)
+	ustring16& operator += (unsigned int c)
 	{
 		append(core::stringc(c));
 		return *this;
@@ -2043,7 +2036,7 @@ public:
 	//! Appends a number to this ustring16.
 	//! \param c Number to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& operator += (long c)
+	ustring16& operator += (long c)
 	{
 		append(core::stringc(c));
 		return *this;
@@ -2053,7 +2046,7 @@ public:
 	//! Appends a number to this ustring16.
 	//! \param c Number to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& operator += (unsigned long c)
+	ustring16& operator += (unsigned long c)
 	{
 		append(core::stringc(c));
 		return *this;
@@ -2063,7 +2056,7 @@ public:
 	//! Appends a number to this ustring16.
 	//! \param c Number to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& operator += (double c)
+	ustring16& operator += (double c)
 	{
 		append(core::stringc(c));
 		return *this;
@@ -2073,7 +2066,7 @@ public:
 	//! Appends a char ustring16 to this ustring16.
 	//! \param c Char ustring16 to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& operator += (const uchar16_t* const c)
+	ustring16& operator += (const uchar16_t* const c)
 	{
 		append(c);
 		return *this;
@@ -2083,7 +2076,7 @@ public:
 	//! Appends a ustring16 to this ustring16.
 	//! \param other ustring16 to append.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& operator += (const ustring16<TAlloc>& other)
+	ustring16& operator += (const ustring16& other)
 	{
 		append(other);
 		return *this;
@@ -2094,12 +2087,12 @@ public:
 	//! \param toReplace Character to replace.
 	//! \param replaceWith Character replacing the old one.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& replace(uchar32_t toReplace, uchar32_t replaceWith)
+	ustring16& replace(uchar32_t toReplace, uchar32_t replaceWith)
 	{
 		iterator i(*this, 0);
 		while (!i.atEnd())
 		{
-			typename ustring16<TAlloc>::access a = *i;
+			typename ustring16::access a = *i;
 			if ((uchar32_t)a == toReplace)
 				a = replaceWith;
 			++i;
@@ -2112,7 +2105,7 @@ public:
 	//! \param toReplace The string to replace.
 	//! \param replaceWith The string replacing the old one.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& replace(const ustring16<TAlloc>& toReplace, const ustring16<TAlloc>& replaceWith)
+	ustring16& replace(const ustring16& toReplace, const ustring16& replaceWith)
 	{
 		if (toReplace.size() == 0)
 			return *this;
@@ -2223,7 +2216,7 @@ public:
 	//! Removes characters from a ustring16..
 	//! \param c The character to remove.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& remove(uchar32_t c)
+	ustring16& remove(uchar32_t c)
 	{
 		u32 pos = 0;
 		u32 found = 0;
@@ -2259,7 +2252,7 @@ public:
 	//! Removes a ustring16 from the ustring16.
 	//! \param toRemove The string to remove.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& remove(const ustring16<TAlloc>& toRemove)
+	ustring16& remove(const ustring16& toRemove)
 	{
 		u32 size = toRemove.size_raw();
 		if (size == 0) return *this;
@@ -2294,7 +2287,7 @@ public:
 	//! Removes characters from the ustring16.
 	//! \param characters The characters to remove.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& removeChars(const ustring16<TAlloc>& characters)
+	ustring16& removeChars(const ustring16& characters)
 	{
 		if (characters.size_raw() == 0)
 			return *this;
@@ -2344,7 +2337,7 @@ public:
 	//! Removes the specified characters (by default, Latin-1 whitespace) from the begining and the end of the ustring16.
 	//! \param whitespace The characters that are to be considered as whitespace.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& trim(const ustring16<TAlloc>& whitespace = " \t\n\r")
+	ustring16& trim(const ustring16& whitespace = " \t\n\r")
 	{
 		core::array<uchar32_t> utf32white = whitespace.toUTF32();
 
@@ -2363,7 +2356,7 @@ public:
 	//! May be slow, because all elements following after the erased element have to be copied.
 	//! \param index Index of element to be erased.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& erase(u32 index)
+	ustring16& erase(u32 index)
 	{
 		_IRR_DEBUG_BREAK_IF(index>used) // access violation
 
@@ -2384,7 +2377,7 @@ public:
 
 	//! Validate the existing ustring16, checking for valid surrogate pairs and checking for proper termination.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& validate()
+	ustring16& validate()
 	{
 		// Validate all unicode characters.
 		for (u32 i=0; i<allocated; ++i)
@@ -2485,7 +2478,7 @@ public:
 				{
 					if ((!ignoreEmptyTokens || pos - lastpos != 0) &&
 							!lastWasSeparator)
-					ret.push_back(ustring16<TAlloc>(&array[lastpospos], pos - lastpos));
+					ret.push_back(ustring16(&array[lastpospos], pos - lastpos));
 					foundSeparator = true;
 					lastpos = (keepSeparators ? pos : pos + 1);
 					lastpospos = (keepSeparators ? i.getPos() : i.getPos() + 1);
@@ -2498,7 +2491,7 @@ public:
 		}
 		u32 s = size() + 1;
 		if (s > lastpos)
-			ret.push_back(ustring16<TAlloc>(&array[lastpospos], s - lastpos));
+			ret.push_back(ustring16(&array[lastpospos], s - lastpos));
 		return ret.size()-oldSize;
 	}
 
@@ -2521,7 +2514,7 @@ public:
 	\return The number of resulting substrings
 	*/
 	template<class container>
-	u32 split(container& ret, const ustring16<TAlloc>& c, bool ignoreEmptyTokens=true, bool keepSeparators=false) const
+	u32 split(container& ret, const ustring16& c, bool ignoreEmptyTokens=true, bool keepSeparators=false) const
 	{
 		core::array<uchar32_t> v = c.toUTF32();
 		return split(ret, v.pointer(), v.size(), ignoreEmptyTokens, keepSeparators);
@@ -2548,7 +2541,7 @@ public:
 	//! \param c The character to insert.
 	//! \param pos The position to insert the character.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& insert(uchar32_t c, u32 pos)
+	ustring16& insert(uchar32_t c, u32 pos)
 	{
 		u8 len = (c > 0xFFFF ? 2 : 1);
 
@@ -2583,7 +2576,7 @@ public:
 	//! \param c The string to insert.
 	//! \param pos The position to insert the string.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& insert(const ustring16<TAlloc>& c, u32 pos)
+	ustring16& insert(const ustring16& c, u32 pos)
 	{
 		u32 len = c.size_raw();
 		if (len == 0) return *this;
@@ -2613,7 +2606,7 @@ public:
 	//! \param c The character to insert.
 	//! \param pos The position to insert the character.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& insert_raw(uchar16_t c, u32 pos)
+	ustring16& insert_raw(uchar16_t c, u32 pos)
 	{
 		if (used + 1 >= allocated)
 			reallocate(used + 1);
@@ -2632,7 +2625,7 @@ public:
 	//! Removes a character from string.
 	//! \param pos Position of the character to remove.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& erase_raw(u32 pos)
+	ustring16& erase_raw(u32 pos)
 	{
 		for (u32 i=pos; i<=used; ++i)
 		{
@@ -2648,7 +2641,7 @@ public:
 	//! \param c The new character.
 	//! \param pos The position of the character to replace.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& replace_raw(uchar16_t c, u32 pos)
+	ustring16& replace_raw(uchar16_t c, u32 pos)
 	{
 		array[pos] = c;
 		return *this;
@@ -3023,7 +3016,7 @@ public:
 	//! \param data The data stream to load from.
 	//! \param data_size The length of the data string.
 	//! \return A reference to our current string.
-	ustring16<TAlloc>& loadDataStream(const char* data, size_t data_size)
+	ustring16& loadDataStream(const char* data, size_t data_size)
 	{
 		// Clear our string.
 		*this = "";
@@ -3079,7 +3072,7 @@ private:
 	{
 		uchar16_t* old_array = array;
 
-		array = allocator.allocate(new_size + 1); //new u16[new_size];
+		array = new uchar16_t[new_size + 1];
 		allocated = new_size + 1;
 		if (old_array == 0) return;
 
@@ -3092,7 +3085,7 @@ private:
 
 		array[used] = 0;
 
-		allocator.deallocate(old_array); // delete [] old_array;
+		delete [] old_array;
 	}
 
 	//--- member variables
@@ -3101,308 +3094,281 @@ private:
 	unicode::EUTF_ENCODE encoding;
 	u32 allocated;
 	u32 used;
-	TAlloc allocator;
-	//irrAllocator<uchar16_t> allocator;
 };
 
-typedef ustring16<irrAllocator<uchar16_t> > ustring;
+typedef ustring16 ustring;
 
 
+/* these cause ambigous overloads errors and don't seem to be actually in use */
+#if 0
 //! Appends two ustring16s.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const ustring16<TAlloc>& right)
+inline ustring16 operator+(const ustring16& left, const ustring16& right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and a null-terminated unicode string.
-template <typename TAlloc, class B>
-inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const B* const right)
+template <class B>
+inline ustring16 operator+(const ustring16& left, const B* const right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and a null-terminated unicode string.
-template <class B, typename TAlloc>
-inline ustring16<TAlloc> operator+(const B* const left, const ustring16<TAlloc>& right)
+template <class B>
+inline ustring16 operator+(const B* const left, const ustring16& right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and an Irrlicht string.
-template <typename TAlloc, typename B>
-inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const string<B>& right)
+template <typename B>
+inline ustring16 operator+(const ustring16& left, const string<B>& right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and an Irrlicht string.
-template <typename TAlloc, typename B>
-inline ustring16<TAlloc> operator+(const string<B>& left, const ustring16<TAlloc>& right)
+template <typename B>
+inline ustring16 operator+(const string<B>& left, const ustring16& right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and a std::basic_string.
-template <typename TAlloc, typename B, typename A, typename BAlloc>
-inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const std::basic_string<B, A, BAlloc>& right)
+template <typename B, typename A, typename BAlloc>
+inline ustring16 operator+(const ustring16& left, const std::basic_string<B, A, BAlloc>& right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and a std::basic_string.
-template <typename TAlloc, typename B, typename A, typename BAlloc>
-inline ustring16<TAlloc> operator+(const std::basic_string<B, A, BAlloc>& left, const ustring16<TAlloc>& right)
+template <typename B, typename A, typename BAlloc>
+inline ustring16 operator+(const std::basic_string<B, A, BAlloc>& left, const ustring16& right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and a char.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const char right)
+inline ustring16 operator+(const ustring16& left, const char right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and a char.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const char left, const ustring16<TAlloc>& right)
+inline ustring16 operator+(const char left, const ustring16& right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and a uchar32_t.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const uchar32_t right)
+inline ustring16 operator+(const ustring16& left, const uchar32_t right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and a uchar32_t.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const uchar32_t left, const ustring16<TAlloc>& right)
+inline ustring16 operator+(const uchar32_t left, const ustring16& right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and a short.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const short right)
+inline ustring16 operator+(const ustring16& left, const short right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += core::stringc(right);
 	return ret;
 }
 
 
 //! Appends a ustring16 and a short.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const short left, const ustring16<TAlloc>& right)
+inline ustring16 operator+(const short left, const ustring16& right)
 {
-	ustring16<TAlloc> ret((core::stringc(left)));
+	ustring16 ret((core::stringc(left)));
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and an unsigned short.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const unsigned short right)
+inline ustring16 operator+(const ustring16& left, const unsigned short right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += core::stringc(right);
 	return ret;
 }
 
 
 //! Appends a ustring16 and an unsigned short.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const unsigned short left, const ustring16<TAlloc>& right)
+inline ustring16 operator+(const unsigned short left, const ustring16& right)
 {
-	ustring16<TAlloc> ret((core::stringc(left)));
+	ustring16 ret((core::stringc(left)));
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and an int.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const int right)
+inline ustring16 operator+(const ustring16& left, const int right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += core::stringc(right);
 	return ret;
 }
 
 
 //! Appends a ustring16 and an int.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const int left, const ustring16<TAlloc>& right)
+inline ustring16 operator+(const int left, const ustring16& right)
 {
-	ustring16<TAlloc> ret((core::stringc(left)));
+	ustring16 ret((core::stringc(left)));
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and an unsigned int.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const unsigned int right)
+inline ustring16 operator+(const ustring16& left, const unsigned int right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += core::stringc(right);
 	return ret;
 }
 
 
 //! Appends a ustring16 and an unsigned int.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const unsigned int left, const ustring16<TAlloc>& right)
+inline ustring16 operator+(const unsigned int left, const ustring16& right)
 {
-	ustring16<TAlloc> ret((core::stringc(left)));
+	ustring16 ret((core::stringc(left)));
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and a long.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const long right)
+inline ustring16 operator+(const ustring16& left, const long right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += core::stringc(right);
 	return ret;
 }
 
 
 //! Appends a ustring16 and a long.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const long left, const ustring16<TAlloc>& right)
+inline ustring16 operator+(const long left, const ustring16& right)
 {
-	ustring16<TAlloc> ret((core::stringc(left)));
+	ustring16 ret((core::stringc(left)));
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and an unsigned long.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const unsigned long right)
+inline ustring16 operator+(const ustring16& left, const unsigned long right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += core::stringc(right);
 	return ret;
 }
 
 
 //! Appends a ustring16 and an unsigned long.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const unsigned long left, const ustring16<TAlloc>& right)
+inline ustring16 operator+(const unsigned long left, const ustring16& right)
 {
-	ustring16<TAlloc> ret((core::stringc(left)));
+	ustring16 ret((core::stringc(left)));
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and a float.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const float right)
+inline ustring16 operator+(const ustring16& left, const float right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += core::stringc(right);
 	return ret;
 }
 
 
 //! Appends a ustring16 and a float.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const float left, const ustring16<TAlloc>& right)
+inline ustring16 operator+(const float left, const ustring16& right)
 {
-	ustring16<TAlloc> ret((core::stringc(left)));
+	ustring16 ret((core::stringc(left)));
 	ret += right;
 	return ret;
 }
 
 
 //! Appends a ustring16 and a double.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const ustring16<TAlloc>& left, const double right)
+inline ustring16 operator+(const ustring16& left, const double right)
 {
-	ustring16<TAlloc> ret(left);
+	ustring16 ret(left);
 	ret += core::stringc(right);
 	return ret;
 }
 
 
 //! Appends a ustring16 and a double.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const double left, const ustring16<TAlloc>& right)
+inline ustring16 operator+(const double left, const ustring16& right)
 {
-	ustring16<TAlloc> ret((core::stringc(left)));
+	ustring16 ret((core::stringc(left)));
 	ret += right;
 	return ret;
 }
 
 
 //! Appends two ustring16s.
-template <typename TAlloc>
-inline ustring16<TAlloc>&& operator+(const ustring16<TAlloc>& left, ustring16<TAlloc>&& right)
+inline ustring16&& operator+(const ustring16& left, ustring16&& right)
 {
-	//std::cout << "MOVE operator+(&, &&)" << std::endl;
 	right.insert(left, 0);
 	return std::move(right);
 }
 
 
 //! Appends two ustring16s.
-template <typename TAlloc>
-inline ustring16<TAlloc>&& operator+(ustring16<TAlloc>&& left, const ustring16<TAlloc>& right)
+inline ustring16&& operator+(ustring16&& left, const ustring16& right)
 {
-	//std::cout << "MOVE operator+(&&, &)" << std::endl;
 	left.append(right);
 	return std::move(left);
 }
 
 
 //! Appends two ustring16s.
-template <typename TAlloc>
-inline ustring16<TAlloc>&& operator+(ustring16<TAlloc>&& left, ustring16<TAlloc>&& right)
+inline ustring16&& operator+(ustring16&& left, ustring16&& right)
 {
-	//std::cout << "MOVE operator+(&&, &&)" << std::endl;
 	if ((right.size_raw() <= left.capacity() - left.size_raw()) ||
 		(right.capacity() - right.size_raw() < left.size_raw()))
 	{
@@ -3418,68 +3384,61 @@ inline ustring16<TAlloc>&& operator+(ustring16<TAlloc>&& left, ustring16<TAlloc>
 
 
 //! Appends a ustring16 and a null-terminated unicode string.
-template <typename TAlloc, class B>
-inline ustring16<TAlloc>&& operator+(ustring16<TAlloc>&& left, const B* const right)
+template <class B>
+inline ustring16&& operator+(ustring16&& left, const B* const right)
 {
-	//std::cout << "MOVE operator+(&&, B*)" << std::endl;
 	left.append(right);
 	return std::move(left);
 }
 
 
 //! Appends a ustring16 and a null-terminated unicode string.
-template <class B, typename TAlloc>
-inline ustring16<TAlloc>&& operator+(const B* const left, ustring16<TAlloc>&& right)
+template <class B>
+inline ustring16&& operator+(const B* const left, ustring16&& right)
 {
-	//std::cout << "MOVE operator+(B*, &&)" << std::endl;
 	right.insert(left, 0);
 	return std::move(right);
 }
 
 
 //! Appends a ustring16 and an Irrlicht string.
-template <typename TAlloc, typename B>
-inline ustring16<TAlloc>&& operator+(const string<B>& left, ustring16<TAlloc>&& right)
+template <typename B>
+inline ustring16&& operator+(const string<B>& left, ustring16&& right)
 {
-	//std::cout << "MOVE operator+(&, &&)" << std::endl;
 	right.insert(left, 0);
 	return std::move(right);
 }
 
 
 //! Appends a ustring16 and an Irrlicht string.
-template <typename TAlloc, typename B>
-inline ustring16<TAlloc>&& operator+(ustring16<TAlloc>&& left, const string<B>& right)
+template <typename B>
+inline ustring16&& operator+(ustring16&& left, const string<B>& right)
 {
-	//std::cout << "MOVE operator+(&&, &)" << std::endl;
 	left.append(right);
 	return std::move(left);
 }
 
 
 //! Appends a ustring16 and a std::basic_string.
-template <typename TAlloc, typename B, typename A, typename BAlloc>
-inline ustring16<TAlloc>&& operator+(const std::basic_string<B, A, BAlloc>& left, ustring16<TAlloc>&& right)
+template <typename B, typename A, typename BAlloc>
+inline ustring16&& operator+(const std::basic_string<B, A, BAlloc>& left, ustring16&& right)
 {
-	//std::cout << "MOVE operator+(&, &&)" << std::endl;
-	right.insert(core::ustring16<TAlloc>(left), 0);
+	right.insert(core::ustring16(left), 0);
 	return std::move(right);
 }
 
 
 //! Appends a ustring16 and a std::basic_string.
-template <typename TAlloc, typename B, typename A, typename BAlloc>
-inline ustring16<TAlloc>&& operator+(ustring16<TAlloc>&& left, const std::basic_string<B, A, BAlloc>& right)
+template <typename B, typename A, typename BAlloc>
+inline ustring16&& operator+(ustring16&& left, const std::basic_string<B, A, BAlloc>& right)
 {
-	//std::cout << "MOVE operator+(&&, &)" << std::endl;
 	left.append(right);
 	return std::move(left);
 }
 
 
 //! Appends a ustring16 and a char.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const char right)
+inline ustring16 operator+(ustring16&& left, const char right)
 {
 	left.append((uchar32_t)right);
 	return std::move(left);
@@ -3487,8 +3446,7 @@ inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const char right)
 
 
 //! Appends a ustring16 and a char.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const char left, ustring16<TAlloc>&& right)
+inline ustring16 operator+(const char left, ustring16&& right)
 {
 	right.insert((uchar32_t)left, 0);
 	return std::move(right);
@@ -3496,8 +3454,7 @@ inline ustring16<TAlloc> operator+(const char left, ustring16<TAlloc>&& right)
 
 
 //! Appends a ustring16 and a uchar32_t.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const uchar32_t right)
+inline ustring16 operator+(ustring16&& left, const uchar32_t right)
 {
 	left.append(right);
 	return std::move(left);
@@ -3505,8 +3462,7 @@ inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const uchar32_t rig
 
 
 //! Appends a ustring16 and a uchar32_t.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const uchar32_t left, ustring16<TAlloc>&& right)
+inline ustring16 operator+(const uchar32_t left, ustring16&& right)
 {
 	right.insert(left, 0);
 	return std::move(right);
@@ -3514,8 +3470,7 @@ inline ustring16<TAlloc> operator+(const uchar32_t left, ustring16<TAlloc>&& rig
 
 
 //! Appends a ustring16 and a short.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const short right)
+inline ustring16 operator+(ustring16&& left, const short right)
 {
 	left.append(core::stringc(right));
 	return std::move(left);
@@ -3523,8 +3478,7 @@ inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const short right)
 
 
 //! Appends a ustring16 and a short.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const short left, ustring16<TAlloc>&& right)
+inline ustring16 operator+(const short left, ustring16&& right)
 {
 	right.insert(core::stringc(left), 0);
 	return std::move(right);
@@ -3532,8 +3486,7 @@ inline ustring16<TAlloc> operator+(const short left, ustring16<TAlloc>&& right)
 
 
 //! Appends a ustring16 and an unsigned short.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const unsigned short right)
+inline ustring16 operator+(ustring16&& left, const unsigned short right)
 {
 	left.append(core::stringc(right));
 	return std::move(left);
@@ -3541,8 +3494,7 @@ inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const unsigned shor
 
 
 //! Appends a ustring16 and an unsigned short.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const unsigned short left, ustring16<TAlloc>&& right)
+inline ustring16 operator+(const unsigned short left, ustring16&& right)
 {
 	right.insert(core::stringc(left), 0);
 	return std::move(right);
@@ -3550,8 +3502,7 @@ inline ustring16<TAlloc> operator+(const unsigned short left, ustring16<TAlloc>&
 
 
 //! Appends a ustring16 and an int.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const int right)
+inline ustring16 operator+(ustring16&& left, const int right)
 {
 	left.append(core::stringc(right));
 	return std::move(left);
@@ -3559,8 +3510,7 @@ inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const int right)
 
 
 //! Appends a ustring16 and an int.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const int left, ustring16<TAlloc>&& right)
+inline ustring16 operator+(const int left, ustring16&& right)
 {
 	right.insert(core::stringc(left), 0);
 	return std::move(right);
@@ -3568,8 +3518,7 @@ inline ustring16<TAlloc> operator+(const int left, ustring16<TAlloc>&& right)
 
 
 //! Appends a ustring16 and an unsigned int.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const unsigned int right)
+inline ustring16 operator+(ustring16&& left, const unsigned int right)
 {
 	left.append(core::stringc(right));
 	return std::move(left);
@@ -3577,8 +3526,7 @@ inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const unsigned int 
 
 
 //! Appends a ustring16 and an unsigned int.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const unsigned int left, ustring16<TAlloc>&& right)
+inline ustring16 operator+(const unsigned int left, ustring16&& right)
 {
 	right.insert(core::stringc(left), 0);
 	return std::move(right);
@@ -3586,8 +3534,7 @@ inline ustring16<TAlloc> operator+(const unsigned int left, ustring16<TAlloc>&& 
 
 
 //! Appends a ustring16 and a long.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const long right)
+inline ustring16 operator+(ustring16&& left, const long right)
 {
 	left.append(core::stringc(right));
 	return std::move(left);
@@ -3595,8 +3542,7 @@ inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const long right)
 
 
 //! Appends a ustring16 and a long.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const long left, ustring16<TAlloc>&& right)
+inline ustring16 operator+(const long left, ustring16&& right)
 {
 	right.insert(core::stringc(left), 0);
 	return std::move(right);
@@ -3604,8 +3550,7 @@ inline ustring16<TAlloc> operator+(const long left, ustring16<TAlloc>&& right)
 
 
 //! Appends a ustring16 and an unsigned long.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const unsigned long right)
+inline ustring16 operator+(ustring16&& left, const unsigned long right)
 {
 	left.append(core::stringc(right));
 	return std::move(left);
@@ -3613,8 +3558,7 @@ inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const unsigned long
 
 
 //! Appends a ustring16 and an unsigned long.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const unsigned long left, ustring16<TAlloc>&& right)
+inline ustring16 operator+(const unsigned long left, ustring16&& right)
 {
 	right.insert(core::stringc(left), 0);
 	return std::move(right);
@@ -3622,8 +3566,7 @@ inline ustring16<TAlloc> operator+(const unsigned long left, ustring16<TAlloc>&&
 
 
 //! Appends a ustring16 and a float.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const float right)
+inline ustring16 operator+(ustring16&& left, const float right)
 {
 	left.append(core::stringc(right));
 	return std::move(left);
@@ -3631,8 +3574,7 @@ inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const float right)
 
 
 //! Appends a ustring16 and a float.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const float left, ustring16<TAlloc>&& right)
+inline ustring16 operator+(const float left, ustring16&& right)
 {
 	right.insert(core::stringc(left), 0);
 	return std::move(right);
@@ -3640,8 +3582,7 @@ inline ustring16<TAlloc> operator+(const float left, ustring16<TAlloc>&& right)
 
 
 //! Appends a ustring16 and a double.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const double right)
+inline ustring16 operator+(ustring16&& left, const double right)
 {
 	left.append(core::stringc(right));
 	return std::move(left);
@@ -3649,25 +3590,23 @@ inline ustring16<TAlloc> operator+(ustring16<TAlloc>&& left, const double right)
 
 
 //! Appends a ustring16 and a double.
-template <typename TAlloc>
-inline ustring16<TAlloc> operator+(const double left, ustring16<TAlloc>&& right)
+inline ustring16 operator+(const double left, ustring16&& right)
 {
 	right.insert(core::stringc(left), 0);
 	return std::move(right);
 }
+#endif
 
 
 //! Writes a ustring16 to an ostream.
-template <typename TAlloc>
-inline std::ostream& operator<<(std::ostream& out, const ustring16<TAlloc>& in)
+inline std::ostream& operator<<(std::ostream& out, const ustring16& in)
 {
 	out << in.toUTF8_s().c_str();
 	return out;
 }
 
 //! Writes a ustring16 to a wostream.
-template <typename TAlloc>
-inline std::wostream& operator<<(std::wostream& out, const ustring16<TAlloc>& in)
+inline std::wostream& operator<<(std::wostream& out, const ustring16& in)
 {
 	out << in.toWCHAR_s().c_str();
 	return out;

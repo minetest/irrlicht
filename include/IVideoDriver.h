@@ -331,7 +331,7 @@ namespace video
 		_IRR_DEPRECATED_ ITexture* addTexture(const io::path& name, IImage* image, void* mipmapData)
 		{
 			if (image)
-				image->setMipMapsData(mipmapData, false, true);
+				image->setMipMapsData(mipmapData, false);
 
 			return addTexture(name, image);
 		}

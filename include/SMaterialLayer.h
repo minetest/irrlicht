@@ -6,7 +6,6 @@
 #define __S_MATERIAL_LAYER_H_INCLUDED__
 
 #include "matrix4.h"
-#include "irrAllocator.h"
 
 namespace irr
 {
@@ -69,8 +68,7 @@ namespace video
 		{
 			if ( TextureMatrix )
 			{
-				MatrixAllocator.destruct(TextureMatrix);
-				MatrixAllocator.deallocate(TextureMatrix);
+				delete TextureMatrix;
 			}
 		}
 
@@ -90,8 +88,7 @@ namespace video
 					*TextureMatrix = *other.TextureMatrix;
 				else
 				{
-					MatrixAllocator.destruct(TextureMatrix);
-					MatrixAllocator.deallocate(TextureMatrix);
+					delete TextureMatrix;
 					TextureMatrix = 0;
 				}
 			}
@@ -99,8 +96,7 @@ namespace video
 			{
 				if (other.TextureMatrix)
 				{
-					TextureMatrix = MatrixAllocator.allocate(1);
-					MatrixAllocator.construct(TextureMatrix,*other.TextureMatrix);
+					TextureMatrix = new core::matrix4(*other.TextureMatrix);
 				}
 				else
 					TextureMatrix = 0;
@@ -122,8 +118,7 @@ namespace video
 		{
 			if (!TextureMatrix)
 			{
-				TextureMatrix = MatrixAllocator.allocate(1);
-				MatrixAllocator.construct(TextureMatrix,core::IdentityMatrix);
+				TextureMatrix = new core::matrix4();
 			}
 			return *TextureMatrix;
 		}
@@ -146,8 +141,7 @@ namespace video
 		{
 			if (!TextureMatrix)
 			{
-				TextureMatrix = MatrixAllocator.allocate(1);
-				MatrixAllocator.construct(TextureMatrix,mat);
+				TextureMatrix = new core::matrix4(mat);
 			}
 			else
 				*TextureMatrix = mat;
@@ -216,7 +210,6 @@ namespace video
 
 	private:
 		friend class SMaterial;
-		irr::core::irrAllocator<irr::core::matrix4> MatrixAllocator;
 
 		//! Texture Matrix
 		/** Do not access this element directly as the internal
