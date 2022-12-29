@@ -3401,8 +3401,23 @@ inline void COpenGLExtensionHandler::extGlSwapInterval(int interval)
 #endif
 #endif
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
-	//TODO: Check GLX_EXT_swap_control and GLX_MESA_swap_control
-#ifdef GLX_SGI_swap_control
+#if defined(GLX_MESA_swap_control)
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlxSwapIntervalMESA)
+		pGlxSwapIntervalMESA(interval);
+#else
+	pGlXSwapIntervalMESA(interval);
+#endif
+#elif defined(GLX_EXT_swap_control)
+	Display *dpy = glXGetCurrentDisplay();
+	GLXDrawable drawable = glXGetCurrentDrawable();
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (pGlxSwapIntervalEXT)
+		pGlxSwapIntervalEXT(dpy, drawable, interval);
+#else
+	pGlXSwapIntervalEXT(dpy, drawable, interval);
+#endif
+#elif defined(GLX_SGI_swap_control)
 	// does not work with interval==0
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
 	if (interval && pGlxSwapIntervalSGI)
@@ -3411,23 +3426,7 @@ inline void COpenGLExtensionHandler::extGlSwapInterval(int interval)
 	if (interval)
 		glXSwapIntervalSGI(interval);
 #endif
-#elif defined(GLX_EXT_swap_control)
-#ifdef _IRR_OPENGL_USE_EXTPOINTER_
-	Display *dpy = glXGetCurrentDisplay();
-	GLXDrawable drawable = glXGetCurrentDrawable();
-
-	if (pGlxSwapIntervalEXT)
-		pGlxSwapIntervalEXT(dpy, drawable, interval);
-#else
-	pGlXSwapIntervalEXT(dpy, drawable, interval);
-#endif
-#elif defined(GLX_MESA_swap_control)
-#ifdef _IRR_OPENGL_USE_EXTPOINTER_
-	if (pGlxSwapIntervalMESA)
-		pGlxSwapIntervalMESA(interval);
-#else
-	pGlXSwapIntervalMESA(interval);
-#endif
+	}
 #endif
 #endif
 }
