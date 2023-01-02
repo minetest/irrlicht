@@ -17,8 +17,6 @@
 #include "EVertexAttributes.h"
 #include "CImage.h"
 #include "os.h"
-#include "EProfileIDs.h"
-#include "IProfiler.h"
 
 #ifdef _IRR_COMPILE_WITH_ANDROID_DEVICE_
 #include "android_native_app_glue.h"
@@ -188,8 +186,6 @@ void COGLES1Driver::createMaterialRenderers()
 
 bool COGLES1Driver::beginScene(u16 clearFlag, SColor clearColor, f32 clearDepth, u8 clearStencil, const SExposedVideoData& videoData, core::rect<s32>* sourceRect)
 {
-	IRR_PROFILE(CProfileScope p1(EPID_ES2_BEGIN_SCENE);)
-
 	CNullDriver::beginScene(clearFlag, clearColor, clearDepth, clearStencil, videoData, sourceRect);
 
 	if (ContextManager)
@@ -202,8 +198,6 @@ bool COGLES1Driver::beginScene(u16 clearFlag, SColor clearColor, f32 clearDepth,
 
 bool COGLES1Driver::endScene()
 {
-	IRR_PROFILE(CProfileScope p1(EPID_ES2_END_SCENE);)
-
 	CNullDriver::endScene();
 
 	glFlush();
