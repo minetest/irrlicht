@@ -1009,24 +1009,6 @@ void CIrrDeviceWin32::createDriver()
 	case video::EDT_WEBGL1:
 		os::Printer::log("WebGL1 driver not supported on Win32 device.", ELL_ERROR);
 		break;
-	case video::EDT_SOFTWARE:
-#ifdef _IRR_COMPILE_WITH_SOFTWARE_
-		switchToFullScreen();
-
-		VideoDriver = video::createSoftwareDriver(CreationParams.WindowSize, CreationParams.Fullscreen, FileSystem, this);
-#else
-		os::Printer::log("Software driver was not compiled in.", ELL_ERROR);
-#endif
-		break;
-	case video::EDT_BURNINGSVIDEO:
-#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
-		switchToFullScreen();
-
-		VideoDriver = video::createBurningVideoDriver(CreationParams, FileSystem, this);
-#else
-		os::Printer::log("Burning's Video driver was not compiled in.", ELL_ERROR);
-#endif
-		break;
 	case video::EDT_NULL:
 		VideoDriver = video::createNullDriver(FileSystem, CreationParams.WindowSize);
 		break;
@@ -1124,54 +1106,6 @@ void CIrrDeviceWin32::setWindowCaption(const wchar_t* text)
 	SendMessageTimeoutW(HWnd, WM_SETTEXT, 0,
 			reinterpret_cast<LPARAM>(text),
 			SMTO_ABORTIFHUNG, 2000, &dwResult);
-}
-
-
-//! presents a surface in the client area
-bool CIrrDeviceWin32::present(video::IImage* image, void* windowId, core::rect<s32>* src)
-{
-	HWND hwnd = HWnd;
-	if ( windowId )
-		hwnd = static_cast<HWND>(windowId);
-
-	HDC dc = GetDC(hwnd);
-
-	if ( dc )
-	{
-		RECT rect;
-		GetClientRect(hwnd, &rect);
-		const void* memory = (const void *)image->getData();
-
-		BITMAPV4HEADER bi;
-		ZeroMemory (&bi, sizeof(bi));
-		bi.bV4Size = sizeof(BITMAPINFOHEADER);
-		bi.bV4BitCount = (WORD)image->getBitsPerPixel();
-		bi.bV4Planes = 1;
-		bi.bV4Width = image->getDimension().Width;
-		bi.bV4Height = -((s32)image->getDimension().Height);
-		bi.bV4V4Compression = BI_BITFIELDS;
-		bi.bV4AlphaMask = image->getAlphaMask();
-		bi.bV4RedMask = image->getRedMask();
-		bi.bV4GreenMask = image->getGreenMask();
-		bi.bV4BlueMask = image->getBlueMask();
-
-		if ( src )
-		{
-			StretchDIBits(dc, 0,0, rect.right, rect.bottom,
-					src->UpperLeftCorner.X, src->UpperLeftCorner.Y,
-					src->getWidth(), src->getHeight(),
-					memory, (const BITMAPINFO*)(&bi), DIB_RGB_COLORS, SRCCOPY);
-		}
-		else
-		{
-			StretchDIBits(dc, 0,0, rect.right, rect.bottom,
-					0, 0, image->getDimension().Width, image->getDimension().Height,
-					memory, (const BITMAPINFO*)(&bi), DIB_RGB_COLORS, SRCCOPY);
-		}
-
-		ReleaseDC(hwnd, dc);
-	}
-	return true;
 }
 
 

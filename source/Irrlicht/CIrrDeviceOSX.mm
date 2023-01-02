@@ -547,8 +547,8 @@ namespace irr
 //! constructor
 CIrrDeviceMacOSX::CIrrDeviceMacOSX(const SIrrlichtCreationParameters& param)
 	: CIrrDeviceStub(param), Window(NULL), Display(NULL),
-	SoftwareDriverTarget(0), DeviceWidth(0), DeviceHeight(0),
-	ScreenWidth(0), ScreenHeight(0), MouseButtonStates(0), SoftwareRendererType(0),
+	DeviceWidth(0), DeviceHeight(0),
+	ScreenWidth(0), ScreenHeight(0), MouseButtonStates(0),
 	IsActive(true), IsFullscreen(false), IsShiftDown(false), IsControlDown(false), IsResizable(false)
 {
 	struct utsname name;
@@ -617,7 +617,6 @@ CIrrDeviceMacOSX::CIrrDeviceMacOSX(const SIrrlichtCreationParameters& param)
 
 CIrrDeviceMacOSX::~CIrrDeviceMacOSX()
 {
-	[SoftwareDriverTarget release];
 	[NSApp setPresentationOptions:(NSApplicationPresentationDefault)];
 	closeDevice();
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
@@ -731,24 +730,6 @@ void CIrrDeviceMacOSX::createDriver()
 {
 	switch (CreationParams.DriverType)
 	{
-		case video::EDT_SOFTWARE:
-#ifdef _IRR_COMPILE_WITH_SOFTWARE_
-			VideoDriver = video::createSoftwareDriver(CreationParams.WindowSize, CreationParams.Fullscreen, FileSystem, this);
-			SoftwareRendererType = 2;
-#else
-			os::Printer::log("No Software driver support compiled in.", ELL_ERROR);
-#endif
-			break;
-
-		case video::EDT_BURNINGSVIDEO:
-#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
-			VideoDriver = video::createBurningVideoDriver(CreationParams, FileSystem, this);
-			SoftwareRendererType = 1;
-#else
-			os::Printer::log("Burning's video driver was not compiled in.", ELL_ERROR);
-#endif
-			break;
-
 		case video::EDT_OPENGL:
 #ifdef _IRR_COMPILE_WITH_OPENGL_
             {
@@ -1355,87 +1336,6 @@ core::position2di CIrrDeviceMacOSX::getWindowPosition()
 	NSRect rect = [Window frame];
 	int screenHeight = [[[NSScreen screens] objectAtIndex:0] frame].size.height;
 	return core::position2di(rect.origin.x, screenHeight - rect.origin.y - rect.size.height);
-}
-
-
-
-bool CIrrDeviceMacOSX::present(video::IImage* surface, void* windowId, core::rect<s32>* src )
-{
-	// todo: implement window ID and src rectangle
-
-	if (!surface)
-		return false;
-
-	if (SoftwareRendererType > 0)
-	{
-		const u32 colorSamples=3;
-		// do we need to change the size?
-		const bool updateSize = !SoftwareDriverTarget ||
-				s32([SoftwareDriverTarget size].width) != surface->getDimension().Width ||
-				s32([SoftwareDriverTarget size].height) != surface->getDimension().Height;
-
-		NSRect areaRect = NSMakeRect(0.0, 0.0, surface->getDimension().Width, surface->getDimension().Height);
-		const u32 destPitch = (colorSamples * areaRect.size.width);
-
-		// create / update the target
-		if (updateSize)
-		{
-			[SoftwareDriverTarget release];
-			// allocate target for IImage
-			SoftwareDriverTarget = [[NSBitmapImageRep alloc]
-					initWithBitmapDataPlanes: nil
-					pixelsWide: areaRect.size.width
-					pixelsHigh: areaRect.size.height
-					bitsPerSample: 8
-					samplesPerPixel: colorSamples
-					hasAlpha: NO
-					isPlanar: NO
-					colorSpaceName: NSCalibratedRGBColorSpace
-					bytesPerRow: destPitch
-					bitsPerPixel: 8*colorSamples];
-		}
-
-		if (SoftwareDriverTarget==nil)
-			return false;
-
-		// get pointer to image data
-		unsigned char* imgData = (unsigned char*)surface->getData();
-
-		u8* srcdata = reinterpret_cast<u8*>(imgData);
-		u8* destData = reinterpret_cast<u8*>([SoftwareDriverTarget bitmapData]);
-		const u32 srcheight = core::min_(surface->getDimension().Height, (u32)areaRect.size.height);
-		const u32 srcPitch = surface->getPitch();
-		const u32 minWidth = core::min_(surface->getDimension().Width, (u32)areaRect.size.width);
-		for (u32 y=0; y!=srcheight; ++y)
-		{
-			if(SoftwareRendererType == 2)
-			{
-				if (surface->getColorFormat() == video::ECF_A8R8G8B8)
-					video::CColorConverter::convert_A8R8G8B8toB8G8R8(srcdata, minWidth, destData);
-				else if (surface->getColorFormat() == video::ECF_A1R5G5B5)
-					video::CColorConverter::convert_A1R5G5B5toB8G8R8(srcdata, minWidth, destData);
-				else
-					video::CColorConverter::convert_viaFormat(srcdata, surface->getColorFormat(), minWidth, destData, video::ECF_R8G8B8);
-			}
-			else
-			{
-				if (surface->getColorFormat() == video::ECF_A8R8G8B8)
-					video::CColorConverter::convert_A8R8G8B8toR8G8B8(srcdata, minWidth, destData);
-				else if (surface->getColorFormat() == video::ECF_A1R5G5B5)
-					video::CColorConverter::convert_A1R5G5B5toR8G8B8(srcdata, minWidth, destData);
-				else
-					video::CColorConverter::convert_viaFormat(srcdata, surface->getColorFormat(), minWidth, destData, video::ECF_R8G8B8);
-			}
-
-			srcdata += srcPitch;
-			destData += destPitch;
-		}
-
-		// todo: draw properly into a sub-view
-		[SoftwareDriverTarget draw];
-	}
-
-	return false;
 }
 
 

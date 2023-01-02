@@ -6,7 +6,6 @@
 #define __C_IRR_DEVICE_STUB_H_INCLUDED__
 
 #include "IrrlichtDevice.h"
-#include "IImagePresenter.h"
 #include "SIrrCreationParameters.h"
 #include "IContextManager.h"
 
@@ -36,11 +35,6 @@ namespace irr
 
 	namespace video
 	{
-		IVideoDriver* createSoftwareDriver(const core::dimension2d<u32>& windowSize,
-				bool fullscreen, io::IFileSystem* io,
-				video::IImagePresenter* presenter);
-		IVideoDriver* createBurningVideoDriver(const irr::SIrrlichtCreationParameters& params,
-				io::IFileSystem* io, video::IImagePresenter* presenter);
 		IVideoDriver* createNullDriver(io::IFileSystem* io, const core::dimension2d<u32>& screenSize);
 	}
 

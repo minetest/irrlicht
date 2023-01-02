@@ -480,11 +480,6 @@ namespace irr
 #endif
     }
 
-    bool CIrrDeviceiOS::present(video::IImage* image, void * windowId, core::rect<s32>* src)
-    {
-        return false;
-    }
-
     void CIrrDeviceiOS::closeDevice()
     {
         CFRunLoopStop(CFRunLoopGetMain());

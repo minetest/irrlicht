@@ -13,7 +13,6 @@
 
 #include "IrrlichtDevice.h"
 #include "CIrrDeviceStub.h"
-#include "IImagePresenter.h"
 #include "ICursorControl.h"
 
 #ifdef _IRR_EMSCRIPTEN_PLATFORM_
@@ -28,7 +27,7 @@
 namespace irr
 {
 
-	class CIrrDeviceSDL : public CIrrDeviceStub, video::IImagePresenter
+	class CIrrDeviceSDL : public CIrrDeviceStub
 	{
 	public:
 
@@ -61,9 +60,6 @@ namespace irr
 
 		//! returns color format of the window.
 		video::ECOLOR_FORMAT getColorFormat() const override;
-
-		//! presents a surface in the client area
-		bool present(video::IImage* surface, void* windowId=0, core::rect<s32>* src=0) override;
 
 		//! notifies the device that it should close itself
 		void closeDevice() override;

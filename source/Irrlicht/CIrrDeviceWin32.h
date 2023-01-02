@@ -10,7 +10,6 @@
 
 #include "CIrrDeviceStub.h"
 #include "IrrlichtDevice.h"
-#include "IImagePresenter.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -25,7 +24,7 @@ namespace irr
 {
 	struct SJoystickWin32Control;
 
-	class CIrrDeviceWin32 : public CIrrDeviceStub, video::IImagePresenter
+	class CIrrDeviceWin32 : public CIrrDeviceStub
 	{
 	friend struct SJoystickWin32Control;
 	public:
@@ -57,9 +56,6 @@ namespace irr
 
 		//! returns if window is minimized
 		bool isWindowMinimized() const override;
-
-		//! presents a surface in the client area
-		bool present(video::IImage* surface, void* windowId=0, core::rect<s32>* src=0) override;
 
 		//! notifies the device that it should close itself
 		void closeDevice() override;

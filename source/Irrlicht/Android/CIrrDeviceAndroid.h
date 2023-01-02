@@ -11,7 +11,6 @@
 
 #include "CIrrDeviceStub.h"
 #include "IrrlichtDevice.h"
-#include "IImagePresenter.h"
 #include "ICursorControl.h"
 
 #include <android/sensor.h>
@@ -19,7 +18,7 @@
 
 namespace irr
 {
-	class CIrrDeviceAndroid : public CIrrDeviceStub, video::IImagePresenter
+	class CIrrDeviceAndroid : public CIrrDeviceStub
 	{
 	public:
 		CIrrDeviceAndroid(const SIrrlichtCreationParameters& param);
@@ -33,8 +32,6 @@ namespace irr
 		virtual void sleep(u32 timeMs, bool pauseTimer = false);
 
 		virtual void setWindowCaption(const wchar_t* text);
-
-		virtual bool present(video::IImage* surface, void* windowId, core::rect<s32>* srcClip);
 
 		virtual bool isWindowActive() const;
 

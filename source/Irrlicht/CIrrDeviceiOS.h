@@ -13,12 +13,11 @@
 
 #include "CIrrDeviceStub.h"
 #include "IrrlichtDevice.h"
-#include "IImagePresenter.h"
 
 namespace irr
 {
 
-	class CIrrDeviceiOS : public CIrrDeviceStub, public video::IImagePresenter
+	class CIrrDeviceiOS : public CIrrDeviceStub
 	{
 	public:
 		CIrrDeviceiOS(const SIrrlichtCreationParameters& params);
@@ -33,8 +32,6 @@ namespace irr
 		bool isWindowActive() const override;
 		bool isWindowFocused() const override;
 		bool isWindowMinimized() const override;
-
-		bool present(video::IImage* surface, void * windowId = 0, core::rect<s32>* src = 0) override;
 
 		void closeDevice() override;
 

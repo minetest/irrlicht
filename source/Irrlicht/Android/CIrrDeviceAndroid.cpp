@@ -180,11 +180,6 @@ void CIrrDeviceAndroid::setWindowCaption(const wchar_t* text)
 {
 }
 
-bool CIrrDeviceAndroid::present(video::IImage* surface, void* windowId, core::rect<s32>* srcClip)
-{
-	return true;
-}
-
 bool CIrrDeviceAndroid::isWindowActive() const
 {
 	return (Focused && !Paused);

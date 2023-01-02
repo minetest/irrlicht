@@ -12,7 +12,6 @@
 
 #include "CIrrDeviceStub.h"
 #include "IrrlichtDevice.h"
-#include "IImagePresenter.h"
 #include "IGUIEnvironment.h"
 #include "ICursorControl.h"
 
@@ -36,7 +35,7 @@ namespace irr
 
 namespace irr
 {
-	class CIrrDeviceMacOSX : public CIrrDeviceStub, video::IImagePresenter
+	class CIrrDeviceMacOSX : public CIrrDeviceStub
 	{
 	public:
 
@@ -67,9 +66,6 @@ namespace irr
 
 		//! Checks if the Irrlicht window is minimized
 		bool isWindowMinimized() const override;
-
-		//! presents a surface in the client area
-		bool present(video::IImage* surface, void* windowId=0, core::rect<s32>* src=0 ) override;
 
 		//! notifies the device that it should close itself
 		void closeDevice() override;
@@ -237,14 +233,12 @@ namespace irr
 
 		NSWindow* Window;
         CGDirectDisplayID Display;
-		NSBitmapImageRep* SoftwareDriverTarget;
 		std::map<int,int> KeyCodes;
 		int DeviceWidth;
 		int DeviceHeight;
 		int ScreenWidth;
 		int ScreenHeight;
 		u32 MouseButtonStates;
-        u32 SoftwareRendererType;
         bool IsFullscreen;
 		bool IsActive;
 		bool IsShiftDown;

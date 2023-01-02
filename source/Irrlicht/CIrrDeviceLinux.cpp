@@ -110,7 +110,7 @@ namespace irr
 CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 	: CIrrDeviceStub(param),
 #ifdef _IRR_COMPILE_WITH_X11_
-	XDisplay(0), VisualInfo(0), Screennr(0), XWindow(0), StdHints(0), SoftwareImage(0),
+	XDisplay(0), VisualInfo(0), Screennr(0), XWindow(0), StdHints(0),
 	XInputMethod(0), XInputContext(0),
 	HasNetWM(false),
 #endif
@@ -210,9 +210,6 @@ CIrrDeviceLinux::~CIrrDeviceLinux()
 			ContextManager->destroyContext();
 			ContextManager->destroySurface();
 		}
-
-		if (SoftwareImage)
-			XDestroyImage(SoftwareImage);
 
 		if (!ExternalWindow)
 		{
@@ -487,21 +484,6 @@ bool CIrrDeviceLinux::createWindow()
 	long num;
 	XGetWMNormalHints(XDisplay, XWindow, StdHints, &num);
 
-	// create an XImage for the software renderer
-	//(thx to Nadav for some clues on how to do that!)
-
-	if (CreationParams.DriverType == video::EDT_SOFTWARE || CreationParams.DriverType == video::EDT_BURNINGSVIDEO)
-	{
-		SoftwareImage = XCreateImage(XDisplay,
-			VisualInfo->visual, VisualInfo->depth,
-			ZPixmap, 0, 0, Width, Height,
-			BitmapPad(XDisplay), 0);
-
-		// use malloc because X will free it later on
-		if (SoftwareImage)
-			SoftwareImage->data = (char*) malloc(SoftwareImage->bytes_per_line * SoftwareImage->height * sizeof(char));
-	}
-
 	initXInput2();
 
 #endif // #ifdef _IRR_COMPILE_WITH_X11_
@@ -515,20 +497,6 @@ void CIrrDeviceLinux::createDriver()
 	switch(CreationParams.DriverType)
 	{
 #ifdef _IRR_COMPILE_WITH_X11_
-	case video::EDT_SOFTWARE:
-#ifdef _IRR_COMPILE_WITH_SOFTWARE_
-		VideoDriver = video::createSoftwareDriver(CreationParams.WindowSize, CreationParams.Fullscreen, FileSystem, this);
-#else
-		os::Printer::log("No Software driver support compiled in.", ELL_ERROR);
-#endif
-		break;
-	case video::EDT_BURNINGSVIDEO:
-#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
-		VideoDriver = video::createBurningVideoDriver(CreationParams, FileSystem, this);
-#else
-		os::Printer::log("Burning's video driver was not compiled in.", ELL_ERROR);
-#endif
-		break;
 	case video::EDT_OPENGL:
 #ifdef _IRR_COMPILE_WITH_OPENGL_
 		{
@@ -764,21 +732,6 @@ bool CIrrDeviceLinux::run()
 				{
 					Width = event.xconfigure.width;
 					Height = event.xconfigure.height;
-
-					// resize image data
-					if (SoftwareImage)
-					{
-						XDestroyImage(SoftwareImage);
-
-						SoftwareImage = XCreateImage(XDisplay,
-							VisualInfo->visual, VisualInfo->depth,
-							ZPixmap, 0, 0, Width, Height,
-							BitmapPad(XDisplay), 0);
-
-						// use malloc because X will free it later on
-						if (SoftwareImage)
-							SoftwareImage->data = (char*) malloc(SoftwareImage->bytes_per_line * SoftwareImage->height * sizeof(char));
-					}
 
 					if (VideoDriver)
 						VideoDriver->OnResize(core::dimension2d<u32>(Width, Height));
@@ -1216,60 +1169,6 @@ void CIrrDeviceLinux::setWindowCaption(const wchar_t* text)
 		XFree(txt.value);
 	}
 #endif
-}
-
-
-//! presents a surface in the client area
-bool CIrrDeviceLinux::present(video::IImage* image, void* windowId, core::rect<s32>* srcRect)
-{
-#ifdef _IRR_COMPILE_WITH_X11_
-	// this is only necessary for software drivers.
-	if (!SoftwareImage)
-		return true;
-
-	// thx to Nadav, who send me some clues of how to display the image
-	// to the X Server.
-
-	const u32 destwidth = SoftwareImage->width;
-	const u32 minWidth = core::min_(image->getDimension().Width, destwidth);
-	const u32 destPitch = SoftwareImage->bytes_per_line;
-
-	video::ECOLOR_FORMAT destColor;
-	switch (SoftwareImage->bits_per_pixel)
-	{
-		case 16:
-			if (SoftwareImage->depth==16)
-				destColor = video::ECF_R5G6B5;
-			else
-				destColor = video::ECF_A1R5G5B5;
-		break;
-		case 24: destColor = video::ECF_R8G8B8; break;
-		case 32: destColor = video::ECF_A8R8G8B8; break;
-		default:
-			os::Printer::log("Unsupported screen depth.");
-			return false;
-	}
-
-	u8* srcdata = reinterpret_cast<u8*>(image->getData());
-	u8* destData = reinterpret_cast<u8*>(SoftwareImage->data);
-
-	const u32 destheight = SoftwareImage->height;
-	const u32 srcheight = core::min_(image->getDimension().Height, destheight);
-	const u32 srcPitch = image->getPitch();
-	for (u32 y=0; y!=srcheight; ++y)
-	{
-		video::CColorConverter::convert_viaFormat(srcdata,image->getColorFormat(), minWidth, destData, destColor);
-		srcdata+=srcPitch;
-		destData+=destPitch;
-	}
-
-	GC gc = DefaultGC(XDisplay, DefaultScreen(XDisplay));
-	Window myWindow=XWindow;
-	if (windowId)
-		myWindow = reinterpret_cast<Window>(windowId);
-	XPutImage(XDisplay, myWindow, gc, SoftwareImage, 0, 0, 0, 0, destwidth, destheight);
-#endif
-	return true;
 }
 
 
