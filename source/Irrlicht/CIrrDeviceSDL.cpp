@@ -711,9 +711,6 @@ bool CIrrDeviceSDL::run()
 					key = (EKEY_CODE)KeyMap[idx].Win32Key;
 
 				// Make sure to only input special characters if something is in focus, as SDL_TEXTINPUT handles normal unicode already
-				// Use auto keyword to avoid typing long
-				// type definitions to get the timepoint
-				// at this instant use function now()
 				if (SDL_IsTextInputActive() && !keyIsKnownSpecial(key) && (SDL_event.key.keysym.mod & KMOD_CTRL) == 0)
 					break;
 
