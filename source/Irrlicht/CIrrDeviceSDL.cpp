@@ -108,7 +108,7 @@ EM_BOOL CIrrDeviceSDL::MouseLeaveCallback(int eventType, const EmscriptenMouseEv
 #endif
 
 
-bool CIrrDeviceSDL::keyIsKnownSpecial(EKEY_CODE key) const
+bool CIrrDeviceSDL::keyIsKnownSpecial(EKEY_CODE key)
 {
 	switch ( key )
 	{
