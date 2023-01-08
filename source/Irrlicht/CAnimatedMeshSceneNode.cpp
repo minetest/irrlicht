@@ -236,15 +236,6 @@ void CAnimatedMeshSceneNode::OnAnimate(u32 timeMs)
 
 	// set CurrentFrameNr
 	buildFrameNr(timeMs-LastTimeMs);
-
-	// update bbox
-	if (Mesh)
-	{
-		scene::IMesh * mesh = getMeshForCurrentFrame();
-
-		if (mesh)
-			Box = mesh->getBoundingBox();
-	}
 	LastTimeMs = timeMs;
 
 	IAnimatedMeshSceneNode::OnAnimate(timeMs);
