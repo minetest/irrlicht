@@ -50,7 +50,7 @@ namespace scene
 				const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f))
 			: RelativeTranslation(position), RelativeRotation(rotation), RelativeScale(scale),
 				Parent(0), SceneManager(mgr), TriangleSelector(0), ID(id),
-				UpdateAbsolutePosBehavior(ESNUA_TRANSFORM_MATRIX), AutomaticCullingState(EAC_BOX),
+				AbsPosUpdateBehavior(ESNUA_TRANSFORM_MATRIX), AutomaticCullingState(EAC_BOX),
 				DebugDataVisible(EDS_OFF),
 				IsVisible(true), IsDebugObject(false)
 		{
@@ -564,13 +564,13 @@ namespace scene
 		//! Set how updateAbsolutePosition calculates the absolute transformation matrix
 		void setUpdateAbsolutePosBehavior(ESCENE_NODE_UPDATE_ABS behavior)
 		{
-			UpdateAbsolutePosBehavior = behavior;
+			AbsPosUpdateBehavior = behavior;
 		}
 
 		//! Get how updateAbsolutePosition calculates the absolute transformation matrix
 		ESCENE_NODE_UPDATE_ABS getUpdateAbsolutePosBehavior() const
 		{
-			return UpdateAbsolutePosBehavior;
+			return AbsPosUpdateBehavior;
 		}
 
 
@@ -682,12 +682,12 @@ namespace scene
 		{
 			if (Parent)
 			{
-				if ( UpdateAbsolutePosBehavior == ESNUA_TRANSFORM_MATRIX )
+				if ( AbsPosUpdateBehavior == ESNUA_TRANSFORM_MATRIX )
 				{
 					AbsoluteTransformation =
 						Parent->getAbsoluteTransformation() * getRelativeTransformation();
 				}
-				else if ( UpdateAbsolutePosBehavior == ESNUA_TRANSFORM_POSITION )
+				else if ( AbsPosUpdateBehavior == ESNUA_TRANSFORM_POSITION )
 				{
 					AbsoluteTransformation = getRelativeTransformation();
 					Parent->getAbsoluteTransformation().transformVect(reinterpret_cast<irr::core::vector3df&>(AbsoluteTransformation[12]));
@@ -733,7 +733,7 @@ namespace scene
 			out->addVector3d("Scale", getScale() );
 
 			out->addBool("Visible", IsVisible );
-			out->addEnum("AbsPosUpdate", (s32)UpdateAbsolutePosBehavior, SceneNodeUpdateAbsNames);
+			out->addEnum("AbsPosUpdate", (s32)AbsPosUpdateBehavior, SceneNodeUpdateAbsNames);
 			out->addInt("AutomaticCulling", AutomaticCullingState);
 			out->addInt("DebugDataVisible", DebugDataVisible );
 			out->addBool("IsDebugObject", IsDebugObject );
@@ -760,7 +760,7 @@ namespace scene
 
 			IsVisible = in->getAttributeAsBool("Visible", IsVisible);
 
-			UpdateAbsolutePosBehavior = (ESCENE_NODE_UPDATE_ABS)in->getAttributeAsEnumeration("AbsPosUpdate", SceneNodeUpdateAbsNames, (s32)UpdateAbsolutePosBehavior);
+			AbsPosUpdateBehavior = (ESCENE_NODE_UPDATE_ABS)in->getAttributeAsEnumeration("AbsPosUpdate", SceneNodeUpdateAbsNames, (s32)AbsPosUpdateBehavior);
 
 			if (in->existsAttribute("AutomaticCulling"))
 			{
@@ -808,7 +808,7 @@ namespace scene
 			RelativeScale = toCopyFrom->RelativeScale;
 			ID = toCopyFrom->ID;
 			setTriangleSelector(toCopyFrom->TriangleSelector);
-			UpdateAbsolutePosBehavior = toCopyFrom->UpdateAbsolutePosBehavior;
+			AbsPosUpdateBehavior = toCopyFrom->AbsPosUpdateBehavior;
 			AutomaticCullingState = toCopyFrom->AutomaticCullingState;
 			DebugDataVisible = toCopyFrom->DebugDataVisible;
 			IsVisible = toCopyFrom->IsVisible;
@@ -884,7 +884,7 @@ namespace scene
 		s32 ID;
 
 		//! How updateAbsolutePosition calculates AbsoluteTransformation
-		ESCENE_NODE_UPDATE_ABS UpdateAbsolutePosBehavior;
+		ESCENE_NODE_UPDATE_ABS AbsPosUpdateBehavior;
 
 		//! Automatic culling state
 		u32 AutomaticCullingState;
