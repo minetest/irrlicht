@@ -81,10 +81,6 @@ static bool tryParseGLTF(io::IReadFile* file, tinygltf::Model& model)
 	auto buf = std::make_unique<char[]>(file->getSize());
 	file->read(buf.get(), file->getSize());
 
-	if (err != "" || warn != "") {
-		return false;
-	}
-
 	return loader.LoadASCIIFromString(&model, &err, &warn, buf.get(), file->getSize(), "", 1);
 }
 
