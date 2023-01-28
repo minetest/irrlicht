@@ -10,6 +10,8 @@
 #include "SColor.h"
 #include "SMesh.h"
 #include "vector3d.h"
+#include <vector>
+#include <tuple>
 
 #define TINYGLTF_IMPLEMENTATION
 #include <tiny_gltf.h>
@@ -52,6 +54,13 @@ private:
 	std::size_t m_offset;
 };
 
+// A helper function to disable tinygltf embedded image loading
+bool turn_off_textures_hack(tinygltf::Image *a, const int b, std::string *c,
+	std::string *d, int e, int f, const unsigned char * g,int h, void *user_pointer)
+{
+	return false;
+};
+
 namespace irr
 {
 
@@ -61,13 +70,22 @@ namespace scene
 static bool tryParseGLTF(io::IReadFile* file, tinygltf::Model& model)
 {
 	tinygltf::TinyGLTF loader {};
+
+	// Stop embedded textures from making model fail to load
+	void *the_void = 0;
+	loader.SetImageLoader(turn_off_textures_hack, the_void);
+
 	std::string err {};
 	std::string warn {};
 
 	auto buf = std::make_unique<char[]>(file->getSize());
 	file->read(buf.get(), file->getSize());
-	return loader.LoadASCIIFromString(
-		&model, &err, &warn, buf.get(), file->getSize(), "", 1);
+
+	if (err != "" || warn != "") {
+		return false;
+	}
+
+	return loader.LoadASCIIFromString(&model, &err, &warn, buf.get(), file->getSize(), "", 1);
 }
 
 template <class T>
@@ -84,9 +102,7 @@ static T readPrimitive(const BufferOffset& readFrom)
 
 static core::vector2df readVec2DF(const BufferOffset& readFrom)
 {
-	return core::vector2df(
-		readPrimitive<float>(readFrom),
-		readPrimitive<float>(BufferOffset(readFrom, sizeof(float))));
+	return core::vector2df( readPrimitive<float>(readFrom), readPrimitive<float>( BufferOffset( readFrom, sizeof(float) ) ) );
 
 }
 
@@ -101,16 +117,6 @@ static core::vector3df readVec3DF(const BufferOffset& readFrom,
 		-scale * readPrimitive<float>(BufferOffset(readFrom, 2 * sizeof(float))));
 }
 
-static u16* readIndices(const BufferOffset& readFrom, const std::size_t count)
-{
-	auto* indices = new u16[count]{};
-	for (std::size_t i = 0; i < count; ++i) {
-		indices[i] = readPrimitive<u16>(BufferOffset(readFrom, i * sizeof(u16)));
-	}
-	return indices;
-}
-
-
 float getScale(const tinygltf::Model& model)
 {
 	if (model.nodes[0].scale.size() > 0) {
@@ -119,82 +125,82 @@ float getScale(const tinygltf::Model& model)
 	return 1.0f;
 }
 
-static void copyPositions(const tinygltf::Model& model,
-		const Span<video::S3DVertex> vertices,
-		const std::size_t accessorId)
+
+
+
+
+static void copyPositions(const tinygltf::Model& model, const Span<video::S3DVertex> vertices, const std::size_t accessorId)
 {
-	const auto& view = model.bufferViews[
-		model.accessors[accessorId].bufferView];
+
+	const auto& view = model.bufferViews[ model.accessors[accessorId].bufferView];
 	const auto& buffer = model.buffers[view.buffer];
-	for (std::size_t i = 0; i < model.accessors[accessorId].count; ++i) {
-		const auto v = readVec3DF(BufferOffset(
-			buffer.data, view.byteOffset + 3 * sizeof(float) * i),
-			getScale(model));
+	const auto count = model.accessors[accessorId].count;
+
+	float scale = getScale(model);
+
+	for (std::size_t i = 0; i < count; i++) {
+		const auto v = readVec3DF(BufferOffset( buffer.data, view.byteOffset + (3 * sizeof(float) * i)), scale);
 		vertices.buffer[i].Pos = v;
 	}
 }
 
-static void copyNormals(const tinygltf::Model& model,
-		const Span<video::S3DVertex> vertices,
-		const std::size_t accessorId)
+static void copyNormals(const tinygltf::Model& model, const Span<video::S3DVertex> vertices, const std::size_t accessorId)
 {
-	const auto& view = model.bufferViews[
-		model.accessors[accessorId].bufferView];
+	const auto& view = model.bufferViews[model.accessors[accessorId].bufferView];
 	const auto& buffer = model.buffers[view.buffer];
-	for (std::size_t i = 0; i < model.accessors[accessorId].count; ++i) {
-		const auto n = readVec3DF(BufferOffset(
-			buffer.data, view.byteOffset + 3 * sizeof(float) * i));
+	const auto count = model.accessors[accessorId].count;
+	
+	for (std::size_t i = 0; i < count; ++i) {
+		const auto n = readVec3DF(BufferOffset( buffer.data, view.byteOffset + 3 * sizeof(float) * i ));
 		vertices.buffer[i].Normal = n;
 	}
 }
 
-static void copyTCoords(const tinygltf::Model& model,
-		const Span<video::S3DVertex> vertices,
-		const std::size_t accessorId)
+static void copyTCoords(const tinygltf::Model& model, const Span<video::S3DVertex> vertices, const std::size_t accessorId)
 {
-	const auto& view = model.bufferViews[
-		model.accessors[accessorId].bufferView];
+	const auto& view = model.bufferViews[ model.accessors[accessorId].bufferView ];
 	const auto& buffer = model.buffers[view.buffer];
-	for (std::size_t i = 0; i < model.accessors[accessorId].count; ++i) {
-		const auto t = readVec2DF(BufferOffset(
-			buffer.data, view.byteOffset + 2 * sizeof(float) * i));
+	const auto count = model.accessors[accessorId].count;
+
+	for (std::size_t i = 0; i < count; ++i) {
+		const auto t = readVec2DF(BufferOffset(buffer.data, view.byteOffset + 2 * sizeof(float) * i));
 		vertices.buffer[i].TCoords = t;
 	}
 }
 
-static video::S3DVertex* getVertices(const tinygltf::Model& model,
-		const std::size_t accessorId)
+static void getIndices(const tinygltf::Model& model, const std::size_t accessorId, std::vector<u16> *indicesBuffer)
 {
-	auto* vertexBuffer = new video::S3DVertex[
-		model.accessors[accessorId].count]{};
-	Span<video::S3DVertex> vertices{
-		vertexBuffer, model.accessors[accessorId].count};
-	copyPositions(model, vertices, accessorId);
+	const auto& view = model.bufferViews[model.accessors[accessorId].bufferView];
+	const auto& modelIndices = model.buffers[view.buffer];
 
-	const auto normalsField
-		= model.meshes[0].primitives[0].attributes.find("NORMAL");
-	if (normalsField != model.meshes[0].primitives[0].attributes.end()) {
-		copyNormals(model, vertices, normalsField->second);
+	auto bufferobject = BufferOffset(modelIndices.data, view.byteOffset);
+	auto count = model.accessors[accessorId].count;
+
+	for (std::size_t i = 0; i < count; i++) {
+		auto current = readPrimitive<u16>(BufferOffset(bufferobject, i * sizeof(u16)));
+		// Inverse the order of indices
+		indicesBuffer->insert(indicesBuffer->begin(), current);
 	}
-
-	const auto tCoordsField
-		= model.meshes[0].primitives[0].attributes.find("TEXCOORD_0");
-	if (tCoordsField != model.meshes[0].primitives[0].attributes.end()) {
-		copyTCoords(model, vertices, tCoordsField->second);
-	}
-
-	return vertexBuffer;
 }
 
-static u16* getIndices(const tinygltf::Model& model,
-		const std::size_t accessorId)
+// Returns a tuple of the current counts (current_vertex_index, current_normals_index, current_tcoords_index)
+static void getVertices
+( const tinygltf::Model& model, const std::size_t accessorId, Span<video::S3DVertex> *verticesBuffer, 
+std::size_t mesh_index, std::size_t primitive_index )
 {
-	const auto& view = model.bufferViews[
-		model.accessors[accessorId].bufferView];
-	const auto& indicesBuffer = model.buffers[view.buffer];
-	return readIndices(
-		BufferOffset(indicesBuffer.data, view.byteOffset),
-		model.accessors[accessorId].count);
+	copyPositions(model, *verticesBuffer, accessorId);
+
+	const auto normalsField = model.meshes[mesh_index].primitives[primitive_index].attributes.find("NORMAL");
+
+	if (normalsField != model.meshes[mesh_index].primitives[primitive_index].attributes.end()) {
+		copyNormals(model, *verticesBuffer, normalsField->second);
+	}
+	
+	const auto tCoordsField = model.meshes[mesh_index].primitives[primitive_index].attributes.find("TEXCOORD_0");
+
+	if (tCoordsField != model.meshes[mesh_index].primitives[primitive_index].attributes.end()) {
+		copyTCoords(model, *verticesBuffer, tCoordsField->second);
+	}
 }
 
 CGLTFMeshFileLoader::CGLTFMeshFileLoader()
@@ -215,24 +221,43 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 		return nullptr;
 	}
 
-	const auto indicesAccessorId =
-		model.meshes[0].primitives[0].indices;
-	const auto positionAccessorId =
-		model.meshes[0].primitives[0].attributes["POSITION"];
-
-	auto* indices = getIndices(model, indicesAccessorId);
-	auto* vertices = getVertices(model, positionAccessorId);
-
-	SMeshBuffer* meshbuf { new SMeshBuffer {} };
-
-	meshbuf->append(vertices, model.accessors[positionAccessorId].count,
-		indices, model.accessors[indicesAccessorId].count);
-
+	// Create the base mesh
 	SMesh* mesh { new SMesh {} };
-	mesh->addMeshBuffer(meshbuf);
 
+	// Iterate models
+	for (std::size_t mesh_index = 0; mesh_index < model.meshes.size(); mesh_index++) {
+	// Iterate primitives
+	for (std::size_t primitive_index = 0; primitive_index < model.meshes[mesh_index].primitives.size(); primitive_index++) {
+
+		const auto positionAccessorId = model.meshes[mesh_index].primitives[primitive_index].attributes["POSITION"];
+		const auto indicesAccessorId = model.meshes[mesh_index].primitives[primitive_index].indices;
+
+		// Creates counts for preallocation
+		std::size_t vertices_count = model.accessors[positionAccessorId].count;
+
+		// We must count to create containers for the data	
+		// Create new buffer for vertices, positions, and normals. Will loop through this soon
+		auto* vertexBuffer = new video::S3DVertex[vertices_count]{};
+		// This is used to copy data into the vertexBuffer
+		Span<video::S3DVertex> verticesBuffer{ vertexBuffer, vertices_count };
+		// Create dynamic indices buffer so it's easier to work with
+		std::vector<u16> indicesBuffer;
+
+		getIndices(model, indicesAccessorId, &indicesBuffer);
+		getVertices(model, positionAccessorId, &verticesBuffer, mesh_index, primitive_index);
+
+		// Create the mesh buffer
+		SMeshBuffer* meshbuf { new SMeshBuffer {} };
+		meshbuf->append(vertexBuffer, vertices_count, indicesBuffer.data(), indicesBuffer.size());
+		
+		mesh->addMeshBuffer(meshbuf);
+
+	}
+	}
+
+	// Create the mesh animations
 	SAnimatedMesh* animatedMesh { new SAnimatedMesh {} };
-	animatedMesh->addMesh(mesh);
+	animatedMesh->addMesh(mesh);	
 
 	return animatedMesh;
 }
