@@ -260,17 +260,17 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 		// This is used to copy data into the vertexBuffer
 		Span<video::S3DVertex> verticesBuffer{vertexBuffer,vertices_count};
 		// Create dynamic indices buffer so it's easier to work with.
-        // Preallocate needed resources to boost game startup speed
+		// Preallocate needed resources to boost game startup speed
 		std::vector<u16> indicesBuffer(model.accessors[
-            indicesAccessorId].count);
+			indicesAccessorId].count);
 
 		getIndices(model, indicesAccessorId, indicesBuffer);
 		getVertices(model, positionAccessorId, verticesBuffer,
 			mesh_index, primitive_index);
 
-        // Inverse the order of indices due to the axis of the model being
+		// Inverse the order of indices due to the axis of the model being
 		// inverted when going from left handed to right handed coordinates
-        std::reverse(indicesBuffer.begin(),indicesBuffer.end()); 
+		std::reverse(indicesBuffer.begin(),indicesBuffer.end()); 
 
 		// Create the mesh buffer
 		SMeshBuffer* meshbuf { new SMeshBuffer {} };

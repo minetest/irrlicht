@@ -141,7 +141,7 @@ TEST_CASE("snow man") {
 		REQUIRE(sm.getMesh()->getMeshBuffer(0)->getVertexCount() == 24);
 		const auto* vertices = reinterpret_cast<irr::video::S3DVertex*>(
 			sm.getMesh()->getMeshBuffer(0)->getVertices());
-        
+		
 		CHECK(vertices[0].Pos == irr::core::vector3df{3.0f, 24.0f, -3.0f});
 		CHECK(vertices[3].Pos == irr::core::vector3df{3.0f, 18.0f, 3.0f});
 		CHECK(vertices[6].Pos == irr::core::vector3df{-3.0f, 18.0f, -3.0f});
@@ -150,11 +150,11 @@ TEST_CASE("snow man") {
 		CHECK(vertices[15].Pos == irr::core::vector3df{-3.0f, 18.0f, 3.0f});
 		CHECK(vertices[18].Pos == irr::core::vector3df{3.0f, 18.0f, -3.0f});
 		CHECK(vertices[21].Pos == irr::core::vector3df{3.0f, 18.0f, 3.0f});
-        
-        vertices = reinterpret_cast<irr::video::S3DVertex*>(
+		
+		vertices = reinterpret_cast<irr::video::S3DVertex*>(
 			sm.getMesh()->getMeshBuffer(1)->getVertices());
-        
-        CHECK(vertices[2].Pos == irr::core::vector3df{5.0f, 10.0f, 5.0f});
+		
+		CHECK(vertices[2].Pos == irr::core::vector3df{5.0f, 10.0f, 5.0f});
 		CHECK(vertices[3].Pos == irr::core::vector3df{5.0f, 0.0f, 5.0f});
 		CHECK(vertices[7].Pos == irr::core::vector3df{-5.0f, 0.0f, 5.0f});
 		CHECK(vertices[8].Pos == irr::core::vector3df{5.0f, 10.0f, -5.0f});
@@ -163,17 +163,17 @@ TEST_CASE("snow man") {
 		CHECK(vertices[22].Pos == irr::core::vector3df{-5.0f, 10.0f, 5.0f});
 		CHECK(vertices[23].Pos == irr::core::vector3df{-5.0f, 0.0f, 5.0f});
 
-        vertices = reinterpret_cast<irr::video::S3DVertex*>(
+		vertices = reinterpret_cast<irr::video::S3DVertex*>(
 			sm.getMesh()->getMeshBuffer(2)->getVertices());
-        
-        CHECK(vertices[1].Pos == irr::core::vector3df{4.0f, 10.0f, -4.0f});
-        CHECK(vertices[2].Pos == irr::core::vector3df{4.0f, 18.0f, 4.0f});
-        CHECK(vertices[3].Pos == irr::core::vector3df{4.0f, 10.0f, 4.0f});
-        CHECK(vertices[10].Pos == irr::core::vector3df{-4.0f, 18.0f, -4.0f});
-        CHECK(vertices[11].Pos == irr::core::vector3df{-4.0f, 18.0f, 4.0f});
-        CHECK(vertices[12].Pos == irr::core::vector3df{4.0f, 10.0f, -4.0f});
-        CHECK(vertices[17].Pos == irr::core::vector3df{-4.0f, 18.0f, -4.0f});
-        CHECK(vertices[18].Pos == irr::core::vector3df{4.0f, 10.0f, -4.0f});
+		
+		CHECK(vertices[1].Pos == irr::core::vector3df{4.0f, 10.0f, -4.0f});
+		CHECK(vertices[2].Pos == irr::core::vector3df{4.0f, 18.0f, 4.0f});
+		CHECK(vertices[3].Pos == irr::core::vector3df{4.0f, 10.0f, 4.0f});
+		CHECK(vertices[10].Pos == irr::core::vector3df{-4.0f, 18.0f, -4.0f});
+		CHECK(vertices[11].Pos == irr::core::vector3df{-4.0f, 18.0f, 4.0f});
+		CHECK(vertices[12].Pos == irr::core::vector3df{4.0f, 10.0f, -4.0f});
+		CHECK(vertices[17].Pos == irr::core::vector3df{-4.0f, 18.0f, -4.0f});
+		CHECK(vertices[18].Pos == irr::core::vector3df{4.0f, 10.0f, -4.0f});
 	}
 
 	SECTION("vertex indices are correct for all buffers") {
@@ -185,7 +185,7 @@ TEST_CASE("snow man") {
 		CHECK(indices[2] == 22);
 		CHECK(indices[35] == 2);
 
-        REQUIRE(sm.getMesh()->getMeshBuffer(1)->getIndexCount() == 36);
+		REQUIRE(sm.getMesh()->getMeshBuffer(1)->getIndexCount() == 36);
 		indices = reinterpret_cast<irr::u16*>(
 			sm.getMesh()->getMeshBuffer(1)->getIndices());
 		CHECK(indices[10] == 16);
@@ -193,7 +193,7 @@ TEST_CASE("snow man") {
 		CHECK(indices[15] == 13);
 		CHECK(indices[27] == 5);
 
-        REQUIRE(sm.getMesh()->getMeshBuffer(1)->getIndexCount() == 36);
+		REQUIRE(sm.getMesh()->getMeshBuffer(1)->getIndexCount() == 36);
 		indices = reinterpret_cast<irr::u16*>(
 			sm.getMesh()->getMeshBuffer(2)->getIndices());
 		CHECK(indices[26] == 6);
@@ -202,72 +202,72 @@ TEST_CASE("snow man") {
 		CHECK(indices[32] == 2);
 	}
 
-    
+	
 	SECTION("vertex normals are correct for all buffers") {
 		REQUIRE(sm.getMesh()->getMeshBuffer(0)->getVertexCount() == 24);
 		const auto* vertices = reinterpret_cast<irr::video::S3DVertex*>(
 			sm.getMesh()->getMeshBuffer(0)->getVertices());
 		CHECK(vertices[0].Normal == irr::core::vector3df{1.0f, 0.0f, -0.0f});
-        CHECK(vertices[1].Normal == irr::core::vector3df{1.0f, 0.0f, -0.0f});
-        CHECK(vertices[2].Normal == irr::core::vector3df{1.0f, 0.0f, -0.0f});
-        CHECK(vertices[3].Normal == irr::core::vector3df{1.0f, 0.0f, -0.0f});
-        CHECK(vertices[6].Normal == irr::core::vector3df{-1.0f, 0.0f, -0.0f});
-        CHECK(vertices[23].Normal == irr::core::vector3df{0.0f, 0.0f, 1.0f});
+		CHECK(vertices[1].Normal == irr::core::vector3df{1.0f, 0.0f, -0.0f});
+		CHECK(vertices[2].Normal == irr::core::vector3df{1.0f, 0.0f, -0.0f});
+		CHECK(vertices[3].Normal == irr::core::vector3df{1.0f, 0.0f, -0.0f});
+		CHECK(vertices[6].Normal == irr::core::vector3df{-1.0f, 0.0f, -0.0f});
+		CHECK(vertices[23].Normal == irr::core::vector3df{0.0f, 0.0f, 1.0f});
 
-        vertices = reinterpret_cast<irr::video::S3DVertex*>(
+		vertices = reinterpret_cast<irr::video::S3DVertex*>(
 			sm.getMesh()->getMeshBuffer(1)->getVertices());
-        
-        CHECK(vertices[0].Normal == irr::core::vector3df{1.0f, 0.0f, -0.0f});
-        CHECK(vertices[1].Normal == irr::core::vector3df{1.0f, 0.0f, -0.0f});
-        CHECK(vertices[3].Normal == irr::core::vector3df{1.0f, 0.0f, -0.0f});
-        CHECK(vertices[6].Normal == irr::core::vector3df{-1.0f, 0.0f, -0.0f});
-        CHECK(vertices[7].Normal == irr::core::vector3df{-1.0f, 0.0f, -0.0f});
-        CHECK(vertices[22].Normal == irr::core::vector3df{0.0f, 0.0f, 1.0f});
+		
+		CHECK(vertices[0].Normal == irr::core::vector3df{1.0f, 0.0f, -0.0f});
+		CHECK(vertices[1].Normal == irr::core::vector3df{1.0f, 0.0f, -0.0f});
+		CHECK(vertices[3].Normal == irr::core::vector3df{1.0f, 0.0f, -0.0f});
+		CHECK(vertices[6].Normal == irr::core::vector3df{-1.0f, 0.0f, -0.0f});
+		CHECK(vertices[7].Normal == irr::core::vector3df{-1.0f, 0.0f, -0.0f});
+		CHECK(vertices[22].Normal == irr::core::vector3df{0.0f, 0.0f, 1.0f});
 
 
-        vertices = reinterpret_cast<irr::video::S3DVertex*>(
+		vertices = reinterpret_cast<irr::video::S3DVertex*>(
 			sm.getMesh()->getMeshBuffer(2)->getVertices());
 
-        CHECK(vertices[3].Normal == irr::core::vector3df{1.0f, 0.0f, -0.0f});
-        CHECK(vertices[4].Normal == irr::core::vector3df{-1.0f, 0.0f, -0.0f});
-        CHECK(vertices[5].Normal == irr::core::vector3df{-1.0f, 0.0f, -0.0f});
-        CHECK(vertices[10].Normal == irr::core::vector3df{0.0f, 1.0f, -0.0f});
-        CHECK(vertices[11].Normal == irr::core::vector3df{0.0f, 1.0f, -0.0f});
-        CHECK(vertices[19].Normal == irr::core::vector3df{0.0f, 0.0f, -1.0f});
+		CHECK(vertices[3].Normal == irr::core::vector3df{1.0f, 0.0f, -0.0f});
+		CHECK(vertices[4].Normal == irr::core::vector3df{-1.0f, 0.0f, -0.0f});
+		CHECK(vertices[5].Normal == irr::core::vector3df{-1.0f, 0.0f, -0.0f});
+		CHECK(vertices[10].Normal == irr::core::vector3df{0.0f, 1.0f, -0.0f});
+		CHECK(vertices[11].Normal == irr::core::vector3df{0.0f, 1.0f, -0.0f});
+		CHECK(vertices[19].Normal == irr::core::vector3df{0.0f, 0.0f, -1.0f});
 
 	}
 
-    
+	
 	SECTION("texture coords are correct for all buffers") {
 		REQUIRE(sm.getMesh()->getMeshBuffer(0)->getVertexCount() == 24);
 		const auto* vertices = reinterpret_cast<irr::video::S3DVertex*>(
 			sm.getMesh()->getMeshBuffer(0)->getVertices());
 
-        CHECK(vertices[0].TCoords == irr::core::vector2df{0.583333, 0.791667});
-        CHECK(vertices[1].TCoords == irr::core::vector2df{0.583333, 0.666667});
-        CHECK(vertices[2].TCoords == irr::core::vector2df{0.708333, 0.791667});
-        CHECK(vertices[5].TCoords == irr::core::vector2df{0.375, 0.416667});
-        CHECK(vertices[6].TCoords == irr::core::vector2df{0.5, 0.291667});
-        CHECK(vertices[19].TCoords == irr::core::vector2df{0.708333, 0.75});
+		CHECK(vertices[0].TCoords == irr::core::vector2df{0.583333, 0.791667});
+		CHECK(vertices[1].TCoords == irr::core::vector2df{0.583333, 0.666667});
+		CHECK(vertices[2].TCoords == irr::core::vector2df{0.708333, 0.791667});
+		CHECK(vertices[5].TCoords == irr::core::vector2df{0.375, 0.416667});
+		CHECK(vertices[6].TCoords == irr::core::vector2df{0.5, 0.291667});
+		CHECK(vertices[19].TCoords == irr::core::vector2df{0.708333, 0.75});
 
-        vertices = reinterpret_cast<irr::video::S3DVertex*>(
+		vertices = reinterpret_cast<irr::video::S3DVertex*>(
 			sm.getMesh()->getMeshBuffer(1)->getVertices());
-                
-        CHECK(vertices[1].TCoords == irr::core::vector2df{0, 0.791667});
-        CHECK(vertices[4].TCoords == irr::core::vector2df{0.208333, 0.791667});
-        CHECK(vertices[5].TCoords == irr::core::vector2df{0, 0.791667});
-        CHECK(vertices[6].TCoords == irr::core::vector2df{0.208333, 0.583333});
-        CHECK(vertices[12].TCoords == irr::core::vector2df{0.416667, 0.791667});
-        CHECK(vertices[15].TCoords == irr::core::vector2df{0.208333, 0.583333});
 
-        vertices = reinterpret_cast<irr::video::S3DVertex*>(
+		CHECK(vertices[1].TCoords == irr::core::vector2df{0, 0.791667});
+		CHECK(vertices[4].TCoords == irr::core::vector2df{0.208333, 0.791667});
+		CHECK(vertices[5].TCoords == irr::core::vector2df{0, 0.791667});
+		CHECK(vertices[6].TCoords == irr::core::vector2df{0.208333, 0.583333});
+		CHECK(vertices[12].TCoords == irr::core::vector2df{0.416667, 0.791667});
+		CHECK(vertices[15].TCoords == irr::core::vector2df{0.208333, 0.583333});
+
+		vertices = reinterpret_cast<irr::video::S3DVertex*>(
 			sm.getMesh()->getMeshBuffer(2)->getVertices());
 
-        CHECK(vertices[10].TCoords == irr::core::vector2df{0.375, 0.416667});
-        CHECK(vertices[11].TCoords == irr::core::vector2df{0.375, 0.583333});
-        CHECK(vertices[12].TCoords == irr::core::vector2df{0.708333, 0.625});
-        CHECK(vertices[17].TCoords == irr::core::vector2df{0.541667, 0.458333});
-        CHECK(vertices[20].TCoords == irr::core::vector2df{0.208333, 0.416667});
-        CHECK(vertices[22].TCoords == irr::core::vector2df{0.375, 0.416667});
+		CHECK(vertices[10].TCoords == irr::core::vector2df{0.375, 0.416667});
+		CHECK(vertices[11].TCoords == irr::core::vector2df{0.375, 0.583333});
+		CHECK(vertices[12].TCoords == irr::core::vector2df{0.708333, 0.625});
+		CHECK(vertices[17].TCoords == irr::core::vector2df{0.541667, 0.458333});
+		CHECK(vertices[20].TCoords == irr::core::vector2df{0.208333, 0.416667});
+		CHECK(vertices[22].TCoords == irr::core::vector2df{0.375, 0.416667});
 	}
 }
