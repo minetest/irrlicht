@@ -25,6 +25,7 @@ Aside from standard search options (`ZLIB_INCLUDE_DIR`, `ZLIB_LIBRARY`, ...) the
 * `ENABLE_GLES1` - Enable OpenGL ES driver, legacy
 * `ENABLE_GLES2` - Enable OpenGL ES 2+ driver
 * `USE_SDL2` (default: platform-dependent, usually `ON`) - Use SDL2 instead of older native device code
+* `BUILD_TESTING` (default: `ON`) - Build Catch2 tests
 
 e.g. on a Linux system you might want to build for local use like this:
 
@@ -49,6 +50,19 @@ Run the following script in PowerShell:
 	cd irrlicht
 	cmake -B build -G "Visual Studio 17 2022" -A "Win64" -DCMAKE_TOOLCHAIN_FILE=[vcpkg-root]/scripts/buildsystems/vcpkg.cmake -DBUILD_SHARED_LIBS=OFF
 	cmake --build build --config Release
+
+Test
+----
+
+To run the Catch2 tests, the project must first be built with `BUILD_TESTING` enabled.
+
+The tests can be run with ctest:
+
+        cd build
+        ctest
+
+Run the tests directly for more detailed output:
+        build/bin/<sysname>/tests
 	
 Platforms
 ---------

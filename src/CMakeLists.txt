@@ -576,6 +576,10 @@ if(WIN32)
 	set_target_properties(IrrlichtMt PROPERTIES PREFIX "") # for DLL name
 endif()
 
+if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND BUILD_TESTING)
+        add_subdirectory(tests)
+endif()
+
 # Installation of library
 install(TARGETS IrrlichtMt tinygltf
 	EXPORT IrrlichtMt-export

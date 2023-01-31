@@ -18,3 +18,9 @@ target_link_libraries(tests
 		Catch2::Catch
 		IrrlichtMt::IrrlichtMt
 )
+
+add_test(
+        NAME tests
+        COMMAND "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/tests"
+        WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+)
