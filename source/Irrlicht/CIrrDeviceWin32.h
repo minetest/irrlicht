@@ -57,6 +57,9 @@ namespace irr
 		//! returns if window is minimized
 		bool isWindowMinimized() const override;
 
+		//! returns last state from maximizeWindow() and restoreWindow()
+		bool isWindowMaximized() const override;
+
 		//! notifies the device that it should close itself
 		void closeDevice() override;
 
@@ -413,6 +416,8 @@ namespace irr
 		CCursorControl* Win32CursorControl;
 
 		SJoystickWin32Control* JoyControl;
+
+		bool WindowMaximized;
 	};
 
 } // end namespace irr

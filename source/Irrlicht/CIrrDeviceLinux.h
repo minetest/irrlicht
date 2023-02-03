@@ -64,6 +64,9 @@ namespace irr
 		//! returns if window is minimized.
 		bool isWindowMinimized() const override;
 
+		//! returns last state from maximizeWindow() and restoreWindow()
+		bool isWindowMaximized() const override;
+
 		//! returns color format of the window.
 		video::ECOLOR_FORMAT getColorFormat() const override;
 
@@ -415,6 +418,7 @@ namespace irr
 		u32 Width, Height;
 		bool WindowHasFocus;
 		bool WindowMinimized;
+		bool WindowMaximized;
 		bool ExternalWindow;
 		int AutorepeatSupport;
 
