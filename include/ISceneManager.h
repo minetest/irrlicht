@@ -754,6 +754,8 @@ namespace scene
 		//! Adds a skydome scene node to the scene graph.
 		/** A skydome is a large (half-) sphere with a panoramic texture
 		on the inside and is drawn around the camera position.
+		Note: If the texture is mirrored you can use a negative scale for 
+		the texture-matrix of the node to still work with it.
 		\param texture: Texture for the dome.
 		\param horiRes: Number of vertices of a horizontal layer of the sphere.
 		\param vertRes: Number of vertices of a vertical layer of the sphere.
