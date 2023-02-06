@@ -118,7 +118,7 @@ CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 	currentTouchedCount(0),
 #endif
 	Width(param.WindowSize.Width), Height(param.WindowSize.Height),
-	WindowHasFocus(false), WindowMinimized(false),
+	WindowHasFocus(false), WindowMinimized(false), WindowMaximized(param.WindowMaximized),
 	ExternalWindow(false), AutorepeatSupport(0)
 {
 	#ifdef _DEBUG
@@ -168,6 +168,9 @@ CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 		return;
 
 	createGUIAndScene();
+
+	if (param.WindowMaximized)
+		maximizeWindow();
 }
 
 
@@ -1200,6 +1203,13 @@ bool CIrrDeviceLinux::isWindowMinimized() const
 }
 
 
+//! returns last state from maximizeWindow() and restoreWindow()
+bool CIrrDeviceLinux::isWindowMaximized() const
+{
+	return WindowMaximized;
+}
+
+
 //! returns color format of the window.
 video::ECOLOR_FORMAT CIrrDeviceLinux::getColorFormat() const
 {
@@ -1284,6 +1294,8 @@ void CIrrDeviceLinux::maximizeWindow()
 	}
 
 	XMapWindow(XDisplay, XWindow);
+
+	WindowMaximized = true;
 #endif
 }
 
@@ -1310,6 +1322,8 @@ void CIrrDeviceLinux::restoreWindow()
 	}
 
 	XMapWindow(XDisplay, XWindow);
+
+	WindowMaximized = false;
 #endif
 }
 

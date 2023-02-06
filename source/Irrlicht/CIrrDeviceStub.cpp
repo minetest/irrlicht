@@ -272,6 +272,13 @@ void CIrrDeviceStub::setInputReceivingSceneManager(scene::ISceneManager* sceneMa
 }
 
 
+//! Checks if the window is maximized.
+bool CIrrDeviceStub::isWindowMaximized() const
+{
+	return false;
+}
+
+
 //! Checks if the window is running in fullscreen mode
 bool CIrrDeviceStub::isFullscreen() const
 {

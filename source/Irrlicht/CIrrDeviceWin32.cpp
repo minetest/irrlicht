@@ -784,7 +784,8 @@ namespace irr
 //! constructor
 CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params)
 : CIrrDeviceStub(params), HWnd(0), Resized(false),
-	ExternalWindow(false), Win32CursorControl(0), JoyControl(0)
+	ExternalWindow(false), Win32CursorControl(0), JoyControl(0),
+	WindowMaximized(params.WindowMaximized)
 {
 	#ifdef _DEBUG
 	setDebugName("CIrrDeviceWin32");
@@ -923,6 +924,9 @@ CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params)
 
 	// inform driver about the window size etc.
 	resizeIfNecessary();
+
+	if (params.WindowMaximized)
+		maximizeWindow();
 }
 
 
@@ -1154,6 +1158,13 @@ bool CIrrDeviceWin32::isWindowMinimized() const
 }
 
 
+//! returns last state from maximizeWindow() and restoreWindow()
+bool CIrrDeviceWin32::isWindowMaximized() const
+{
+	return WindowMaximized;
+}
+
+
 //! switches to fullscreen
 bool CIrrDeviceWin32::switchToFullScreen()
 {
@@ -1278,6 +1289,8 @@ void CIrrDeviceWin32::maximizeWindow()
 	GetWindowPlacement(HWnd, &wndpl);
 	wndpl.showCmd = SW_SHOWMAXIMIZED;
 	SetWindowPlacement(HWnd, &wndpl);
+
+	WindowMaximized = true;
 }
 
 
@@ -1289,6 +1302,8 @@ void CIrrDeviceWin32::restoreWindow()
 	GetWindowPlacement(HWnd, &wndpl);
 	wndpl.showCmd = SW_SHOWNORMAL;
 	SetWindowPlacement(HWnd, &wndpl);
+
+	WindowMaximized = false;
 }
 
 core::position2di CIrrDeviceWin32::getWindowPosition()

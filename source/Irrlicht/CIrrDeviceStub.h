@@ -94,6 +94,9 @@ namespace irr
 		//! Returns the operation system opertator object.
 		IOSOperator* getOSOperator() override;
 
+		//! Checks if the window is maximized.
+		bool isWindowMaximized() const override;
+
 		//! Checks if the window is running in fullscreen mode.
 		bool isFullscreen() const override;
 
@@ -103,41 +106,41 @@ namespace irr
 		//! Activate any joysticks, and generate events for them.
 		bool activateJoysticks(core::array<SJoystickInfo> & joystickInfo) override;
 
-        //! Activate accelerometer.
-        bool activateAccelerometer(float updateInterval = 0.016666f) override;
-        
-        //! Deactivate accelerometer.
-        bool deactivateAccelerometer() override;
-        
-        //! Is accelerometer active.
-        bool isAccelerometerActive() override;
-        
-        //! Is accelerometer available.
-        bool isAccelerometerAvailable() override;
-        
-        //! Activate gyroscope.
-        bool activateGyroscope(float updateInterval = 0.016666f) override;
-        
-        //! Deactivate gyroscope.
-        bool deactivateGyroscope() override;
-        
-        //! Is gyroscope active.
-        bool isGyroscopeActive() override;
-        
-        //! Is gyroscope available.
-        bool isGyroscopeAvailable() override;
-        
-        //! Activate device motion.
-        bool activateDeviceMotion(float updateInterval = 0.016666f) override;
-        
-        //! Deactivate device motion.
-        bool deactivateDeviceMotion() override;
-        
-        //! Is device motion active.
-        bool isDeviceMotionActive() override;
-        
-        //! Is device motion available.
-        bool isDeviceMotionAvailable() override;
+		//! Activate accelerometer.
+		bool activateAccelerometer(float updateInterval = 0.016666f) override;
+
+		//! Deactivate accelerometer.
+		bool deactivateAccelerometer() override;
+
+		//! Is accelerometer active.
+		bool isAccelerometerActive() override;
+
+		//! Is accelerometer available.
+		bool isAccelerometerAvailable() override;
+
+		//! Activate gyroscope.
+		bool activateGyroscope(float updateInterval = 0.016666f) override;
+
+		//! Deactivate gyroscope.
+		bool deactivateGyroscope() override;
+
+		//! Is gyroscope active.
+		bool isGyroscopeActive() override;
+
+		//! Is gyroscope available.
+		bool isGyroscopeAvailable() override;
+
+		//! Activate device motion.
+		bool activateDeviceMotion(float updateInterval = 0.016666f) override;
+
+		//! Deactivate device motion.
+		bool deactivateDeviceMotion() override;
+
+		//! Is device motion active.
+		bool isDeviceMotionActive() override;
+
+		//! Is device motion available.
+		bool isDeviceMotionAvailable() override;
 
 		//! Set the maximal elapsed time between 2 clicks to generate doubleclicks for the mouse. It also affects tripleclick behavior.
 		//! When set to 0 no double- and tripleclicks will be generated.

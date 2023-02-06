@@ -111,7 +111,7 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	Window((SDL_Window*)param.WindowId), SDL_Flags(0),
 	MouseX(0), MouseY(0), MouseXRel(0), MouseYRel(0), MouseButtonStates(0),
 	Width(param.WindowSize.Width), Height(param.WindowSize.Height),
-	Resizable(param.WindowResizable == 1 ? true : false), WindowMinimized(false)
+	Resizable(param.WindowResizable == 1 ? true : false)
 {
 	#ifdef _DEBUG
 	setDebugName("CIrrDeviceSDL");
@@ -139,10 +139,14 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	// create keymap
 	createKeyMap();
 
-	if ( CreationParams.Fullscreen )
+	if (CreationParams.Fullscreen) {
 		SDL_Flags |= SDL_WINDOW_FULLSCREEN;
-	else if ( Resizable )
-		SDL_Flags |= SDL_WINDOW_RESIZABLE;
+	} else  {
+		if (Resizable)
+			SDL_Flags |= SDL_WINDOW_RESIZABLE;
+		if (CreationParams.WindowMaximized)
+			SDL_Flags |= SDL_WINDOW_MAXIMIZED;
+	}
 	if (CreationParams.DriverType == video::EDT_OPENGL)
 	{
 		SDL_Flags |= SDL_WINDOW_OPENGL;
@@ -159,6 +163,7 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 		// create the window, only if we do not use the null device
 		createWindow();
 	}
+
 
 	SDL_VERSION(&Info.version);
 
@@ -636,12 +641,6 @@ bool CIrrDeviceSDL::run()
 		case SDL_WINDOWEVENT:
 			switch (SDL_event.window.event)
 			{
-			case SDL_WINDOWEVENT_MAXIMIZED:
-				WindowMinimized = true;
-				break;
-			case SDL_WINDOWEVENT_RESTORED:
-				WindowMinimized = false;
-				break;
 			case SDL_WINDOWEVENT_RESIZED:
 				if ((SDL_event.window.data1 != (int)Width) || (SDL_event.window.data2 != (int)Height))
 				{
@@ -862,16 +861,16 @@ void CIrrDeviceSDL::setResizable(bool resize)
 //! Minimizes window if possible
 void CIrrDeviceSDL::minimizeWindow()
 {
-	if (Window) {
+	if (Window)
 		SDL_MinimizeWindow(Window);
-	}
 }
 
 
 //! Maximize window
 void CIrrDeviceSDL::maximizeWindow()
 {
-	// do nothing
+	if (Window)
+		SDL_MaximizeWindow(Window);
 }
 
 //! Get the position of this window on screen
@@ -884,7 +883,13 @@ core::position2di CIrrDeviceSDL::getWindowPosition()
 //! Restore original window size
 void CIrrDeviceSDL::restoreWindow()
 {
-	// do nothing
+	if (Window)
+		SDL_RestoreWindow(Window);
+}
+
+bool CIrrDeviceSDL::isWindowMaximized() const
+{
+	return Window && (SDL_GetWindowFlags(Window) & SDL_WINDOW_MAXIMIZED) != 0;
 }
 
 bool CIrrDeviceSDL::isFullscreen() const
@@ -919,14 +924,14 @@ bool CIrrDeviceSDL::isWindowActive() const
 //! returns if window has focus.
 bool CIrrDeviceSDL::isWindowFocused() const
 {
-	return SDL_GetWindowFlags(Window) & SDL_WINDOW_INPUT_FOCUS;
+	return Window && (SDL_GetWindowFlags(Window) & SDL_WINDOW_INPUT_FOCUS) != 0;
 }
 
 
 //! returns if window is minimized.
 bool CIrrDeviceSDL::isWindowMinimized() const
 {
-	return WindowMinimized;
+	return Window && (SDL_GetWindowFlags(Window) & SDL_WINDOW_MINIMIZED) != 0;
 }
 
 

@@ -156,6 +156,12 @@ namespace irr
 		/** \return True if window is minimized. */
 		virtual bool isWindowMinimized() const = 0;
 
+		//! Checks if the Irrlicht window is maximized
+		//! Only fully works on SDL. Returns false, or the last value set via
+		//! maximizeWindow() and restoreWindow(), on other backends.
+		/** \return True if window is maximized. */
+		virtual bool isWindowMaximized() const = 0;
+
 		//! Checks if the Irrlicht window is running in fullscreen mode
 		/** \return True if window is fullscreen. */
 		virtual bool isFullscreen() const = 0;
