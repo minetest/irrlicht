@@ -179,6 +179,7 @@ int CIrrDeviceSDL::findCharToPassToIrrlicht(int assumedChar, EKEY_CODE key) {
 		case KEY_UP:
 		case KEY_RIGHT:
 		case KEY_DOWN:
+		case KEY_NUMLOCK:
 			return 0;
 		default:
 			return assumedChar;
