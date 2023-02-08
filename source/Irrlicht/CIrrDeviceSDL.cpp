@@ -170,6 +170,11 @@ bool CIrrDeviceSDL::keyIsKnownSpecial(EKEY_CODE key)
 }
 
 int CIrrDeviceSDL::findCharToPassToIrrlicht(int assumedChar, EKEY_CODE key) {
+	// SDL in-place ORs values with no character representation with 1<<30
+	// https://wiki.libsdl.org/SDL2/SDLKeycodeLookup
+	if (assumedChar & (1<<30))
+		return 0;
+
 	switch (key) {
 		case KEY_PRIOR:
 		case KEY_NEXT:
