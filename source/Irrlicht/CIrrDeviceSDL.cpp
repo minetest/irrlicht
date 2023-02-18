@@ -140,7 +140,7 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	createKeyMap();
 
 	if (CreationParams.Fullscreen) {
-		SDL_Flags |= SDL_WINDOW_FULLSCREEN;
+		SDL_Flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	} else  {
 		if (Resizable)
 			SDL_Flags |= SDL_WINDOW_RESIZABLE;
