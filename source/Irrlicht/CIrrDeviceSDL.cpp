@@ -8,6 +8,8 @@
 
 #include "CIrrDeviceSDL.h"
 #include "IEventReceiver.h"
+#include "IGUIElement.h"
+#include "IGUIEnvironment.h"
 #include "os.h"
 #include "CTimer.h"
 #include "irrString.h"
@@ -104,6 +106,98 @@ EM_BOOL CIrrDeviceSDL::MouseLeaveCallback(int eventType, const EmscriptenMouseEv
 	return EM_FALSE;
 }
 #endif
+
+
+bool CIrrDeviceSDL::keyIsKnownSpecial(EKEY_CODE key)
+{
+	switch ( key )
+	{
+		// keys which are known to have safe special character interpretation
+		// could need changes over time (removals and additions!)
+		case KEY_RETURN:
+		case KEY_PAUSE:
+		case KEY_ESCAPE:
+		case KEY_PRIOR:
+		case KEY_NEXT:
+		case KEY_HOME:
+		case KEY_END:
+		case KEY_LEFT:
+		case KEY_UP:
+		case KEY_RIGHT:
+		case KEY_DOWN:
+		case KEY_TAB:
+		case KEY_PRINT:
+		case KEY_SNAPSHOT:
+		case KEY_INSERT:
+		case KEY_BACK:
+		case KEY_DELETE:
+		case KEY_HELP:
+		case KEY_APPS:
+		case KEY_SLEEP:
+		case KEY_F1:
+		case KEY_F2:
+		case KEY_F3:
+		case KEY_F4:
+		case KEY_F5:
+		case KEY_F6:
+		case KEY_F7:
+		case KEY_F8:
+		case KEY_F9:
+		case KEY_F10:
+		case KEY_F11:
+		case KEY_F12:
+		case KEY_F13:
+		case KEY_F14:
+		case KEY_F15:
+		case KEY_F16:
+		case KEY_F17:
+		case KEY_F18:
+		case KEY_F19:
+		case KEY_F20:
+		case KEY_F21:
+		case KEY_F22:
+		case KEY_F23:
+		case KEY_F24:
+		case KEY_NUMLOCK:
+		case KEY_SCROLL:
+		case KEY_LCONTROL:
+		case KEY_RCONTROL:
+			return true;
+
+		default:
+			return false;
+	}
+}
+
+int CIrrDeviceSDL::findCharToPassToIrrlicht(int assumedChar, EKEY_CODE key) {
+	// SDL in-place ORs values with no character representation with 1<<30
+	// https://wiki.libsdl.org/SDL2/SDLKeycodeLookup
+	if (assumedChar & (1<<30))
+		return 0;
+
+	switch (key) {
+		case KEY_PRIOR:
+		case KEY_NEXT:
+		case KEY_HOME:
+		case KEY_END:
+		case KEY_LEFT:
+		case KEY_UP:
+		case KEY_RIGHT:
+		case KEY_DOWN:
+		case KEY_NUMLOCK:
+			return 0;
+		default:
+			return assumedChar;
+	}
+}
+
+void CIrrDeviceSDL::resetReceiveTextInputEvents() {
+	gui::IGUIElement *elem = GUIEnvironment->getFocus();
+	if (elem && elem->acceptsIME())
+		SDL_StartTextInput();
+	else
+		SDL_StopTextInput();
+}
 
 //! constructor
 CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
@@ -611,6 +705,10 @@ bool CIrrDeviceSDL::run()
 				else
 					key = (EKEY_CODE)KeyMap[idx].Win32Key;
 
+				// Make sure to only input special characters if something is in focus, as SDL_TEXTINPUT handles normal unicode already
+				if (SDL_IsTextInputActive() && !keyIsKnownSpecial(key) && (SDL_event.key.keysym.mod & KMOD_CTRL) == 0)
+					break;
+
 #ifdef _IRR_WINDOWS_API_
 				// handle alt+f4 in Windows, because SDL seems not to
 				if ( (SDL_event.key.keysym.mod & KMOD_LALT) && key == KEY_F4)
@@ -624,12 +722,7 @@ bool CIrrDeviceSDL::run()
 				irrevent.KeyInput.PressedDown = (SDL_event.type == SDL_KEYDOWN);
 				irrevent.KeyInput.Shift = (SDL_event.key.keysym.mod & KMOD_SHIFT) != 0;
 				irrevent.KeyInput.Control = (SDL_event.key.keysym.mod & KMOD_CTRL ) != 0;
-				// These keys are handled differently in CGUIEditBox.cpp (may become out of date!)
-				// Control key is used in special character combinations, so keep that too
-				// Pass through the keysym only then so no extra text gets input
-				irrevent.KeyInput.Char = 0;
-				if (mp.SDLKey == SDLK_DELETE || mp.SDLKey == SDLK_RETURN || mp.SDLKey == SDLK_BACKSPACE || irrevent.KeyInput.Control)
-					irrevent.KeyInput.Char = mp.SDLKey;
+				irrevent.KeyInput.Char = findCharToPassToIrrlicht(mp.SDLKey, key);
 				postEventFromUser(irrevent);
 			}
 			break;
@@ -663,7 +756,7 @@ bool CIrrDeviceSDL::run()
 		default:
 			break;
 		} // end switch
-
+	resetReceiveTextInputEvents();
 	} // end while
 
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
