@@ -145,12 +145,12 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 #else
 		SDL_Flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 #endif
-	} else  {
-		if (Resizable)
-			SDL_Flags |= SDL_WINDOW_RESIZABLE;
-		if (CreationParams.WindowMaximized)
-			SDL_Flags |= SDL_WINDOW_MAXIMIZED;
 	}
+	if (Resizable)
+		SDL_Flags |= SDL_WINDOW_RESIZABLE;
+	if (CreationParams.WindowMaximized)
+		SDL_Flags |= SDL_WINDOW_MAXIMIZED;
+
 	if (CreationParams.DriverType == video::EDT_OPENGL)
 	{
 		SDL_Flags |= SDL_WINDOW_OPENGL;
