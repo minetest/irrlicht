@@ -48,9 +48,7 @@ jobs:
 
       - name: Build
         run: |
-          sed '/#define _IRR_COMPILE_WITH_OGLES2_/ s|^//||g' -i include/IrrCompileConfig.h
-          sed '/#define _IRR_COMPILE_WITH_OPENGL_/ s|^|//|g' -i include/IrrCompileConfig.h
-          cmake . -DBUILD_EXAMPLES=1
+          cmake . -DBUILD_EXAMPLES=1 -DENABLE_OPENGL=OFF -DENABLE_GLES2=ON
           make -j2
 
       - name: Test (headless)
@@ -61,7 +59,7 @@ jobs:
       - name: Test (Xvfb)
         run: |
           cd bin/Linux
-          LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest
+          LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest ogles2
 
   linux-sdl:
     runs-on: ubuntu-latest
@@ -77,8 +75,7 @@ jobs:
 
       - name: Build
         run: |
-          sed '/#define _IRR_COMPILE_WITH_SDL_DEVICE_/ s|^//||g' -i include/IrrCompileConfig.h
-          cmake . -DBUILD_EXAMPLES=1
+          cmake . -DBUILD_EXAMPLES=1 -DUSE_SDL2=ON
           make -j2
 
       - name: Test (headless)

@@ -310,37 +310,7 @@ namespace irr
 		for a configuration requested when creating the device. */
 		static bool isDriverSupported(video::E_DRIVER_TYPE driver)
 		{
-			switch (driver)
-			{
-				case video::EDT_NULL:
-					return true;
-				case video::EDT_OPENGL:
-#ifdef _IRR_COMPILE_WITH_OPENGL_
-					return true;
-#else
-					return false;
-#endif
-				case video::EDT_OGLES1:
-#ifdef _IRR_COMPILE_WITH_OGLES1_
-					return true;
-#else
-					return false;
-#endif
-				case video::EDT_OGLES2:
-#ifdef _IRR_COMPILE_WITH_OGLES2_
-					return true;
-#else
-					return false;
-#endif
-				case video::EDT_WEBGL1:
-#ifdef _IRR_COMPILE_WITH_WEBGL1_
-					return true;
-#else
-					return false;
-#endif
-				default:
-					return false;
-			}
+			return true;
 		}
 	};
 
