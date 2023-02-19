@@ -132,43 +132,6 @@
 //! Maximum number of texture an SMaterial can have, up to 8 are supported by Irrlicht.
 #define _IRR_MATERIAL_MAX_TEXTURES_ 4
 
-//! Add a leak-hunter to Irrlicht which helps finding unreleased reference counted objects.
-//! NOTE: This is slow and should only be used for debugging
-//#define _IRR_COMPILE_WITH_LEAK_HUNTER_
-#ifdef NO_IRR_COMPILE_WITH_LEAK_HUNTER_
-#undef _IRR_COMPILE_WITH_LEAK_HUNTER_
-#endif
-
-//! Enable profiling information in the engine
-/** NOTE: The profiler itself always exists and can be used by applications.
-This define is about the engine creating profile data
-while it runs and enabling it will slow down the engine. */
-//#define _IRR_COMPILE_WITH_PROFILING_
-#ifdef NO_IRR_COMPILE_WITH_PROFILING_
-#undef _IRR_COMPILE_WITH_PROFILING_
-#endif
-
-//! Define _IRR_COMPILE_WITH_DIRECT3D_9_ to compile the Irrlicht engine with DIRECT3D9.
-/** If you only want to use the software device or opengl you can disable those defines.
-This switch is mostly disabled because people do not get the g++ compiler compile
-directX header files, and directX is only available on Windows platforms. If you
-are using Dev-Cpp, and want to compile this using a DX dev pack, you can define
-_IRR_COMPILE_WITH_DX9_DEV_PACK_. So you simply need to add something like this
-to the compiler settings: -DIRR_COMPILE_WITH_DX9_DEV_PACK
-and this to the linker settings: -ld3dx9
-*/
-#if defined(_IRR_WINDOWS_API_) && defined(IRR_COMPILE_WITH_DX9_DEV_PACK)
-
-//! Define _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_ if you want to use DirectInput for joystick handling.
-/** This only applies to Windows devices, currently only supported under Win32 device.
-If not defined, Windows Multimedia library is used, which offers also broad support for joystick devices. */
-#define _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
-#ifdef NO_IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
-#undef _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
-#endif
-
-#endif
-
 //! Define _IRR_COMPILE_WITH_OPENGL_ to compile the Irrlicht engine with OpenGL.
 /** If you do not wish the engine to be compiled with OpenGL, comment this
 define out. */
@@ -289,123 +252,11 @@ define out. */
 
 #endif
 
-//! Define _IRR_COMPILE_WITH_GUI_ to compile the engine with the built-in GUI
-/** Disable this if you are using an external library to draw the GUI. If you disable this then
-you will not be able to use anything provided by the GUI Environment, including loading fonts. */
-#define _IRR_COMPILE_WITH_GUI_
-#ifdef NO_IRR_COMPILE_WITH_GUI_
-#undef _IRR_COMPILE_WITH_GUI_
+
+#if defined(_IRR_SOLARIS_PLATFORM_)
+	#undef _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
 #endif
 
-//! Define _IRR_COMPILE_WITH_LIBJPEG_ to enable compiling the engine using libjpeg.
-/** This enables the engine to read jpeg images. If you comment this out,
-the engine will no longer read .jpeg images. */
-#define _IRR_COMPILE_WITH_LIBJPEG_
-#ifdef NO_IRR_COMPILE_WITH_LIBJPEG_
-#undef _IRR_COMPILE_WITH_LIBJPEG_
-#endif
-
-//! Define _IRR_COMPILE_WITH_LIBPNG_ to enable compiling the engine using libpng.
-/** This enables the engine to read png images. If you comment this out,
-the engine will no longer read .png images. */
-#define _IRR_COMPILE_WITH_LIBPNG_
-#ifdef NO_IRR_COMPILE_WITH_LIBPNG_
-#undef _IRR_COMPILE_WITH_LIBPNG_
-#endif
-
-//! Uncomment the following line if you want to ignore the deprecated warnings
-//#define IGNORE_DEPRECATED_WARNING
-
-//! Define _IRR_COMPILE_WITH_BILLBOARD_SCENENODE_ to support BillboardSceneNodes
-#define _IRR_COMPILE_WITH_BILLBOARD_SCENENODE_
-#ifdef NO_IRR_COMPILE_WITH_BILLBOARD_SCENENODE_
-#undef _IRR_COMPILE_WITH_BILLBOARD_SCENENODE_
-#endif
-
-//! Define _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_ if you want to use bone based
-/** animated meshes. If you compile without this, you will be unable to load
-B3D, MS3D or X meshes */
-#define _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-#ifdef NO_IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-#undef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-#endif
-
-#ifdef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-//! Define _IRR_COMPILE_WITH_B3D_LOADER_ if you want to use Blitz3D files
-#define _IRR_COMPILE_WITH_B3D_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_B3D_LOADER_
-#undef _IRR_COMPILE_WITH_B3D_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_X_LOADER_ if you want to use Microsoft X files
-#define _IRR_COMPILE_WITH_X_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_X_LOADER_
-#undef _IRR_COMPILE_WITH_X_LOADER_
-#endif
-#endif // _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-
-//! Define _IRR_COMPILE_WITH_OBJ_LOADER_ if you want to load Wavefront OBJ files
-#define _IRR_COMPILE_WITH_OBJ_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_OBJ_LOADER_
-#undef _IRR_COMPILE_WITH_OBJ_LOADER_
-#endif
-
-//! Define _IRR_COMPILE_WITH_BMP_LOADER_ if you want to load .bmp files
-//! Disabling this loader will also disable the built-in font
-#define _IRR_COMPILE_WITH_BMP_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_BMP_LOADER_
-#undef _IRR_COMPILE_WITH_BMP_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_JPG_LOADER_ if you want to load .jpg files
-#define _IRR_COMPILE_WITH_JPG_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_JPG_LOADER_
-#undef _IRR_COMPILE_WITH_JPG_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_PNG_LOADER_ if you want to load .png files
-#define _IRR_COMPILE_WITH_PNG_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_PNG_LOADER_
-#undef _IRR_COMPILE_WITH_PNG_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_TGA_LOADER_ if you want to load .tga files
-#define _IRR_COMPILE_WITH_TGA_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_TGA_LOADER_
-#undef _IRR_COMPILE_WITH_TGA_LOADER_
-#endif
-
-//! Define _IRR_COMPILE_WITH_JPG_WRITER_ if you want to write .jpg files
-#define _IRR_COMPILE_WITH_JPG_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_JPG_WRITER_
-#undef _IRR_COMPILE_WITH_JPG_WRITER_
-#endif
-//! Define _IRR_COMPILE_WITH_PNG_WRITER_ if you want to write .png files
-#define _IRR_COMPILE_WITH_PNG_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_PNG_WRITER_
-#undef _IRR_COMPILE_WITH_PNG_WRITER_
-#endif
-
-//! Define __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_ if you want to open ZIP and GZIP archives
-/** ZIP reading has several more options below to configure. */
-#define __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_
-#ifdef NO__IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_
-#undef __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_
-#endif
-#ifdef __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_
-//! Define _IRR_COMPILE_WITH_ZLIB_ to enable compiling the engine using zlib.
-/** This enables the engine to read from compressed .zip archives. If you
-disable this feature, the engine can still read archives, but only uncompressed
-ones. */
-#define _IRR_COMPILE_WITH_ZLIB_
-#ifdef NO_IRR_COMPILE_WITH_ZLIB_
-#undef _IRR_COMPILE_WITH_ZLIB_
-#endif
-#endif
-
-//! Define __IRR_COMPILE_WITH_MOUNT_ARCHIVE_LOADER_ if you want to mount folders as archives
-#define __IRR_COMPILE_WITH_MOUNT_ARCHIVE_LOADER_
-#ifdef NO__IRR_COMPILE_WITH_MOUNT_ARCHIVE_LOADER_
-#undef __IRR_COMPILE_WITH_MOUNT_ARCHIVE_LOADER_
-#endif
-
-// Some cleanup and standard stuff
 
 #ifdef _IRR_WINDOWS_API_
 
@@ -441,19 +292,25 @@ ones. */
 
 #endif // _IRR_WINDOWS_API_
 
-#if defined(_IRR_SOLARIS_PLATFORM_)
-	#undef _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
-#endif
 
-//! Define __IRR_HAS_S64 if the irr::s64 type should be enable (needs long long, available on most platforms, but not part of ISO C++ 98)
+#define _IRR_COMPILE_WITH_GUI_
+#define _IRR_COMPILE_WITH_LIBJPEG_
+#define _IRR_COMPILE_WITH_LIBPNG_
+#define _IRR_COMPILE_WITH_BILLBOARD_SCENENODE_
+#define _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
+#define _IRR_COMPILE_WITH_B3D_LOADER_
+#define _IRR_COMPILE_WITH_X_LOADER_
+#define _IRR_COMPILE_WITH_OBJ_LOADER_
+#define _IRR_COMPILE_WITH_BMP_LOADER_
+#define _IRR_COMPILE_WITH_JPG_LOADER_
+#define _IRR_COMPILE_WITH_PNG_LOADER_
+#define _IRR_COMPILE_WITH_TGA_LOADER_
+#define _IRR_COMPILE_WITH_JPG_WRITER_
+#define _IRR_COMPILE_WITH_PNG_WRITER_
+#define __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_
+#define _IRR_COMPILE_WITH_ZLIB_
 #define __IRR_HAS_S64
-#ifdef NO__IRR_HAS_S64
-#undef __IRR_HAS_S64
-#endif
 
-#ifndef __has_feature
-  #define __has_feature(x) 0  // Compatibility with non-clang compilers.
-#endif
 
 #ifdef _DEBUG
 	//! A few attributes are written in CSceneManager when _IRR_SCENEMANAGER_DEBUG is enabled
@@ -470,4 +327,3 @@ ones. */
 #endif
 
 #endif // __IRR_COMPILE_CONFIG_H_INCLUDED__
-
