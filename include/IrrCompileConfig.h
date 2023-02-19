@@ -25,39 +25,15 @@
 #define _IRR_MATERIAL_MAX_TEXTURES_ 4
 
 
-#ifdef _IRR_WINDOWS_API_
-
-// To build Irrlicht as a static library, you must define _IRR_STATIC_LIB_ in both the
-// Irrlicht build, *and* in the user application, before #including <irrlicht.h>
-#ifndef _IRR_STATIC_LIB_
-#ifdef IRRLICHT_EXPORTS
-#define IRRLICHT_API __declspec(dllexport)
-#else
-#define IRRLICHT_API __declspec(dllimport)
-#endif // IRRLICHT_EXPORT
-#else
-#define IRRLICHT_API
-#endif // _IRR_STATIC_LIB_
-
-// Declare the calling convention.
-#if defined(_STDCALL_SUPPORTED)
+#ifdef _WIN32
 #define IRRCALLCONV __stdcall
 #else
-#define IRRCALLCONV __cdecl
-#endif // STDCALL_SUPPORTED
-
-#else // _IRR_WINDOWS_API_
-
-// Force symbol export in shared libraries built with gcc.
-#if defined(__GNUC__) && !defined(_IRR_STATIC_LIB_) && defined(IRRLICHT_EXPORTS)
-#define IRRLICHT_API __attribute__ ((visibility("default")))
-#else
-#define IRRLICHT_API
+#define IRRCALLCONV
 #endif
 
-#define IRRCALLCONV
-
-#endif // _IRR_WINDOWS_API_
+#ifndef IRRLICHT_API
+#define IRRLICHT_API
+#endif
 
 
 #define _IRR_COMPILE_WITH_GUI_
