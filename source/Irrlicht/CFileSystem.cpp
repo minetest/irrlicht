@@ -54,9 +54,7 @@ CFileSystem::CFileSystem()
 	//! reset current working directory
 	getWorkingDirectory();
 
-#ifdef __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_
 	ArchiveLoader.push_back(new CArchiveLoaderZIP(this));
-#endif
 
 }
 

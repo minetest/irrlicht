@@ -15,27 +15,11 @@
 
 #include "os.h"
 
-// We need this include for the case of skinned mesh support without
-// any such loader
-#ifdef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
 #include "CSkinnedMesh.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_X_LOADER_
 #include "CXMeshFileLoader.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_OBJ_LOADER_
 #include "COBJMeshFileLoader.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_B3D_LOADER_
 #include "CB3DMeshFileLoader.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_BILLBOARD_SCENENODE_
 #include "CBillboardSceneNode.h"
-#endif // _IRR_COMPILE_WITH_BILLBOARD_SCENENODE_
 #include "CAnimatedMeshSceneNode.h"
 #include "CCameraSceneNode.h"
 #include "CMeshSceneNode.h"
@@ -96,15 +80,9 @@ CSceneManager::CSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs,
 	// TODO: now that we have multiple scene managers, these should be
 	// shallow copies from the previous manager if there is one.
 
-	#ifdef _IRR_COMPILE_WITH_X_LOADER_
 	MeshLoaderList.push_back(new CXMeshFileLoader(this, FileSystem));
-	#endif
-	#ifdef _IRR_COMPILE_WITH_OBJ_LOADER_
 	MeshLoaderList.push_back(new COBJMeshFileLoader(this, FileSystem));
-	#endif
-	#ifdef _IRR_COMPILE_WITH_B3D_LOADER_
 	MeshLoaderList.push_back(new CB3DMeshFileLoader(this));
-	#endif
 }
 
 
@@ -316,7 +294,6 @@ IBillboardSceneNode* CSceneManager::addBillboardSceneNode(ISceneNode* parent,
 	video::SColor colorTop, video::SColor colorBottom
 	)
 {
-#ifdef _IRR_COMPILE_WITH_BILLBOARD_SCENENODE_
 	if (!parent)
 		parent = this;
 
@@ -325,9 +302,6 @@ IBillboardSceneNode* CSceneManager::addBillboardSceneNode(ISceneNode* parent,
 	node->drop();
 
 	return node;
-#else
-	return 0;
-#endif
 }
 
 
@@ -971,49 +945,12 @@ const video::SColorf& CSceneManager::getAmbientLight() const
 //! Get a skinned mesh, which is not available as header-only code
 ISkinnedMesh* CSceneManager::createSkinnedMesh()
 {
-#ifdef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
 	return new CSkinnedMesh();
-#else
-	return 0;
-#endif
 }
 
 //! Returns a mesh writer implementation if available
 IMeshWriter* CSceneManager::createMeshWriter(EMESH_WRITER_TYPE type)
 {
-	switch(type)
-	{
-	case EMWT_IRR_MESH:
-	case EMWT_COLLADA:
-		return 0;
-	case EMWT_STL:
-#ifdef _IRR_COMPILE_WITH_STL_WRITER_
-		return new CSTLMeshWriter(this);
-#else
-		return 0;
-#endif
-	case EMWT_OBJ:
-#ifdef _IRR_COMPILE_WITH_OBJ_WRITER_
-		return new COBJMeshWriter(this, FileSystem);
-#else
-		return 0;
-#endif
-
-	case EMWT_PLY:
-#ifdef _IRR_COMPILE_WITH_PLY_WRITER_
-		return new CPLYMeshWriter();
-#else
-		return 0;
-#endif
-
-	case EMWT_B3D:
-#ifdef _IRR_COMPILE_WITH_B3D_WRITER_
-		return new CB3DMeshWriter();
-#else
-		return 0;
-#endif
-	}
-
 	return 0;
 }
 

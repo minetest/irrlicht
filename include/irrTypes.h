@@ -38,13 +38,11 @@ typedef uint32_t 		u32;
 typedef int32_t			s32;
 
 
-#ifdef __IRR_HAS_S64
 //! 64 bit unsigned variable.
 typedef uint64_t		u64;
 
 //! 64 bit signed variable.
 typedef int64_t			s64;
-#endif	// __IRR_HAS_S64
 
 
 

@@ -32,57 +32,15 @@ IImageLoader* createImageLoaderJPG();
 //! creates a loader which is able to load targa images
 IImageLoader* createImageLoaderTGA();
 
-//! creates a loader which is able to load psd images
-IImageLoader* createImageLoaderPSD();
-
-//! creates a loader which is able to load psd images
-IImageLoader* createImageLoaderPVR();
-
-//! creates a loader which is able to load dds images
-IImageLoader* createImageLoaderDDS();
-
-//! creates a loader which is able to load pcx images
-IImageLoader* createImageLoaderPCX();
-
 //! creates a loader which is able to load png images
 IImageLoader* createImageLoaderPNG();
-
-//! creates a loader which is able to load WAL images
-IImageLoader* createImageLoaderWAL();
-
-//! creates a loader which is able to load halflife images
-IImageLoader* createImageLoaderHalfLife();
-
-//! creates a loader which is able to load lmp images
-IImageLoader* createImageLoaderLMP();
-
-//! creates a loader which is able to load ppm/pgm/pbm images
-IImageLoader* createImageLoaderPPM();
-
-//! creates a loader which is able to load rgb images
-IImageLoader* createImageLoaderRGB();
-
-
-//! creates a writer which is able to save bmp images
-IImageWriter* createImageWriterBMP();
 
 //! creates a writer which is able to save jpg images
 IImageWriter* createImageWriterJPG();
 
-//! creates a writer which is able to save tga images
-IImageWriter* createImageWriterTGA();
-
-//! creates a writer which is able to save psd images
-IImageWriter* createImageWriterPSD();
-
-//! creates a writer which is able to save pcx images
-IImageWriter* createImageWriterPCX();
-
 //! creates a writer which is able to save png images
 IImageWriter* createImageWriterPNG();
 
-//! creates a writer which is able to save ppm images
-IImageWriter* createImageWriterPPM();
 
 //! constructor
 CNullDriver::CNullDriver(io::IFileSystem* io, const core::dimension2d<u32>& screenSize)
@@ -124,68 +82,14 @@ CNullDriver::CNullDriver(io::IFileSystem* io, const core::dimension2d<u32>& scre
 	if (FileSystem)
 		FileSystem->grab();
 
-	// create surface loader
-
-#ifdef _IRR_COMPILE_WITH_WAL_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderHalfLife());
-	SurfaceLoader.push_back(video::createImageLoaderWAL());
-#endif
-#ifdef _IRR_COMPILE_WITH_LMP_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderLMP());
-#endif
-#ifdef _IRR_COMPILE_WITH_PPM_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderPPM());
-#endif
-#ifdef _IRR_COMPILE_WITH_RGB_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderRGB());
-#endif
-#ifdef _IRR_COMPILE_WITH_PSD_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderPSD());
-#endif
-#ifdef _IRR_COMPILE_WITH_PVR_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderPVR());
-#endif
-#if defined(_IRR_COMPILE_WITH_DDS_LOADER_) || defined(_IRR_COMPILE_WITH_DDS_DECODER_LOADER_)
-	SurfaceLoader.push_back(video::createImageLoaderDDS());
-#endif
-#ifdef _IRR_COMPILE_WITH_PCX_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderPCX());
-#endif
-#ifdef _IRR_COMPILE_WITH_TGA_LOADER_
+	// create surface loaders and writers
 	SurfaceLoader.push_back(video::createImageLoaderTGA());
-#endif
-#ifdef _IRR_COMPILE_WITH_PNG_LOADER_
 	SurfaceLoader.push_back(video::createImageLoaderPNG());
-#endif
-#ifdef _IRR_COMPILE_WITH_JPG_LOADER_
 	SurfaceLoader.push_back(video::createImageLoaderJPG());
-#endif
-#ifdef _IRR_COMPILE_WITH_BMP_LOADER_
 	SurfaceLoader.push_back(video::createImageLoaderBMP());
-#endif
 
-
-#ifdef _IRR_COMPILE_WITH_PPM_WRITER_
-	SurfaceWriter.push_back(video::createImageWriterPPM());
-#endif
-#ifdef _IRR_COMPILE_WITH_PCX_WRITER_
-	SurfaceWriter.push_back(video::createImageWriterPCX());
-#endif
-#ifdef _IRR_COMPILE_WITH_PSD_WRITER_
-	SurfaceWriter.push_back(video::createImageWriterPSD());
-#endif
-#ifdef _IRR_COMPILE_WITH_TGA_WRITER_
-	SurfaceWriter.push_back(video::createImageWriterTGA());
-#endif
-#ifdef _IRR_COMPILE_WITH_JPG_WRITER_
 	SurfaceWriter.push_back(video::createImageWriterJPG());
-#endif
-#ifdef _IRR_COMPILE_WITH_PNG_WRITER_
 	SurfaceWriter.push_back(video::createImageWriterPNG());
-#endif
-#ifdef _IRR_COMPILE_WITH_BMP_WRITER_
-	SurfaceWriter.push_back(video::createImageWriterBMP());
-#endif
 
 
 	// set ExposedData to 0

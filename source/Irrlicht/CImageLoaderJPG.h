@@ -7,17 +7,11 @@
 
 #include "IrrCompileConfig.h"
 
-#ifdef _IRR_COMPILE_WITH_JPG_LOADER_
-
 #include "IImageLoader.h"
 
 #include <stdio.h> // required for jpeglib.h
-#ifdef _IRR_COMPILE_WITH_LIBJPEG_
-extern "C" {
-	#include <jpeglib.h> // use system lib
-	#include <setjmp.h>
-}
-#endif // _IRR_COMPILE_WITH_LIBJPEG_
+#include <jpeglib.h> // use system lib
+#include <setjmp.h>
 
 
 namespace irr
@@ -48,8 +42,6 @@ public:
 	IImage* loadImage(io::IReadFile* file) const override;
 
 private:
-
-#ifdef _IRR_COMPILE_WITH_LIBJPEG_
 	// several methods used via function pointers by jpeglib
 
 	/* Receives control for a fatal error. Information sufficient to
@@ -95,8 +87,6 @@ private:
 	/* Terminate source --- called by jpeg_finish_decompress() after all
 	data has been read. Often a no-op. */
 	static void term_source (j_decompress_ptr cinfo);
-
-	#endif // _IRR_COMPILE_WITH_LIBJPEG_
 };
 
 
@@ -105,5 +95,3 @@ private:
 
 
 #endif
-#endif
-
