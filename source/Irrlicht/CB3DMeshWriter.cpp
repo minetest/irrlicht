@@ -6,8 +6,6 @@
 
 #include "IrrCompileConfig.h"
 
-#ifdef _IRR_COMPILE_WITH_B3D_WRITER_
-
 #include "CB3DMeshWriter.h"
 #include "os.h"
 #include "ISkinnedMesh.h"
@@ -531,6 +529,3 @@ void CB3DMeshWriter::writeSizeFrom(io::IWriteFile* file, const u32 from, const u
 
 } // end namespace
 } // end namespace
-
-#endif // _IRR_COMPILE_WITH_B3D_WRITER_
-

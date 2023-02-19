@@ -7,7 +7,9 @@
 #include "ISceneManager.h"
 #include "S3DVertex.h"
 #include "os.h"
+#ifdef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
 #include "CSkinnedMesh.h"
+#endif
 #include "IDummyTransformationSceneNode.h"
 #include "IBoneSceneNode.h"
 #include "IMaterialRenderer.h"

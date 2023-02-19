@@ -7,8 +7,6 @@
 
 #include "IrrCompileConfig.h"
 
-#ifdef __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_
-
 #include "IReadFile.h"
 #include "irrArray.h"
 #include "irrString.h"
@@ -226,6 +224,4 @@ namespace io
 } // end namespace io
 } // end namespace irr
 
-#endif // __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_
 #endif // __C_ZIP_READER_H_INCLUDED__
-

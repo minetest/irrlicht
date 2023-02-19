@@ -3,8 +3,6 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
 #include "IrrCompileConfig.h"
-#ifdef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-
 #include "CSkinnedMesh.h"
 #include "CBoneSceneNode.h"
 #include "IAnimatedMeshSceneNode.h"
@@ -1539,6 +1537,3 @@ void CSkinnedMesh::calculateTangents(
 
 } // end namespace scene
 } // end namespace irr
-
-#endif // _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-

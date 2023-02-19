@@ -15,9 +15,6 @@ namespace irr
 namespace video
 {
 
-#if defined(_IRR_COMPILE_WITH_BMP_LOADER_) || defined(_IRR_COMPILE_WITH_BMP_WRITER_)
-
-
 // byte-align structures
 #include "irrpack.h"
 
@@ -59,10 +56,6 @@ namespace video
 // Default alignment
 #include "irrunpack.h"
 
-#endif // defined with loader or writer
-
-#ifdef _IRR_COMPILE_WITH_BMP_LOADER_
-
 /*!
 	Surface Loader for Windows bitmaps
 */
@@ -91,10 +84,7 @@ private:
 };
 
 
-#endif // compiled with loader
-
 } // end namespace video
 } // end namespace irr
 
 #endif
-

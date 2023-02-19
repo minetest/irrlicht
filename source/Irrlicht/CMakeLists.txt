@@ -63,6 +63,12 @@ if(NOT REVISION_SANITY_CHECK)
 	message(FATAL_ERROR "IrrlichtMt revision number mismatches between CMake and headers.")
 endif()
 
+# Platform-independent configuration (hard-coded currently)
+add_definitions(
+	-DIRR_ENABLE_BUILTIN_FONT
+	-D_IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
+	)
+
 # Platform-specific configuration
 
 if(CMAKE_SYSTEM_NAME STREQUAL "SunOS")

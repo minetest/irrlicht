@@ -23,7 +23,7 @@
 
 //! Maximum number of texture an SMaterial can have, up to 8 are supported by Irrlicht.
 #define _IRR_MATERIAL_MAX_TEXTURES_ 4
-
+#define _IRR_COMPILE_WITH_GUI_
 
 #ifdef _WIN32
 #define IRRCALLCONV __stdcall
@@ -34,25 +34,6 @@
 #ifndef IRRLICHT_API
 #define IRRLICHT_API
 #endif
-
-
-#define _IRR_COMPILE_WITH_GUI_
-#define _IRR_COMPILE_WITH_LIBJPEG_
-#define _IRR_COMPILE_WITH_LIBPNG_
-#define _IRR_COMPILE_WITH_BILLBOARD_SCENENODE_
-#define _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-#define _IRR_COMPILE_WITH_B3D_LOADER_
-#define _IRR_COMPILE_WITH_X_LOADER_
-#define _IRR_COMPILE_WITH_OBJ_LOADER_
-#define _IRR_COMPILE_WITH_BMP_LOADER_
-#define _IRR_COMPILE_WITH_JPG_LOADER_
-#define _IRR_COMPILE_WITH_PNG_LOADER_
-#define _IRR_COMPILE_WITH_TGA_LOADER_
-#define _IRR_COMPILE_WITH_JPG_WRITER_
-#define _IRR_COMPILE_WITH_PNG_WRITER_
-#define __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_
-#define _IRR_COMPILE_WITH_ZLIB_
-#define __IRR_HAS_S64
 
 
 #ifdef _DEBUG
