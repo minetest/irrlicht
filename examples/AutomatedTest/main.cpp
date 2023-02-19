@@ -10,15 +10,17 @@ static int test_fail = 0;
 void test_irr_array();
 void test_irr_string();
 
-static video::E_DRIVER_TYPE chooseDriver(const char *arg_)
+static video::E_DRIVER_TYPE chooseDriver(core::stringc arg_)
 {
-	if (core::stringc(arg_) == "null")
+	if (arg_ == "null")
 		return video::EDT_NULL;
-
-	if (IrrlichtDevice::isDriverSupported(video::EDT_OGLES1))
+	if (arg_ == "ogles1")
 		return video::EDT_OGLES1;
-	if (IrrlichtDevice::isDriverSupported(video::EDT_OGLES2))
+	if (arg_ == "ogles2")
 		return video::EDT_OGLES2;
+	if (arg_ == "opengl")
+		return video::EDT_OPENGL;
+	std::cerr << "Unknown driver type: " << arg_.c_str() << ". Trying OpenGL." << std::endl;
 	return video::EDT_OPENGL;
 }
 
