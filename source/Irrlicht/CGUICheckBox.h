@@ -5,7 +5,6 @@
 #ifndef __C_GUI_CHECKBOX_H_INCLUDED__
 #define __C_GUI_CHECKBOX_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "IGUICheckBox.h"
 
 namespace irr

@@ -5,7 +5,6 @@
 #ifndef __C_GUI_LIST_BOX_H_INCLUDED__
 #define __C_GUI_LIST_BOX_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "IGUIListBox.h"
 #include "irrArray.h"
 

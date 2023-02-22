@@ -5,7 +5,6 @@
 #ifndef __C_GUI_SPRITE_BANK_H_INCLUDED__
 #define __C_GUI_SPRITE_BANK_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "IGUISpriteBank.h"
 
 namespace irr

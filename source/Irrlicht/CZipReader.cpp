@@ -11,7 +11,6 @@
 #include "CReadFile.h"
 #include "coreutil.h"
 
-#include "IrrCompileConfig.h"
 #include <zlib.h> // use system lib
 
 namespace irr

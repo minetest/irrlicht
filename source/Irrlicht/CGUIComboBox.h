@@ -5,7 +5,6 @@
 #ifndef __C_GUI_COMBO_BOX_H_INCLUDED__
 #define __C_GUI_COMBO_BOX_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "IGUIComboBox.h"
 #include "IGUIStaticText.h"
 #include "irrString.h"

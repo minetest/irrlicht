@@ -5,7 +5,6 @@
 #ifndef __C_GUI_STATIC_TEXT_H_INCLUDED__
 #define __C_GUI_STATIC_TEXT_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "IGUIStaticText.h"
 #include "irrArray.h"
 

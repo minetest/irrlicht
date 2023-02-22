@@ -5,7 +5,6 @@
 #ifndef __C_GUI_EDIT_BOX_H_INCLUDED__
 #define __C_GUI_EDIT_BOX_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "IGUIEditBox.h"
 #include "irrArray.h"
 #include "IOSOperator.h"

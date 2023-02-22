@@ -5,7 +5,6 @@
 #ifndef __C_GUI_FONT_H_INCLUDED__
 #define __C_GUI_FONT_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "IGUIFontBitmap.h"
 #include "irrString.h"
 #include "IReadFile.h"

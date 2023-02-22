@@ -5,7 +5,6 @@
 #ifndef __C_GUI_IMAGE_H_INCLUDED__
 #define __C_GUI_IMAGE_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "IGUIImage.h"
 
 namespace irr

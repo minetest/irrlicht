@@ -4,7 +4,6 @@
 
 // TODO: replace printf's by logging messages
 
-#include "IrrCompileConfig.h"
 
 #include "CB3DMeshWriter.h"
 #include "os.h"

@@ -5,7 +5,6 @@
 #ifndef __E_OGLES_CORE_EXTENSION_HANDLER_H_INCLUDED__
 #define __E_OGLES_CORE_EXTENSION_HANDLER_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 
 // Can be included from different ES versions
 // (this is also the reason why this file is header-only as correct OGL ES headers have to be included first)

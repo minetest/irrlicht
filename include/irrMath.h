@@ -5,7 +5,6 @@
 #ifndef __IRR_MATH_H_INCLUDED__
 #define __IRR_MATH_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "irrTypes.h"
 #include <math.h>
 #include <float.h>

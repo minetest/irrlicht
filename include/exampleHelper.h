@@ -5,7 +5,6 @@
 #ifndef __EXAMPLE_HELPER_H_INCLUDED__
 #define __EXAMPLE_HELPER_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "path.h"
 
 namespace irr

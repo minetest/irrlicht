@@ -12,6 +12,7 @@
 #include "EMaterialTypes.h"
 #include "EMaterialFlags.h"
 #include "SMaterialLayer.h"
+#include "IrrCompileConfig.h" // for IRRLICHT_API
 
 namespace irr
 {

@@ -5,7 +5,6 @@
 #ifndef __C_GUI_SCROLL_BAR_H_INCLUDED__
 #define __C_GUI_SCROLL_BAR_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "IGUIScrollBar.h"
 #include "IGUIButton.h"
 

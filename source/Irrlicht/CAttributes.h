@@ -5,7 +5,6 @@
 #ifndef __C_ATTRIBUTES_H_INCLUDED__
 #define __C_ATTRIBUTES_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 
 #include "IAttributes.h"
 #include "IAttribute.h"

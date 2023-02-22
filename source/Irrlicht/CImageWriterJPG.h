@@ -5,7 +5,6 @@
 #ifndef _C_IMAGE_WRITER_JPG_H_INCLUDED__
 #define _C_IMAGE_WRITER_JPG_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 
 #include "IImageWriter.h"
 

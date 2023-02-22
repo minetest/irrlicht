@@ -5,7 +5,6 @@
 #ifndef __C_GUI_ENVIRONMENT_H_INCLUDED__
 #define __C_GUI_ENVIRONMENT_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "IGUIEnvironment.h"
 #include "IGUIElement.h"
 #include "irrArray.h"

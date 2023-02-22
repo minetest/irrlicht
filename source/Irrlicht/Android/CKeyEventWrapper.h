@@ -4,7 +4,6 @@
 #ifndef __C_IRR_KEY_EVENT_WRAPPER_H_INCLUDED__
 #define __C_IRR_KEY_EVENT_WRAPPER_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 
 #ifdef _IRR_COMPILE_WITH_ANDROID_DEVICE_
 

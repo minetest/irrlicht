@@ -6,7 +6,6 @@
 // File format designed by Mark Sibly for the Blitz3D engine and has been
 // declared public domain
 
-#include "IrrCompileConfig.h"
 #include "CB3DMeshFileLoader.h"
 
 #include "IVideoDriver.h"

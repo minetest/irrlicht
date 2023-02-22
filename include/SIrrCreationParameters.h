@@ -11,7 +11,7 @@
 #include "ILogger.h"
 #include "position2d.h"
 #include "path.h"
-#include "IrrCompileConfig.h"
+#include "IrrCompileConfig.h" // for IRRLICHT_SDK_VERSION
 
 namespace irr
 {

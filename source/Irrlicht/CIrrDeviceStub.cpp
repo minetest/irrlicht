@@ -9,10 +9,10 @@
 #include "IGUIElement.h"
 #include "IGUIEnvironment.h"
 #include "os.h"
-#include "IrrCompileConfig.h"
 #include "CTimer.h"
 #include "CLogger.h"
 #include "irrString.h"
+#include "IrrCompileConfig.h" // for IRRLICHT_SDK_VERSION
 
 namespace irr
 {

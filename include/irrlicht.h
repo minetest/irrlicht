@@ -29,7 +29,6 @@
 #ifndef __IRRLICHT_H_INCLUDED__
 #define __IRRLICHT_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "aabbox3d.h"
 #include "CIndexBuffer.h"
 #include "CMeshBuffer.h"
@@ -135,6 +134,7 @@
 #include "triangle3d.h"
 #include "vector2d.h"
 #include "vector3d.h"
+#include "IrrCompileConfig.h" // for IRRLICHT_API and IRRCALLCONV
 
 /*! \mainpage Irrlicht Engine 1.9 API documentation
  *

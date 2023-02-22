@@ -5,7 +5,6 @@
 #ifndef __C_GUI_BUTTON_H_INCLUDED__
 #define __C_GUI_BUTTON_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "IGUIButton.h"
 #include "IGUISpriteBank.h"
 #include "ITexture.h"

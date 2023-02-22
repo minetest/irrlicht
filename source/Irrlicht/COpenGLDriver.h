@@ -5,7 +5,6 @@
 #ifndef __C_VIDEO_OPEN_GL_H_INCLUDED__
 #define __C_VIDEO_OPEN_GL_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 
 #include "SIrrCreationParameters.h"
 

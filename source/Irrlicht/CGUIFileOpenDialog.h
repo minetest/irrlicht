@@ -5,7 +5,6 @@
 #ifndef __C_GUI_FILE_OPEN_DIALOG_H_INCLUDED__
 #define __C_GUI_FILE_OPEN_DIALOG_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "IGUIFileOpenDialog.h"
 #include "IGUIButton.h"
 #include "IGUIListBox.h"

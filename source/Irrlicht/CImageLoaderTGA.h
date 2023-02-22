@@ -5,7 +5,6 @@
 #ifndef __C_IMAGE_LOADER_TGA_H_INCLUDED__
 #define __C_IMAGE_LOADER_TGA_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 
 #include "IImageLoader.h"
 
