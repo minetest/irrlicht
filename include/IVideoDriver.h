@@ -56,32 +56,13 @@ namespace video
 		ETS_WORLD,
 		//! Projection transformation
 		ETS_PROJECTION,
-		//! Texture transformation
+		//! Texture 0 transformation
+		//! Use ETS_TEXTURE_0 + texture_number to access other texture transformations
 		ETS_TEXTURE_0,
-		//! Texture transformation
+		//! Texture 1 transformation
 		ETS_TEXTURE_1,
-		//! Texture transformation
-		ETS_TEXTURE_2,
-		//! Texture transformation
-		ETS_TEXTURE_3,
-#if _IRR_MATERIAL_MAX_TEXTURES_>4
-		//! Texture transformation
-		ETS_TEXTURE_4,
-#if _IRR_MATERIAL_MAX_TEXTURES_>5
-		//! Texture transformation
-		ETS_TEXTURE_5,
-#if _IRR_MATERIAL_MAX_TEXTURES_>6
-		//! Texture transformation
-		ETS_TEXTURE_6,
-#if _IRR_MATERIAL_MAX_TEXTURES_>7
-		//! Texture transformation
-		ETS_TEXTURE_7,
-#endif
-#endif
-#endif
-#endif
 		//! Only used internally
-		ETS_COUNT = ETS_TEXTURE_0 + _IRR_MATERIAL_MAX_TEXTURES_
+		ETS_COUNT = ETS_TEXTURE_0 + MATERIAL_MAX_TEXTURES
 	};
 
 	//! Special render targets, which usually map to dedicated hardware

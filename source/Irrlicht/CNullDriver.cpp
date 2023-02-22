@@ -53,8 +53,8 @@ CNullDriver::CNullDriver(io::IFileSystem* io, const core::dimension2d<u32>& scre
 	#endif
 
 	DriverAttributes = new io::CAttributes();
-	DriverAttributes->addInt("MaxTextures", _IRR_MATERIAL_MAX_TEXTURES_);
-	DriverAttributes->addInt("MaxSupportedTextures", _IRR_MATERIAL_MAX_TEXTURES_);
+	DriverAttributes->addInt("MaxTextures", MATERIAL_MAX_TEXTURES);
+	DriverAttributes->addInt("MaxSupportedTextures", MATERIAL_MAX_TEXTURES);
 	DriverAttributes->addInt("MaxAnisotropy", 1);
 //	DriverAttributes->addInt("MaxUserClipPlanes", 0);
 //	DriverAttributes->addInt("MaxAuxBuffers", 0);

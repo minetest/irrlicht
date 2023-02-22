@@ -20,10 +20,6 @@
 
 #include <stdio.h> // TODO: Although included elsewhere this is required at least for mingw
 
-
-//! Maximum number of texture an SMaterial can have, up to 8 are supported by Irrlicht.
-#define _IRR_MATERIAL_MAX_TEXTURES_ 4
-
 #ifdef _WIN32
 #define IRRCALLCONV __stdcall
 #else
