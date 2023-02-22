@@ -549,17 +549,6 @@ u32 CSceneManager::registerNodeForRendering(ISceneNode* node, E_SCENE_NODE_RENDE
 		break;
 	}
 
-#ifdef _IRR_SCENEMANAGER_DEBUG
-	s32 index = Parameters->findAttribute("calls");
-	Parameters->setAttribute(index, Parameters->getAttributeAsInt(index)+1);
-
-	if (!taken)
-	{
-		index = Parameters->findAttribute("culled");
-		Parameters->setAttribute(index, Parameters->getAttributeAsInt(index)+1);
-	}
-#endif
-
 	return taken;
 }
 
@@ -579,15 +568,6 @@ void CSceneManager::drawAll()
 {
 	if (!Driver)
 		return;
-
-#ifdef _IRR_SCENEMANAGER_DEBUG
-	// reset attributes
-	Parameters->setAttribute("culled", 0);
-	Parameters->setAttribute("calls", 0);
-	Parameters->setAttribute("drawn_solid", 0);
-	Parameters->setAttribute("drawn_transparent", 0);
-	Parameters->setAttribute("drawn_transparent_effect", 0);
-#endif
 
 	u32 i; // new ISO for scoping problem in some compilers
 
@@ -650,9 +630,6 @@ void CSceneManager::drawAll()
 		for (i=0; i<SolidNodeList.size(); ++i)
 			SolidNodeList[i].Node->render();
 
-#ifdef _IRR_SCENEMANAGER_DEBUG
-		Parameters->setAttribute("drawn_solid", (s32) SolidNodeList.size() );
-#endif
 		SolidNodeList.set_used(0);
 	}
 
@@ -665,9 +642,6 @@ void CSceneManager::drawAll()
 		for (i=0; i<TransparentNodeList.size(); ++i)
 			TransparentNodeList[i].Node->render();
 
-#ifdef _IRR_SCENEMANAGER_DEBUG
-		Parameters->setAttribute ( "drawn_transparent", (s32) TransparentNodeList.size() );
-#endif
 		TransparentNodeList.set_used(0);
 	}
 
@@ -680,9 +654,7 @@ void CSceneManager::drawAll()
 
 		for (i=0; i<TransparentEffectNodeList.size(); ++i)
 			TransparentEffectNodeList[i].Node->render();
-#ifdef _IRR_SCENEMANAGER_DEBUG
-		Parameters->setAttribute("drawn_transparent_effect", (s32) TransparentEffectNodeList.size());
-#endif
+
 		TransparentEffectNodeList.set_used(0);
 	}
 
@@ -693,9 +665,7 @@ void CSceneManager::drawAll()
 
 		for (i=0; i<GuiNodeList.size(); ++i)
 			GuiNodeList[i]->render();
-#ifdef _IRR_SCENEMANAGER_DEBUG
-		Parameters->setAttribute("drawn_gui_nodes", (s32) GuiNodeList.size());
-#endif
+
 		GuiNodeList.set_used(0);
 	}
 	clearDeletionList();
