@@ -4,8 +4,6 @@
 
 #include "CGUICheckBox.h"
 
-#ifdef _IRR_COMPILE_WITH_GUI_
-
 #include "IGUISkin.h"
 #include "IGUIEnvironment.h"
 #include "IVideoDriver.h"
@@ -227,6 +225,3 @@ bool CGUICheckBox::isDrawBorderEnabled() const
 
 } // end namespace gui
 } // end namespace irr
-
-#endif // _IRR_COMPILE_WITH_GUI_
-

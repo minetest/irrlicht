@@ -6,8 +6,6 @@
 #define __C_GUI_COMBO_BOX_H_INCLUDED__
 
 #include "IrrCompileConfig.h"
-#ifdef _IRR_COMPILE_WITH_GUI_
-
 #include "IGUIComboBox.h"
 #include "IGUIStaticText.h"
 #include "irrString.h"
@@ -107,7 +105,4 @@ namespace gui
 } // end namespace gui
 } // end namespace irr
 
-#endif // _IRR_COMPILE_WITH_GUI_
-
 #endif // __C_GUI_COMBO_BOX_H_INCLUDED__
-

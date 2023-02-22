@@ -6,8 +6,6 @@
 #define __C_GUI_TAB_CONTROL_H_INCLUDED__
 
 #include "IrrCompileConfig.h"
-#ifdef _IRR_COMPILE_WITH_GUI_
-
 #include "IGUITabControl.h"
 #include "irrArray.h"
 #include "IGUISkin.h"
@@ -184,7 +182,4 @@ namespace gui
 } // end namespace gui
 } // end namespace irr
 
-#endif // _IRR_COMPILE_WITH_GUI_
-
 #endif
-

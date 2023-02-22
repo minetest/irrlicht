@@ -6,8 +6,6 @@
 #define __C_GUI_IMAGE_H_INCLUDED__
 
 #include "IrrCompileConfig.h"
-#ifdef _IRR_COMPILE_WITH_GUI_
-
 #include "IGUIImage.h"
 
 namespace irr
@@ -101,7 +99,5 @@ namespace gui
 
 } // end namespace gui
 } // end namespace irr
-
-#endif // _IRR_COMPILE_WITH_GUI_
 
 #endif // __C_GUI_IMAGE_H_INCLUDED__
