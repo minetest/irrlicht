@@ -351,10 +351,10 @@ protected:
 			case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
 				os::Printer::log("FBO has one or several incomplete image attachments", ELL_ERROR);
 				break;
-			case GL_FRAMEBUFFER_INCOMPLETE_FORMATS:
+			case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
 				os::Printer::log("FBO has one or several image attachments with different internal formats", ELL_ERROR);
 				break;
-			case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
+			case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
 				os::Printer::log("FBO has one or several image attachments with different dimensions", ELL_ERROR);
 				break;
 			case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:

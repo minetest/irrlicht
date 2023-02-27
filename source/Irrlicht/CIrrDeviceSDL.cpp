@@ -47,6 +47,10 @@ namespace irr
 		#ifdef _IRR_COMPILE_WITH_WEBGL1_
 		IVideoDriver* createWebGL1Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
 		#endif
+
+		#ifdef ENABLE_OPENGL3
+		IVideoDriver* createOpenGL3Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
+		#endif
 	} // end namespace video
 
 } // end namespace irr
@@ -457,23 +461,10 @@ void CIrrDeviceSDL::createDriver()
 {
 	switch(CreationParams.DriverType)
 	{
-	case video::DEPRECATED_EDT_DIRECT3D8_NO_LONGER_EXISTS:
-		os::Printer::log("DIRECT3D8 Driver is no longer supported in Irrlicht. Try another one.", ELL_ERROR);
-		break;
-
-	case video::EDT_DIRECT3D9:
-		#ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
-		os::Printer::log("SDL device does not support DIRECT3D9 driver. Try another one.", ELL_ERROR);
-		#else
-		os::Printer::log("DIRECT3D9 Driver was not compiled into this dll. Try another one.", ELL_ERROR);
-		#endif // _IRR_COMPILE_WITH_DIRECT3D_9_
-
-		break;
-
 	case video::EDT_OPENGL:
 		#ifdef _IRR_COMPILE_WITH_OPENGL_
 		ContextManager = new video::CSDLManager(this);
-		VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, ContextManager);
+		VideoDriver = video::createOpenGL3Driver(CreationParams, FileSystem, ContextManager);
 		#else
 		os::Printer::log("No OpenGL support compiled in.", ELL_ERROR);
 		#endif

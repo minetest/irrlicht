@@ -153,6 +153,8 @@ endif()
 
 # OpenGL
 
+option(ENABLE_OPENGL3 "Enable OpenGL 3+" FALSE)
+
 if(IOS OR ANDROID OR EMSCRIPTEN)
 	set(ENABLE_OPENGL FALSE)
 else()
@@ -383,6 +385,19 @@ add_library(IRRVIDEOOBJ OBJECT
 	${IRRIMAGEOBJ}
 )
 
+if(ENABLE_OPENGL3)
+	if (NOT USE_SDL2)
+		message(SEND_ERROR "OpenGL3 support requires SDL2")
+	endif()
+	target_sources(IRRVIDEOOBJ PUBLIC
+		OpenGL/Driver.cpp
+		OpenGL/ExtensionHandler.cpp
+		OpenGL/FixedPipelineRenderer.cpp
+		OpenGL/MaterialRenderer.cpp
+		OpenGL/Renderer2D.cpp
+	)
+endif()
+
 add_library(IRRIOOBJ OBJECT
 	CFileList.cpp
 	CFileSystem.cpp
@@ -404,6 +419,10 @@ add_library(IRROTHEROBJ OBJECT
 	Irrlicht.cpp
 	os.cpp
 )
+
+if(ENABLE_OPENGL3)
+	target_compile_definitions(IRROTHEROBJ PRIVATE ENABLE_OPENGL3)
+endif()
 
 if(ANDROID)
 	target_sources(IRROTHEROBJ PRIVATE
