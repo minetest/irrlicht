@@ -828,128 +828,8 @@ COpenGL3Driver::~COpenGL3Driver()
 		if (!sourceRect.isValid())
 			return;
 
-		core::position2d<s32> targetPos(destPos);
-		core::position2d<s32> sourcePos(sourceRect.UpperLeftCorner);
-		core::dimension2d<s32> sourceSize(sourceRect.getSize());
-		if (clipRect)
-		{
-			if (targetPos.X < clipRect->UpperLeftCorner.X)
-			{
-				sourceSize.Width += targetPos.X - clipRect->UpperLeftCorner.X;
-				if (sourceSize.Width <= 0)
-					return;
-
-				sourcePos.X -= targetPos.X - clipRect->UpperLeftCorner.X;
-				targetPos.X = clipRect->UpperLeftCorner.X;
-			}
-
-			if (targetPos.X + sourceSize.Width > clipRect->LowerRightCorner.X)
-			{
-				sourceSize.Width -= (targetPos.X + sourceSize.Width) - clipRect->LowerRightCorner.X;
-				if (sourceSize.Width <= 0)
-					return;
-			}
-
-			if (targetPos.Y < clipRect->UpperLeftCorner.Y)
-			{
-				sourceSize.Height += targetPos.Y - clipRect->UpperLeftCorner.Y;
-				if (sourceSize.Height <= 0)
-					return;
-
-				sourcePos.Y -= targetPos.Y - clipRect->UpperLeftCorner.Y;
-				targetPos.Y = clipRect->UpperLeftCorner.Y;
-			}
-
-			if (targetPos.Y + sourceSize.Height > clipRect->LowerRightCorner.Y)
-			{
-				sourceSize.Height -= (targetPos.Y + sourceSize.Height) - clipRect->LowerRightCorner.Y;
-				if (sourceSize.Height <= 0)
-					return;
-			}
-		}
-
-		// clip these coordinates
-
-		if (targetPos.X < 0)
-		{
-			sourceSize.Width += targetPos.X;
-			if (sourceSize.Width <= 0)
-				return;
-
-			sourcePos.X -= targetPos.X;
-			targetPos.X = 0;
-		}
-
-		const core::dimension2d<u32>& renderTargetSize = getCurrentRenderTargetSize();
-
-		if (targetPos.X + sourceSize.Width > (s32)renderTargetSize.Width)
-		{
-			sourceSize.Width -= (targetPos.X + sourceSize.Width) - renderTargetSize.Width;
-			if (sourceSize.Width <= 0)
-				return;
-		}
-
-		if (targetPos.Y < 0)
-		{
-			sourceSize.Height += targetPos.Y;
-			if (sourceSize.Height <= 0)
-				return;
-
-			sourcePos.Y -= targetPos.Y;
-			targetPos.Y = 0;
-		}
-
-		if (targetPos.Y + sourceSize.Height > (s32)renderTargetSize.Height)
-		{
-			sourceSize.Height -= (targetPos.Y + sourceSize.Height) - renderTargetSize.Height;
-			if (sourceSize.Height <= 0)
-				return;
-		}
-
-		// ok, we've clipped everything.
-		// now draw it.
-
-		// texcoords need to be flipped horizontally for RTTs
-		const bool isRTT = texture->isRenderTarget();
-		const core::dimension2d<u32>& ss = texture->getOriginalSize();
-		const f32 invW = 1.f / static_cast<f32>(ss.Width);
-		const f32 invH = 1.f / static_cast<f32>(ss.Height);
-		const core::rect<f32> tcoords(
-			sourcePos.X * invW,
-			(isRTT ? (sourcePos.Y + sourceSize.Height) : sourcePos.Y) * invH,
-			(sourcePos.X + sourceSize.Width) * invW,
-			(isRTT ? sourcePos.Y : (sourcePos.Y + sourceSize.Height)) * invH);
-
-		const core::rect<s32> poss(targetPos, sourceSize);
-
-		chooseMaterial2D();
-		if (!setMaterialTexture(0, texture ))
-			return;
-
-		setRenderStates2DMode(color.getAlpha() < 255, true, useAlphaChannelOfTexture);
-
-		f32 left = (f32)poss.UpperLeftCorner.X / (f32)renderTargetSize.Width * 2.f - 1.f;
-		f32 right = (f32)poss.LowerRightCorner.X / (f32)renderTargetSize.Width * 2.f - 1.f;
-		f32 down = 2.f - (f32)poss.LowerRightCorner.Y / (f32)renderTargetSize.Height * 2.f - 1.f;
-		f32 top = 2.f - (f32)poss.UpperLeftCorner.Y / (f32)renderTargetSize.Height * 2.f - 1.f;
-
-		u16 indices[] = {0, 1, 2, 3};
-		S3DVertex vertices[4];
-		vertices[0] = S3DVertex(left, top, 0, 0, 0, 1, color, tcoords.UpperLeftCorner.X, tcoords.UpperLeftCorner.Y);
-		vertices[1] = S3DVertex(right, top, 0, 0, 0, 1, color, tcoords.LowerRightCorner.X, tcoords.UpperLeftCorner.Y);
-		vertices[2] = S3DVertex(right, down, 0, 0, 0, 1, color, tcoords.LowerRightCorner.X, tcoords.LowerRightCorner.Y);
-		vertices[3] = S3DVertex(left, down, 0, 0, 0, 1, color, tcoords.UpperLeftCorner.X, tcoords.LowerRightCorner.Y);
-
-		glEnableVertexAttribArray(EVA_POSITION);
-		glEnableVertexAttribArray(EVA_COLOR);
-		glEnableVertexAttribArray(EVA_TCOORD0);
-		glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
-		glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
-		glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
-		glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_SHORT, indices);
-		glDisableVertexAttribArray(EVA_TCOORD0);
-		glDisableVertexAttribArray(EVA_COLOR);
-		glDisableVertexAttribArray(EVA_POSITION);
+		SColor colors[4] = {color, color, color, color};
+		draw2DImage(texture, {destPos, sourceRect.getSize()}, sourceRect, clipRect, colors, useAlphaChannelOfTexture);
 	}
 
 
@@ -1083,6 +963,24 @@ COpenGL3Driver::~COpenGL3Driver()
 		if (!texture)
 			return;
 
+		chooseMaterial2D();
+		if (!setMaterialTexture(0, texture))
+			return;
+
+		setRenderStates2DMode(color.getAlpha() < 255, true, useAlphaChannelOfTexture);
+
+		const core::dimension2d<u32>& renderTargetSize = getCurrentRenderTargetSize();
+
+		if (clipRect)
+		{
+			if (!clipRect->isValid())
+				return;
+
+			glEnable(GL_SCISSOR_TEST);
+			glScissor(clipRect->UpperLeftCorner.X, renderTargetSize.Height - clipRect->LowerRightCorner.Y,
+					clipRect->getWidth(), clipRect->getHeight());
+		}
+
 		const irr::u32 drawCount = core::min_<u32>(positions.size(), sourceRects.size());
 
 		core::array<S3DVertex> vtx(drawCount * 4);
@@ -1095,82 +993,6 @@ COpenGL3Driver::~COpenGL3Driver()
 			// This needs to be signed as it may go negative.
 			core::dimension2d<s32> sourceSize(sourceRects[i].getSize());
 
-			if (clipRect)
-			{
-				if (targetPos.X < clipRect->UpperLeftCorner.X)
-				{
-					sourceSize.Width += targetPos.X - clipRect->UpperLeftCorner.X;
-					if (sourceSize.Width <= 0)
-						continue;
-
-					sourcePos.X -= targetPos.X - clipRect->UpperLeftCorner.X;
-					targetPos.X = clipRect->UpperLeftCorner.X;
-				}
-
-				if (targetPos.X + (s32)sourceSize.Width > clipRect->LowerRightCorner.X)
-				{
-					sourceSize.Width -= (targetPos.X + sourceSize.Width) - clipRect->LowerRightCorner.X;
-					if (sourceSize.Width <= 0)
-						continue;
-				}
-
-				if (targetPos.Y < clipRect->UpperLeftCorner.Y)
-				{
-					sourceSize.Height += targetPos.Y - clipRect->UpperLeftCorner.Y;
-					if (sourceSize.Height <= 0)
-						continue;
-
-					sourcePos.Y -= targetPos.Y - clipRect->UpperLeftCorner.Y;
-					targetPos.Y = clipRect->UpperLeftCorner.Y;
-				}
-
-				if (targetPos.Y + (s32)sourceSize.Height > clipRect->LowerRightCorner.Y)
-				{
-					sourceSize.Height -= (targetPos.Y + sourceSize.Height) - clipRect->LowerRightCorner.Y;
-					if (sourceSize.Height <= 0)
-						continue;
-				}
-			}
-
-			// clip these coordinates
-
-			if (targetPos.X < 0)
-			{
-				sourceSize.Width += targetPos.X;
-				if (sourceSize.Width <= 0)
-					continue;
-
-				sourcePos.X -= targetPos.X;
-				targetPos.X = 0;
-			}
-
-			const core::dimension2d<u32>& renderTargetSize = getCurrentRenderTargetSize();
-
-			if (targetPos.X + sourceSize.Width > (s32)renderTargetSize.Width)
-			{
-				sourceSize.Width -= (targetPos.X + sourceSize.Width) - renderTargetSize.Width;
-				if (sourceSize.Width <= 0)
-					continue;
-			}
-
-			if (targetPos.Y < 0)
-			{
-				sourceSize.Height += targetPos.Y;
-				if (sourceSize.Height <= 0)
-					continue;
-
-				sourcePos.Y -= targetPos.Y;
-				targetPos.Y = 0;
-			}
-
-			if (targetPos.Y + sourceSize.Height > (s32)renderTargetSize.Height)
-			{
-				sourceSize.Height -= (targetPos.Y + sourceSize.Height) - renderTargetSize.Height;
-				if (sourceSize.Height <= 0)
-					continue;
-			}
-
-			// ok, we've clipped everything.
 			// now draw it.
 
 			core::rect<f32> tcoords;
@@ -1180,12 +1002,6 @@ COpenGL3Driver::~COpenGL3Driver()
 			tcoords.LowerRightCorner.Y = tcoords.UpperLeftCorner.Y + ((f32)(sourceSize.Height) / texture->getOriginalSize().Height);
 
 			const core::rect<s32> poss(targetPos, sourceSize);
-
-			chooseMaterial2D();
-			if (!setMaterialTexture(0, texture))
-				return;
-
-			setRenderStates2DMode(color.getAlpha() < 255, true, useAlphaChannelOfTexture);
 
 			f32 left = (f32)poss.UpperLeftCorner.X / (f32)renderTargetSize.Width * 2.f - 1.f;
 			f32 right = (f32)poss.LowerRightCorner.X / (f32)renderTargetSize.Width * 2.f - 1.f;
