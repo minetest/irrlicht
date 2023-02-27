@@ -273,9 +273,6 @@ namespace video
 		//! Convert E_BLEND_FACTOR to OpenGL equivalent
 		GLenum getGLBlend(E_BLEND_FACTOR factor) const;
 
-		//! Get ZBuffer bits.
-		virtual GLenum getZBufferBits() const;
-
 		virtual bool getColorFormatParameters(ECOLOR_FORMAT format, GLint& internalFormat, GLenum& pixelFormat,
 			GLenum& pixelType, void(**converter)(const void*, s32, void*)) const;
 

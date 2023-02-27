@@ -2133,38 +2133,6 @@ COpenGL3Driver::~COpenGL3Driver()
 		return blendTable[factor];
 	}
 
-	GLenum COpenGL3Driver::getZBufferBits() const
-	{
-		// TODO: never used, so not sure what this was really about (zbuffer used by device? Or for RTT's?)
-
-		GLenum bits = 0;
-
-		switch (Params.ZBufferBits)
-		{
-		case 24:
-#if defined(GL_OES_depth24)
-			if (queryGLESFeature(COGLESCoreExtensionHandler::IRR_GL_OES_depth24))
-				bits = GL_DEPTH_COMPONENT24_OES;
-			else
-#endif
-				bits = GL_DEPTH_COMPONENT16;
-			break;
-		case 32:
-#if defined(GL_OES_depth32)
-			if (queryGLESFeature(COGLESCoreExtensionHandler::IRR_GL_OES_depth32))
-				bits = GL_DEPTH_COMPONENT32_OES;
-			else
-#endif
-				bits = GL_DEPTH_COMPONENT16;
-			break;
-		default:
-			bits = GL_DEPTH_COMPONENT16;
-			break;
-		}
-
-		return bits;
-	}
-
 	bool COpenGL3Driver::getColorFormatParameters(ECOLOR_FORMAT format, GLint& internalFormat, GLenum& pixelFormat,
 		GLenum& pixelType, void(**converter)(const void*, s32, void*)) const
 	{
@@ -2212,63 +2180,17 @@ COpenGL3Driver::~COpenGL3Driver()
 			pixelFormat = GL_RGBA;
 			pixelType = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
 			break;
-#endif
-#ifdef GL_EXT_texture_compression_s3tc
 		case ECF_DXT2:
 		case ECF_DXT3:
 			supported = true;
 			pixelFormat = GL_RGBA;
 			pixelType = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
 			break;
-#endif
-#ifdef GL_EXT_texture_compression_s3tc
 		case ECF_DXT4:
 		case ECF_DXT5:
 			supported = true;
 			pixelFormat = GL_RGBA;
 			pixelType = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-			break;
-#endif
-#ifdef GL_IMG_texture_compression_pvrtc
-		case ECF_PVRTC_RGB2:
-			supported = true;
-			pixelFormat = GL_RGB;
-			pixelType = GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG;
-			break;
-#endif
-#ifdef GL_IMG_texture_compression_pvrtc
-		case ECF_PVRTC_ARGB2:
-			supported = true;
-			pixelFormat = GL_RGBA;
-			pixelType = GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
-			break;
-#endif
-#ifdef GL_IMG_texture_compression_pvrtc
-		case ECF_PVRTC_RGB4:
-			supported = true;
-			pixelFormat = GL_RGB;
-			pixelType = GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
-			break;
-#endif
-#ifdef GL_IMG_texture_compression_pvrtc
-		case ECF_PVRTC_ARGB4:
-			supported = true;
-			pixelFormat = GL_RGBA;
-			pixelType = GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
-			break;
-#endif
-#ifdef GL_IMG_texture_compression_pvrtc2
-		case ECF_PVRTC2_ARGB2:
-			supported = true;
-			pixelFormat = GL_RGBA;
-			pixelType = GL_COMPRESSED_RGBA_PVRTC_2BPPV2_IMG;
-			break;
-#endif
-#ifdef GL_IMG_texture_compression_pvrtc2
-		case ECF_PVRTC2_ARGB4:
-			supported = true;
-			pixelFormat = GL_RGBA;
-			pixelType = GL_COMPRESSED_RGBA_PVRTC_4BPPV2_IMG;
 			break;
 #endif
 #ifdef GL_OES_compressed_ETC1_RGB8_texture
