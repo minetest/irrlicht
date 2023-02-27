@@ -9,6 +9,7 @@
 #include "irrString.h"
 #include "SMaterial.h"
 #include "fast_atof.h"
+#include <mt_opengl.h>
 
 namespace irr
 {
@@ -16,9 +17,22 @@ namespace video
 {
 	void COpenGL3ExtensionHandler::initExtensions()
 	{
-		getGLVersion();
+		GLint major, minor;
+		glGetIntegerv(GL_MAJOR_VERSION, &major);
+		glGetIntegerv(GL_MINOR_VERSION, &minor);
+		Version = 100 * major + 10 * minor;
 
-		getGLExtensions();
+		GLint ext_count = 0;
+		GL.GetIntegerv(GL_NUM_EXTENSIONS, &ext_count);
+		for (int k = 0; k < ext_count; k++) {
+			auto ext_name = (char *)GL.GetStringi(GL_EXTENSIONS, k);
+			for (size_t j=0; j<IRR_OGLES_Feature_Count; ++j) {
+				if (!strcmp(getFeatureString(j), ext_name)) {
+					FeatureAvailable[j] = true;
+					break;
+				}
+			}
+		}
 
 		GLint val=0;
 		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &val);
