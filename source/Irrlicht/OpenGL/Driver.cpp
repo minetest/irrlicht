@@ -31,6 +31,16 @@ namespace irr
 namespace video
 {
 
+void APIENTRY COpenGL3Driver::debugCb(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam)
+{
+	((COpenGL3Driver *)userParam)->debugCb(source, type, id, severity, length, message);
+}
+
+void COpenGL3Driver::debugCb(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message)
+{
+	printf("%04x %04x %x %x %.*s\n", source, type, id, severity, length, message);
+}
+
 COpenGL3Driver::COpenGL3Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager) :
 	CNullDriver(io, params.WindowSize), COpenGL3ExtensionHandler(), CacheHandler(0),
 	Params(params), ResetRenderStates(true), LockRenderStateMode(false), AntiAlias(params.AntiAlias),
@@ -52,6 +62,7 @@ COpenGL3Driver::COpenGL3Driver(const SIrrlichtCreationParameters& params, io::IF
 	ExposedData = ContextManager->getContext();
 	ContextManager->activateContext(ExposedData, false);
 	GL.LoadAllProcedures(ContextManager);
+	GL.DebugMessageCallback(debugCb, this);
 }
 
 COpenGL3Driver::~COpenGL3Driver()
