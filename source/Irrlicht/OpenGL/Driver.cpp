@@ -30,6 +30,98 @@ namespace irr
 {
 namespace video
 {
+	struct VertexAttribute {
+		enum class Mode {
+			Regular,
+			Normalized,
+			Integral,
+		};
+		int Index;
+		int ComponentCount;
+		GLenum ComponentType;
+		Mode mode;
+		int Offset;
+	};
+
+	struct VertexType {
+		int VertexSize;
+		int AttributeCount;
+		VertexAttribute Attributes[];
+
+		VertexType(const VertexType &) = delete;
+		VertexType &operator= (const VertexType &) = delete;
+	};
+
+	static const VertexAttribute *begin(const VertexType &type)
+	{
+		return type.Attributes;
+	}
+
+	static const VertexAttribute *end(const VertexType &type)
+	{
+		return type.Attributes + type.AttributeCount;
+	}
+
+	static constexpr VertexType vtStandard = {
+		sizeof(S3DVertex), 4, {
+			{EVA_POSITION, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex, Pos)},
+			{EVA_NORMAL, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex, Normal)},
+			{EVA_COLOR, 4, GL_UNSIGNED_BYTE, VertexAttribute::Mode::Normalized, offsetof(S3DVertex, Color)},
+			{EVA_TCOORD0, 2, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex, TCoords)},
+		},
+	};
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winvalid-offsetof"
+
+	static constexpr VertexType vt2TCoords = {
+		sizeof(S3DVertex2TCoords), 5, {
+			{EVA_POSITION, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex2TCoords, Pos)},
+			{EVA_NORMAL, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex2TCoords, Normal)},
+			{EVA_COLOR, 4, GL_UNSIGNED_BYTE, VertexAttribute::Mode::Normalized, offsetof(S3DVertex2TCoords, Color)},
+			{EVA_TCOORD0, 2, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex2TCoords, TCoords)},
+			{EVA_TCOORD1, 2, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex2TCoords, TCoords2)},
+		},
+	};
+
+	static constexpr VertexType vtTangents = {
+		sizeof(S3DVertexTangents), 6, {
+			{EVA_POSITION, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertexTangents, Pos)},
+			{EVA_NORMAL, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertexTangents, Normal)},
+			{EVA_COLOR, 4, GL_UNSIGNED_BYTE, VertexAttribute::Mode::Normalized, offsetof(S3DVertexTangents, Color)},
+			{EVA_TCOORD0, 2, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertexTangents, TCoords)},
+			{EVA_TANGENT, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertexTangents, Tangent)},
+			{EVA_BINORMAL, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertexTangents, Binormal)},
+		},
+	};
+
+#pragma GCC diagnostic pop
+
+	static const VertexType &getVertexTypeDescription(E_VERTEX_TYPE type)
+	{
+		switch (type) {
+			case EVT_STANDARD: return vtStandard;
+			case EVT_2TCOORDS: return vt2TCoords;
+			case EVT_TANGENTS: return vtTangents;
+			default: assert(false);
+		}
+	}
+
+	static constexpr VertexType vt2DImage = {
+		sizeof(S3DVertex), 3, {
+			{EVA_POSITION, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex, Pos)},
+			{EVA_COLOR, 4, GL_UNSIGNED_BYTE, VertexAttribute::Mode::Normalized, offsetof(S3DVertex, Color)},
+			{EVA_TCOORD0, 2, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex, TCoords)},
+		},
+	};
+
+	static constexpr VertexType vtPrimitive = {
+		sizeof(S3DVertex), 2, {
+			{EVA_POSITION, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex, Pos)},
+			{EVA_COLOR, 4, GL_UNSIGNED_BYTE, VertexAttribute::Mode::Normalized, offsetof(S3DVertex, Color)},
+		},
+	};
+
 
 void APIENTRY COpenGL3Driver::debugCb(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam)
 {
@@ -692,75 +784,8 @@ COpenGL3Driver::~COpenGL3Driver()
 
 		setRenderStates3DMode();
 
-		glEnableVertexAttribArray(EVA_POSITION);
-		glEnableVertexAttribArray(EVA_COLOR);
-		glEnableVertexAttribArray(EVA_NORMAL);
-		glEnableVertexAttribArray(EVA_TCOORD0);
-
-		switch (vType)
-		{
-		case EVT_STANDARD:
-			if (vertices)
-			{
-				glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
-				glVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Normal);
-				glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
-				glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
-			}
-			else
-			{
-				glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), 0);
-				glVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertex), buffer_offset(12));
-				glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), buffer_offset(24));
-				glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex), buffer_offset(28));
-			}
-
-			break;
-		case EVT_2TCOORDS:
-			glEnableVertexAttribArray(EVA_TCOORD1);
-
-			if (vertices)
-			{
-				glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Pos);
-				glVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Normal);
-				glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Color);
-				glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].TCoords);
-				glVertexAttribPointer(EVA_TCOORD1, 2, GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].TCoords2);
-			}
-			else
-			{
-				glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex2TCoords), buffer_offset(0));
-				glVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertex2TCoords), buffer_offset(12));
-				glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex2TCoords), buffer_offset(24));
-				glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex2TCoords), buffer_offset(28));
-				glVertexAttribPointer(EVA_TCOORD1, 2, GL_FLOAT, false, sizeof(S3DVertex2TCoords), buffer_offset(36));
-			}
-			break;
-		case EVT_TANGENTS:
-			glEnableVertexAttribArray(EVA_TANGENT);
-			glEnableVertexAttribArray(EVA_BINORMAL);
-
-			if (vertices)
-			{
-				glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertexTangents), &(static_cast<const S3DVertexTangents*>(vertices))[0].Pos);
-				glVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertexTangents), &(static_cast<const S3DVertexTangents*>(vertices))[0].Normal);
-				glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertexTangents), &(static_cast<const S3DVertexTangents*>(vertices))[0].Color);
-				glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertexTangents), &(static_cast<const S3DVertexTangents*>(vertices))[0].TCoords);
-				glVertexAttribPointer(EVA_TANGENT, 3, GL_FLOAT, false, sizeof(S3DVertexTangents), &(static_cast<const S3DVertexTangents*>(vertices))[0].Tangent);
-				glVertexAttribPointer(EVA_BINORMAL, 3, GL_FLOAT, false, sizeof(S3DVertexTangents), &(static_cast<const S3DVertexTangents*>(vertices))[0].Binormal);
-			}
-			else
-			{
-				glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertexTangents), buffer_offset(0));
-				glVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertexTangents), buffer_offset(12));
-				glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertexTangents), buffer_offset(24));
-				glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertexTangents), buffer_offset(28));
-				glVertexAttribPointer(EVA_TANGENT, 3, GL_FLOAT, false, sizeof(S3DVertexTangents), buffer_offset(36));
-				glVertexAttribPointer(EVA_BINORMAL, 3, GL_FLOAT, false, sizeof(S3DVertexTangents), buffer_offset(48));
-			}
-			break;
-		}
-
+		auto &vTypeDesc = getVertexTypeDescription(vType);
+		beginDraw(vTypeDesc, reinterpret_cast<uintptr_t>(vertices));
 		GLenum indexSize = 0;
 
 		switch (iType)
@@ -813,23 +838,7 @@ COpenGL3Driver::~COpenGL3Driver()
 				break;
 		}
 
-		switch (vType)
-		{
-		case EVT_2TCOORDS:
-			glDisableVertexAttribArray(EVA_TCOORD1);
-			break;
-		case EVT_TANGENTS:
-			glDisableVertexAttribArray(EVA_TANGENT);
-			glDisableVertexAttribArray(EVA_BINORMAL);
-			break;
-		default:
-			break;
-		}
-
-		glDisableVertexAttribArray(EVA_POSITION);
-		glDisableVertexAttribArray(EVA_NORMAL);
-		glDisableVertexAttribArray(EVA_COLOR);
-		glDisableVertexAttribArray(EVA_TCOORD0);
+		endDraw(vTypeDesc);
 	}
 
 
@@ -907,7 +916,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		vertices[2] = S3DVertex(right, down, 0, 0, 0, 1, useColor[2], tcoords.LowerRightCorner.X, tcoords.LowerRightCorner.Y);
 		vertices[3] = S3DVertex(left, down, 0, 0, 0, 1, useColor[1], tcoords.UpperLeftCorner.X, tcoords.LowerRightCorner.Y);
 
-		drawQuad(vertices, true);
+		drawQuad(vt2DImage, vertices);
 
 		if (clipRect)
 			glDisable(GL_SCISSOR_TEST);
@@ -945,7 +954,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		quad2DVertices[2].Color = SColor(0xFFFFFFFF);
 		quad2DVertices[3].Color = SColor(0xFFFFFFFF);
 
-		drawQuad(quad2DVertices, true);
+		drawQuad(vt2DImage, quad2DVertices);
 	}
 
 	void COpenGL3Driver::draw2DImageBatch(const video::ITexture* texture,
@@ -976,6 +985,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		}
 
 		const irr::u32 drawCount = core::min_<u32>(positions.size(), sourceRects.size());
+		assert(6 * std::size_t(drawCount) <= QuadsIndices.size());
 
 		core::array<S3DVertex> vtx(drawCount * 4);
 
@@ -1015,7 +1025,7 @@ COpenGL3Driver::~COpenGL3Driver()
 					tcoords.UpperLeftCorner.X, tcoords.LowerRightCorner.Y));
 		}
 
-		drawQuads(vtx.const_pointer(), drawCount, true);
+		drawElements(GL_TRIANGLES, vt2DImage, vtx.const_pointer(), QuadsIndices.data(), 6 * drawCount);
 
 		if (clipRect)
 			glDisable(GL_SCISSOR_TEST);
@@ -1053,7 +1063,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		vertices[2] = S3DVertex(right, down, 0, 0, 0, 1, color, 0, 0);
 		vertices[3] = S3DVertex(left, down, 0, 0, 0, 1, color, 0, 0);
 
-		drawQuad(vertices, false);
+		drawQuad(vtPrimitive, vertices);
 	}
 
 
@@ -1092,7 +1102,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		vertices[2] = S3DVertex(right, down, 0, 0, 0, 1, colorRightDown, 0, 0);
 		vertices[3] = S3DVertex(left, down, 0, 0, 0, 1, colorLeftDown, 0, 0);
 
-		drawQuad(vertices, false);
+		drawQuad(vtPrimitive, vertices);
 	}
 
 
@@ -1120,7 +1130,7 @@ COpenGL3Driver::~COpenGL3Driver()
 			vertices[0] = S3DVertex(startX, startY, 0, 0, 0, 1, color, 0, 0);
 			vertices[1] = S3DVertex(endX, endY, 0, 0, 0, 1, color, 1, 1);
 
-			drawArrays(GL_LINES, vertices, 2, false);
+			drawArrays(GL_LINES, vtPrimitive, vertices, 2);
 		}
 	}
 
@@ -1143,43 +1153,44 @@ COpenGL3Driver::~COpenGL3Driver()
 		S3DVertex vertices[1];
 		vertices[0] = S3DVertex(X, Y, 0, 0, 0, 1, color, 0, 0);
 
-		drawArrays(GL_POINTS, vertices, 1, false);
+		drawArrays(GL_POINTS, vtPrimitive, vertices, 1);
 	}
 
-	void COpenGL3Driver::drawQuads(const S3DVertex *vertices, int quad_count, bool textured)
+	void COpenGL3Driver::drawQuad(const VertexType &vertexType, const S3DVertex (&vertices)[4])
 	{
-		assert(6 * std::size_t(quad_count) <= QuadsIndices.size());
-		glEnableVertexAttribArray(EVA_POSITION);
-		glEnableVertexAttribArray(EVA_COLOR);
-		if (textured)
-			glEnableVertexAttribArray(EVA_TCOORD0);
-		glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
-		glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
-		glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
-		glDrawElements(GL_TRIANGLES, 6 * quad_count, GL_UNSIGNED_SHORT, QuadsIndices.data());
-		glDisableVertexAttribArray(EVA_TCOORD0);
-		glDisableVertexAttribArray(EVA_COLOR);
-		glDisableVertexAttribArray(EVA_POSITION);
+		drawArrays(GL_TRIANGLE_FAN, vertexType, vertices, 4);
 	}
 
-	void COpenGL3Driver::drawArrays(GLenum type, const S3DVertex *vertices, int vertex_count, bool textured)
+	void COpenGL3Driver::drawArrays(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount)
 	{
-		glEnableVertexAttribArray(EVA_POSITION);
-		glEnableVertexAttribArray(EVA_COLOR);
-		if (textured)
-			glEnableVertexAttribArray(EVA_TCOORD0);
-		glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
-		glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
-		glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
-		glDrawArrays(type, 0, vertex_count);
-		glDisableVertexAttribArray(EVA_TCOORD0);
-		glDisableVertexAttribArray(EVA_COLOR);
-		glDisableVertexAttribArray(EVA_POSITION);
+		beginDraw(vertexType, reinterpret_cast<uintptr_t>(vertices));
+		glDrawArrays(primitiveType, 0, vertexCount);
+		endDraw(vertexType);
 	}
 
-	void COpenGL3Driver::drawQuad(const S3DVertex (&vertices)[4], bool textured)
+	void COpenGL3Driver::drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, const u16 *indices, int indexCount)
 	{
-		drawQuads(vertices, 1, textured);
+		beginDraw(vertexType, reinterpret_cast<uintptr_t>(vertices));
+		glDrawElements(primitiveType, indexCount, GL_UNSIGNED_SHORT, indices);
+		endDraw(vertexType);
+	}
+
+	void COpenGL3Driver::beginDraw(const VertexType &vertexType, uintptr_t verticesBase)
+	{
+		for (auto attr: vertexType) {
+			glEnableVertexAttribArray(attr.Index);
+			switch (attr.mode) {
+			case VertexAttribute::Mode::Regular: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_FALSE, vertexType.VertexSize, reinterpret_cast<void *>(verticesBase + attr.Offset)); break;
+			case VertexAttribute::Mode::Normalized: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_TRUE, vertexType.VertexSize, reinterpret_cast<void *>(verticesBase + attr.Offset)); break;
+			case VertexAttribute::Mode::Integral: glVertexAttribIPointer(attr.Index, attr.ComponentCount, attr.ComponentType, vertexType.VertexSize, reinterpret_cast<void *>(verticesBase + attr.Offset)); break;
+			}
+		}
+	}
+
+	void COpenGL3Driver::endDraw(const VertexType &vertexType)
+	{
+		for (auto attr: vertexType)
+			glDisableVertexAttribArray(attr.Index);
 	}
 
 	ITexture* COpenGL3Driver::createDeviceDependentTexture(const io::path& name, IImage* image)
@@ -1694,7 +1705,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		vertices[0] = S3DVertex(start.X, start.Y, start.Z, 0, 0, 1, color, 0, 0);
 		vertices[1] = S3DVertex(end.X, end.Y, end.Z, 0, 0, 1, color, 0, 0);
 
-		drawArrays(GL_LINES, vertices, 2, false);
+		drawArrays(GL_LINES, vtPrimitive, vertices, 2);
 	}
 
 

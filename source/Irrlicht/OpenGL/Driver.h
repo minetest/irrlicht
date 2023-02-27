@@ -20,6 +20,7 @@ namespace irr
 {
 namespace video
 {
+	struct VertexType;
 
 	class COpenGL3FixedPipelineRenderer;
 	class COpenGL3Renderer2D;
@@ -329,9 +330,13 @@ namespace video
 		//! Same as `CacheHandler->setViewport`, but also sets `ViewPort`
 		virtual void setViewPortRaw(u32 width, u32 height);
 
-		void drawQuad(const S3DVertex (&vertices)[4], bool textured);
-		void drawQuads(const S3DVertex *vertices, int quad_count, bool textured);
-		void drawArrays(GLenum type, const S3DVertex *vertices, int vertex_count, bool textured);
+		void drawQuad(const VertexType &vertexType, const S3DVertex (&vertices)[4]);
+		void drawArrays(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount);
+		void drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, const u16 *indices, int indexCount);
+		void drawElements(GLenum primitiveType, const VertexType &vertexType, uintptr_t vertices, uintptr_t indices, int indexCount);
+
+		void beginDraw(const VertexType &vertexType, uintptr_t verticesBase);
+		void endDraw(const VertexType &vertexType);
 
 		COpenGL3CacheHandler* CacheHandler;
 		core::stringw Name;
