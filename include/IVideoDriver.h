@@ -719,23 +719,6 @@ namespace video
 		virtual void draw3DLine(const core::vector3df& start,
 			const core::vector3df& end, SColor color = SColor(255,255,255,255)) =0;
 
-		//! Draws a 3d triangle.
-		/** This method calls drawVertexPrimitiveList for some triangles.
-		This method works with all drivers because it simply calls
-		drawVertexPrimitiveList, but it is hence not very fast.
-		Note that the triangle is drawn using the current
-		transformation matrix and material. So if you need to draw it
-		independently of the current transformation, use
-		\code
-		driver->setMaterial(someMaterial);
-		driver->setTransform(video::ETS_WORLD, core::IdentityMatrix);
-		\endcode
-		for some properly set up material before drawing the triangle.
-		\param triangle The triangle to draw.
-		\param color Color of the line. */
-		virtual void draw3DTriangle(const core::triangle3df& triangle,
-			SColor color = SColor(255,255,255,255)) =0;
-
 		//! Draws a 3d axis aligned box.
 		/** This method simply calls draw3DLine for the edges of the
 		box. Note that the box is drawn using the current transformation
@@ -779,35 +762,6 @@ namespace video
 		virtual void draw2DImage(const video::ITexture* texture, const core::position2d<s32>& destPos,
 			const core::rect<s32>& sourceRect, const core::rect<s32>* clipRect =0,
 			SColor color=SColor(255,255,255,255), bool useAlphaChannelOfTexture=false) =0;
-
-		//! Draws a set of 2d images, using a color and the alpha channel of the texture.
-		/** The images are drawn beginning at pos and concatenated in
-		one line. All drawings are clipped against clipRect (if != 0).
-		The subtextures are defined by the array of sourceRects and are
-		chosen by the indices given.
-		\param texture Texture to be drawn.
-		\param pos Upper left 2d destination position where the image
-		will be drawn.
-		\param sourceRects Source rectangles of the image.
-		\param indices List of indices which choose the actual
-		rectangle used each time.
-		\param kerningWidth Offset to Position on X
-		\param clipRect Pointer to rectangle on the screen where the
-		image is clipped to.
-		If this pointer is 0 then the image is not clipped.
-		\param color Color with which the image is drawn.
-		Note that the alpha component is used. If alpha is other than
-		255, the image will be transparent.
-		\param useAlphaChannelOfTexture: If true, the alpha channel of
-		the texture is used to draw the image. */
-		virtual void draw2DImageBatch(const video::ITexture* texture,
-				const core::position2d<s32>& pos,
-				const core::array<core::rect<s32> >& sourceRects,
-				const core::array<s32>& indices,
-				s32 kerningWidth=0,
-				const core::rect<s32>* clipRect=0,
-				SColor color=SColor(255,255,255,255),
-				bool useAlphaChannelOfTexture=false) =0;
 
 		//! Draws a set of 2d images, using a color and the alpha channel of the texture.
 		/** All drawings are clipped against clipRect (if != 0).
@@ -879,13 +833,6 @@ namespace video
 				SColor colorLeftDown, SColor colorRightDown,
 				const core::rect<s32>* clip =0) =0;
 
-		//! Draws the outline of a 2D rectangle.
-		/** \param pos Position of the rectangle.
-		\param color Color of the rectangle to draw. The alpha component
-		specifies how transparent the rectangle outline will be. */
-		virtual void draw2DRectangleOutline(const core::recti& pos,
-				SColor color=SColor(255,255,255,255)) =0;
-
 		//! Draws a 2d line.
 		/** In theory both start and end will be included in coloring.
 		BUG: Currently d3d ignores the last pixel
@@ -898,72 +845,6 @@ namespace video
 		virtual void draw2DLine(const core::position2d<s32>& start,
 					const core::position2d<s32>& end,
 					SColor color=SColor(255,255,255,255)) =0;
-
-		//! Draws a pixel.
-		/** \param x The x-position of the pixel.
-		\param y The y-position of the pixel.
-		\param color Color of the pixel to draw. */
-		virtual void drawPixel(u32 x, u32 y, const SColor& color) =0;
-
-		//! Draws a non filled concyclic regular 2d polygon.
-		/** This method can be used to draw circles, but also
-		triangles, tetragons, pentagons, hexagons, heptagons, octagons,
-		enneagons, decagons, hendecagons, dodecagon, triskaidecagons,
-		etc. I think you'll got it now. And all this by simply
-		specifying the vertex count. Welcome to the wonders of
-		geometry.
-		\param center Position of center of circle (pixels).
-		\param radius Radius of circle in pixels.
-		\param color Color of the circle.
-		\param vertexCount Amount of vertices of the polygon. Specify 2
-		to draw a line, 3 to draw a triangle, 4 for tetragons and a lot
-		(>10) for nearly a circle. */
-		virtual void draw2DPolygon(core::position2d<s32> center,
-				f32 radius,
-				video::SColor color=SColor(100,255,255,255),
-				s32 vertexCount=10) =0;
-
-		//! Draws a shadow volume into the stencil buffer.
-		/** To draw a stencil shadow, do this: First, draw all geometry.
-		Then use this method, to draw the shadow volume. Then, use
-		IVideoDriver::drawStencilShadow() to visualize the shadow.
-		Please note that the code for the opengl version of the method
-		is based on free code sent in by Philipp Dortmann, lots of
-		thanks go to him!
-		\param triangles Array of 3d vectors, specifying the shadow
-		volume.
-		\param zfail If set to true, zfail method is used, otherwise
-		zpass.
-		\param debugDataVisible The debug data that is enabled for this
-		shadow node
-		*/
-		virtual void drawStencilShadowVolume(const core::array<core::vector3df>& triangles, bool zfail=true, u32 debugDataVisible=0) =0;
-
-		//! Fills the stencil shadow with color.
-		/** After the shadow volume has been drawn into the stencil
-		buffer using IVideoDriver::drawStencilShadowVolume(), use this
-		to draw the color of the shadow.
-		Please note that the code for the opengl version of the method
-		is based on free code sent in by Philipp Dortmann, lots of
-		thanks go to him!
-		\param clearStencilBuffer Set this to false, if you want to
-		draw every shadow with the same color, and only want to call
-		drawStencilShadow() once after all shadow volumes have been
-		drawn. Set this to true, if you want to paint every shadow with
-		its own color.
-		\param leftUpEdge Color of the shadow in the upper left corner
-		of screen.
-		\param rightUpEdge Color of the shadow in the upper right
-		corner of screen.
-		\param leftDownEdge Color of the shadow in the lower left
-		corner of screen.
-		\param rightDownEdge Color of the shadow in the lower right
-		corner of screen. */
-		virtual void drawStencilShadow(bool clearStencilBuffer=false,
-			video::SColor leftUpEdge = video::SColor(255,0,0,0),
-			video::SColor rightUpEdge = video::SColor(255,0,0,0),
-			video::SColor leftDownEdge = video::SColor(255,0,0,0),
-			video::SColor rightDownEdge = video::SColor(255,0,0,0)) =0;
 
 		//! Draws a mesh buffer
 		/** \param mb Buffer to draw */

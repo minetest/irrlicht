@@ -719,27 +719,6 @@ void CNullDriver::draw3DLine(const core::vector3df& start,
 }
 
 
-//! Draws a 3d triangle.
-void CNullDriver::draw3DTriangle(const core::triangle3df& triangle, SColor color)
-{
-	S3DVertex vertices[3];
-	vertices[0].Pos=triangle.pointA;
-	vertices[0].Color=color;
-	vertices[0].Normal=triangle.getNormal().normalize();
-	vertices[0].TCoords.set(0.f,0.f);
-	vertices[1].Pos=triangle.pointB;
-	vertices[1].Color=color;
-	vertices[1].Normal=vertices[0].Normal;
-	vertices[1].TCoords.set(0.5f,1.f);
-	vertices[2].Pos=triangle.pointC;
-	vertices[2].Color=color;
-	vertices[2].Normal=vertices[0].Normal;
-	vertices[2].TCoords.set(1.f,0.f);
-	const u16 indexList[] = {0,1,2};
-	drawVertexPrimitiveList(vertices, 3, indexList, 1, EVT_STANDARD, scene::EPT_TRIANGLES, EIT_16BIT);
-}
-
-
 //! Draws a 3d axis aligned box.
 void CNullDriver::draw3DBox(const core::aabbox3d<f32>& box, SColor color)
 {
@@ -778,31 +757,6 @@ void CNullDriver::draw2DImage(const video::ITexture* texture, const core::positi
 												);
 }
 
-
-
-//! draws a set of 2d images, using a color and the alpha channel of the
-//! texture if desired. The images are drawn beginning at pos and concatenated
-//! in one line. All drawings are clipped against clipRect (if != 0).
-//! The subtextures are defined by the array of sourceRects and are chosen
-//! by the indices given.
-void CNullDriver::draw2DImageBatch(const video::ITexture* texture,
-				const core::position2d<s32>& pos,
-				const core::array<core::rect<s32> >& sourceRects,
-				const core::array<s32>& indices,
-				s32 kerningWidth,
-				const core::rect<s32>* clipRect, SColor color,
-				bool useAlphaChannelOfTexture)
-{
-	core::position2d<s32> target(pos);
-
-	for (u32 i=0; i<indices.size(); ++i)
-	{
-		draw2DImage(texture, target, sourceRects[indices[i]],
-				clipRect, color, useAlphaChannelOfTexture);
-		target.X += sourceRects[indices[i]].getWidth();
-		target.X += kerningWidth;
-	}
-}
 
 //! draws a set of 2d images, using a color and the alpha channel of the
 //! texture if desired.
@@ -844,16 +798,6 @@ void CNullDriver::draw2DImage(const video::ITexture* texture, const core::positi
 }
 
 
-//! Draws the outline of a 2d rectangle
-void CNullDriver::draw2DRectangleOutline(const core::recti& pos, SColor color)
-{
-	draw2DLine(pos.UpperLeftCorner, core::position2di(pos.LowerRightCorner.X, pos.UpperLeftCorner.Y), color);
-	draw2DLine(core::position2di(pos.LowerRightCorner.X, pos.UpperLeftCorner.Y), pos.LowerRightCorner, color);
-	draw2DLine(pos.LowerRightCorner, core::position2di(pos.UpperLeftCorner.X, pos.LowerRightCorner.Y), color);
-	draw2DLine(core::position2di(pos.UpperLeftCorner.X, pos.LowerRightCorner.Y), pos.UpperLeftCorner, color);
-}
-
-
 //! Draw a 2d rectangle
 void CNullDriver::draw2DRectangle(SColor color, const core::rect<s32>& pos, const core::rect<s32>* clip)
 {
@@ -875,38 +819,6 @@ void CNullDriver::draw2DRectangle(const core::rect<s32>& pos,
 void CNullDriver::draw2DLine(const core::position2d<s32>& start,
 				const core::position2d<s32>& end, SColor color)
 {
-}
-
-//! Draws a pixel
-void CNullDriver::drawPixel(u32 x, u32 y, const SColor & color)
-{
-}
-
-
-//! Draws a non filled concyclic regular 2d polygon.
-void CNullDriver::draw2DPolygon(core::position2d<s32> center,
-	f32 radius, video::SColor color, s32 count)
-{
-	if (count < 2)
-		return;
-
-	core::position2d<s32> first;
-	core::position2d<s32> a,b;
-
-	for (s32 j=0; j<count; ++j)
-	{
-		b = a;
-
-		f32 p = j / (f32)count * (core::PI*2);
-		a = center + core::position2d<s32>((s32)(sin(p)*radius), (s32)(cos(p)*radius));
-
-		if (j==0)
-			first = a;
-		else
-			draw2DLine(a, b, color);
-	}
-
-	draw2DLine(a, first, color);
 }
 
 
@@ -976,25 +888,6 @@ const SColorf& CNullDriver::getAmbientLight() const
 const wchar_t* CNullDriver::getName() const
 {
 	return L"Irrlicht NullDevice";
-}
-
-
-
-//! Draws a shadow volume into the stencil buffer. To draw a stencil shadow, do
-//! this: First, draw all geometry. Then use this method, to draw the shadow
-//! volume. Then, use IVideoDriver::drawStencilShadow() to visualize the shadow.
-void CNullDriver::drawStencilShadowVolume(const core::array<core::vector3df>& triangles, bool zfail, u32 debugDataVisible)
-{
-}
-
-
-//! Fills the stencil shadow with color. After the shadow volume has been drawn
-//! into the stencil buffer using IVideoDriver::drawStencilShadowVolume(), use this
-//! to draw the color of the shadow.
-void CNullDriver::drawStencilShadow(bool clearStencilBuffer,
-		video::SColor leftUpEdge, video::SColor rightUpEdge,
-		video::SColor leftDownEdge, video::SColor rightDownEdge)
-{
 }
 
 
