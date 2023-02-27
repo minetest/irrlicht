@@ -63,6 +63,7 @@ COpenGL3Driver::COpenGL3Driver(const SIrrlichtCreationParameters& params, io::IF
 	ContextManager->activateContext(ExposedData, false);
 	GL.LoadAllProcedures(ContextManager);
 	GL.DebugMessageCallback(debugCb, this);
+	initQuadsIndices();
 }
 
 COpenGL3Driver::~COpenGL3Driver()
@@ -88,6 +89,20 @@ COpenGL3Driver::~COpenGL3Driver()
 		ContextManager->drop();
 	}
 }
+
+	void COpenGL3Driver::initQuadsIndices(int max_vertex_count)
+	{
+		int max_quad_count = max_vertex_count / 4;
+		QuadsIndices.reserve(6 * max_quad_count);
+		for (int k = 0; k < max_quad_count; k++) {
+			QuadsIndices.push_back(4 * k + 0);
+			QuadsIndices.push_back(4 * k + 1);
+			QuadsIndices.push_back(4 * k + 2);
+			QuadsIndices.push_back(4 * k + 0);
+			QuadsIndices.push_back(4 * k + 2);
+			QuadsIndices.push_back(4 * k + 3);
+		}
+	}
 
 	bool COpenGL3Driver::genericDriverInit(const core::dimension2d<u32>& screenSize, bool stencilBuffer)
 	{
@@ -886,23 +901,13 @@ COpenGL3Driver::~COpenGL3Driver()
 		f32 down = 2.f - (f32)destRect.LowerRightCorner.Y / (f32)renderTargetSize.Height * 2.f - 1.f;
 		f32 top = 2.f - (f32)destRect.UpperLeftCorner.Y / (f32)renderTargetSize.Height * 2.f - 1.f;
 
-		u16 indices[] = { 0, 1, 2, 3 };
 		S3DVertex vertices[4];
 		vertices[0] = S3DVertex(left, top, 0, 0, 0, 1, useColor[0], tcoords.UpperLeftCorner.X, tcoords.UpperLeftCorner.Y);
 		vertices[1] = S3DVertex(right, top, 0, 0, 0, 1, useColor[3], tcoords.LowerRightCorner.X, tcoords.UpperLeftCorner.Y);
 		vertices[2] = S3DVertex(right, down, 0, 0, 0, 1, useColor[2], tcoords.LowerRightCorner.X, tcoords.LowerRightCorner.Y);
 		vertices[3] = S3DVertex(left, down, 0, 0, 0, 1, useColor[1], tcoords.UpperLeftCorner.X, tcoords.LowerRightCorner.Y);
 
-		glEnableVertexAttribArray(EVA_POSITION);
-		glEnableVertexAttribArray(EVA_COLOR);
-		glEnableVertexAttribArray(EVA_TCOORD0);
-		glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
-		glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
-		glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
-		glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_SHORT, indices);
-		glDisableVertexAttribArray(EVA_TCOORD0);
-		glDisableVertexAttribArray(EVA_COLOR);
-		glDisableVertexAttribArray(EVA_POSITION);
+		drawQuad(vertices, true);
 
 		if (clipRect)
 			glDisable(GL_SCISSOR_TEST);
@@ -921,7 +926,6 @@ COpenGL3Driver::~COpenGL3Driver()
 
 		setRenderStates2DMode(false, true, true);
 
-		u16 quad2DIndices[] = { 0, 1, 2, 3 };
 		S3DVertex quad2DVertices[4];
 
 		quad2DVertices[0].Pos = core::vector3df(-1.f, 1.f, 0.f);
@@ -941,18 +945,8 @@ COpenGL3Driver::~COpenGL3Driver()
 		quad2DVertices[2].Color = SColor(0xFFFFFFFF);
 		quad2DVertices[3].Color = SColor(0xFFFFFFFF);
 
-		glEnableVertexAttribArray(EVA_POSITION);
-		glEnableVertexAttribArray(EVA_COLOR);
-		glEnableVertexAttribArray(EVA_TCOORD0);
-		glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(quad2DVertices))[0].Pos);
-		glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(quad2DVertices))[0].Color);
-		glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(quad2DVertices))[0].TCoords);
-		glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_SHORT, quad2DIndices);
-		glDisableVertexAttribArray(EVA_TCOORD0);
-		glDisableVertexAttribArray(EVA_COLOR);
-		glDisableVertexAttribArray(EVA_POSITION);
+		drawQuad(quad2DVertices, true);
 	}
-
 
 	void COpenGL3Driver::draw2DImageBatch(const video::ITexture* texture,
 			const core::array<core::position2d<s32> >& positions,
@@ -984,7 +978,6 @@ COpenGL3Driver::~COpenGL3Driver()
 		const irr::u32 drawCount = core::min_<u32>(positions.size(), sourceRects.size());
 
 		core::array<S3DVertex> vtx(drawCount * 4);
-		core::array<u16> indices(drawCount * 6);
 
 		for (u32 i = 0; i < drawCount; i++)
 		{
@@ -1020,30 +1013,12 @@ COpenGL3Driver::~COpenGL3Driver()
 			vtx.push_back(S3DVertex(left, down, 0.0f,
 					0.0f, 0.0f, 0.0f, color,
 					tcoords.UpperLeftCorner.X, tcoords.LowerRightCorner.Y));
-
-			const u32 curPos = vtx.size() - 4;
-			indices.push_back(0 + curPos);
-			indices.push_back(1 + curPos);
-			indices.push_back(2 + curPos);
-
-			indices.push_back(0 + curPos);
-			indices.push_back(2 + curPos);
-			indices.push_back(3 + curPos);
 		}
 
-		if (vtx.size())
-		{
-			glEnableVertexAttribArray(EVA_POSITION);
-			glEnableVertexAttribArray(EVA_COLOR);
-			glEnableVertexAttribArray(EVA_TCOORD0);
-			glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), &vtx[0].Pos);
-			glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &vtx[0].Color);
-			glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex), &vtx[0].TCoords);
-			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_SHORT, indices.pointer());
-			glDisableVertexAttribArray(EVA_TCOORD0);
-			glDisableVertexAttribArray(EVA_COLOR);
-			glDisableVertexAttribArray(EVA_POSITION);
-		}
+		drawQuads(vtx.const_pointer(), drawCount, true);
+
+		if (clipRect)
+			glDisable(GL_SCISSOR_TEST);
 	}
 
 
@@ -1072,20 +1047,13 @@ COpenGL3Driver::~COpenGL3Driver()
 		f32 down = 2.f - (f32)pos.LowerRightCorner.Y / (f32)renderTargetSize.Height * 2.f - 1.f;
 		f32 top = 2.f - (f32)pos.UpperLeftCorner.Y / (f32)renderTargetSize.Height * 2.f - 1.f;
 
-		u16 indices[] = {0, 1, 2, 3};
 		S3DVertex vertices[4];
 		vertices[0] = S3DVertex(left, top, 0, 0, 0, 1, color, 0, 0);
 		vertices[1] = S3DVertex(right, top, 0, 0, 0, 1, color, 0, 0);
 		vertices[2] = S3DVertex(right, down, 0, 0, 0, 1, color, 0, 0);
 		vertices[3] = S3DVertex(left, down, 0, 0, 0, 1, color, 0, 0);
 
-		glEnableVertexAttribArray(EVA_POSITION);
-		glEnableVertexAttribArray(EVA_COLOR);
-		glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
-		glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
-		glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_SHORT, indices);
-		glDisableVertexAttribArray(EVA_COLOR);
-		glDisableVertexAttribArray(EVA_POSITION);
+		drawQuad(vertices, false);
 	}
 
 
@@ -1118,20 +1086,13 @@ COpenGL3Driver::~COpenGL3Driver()
 		f32 down = 2.f - (f32)pos.LowerRightCorner.Y / (f32)renderTargetSize.Height * 2.f - 1.f;
 		f32 top = 2.f - (f32)pos.UpperLeftCorner.Y / (f32)renderTargetSize.Height * 2.f - 1.f;
 
-		u16 indices[] = {0, 1, 2, 3};
 		S3DVertex vertices[4];
 		vertices[0] = S3DVertex(left, top, 0, 0, 0, 1, colorLeftUp, 0, 0);
 		vertices[1] = S3DVertex(right, top, 0, 0, 0, 1, colorRightUp, 0, 0);
 		vertices[2] = S3DVertex(right, down, 0, 0, 0, 1, colorRightDown, 0, 0);
 		vertices[3] = S3DVertex(left, down, 0, 0, 0, 1, colorLeftDown, 0, 0);
 
-		glEnableVertexAttribArray(EVA_POSITION);
-		glEnableVertexAttribArray(EVA_COLOR);
-		glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
-		glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
-		glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_SHORT, indices);
-		glDisableVertexAttribArray(EVA_COLOR);
-		glDisableVertexAttribArray(EVA_POSITION);
+		drawQuad(vertices, false);
 	}
 
 
@@ -1155,18 +1116,11 @@ COpenGL3Driver::~COpenGL3Driver()
 			f32 startY = 2.f - (f32)start.Y / (f32)renderTargetSize.Height * 2.f - 1.f;
 			f32 endY = 2.f - (f32)end.Y / (f32)renderTargetSize.Height * 2.f - 1.f;
 
-			u16 indices[] = {0, 1};
 			S3DVertex vertices[2];
 			vertices[0] = S3DVertex(startX, startY, 0, 0, 0, 1, color, 0, 0);
 			vertices[1] = S3DVertex(endX, endY, 0, 0, 0, 1, color, 1, 1);
 
-			glEnableVertexAttribArray(EVA_POSITION);
-			glEnableVertexAttribArray(EVA_COLOR);
-			glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
-			glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
-			glDrawElements(GL_LINES, 2, GL_UNSIGNED_SHORT, indices);
-			glDisableVertexAttribArray(EVA_COLOR);
-			glDisableVertexAttribArray(EVA_POSITION);
+			drawArrays(GL_LINES, vertices, 2, false);
 		}
 	}
 
@@ -1189,13 +1143,43 @@ COpenGL3Driver::~COpenGL3Driver()
 		S3DVertex vertices[1];
 		vertices[0] = S3DVertex(X, Y, 0, 0, 0, 1, color, 0, 0);
 
+		drawArrays(GL_POINTS, vertices, 1, false);
+	}
+
+	void COpenGL3Driver::drawQuads(const S3DVertex *vertices, int quad_count, bool textured)
+	{
+		assert(6 * std::size_t(quad_count) <= QuadsIndices.size());
 		glEnableVertexAttribArray(EVA_POSITION);
 		glEnableVertexAttribArray(EVA_COLOR);
+		if (textured)
+			glEnableVertexAttribArray(EVA_TCOORD0);
 		glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
 		glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
-		glDrawArrays(GL_POINTS, 0, 1);
+		glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
+		glDrawElements(GL_TRIANGLES, 6 * quad_count, GL_UNSIGNED_SHORT, QuadsIndices.data());
+		glDisableVertexAttribArray(EVA_TCOORD0);
 		glDisableVertexAttribArray(EVA_COLOR);
 		glDisableVertexAttribArray(EVA_POSITION);
+	}
+
+	void COpenGL3Driver::drawArrays(GLenum type, const S3DVertex *vertices, int vertex_count, bool textured)
+	{
+		glEnableVertexAttribArray(EVA_POSITION);
+		glEnableVertexAttribArray(EVA_COLOR);
+		if (textured)
+			glEnableVertexAttribArray(EVA_TCOORD0);
+		glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
+		glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
+		glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
+		glDrawArrays(type, 0, vertex_count);
+		glDisableVertexAttribArray(EVA_TCOORD0);
+		glDisableVertexAttribArray(EVA_COLOR);
+		glDisableVertexAttribArray(EVA_POSITION);
+	}
+
+	void COpenGL3Driver::drawQuad(const S3DVertex (&vertices)[4], bool textured)
+	{
+		drawQuads(vertices, 1, textured);
 	}
 
 	ITexture* COpenGL3Driver::createDeviceDependentTexture(const io::path& name, IImage* image)
@@ -1706,18 +1690,11 @@ COpenGL3Driver::~COpenGL3Driver()
 	{
 		setRenderStates3DMode();
 
-		u16 indices[] = {0, 1};
 		S3DVertex vertices[2];
 		vertices[0] = S3DVertex(start.X, start.Y, start.Z, 0, 0, 1, color, 0, 0);
 		vertices[1] = S3DVertex(end.X, end.Y, end.Z, 0, 0, 1, color, 0, 0);
 
-		glEnableVertexAttribArray(EVA_POSITION);
-		glEnableVertexAttribArray(EVA_COLOR);
-		glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
-		glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
-		glDrawElements(GL_LINES, 2, GL_UNSIGNED_SHORT, indices);
-		glDisableVertexAttribArray(EVA_COLOR);
-		glDisableVertexAttribArray(EVA_POSITION);
+		drawArrays(GL_LINES, vertices, 2, false);
 	}
 
 

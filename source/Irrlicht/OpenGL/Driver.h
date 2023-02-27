@@ -332,6 +332,10 @@ namespace video
 		//! Same as `CacheHandler->setViewport`, but also sets `ViewPort`
 		virtual void setViewPortRaw(u32 width, u32 height);
 
+		void drawQuad(const S3DVertex (&vertices)[4], bool textured);
+		void drawQuads(const S3DVertex *vertices, int quad_count, bool textured);
+		void drawArrays(GLenum type, const S3DVertex *vertices, int vertex_count, bool textured);
+
 		COpenGL3CacheHandler* CacheHandler;
 		core::stringw Name;
 		core::stringc VendorName;
@@ -378,6 +382,9 @@ private:
 		ECOLOR_FORMAT ColorFormat;
 
 		IContextManager* ContextManager;
+
+		std::vector<u16> QuadsIndices;
+		void initQuadsIndices(int max_vertex_count = 65536);
 
 		void debugCb(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message);
 		static void APIENTRY debugCb(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
