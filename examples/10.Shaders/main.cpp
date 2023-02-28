@@ -288,6 +288,11 @@ int main()
 
 	To demonstrate this, we create two materials with a different base
 	material, one with EMT_SOLID and one with EMT_TRANSPARENT_ADD_COLOR.
+	The role of the base material is to set the alpha (transparency)
+	and blending settings as used in the base material. Avoid the 
+	EMT_NORMAL_... or EMT_PARALLAX... types as base materials as they
+	are internally shaders themselves and will only create conflicts with 
+	your shaders.
 	*/
 
 	// create materials

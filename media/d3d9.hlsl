@@ -19,12 +19,17 @@ struct VS_OUTPUT
 	float4 Position : POSITION;  // vertex position
 	float4 Diffuse  : COLOR0;    // vertex diffuse color
 	float2 TexCoord : TEXCOORD0; // tex coords
+//	float3 Tangent   : TEXCOORD1;	// Not used in this example, but additional values can be passed on as tex coords
+//	float3 Binormal  : TEXCOORD2;	// Not used in this example, but additional values can be passed on as tex coords
 };
 
 
-VS_OUTPUT vertexMain(in float4 vPosition : POSITION,
-					in float3 vNormal    : NORMAL,
-					float2 texCoord      : TEXCOORD0 )
+VS_OUTPUT vertexMain( in float4 vPosition : POSITION
+					, in float3 vNormal   : NORMAL
+					, float2 texCoord     : TEXCOORD0 
+					//,float3 Tangent     : TEXCOORD1;	// Used for Tangent when working with S3DVertexTangents
+					//,float3 Binormal    : TEXCOORD2;	// Used for Binormal when working with S3DVertexTangents
+					)
 {
 	VS_OUTPUT Output;
 
