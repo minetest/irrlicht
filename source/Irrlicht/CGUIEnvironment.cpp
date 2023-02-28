@@ -387,6 +387,8 @@ bool CGUIEnvironment::OnEvent(const SEvent& event)
 //
 void CGUIEnvironment::OnPostRender( u32 time )
 {
+	// Minetest draws its tooltips itself
+#if 0
 	// launch tooltip
 	if ( ToolTip.Element == 0 &&
 		HoveredNoSubelement && HoveredNoSubelement != this &&
@@ -438,6 +440,7 @@ void CGUIEnvironment::OnPostRender( u32 time )
 			ToolTip.Element = 0;
 		}
 	}
+#endif
 
 	IGUIElement::OnPostRender ( time );
 }
