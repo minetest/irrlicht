@@ -10,6 +10,14 @@
 
 #include "IRenderTarget.h"
 
+#ifndef GL_FRAMEBUFFER_INCOMPLETE_FORMATS
+#define GL_FRAMEBUFFER_INCOMPLETE_FORMATS GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT
+#endif
+
+#ifndef GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS
+#define GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT
+#endif
+
 namespace irr
 {
 namespace video
@@ -351,10 +359,10 @@ protected:
 			case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
 				os::Printer::log("FBO has one or several incomplete image attachments", ELL_ERROR);
 				break;
-			case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+			case GL_FRAMEBUFFER_INCOMPLETE_FORMATS:
 				os::Printer::log("FBO has one or several image attachments with different internal formats", ELL_ERROR);
 				break;
-			case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+			case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
 				os::Printer::log("FBO has one or several image attachments with different dimensions", ELL_ERROR);
 				break;
 			case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
