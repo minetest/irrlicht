@@ -35,6 +35,8 @@ namespace video
 		//! WebGL1 friendly subset of OpenGL-ES 2.x driver for Emscripten
 		EDT_WEBGL1,
 
+		EDT_OPENGL3,
+
 		//! No driver, just for counting the elements
 		EDT_COUNT
 	};

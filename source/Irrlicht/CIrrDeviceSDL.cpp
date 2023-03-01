@@ -38,18 +38,37 @@ namespace irr
 	{
 		#ifdef _IRR_COMPILE_WITH_OPENGL_
 		IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
-		#endif
-
-		#ifdef _IRR_COMPILE_WITH_OGLES2_
-		IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
-		#endif
-
-		#ifdef _IRR_COMPILE_WITH_WEBGL1_
-		IVideoDriver* createWebGL1Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
+		#else
+		static IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
+		{
+			os::Printer::log("No OpenGL support compiled in.", ELL_ERROR);
+			return nullptr;
+		}
 		#endif
 
 		#ifdef ENABLE_OPENGL3
 		IVideoDriver* createOpenGL3Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
+		#else
+		static IVideoDriver* createOpenGL3Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
+		{
+			os::Printer::log("No OpenGL 3 support compiled in.", ELL_ERROR);
+			return nullptr;
+		}
+		#endif
+
+		static IVideoDriver* createOpenGLES2Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
+		{
+			return createOpenGL3Driver(params, io, contextManager);
+		}
+
+		#ifdef _IRR_COMPILE_WITH_WEBGL1_
+		IVideoDriver* createWebGL1Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
+		#else
+		static IVideoDriver* createWebGL1Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
+		{
+			os::Printer::log("No WebGL 1 support compiled in.", ELL_ERROR);
+			return nullptr;
+		}
 		#endif
 	} // end namespace video
 
@@ -236,24 +255,6 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	// create keymap
 	createKeyMap();
 
-	if (CreationParams.Fullscreen) {
-		SDL_Flags |= SDL_WINDOW_FULLSCREEN;
-	} else  {
-		if (Resizable)
-			SDL_Flags |= SDL_WINDOW_RESIZABLE;
-		if (CreationParams.WindowMaximized)
-			SDL_Flags |= SDL_WINDOW_MAXIMIZED;
-	}
-	if (CreationParams.DriverType == video::EDT_OPENGL)
-	{
-		SDL_Flags |= SDL_WINDOW_OPENGL;
-		if (!CreationParams.Doublebuffer)
-			SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
-	}
-#ifdef _IRR_EMSCRIPTEN_PLATFORM_
-	SDL_Flags |= SDL_WINDOW_OPENGL;
-#endif //_IRR_EMSCRIPTEN_PLATFORM_
-
 	// create window
 	if (CreationParams.DriverType != video::EDT_NULL)
 	{
@@ -343,6 +344,16 @@ void CIrrDeviceSDL::logAttributes()
 
 bool CIrrDeviceSDL::createWindow()
 {
+	if (CreationParams.Fullscreen) {
+		SDL_Flags |= SDL_WINDOW_FULLSCREEN;
+	} else  {
+		if (Resizable)
+			SDL_Flags |= SDL_WINDOW_RESIZABLE;
+		if (CreationParams.WindowMaximized)
+			SDL_Flags |= SDL_WINDOW_MAXIMIZED;
+	}
+	SDL_Flags |= SDL_WINDOW_OPENGL;
+
 #ifdef _IRR_EMSCRIPTEN_PLATFORM_
 	if ( Width != 0 || Height != 0 )
 		emscripten_set_canvas_size( Width, Height);
@@ -389,58 +400,73 @@ bool CIrrDeviceSDL::createWindow()
 	if ( Close )
 		return false;
 
-	if (CreationParams.DriverType == video::EDT_OPENGL) {
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG | SDL_GL_CONTEXT_ROBUST_ACCESS_FLAG);
-		if (CreationParams.Bits == 16) {
-			SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 4);
-			SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 4);
-			SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 4);
-			SDL_GL_SetAttribute(
-					SDL_GL_ALPHA_SIZE, CreationParams.WithAlphaChannel ? 1 : 0);
-		} else {
-			SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-			SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-			SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-			SDL_GL_SetAttribute(
-					SDL_GL_ALPHA_SIZE, CreationParams.WithAlphaChannel ? 8 : 0);
-		}
-		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, CreationParams.ZBufferBits);
-		if (CreationParams.Doublebuffer)
-			SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, CreationParams.Stencilbuffer ? 8 : 0);
-		if (CreationParams.Stereobuffer)
-			SDL_GL_SetAttribute(SDL_GL_STEREO, 1);
-		if (CreationParams.AntiAlias > 1) {
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, CreationParams.AntiAlias);
-		}
-		if (!Window)
-			Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
-		if (!Window && CreationParams.AntiAlias > 1) {
-			while (--CreationParams.AntiAlias > 1) {
-				SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, CreationParams.AntiAlias);
-				Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
-				if (Window)
-					break;
-			}
-			if (!Window) {
-				SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
-				SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
-				Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
-				if (Window)
-					os::Printer::log("AntiAliasing disabled due to lack of support!");
-			}
-		}
+	switch (CreationParams.DriverType) {
+		case video::EDT_OPENGL:
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+			break;
+		case video::EDT_OPENGL3:
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+			break;
+		case video::EDT_OGLES1:
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+			break;
+		case video::EDT_OGLES2:
+		case video::EDT_WEBGL1:
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+			break;
+		default:;
+	}
 
-		if (Window)
-		{
-			Context = SDL_GL_CreateContext(Window);
-		}
-	} else if (!Window)
+#ifdef _DEBUG
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG | SDL_GL_CONTEXT_ROBUST_ACCESS_FLAG);
+#endif
+
+	if (CreationParams.Bits == 16) {
+		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
+		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
+		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, CreationParams.WithAlphaChannel ? 1 : 0);
+	} else {
+		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, CreationParams.WithAlphaChannel ? 8 : 0);
+	}
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, CreationParams.ZBufferBits);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, CreationParams.Doublebuffer);
+	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, CreationParams.Stencilbuffer ? 8 : 0);
+	SDL_GL_SetAttribute(SDL_GL_STEREO, CreationParams.Stereobuffer);
+	if (CreationParams.AntiAlias > 1) {
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, CreationParams.AntiAlias);
+	}
+	if (!Window)
 		Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
+	if (!Window) {
+		os::Printer::log("Could not create window...", SDL_GetError(), ELL_WARNING);
+	}
+	if (!Window && CreationParams.AntiAlias > 1) {
+		while (--CreationParams.AntiAlias > 1) {
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, CreationParams.AntiAlias);
+			Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
+			if (Window)
+				break;
+		}
+		if (!Window) {
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
+			Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
+			if (Window)
+				os::Printer::log("AntiAliasing disabled due to lack of support!", ELL_WARNING);
+		}
+	}
 
 	if ( !Window && CreationParams.Doublebuffer)
 	{
@@ -451,7 +477,14 @@ bool CIrrDeviceSDL::createWindow()
 	}
 	if ( !Window )
 	{
-		os::Printer::log( "Could not initialize display!" );
+		os::Printer::log("Could not initialize display", SDL_GetError(), ELL_ERROR);
+		return false;
+	}
+
+	Context = SDL_GL_CreateContext(Window);
+	if (!Context) {
+		os::Printer::log("Could not initialize context", SDL_GetError(), ELL_ERROR);
+		SDL_DestroyWindow(Window);
 		return false;
 	}
 
@@ -463,66 +496,22 @@ bool CIrrDeviceSDL::createWindow()
 //! create the driver
 void CIrrDeviceSDL::createDriver()
 {
+	if (CreationParams.DriverType == video::EDT_NULL) {
+		VideoDriver = video::createNullDriver(FileSystem, CreationParams.WindowSize);
+		return;
+	}
+
+	ContextManager = new video::CSDLManager(this);
 	switch(CreationParams.DriverType)
 	{
-	case video::EDT_OPENGL:
-		#ifdef _IRR_COMPILE_WITH_OPENGL_
-		ContextManager = new video::CSDLManager(this);
-		VideoDriver = video::createOpenGL3Driver(CreationParams, FileSystem, ContextManager);
-		#else
-		os::Printer::log("No OpenGL support compiled in.", ELL_ERROR);
-		#endif
-		break;
-
-	case video::EDT_OGLES2:
-#if defined(_IRR_COMPILE_WITH_OGLES2_) && defined(_IRR_EMSCRIPTEN_PLATFORM_)
-		{
-			video::SExposedVideoData data;
-
-			ContextManager = new video::CEGLManager();
-			ContextManager->initialize(CreationParams, data);
-
-			VideoDriver = video::createOGLES2Driver(CreationParams, FileSystem, ContextManager);
-		}
-#else
-		os::Printer::log("No OpenGL-ES2 support compiled in.", ELL_ERROR);
-#endif
-		break;
-
-	case video::EDT_WEBGL1:
-#if defined(_IRR_COMPILE_WITH_WEBGL1_) && defined(_IRR_EMSCRIPTEN_PLATFORM_)
-		{
-			video::SExposedVideoData data;
-
-			ContextManager = new video::CEGLManager();
-			ContextManager->initialize(CreationParams, data);
-
-			VideoDriver = video::createWebGL1Driver(CreationParams, FileSystem, ContextManager);
-		}
-#else
-		os::Printer::log("No WebGL1 support compiled in.", ELL_ERROR);
-#endif
-		break;
-
-	case video::EDT_NULL:
-		VideoDriver = video::createNullDriver(FileSystem, CreationParams.WindowSize);
-		break;
-
-	default:
-		os::Printer::log("Unable to create video driver of unknown type.", ELL_ERROR);
-		break;
+	case video::EDT_OPENGL: VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, ContextManager); break;
+	case video::EDT_OPENGL3: VideoDriver = video::createOpenGL3Driver(CreationParams, FileSystem, ContextManager); break;
+	case video::EDT_OGLES2: VideoDriver = video::createOpenGLES2Driver(CreationParams, FileSystem, ContextManager); break;
+	case video::EDT_WEBGL1: VideoDriver = video::createWebGL1Driver(CreationParams, FileSystem, ContextManager); break;
+	default:;
 	}
-
-	// In case we got the size from the canvas
-	if ( VideoDriver && CreationParams.WindowSize.Width == 0 && CreationParams.WindowSize.Height == 0 && Width > 0 && Height > 0 )
-	{
-#ifdef _IRR_EMSCRIPTEN_PLATFORM_
-		SDL_CreateWindowAndRenderer(Width, Height, SDL_Flags, &Window, &Renderer);
-#else //_IRR_EMSCRIPTEN_PLATFORM_
-		Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
-#endif //_IRR_EMSCRIPTEN_PLATFOR
-		VideoDriver->OnResize(core::dimension2d<u32>(Width, Height));
-	}
+	if (!VideoDriver)
+		os::Printer::log("Could not create video driver", ELL_ERROR);
 }
 
 
