@@ -1722,7 +1722,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	//! Returns type of video driver
 	E_DRIVER_TYPE COpenGL3Driver::getDriverType() const
 	{
-		return EDT_OGLES2;
+		return EDT_OPENGL3;
 	}
 
 
@@ -1905,9 +1905,9 @@ COpenGL3Driver::~COpenGL3Driver()
 
 	bool COpenGL3Driver::setRenderTargetEx(IRenderTarget* target, u16 clearFlag, SColor clearColor, f32 clearDepth, u8 clearStencil)
 	{
-		if (target && target->getDriverType() != EDT_OGLES2  && target->getDriverType() != EDT_WEBGL1)
+		if (target && target->getDriverType() != EDT_OPENGL3)
 		{
-			os::Printer::log("Fatal Error: Tried to set a render target not owned by OGLES2 driver.", ELL_ERROR);
+			os::Printer::log("Fatal Error: Tried to set a render target not owned by OpenGL 3 driver.", ELL_ERROR);
 			return false;
 		}
 
