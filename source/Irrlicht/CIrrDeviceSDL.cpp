@@ -20,15 +20,10 @@
 #include <SDL_video.h>
 
 #ifdef _IRR_EMSCRIPTEN_PLATFORM_
-#ifdef _IRR_COMPILE_WITH_OGLES2_
-#include "CEGLManager.h"
-#endif
 #include <emscripten.h>
 #endif
 
-#ifdef _IRR_COMPILE_WITH_OPENGL_
 #include "CSDLManager.h"
-#endif
 
 static int SDLDeviceInstances = 0;
 
