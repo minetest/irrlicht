@@ -345,13 +345,16 @@ void CIrrDeviceSDL::logAttributes()
 bool CIrrDeviceSDL::createWindow()
 {
 	if (CreationParams.Fullscreen) {
+#ifdef _IRR_EMSCRIPTEN_PLATFORM_
 		SDL_Flags |= SDL_WINDOW_FULLSCREEN;
-	} else  {
-		if (Resizable)
-			SDL_Flags |= SDL_WINDOW_RESIZABLE;
-		if (CreationParams.WindowMaximized)
-			SDL_Flags |= SDL_WINDOW_MAXIMIZED;
+#else
+		SDL_Flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+#endif
 	}
+	if (Resizable)
+		SDL_Flags |= SDL_WINDOW_RESIZABLE;
+	if (CreationParams.WindowMaximized)
+		SDL_Flags |= SDL_WINDOW_MAXIMIZED;
 	SDL_Flags |= SDL_WINDOW_OPENGL;
 
 #ifdef _IRR_EMSCRIPTEN_PLATFORM_
