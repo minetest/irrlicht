@@ -56,10 +56,15 @@ namespace irr
 		}
 		#endif
 
-		static IVideoDriver* createOpenGLES2Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
+		#ifdef _IRR_COMPILE_WITH_OGLES2_
+		IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
+		#else
+		static IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
 		{
-			return createOpenGL3Driver(params, io, contextManager);
+			os::Printer::log("No OpenGL ES 2 support compiled in.", ELL_ERROR);
+			return nullptr;
 		}
+		#endif
 
 		#ifdef _IRR_COMPILE_WITH_WEBGL1_
 		IVideoDriver* createWebGL1Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
@@ -506,7 +511,7 @@ void CIrrDeviceSDL::createDriver()
 	{
 	case video::EDT_OPENGL: VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, ContextManager); break;
 	case video::EDT_OPENGL3: VideoDriver = video::createOpenGL3Driver(CreationParams, FileSystem, ContextManager); break;
-	case video::EDT_OGLES2: VideoDriver = video::createOpenGLES2Driver(CreationParams, FileSystem, ContextManager); break;
+	case video::EDT_OGLES2: VideoDriver = video::createOGLES2Driver(CreationParams, FileSystem, ContextManager); break;
 	case video::EDT_WEBGL1: VideoDriver = video::createWebGL1Driver(CreationParams, FileSystem, ContextManager); break;
 	default:;
 	}

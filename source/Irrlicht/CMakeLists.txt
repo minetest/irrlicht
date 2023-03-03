@@ -198,6 +198,14 @@ if(ENABLE_OPENGL)
 	endif()
 endif()
 
+if(ENABLE_OPENGL3)
+	if (NOT USE_SDL2)
+		message(SEND_ERROR "OpenGL3 support requires SDL2")
+	endif()
+	set(USE_SDLGL ON)
+	set(USE_SDLGL3 ON)
+endif()
+
 if(ENABLE_GLES1)
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES1_)
 	if(DEVICE MATCHES "^WINDOWS|X11|ANDROID$")
@@ -213,6 +221,9 @@ if(ENABLE_GLES2)
 		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_ -D_IRR_OGLES2_USE_EXTPOINTER_)
 	elseif(DEVICE STREQUAL "IOS")
 		add_definitions(-D_IRR_COMPILE_WITH_EAGL_MANAGER_)
+	elseif(DEVICE STREQUAL "SDL")
+		set(USE_SDLGL ON)
+		set(USE_SDLGLES2 ON)
 	endif()
 endif()
 
@@ -232,6 +243,7 @@ endif()
 
 message(STATUS "Device: ${DEVICE}")
 message(STATUS "OpenGL: ${ENABLE_OPENGL}")
+message(STATUS "OpenGL 3: ${ENABLE_OPENGL3}")
 message(STATUS "OpenGL ES: ${ENABLE_GLES1}")
 message(STATUS "OpenGL ES 2: ${ENABLE_GLES2}")
 message(STATUS "WebGL: ${ENABLE_WEBGL1}")
@@ -353,12 +365,6 @@ set(IRRDRVROBJ
 	COpenGLExtensionHandler.cpp
 	COGLESDriver.cpp
 	COGLESExtensionHandler.cpp
-	COGLES2Driver.cpp
-	COGLES2ExtensionHandler.cpp
-	COGLES2FixedPipelineRenderer.cpp
-	COGLES2MaterialRenderer.cpp
-	COGLES2Renderer2D.cpp
-	CWebGL1Driver.cpp
 	CGLXManager.cpp
 	CWGLManager.cpp
 	CEGLManager.cpp
@@ -383,16 +389,34 @@ add_library(IRRVIDEOOBJ OBJECT
 	${IRRIMAGEOBJ}
 )
 
-if(ENABLE_OPENGL3)
-	if (NOT USE_SDL2)
-		message(SEND_ERROR "OpenGL3 support requires SDL2")
-	endif()
+if(USE_SDLGL)
 	target_sources(IRRVIDEOOBJ PUBLIC
 		OpenGL/Driver.cpp
 		OpenGL/ExtensionHandler.cpp
 		OpenGL/FixedPipelineRenderer.cpp
 		OpenGL/MaterialRenderer.cpp
 		OpenGL/Renderer2D.cpp
+	)
+endif()
+
+if(USE_SDLGL3)
+	target_sources(IRRVIDEOOBJ PUBLIC
+		OpenGL3/Driver.cpp
+	)
+endif()
+
+if(USE_SDLGLES2)
+	target_sources(IRRVIDEOOBJ PUBLIC
+		OpenGLES2/Driver.cpp
+	)
+else()
+	target_sources(IRRVIDEOOBJ PUBLIC
+		COGLES2Driver.cpp
+		COGLES2ExtensionHandler.cpp
+		COGLES2FixedPipelineRenderer.cpp
+		COGLES2MaterialRenderer.cpp
+		COGLES2Renderer2D.cpp
+		CWebGL1Driver.cpp
 	)
 endif()
 

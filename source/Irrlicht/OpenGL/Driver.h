@@ -25,19 +25,18 @@ namespace video
 	class COpenGL3FixedPipelineRenderer;
 	class COpenGL3Renderer2D;
 
-	class COpenGL3Driver : public CNullDriver, public IMaterialRendererServices, public COpenGL3ExtensionHandler
+	class COpenGL3DriverBase : public CNullDriver, public IMaterialRendererServices, public COpenGL3ExtensionHandler
 	{
-		friend class COpenGLCoreTexture<COpenGL3Driver>;
-		friend IVideoDriver* createOpenGL3Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
+		friend class COpenGLCoreTexture<COpenGL3DriverBase>;
 
 	protected:
 		//! constructor (use createOpenGL3Driver instead)
-		COpenGL3Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
+		COpenGL3DriverBase(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
 
 	public:
 
 		//! destructor
-		virtual ~COpenGL3Driver();
+		virtual ~COpenGL3DriverBase();
 
 		virtual bool beginScene(u16 clearFlag, SColor clearColor = SColor(255, 0, 0, 0), f32 clearDepth = 1.f, u8 clearStencil = 0,
 			const SExposedVideoData& videoData = SExposedVideoData(), core::rect<s32>* sourceRect = 0) override;

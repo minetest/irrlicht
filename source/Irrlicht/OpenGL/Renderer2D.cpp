@@ -18,7 +18,7 @@ namespace irr
 namespace video
 {
 
-COpenGL3Renderer2D::COpenGL3Renderer2D(const c8* vertexShaderProgram, const c8* pixelShaderProgram, COpenGL3Driver* driver, bool withTexture) :
+COpenGL3Renderer2D::COpenGL3Renderer2D(const c8* vertexShaderProgram, const c8* pixelShaderProgram, COpenGL3DriverBase* driver, bool withTexture) :
 	COpenGL3MaterialRenderer(driver, 0, EMT_SOLID),
 	WithTexture(withTexture)
 {

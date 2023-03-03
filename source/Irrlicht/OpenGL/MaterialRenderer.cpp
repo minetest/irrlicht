@@ -21,7 +21,7 @@ namespace video
 {
 
 
-COpenGL3MaterialRenderer::COpenGL3MaterialRenderer(COpenGL3Driver* driver,
+COpenGL3MaterialRenderer::COpenGL3MaterialRenderer(COpenGL3DriverBase* driver,
 		s32& outMaterialTypeNr,
 		const c8* vertexShaderProgram,
 		const c8* pixelShaderProgram,
@@ -57,7 +57,7 @@ COpenGL3MaterialRenderer::COpenGL3MaterialRenderer(COpenGL3Driver* driver,
 }
 
 
-COpenGL3MaterialRenderer::COpenGL3MaterialRenderer(COpenGL3Driver* driver,
+COpenGL3MaterialRenderer::COpenGL3MaterialRenderer(COpenGL3DriverBase* driver,
 					IShaderConstantSetCallBack* callback,
 					E_MATERIAL_TYPE baseMaterial, s32 userData)
 : Driver(driver), CallBack(callback), Alpha(false), Blending(false), FixedBlending(false), Program(0), UserData(userData)

@@ -123,17 +123,17 @@ namespace video
 	};
 
 
-void APIENTRY COpenGL3Driver::debugCb(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam)
+void APIENTRY COpenGL3DriverBase::debugCb(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam)
 {
-	((COpenGL3Driver *)userParam)->debugCb(source, type, id, severity, length, message);
+	((COpenGL3DriverBase *)userParam)->debugCb(source, type, id, severity, length, message);
 }
 
-void COpenGL3Driver::debugCb(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message)
+void COpenGL3DriverBase::debugCb(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message)
 {
 	printf("%04x %04x %x %x %.*s\n", source, type, id, severity, length, message);
 }
 
-COpenGL3Driver::COpenGL3Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager) :
+COpenGL3DriverBase::COpenGL3DriverBase(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager) :
 	CNullDriver(io, params.WindowSize), COpenGL3ExtensionHandler(), CacheHandler(0),
 	Params(params), ResetRenderStates(true), LockRenderStateMode(false), AntiAlias(params.AntiAlias),
 	MaterialRenderer2DActive(0), MaterialRenderer2DTexture(0), MaterialRenderer2DNoTexture(0),
@@ -158,7 +158,7 @@ COpenGL3Driver::COpenGL3Driver(const SIrrlichtCreationParameters& params, io::IF
 	initQuadsIndices();
 }
 
-COpenGL3Driver::~COpenGL3Driver()
+COpenGL3DriverBase::~COpenGL3DriverBase()
 {
 	deleteMaterialRenders();
 
@@ -182,7 +182,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	}
 }
 
-	void COpenGL3Driver::initQuadsIndices(int max_vertex_count)
+	void COpenGL3DriverBase::initQuadsIndices(int max_vertex_count)
 	{
 		int max_quad_count = max_vertex_count / 4;
 		QuadsIndices.reserve(6 * max_quad_count);
@@ -196,7 +196,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		}
 	}
 
-	bool COpenGL3Driver::genericDriverInit(const core::dimension2d<u32>& screenSize, bool stencilBuffer)
+	bool COpenGL3DriverBase::genericDriverInit(const core::dimension2d<u32>& screenSize, bool stencilBuffer)
 	{
 		Name = glGetString(GL_VERSION);
 		printVersion();
@@ -261,7 +261,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		return true;
 	}
 
-	void COpenGL3Driver::loadShaderData(const io::path& vertexShaderName, const io::path& fragmentShaderName, c8** vertexShaderData, c8** fragmentShaderData)
+	void COpenGL3DriverBase::loadShaderData(const io::path& vertexShaderName, const io::path& fragmentShaderName, c8** vertexShaderData, c8** fragmentShaderData)
 	{
 		io::path vsPath(OGLES2ShaderPath);
 		vsPath += vertexShaderName;
@@ -316,7 +316,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		fsFile->drop();
 	}
 
-	void COpenGL3Driver::createMaterialRenderers()
+	void COpenGL3DriverBase::createMaterialRenderers()
 	{
 		// Create callbacks.
 
@@ -469,13 +469,13 @@ COpenGL3Driver::~COpenGL3Driver()
 		delete[] fs2DData;
 	}
 
-	bool COpenGL3Driver::setMaterialTexture(irr::u32 layerIdx, const irr::video::ITexture* texture)
+	bool COpenGL3DriverBase::setMaterialTexture(irr::u32 layerIdx, const irr::video::ITexture* texture)
 	{
 		Material.TextureLayer[layerIdx].Texture = const_cast<ITexture*>(texture); // function uses const-pointer for texture because all draw functions use const-pointers already
 		return CacheHandler->getTextureCache().set(0, texture);
 	}
 
-	bool COpenGL3Driver::beginScene(u16 clearFlag, SColor clearColor, f32 clearDepth, u8 clearStencil, const SExposedVideoData& videoData, core::rect<s32>* sourceRect)
+	bool COpenGL3DriverBase::beginScene(u16 clearFlag, SColor clearColor, f32 clearDepth, u8 clearStencil, const SExposedVideoData& videoData, core::rect<s32>* sourceRect)
 	{
 		CNullDriver::beginScene(clearFlag, clearColor, clearDepth, clearStencil, videoData, sourceRect);
 
@@ -487,7 +487,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		return true;
 	}
 
-	bool COpenGL3Driver::endScene()
+	bool COpenGL3DriverBase::endScene()
 	{
 		CNullDriver::endScene();
 
@@ -501,21 +501,21 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	//! Returns the transformation set by setTransform
-	const core::matrix4& COpenGL3Driver::getTransform(E_TRANSFORMATION_STATE state) const
+	const core::matrix4& COpenGL3DriverBase::getTransform(E_TRANSFORMATION_STATE state) const
 	{
 		return Matrices[state];
 	}
 
 
 	//! sets transformation
-	void COpenGL3Driver::setTransform(E_TRANSFORMATION_STATE state, const core::matrix4& mat)
+	void COpenGL3DriverBase::setTransform(E_TRANSFORMATION_STATE state, const core::matrix4& mat)
 	{
 		Matrices[state] = mat;
 		Transformation3DChanged = true;
 	}
 
 
-	bool COpenGL3Driver::updateVertexHardwareBuffer(SHWBufferLink_opengl *HWBuffer)
+	bool COpenGL3DriverBase::updateVertexHardwareBuffer(SHWBufferLink_opengl *HWBuffer)
 	{
 		if (!HWBuffer)
 			return false;
@@ -563,7 +563,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	}
 
 
-	bool COpenGL3Driver::updateIndexHardwareBuffer(SHWBufferLink_opengl *HWBuffer)
+	bool COpenGL3DriverBase::updateIndexHardwareBuffer(SHWBufferLink_opengl *HWBuffer)
 	{
 		if (!HWBuffer)
 			return false;
@@ -627,7 +627,7 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	//! updates hardware buffer if needed
-	bool COpenGL3Driver::updateHardwareBuffer(SHWBufferLink *HWBuffer)
+	bool COpenGL3DriverBase::updateHardwareBuffer(SHWBufferLink *HWBuffer)
 	{
 		if (!HWBuffer)
 			return false;
@@ -663,7 +663,7 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	//! Create hardware buffer from meshbuffer
-	COpenGL3Driver::SHWBufferLink *COpenGL3Driver::createHardwareBuffer(const scene::IMeshBuffer* mb)
+	COpenGL3DriverBase::SHWBufferLink *COpenGL3DriverBase::createHardwareBuffer(const scene::IMeshBuffer* mb)
 	{
 		if (!mb || (mb->getHardwareMappingHint_Index() == scene::EHM_NEVER && mb->getHardwareMappingHint_Vertex() == scene::EHM_NEVER))
 			return 0;
@@ -692,7 +692,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	}
 
 
-	void COpenGL3Driver::deleteHardwareBuffer(SHWBufferLink *_HWBuffer)
+	void COpenGL3DriverBase::deleteHardwareBuffer(SHWBufferLink *_HWBuffer)
 	{
 		if (!_HWBuffer)
 			return;
@@ -714,7 +714,7 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	//! Draw hardware buffer
-	void COpenGL3Driver::drawHardwareBuffer(SHWBufferLink *_HWBuffer)
+	void COpenGL3DriverBase::drawHardwareBuffer(SHWBufferLink *_HWBuffer)
 	{
 		if (!_HWBuffer)
 			return;
@@ -753,7 +753,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	}
 
 
-	IRenderTarget* COpenGL3Driver::addRenderTarget()
+	IRenderTarget* COpenGL3DriverBase::addRenderTarget()
 	{
 		COpenGL3RenderTarget* renderTarget = new COpenGL3RenderTarget(this);
 		RenderTargets.push_back(renderTarget);
@@ -770,7 +770,7 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	//! draws a vertex primitive list
-	void COpenGL3Driver::drawVertexPrimitiveList(const void* vertices, u32 vertexCount,
+	void COpenGL3DriverBase::drawVertexPrimitiveList(const void* vertices, u32 vertexCount,
 			const void* indexList, u32 primitiveCount,
 			E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType)
 	{
@@ -842,7 +842,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	}
 
 
-	void COpenGL3Driver::draw2DImage(const video::ITexture* texture, const core::position2d<s32>& destPos,
+	void COpenGL3DriverBase::draw2DImage(const video::ITexture* texture, const core::position2d<s32>& destPos,
 		const core::rect<s32>& sourceRect, const core::rect<s32>* clipRect, SColor color,
 		bool useAlphaChannelOfTexture)
 	{
@@ -857,7 +857,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	}
 
 
-	void COpenGL3Driver::draw2DImage(const video::ITexture* texture, const core::rect<s32>& destRect,
+	void COpenGL3DriverBase::draw2DImage(const video::ITexture* texture, const core::rect<s32>& destRect,
 		const core::rect<s32>& sourceRect, const core::rect<s32>* clipRect,
 		const video::SColor* const colors, bool useAlphaChannelOfTexture)
 	{
@@ -924,7 +924,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		testGLError(__LINE__);
 	}
 
-	void COpenGL3Driver::draw2DImage(const video::ITexture* texture, u32 layer, bool flip)
+	void COpenGL3DriverBase::draw2DImage(const video::ITexture* texture, u32 layer, bool flip)
 	{
 		if (!texture)
 			return;
@@ -957,7 +957,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		drawQuad(vt2DImage, quad2DVertices);
 	}
 
-	void COpenGL3Driver::draw2DImageBatch(const video::ITexture* texture,
+	void COpenGL3DriverBase::draw2DImageBatch(const video::ITexture* texture,
 			const core::array<core::position2d<s32> >& positions,
 			const core::array<core::rect<s32> >& sourceRects,
 			const core::rect<s32>* clipRect,
@@ -1033,7 +1033,7 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	//! draw a 2d rectangle
-	void COpenGL3Driver::draw2DRectangle(SColor color,
+	void COpenGL3DriverBase::draw2DRectangle(SColor color,
 			const core::rect<s32>& position,
 			const core::rect<s32>* clip)
 	{
@@ -1068,7 +1068,7 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	//! draw an 2d rectangle
-	void COpenGL3Driver::draw2DRectangle(const core::rect<s32>& position,
+	void COpenGL3DriverBase::draw2DRectangle(const core::rect<s32>& position,
 			SColor colorLeftUp, SColor colorRightUp,
 			SColor colorLeftDown, SColor colorRightDown,
 			const core::rect<s32>* clip)
@@ -1107,7 +1107,7 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	//! Draws a 2d line.
-	void COpenGL3Driver::draw2DLine(const core::position2d<s32>& start,
+	void COpenGL3DriverBase::draw2DLine(const core::position2d<s32>& start,
 			const core::position2d<s32>& end, SColor color)
 	{
 		if (start==end)
@@ -1136,7 +1136,7 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	//! Draws a pixel
-	void COpenGL3Driver::drawPixel(u32 x, u32 y, const SColor &color)
+	void COpenGL3DriverBase::drawPixel(u32 x, u32 y, const SColor &color)
 	{
 		const core::dimension2d<u32>& renderTargetSize = getCurrentRenderTargetSize();
 		if (x > (u32)renderTargetSize.Width || y > (u32)renderTargetSize.Height)
@@ -1156,26 +1156,26 @@ COpenGL3Driver::~COpenGL3Driver()
 		drawArrays(GL_POINTS, vtPrimitive, vertices, 1);
 	}
 
-	void COpenGL3Driver::drawQuad(const VertexType &vertexType, const S3DVertex (&vertices)[4])
+	void COpenGL3DriverBase::drawQuad(const VertexType &vertexType, const S3DVertex (&vertices)[4])
 	{
 		drawArrays(GL_TRIANGLE_FAN, vertexType, vertices, 4);
 	}
 
-	void COpenGL3Driver::drawArrays(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount)
+	void COpenGL3DriverBase::drawArrays(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount)
 	{
 		beginDraw(vertexType, reinterpret_cast<uintptr_t>(vertices));
 		glDrawArrays(primitiveType, 0, vertexCount);
 		endDraw(vertexType);
 	}
 
-	void COpenGL3Driver::drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, const u16 *indices, int indexCount)
+	void COpenGL3DriverBase::drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, const u16 *indices, int indexCount)
 	{
 		beginDraw(vertexType, reinterpret_cast<uintptr_t>(vertices));
 		glDrawElements(primitiveType, indexCount, GL_UNSIGNED_SHORT, indices);
 		endDraw(vertexType);
 	}
 
-	void COpenGL3Driver::beginDraw(const VertexType &vertexType, uintptr_t verticesBase)
+	void COpenGL3DriverBase::beginDraw(const VertexType &vertexType, uintptr_t verticesBase)
 	{
 		for (auto attr: vertexType) {
 			glEnableVertexAttribArray(attr.Index);
@@ -1187,13 +1187,13 @@ COpenGL3Driver::~COpenGL3Driver()
 		}
 	}
 
-	void COpenGL3Driver::endDraw(const VertexType &vertexType)
+	void COpenGL3DriverBase::endDraw(const VertexType &vertexType)
 	{
 		for (auto attr: vertexType)
 			glDisableVertexAttribArray(attr.Index);
 	}
 
-	ITexture* COpenGL3Driver::createDeviceDependentTexture(const io::path& name, IImage* image)
+	ITexture* COpenGL3DriverBase::createDeviceDependentTexture(const io::path& name, IImage* image)
 	{
 		core::array<IImage*> imageArray(1);
 		imageArray.push_back(image);
@@ -1203,7 +1203,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		return texture;
 	}
 
-	ITexture* COpenGL3Driver::createDeviceDependentTextureCubemap(const io::path& name, const core::array<IImage*>& image)
+	ITexture* COpenGL3DriverBase::createDeviceDependentTextureCubemap(const io::path& name, const core::array<IImage*>& image)
 	{
 		COpenGL3Texture* texture = new COpenGL3Texture(name, image, ETT_CUBEMAP, this);
 
@@ -1211,7 +1211,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	}
 
 	//! Sets a material.
-	void COpenGL3Driver::setMaterial(const SMaterial& material)
+	void COpenGL3DriverBase::setMaterial(const SMaterial& material)
 	{
 		Material = material;
 		OverrideMaterial.apply(Material);
@@ -1224,7 +1224,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	}
 
 	//! prints error if an error happened.
-	bool COpenGL3Driver::testGLError(int code)
+	bool COpenGL3DriverBase::testGLError(int code)
 	{
 #ifdef _DEBUG
 		GLenum g = glGetError();
@@ -1252,7 +1252,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	}
 
 	//! prints error if an error happened.
-	bool COpenGL3Driver::testEGLError()
+	bool COpenGL3DriverBase::testEGLError()
 	{
 #if defined(EGL_VERSION_1_0) && defined(_DEBUG)
 		EGLint g = eglGetError();
@@ -1310,7 +1310,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	}
 
 
-	void COpenGL3Driver::setRenderStates3DMode()
+	void COpenGL3DriverBase::setRenderStates3DMode()
 	{
 		if ( LockRenderStateMode )
 			return;
@@ -1355,7 +1355,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	}
 
 	//! Can be called by an IMaterialRenderer to make its work easier.
-	void COpenGL3Driver::setBasicRenderStates(const SMaterial& material, const SMaterial& lastmaterial, bool resetAllRenderStates)
+	void COpenGL3DriverBase::setBasicRenderStates(const SMaterial& material, const SMaterial& lastmaterial, bool resetAllRenderStates)
 	{
 		// ZBuffer
 		switch (material.ZBuffer)
@@ -1493,7 +1493,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	}
 
 	//! Compare in SMaterial doesn't check texture parameters, so we should call this on each OnRender call.
-	void COpenGL3Driver::setTextureRenderStates(const SMaterial& material, bool resetAllRenderstates)
+	void COpenGL3DriverBase::setTextureRenderStates(const SMaterial& material, bool resetAllRenderstates)
 	{
 		// Set textures to TU/TIU and apply filters to them
 
@@ -1579,7 +1579,7 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	// Get OpenGL ES2.0 texture wrap mode from Irrlicht wrap mode.
-	GLint COpenGL3Driver::getTextureWrapMode(u8 clamp) const
+	GLint COpenGL3DriverBase::getTextureWrapMode(u8 clamp) const
 	{
 		switch (clamp)
 		{
@@ -1596,7 +1596,7 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	//! sets the needed renderstates
-	void COpenGL3Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel)
+	void COpenGL3DriverBase::setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel)
 	{
 		if ( LockRenderStateMode )
 			return;
@@ -1652,7 +1652,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	}
 
 
-	void COpenGL3Driver::chooseMaterial2D()
+	void COpenGL3DriverBase::chooseMaterial2D()
 	{
 		if (!OverrideMaterial2DEnabled)
 			Material = InitMaterial2D;
@@ -1670,12 +1670,12 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	//! \return Returns the name of the video driver.
-	const wchar_t* COpenGL3Driver::getName() const
+	const wchar_t* COpenGL3DriverBase::getName() const
 	{
 		return Name.c_str();
 	}
 
-	void COpenGL3Driver::setViewPort(const core::rect<s32>& area)
+	void COpenGL3DriverBase::setViewPort(const core::rect<s32>& area)
 	{
 		core::rect<s32> vp = area;
 		core::rect<s32> rendert(0, 0, getCurrentRenderTargetSize().Width, getCurrentRenderTargetSize().Height);
@@ -1688,7 +1688,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	}
 
 
-	void COpenGL3Driver::setViewPortRaw(u32 width, u32 height)
+	void COpenGL3DriverBase::setViewPortRaw(u32 width, u32 height)
 	{
 		CacheHandler->setViewport(0, 0, width, height);
 		ViewPort = core::recti(0, 0, width, height);
@@ -1696,7 +1696,7 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	//! Draws a 3d line.
-	void COpenGL3Driver::draw3DLine(const core::vector3df& start,
+	void COpenGL3DriverBase::draw3DLine(const core::vector3df& start,
 			const core::vector3df& end, SColor color)
 	{
 		setRenderStates3DMode();
@@ -1711,7 +1711,7 @@ COpenGL3Driver::~COpenGL3Driver()
 
 	//! Only used by the internal engine. Used to notify the driver that
 	//! the window was resized.
-	void COpenGL3Driver::OnResize(const core::dimension2d<u32>& size)
+	void COpenGL3DriverBase::OnResize(const core::dimension2d<u32>& size)
 	{
 		CNullDriver::OnResize(size);
 		CacheHandler->setViewport(0, 0, size.Width, size.Height);
@@ -1720,79 +1720,79 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	//! Returns type of video driver
-	E_DRIVER_TYPE COpenGL3Driver::getDriverType() const
+	E_DRIVER_TYPE COpenGL3DriverBase::getDriverType() const
 	{
 		return EDT_OPENGL3;
 	}
 
 
 	//! returns color format
-	ECOLOR_FORMAT COpenGL3Driver::getColorFormat() const
+	ECOLOR_FORMAT COpenGL3DriverBase::getColorFormat() const
 	{
 		return ColorFormat;
 	}
 
 
 	//! Get a vertex shader constant index.
-	s32 COpenGL3Driver::getVertexShaderConstantID(const c8* name)
+	s32 COpenGL3DriverBase::getVertexShaderConstantID(const c8* name)
 	{
 		return getPixelShaderConstantID(name);
 	}
 
 	//! Get a pixel shader constant index.
-	s32 COpenGL3Driver::getPixelShaderConstantID(const c8* name)
+	s32 COpenGL3DriverBase::getPixelShaderConstantID(const c8* name)
 	{
 		os::Printer::log("Error: Please call services->getPixelShaderConstantID(), not VideoDriver->getPixelShaderConstantID().");
 		return -1;
 	}
 
 	//! Sets a vertex shader constant.
-	void COpenGL3Driver::setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
+	void COpenGL3DriverBase::setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
 	{
 		os::Printer::log("Error: Please call services->setVertexShaderConstant(), not VideoDriver->setPixelShaderConstant().");
 	}
 
 	//! Sets a pixel shader constant.
-	void COpenGL3Driver::setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
+	void COpenGL3DriverBase::setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
 	{
 		os::Printer::log("Error: Please call services->setPixelShaderConstant(), not VideoDriver->setPixelShaderConstant().");
 	}
 
 	//! Sets a constant for the vertex shader based on an index.
-	bool COpenGL3Driver::setVertexShaderConstant(s32 index, const f32* floats, int count)
+	bool COpenGL3DriverBase::setVertexShaderConstant(s32 index, const f32* floats, int count)
 	{
 		os::Printer::log("Error: Please call services->setVertexShaderConstant(), not VideoDriver->setVertexShaderConstant().");
 		return false;
 	}
 
 	//! Int interface for the above.
-	bool COpenGL3Driver::setVertexShaderConstant(s32 index, const s32* ints, int count)
+	bool COpenGL3DriverBase::setVertexShaderConstant(s32 index, const s32* ints, int count)
 	{
 		os::Printer::log("Error: Please call services->setVertexShaderConstant(), not VideoDriver->setVertexShaderConstant().");
 		return false;
 	}
 
-	bool COpenGL3Driver::setVertexShaderConstant(s32 index, const u32* ints, int count)
+	bool COpenGL3DriverBase::setVertexShaderConstant(s32 index, const u32* ints, int count)
 	{
 		os::Printer::log("Error: Please call services->setVertexShaderConstant(), not VideoDriver->setVertexShaderConstant().");
 		return false;
 	}
 
 	//! Sets a constant for the pixel shader based on an index.
-	bool COpenGL3Driver::setPixelShaderConstant(s32 index, const f32* floats, int count)
+	bool COpenGL3DriverBase::setPixelShaderConstant(s32 index, const f32* floats, int count)
 	{
 		os::Printer::log("Error: Please call services->setPixelShaderConstant(), not VideoDriver->setPixelShaderConstant().");
 		return false;
 	}
 
 	//! Int interface for the above.
-	bool COpenGL3Driver::setPixelShaderConstant(s32 index, const s32* ints, int count)
+	bool COpenGL3DriverBase::setPixelShaderConstant(s32 index, const s32* ints, int count)
 	{
 		os::Printer::log("Error: Please call services->setPixelShaderConstant(), not VideoDriver->setPixelShaderConstant().");
 		return false;
 	}
 
-	bool COpenGL3Driver::setPixelShaderConstant(s32 index, const u32* ints, int count)
+	bool COpenGL3DriverBase::setPixelShaderConstant(s32 index, const u32* ints, int count)
 	{
 		os::Printer::log("Error: Please call services->setPixelShaderConstant(), not VideoDriver->setPixelShaderConstant().");
 		return false;
@@ -1800,7 +1800,7 @@ COpenGL3Driver::~COpenGL3Driver()
 
 	//! Adds a new material renderer to the VideoDriver, using pixel and/or
 	//! vertex shaders to render geometry.
-	s32 COpenGL3Driver::addShaderMaterial(const c8* vertexShaderProgram,
+	s32 COpenGL3DriverBase::addShaderMaterial(const c8* vertexShaderProgram,
 			const c8* pixelShaderProgram,
 			IShaderConstantSetCallBack* callback,
 			E_MATERIAL_TYPE baseMaterial, s32 userData)
@@ -1811,7 +1811,7 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	//! Adds a new material renderer to the VideoDriver, using GLSL to render geometry.
-	s32 COpenGL3Driver::addHighLevelShaderMaterial(
+	s32 COpenGL3DriverBase::addHighLevelShaderMaterial(
 			const c8* vertexShaderProgram,
 			const c8* vertexShaderEntryPointName,
 			E_VERTEX_SHADER_TYPE vsCompileTarget,
@@ -1840,19 +1840,19 @@ COpenGL3Driver::~COpenGL3Driver()
 
 	//! Returns a pointer to the IVideoDriver interface. (Implementation for
 	//! IMaterialRendererServices)
-	IVideoDriver* COpenGL3Driver::getVideoDriver()
+	IVideoDriver* COpenGL3DriverBase::getVideoDriver()
 	{
 		return this;
 	}
 
 
 	//! Returns pointer to the IGPUProgrammingServices interface.
-	IGPUProgrammingServices* COpenGL3Driver::getGPUProgrammingServices()
+	IGPUProgrammingServices* COpenGL3DriverBase::getGPUProgrammingServices()
 	{
 		return this;
 	}
 
-	ITexture* COpenGL3Driver::addRenderTargetTexture(const core::dimension2d<u32>& size,
+	ITexture* COpenGL3DriverBase::addRenderTargetTexture(const core::dimension2d<u32>& size,
 		const io::path& name, const ECOLOR_FORMAT format)
 	{
 		//disable mip-mapping
@@ -1869,7 +1869,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		return renderTargetTexture;
 	}
 
-	ITexture* COpenGL3Driver::addRenderTargetTextureCubemap(const irr::u32 sideLen, const io::path& name, const ECOLOR_FORMAT format)
+	ITexture* COpenGL3DriverBase::addRenderTargetTextureCubemap(const irr::u32 sideLen, const io::path& name, const ECOLOR_FORMAT format)
 	{
 		//disable mip-mapping
 		bool generateMipLevels = getTextureCreationFlag(ETCF_CREATE_MIP_MAPS);
@@ -1898,14 +1898,14 @@ COpenGL3Driver::~COpenGL3Driver()
 
 
 	//! Returns the maximum amount of primitives
-	u32 COpenGL3Driver::getMaximalPrimitiveCount() const
+	u32 COpenGL3DriverBase::getMaximalPrimitiveCount() const
 	{
 		return 65535;
 	}
 
-	bool COpenGL3Driver::setRenderTargetEx(IRenderTarget* target, u16 clearFlag, SColor clearColor, f32 clearDepth, u8 clearStencil)
+	bool COpenGL3DriverBase::setRenderTargetEx(IRenderTarget* target, u16 clearFlag, SColor clearColor, f32 clearDepth, u8 clearStencil)
 	{
-		if (target && target->getDriverType() != EDT_OPENGL3)
+		if (target && target->getDriverType() != getDriverType())
 		{
 			os::Printer::log("Fatal Error: Tried to set a render target not owned by OpenGL 3 driver.", ELL_ERROR);
 			return false;
@@ -1947,7 +1947,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		return true;
 	}
 
-	void COpenGL3Driver::clearBuffers(u16 flag, SColor color, f32 depth, u8 stencil)
+	void COpenGL3DriverBase::clearBuffers(u16 flag, SColor color, f32 depth, u8 stencil)
 	{
 		GLbitfield mask = 0;
 		u8 colorMask = 0;
@@ -1992,7 +1992,7 @@ COpenGL3Driver::~COpenGL3Driver()
 	// We want to read the front buffer to get the latest render finished.
 	// This is not possible under ogl-es, though, so one has to call this method
 	// outside of the render loop only.
-	IImage* COpenGL3Driver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RENDER_TARGET target)
+	IImage* COpenGL3DriverBase::createScreenShot(video::ECOLOR_FORMAT format, video::E_RENDER_TARGET target)
 	{
 		if (target==video::ERT_MULTI_RENDER_TEXTURES || target==video::ERT_RENDER_TEXTURE || target==video::ERT_STEREO_BOTH_BUFFERS)
 			return 0;
@@ -2078,14 +2078,14 @@ COpenGL3Driver::~COpenGL3Driver()
 		return newImage;
 	}
 
-	void COpenGL3Driver::removeTexture(ITexture* texture)
+	void COpenGL3DriverBase::removeTexture(ITexture* texture)
 	{
 		CacheHandler->getTextureCache().remove(texture);
 		CNullDriver::removeTexture(texture);
 	}
 
 	//! Set/unset a clipping plane.
-	bool COpenGL3Driver::setClipPlane(u32 index, const core::plane3df& plane, bool enable)
+	bool COpenGL3DriverBase::setClipPlane(u32 index, const core::plane3df& plane, bool enable)
 	{
 		if (index >= UserClipPlane.size())
 			UserClipPlane.push_back(SUserClipPlane());
@@ -2096,18 +2096,18 @@ COpenGL3Driver::~COpenGL3Driver()
 	}
 
 	//! Enable/disable a clipping plane.
-	void COpenGL3Driver::enableClipPlane(u32 index, bool enable)
+	void COpenGL3DriverBase::enableClipPlane(u32 index, bool enable)
 	{
 		UserClipPlane[index].Enabled = enable;
 	}
 
 	//! Get the ClipPlane Count
-	u32 COpenGL3Driver::getClipPlaneCount() const
+	u32 COpenGL3DriverBase::getClipPlaneCount() const
 	{
 		return UserClipPlane.size();
 	}
 
-	const core::plane3df& COpenGL3Driver::getClipPlane(irr::u32 index) const
+	const core::plane3df& COpenGL3DriverBase::getClipPlane(irr::u32 index) const
 	{
 		if (index < UserClipPlane.size())
 			return UserClipPlane[index].Plane;
@@ -2119,12 +2119,12 @@ COpenGL3Driver::~COpenGL3Driver()
 		}
 	}
 
-	core::dimension2du COpenGL3Driver::getMaxTextureSize() const
+	core::dimension2du COpenGL3DriverBase::getMaxTextureSize() const
 	{
 		return core::dimension2du(MaxTextureSize, MaxTextureSize);
 	}
 
-	GLenum COpenGL3Driver::getGLBlend(E_BLEND_FACTOR factor) const
+	GLenum COpenGL3DriverBase::getGLBlend(E_BLEND_FACTOR factor) const
 	{
 		static GLenum const blendTable[] =
 		{
@@ -2144,7 +2144,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		return blendTable[factor];
 	}
 
-	bool COpenGL3Driver::getColorFormatParameters(ECOLOR_FORMAT format, GLint& internalFormat, GLenum& pixelFormat,
+	bool COpenGL3DriverBase::getColorFormatParameters(ECOLOR_FORMAT format, GLint& internalFormat, GLenum& pixelFormat,
 		GLenum& pixelType, void(**converter)(const void*, s32, void*)) const
 	{
 		bool supported = false;
@@ -2360,7 +2360,7 @@ COpenGL3Driver::~COpenGL3Driver()
 		return supported;
 	}
 
-	bool COpenGL3Driver::queryTextureFormat(ECOLOR_FORMAT format) const
+	bool COpenGL3DriverBase::queryTextureFormat(ECOLOR_FORMAT format) const
 	{
 		GLint dummyInternalFormat;
 		GLenum dummyPixelFormat;
@@ -2369,28 +2369,20 @@ COpenGL3Driver::~COpenGL3Driver()
 		return getColorFormatParameters(format, dummyInternalFormat, dummyPixelFormat, dummyPixelType, &dummyConverter);
 	}
 
-	bool COpenGL3Driver::needsTransparentRenderPass(const irr::video::SMaterial& material) const
+	bool COpenGL3DriverBase::needsTransparentRenderPass(const irr::video::SMaterial& material) const
 	{
 		return CNullDriver::needsTransparentRenderPass(material) || material.isAlphaBlendOperation();
 	}
 
-	const SMaterial& COpenGL3Driver::getCurrentMaterial() const
+	const SMaterial& COpenGL3DriverBase::getCurrentMaterial() const
 	{
 		return Material;
 	}
 
-	COpenGL3CacheHandler* COpenGL3Driver::getCacheHandler() const
+	COpenGL3CacheHandler* COpenGL3DriverBase::getCacheHandler() const
 	{
 		return CacheHandler;
 	}
-
-
-IVideoDriver* createOpenGL3Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
-{
-	COpenGL3Driver* driver = new COpenGL3Driver(params, io, contextManager);
-	driver->genericDriverInit(params.WindowSize, params.Stencilbuffer);	// don't call in constructor, it uses virtual function calls of driver
-	return driver;
-}
 
 } // end namespace
 } // end namespace

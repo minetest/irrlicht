@@ -18,14 +18,14 @@ namespace irr
 namespace video
 {
 
-class COpenGL3Driver;
+class COpenGL3DriverBase;
 
 class COpenGL3MaterialRenderer : public IMaterialRenderer, public IMaterialRendererServices
 {
 public:
 
 	COpenGL3MaterialRenderer(
-		COpenGL3Driver* driver,
+		COpenGL3DriverBase* driver,
 		s32& outMaterialTypeNr,
 		const c8* vertexShaderProgram = 0,
 		const c8* pixelShaderProgram = 0,
@@ -65,7 +65,7 @@ public:
 
 protected:
 
-	COpenGL3MaterialRenderer(COpenGL3Driver* driver,
+	COpenGL3MaterialRenderer(COpenGL3DriverBase* driver,
 					IShaderConstantSetCallBack* callback = 0,
 					E_MATERIAL_TYPE baseMaterial = EMT_SOLID,
 					s32 userData = 0);
@@ -75,7 +75,7 @@ protected:
 	bool createShader(GLenum shaderType, const char* shader);
 	bool linkProgram();
 
-	COpenGL3Driver* Driver;
+	COpenGL3DriverBase* Driver;
 	IShaderConstantSetCallBack* CallBack;
 
 	bool Alpha;

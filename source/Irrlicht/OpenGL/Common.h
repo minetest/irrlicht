@@ -27,10 +27,10 @@ namespace video
 	template <class TOpenGLDriver, class TOpenGLTexture>
 	class COpenGLCoreCacheHandler;
 
-	class COpenGL3Driver;
-	typedef COpenGLCoreTexture<COpenGL3Driver> COpenGL3Texture;
-	typedef COpenGLCoreRenderTarget<COpenGL3Driver, COpenGL3Texture> COpenGL3RenderTarget;
-	typedef COpenGLCoreCacheHandler<COpenGL3Driver, COpenGL3Texture> COpenGL3CacheHandler;
+	class COpenGL3DriverBase;
+	typedef COpenGLCoreTexture<COpenGL3DriverBase> COpenGL3Texture;
+	typedef COpenGLCoreRenderTarget<COpenGL3DriverBase, COpenGL3Texture> COpenGL3RenderTarget;
+	typedef COpenGLCoreCacheHandler<COpenGL3DriverBase, COpenGL3Texture> COpenGL3CacheHandler;
 
 }
 }

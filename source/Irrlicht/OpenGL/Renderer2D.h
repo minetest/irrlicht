@@ -14,7 +14,7 @@ namespace video
 class COpenGL3Renderer2D : public COpenGL3MaterialRenderer
 {
 public:
-	COpenGL3Renderer2D(const c8* vertexShaderProgram, const c8* pixelShaderProgram, COpenGL3Driver* driver, bool withTexture);
+	COpenGL3Renderer2D(const c8* vertexShaderProgram, const c8* pixelShaderProgram, COpenGL3DriverBase* driver, bool withTexture);
 	~COpenGL3Renderer2D();
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
