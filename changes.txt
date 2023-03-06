@@ -1,6 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Listbox items can now change individual background colors
 - Fix some bitfield sizes in SMaterial which were chosen too small for enums (PolygonOffsetDirection, ZWriteEnable, BlendOperation)
 - Add ISceneNode::UpdateAbsolutePosBehavior variable to allow nodes to ignore the scale/rotation parts of their parents transformation.
 - Add IGUISpinBox functions getValueFor and getOldValue

@@ -26,6 +26,11 @@ namespace gui
 		EGUI_LBC_ICON,
 		//! Color of selected icon
 		EGUI_LBC_ICON_HIGHLIGHT,
+		//! Color of background. 
+		//! Note that this one is drawn over the listbox background and when not used there is no other default
+		EGUI_LBC_BACKGROUND,
+		//! Color of selected background
+		EGUI_LBC_BACKGROUND_HIGHLIGHT,
 		//! Not used, just counts the number of available colors
 		EGUI_LBC_COUNT
 	};

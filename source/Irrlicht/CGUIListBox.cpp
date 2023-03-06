@@ -528,7 +528,13 @@ void CGUIListBox::draw()
 			frameRect.UpperLeftCorner.Y <= AbsoluteRect.LowerRightCorner.Y)
 		{
 			if (i == Selected && hl)
-				skin->draw2DRectangle(this, skin->getColor(EGDC_HIGH_LIGHT), frameRect, &clientClip);
+			{
+				skin->draw2DRectangle(this, hasItemOverrideColor(i, EGUI_LBC_BACKGROUND_HIGHLIGHT) ? getItemOverrideColor(i, EGUI_LBC_BACKGROUND_HIGHLIGHT) : getItemDefaultColor(EGUI_LBC_BACKGROUND_HIGHLIGHT), frameRect, &clientClip);
+			}
+			else if ( hasItemOverrideColor(i, EGUI_LBC_BACKGROUND ) )
+			{
+				skin->draw2DRectangle(this, getItemOverrideColor(i, EGUI_LBC_BACKGROUND), frameRect, &clientClip);
+			}
 
 			core::rect<s32> textRect = frameRect;
 			textRect.UpperLeftCorner.X += 3;
@@ -670,6 +676,14 @@ bool CGUIListBox::getSerializationLabels(EGUI_LISTBOX_COLOR colorType, core::str
 	case EGUI_LBC_ICON_HIGHLIGHT:
 		useColorLabel = "UseColIconHl";
 		colorLabel = "ColIconHl";
+		break;
+	case EGUI_LBC_BACKGROUND:
+		useColorLabel = "UseColBg";
+		colorLabel = "ColBg";
+		break;
+	case EGUI_LBC_BACKGROUND_HIGHLIGHT:
+		useColorLabel = "UseColBgHl";
+		colorLabel = "ColBgHl";
 		break;
 	default:
 		return false;
@@ -887,6 +901,10 @@ video::SColor CGUIListBox::getItemDefaultColor(EGUI_LISTBOX_COLOR colorType) con
 			return skin->getColor(EGDC_ICON);
 		case EGUI_LBC_ICON_HIGHLIGHT:
 			return skin->getColor(EGDC_ICON_HIGH_LIGHT);
+		case EGUI_LBC_BACKGROUND:
+			return skin->getColor(EGDC_3D_HIGH_LIGHT);
+		case EGUI_LBC_BACKGROUND_HIGHLIGHT:
+			return skin->getColor(EGDC_HIGH_LIGHT);
 		default:
 			return video::SColor();
 	}
