@@ -113,37 +113,31 @@ else()
 	set(DEVICE "X11")
 endif()
 
-if(USE_SDL2)
-	set(DEVICE "SDL")
-endif()
-
-option(USE_X11 "Use X11" TRUE)
-if(USE_X11)
-	add_definitions(-D_IRR_COMPILE_WITH_X11_)
-endif()
-
 if(LINUX_PLATFORM)
 	add_definitions(-D_IRR_LINUX_PLATFORM_)
 endif()
 
+if(USE_SDL2)
+	set(DEVICE "SDL")
+endif()
+
+add_definitions("-D_IRR_COMPILE_WITH_${DEVICE}_DEVICE_")
+
+# X11
+
+if(DEVICE STREQUAL "X11")
+	option(USE_X11 "Use X11" TRUE)
+else()
+	set(USE_X11 FALSE)
+endif()
+
 if(LINUX_PLATFORM AND USE_X11)
-	add_definitions(-D_IRR_COMPILE_WITH_X11_)
-
 	option(USE_XINPUT2 "Use XInput2" TRUE)
-	if(USE_XINPUT2)
-		add_definitions(-D_IRR_LINUX_X11_XINPUT2_)
-	endif()
-
 	option(USE_XCURSOR "Use XCursor" FALSE)
-	if(USE_XCURSOR)
-		add_definitions(-D_IRR_LINUX_XCURSOR_)
-	endif()
 else()
 	set(USE_XINPUT2 FALSE)
 	set(USE_XCURSOR FALSE)
 endif()
-
-add_definitions("-D_IRR_COMPILE_WITH_${DEVICE}_DEVICE_")
 
 # Joystick
 
@@ -419,6 +413,18 @@ elseif(APPLE)
 		CIrrDeviceOSX.mm
 		CNSOGLManager.mm
 	)
+endif()
+
+if(USE_X11)
+	target_compile_definitions(IRROTHEROBJ PRIVATE _IRR_COMPILE_WITH_X11_)
+endif()
+
+if(USE_XINPUT2)
+	target_compile_definitions(IRROTHEROBJ PRIVATE _IRR_LINUX_X11_XINPUT2_)
+endif()
+
+if(USE_XCURSOR)
+	target_compile_definitions(IRROTHEROBJ PRIVATE _IRR_LINUX_XCURSOR_)
 endif()
 
 add_library(IRRGUIOBJ OBJECT
