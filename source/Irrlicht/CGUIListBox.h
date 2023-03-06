@@ -164,6 +164,7 @@ namespace gui
 
 		core::array< ListItem > Items;
 		s32 Selected;
+		s32 HoverSelected;	// When >= 0 we're in the middle of changing selection while mouse is pressed. We need to know so selected again isn't called too often.
 		s32 ItemHeight;
 		s32 ItemHeightOverride;
 		s32 TotalItemHeight;
@@ -171,7 +172,7 @@ namespace gui
 		gui::IGUIFont* Font;
 		gui::IGUISpriteBank* IconBank;
 		gui::IGUIScrollBar* ScrollBar;
-		u32 selectTime;
+		u32 SelectTime;
 		u32 LastKeyTime;
 		core::stringw KeyBuffer;
 		bool Selecting;
