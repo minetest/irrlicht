@@ -14,6 +14,7 @@
 #include "ICursorControl.h"
 #include "ITimer.h"
 #include "IOSOperator.h"
+#include "IrrCompileConfig.h"
 
 namespace irr
 {
@@ -34,6 +35,7 @@ namespace irr
 
 	namespace video {
 		class IContextManager;
+		extern "C" IRRLICHT_API bool IRRCALLCONV isDriverSupported(E_DRIVER_TYPE driver);
 	} // end namespace video
 
 	//! The Irrlicht device. You can create it with createDevice() or createDeviceEx().
@@ -310,7 +312,7 @@ namespace irr
 		for a configuration requested when creating the device. */
 		static bool isDriverSupported(video::E_DRIVER_TYPE driver)
 		{
-			return true;
+			return video::isDriverSupported(driver);
 		}
 	};
 
