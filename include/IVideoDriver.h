@@ -57,10 +57,8 @@ namespace video
 		//! Projection transformation
 		ETS_PROJECTION,
 		//! Texture 0 transformation
-		//! Use ETS_TEXTURE_0 + texture_number to access other texture transformations
+		//! Use E_TRANSFORMATION_STATE(ETS_TEXTURE_0 + texture_number) to access other texture transformations
 		ETS_TEXTURE_0,
-		//! Texture 1 transformation
-		ETS_TEXTURE_1,
 		//! Only used internally
 		ETS_COUNT = ETS_TEXTURE_0 + MATERIAL_MAX_TEXTURES
 	};
