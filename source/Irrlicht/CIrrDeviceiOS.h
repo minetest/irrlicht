@@ -7,7 +7,6 @@
 #ifndef __C_IRR_DEVICE_IOS_H_INCLUDED__
 #define __C_IRR_DEVICE_IOS_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 
 #ifdef _IRR_COMPILE_WITH_IOS_DEVICE_
 

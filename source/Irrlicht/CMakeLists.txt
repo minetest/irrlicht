@@ -1,11 +1,21 @@
 option(BUILD_SHARED_LIBS "Build shared library" TRUE)
+option(USE_SDL2 "Use the SDL2 backend" FALSE)
 
 # Compiler flags
 
 add_definitions(-DIRRLICHT_EXPORTS)
-if(NOT BUILD_SHARED_LIBS)
+if(BUILD_SHARED_LIBS)
+	if(WIN32)
+		set(API_IMPORT "__declspec(dllimport)")
+		set(API_EXPORT "__declspec(dllexport)")
+	elseif(CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
+		set(API_EXPORT "__attribute__ ((visibility(\"default\")))") # only necessary if default visibility is set to hidden
+	endif()
+else()
 	add_definitions(-D_IRR_STATIC_LIB_)
 endif()
+add_definitions("-DIRRLICHT_API=${API_EXPORT}")
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_definitions(-D_DEBUG)
 endif()
@@ -56,46 +66,195 @@ if(NOT REVISION_SANITY_CHECK)
 	message(FATAL_ERROR "IrrlichtMt revision number mismatches between CMake and headers.")
 endif()
 
+# Platform-independent configuration (hard-coded currently)
+add_definitions(
+	-DIRR_ENABLE_BUILTIN_FONT
+	-D_IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
+	)
+
+# Platform-specific configuration
+
+if(CMAKE_SYSTEM_NAME STREQUAL "SunOS")
+	set(SOLARIS TRUE)
+endif()
+if(APPLE AND NOT IOS)
+	set(OSX TRUE)
+endif()
+
+# Device
+
+if(WIN32)
+	add_definitions(-D_IRR_WINDOWS_ -D_IRR_WINDOWS_API_)
+	set(DEVICE "WINDOWS")
+elseif(IOS)
+	add_definitions(-D_IRR_IOS_PLATFORM_ -D_IRR_COMPILE_WITH_IOS_BUILTIN_MAIN_)
+	if(USE_SDL2)
+		message(WARNING "SDL2 backend is not supported on iOS")
+		set(USE_SDL2 FALSE)
+	endif()
+	set(DEVICE "IOS")
+elseif(OSX)
+	add_definitions(-D_IRR_OSX_PLATFORM_)
+	set(DEVICE "OSX")
+elseif(ANDROID)
+	add_definitions(-D_IRR_ANDROID_PLATFORM_ -D_IRR_COMPILE_ANDROID_ASSET_READER_)
+	if(USE_SDL2)
+		message(WARNING "SDL2 backend is not supported on Android")
+		set(USE_SDL2 FALSE)
+	endif()
+	set(DEVICE "Android")
+elseif(EMSCRIPTEN)
+	add_definitions(-D_IRR_EMSCRIPTEN_PLATFORM_ -D_IRR_COMPILE_WITH_EGL_MANAGER_)
+	set(LINUX_PLATFORM TRUE)
+	set(DEVICE "SDL")
+elseif(SOLARIS)
+	add_definitions(-D_IRR_SOLARIS_PLATFORM_ -D_IRR_POSIX_API_)
+	set(DEVICE "X11")
+else()
+	add_definitions(-D_IRR_POSIX_API_)
+	set(LINUX_PLATFORM TRUE)
+	set(DEVICE "X11")
+endif()
+
+if(LINUX_PLATFORM)
+	add_definitions(-D_IRR_LINUX_PLATFORM_)
+endif()
+
+if(USE_SDL2)
+	set(DEVICE "SDL")
+endif()
+
+add_definitions("-D_IRR_COMPILE_WITH_${DEVICE}_DEVICE_")
+
+# X11
+
+if(DEVICE STREQUAL "X11")
+	option(USE_X11 "Use X11" TRUE)
+else()
+	set(USE_X11 FALSE)
+endif()
+
+if(LINUX_PLATFORM AND USE_X11)
+	option(USE_XINPUT2 "Use XInput2" TRUE)
+	option(USE_XCURSOR "Use XCursor" FALSE)
+else()
+	set(USE_XINPUT2 FALSE)
+	set(USE_XCURSOR FALSE)
+endif()
+
+# Joystick
+
+if(NOT (BSD OR SOLARIS OR EMSCRIPTEN))
+	add_definitions(-D_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
+endif()
+
+# OpenGL
+
+if(IOS OR ANDROID OR EMSCRIPTEN)
+	set(ENABLE_OPENGL FALSE)
+else()
+	option(ENABLE_OPENGL "Enable OpenGL" TRUE)
+endif()
+
+if(EMSCRIPTEN OR OSX)
+	set(ENABLE_GLES1 FALSE)
+else()
+	if(ANDROID OR IOS)
+		set(DEFAULT_GLES1 TRUE)
+	endif()
+	option(ENABLE_GLES1 "Enable OpenGL ES" ${DEFAULT_GLES1})
+endif()
+
+if(OSX)
+	set(ENABLE_GLES2 FALSE)
+	set(ENABLE_WEBGL1 FALSE)
+else()
+	if(ANDROID OR IOS OR EMSCRIPTEN)
+		set(DEFAULT_GLES2 TRUE)
+	endif()
+	if(EMSCRIPTEN)
+		set(DEFAULT_WEBGL1 TRUE)
+	endif()
+	option(ENABLE_GLES2 "Enable OpenGL ES 2+" ${DEFAULT_GLES2})
+	option(ENABLE_WEBGL1 "Enable WebGL (requires GLES2)" ${DEFAULT_WEBGL1})
+	if(ENABLE_WEBGL1)
+		set(ENABLE_GLES2 TRUE)
+	endif()
+endif()
+
+if(ENABLE_OPENGL)
+	add_definitions(-D_IRR_COMPILE_WITH_OPENGL_)
+	if(DEVICE STREQUAL "WINDOWS")
+		add_definitions(-D_IRR_COMPILE_WITH_WGL_MANAGER_ -D_IRR_OPENGL_USE_EXTPOINTER_)
+	elseif(DEVICE STREQUAL "X11")
+		add_definitions(-D_IRR_COMPILE_WITH_GLX_MANAGER_ -D_IRR_OPENGL_USE_EXTPOINTER_)
+	elseif(DEVICE STREQUAL "OSX")
+		add_definitions(-D_IRR_COMPILE_WITH_NSOGL_MANAGER_)
+	elseif(DEVICE STREQUAL "SDL")
+		add_definitions(-D_IRR_OPENGL_USE_EXTPOINTER_)
+	endif()
+endif()
+
+if(ENABLE_GLES1)
+	add_definitions(-D_IRR_COMPILE_WITH_OGLES1_)
+	if(DEVICE MATCHES "^(WINDOWS|X11|ANDROID)$")
+		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_ -D_IRR_OGLES1_USE_EXTPOINTER_)
+	elseif(DEVICE STREQUAL "IOS")
+		add_definitions(-D_IRR_COMPILE_WITH_EAGL_MANAGER_)
+	endif()
+endif()
+
+if(ENABLE_GLES2)
+	add_definitions(-D_IRR_COMPILE_WITH_OGLES2_)
+	if(DEVICE MATCHES "^(WINDOWS|X11|ANDROID)$" OR EMSCRIPTEN)
+		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_ -D_IRR_OGLES2_USE_EXTPOINTER_)
+	elseif(DEVICE STREQUAL "IOS")
+		add_definitions(-D_IRR_COMPILE_WITH_EAGL_MANAGER_)
+	endif()
+endif()
+
+if(ENABLE_WEBGL1)
+	add_definitions(-D_IRR_COMPILE_WITH_WEBGL1_)
+endif()
+
+# Misc
+
+include(TestBigEndian)
+TEST_BIG_ENDIAN(BIG_ENDIAN)
+if(BIG_ENDIAN)
+	add_definitions(-D__BIG_ENDIAN__)
+endif()
+
+# Configuration report
+
+message(STATUS "Device: ${DEVICE}")
+message(STATUS "OpenGL: ${ENABLE_OPENGL}")
+message(STATUS "OpenGL ES: ${ENABLE_GLES1}")
+message(STATUS "OpenGL ES 2: ${ENABLE_GLES2}")
+message(STATUS "WebGL: ${ENABLE_WEBGL1}")
+
 # Required libs
 
 find_package(ZLIB REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(PNG REQUIRED)
 
-# To configure the features available in this Irrlicht build please edit include/IrrCompileConfig.h.
-include(CheckSymbolExists)
-set(CMAKE_REQUIRED_INCLUDES ${PROJECT_SOURCE_DIR}/include)
-unset(OGLES1_ENABLED CACHE)
-unset(OGLES2_ENABLED CACHE)
-unset(OGL_ENABLED CACHE)
-unset(XINPUT2_ENABLED CACHE)
-unset(SDL_ENABLED CACHE)
 
-# tell cmake about the dependency
-set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${CMAKE_REQUIRED_INCLUDES}/IrrCompileConfig.h)
-
-check_symbol_exists(_IRR_COMPILE_WITH_OGLES1_ "IrrCompileConfig.h" OGLES1_ENABLED)
-if(OGLES1_ENABLED)
+if(ENABLE_GLES1)
 	# only tested on Android, probably works on Linux (is this needed anywhere else?)
 	find_library(OPENGLES_LIBRARY NAMES GLESv1_CM REQUIRED)
 	find_library(EGL_LIBRARY NAMES EGL REQUIRED)
 
 	message(STATUS "Found OpenGLES: ${OPENGLES_LIBRARY}")
 endif()
-check_symbol_exists(_IRR_COMPILE_WITH_OGLES2_ "IrrCompileConfig.h" OGLES2_ENABLED)
-if(OGLES2_ENABLED)
+if(ENABLE_GLES2)
 	find_package(OpenGLES2 REQUIRED)
 endif()
-check_symbol_exists(_IRR_COMPILE_WITH_OPENGL_ "IrrCompileConfig.h" OGL_ENABLED)
-if(OGL_ENABLED)
+if(ENABLE_OPENGL)
 	set(OpenGL_GL_PREFERENCE "LEGACY")
 	find_package(OpenGL REQUIRED)
 endif()
-if(UNIX AND NOT ANDROID AND NOT APPLE)
-	check_symbol_exists(_IRR_LINUX_X11_XINPUT2_ "IrrCompileConfig.h" XINPUT2_ENABLED)
-endif()
-check_symbol_exists(_IRR_COMPILE_WITH_SDL_DEVICE_ "IrrCompileConfig.h" SDL_ENABLED)
-if(SDL_ENABLED)
+if(USE_SDL2)
 	find_package(SDL2 CONFIG REQUIRED)
 	message(STATUS "Found SDL2: ${SDL2_LIBRARIES}")
 endif()
@@ -113,7 +272,7 @@ elseif(APPLE)
 else()
 	# Unix probably
 	find_package(X11 REQUIRED)
-	if(XINPUT2_ENABLED AND NOT X11_Xi_FOUND)
+	if(USE_XINPUT2 AND NOT X11_Xi_FOUND)
 		message(FATAL_ERROR "XInput not found")
 	endif()
 endif()
@@ -259,6 +418,18 @@ elseif(APPLE)
 	)
 endif()
 
+if(USE_X11)
+	target_compile_definitions(IRROTHEROBJ PRIVATE _IRR_COMPILE_WITH_X11_)
+endif()
+
+if(USE_XINPUT2)
+	target_compile_definitions(IRROTHEROBJ PRIVATE _IRR_LINUX_X11_XINPUT2_)
+endif()
+
+if(USE_XCURSOR)
+	target_compile_definitions(IRROTHEROBJ PRIVATE _IRR_LINUX_XCURSOR_)
+endif()
+
 add_library(IRRGUIOBJ OBJECT
 	CGUIButton.cpp
 	CGUICheckBox.cpp
@@ -303,9 +474,12 @@ target_include_directories(IrrlichtMt
 
 target_link_libraries(IrrlichtMt PRIVATE ${link_libs})
 
-# Propagate static library flag to lib users, only needed for Windows
-if(NOT BUILD_SHARED_LIBS)
-	target_compile_definitions(IrrlichtMt INTERFACE _IRR_STATIC_LIB_)
+if(WIN32)
+	target_compile_definitions(IrrlichtMt INTERFACE _IRR_WINDOWS_API_) # used in _IRR_DEBUG_BREAK_IF definition in a public header
+endif()
+target_compile_definitions(IrrlichtMt INTERFACE "IRRLICHT_API=${API_IMPORT}")
+if(APPLE OR ANDROID OR EMSCRIPTEN)
+	target_compile_definitions(IrrlichtMt PUBLIC IRR_MOBILE_PATHS)
 endif()
 
 set_target_properties(IrrlichtMt PROPERTIES

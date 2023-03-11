@@ -14,6 +14,7 @@
 #include "ICursorControl.h"
 #include "ITimer.h"
 #include "IOSOperator.h"
+#include "IrrCompileConfig.h"
 
 namespace irr
 {
@@ -34,6 +35,7 @@ namespace irr
 
 	namespace video {
 		class IContextManager;
+		extern "C" IRRLICHT_API bool IRRCALLCONV isDriverSupported(E_DRIVER_TYPE driver);
 	} // end namespace video
 
 	//! The Irrlicht device. You can create it with createDevice() or createDeviceEx().
@@ -235,8 +237,8 @@ namespace irr
 		as this would consume joystick info that 3rd party libraries might rely on. Call this method to
 		activate joystick support in Irrlicht and to receive irr::SJoystickEvent events.
 		\param joystickInfo On return, this will contain an array of each joystick that was found and activated.
-		\return true if joysticks are supported on this device and _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
-				is defined, false if joysticks are not supported or support is compiled out.
+		\return true if joysticks are supported on this device, false if joysticks are not
+		             supported or support is compiled out.
 		*/
 		virtual bool activateJoysticks(core::array<SJoystickInfo>& joystickInfo) =0;
 
@@ -310,37 +312,7 @@ namespace irr
 		for a configuration requested when creating the device. */
 		static bool isDriverSupported(video::E_DRIVER_TYPE driver)
 		{
-			switch (driver)
-			{
-				case video::EDT_NULL:
-					return true;
-				case video::EDT_OPENGL:
-#ifdef _IRR_COMPILE_WITH_OPENGL_
-					return true;
-#else
-					return false;
-#endif
-				case video::EDT_OGLES1:
-#ifdef _IRR_COMPILE_WITH_OGLES1_
-					return true;
-#else
-					return false;
-#endif
-				case video::EDT_OGLES2:
-#ifdef _IRR_COMPILE_WITH_OGLES2_
-					return true;
-#else
-					return false;
-#endif
-				case video::EDT_WEBGL1:
-#ifdef _IRR_COMPILE_WITH_WEBGL1_
-					return true;
-#else
-					return false;
-#endif
-				default:
-					return false;
-			}
+			return video::isDriverSupported(driver);
 		}
 	};
 

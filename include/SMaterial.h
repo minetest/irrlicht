@@ -12,6 +12,7 @@
 #include "EMaterialTypes.h"
 #include "EMaterialFlags.h"
 #include "SMaterialLayer.h"
+#include "IrrCompileConfig.h" // for IRRLICHT_API
 
 namespace irr
 {
@@ -280,7 +281,7 @@ namespace video
 	/** SMaterial might ignore some textures in most function, like assignment and comparison,
 		when SIrrlichtCreationParameters::MaxTextureUnits is set to a lower number.
 	*/
-	const u32 MATERIAL_MAX_TEXTURES = _IRR_MATERIAL_MAX_TEXTURES_;
+	const u32 MATERIAL_MAX_TEXTURES = 4;
 
 	//! Struct for holding parameters for a material renderer
 	// Note for implementors: Serialization is in CNullDriver

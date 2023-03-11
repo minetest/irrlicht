@@ -5,8 +5,6 @@
 
 #include "CGUIEnvironment.h"
 
-#ifdef _IRR_COMPILE_WITH_GUI_
-
 #include "IVideoDriver.h"
 
 #include "CGUISkin.h"
@@ -25,8 +23,9 @@
 #include "CGUIComboBox.h"
 
 #include "IWriteFile.h"
-
+#ifdef IRR_ENABLE_BUILTIN_FONT
 #include "BuiltInFont.h"
+#endif
 #include "os.h"
 
 namespace irr
@@ -143,6 +142,7 @@ CGUIEnvironment::~CGUIEnvironment()
 
 void CGUIEnvironment::loadBuiltInFont()
 {
+#ifdef IRR_ENABLE_BUILTIN_FONT
 	io::IReadFile* file = FileSystem->createMemoryReadFile(BuiltInFontData,
 				BuiltInFontDataSize, DefaultFontName, false);
 
@@ -161,6 +161,7 @@ void CGUIEnvironment::loadBuiltInFont()
 	Fonts.push_back(f);
 
 	file->drop();
+#endif
 }
 
 
@@ -1107,6 +1108,3 @@ IGUIEnvironment* createGUIEnvironment(io::IFileSystem* fs,
 
 } // end namespace gui
 } // end namespace irr
-
-#endif // _IRR_COMPILE_WITH_GUI_
-

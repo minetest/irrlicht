@@ -7,16 +7,11 @@
 #include "os.h"
 
 
-#ifdef __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_
-
 #include "CFileList.h"
 #include "CReadFile.h"
 #include "coreutil.h"
 
-#include "IrrCompileConfig.h"
-#ifdef _IRR_COMPILE_WITH_ZLIB_
-	#include <zlib.h> // use system lib
-#endif
+#include <zlib.h> // use system lib
 
 namespace irr
 {
@@ -464,8 +459,6 @@ IReadFile* CZipReader::createAndOpenFile(u32 index)
 		}
 	case 8:
 		{
-  			#ifdef _IRR_COMPILE_WITH_ZLIB_
-
 			const u32 uncompressedSize = e.header.DataDescriptor.UncompressedSize;
 			c8* pBuf = new c8[ uncompressedSize ];
 			if (!pBuf)
@@ -531,10 +524,6 @@ IReadFile* CZipReader::createAndOpenFile(u32 index)
 			}
 			else
 				return FileSystem->createMemoryReadFile(pBuf, uncompressedSize, Files[index].FullName, true);
-
-			#else
-			return 0; // zlib not compiled, we cannot decompress the data.
-			#endif
 		}
 	case 12:
 		{
@@ -560,5 +549,3 @@ IReadFile* CZipReader::createAndOpenFile(u32 index)
 
 } // end namespace io
 } // end namespace irr
-
-#endif // __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_

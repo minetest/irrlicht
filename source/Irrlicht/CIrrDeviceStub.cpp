@@ -9,10 +9,10 @@
 #include "IGUIElement.h"
 #include "IGUIEnvironment.h"
 #include "os.h"
-#include "IrrCompileConfig.h"
 #include "CTimer.h"
 #include "CLogger.h"
 #include "irrString.h"
+#include "IrrCompileConfig.h" // for IRRLICHT_SDK_VERSION
 
 namespace irr
 {
@@ -88,10 +88,8 @@ CIrrDeviceStub::~CIrrDeviceStub()
 
 void CIrrDeviceStub::createGUIAndScene()
 {
-	#ifdef _IRR_COMPILE_WITH_GUI_
 	// create gui environment
 	GUIEnvironment = gui::createGUIEnvironment(FileSystem, VideoDriver, Operator);
-	#endif
 
 	// create Scene manager
 	SceneManager = scene::createSceneManager(VideoDriver, FileSystem, CursorControl, GUIEnvironment);

@@ -349,7 +349,7 @@ f:write[[
 
 #include <string>
 #include <unordered_set>
-#include "IrrCompileConfig.h"
+#include "IrrCompileConfig.h" // for IRRLICHT_API
 #include "irrTypes.h"
 #include "IContextManager.h"
 #include <KHR/khrplatform.h>

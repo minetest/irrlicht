@@ -5,7 +5,6 @@
 #ifndef __E_WEGL_EXTENSION_HANDLER_H_INCLUDED__
 #define __E_WEGL_EXTENSION_HANDLER_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 
 #if defined(_IRR_COMPILE_WITH_WEBGL1_)	// Note: should also work with WebGL2 once we add that to Irrlicht
 

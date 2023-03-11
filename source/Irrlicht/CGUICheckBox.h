@@ -5,9 +5,6 @@
 #ifndef __C_GUI_CHECKBOX_H_INCLUDED__
 #define __C_GUI_CHECKBOX_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
-#ifdef _IRR_COMPILE_WITH_GUI_
-
 #include "IGUICheckBox.h"
 
 namespace irr
@@ -61,5 +58,3 @@ namespace gui
 } // end namespace irr
 
 #endif // __C_GUI_CHECKBOX_H_INCLUDED__
-
-#endif // _IRR_COMPILE_WITH_GUI_

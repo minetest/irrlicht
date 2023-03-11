@@ -2,7 +2,6 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#include "IrrCompileConfig.h"
 
 #include "CFileSystem.h"
 #include "IReadFile.h"
@@ -54,9 +53,7 @@ CFileSystem::CFileSystem()
 	//! reset current working directory
 	getWorkingDirectory();
 
-#ifdef __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_
 	ArchiveLoader.push_back(new CArchiveLoaderZIP(this));
-#endif
 
 }
 

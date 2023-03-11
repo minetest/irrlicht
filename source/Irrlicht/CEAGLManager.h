@@ -5,7 +5,6 @@
 #ifndef __C_EAGL_MANAGER_H_INCLUDED__
 #define __C_EAGL_MANAGER_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 
 #ifdef _IRR_COMPILE_WITH_EAGL_MANAGER_
 

@@ -7,7 +7,6 @@
 #ifndef __C_IRR_DEVICE_SDL_H_INCLUDED__
 #define __C_IRR_DEVICE_SDL_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
 

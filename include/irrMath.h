@@ -5,7 +5,6 @@
 #ifndef __IRR_MATH_H_INCLUDED__
 #define __IRR_MATH_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "irrTypes.h"
 #include <math.h>
 #include <float.h>
@@ -21,9 +20,7 @@ namespace core
 
 	const s32 ROUNDING_ERROR_S32 = 0;
 
-#ifdef __IRR_HAS_S64
 	const s64 ROUNDING_ERROR_S64 = 0;
-#endif
 	const f32 ROUNDING_ERROR_f32 = 0.000001f;
 	const f64 ROUNDING_ERROR_f64 = 0.00000001;
 
@@ -186,7 +183,6 @@ namespace core
 		return ROUNDING_ERROR_S32;
 	}
 
-#ifdef __IRR_HAS_S64
 	template <>
 	inline s64 roundingError()
 	{
@@ -198,7 +194,6 @@ namespace core
 	{
 		return ROUNDING_ERROR_S64;
 	}
-#endif
 
 	template <class T>
 	inline T relativeErrorFactor()
@@ -310,13 +305,11 @@ namespace core
 		return a <= tolerance;
 	}
 
-#ifdef __IRR_HAS_S64
 	//! returns if a equals zero, taking rounding errors into account
 	inline bool iszero(const s64 a, const s64 tolerance = 0)
 	{
 		return abs_(a) <= tolerance;
 	}
-#endif
 
 	inline s32 s32_min(s32 a, s32 b)
 	{
@@ -406,13 +399,11 @@ namespace core
 		return static_cast<s32>(squareroot(static_cast<f32>(f)));
 	}
 
-#ifdef __IRR_HAS_S64
 	// calculate: sqrt ( x )
 	REALINLINE s64 squareroot(const s64 f)
 	{
 		return static_cast<s64>(squareroot(static_cast<f64>(f)));
 	}
-#endif
 
 	// calculate: 1 / sqrt ( x )
 	REALINLINE f64 reciprocal_squareroot(const f64 x)

@@ -4,7 +4,6 @@
 
 #include "os.h"
 #include "irrString.h"
-#include "IrrCompileConfig.h"
 #include "irrMath.h"
 
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
