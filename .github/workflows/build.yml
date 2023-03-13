@@ -93,7 +93,7 @@ jobs:
       - name: Install deps
         run: |
           apt-get update
-          apt-get install g++ cmake libsdl2-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
+          apt-get install g++ cmake libsdl2-dev libpng-dev libjpeg-dev zlib1g-dev xvfb -qyy
 
       - name: Build
         run: |
@@ -120,7 +120,7 @@ jobs:
       - name: Install deps
         run: |
           apt-get update
-          apt-get install g++ cmake libsdl2-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
+          apt-get install g++ cmake libsdl2-dev libpng-dev libjpeg-dev zlib1g-dev xvfb -qyy
 
       - name: Build
         run: |
