@@ -6,13 +6,16 @@ option(USE_SDL2 "Use the SDL2 backend" FALSE)
 add_definitions(-DIRRLICHT_EXPORTS)
 if(BUILD_SHARED_LIBS)
 	if(WIN32)
-		add_definitions("-DIRRLICHT_API=__declspec(dllexport)")
+		set(API_IMPORT "__declspec(dllimport)")
+		set(API_EXPORT "__declspec(dllexport)")
 	elseif(CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
-		add_definitions("-DIRRLICHT_API=__attribute__ ((visibility(\"default\")))")
+		set(API_EXPORT "__attribute__ ((visibility(\"default\")))") # only necessary if default visibility is set to hidden
 	endif()
 else()
 	add_definitions(-D_IRR_STATIC_LIB_)
 endif()
+add_definitions("-DIRRLICHT_API=${API_EXPORT}")
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_definitions(-D_DEBUG)
 endif()
@@ -111,37 +114,31 @@ else()
 	set(DEVICE "X11")
 endif()
 
-if(USE_SDL2)
-	set(DEVICE "SDL")
-endif()
-
-option(USE_X11 "Use X11" TRUE)
-if(USE_X11)
-	add_definitions(-D_IRR_COMPILE_WITH_X11_)
-endif()
-
 if(LINUX_PLATFORM)
 	add_definitions(-D_IRR_LINUX_PLATFORM_)
 endif()
 
+if(USE_SDL2)
+	set(DEVICE "SDL")
+endif()
+
+add_definitions("-D_IRR_COMPILE_WITH_${DEVICE}_DEVICE_")
+
+# X11
+
+if(DEVICE STREQUAL "X11")
+	option(USE_X11 "Use X11" TRUE)
+else()
+	set(USE_X11 FALSE)
+endif()
+
 if(LINUX_PLATFORM AND USE_X11)
-	add_definitions(-D_IRR_COMPILE_WITH_X11_)
-
 	option(USE_XINPUT2 "Use XInput2" TRUE)
-	if(USE_XINPUT2)
-		add_definitions(-D_IRR_LINUX_X11_XINPUT2_)
-	endif()
-
 	option(USE_XCURSOR "Use XCursor" FALSE)
-	if(USE_XCURSOR)
-		add_definitions(-D_IRR_LINUX_XCURSOR_)
-	endif()
 else()
 	set(USE_XINPUT2 FALSE)
 	set(USE_XCURSOR FALSE)
 endif()
-
-add_definitions("-D_IRR_COMPILE_WITH_${DEVICE}_DEVICE_")
 
 # Joystick
 
@@ -208,7 +205,7 @@ endif()
 
 if(ENABLE_GLES1)
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES1_)
-	if(DEVICE MATCHES "^WINDOWS|X11|ANDROID$")
+	if(DEVICE MATCHES "^(WINDOWS|X11|ANDROID)$")
 		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_ -D_IRR_OGLES1_USE_EXTPOINTER_)
 	elseif(DEVICE STREQUAL "IOS")
 		add_definitions(-D_IRR_COMPILE_WITH_EAGL_MANAGER_)
@@ -217,7 +214,7 @@ endif()
 
 if(ENABLE_GLES2)
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES2_)
-	if(DEVICE MATCHES "^WINDOWS|X11|ANDROID$" OR EMSCRIPTEN)
+	if(DEVICE MATCHES "^(WINDOWS|X11|ANDROID)$" OR EMSCRIPTEN)
 		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_ -D_IRR_OGLES2_USE_EXTPOINTER_)
 	elseif(DEVICE STREQUAL "IOS")
 		add_definitions(-D_IRR_COMPILE_WITH_EAGL_MANAGER_)
@@ -287,7 +284,7 @@ elseif(APPLE)
 else()
 	# Unix probably
 	find_package(X11 REQUIRED)
-	if(${USE_XINPUT2} AND NOT X11_Xi_FOUND)
+	if(USE_XINPUT2 AND NOT X11_Xi_FOUND)
 		message(FATAL_ERROR "XInput not found")
 	endif()
 endif()
@@ -462,6 +459,18 @@ elseif(APPLE)
 	)
 endif()
 
+if(USE_X11)
+	target_compile_definitions(IRROTHEROBJ PRIVATE _IRR_COMPILE_WITH_X11_)
+endif()
+
+if(USE_XINPUT2)
+	target_compile_definitions(IRROTHEROBJ PRIVATE _IRR_LINUX_X11_XINPUT2_)
+endif()
+
+if(USE_XCURSOR)
+	target_compile_definitions(IRROTHEROBJ PRIVATE _IRR_LINUX_XCURSOR_)
+endif()
+
 add_library(IRRGUIOBJ OBJECT
 	CGUIButton.cpp
 	CGUICheckBox.cpp
@@ -507,11 +516,9 @@ target_include_directories(IrrlichtMt
 target_link_libraries(IrrlichtMt PRIVATE ${link_libs})
 
 if(WIN32)
-	target_compile_definitions(IrrlichtMt INTERFACE _IRR_WINDOWS_API_)
+	target_compile_definitions(IrrlichtMt INTERFACE _IRR_WINDOWS_API_) # used in _IRR_DEBUG_BREAK_IF definition in a public header
 endif()
-if(WIN32 AND BUILD_SHARED_LIBS)
-	target_compile_definitions(IrrlichtMt INTERFACE IRRLICHT_API=__declspec(dllimport))
-endif()
+target_compile_definitions(IrrlichtMt INTERFACE "IRRLICHT_API=${API_IMPORT}")
 if(APPLE OR ANDROID OR EMSCRIPTEN)
 	target_compile_definitions(IrrlichtMt PUBLIC IRR_MOBILE_PATHS)
 endif()

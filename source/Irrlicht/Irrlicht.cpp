@@ -113,6 +113,26 @@ namespace core
 namespace video
 {
 	SMaterial IdentityMaterial;
+
+	extern "C" IRRLICHT_API bool IRRCALLCONV isDriverSupported(E_DRIVER_TYPE driver)
+	{
+		switch (driver) {
+			case EDT_NULL: return true;
+#ifdef _IRR_COMPILE_WITH_OPENGL_
+			case EDT_OPENGL: return true;
+#endif
+#ifdef _IRR_COMPILE_WITH_OGLES1_
+			case EDT_OGLES1: return true;
+#endif
+#ifdef _IRR_COMPILE_WITH_OGLES2_
+			case EDT_OGLES2: return true;
+#endif
+#ifdef _IRR_COMPILE_WITH_WEBGL1_
+			case EDT_WEBGL1: return true;
+#endif
+			default: return false;
+		}
+	}
 }
 
 } // end namespace irr

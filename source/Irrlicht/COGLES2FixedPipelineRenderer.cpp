@@ -176,7 +176,7 @@ void COGLES2MaterialSolid2CB::OnSetConstants(IMaterialRendererServices* services
 	core::matrix4 Matrix = driver->getTransform(ETS_TEXTURE_0);
 	services->setPixelShaderConstant(TMatrix0ID, Matrix.pointer(), 16);
 
-	Matrix = driver->getTransform(ETS_TEXTURE_1);
+	Matrix = driver->getTransform(E_TRANSFORMATION_STATE(ETS_TEXTURE_0 + 1));
 	services->setPixelShaderConstant(TMatrix1ID, Matrix.pointer(), 16);
 
 	services->setPixelShaderConstant(TextureUsage0ID, &TextureUsage0, 1);
@@ -223,7 +223,7 @@ void COGLES2MaterialLightmapCB::OnSetConstants(IMaterialRendererServices* servic
 	core::matrix4 Matrix = driver->getTransform(ETS_TEXTURE_0);
 	services->setPixelShaderConstant(TMatrix0ID, Matrix.pointer(), 16);
 
-	Matrix = driver->getTransform(ETS_TEXTURE_1);
+	Matrix = driver->getTransform(E_TRANSFORMATION_STATE(ETS_TEXTURE_0 + 1));
 	services->setPixelShaderConstant(TMatrix1ID, Matrix.pointer(), 16);
 
 	services->setPixelShaderConstant(ModulateID, &Modulate, 1);
