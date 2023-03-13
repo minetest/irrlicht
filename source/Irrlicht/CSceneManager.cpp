@@ -79,8 +79,8 @@ CSceneManager::CSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs,
 	// TODO: now that we have multiple scene managers, these should be
 	// shallow copies from the previous manager if there is one.
 
-	MeshLoaderList.push_back(new CXMeshFileLoader(this, FileSystem));
-	MeshLoaderList.push_back(new COBJMeshFileLoader(this, FileSystem));
+	MeshLoaderList.push_back(new CXMeshFileLoader(this));
+	MeshLoaderList.push_back(new COBJMeshFileLoader(this));
 	MeshLoaderList.push_back(new CB3DMeshFileLoader(this));
 }
 
