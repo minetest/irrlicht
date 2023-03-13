@@ -7,7 +7,6 @@
 
 #include <map>
 #include "IMeshLoader.h"
-#include "IFileSystem.h"
 #include "ISceneManager.h"
 #include "irrString.h"
 #include "SMeshBuffer.h"
@@ -23,7 +22,7 @@ class COBJMeshFileLoader : public IMeshLoader
 public:
 
 	//! Constructor
-	COBJMeshFileLoader(scene::ISceneManager* smgr, io::IFileSystem* fs);
+	COBJMeshFileLoader(scene::ISceneManager* smgr);
 
 	//! destructor
 	virtual ~COBJMeshFileLoader();
@@ -104,7 +103,6 @@ private:
 	void cleanUp();
 
 	scene::ISceneManager* SceneManager;
-	io::IFileSystem* FileSystem;
 
 	core::array<SObjMtl*> Materials;
 };

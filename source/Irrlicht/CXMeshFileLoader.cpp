@@ -10,7 +10,6 @@
 #include "coreutil.h"
 #include "ISceneManager.h"
 #include "IVideoDriver.h"
-#include "IFileSystem.h"
 #include "IReadFile.h"
 
 #ifdef _DEBUG
@@ -24,7 +23,7 @@ namespace scene
 {
 
 //! Constructor
-CXMeshFileLoader::CXMeshFileLoader(scene::ISceneManager* smgr, io::IFileSystem* fs)
+CXMeshFileLoader::CXMeshFileLoader(scene::ISceneManager* smgr)
 : AnimatedMesh(0), Buffer(0), P(0), End(0), BinaryNumCount(0), Line(0),
 	CurFrame(0), MajorVersion(0), MinorVersion(0), BinaryFormat(false), FloatSize(0)
 {

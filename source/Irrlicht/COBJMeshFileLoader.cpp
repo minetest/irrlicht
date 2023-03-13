@@ -24,23 +24,18 @@ namespace scene
 #endif
 
 //! Constructor
-COBJMeshFileLoader::COBJMeshFileLoader(scene::ISceneManager* smgr, io::IFileSystem* fs)
-: SceneManager(smgr), FileSystem(fs)
+COBJMeshFileLoader::COBJMeshFileLoader(scene::ISceneManager* smgr)
+: SceneManager(smgr)
 {
 	#ifdef _DEBUG
 	setDebugName("COBJMeshFileLoader");
 	#endif
-
-	if (FileSystem)
-		FileSystem->grab();
 }
 
 
 //! destructor
 COBJMeshFileLoader::~COBJMeshFileLoader()
 {
-	if (FileSystem)
-		FileSystem->drop();
 }
 
 
@@ -76,7 +71,6 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 	u32 smoothingGroup=0;
 
 	const io::path fullName = file->getFileName();
-	const io::path relPath = FileSystem->getFileDir(fullName)+"/";
 
 	c8* buf = new c8[filesize];
 	memset(buf, 0, filesize);
