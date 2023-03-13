@@ -118,6 +118,9 @@ namespace video
 	{
 		switch (driver) {
 			case EDT_NULL: return true;
+#ifdef ENABLE_OPENGL3
+			case EDT_OPENGL3: return true;
+#endif
 #ifdef _IRR_COMPILE_WITH_OPENGL_
 			case EDT_OPENGL: return true;
 #endif

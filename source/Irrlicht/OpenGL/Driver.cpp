@@ -5,6 +5,7 @@
 // For conditions of distribution and use, see copyright notice in Irrlicht.h
 
 #include "Driver.h"
+#include <cassert>
 #include "CNullDriver.h"
 #include "IContextManager.h"
 
