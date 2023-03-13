@@ -233,13 +233,17 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	createKeyMap();
 
 	if (CreationParams.Fullscreen) {
+#ifdef _IRR_EMSCRIPTEN_PLATFORM_
 		SDL_Flags |= SDL_WINDOW_FULLSCREEN;
-	} else  {
-		if (Resizable)
-			SDL_Flags |= SDL_WINDOW_RESIZABLE;
-		if (CreationParams.WindowMaximized)
-			SDL_Flags |= SDL_WINDOW_MAXIMIZED;
+#else
+		SDL_Flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+#endif
 	}
+	if (Resizable)
+		SDL_Flags |= SDL_WINDOW_RESIZABLE;
+	if (CreationParams.WindowMaximized)
+		SDL_Flags |= SDL_WINDOW_MAXIMIZED;
+
 	if (CreationParams.DriverType == video::EDT_OPENGL)
 	{
 		SDL_Flags |= SDL_WINDOW_OPENGL;

@@ -963,11 +963,11 @@ public:
 #endif
 
 		if (sizeof(wchar_t) == 4)
-			append(reinterpret_cast<const uchar32_t* const>(c));
+			append(reinterpret_cast<const uchar32_t*>(c));
 		else if (sizeof(wchar_t) == 2)
-			append(reinterpret_cast<const uchar16_t* const>(c));
+			append(reinterpret_cast<const uchar16_t*>(c));
 		else if (sizeof(wchar_t) == 1)
-			append(reinterpret_cast<const uchar8_t* const>(c));
+			append(reinterpret_cast<const uchar8_t*>(c));
 	}
 
 
@@ -982,11 +982,11 @@ public:
 #endif
 
 		if (sizeof(wchar_t) == 4)
-			append(reinterpret_cast<const uchar32_t* const>(c), length);
+			append(reinterpret_cast<const uchar32_t*>(c), length);
 		else if (sizeof(wchar_t) == 2)
-			append(reinterpret_cast<const uchar16_t* const>(c), length);
+			append(reinterpret_cast<const uchar16_t*>(c), length);
 		else if (sizeof(wchar_t) == 1)
-			append(reinterpret_cast<const uchar8_t* const>(c), length);
+			append(reinterpret_cast<const uchar8_t*>(c), length);
 	}
 
 
@@ -1116,11 +1116,11 @@ public:
 	ustring16& operator=(const wchar_t* const c)
 	{
 		if (sizeof(wchar_t) == 4)
-			*this = reinterpret_cast<const uchar32_t* const>(c);
+			*this = reinterpret_cast<const uchar32_t*>(c);
 		else if (sizeof(wchar_t) == 2)
-			*this = reinterpret_cast<const uchar16_t* const>(c);
+			*this = reinterpret_cast<const uchar16_t*>(c);
 		else if (sizeof(wchar_t) == 1)
-			*this = reinterpret_cast<const uchar8_t* const>(c);
+			*this = reinterpret_cast<const uchar8_t*>(c);
 
 		return *this;
 	}
@@ -3049,14 +3049,14 @@ public:
 
 	//! Gets the encoding of the Unicode string this class contains.
 	//! \return An enum describing the current encoding of this string.
-	const unicode::EUTF_ENCODE getEncoding() const
+	unicode::EUTF_ENCODE getEncoding() const
 	{
 		return encoding;
 	}
 
 	//! Gets the endianness of the Unicode string this class contains.
 	//! \return An enum describing the endianness of this string.
-	const unicode::EUTF_ENDIAN getEndianness() const
+	unicode::EUTF_ENDIAN getEndianness() const
 	{
 		if (encoding == unicode::EUTFE_UTF16_LE ||
 			encoding == unicode::EUTFE_UTF32_LE)
@@ -3611,34 +3611,6 @@ inline std::wostream& operator<<(std::wostream& out, const ustring16& in)
 	out << in.toWCHAR_s().c_str();
 	return out;
 }
-
-namespace unicode
-{
-
-//! Hashing algorithm for hashing a ustring.  Used for things like unordered_maps.
-//! Algorithm taken from std::hash<std::string>.
-class hash : public std::unary_function<core::ustring, size_t>
-{
-	public:
-		size_t operator()(const core::ustring& s) const
-		{
-			size_t ret = 2166136261U;
-			size_t index = 0;
-			size_t stride = 1 + s.size_raw() / 10;
-
-			core::ustring::const_iterator i = s.begin();
-			while (i != s.end())
-			{
-				// TODO: Don't force u32 on an x64 OS.  Make it agnostic.
-				ret = 16777619U * ret ^ (size_t)s[(u32)index];
-				index += stride;
-				i += stride;
-			}
-			return (ret);
-		}
-};
-
-} // end namespace unicode
 
 } // end namespace core
 } // end namespace irr
