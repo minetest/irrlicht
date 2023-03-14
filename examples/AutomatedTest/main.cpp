@@ -85,8 +85,12 @@ int main(int argc, char *argv[])
 
 	const io::path mediaPath = getExampleMediaPath();
 
-	scene::IAnimatedMesh* mesh = smgr->getMesh(mediaPath + "coolguy_opt.x");
+	auto mesh_file = device->getFileSystem()->createAndOpenFile(mediaPath + "coolguy_opt.x");
+	check(mesh_file, "mesh file loading");
+	scene::IAnimatedMesh* mesh = smgr->getMesh(mesh_file);
 	check(mesh, "mesh loading");
+	if (mesh_file)
+		mesh_file->drop();
 	if (mesh)
 	{
 		video::ITexture* tex = driver->getTexture(mediaPath + "cooltexture.png");

@@ -24,7 +24,7 @@ namespace irr
 
 	namespace scene
 	{
-		ISceneManager* createSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs, gui::ICursorControl* cc);
+		ISceneManager* createSceneManager(video::IVideoDriver* driver, gui::ICursorControl* cc);
 	}
 
 	namespace io
