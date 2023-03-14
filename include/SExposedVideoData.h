@@ -78,21 +78,6 @@ struct SExposedVideoData
 		//! The EGLNativeWindowType object.
 		void* Window;	
 	};
-	
-	struct SOpenGLiOS
-	{
-		//! The EAGLContext object.
-		void* Context;
-			
-		//! The subview UIView object where the drawing happens.
-		void* View;
-		
-		//! The UIViewController object.
-		void* ViewController;
-		
-		//! The UIWindow object.
-        void* Window;
-	};
 
 	struct SOGLESAndroid
 	{
@@ -107,7 +92,6 @@ struct SExposedVideoData
 		SOpenGLLinux OpenGLLinux;
 		SOpenGLOSX OpenGLOSX;
 		SOpenGLFB OpenGLFB;
-		SOpenGLiOS OpenGLiOS;
 		SOGLESAndroid OGLESAndroid;
 	};
 };

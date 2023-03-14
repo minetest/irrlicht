@@ -17,7 +17,7 @@
 	#define bswap_32(X) _byteswap_ulong(X)
 	#define bswap_64(X) _byteswap_uint64(X)
 	#define localtime _localtime_s
-#elif defined(_IRR_OSX_PLATFORM_) || defined(_IRR_IOS_PLATFORM_)
+#elif defined(_IRR_OSX_PLATFORM_)
 	#include <libkern/OSByteOrder.h>
 	#define bswap_16(X) OSReadSwapInt16(&X,0)
 	#define bswap_32(X) OSReadSwapInt32(&X,0)
