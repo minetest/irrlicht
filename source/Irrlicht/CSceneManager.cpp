@@ -33,9 +33,9 @@ namespace scene
 {
 
 //! constructor
-CSceneManager::CSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs,
+CSceneManager::CSceneManager(video::IVideoDriver* driver,
 		gui::ICursorControl* cursorControl, IMeshCache* cache)
-: ISceneNode(0, 0), Driver(driver), FileSystem(fs),
+: ISceneNode(0, 0), Driver(driver),
 	CursorControl(cursorControl),
 	ActiveCamera(0), ShadowColor(150,0,0,0), AmbientLight(0,0,0,0), Parameters(0),
 	MeshCache(cache), CurrentRenderPass(ESNRP_NONE)
@@ -50,9 +50,6 @@ CSceneManager::CSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs,
 
 	if (Driver)
 		Driver->grab();
-
-	if (FileSystem)
-		FileSystem->grab();
 
 	if (CursorControl)
 		CursorControl->grab();
@@ -92,9 +89,6 @@ CSceneManager::~CSceneManager()
 	if (Driver)
 		Driver->removeAllHardwareBuffers();
 
-	if (FileSystem)
-		FileSystem->drop();
-
 	if (CursorControl)
 		CursorControl->drop();
 
@@ -122,29 +116,6 @@ CSceneManager::~CSceneManager()
 
 	if (Driver)
 		Driver->drop();
-}
-
-
-//! gets an animateable mesh. loads it if needed. returned pointer must not be dropped.
-IAnimatedMesh* CSceneManager::getMesh(const io::path& filename, const io::path& alternativeCacheName)
-{
-	io::path cacheName = alternativeCacheName.empty() ? filename : alternativeCacheName;
-	IAnimatedMesh* msh = MeshCache->getMeshByName(cacheName);
-	if (msh)
-		return msh;
-
-	io::IReadFile* file = FileSystem->createAndOpenFile(filename);
-	if (!file)
-	{
-		os::Printer::log("Could not load mesh, because file could not be opened: ", filename, ELL_ERROR);
-		return 0;
-	}
-
-	msh = getUncachedMesh(file, filename, cacheName);
-
-	file->drop();
-
-	return msh;
 }
 
 
@@ -199,15 +170,6 @@ IAnimatedMesh* CSceneManager::getUncachedMesh(io::IReadFile* file, const io::pat
 video::IVideoDriver* CSceneManager::getVideoDriver()
 {
 	return Driver;
-}
-
-
-//! Get the active FileSystem
-/** \return Pointer to the FileSystem
-This pointer should not be dropped. See IReferenceCounted::drop() for more information. */
-io::IFileSystem* CSceneManager::getFileSystem()
-{
-	return FileSystem;
 }
 
 
@@ -875,7 +837,7 @@ IMeshCache* CSceneManager::getMeshCache()
 //! Creates a new scene manager.
 ISceneManager* CSceneManager::createNewSceneManager(bool cloneContent)
 {
-	CSceneManager* manager = new CSceneManager(Driver, FileSystem, CursorControl, MeshCache);
+	CSceneManager* manager = new CSceneManager(Driver, CursorControl, MeshCache);
 
 	if (cloneContent)
 		manager->cloneMembers(this, manager);
@@ -912,10 +874,9 @@ IMeshWriter* CSceneManager::createMeshWriter(EMESH_WRITER_TYPE type)
 
 
 // creates a scenemanager
-ISceneManager* createSceneManager(video::IVideoDriver* driver,
-		io::IFileSystem* fs, gui::ICursorControl* cursorcontrol)
+ISceneManager* createSceneManager(video::IVideoDriver* driver, gui::ICursorControl* cursorcontrol)
 {
-	return new CSceneManager(driver, fs, cursorcontrol, nullptr);
+	return new CSceneManager(driver, cursorcontrol, nullptr);
 }
 
 
