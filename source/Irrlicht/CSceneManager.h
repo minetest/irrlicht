@@ -32,8 +32,7 @@ namespace scene
 
 		//! constructor
 		CSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs,
-			gui::ICursorControl* cursorControl, IMeshCache* cache = 0,
-			gui::IGUIEnvironment *guiEnvironment = 0);
+			gui::ICursorControl* cursorControl, IMeshCache* cache = nullptr);
 
 		//! destructor
 		virtual ~CSceneManager();
@@ -49,9 +48,6 @@ namespace scene
 
 		//! returns the video driver
 		video::IVideoDriver* getVideoDriver() override;
-
-		//! return the gui environment
-		gui::IGUIEnvironment* getGUIEnvironment() override;
 
 		//! return the filesystem
 		io::IFileSystem* getFileSystem() override;
@@ -284,9 +280,6 @@ namespace scene
 
 		//! file system
 		io::IFileSystem* FileSystem;
-
-		//! GUI Enviroment ( Debug Purpose )
-		gui::IGUIEnvironment* GUIEnvironment;
 
 		//! cursor control
 		gui::ICursorControl* CursorControl;

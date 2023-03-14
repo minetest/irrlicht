@@ -92,7 +92,7 @@ void CIrrDeviceStub::createGUIAndScene()
 	GUIEnvironment = gui::createGUIEnvironment(FileSystem, VideoDriver, Operator);
 
 	// create Scene manager
-	SceneManager = scene::createSceneManager(VideoDriver, FileSystem, CursorControl, GUIEnvironment);
+	SceneManager = scene::createSceneManager(VideoDriver, FileSystem, CursorControl);
 
 	setEventReceiver(UserReceiver);
 }
