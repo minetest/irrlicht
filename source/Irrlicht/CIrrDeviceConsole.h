@@ -197,6 +197,20 @@ namespace irr
 					UseReferenceRect = false;
 			}
 
+			virtual bool getReferenceRect(core::rect<s32>& rect) IRR_OVERRIDE
+			{ 
+				if ( UseReferenceRect )
+				{
+					rect = ReferenceRect;
+				}
+				else
+				{
+					rect.UpperLeftCorner = core::vector2di(0,0);
+					rect.LowerRightCorner.X = (irr::s32)WindowSize.Width;
+					rect.LowerRightCorner.Y = (irr::s32)WindowSize.Height;
+				}
+				return UseReferenceRect;
+			}
 
 			//! Updates the internal cursor position
 			void setInternalCursorPosition(const core::position2di &pos)

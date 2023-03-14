@@ -160,6 +160,12 @@ namespace gui
 		\param rect: A pointer to an reference rectangle or 0 to disable the reference rectangle.*/
 		virtual void setReferenceRect(core::rect<s32>* rect=0) = 0;
 
+		//! Returns the current absolute reference rect used for the cursor position
+		/** \param rect Will receive the reference rectangle when the function returns true
+			When the result is false drivers can still write some platform specific values in there.
+			Generally at least the width/height of the returned rect will correspond to the current window size.
+		\return Return true when a reference rectangle has been set and is used by this driver */
+		virtual bool getReferenceRect(core::rect<s32>& rect) { return false; }
 
 		//! Sets the active cursor icon
 		/** Setting cursor icons is so far only supported on Win32 and Linux */

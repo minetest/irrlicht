@@ -160,6 +160,14 @@ namespace irr
 			{
 			}
 
+			virtual bool getReferenceRect(core::rect<s32>& rect) IRR_OVERRIDE
+			{ 
+				rect.UpperLeftCorner = core::vector2di(0,0);
+				rect.LowerRightCorner.X = (irr::s32)Device->CreationParams.WindowSize.Width;
+				rect.LowerRightCorner.Y = (irr::s32)Device->CreationParams.WindowSize.Height;
+				return false;
+			}
+
 		private:
 
 			void updateCursorPos()
