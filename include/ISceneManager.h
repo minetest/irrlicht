@@ -345,11 +345,6 @@ namespace scene
 		This pointer should not be dropped. See IReferenceCounted::drop() for more information. */
 		virtual video::IVideoDriver* getVideoDriver() = 0;
 
-		//! Get the active GUIEnvironment
-		/** \return Pointer to the GUIEnvironment
-		This pointer should not be dropped. See IReferenceCounted::drop() for more information. */
-		virtual gui::IGUIEnvironment* getGUIEnvironment() = 0;
-
 		//! Get the active FileSystem
 		/** \return Pointer to the FileSystem
 		This pointer should not be dropped. See IReferenceCounted::drop() for more information. */

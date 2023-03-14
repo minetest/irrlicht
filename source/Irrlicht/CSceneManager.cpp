@@ -34,9 +34,8 @@ namespace scene
 
 //! constructor
 CSceneManager::CSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs,
-		gui::ICursorControl* cursorControl, IMeshCache* cache,
-		gui::IGUIEnvironment* gui)
-: ISceneNode(0, 0), Driver(driver), FileSystem(fs), GUIEnvironment(gui),
+		gui::ICursorControl* cursorControl, IMeshCache* cache)
+: ISceneNode(0, 0), Driver(driver), FileSystem(fs),
 	CursorControl(cursorControl),
 	ActiveCamera(0), ShadowColor(150,0,0,0), AmbientLight(0,0,0,0), Parameters(0),
 	MeshCache(cache), CurrentRenderPass(ESNRP_NONE)
@@ -57,9 +56,6 @@ CSceneManager::CSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs,
 
 	if (CursorControl)
 		CursorControl->grab();
-
-	if (GUIEnvironment)
-		GUIEnvironment->grab();
 
 	// create mesh cache if not there already
 	if (!MeshCache)
@@ -104,9 +100,6 @@ CSceneManager::~CSceneManager()
 
 	if (CollisionManager)
 		CollisionManager->drop();
-
-	if (GUIEnvironment)
-		GUIEnvironment->drop();
 
 	u32 i;
 	for (i=0; i<MeshLoaderList.size(); ++i)
@@ -208,12 +201,6 @@ video::IVideoDriver* CSceneManager::getVideoDriver()
 	return Driver;
 }
 
-
-//! returns the GUI Environment
-gui::IGUIEnvironment* CSceneManager::getGUIEnvironment()
-{
-	return GUIEnvironment;
-}
 
 //! Get the active FileSystem
 /** \return Pointer to the FileSystem
@@ -888,7 +875,7 @@ IMeshCache* CSceneManager::getMeshCache()
 //! Creates a new scene manager.
 ISceneManager* CSceneManager::createNewSceneManager(bool cloneContent)
 {
-	CSceneManager* manager = new CSceneManager(Driver, FileSystem, CursorControl, MeshCache, GUIEnvironment);
+	CSceneManager* manager = new CSceneManager(Driver, FileSystem, CursorControl, MeshCache);
 
 	if (cloneContent)
 		manager->cloneMembers(this, manager);
@@ -926,10 +913,9 @@ IMeshWriter* CSceneManager::createMeshWriter(EMESH_WRITER_TYPE type)
 
 // creates a scenemanager
 ISceneManager* createSceneManager(video::IVideoDriver* driver,
-		io::IFileSystem* fs, gui::ICursorControl* cursorcontrol,
-		gui::IGUIEnvironment *guiEnvironment)
+		io::IFileSystem* fs, gui::ICursorControl* cursorcontrol)
 {
-	return new CSceneManager(driver, fs, cursorcontrol, 0, guiEnvironment );
+	return new CSceneManager(driver, fs, cursorcontrol, nullptr);
 }
 
 
