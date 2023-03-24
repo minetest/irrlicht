@@ -30,7 +30,7 @@
 #include "fast_atof.h"
 
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-static bool sdl_supports_primary_selection = [] {
+static const bool sdl_supports_primary_selection = [] {
 #if SDL_VERSION_ATLEAST(2, 25, 0)
 	SDL_version linked_version;
 	SDL_GetVersion(&linked_version);
@@ -59,6 +59,15 @@ COSOperator::COSOperator(const core::stringc& osVersion) : OperatingSystem(osVer
 	#ifdef _DEBUG
 	setDebugName("COSOperator");
 	#endif
+}
+
+
+COSOperator::~COSOperator()
+{
+#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
+	SDL_free(ClipboardSelectionText);
+	SDL_free(PrimarySelectionText);
+#endif
 }
 
 
@@ -142,11 +151,9 @@ void COSOperator::copyToPrimarySelection(const c8 *text) const
 const c8* COSOperator::getTextFromClipboard() const
 {
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-	static char *text = nullptr;
-	if (text)
-		SDL_free(text);
-	text = SDL_GetClipboardText();
-	return text;
+	SDL_free(ClipboardSelectionText);
+	ClipboardSelectionText = SDL_GetClipboardText();
+	return ClipboardSelectionText;
 
 #elif defined(_IRR_WINDOWS_API_)
 	if (!OpenClipboard(NULL))
@@ -195,19 +202,17 @@ const c8* COSOperator::getTextFromPrimarySelection() const
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
 #if SDL_VERSION_ATLEAST(2, 25, 0)
 	if (sdl_supports_primary_selection) {
-		static char *text = nullptr;
-		if (text)
-			SDL_free(text);
-		text = SDL_GetPrimarySelectionText();
-		return text;
+		SDL_free(PrimarySelectionText);
+		PrimarySelectionText = SDL_GetPrimarySelectionText();
+		return PrimarySelectionText;
 	}
 #endif
 	return 0;
 
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
-    if ( IrrDeviceLinux )
-        return IrrDeviceLinux->getTextFromPrimarySelection();
-    return 0;
+	if ( IrrDeviceLinux )
+		return IrrDeviceLinux->getTextFromPrimarySelection();
+	return 0;
 
 #else
 
