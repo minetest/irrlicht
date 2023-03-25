@@ -47,6 +47,9 @@ namespace irr
 		//! sets the caption of the window
 		void setWindowCaption(const wchar_t* text) override;
 
+		//! Sets the window icon.
+		bool setWindowIcon(const video::IImage *img) override;
+
 		//! returns if window is active. if not, nothing need to be drawn
 		bool isWindowActive() const override;
 
@@ -95,6 +98,9 @@ namespace irr
 		{
 			return EIDT_WIN32;
 		}
+
+		//! Get the display density in dots per inch.
+		float getDisplayDensity() const override;
 
 		//! Compares to the last call of this function to return double and triple clicks.
 		//! \return Returns only 1,2 or 3. A 4th click will start with 1 again.

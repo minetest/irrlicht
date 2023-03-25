@@ -54,6 +54,9 @@ namespace irr
 		//! sets the caption of the window
 		void setWindowCaption(const wchar_t* text) override;
 
+		//! Sets the window icon.
+		bool setWindowIcon(const video::IImage *img) override;
+
 		//! returns if window is active. if not, nothing need to be drawn
 		bool isWindowActive() const override;
 
@@ -120,6 +123,9 @@ namespace irr
 			return EIDT_X11;
 		}
 
+		//! Get the display density in dots per inch.
+		float getDisplayDensity() const override;
+
 #ifdef _IRR_COMPILE_WITH_X11_
 		// convert an Irrlicht texture to a X11 cursor
 		Cursor TextureToCursor(irr::video::ITexture * tex, const core::rect<s32>& sourceRect, const core::position2d<s32> &hotspot);
@@ -145,6 +151,8 @@ namespace irr
 		void initXInput2();
 
 		bool switchToFullscreen();
+
+		void setupTopLevelXorgWindow();
 
 #ifdef _IRR_COMPILE_WITH_X11_
 		bool createInputContext();

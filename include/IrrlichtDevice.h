@@ -132,6 +132,11 @@ namespace irr
 		/** \param text: New text of the window caption. */
 		virtual void setWindowCaption(const wchar_t* text) = 0;
 
+		//! Sets the window icon.
+		/** \param img The icon texture.
+		\return False if no icon was set. */
+		virtual bool setWindowIcon(const video::IImage *img) = 0;
+
 		//! Returns if the window is active.
 		/** If the window is inactive,
 		nothing needs to be drawn. So if you don't want to draw anything
@@ -306,6 +311,10 @@ namespace irr
 		/** This allows the user to check which windowing system is currently being
 		used. */
 		virtual E_DEVICE_TYPE getType() const = 0;
+
+		//! Get the display density in dots per inch.
+		//! Returns 0.0f on failure.
+		virtual float getDisplayDensity() const = 0;
 
 		//! Check if a driver type is supported by the engine.
 		/** Even if true is returned the driver may not be available
