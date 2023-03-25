@@ -1134,27 +1134,27 @@ void CSkinnedMesh::finalize()
 
 		if ( redundantPosKeys > 0 )
 		{
-			os::Printer::log("Skinned Mesh - redundant position frames kicked:", core::stringc(redundantPosKeys).c_str(), ELL_DEBUG);
+			os::Printer::log("Skinned Mesh - redundant position frames kicked", core::stringc(redundantPosKeys).c_str(), ELL_DEBUG);
 		}
 		if ( unorderedPosKeys > 0 )
 		{
-			irr::os::Printer::log("Skinned Mesh - unsorted position frames kicked:", irr::core::stringc(unorderedPosKeys).c_str(), irr::ELL_DEBUG);
+			irr::os::Printer::log("Skinned Mesh - unsorted position frames kicked", irr::core::stringc(unorderedPosKeys).c_str(), irr::ELL_DEBUG);
 		}
 		if ( redundantScaleKeys > 0 )
 		{
-			os::Printer::log("Skinned Mesh - redundant scale frames kicked:", core::stringc(redundantScaleKeys).c_str(), ELL_DEBUG);
+			os::Printer::log("Skinned Mesh - redundant scale frames kicked", core::stringc(redundantScaleKeys).c_str(), ELL_DEBUG);
 		}
 		if ( unorderedScaleKeys > 0 )
 		{
-			irr::os::Printer::log("Skinned Mesh - unsorted scale frames kicked:", irr::core::stringc(unorderedScaleKeys).c_str(), irr::ELL_DEBUG);
+			irr::os::Printer::log("Skinned Mesh - unsorted scale frames kicked", irr::core::stringc(unorderedScaleKeys).c_str(), irr::ELL_DEBUG);
 		}
 		if ( redundantRotationKeys > 0 )
 		{
-			os::Printer::log("Skinned Mesh - redundant rotation frames kicked:", core::stringc(redundantRotationKeys).c_str(), ELL_DEBUG);
+			os::Printer::log("Skinned Mesh - redundant rotation frames kicked", core::stringc(redundantRotationKeys).c_str(), ELL_DEBUG);
 		}
 		if ( unorderedRotationKeys > 0 )
 		{
-			irr::os::Printer::log("Skinned Mesh - unsorted rotation frames kicked:", irr::core::stringc(unorderedRotationKeys).c_str(), irr::ELL_DEBUG);
+			irr::os::Printer::log("Skinned Mesh - unsorted rotation frames kicked", irr::core::stringc(unorderedRotationKeys).c_str(), irr::ELL_DEBUG);
 		}
 	}
 
@@ -1347,9 +1347,24 @@ void CSkinnedMesh::recoverJointsFromMesh(core::array<IBoneSceneNode*> &jointChil
 	{
 		IBoneSceneNode* node=jointChildSceneNodes[i];
 		SJoint *joint=AllJoints[i];
-		node->setPosition(joint->LocalAnimatedMatrix.getTranslation());
-		node->setRotation(joint->LocalAnimatedMatrix.getRotationDegrees());
-		node->setScale(joint->LocalAnimatedMatrix.getScale());
+
+		if ( joint->UseAnimationFrom )	// Seems to work better (else solution seems to mess up sometimes) and would be faster. Any disadvantage?
+		{
+			node->setPosition(joint->Animatedposition);
+			core::quaternion qrot = joint->Animatedrotation;
+			qrot.W *= -1.f;	// Animation system uses right-handed rotations? Argh... 
+			irr::core::vector3df euler;
+			qrot.toEuler(euler);
+			euler *= core::RADTODEG;
+			node->setRotation(euler);
+			node->setScale(joint->Animatedscale);
+		}
+		else
+		{
+			node->setPosition(joint->LocalAnimatedMatrix.getTranslation());
+			node->setRotation(joint->LocalAnimatedMatrix.getRotationDegrees());
+			node->setScale(joint->LocalAnimatedMatrix.getScale());
+		}
 
 		node->positionHint=joint->positionHint;
 		node->scaleHint=joint->scaleHint;

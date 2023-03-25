@@ -747,7 +747,7 @@ namespace video
 		\param texture Texture to be drawn.
 		\param destPos Upper left 2d destination position where the
 		image will be drawn.
-		\param sourceRect Source rectangle in the image.
+		\param sourceRect Source rectangle in the texture (based on it's OriginalSize)
 		\param clipRect Pointer to rectangle on the screen where the
 		image is clipped to.
 		If this pointer is NULL the image is not clipped.
@@ -768,7 +768,7 @@ namespace video
 		\param texture Texture to be drawn.
 		\param positions Array of upper left 2d destinations where the
 		images will be drawn.
-		\param sourceRects Source rectangles of the image.
+		\param sourceRects Source rectangles of the texture (based on it's OriginalSize)
 		\param clipRect Pointer to rectangle on the screen where the
 		images are clipped to.
 		If this pointer is 0 then the image is not clipped.
@@ -788,7 +788,7 @@ namespace video
 		/** Suggested and first implemented by zola.
 		\param texture The texture to draw from
 		\param destRect The rectangle to draw into
-		\param sourceRect The rectangle denoting a part of the texture
+		\param sourceRect The rectangle denoting a part of the texture (based on it's OriginalSize)
 		\param clipRect Clips the destination rectangle (may be 0)
 		\param colors Array of 4 colors denoting the color values of
 		the corners of the destRect
@@ -1160,7 +1160,7 @@ namespace video
 		E_MATERIAL_TYPE enum or a value which was returned by
 		addMaterialRenderer().
 		\param name: New name of the material renderer. */
-		virtual void setMaterialRendererName(s32 idx, const c8* name) =0;
+		virtual void setMaterialRendererName(u32 idx, const c8* name) =0;
 
 		//! Swap the material renderers used for certain id's
 		/** Swap the IMaterialRenderers responsible for rendering specific

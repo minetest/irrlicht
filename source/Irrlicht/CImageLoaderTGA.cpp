@@ -106,7 +106,7 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 
 	if (!checkImageDimensions(header.ImageWidth, header.ImageHeight))
 	{
-		os::Printer::log("Rejecting TGA with unreasonable size.", ELL_ERROR);
+		os::Printer::log("Image dimensions too large in file", file->getFileName(), ELL_ERROR);
 		return 0;
 	}
 
