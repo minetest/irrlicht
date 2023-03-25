@@ -48,6 +48,9 @@ namespace irr
 		//! sets the caption of the window
 		void setWindowCaption(const wchar_t* text) override;
 
+		//! Sets the window icon.
+		bool setWindowIcon(const video::IImage *img) override;
+
 		//! returns if window is active. if not, nothing need to be drawn
 		bool isWindowActive() const override;
 
@@ -93,6 +96,9 @@ namespace irr
 		{
 			return EIDT_SDL;
 		}
+
+		//! Get the display density in dots per inch.
+		float getDisplayDensity() const override;
 
 		void SwapWindow();
 

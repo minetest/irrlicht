@@ -9,6 +9,8 @@
 #include "IEventReceiver.h"
 #include "IGUIElement.h"
 #include "IGUIEnvironment.h"
+#include "IImageLoader.h"
+#include "IFileSystem.h"
 #include "os.h"
 #include "CTimer.h"
 #include "irrString.h"
@@ -243,7 +245,7 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 #endif
 		if (SDL_Init(flags) < 0)
 		{
-			os::Printer::log("Unable to initialize SDL!", SDL_GetError());
+			os::Printer::log("Unable to initialize SDL", SDL_GetError(), ELL_ERROR);
 			Close = true;
 		}
 		else
@@ -871,6 +873,29 @@ bool CIrrDeviceSDL::activateJoysticks(core::array<SJoystickInfo> & joystickInfo)
 	return false;
 }
 
+
+//! Get the display density in dots per inch.
+float CIrrDeviceSDL::getDisplayDensity() const
+{
+	if (!Window)
+		return 0.0f;
+
+	int window_w;
+	int window_h;
+	SDL_GetWindowSize(Window, &window_w, &window_h);
+
+	int drawable_w;
+	int drawable_h;
+	SDL_GL_GetDrawableSize(Window, &drawable_w, &drawable_h);
+
+	// assume 96 dpi
+	float dpi_w = (float)drawable_w / (float)window_w * 96.0f;
+	float dpi_h = (float)drawable_h / (float)window_h * 96.0f;
+
+	return std::max(dpi_w, dpi_h);
+}
+
+
 void CIrrDeviceSDL::SwapWindow()
 {
 	SDL_GL_SwapWindow(Window);
@@ -905,6 +930,41 @@ void CIrrDeviceSDL::setWindowCaption(const wchar_t* text)
 	core::stringc textc;
 	core::wStringToMultibyte(textc, text);
 	SDL_SetWindowTitle(Window, textc.c_str());
+}
+
+
+//! Sets the window icon.
+bool CIrrDeviceSDL::setWindowIcon(const video::IImage *img)
+{
+	if (!Window)
+		return false;
+
+	u32 height = img->getDimension().Height;
+	u32 width = img->getDimension().Width;
+
+	SDL_Surface *surface = SDL_CreateRGBSurface(0, width, height, 32,
+			0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+
+	if (!surface) {
+		os::Printer::log("Failed to create SDL suface", ELL_ERROR);
+		return false;
+	}
+
+	SDL_LockSurface(surface);
+	bool succ = img->copyToNoScaling(surface->pixels, width, height, video::ECF_A8R8G8B8, surface->pitch);
+	SDL_UnlockSurface(surface);
+
+	if (!succ) {
+		os::Printer::log("Could not copy icon image. Is the format not ECF_A8R8G8B8?", ELL_ERROR);
+		SDL_FreeSurface(surface);
+		return false;
+	}
+
+	SDL_SetWindowIcon(Window, surface);
+
+	SDL_FreeSurface(surface);
+
+	return true;
 }
 
 
