@@ -136,6 +136,13 @@ ITimer* CIrrDeviceStub::getTimer()
 }
 
 
+//! Sets the window icon.
+bool CIrrDeviceStub::setWindowIcon(const video::IImage *img)
+{
+	return false;
+}
+
+
 //! Returns the version of the engine.
 const char* CIrrDeviceStub::getVersion() const
 {
@@ -383,6 +390,12 @@ u32 CIrrDeviceStub::getDoubleClickTime() const
 //! Remove all messages pending in the system message loop
 void CIrrDeviceStub::clearSystemMessages()
 {
+}
+
+//! Get the display density in dots per inch.
+float CIrrDeviceStub::getDisplayDensity() const
+{
+	return 0.0f;
 }
 
 //! Checks whether the input device should take input from the IME

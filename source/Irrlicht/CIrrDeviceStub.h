@@ -71,6 +71,9 @@ namespace irr
 		//! Returns a pointer to the ITimer object. With it the current Time can be received.
 		ITimer* getTimer() override;
 
+		//! Sets the window icon.
+		bool setWindowIcon(const video::IImage *img) override;
+
 		//! Returns the version of the engine.
 		const char* getVersion() const override;
 
@@ -150,6 +153,9 @@ namespace irr
 
 		//! Remove all messages pending in the system message loop
 		void clearSystemMessages() override;
+
+		//! Get the display density in dots per inch.
+		float getDisplayDensity() const override;
 
 		//! Resize the render window.
 		void setWindowSize(const irr::core::dimension2d<u32>& size) override {}

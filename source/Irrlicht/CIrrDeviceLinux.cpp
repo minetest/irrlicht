@@ -24,6 +24,8 @@
 #include "SIrrCreationParameters.h"
 #include "SExposedVideoData.h"
 #include "IGUISpriteBank.h"
+#include "IImageLoader.h"
+#include "IFileSystem.h"
 #include <X11/XKBlib.h>
 #include <X11/Xatom.h>
 
@@ -171,6 +173,8 @@ CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 
 	if (param.WindowMaximized)
 		maximizeWindow();
+
+	setupTopLevelXorgWindow();
 }
 
 
@@ -279,6 +283,72 @@ bool CIrrDeviceLinux::switchToFullscreen()
 			SubstructureNotifyMask | SubstructureRedirectMask, &ev);
 
 	return true;
+}
+
+
+void CIrrDeviceLinux::setupTopLevelXorgWindow()
+{
+#ifdef _IRR_COMPILE_WITH_X11_
+	if (CreationParams.DriverType == video::EDT_NULL)
+		return; // no display and window
+
+	os::Printer::log("Configuring X11-specific top level window properties", ELL_DEBUG);
+
+	// Set application name and class hints. For now name and class are the same.
+	// Note: SDL uses the executable name here (i.e. "minetest").
+	XClassHint *classhint = XAllocClassHint();
+	classhint->res_name = const_cast<char *>("Minetest");
+	classhint->res_class = const_cast<char *>("Minetest");
+
+	XSetClassHint(XDisplay, XWindow, classhint);
+	XFree(classhint);
+
+	// FIXME: In the future WMNormalHints should be set ... e.g see the
+	// gtk/gdk code (gdk/x11/gdksurface-x11.c) for the setup_top_level
+	// method. But for now (as it would require some significant changes)
+	// leave the code as is.
+
+	// The following is borrowed from the above gdk source for setting top
+	// level windows. The source indicates and the Xlib docs suggest that
+	// this will set the WM_CLIENT_MACHINE and WM_LOCAL_NAME. This will not
+	// set the WM_CLIENT_MACHINE to a Fully Qualified Domain Name (FQDN) which is
+	// required by the Extended Window Manager Hints (EWMH) spec when setting
+	// the _NET_WM_PID (see further down) but running Minetest in an env
+	// where the window manager is on another machine from Minetest (therefore
+	// making the PID useless) is not expected to be a problem. Further
+	// more, using gtk/gdk as the model it would seem that not using a FQDN is
+	// not an issue for modern Xorg window managers.
+
+	os::Printer::log("Setting Xorg window manager Properties", ELL_DEBUG);
+
+	XSetWMProperties (XDisplay, XWindow, NULL, NULL, NULL, 0, NULL, NULL, NULL);
+
+	// Set the _NET_WM_PID window property according to the EWMH spec. _NET_WM_PID
+	// (in conjunction with WM_CLIENT_MACHINE) can be used by window managers to
+	// force a shutdown of an application if it doesn't respond to the destroy
+	// window message.
+
+	os::Printer::log("Setting Xorg _NET_WM_PID extended window manager property", ELL_DEBUG);
+
+	Atom NET_WM_PID = XInternAtom(XDisplay, "_NET_WM_PID", false);
+
+	pid_t pid = getpid();
+
+	XChangeProperty(XDisplay, XWindow, NET_WM_PID,
+			XA_CARDINAL, 32, PropModeReplace,
+			reinterpret_cast<unsigned char *>(&pid),1);
+
+	// Set the WM_CLIENT_LEADER window property here. Minetest has only one
+	// window and that window will always be the leader.
+
+	os::Printer::log("Setting Xorg WM_CLIENT_LEADER property", ELL_DEBUG);
+
+	Atom WM_CLIENT_LEADER = XInternAtom(XDisplay, "WM_CLIENT_LEADER", false);
+
+	XChangeProperty (XDisplay, XWindow, WM_CLIENT_LEADER,
+		XA_WINDOW, 32, PropModeReplace,
+		reinterpret_cast<unsigned char *>(&XWindow), 1);
+#endif
 }
 
 
@@ -1178,6 +1248,50 @@ void CIrrDeviceLinux::setWindowCaption(const wchar_t* text)
 }
 
 
+//! Sets the window icon.
+bool CIrrDeviceLinux::setWindowIcon(const video::IImage *img)
+{
+	if (CreationParams.DriverType == video::EDT_NULL)
+		return false; // no display and window
+
+	u32 height = img->getDimension().Height;
+	u32 width = img->getDimension().Width;
+
+	size_t icon_buffer_len = 2 + height * width;
+	long *icon_buffer = new long[icon_buffer_len];
+
+	icon_buffer[0] = width;
+	icon_buffer[1] = height;
+
+	for (u32 x = 0; x < width; x++) {
+		for (u32 y = 0; y < height; y++) {
+			video::SColor col = img->getPixel(x, y);
+			long pixel_val = 0;
+			pixel_val |= (u8)col.getAlpha() << 24;
+			pixel_val |= (u8)col.getRed() << 16;
+			pixel_val |= (u8)col.getGreen() << 8;
+			pixel_val |= (u8)col.getBlue();
+			icon_buffer[2 + x + y * width] = pixel_val;
+		}
+	}
+
+	if (XDisplay == NULL) {
+		os::Printer::log("Could not find x11 display for setting its icon.", ELL_ERROR);
+		delete[] icon_buffer;
+		return false;
+	}
+
+	Atom net_wm_icon = XInternAtom(XDisplay, "_NET_WM_ICON", False);
+	Atom cardinal = XInternAtom(XDisplay, "CARDINAL", False);
+	XChangeProperty(XDisplay, XWindow, net_wm_icon, cardinal, 32, PropModeReplace,
+			(const unsigned char *)icon_buffer, icon_buffer_len);
+
+	delete[] icon_buffer;
+
+	return true;
+}
+
+
 //! notifies the device that it should close itself
 void CIrrDeviceLinux::closeDevice()
 {
@@ -1864,6 +1978,28 @@ void CIrrDeviceLinux::clearSystemMessages()
 		while ( XCheckIfEvent(XDisplay, &event, PredicateIsEventType, XPointer(&usrArg)) == True ) {}
 	}
 #endif //_IRR_COMPILE_WITH_X11_
+}
+
+//! Get the display density in dots per inch.
+float CIrrDeviceLinux::getDisplayDensity() const
+{
+#ifdef _IRR_COMPILE_WITH_X11_
+	if (XDisplay != NULL) {
+		/* try x direct */
+		int dh = DisplayHeight(XDisplay, 0);
+		int dw = DisplayWidth(XDisplay, 0);
+		int dh_mm = DisplayHeightMM(XDisplay, 0);
+		int dw_mm = DisplayWidthMM(XDisplay, 0);
+
+		if (dh_mm != 0 && dw_mm != 0) {
+			float dpi_height = floor(dh / (dh_mm * 0.039370) + 0.5);
+			float dpi_width = floor(dw / (dw_mm * 0.039370) + 0.5);
+			return std::max(dpi_height, dpi_width);
+		}
+	}
+#endif //_IRR_COMPILE_WITH_X11_
+
+	return 0.0f;
 }
 
 void CIrrDeviceLinux::initXAtoms()

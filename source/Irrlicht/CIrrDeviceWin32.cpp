@@ -1112,6 +1112,26 @@ void CIrrDeviceWin32::setWindowCaption(const wchar_t* text)
 }
 
 
+//! Sets the window icon.
+bool CIrrDeviceWin32::setWindowIcon(const video::IImage *img)
+{
+	// Ignore the img, instead load the ICON from resource file
+	// (This is minetest-specific!)
+	const HICON hicon = LoadIcon(GetModuleHandle(NULL),
+			MAKEINTRESOURCE(130) // The ID of the ICON defined in
+					     // winresource.rc
+	);
+
+	if (hicon) {
+		SendMessage(HWnd, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(hicon));
+		SendMessage(HWnd, WM_SETICON, ICON_SMALL,
+				reinterpret_cast<LPARAM>(hicon));
+		return true;
+	}
+	return false;
+}
+
+
 //! notifies the device that it should close itself
 void CIrrDeviceWin32::closeDevice()
 {
@@ -1372,6 +1392,17 @@ void CIrrDeviceWin32::clearSystemMessages()
 	while (PeekMessage(&msg, NULL, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE))
 	{}
 }
+
+
+//! Get the display density in dots per inch.
+float CIrrDeviceWin32::getDisplayDensity() const
+{
+	HDC hdc = GetDC(HWnd);
+	float dpi = GetDeviceCaps(hdc, LOGPIXELSX);
+	ReleaseDC(HWnd, hdc);
+	return dpi;
+}
+
 
 // Convert an Irrlicht texture to a Windows cursor
 // Based on http://www.codeguru.com/cpp/w-p/win32/cursors/article.php/c4529/
