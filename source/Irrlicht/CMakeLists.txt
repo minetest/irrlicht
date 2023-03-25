@@ -377,7 +377,7 @@ add_library(IRRVIDEOOBJ OBJECT
 )
 
 if(USE_SDLGL)
-	target_sources(IRRVIDEOOBJ PUBLIC
+	target_sources(IRRVIDEOOBJ PRIVATE
 		OpenGL/Driver.cpp
 		OpenGL/ExtensionHandler.cpp
 		OpenGL/FixedPipelineRenderer.cpp
@@ -387,17 +387,17 @@ if(USE_SDLGL)
 endif()
 
 if(USE_SDLGL3)
-	target_sources(IRRVIDEOOBJ PUBLIC
+	target_sources(IRRVIDEOOBJ PRIVATE
 		OpenGL3/Driver.cpp
 	)
 endif()
 
 if(USE_SDLGLES2)
-	target_sources(IRRVIDEOOBJ PUBLIC
+	target_sources(IRRVIDEOOBJ PRIVATE
 		OpenGLES2/Driver.cpp
 	)
 else()
-	target_sources(IRRVIDEOOBJ PUBLIC
+	target_sources(IRRVIDEOOBJ PRIVATE
 		COGLES2Driver.cpp
 		COGLES2ExtensionHandler.cpp
 		COGLES2FixedPipelineRenderer.cpp
