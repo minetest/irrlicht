@@ -23,6 +23,11 @@ public:
 #endif
 	COSOperator(const core::stringc& osversion);
 
+	~COSOperator();
+
+	COSOperator(const COSOperator &) = delete;
+	COSOperator &operator=(const COSOperator &) = delete;
+
 	//! returns the current operation system version as string.
 	const core::stringc& getOperatingSystemVersion() const override;
 
@@ -54,6 +59,12 @@ private:
 
 #ifdef  _IRR_WINDOWS_API_
 	mutable core::stringc ClipboardBuf;
+#endif
+
+#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
+	// These need to be freed with SDL_free
+	mutable char *ClipboardSelectionText = nullptr;
+	mutable char *PrimarySelectionText = nullptr;
 #endif
 
 };
