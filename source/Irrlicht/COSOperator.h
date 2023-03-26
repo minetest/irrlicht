@@ -23,7 +23,7 @@ public:
 #endif
 	COSOperator(const core::stringc& osversion);
 
-	~COSOperator() override;
+	~COSOperator();
 
 	COSOperator(const COSOperator &) = delete;
 	COSOperator &operator=(const COSOperator &) = delete;
