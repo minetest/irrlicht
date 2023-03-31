@@ -509,7 +509,7 @@ namespace scene
 
 		//! Clear all nodes which are currently registered for rendering
 		/** Usually you don't have to care about this as drawAll will clear nodes
-		after rendering them. But sometimes you might have to manully reset this.
+		after rendering them. But sometimes you might have to manually reset this.
 		For example when you deleted nodes between registering and rendering. */
 		virtual void clearAllRegisteredNodesForRendering() = 0;
 

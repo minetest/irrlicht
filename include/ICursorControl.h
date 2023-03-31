@@ -26,7 +26,7 @@ namespace gui
 		ECI_HELP,	// Arrow and question mark
 		ECI_IBEAM,	// typical text-selection cursor
 		ECI_NO,		// should not click icon
-		ECI_WAIT,	// hourclass
+		ECI_WAIT,	// hourglass
 		ECI_SIZEALL,	// arrow in all directions
 		ECI_SIZENESW,	// resizes in direction north-east or south-west
 		ECI_SIZENWSE,	// resizes in direction north-west or south-east
