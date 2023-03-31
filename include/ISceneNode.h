@@ -674,7 +674,7 @@ namespace scene
 		}
 
 
-		//! Updates the absolute tranformation or position based on the relative and the parents transformation
+		//! Updates the absolute transformation or position based on the relative and the parents transformation
 		/** It's exact behavior can be controlled by setUpdateAbsolutePosBehavior.
 		Note: This does not recursively update the parents absolute positions, so if you have a deeper
 			hierarchy you might want to update the parents first.*/

@@ -1015,8 +1015,8 @@ namespace scene
 		/** \param name Name of the mesh
 		\param vtxColorCylinder color of the cylinder
 		\param vtxColorCone color of the cone
-		\param tesselationCylinder Number of quads the cylinder side consists of
-		\param tesselationCone Number of triangles the cone's roof consists of
+		\param tessellationCylinder Number of quads the cylinder side consists of
+		\param tessellationCone Number of triangles the cone's roof consists of
 		\param height Total height of the arrow
 		\param cylinderHeight Total height of the cylinder, should be lesser than total height
 		\param widthCylinder Diameter of the cylinder
@@ -1026,7 +1026,7 @@ namespace scene
 		virtual IAnimatedMesh* addArrowMesh(const io::path& name,
 				video::SColor vtxColorCylinder=0xFFFFFFFF,
 				video::SColor vtxColorCone=0xFFFFFFFF,
-				u32 tesselationCylinder=4, u32 tesselationCone=8,
+				u32 tessellationCylinder=4, u32 tessellationCone=8,
 				f32 height=1.f, f32 cylinderHeight=0.6f,
 				f32 widthCylinder=0.05f, f32 widthCone=0.3f) = 0;
 
@@ -1142,7 +1142,7 @@ namespace scene
 
 		//! Clear all nodes which are currently registered for rendering
 		/** Usually you don't have to care about this as drawAll will clear nodes
-		after rendering them. But sometimes you might have to manully reset this.
+		after rendering them. But sometimes you might have to manually reset this.
 		For example when you deleted nodes between registering and rendering. */
 		virtual void clearAllRegisteredNodesForRendering() = 0;
 

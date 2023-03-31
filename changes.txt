@@ -1522,7 +1522,7 @@ Changes in 1.7 (03.02.2010)
 
  - More draw2dimage support in software drivers
 
- - Sphere node now properly chooses a good tesselation based on the parameters
+ - Sphere node now properly chooses a good tessellation based on the parameters
 
  - Active camera not registered twice anymore
 

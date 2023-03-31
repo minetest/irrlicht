@@ -1334,7 +1334,7 @@ namespace video
 		E_MATERIAL_TYPE enum or a value which was returned by
 		addMaterialRenderer().
 		\return String with the name of the renderer, or 0 if not
-		exisiting */
+		existing */
 		virtual const c8* getMaterialRendererName(u32 idx) const =0;
 
 		//! Sets the name of a material renderer.

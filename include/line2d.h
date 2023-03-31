@@ -66,7 +66,7 @@ class line2d
 		vector2d<T> getVector() const { return vector2d<T>( end.X - start.X, end.Y - start.Y); }
 
 		/*! Check if this segment intersects another segment,
-			or if segments are coincindent (colinear). */
+			or if segments are coincident (colinear). */
 		bool intersectAsSegments( const line2d<T>& other) const
 		{
 			// Taken from:
@@ -83,7 +83,7 @@ class line2d
 			if (o1 != o2 && o3 != o4)
 				return true;
 
-			// Special Cases to check if segments are coolinear
+			// Special Cases to check if segments are colinear
 			if (o1 == 0 && other.start.isBetweenPoints( start, end)) return true;
 			if (o2 == 0 && other.end.isBetweenPoints( start, end)) return true;
 			if (o3 == 0 && start.isBetweenPoints( other.start, other.end)) return true;

@@ -549,8 +549,8 @@ IMesh* CGeometryCreator::createTerrainMesh(video::IImage* texture,
 	a cylinder, a cone and a cross
 	point up on (0,1.f, 0.f )
 */
-IMesh* CGeometryCreator::createArrowMesh(const u32 tesselationCylinder,
-						const u32 tesselationCone,
+IMesh* CGeometryCreator::createArrowMesh(const u32 tessellationCylinder,
+						const u32 tessellationCone,
 						const f32 height,
 						const f32 cylinderHeight,
 						const f32 width0,
@@ -558,9 +558,9 @@ IMesh* CGeometryCreator::createArrowMesh(const u32 tesselationCylinder,
 						const video::SColor vtxColor0,
 						const video::SColor vtxColor1) const
 {
-	SMesh* mesh = (SMesh*)createCylinderMesh(width0, cylinderHeight, tesselationCylinder, vtxColor0, false);
+	SMesh* mesh = (SMesh*)createCylinderMesh(width0, cylinderHeight, tessellationCylinder, vtxColor0, false);
 
-	IMesh* mesh2 = createConeMesh(width1, height-cylinderHeight, tesselationCone, vtxColor1, vtxColor0);
+	IMesh* mesh2 = createConeMesh(width1, height-cylinderHeight, tessellationCone, vtxColor1, vtxColor0);
 	for (u32 i=0; i<mesh2->getMeshBufferCount(); ++i)
 	{
 		IMeshBuffer* buffer = mesh2->getMeshBuffer(i);
@@ -745,23 +745,23 @@ IMesh* CGeometryCreator::createSphereMesh(f32 radius, u32 polyCountX, u32 polyCo
 
 /* A cylinder with proper normals and texture coords */
 IMesh* CGeometryCreator::createCylinderMesh(f32 radius, f32 length,
-			u32 tesselation, const video::SColor& color,
+			u32 tessellation, const video::SColor& color,
 			bool closeTop, f32 oblique, u32 normalType) const
 {
 	SMeshBuffer* buffer = new SMeshBuffer();
 
-	const f32 recTesselation = core::reciprocal((f32)tesselation);
-	const f32 recTesselationHalf = recTesselation * 0.5f;
-	const f32 angleStep = (core::PI * 2.f ) * recTesselation;
+	const f32 recTessellation = core::reciprocal((f32)tessellation);
+	const f32 recTessellationHalf = recTessellation * 0.5f;
+	const f32 angleStep = (core::PI * 2.f ) * recTessellation;
 	const f32 angleStepHalf = angleStep*0.5f;
 
 	u32 i;
 	video::S3DVertex v;
 	v.Color = color;
-	buffer->Vertices.reallocate(tesselation*4+4+(closeTop?2:1));
-	buffer->Indices.reallocate((tesselation*2+1)*(closeTop?12:9));
+	buffer->Vertices.reallocate(tessellation*4+4+(closeTop?2:1));
+	buffer->Indices.reallocate((tessellation*2+1)*(closeTop?12:9));
 	f32 tcx = 0.f;
-	for ( i = 0; i <= tesselation; ++i )
+	for ( i = 0; i <= tessellation; ++i )
 	{
 		const f32 angle = angleStep * i;
 		v.Pos.X = radius * cosf(angle);
@@ -797,7 +797,7 @@ IMesh* CGeometryCreator::createCylinderMesh(f32 radius, f32 length,
 			case 1: v.Normal = v.Pos; break;
 		}
 		v.Normal.normalize();
-		v.TCoords.X=tcx+recTesselationHalf;
+		v.TCoords.X=tcx+recTessellationHalf;
 		v.TCoords.Y=0.f;
 		buffer->Vertices.push_back(v);
 
@@ -811,11 +811,11 @@ IMesh* CGeometryCreator::createCylinderMesh(f32 radius, f32 length,
 		v.Normal.normalize();
 		v.TCoords.Y=1.f;
 		buffer->Vertices.push_back(v);
-		tcx += recTesselation;
+		tcx += recTessellation;
 	}
 
 	// indices for the main hull part
-	const u32 nonWrappedSize = tesselation* 4;
+	const u32 nonWrappedSize = tessellation* 4;
 	for (i=0; i != nonWrappedSize; i += 2)
 	{
 		buffer->Indices.push_back(i + 2);
@@ -898,21 +898,21 @@ IMesh* CGeometryCreator::createCylinderMesh(f32 radius, f32 length,
 
 
 /* A cone with proper normals and texture coords */
-IMesh* CGeometryCreator::createConeMesh(f32 radius, f32 length, u32 tesselation,
+IMesh* CGeometryCreator::createConeMesh(f32 radius, f32 length, u32 tessellation,
 					const video::SColor& colorTop,
 					const video::SColor& colorBottom,
 					f32 oblique) const
 {
 	SMeshBuffer* buffer = new SMeshBuffer();
 
-	const f32 angleStep = (core::PI * 2.f ) / tesselation;
+	const f32 angleStep = (core::PI * 2.f ) / tessellation;
 	const f32 angleStepHalf = angleStep*0.5f;
 
 	video::S3DVertex v;
 	u32 i;
 
 	v.Color = colorTop;
-	for ( i = 0; i != tesselation; ++i )
+	for ( i = 0; i != tessellation; ++i )
 	{
 		f32 angle = angleStep * f32(i);
 

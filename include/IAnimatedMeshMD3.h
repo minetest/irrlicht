@@ -87,7 +87,7 @@ namespace scene
 		s32 numTags;	//number of 'tags' per frame
 		s32 numMeshes;	//number of meshes/skins
 		s32 numMaxSkins;//maximum number of unique skins used in md3 file. artefact md2
-		s32 frameStart;	//starting position of frame-structur
+		s32 frameStart;	//starting position of frame-structure
 		s32 tagStart;	//starting position of tag-structures
 		s32 tagEnd;	//ending position of tag-structures/starting position of mesh-structures
 		s32 fileSize;

@@ -40,7 +40,7 @@ namespace quake3
 			:defaultLightMapMaterial ( video::EMT_LIGHTMAP_M4 ),
 			defaultModulate ( video::EMFN_MODULATE_4X ),
 			defaultFilter ( video::EMF_BILINEAR_FILTER ),
-			patchTesselation ( 8 ),
+			patchTessellation ( 8 ),
 			verbose ( 0 ),
 			startTime ( 0 ), endTime ( 0 ),
 			mergeShaderBuffer ( 1 ),
@@ -61,7 +61,7 @@ namespace quake3
 		video::E_MATERIAL_TYPE defaultLightMapMaterial;
 		video::E_MODULATE_FUNC defaultModulate;
 		video::E_MATERIAL_FLAG defaultFilter;
-		s32 patchTesselation;
+		s32 patchTessellation;
 		s32 verbose;
 		u32 startTime;
 		u32 endTime;

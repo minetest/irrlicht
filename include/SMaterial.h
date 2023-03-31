@@ -258,7 +258,7 @@ namespace video
 		//! This is also the value which is set when SMaterial::setFlag(EMF_ZWRITE_ENABLE) is enabled.
 		//! Usually zwriting is enabled non-transparent materials - as far as Irrlicht can recognize those.
 		//! Basically Irrlicht tries to handle the zwriting for you and assumes transparent materials don't need it.
-		//! This is addionally affected by IVideoDriver::setAllowZWriteOnTransparent
+		//! This is additionally affected by IVideoDriver::setAllowZWriteOnTransparent
 		EZW_AUTO,
 
 		//! zwrite always enabled for this material
@@ -299,7 +299,7 @@ namespace video
 	IRRLICHT_API extern u32 MATERIAL_MAX_TEXTURES_USED;
 
 	//! Struct for holding parameters for a material renderer
-	// Note for implementors: Serialization is in CNullDriver
+	// Note for implementers: Serialization is in CNullDriver
 	class SMaterial
 	{
 	public:
