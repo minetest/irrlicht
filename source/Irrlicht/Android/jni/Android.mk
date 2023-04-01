@@ -217,13 +217,13 @@ LOCAL_SRC_FILES := \
 					CTRFlatWire.cpp \
 					CTRGouraud.cpp \
 					CTRGouraud2.cpp \
-					CTRGouraudAlpha2.cpp \
 					CTRGouraudAlphaNoZ2.cpp \
 					CTRGouraudWire.cpp \
 					CTriangleBBSelector.cpp \
 					CTriangleSelector.cpp \
 					CTRGouraudNoZ2.cpp \
 					CTRNormalMap.cpp \
+					CTRParallaxMap.cpp \
 					CTRStencilShadow.cpp \
 					CTRTextureBlend.cpp \
 					CTRTextureDetailMap2.cpp \
