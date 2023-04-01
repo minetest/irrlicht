@@ -420,7 +420,7 @@ COBJMeshFileLoader::SObjMtl* COBJMeshFileLoader::findMtl(const core::stringc& mt
 		Materials.getLast()->Group = grpName;
 		return Materials.getLast();
 	}
-	// we found a new group for a non-existant material
+	// we found a new group for a non-existent material
 	else if (grpName.size())
 	{
 		Materials.push_back(new SObjMtl(*Materials[0]));

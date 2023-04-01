@@ -2057,7 +2057,7 @@ namespace core
 		core::vector3df v(vs);
 		v.normalize();
 
-		// cosinus angle
+		// cosine angle
 		T ca = f.dotProduct(t);
 
 		core::vector3df vt(v * (1 - ca));
@@ -2118,7 +2118,7 @@ namespace core
 		// axis multiplication by sin
 		const core::vector3df vs = look.crossProduct(from);
 
-		// cosinus angle
+		// cosine angle
 		const f32 ca = from.dotProduct(look);
 
 		core::vector3df vt(up * (1.f - ca));
