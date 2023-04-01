@@ -79,7 +79,7 @@ namespace scene
 
 		//! This method is called just before the rendering process of the whole scene.
 		/** Nodes may register themselves in the render pipeline during this call,
-		precalculate the geometry which should be renderered, and prevent their
+		precalculate the geometry which should be rendered, and prevent their
 		children from being able to register themselves if they are clipped by simply
 		not calling their OnRegisterSceneNode method.
 		If you are implementing your own scene node, you should overwrite this method
