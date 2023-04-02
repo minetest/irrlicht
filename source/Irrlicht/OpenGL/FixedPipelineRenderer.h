@@ -28,13 +28,6 @@ protected:
 	s32 WVMatrixID;
 	s32 NMatrixID;
 
-	s32 GlobalAmbientID;
-	s32 MaterialAmbientID;
-	s32 MaterialDiffuseID;
-	s32 MaterialEmissiveID;
-	s32 MaterialSpecularID;
-	s32 MaterialShininessID;
-
 	s32 FogEnableID;
 	s32 FogTypeID;
 	s32 FogColorID;

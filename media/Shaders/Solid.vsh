@@ -14,13 +14,6 @@ uniform mat4 uWVMatrix;
 uniform mat4 uNMatrix;
 uniform mat4 uTMatrix0;
 
-uniform vec4 uGlobalAmbient;
-uniform vec4 uMaterialAmbient;
-uniform vec4 uMaterialDiffuse;
-uniform vec4 uMaterialEmissive;
-uniform vec4 uMaterialSpecular;
-uniform float uMaterialShininess;
-
 uniform float uThickness;
 
 /* Varyings */
