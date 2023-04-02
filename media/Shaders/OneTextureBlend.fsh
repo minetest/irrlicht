@@ -18,7 +18,6 @@ uniform float uFogDensity;
 
 varying vec2 vTextureCoord0;
 varying vec4 vVertexColor;
-varying vec4 vSpecularColor;
 varying float vFogCoord;
 
 float computeFog()
@@ -54,7 +53,6 @@ void main()
 		Color1 = texture2D(uTextureUnit0, vTextureCoord0);
 
 	vec4 FinalColor = Color0 * Color1;
-	FinalColor += vSpecularColor;
 
 	if (uBlendType == 1)
 	{
