@@ -1,3 +1,4 @@
+// Copyright (C) 2023 Vitaliy Lobachevskiy
 // Copyright (C) 2014 Patryk Nadrowski
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in Irrlicht.h
@@ -80,79 +81,6 @@ protected:
 	f32 AlphaRef;
 	s32 TextureUsage0;
 	s32 TextureUnit0;
-};
-
-class COpenGL3MaterialSolid2CB : public COpenGL3MaterialBaseCB
-{
-public:
-	COpenGL3MaterialSolid2CB();
-
-	virtual void OnSetMaterial(const SMaterial& material);
-	virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData);
-
-protected:
-	bool FirstUpdate;
-
-	s32 TMatrix0ID;
-	s32 TMatrix1ID;
-	s32 TextureUsage0ID;
-	s32 TextureUsage1ID;
-	s32 TextureUnit0ID;
-	s32 TextureUnit1ID;
-
-	s32 TextureUsage0;
-	s32 TextureUsage1;
-	s32 TextureUnit0;
-	s32 TextureUnit1;
-};
-
-class COpenGL3MaterialLightmapCB : public COpenGL3MaterialBaseCB
-{
-public:
-	COpenGL3MaterialLightmapCB(float modulate);
-
-	virtual void OnSetMaterial(const SMaterial& material);
-	virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData);
-
-protected:
-	bool FirstUpdate;
-
-	s32 TMatrix0ID;
-	s32 TMatrix1ID;
-	s32 ModulateID;
-	s32 TextureUsage0ID;
-	s32 TextureUsage1ID;
-	s32 TextureUnit0ID;
-	s32 TextureUnit1ID;
-
-	f32 Modulate;
-	s32 TextureUsage0;
-	s32 TextureUsage1;
-	s32 TextureUnit0;
-	s32 TextureUnit1;
-};
-
-class COpenGL3MaterialReflectionCB : public COpenGL3MaterialBaseCB
-{
-public:
-	COpenGL3MaterialReflectionCB();
-
-	virtual void OnSetMaterial(const SMaterial& material);
-	virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData);
-
-protected:
-	bool FirstUpdate;
-
-	s32 TMatrix0ID;
-	s32 TextureUsage0ID;
-	s32 TextureUsage1ID;
-	s32 TextureUnit0ID;
-	s32 TextureUnit1ID;
-
-	s32 TextureUsage0;
-	s32 TextureUsage1;
-	s32 TextureUnit0;
-	s32 TextureUnit1;
 };
 
 class COpenGL3MaterialOneTextureBlendCB : public COpenGL3MaterialBaseCB
