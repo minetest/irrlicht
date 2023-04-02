@@ -20,7 +20,6 @@ uniform float uThickness;
 
 varying vec2 vTextureCoord0;
 varying vec4 vVertexColor;
-varying vec4 vSpecularColor;
 varying float vFogCoord;
 
 void main()
@@ -32,7 +31,6 @@ void main()
 	vTextureCoord0 = vec4(uTMatrix0 * TextureCoord0).xy;
 
 	vVertexColor = inVertexColor.bgra;
-	vSpecularColor = vec4(0.0, 0.0, 0.0, 0.0);
 
 	vec3 Position = (uWVMatrix * vec4(inVertexPosition, 1.0)).xyz;
 
