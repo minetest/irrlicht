@@ -1231,7 +1231,7 @@ bool CIrrDeviceWin32::run()
 //! Pause the current process for the minimum time allowed only to allow other processes to execute
 void CIrrDeviceWin32::yield()
 {
-	Sleep(1);
+	Sleep(0);
 }
 
 //! Pause execution and let other processes to run for a specified amount of time.

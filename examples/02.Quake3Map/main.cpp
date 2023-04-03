@@ -168,6 +168,7 @@ int main()
 				device->setWindowCaption(str.c_str());
 				lastFPS = fps;
 			}
+			device->yield();
 		}
 		else
 			device->yield();

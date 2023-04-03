@@ -76,13 +76,17 @@ namespace irr
 		virtual bool run() = 0;
 
 		//! Cause the device to temporarily pause execution and let other processes run.
-		/** This should bring down processor usage without major
-		performance loss for Irrlicht */
+		/** This should bring down processor usage without major performance loss for Irrlicht.
+		But this is system dependent, so there's a chance your thread won't get control back quickly.
+		*/
 		virtual void yield() = 0;
 
 		//! Pause execution and let other processes to run for a specified amount of time.
-		/** It may not wait the full given time, as sleep may be interrupted
-		\param timeMs: Time to sleep for in milliseconds.
+		/** It may not wait the full given time, as sleep may be interrupted and also may wait longer on some OS.
+		\param timeMs: Time to sleep for in milliseconds. Note that the OS can round up this number.
+                       On Windows you usually get at least 15ms sleep time minium for any value > 0. 
+					   So if you call this in your main loop you can't get more than 65 FPS anymore in your game.
+					   On most Linux systems it's relatively exact, but also no guarantee.
 		\param pauseTimer: If true, pauses the device timer while sleeping
 		*/
 		virtual void sleep(u32 timeMs, bool pauseTimer=false) = 0;

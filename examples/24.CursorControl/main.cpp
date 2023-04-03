@@ -564,7 +564,7 @@ int main()
 		}
 		else
 		{
-			device->sleep(10);
+			device->yield(); // be nice
 		}
 	}
 
