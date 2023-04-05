@@ -230,9 +230,15 @@ endif()
 
 message(STATUS "Device: ${DEVICE}")
 message(STATUS "OpenGL: ${ENABLE_OPENGL}")
-message(STATUS "OpenGL 3: ${ENABLE_OPENGL3}")
+message(STATUS "OpenGL 3: ${USE_SDLGL3}")
 message(STATUS "OpenGL ES: ${ENABLE_GLES1}")
-message(STATUS "OpenGL ES 2: ${ENABLE_GLES2}")
+if (USE_SDLGLES2)
+	message(STATUS "OpenGL ES 2: ON (unified)")
+elseif (ENABLE_GLES2)
+	message(STATUS "OpenGL ES 2: ON (legacy)")
+else()
+	message(STATUS "OpenGL ES 2: OFF")
+endif()
 message(STATUS "WebGL: ${ENABLE_WEBGL1}")
 
 # Required libs
