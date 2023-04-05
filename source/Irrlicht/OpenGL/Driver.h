@@ -384,7 +384,8 @@ private:
 
 		IContextManager* ContextManager;
 
-		std::vector<u16> QuadsIndices;
+		unsigned QuadIndexCount;
+		GLuint QuadIndexBuffer = 0;
 		void initQuadsIndices(int max_vertex_count = 65536);
 
 		void debugCb(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message);
