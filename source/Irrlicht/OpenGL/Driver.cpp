@@ -1033,7 +1033,7 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		}
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, QuadIndexBuffer);
-		drawElements(GL_TRIANGLES, vt2DImage, vtx.const_pointer(), 0, 6 * drawCount);
+		drawElements(GL_TRIANGLES, vt2DImage, vtx.const_pointer(), vtx.size(), 0, 6 * drawCount);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		if (clipRect)
@@ -1177,10 +1177,10 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		endDraw(vertexType);
 	}
 
-	void COpenGL3DriverBase::drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, const u16 *indices, int indexCount)
+	void COpenGL3DriverBase::drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount, const u16 *indices, int indexCount)
 	{
 		beginDraw(vertexType, reinterpret_cast<uintptr_t>(vertices));
-		glDrawElements(primitiveType, indexCount, GL_UNSIGNED_SHORT, indices);
+		glDrawRangeElements(primitiveType, 0, vertexCount - 1, indexCount, GL_UNSIGNED_SHORT, indices);
 		endDraw(vertexType);
 	}
 
