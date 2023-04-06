@@ -70,7 +70,7 @@ endif()
 add_definitions(
 	-DIRR_ENABLE_BUILTIN_FONT
 	-D_IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-	)
+)
 
 # Platform-specific configuration
 
@@ -89,7 +89,7 @@ elseif(APPLE)
 elseif(ANDROID)
 	add_definitions(-D_IRR_ANDROID_PLATFORM_ -D_IRR_COMPILE_ANDROID_ASSET_READER_)
 	if(USE_SDL2)
-		message(SEND_ERROR "SDL2 backend is not supported on Android")
+		message(FATAL_ERROR "SDL2 device is not (yet) supported on Android")
 	endif()
 	set(DEVICE "Android")
 elseif(EMSCRIPTEN)
@@ -111,6 +111,8 @@ endif()
 
 if(USE_SDL2)
 	set(DEVICE "SDL")
+elseif(DEVICE STREQUAL "SDL")
+	message(FATAL_ERROR "SDL was used but not enabled?!")
 endif()
 
 add_definitions("-D_IRR_COMPILE_WITH_${DEVICE}_DEVICE_")
@@ -188,7 +190,7 @@ endif()
 
 if(ENABLE_OPENGL3)
 	if (NOT USE_SDL2)
-		message(SEND_ERROR "OpenGL3 support requires SDL2")
+		message(FATAL_ERROR "OpenGL 3 driver requires SDL2")
 	endif()
 	set(USE_SDLGL ON)
 	set(USE_SDLGL3 ON)
@@ -196,7 +198,7 @@ endif()
 
 if(ENABLE_GLES1)
 	if (USE_SDL2)
-		message(SEND_ERROR "OpenGL ES 1 is not supported with SDL2")
+		message(FATAL_ERROR "OpenGL ES 1 is not supported with SDL2")
 	endif()
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES1_)
 	if(DEVICE MATCHES "^(WINDOWS|X11|ANDROID)$")
@@ -230,7 +232,7 @@ endif()
 
 message(STATUS "Device: ${DEVICE}")
 message(STATUS "OpenGL: ${ENABLE_OPENGL}")
-message(STATUS "OpenGL 3: ${USE_SDLGL3}")
+message(STATUS "OpenGL 3: ${ENABLE_OPENGL3}")
 message(STATUS "OpenGL ES: ${ENABLE_GLES1}")
 if (USE_SDLGLES2)
 	message(STATUS "OpenGL ES 2: ON (unified)")
