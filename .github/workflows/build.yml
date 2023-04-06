@@ -83,6 +83,60 @@ jobs:
           cd bin/Linux
           ./AutomatedTest null
 
+  linux-sdl-gl3:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:jammy
+      env: { LANG: "C.UTF-8" }
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install deps
+        run: |
+          apt-get update
+          apt-get install g++ cmake libsdl2-dev libpng-dev libjpeg-dev zlib1g-dev xvfb -qyy
+
+      - name: Build
+        run: |
+          cmake . -DBUILD_EXAMPLES=1 -DUSE_SDL2=ON -DENABLE_OPENGL3=ON
+          make -j2
+
+      - name: Test (headless)
+        run: |
+          cd bin/Linux
+          ./AutomatedTest null
+
+      - name: Test (Xvfb)
+        run: |
+          cd bin/Linux
+          LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest opengl3
+
+  linux-sdl-gles2:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:jammy
+      env: { LANG: "C.UTF-8" }
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install deps
+        run: |
+          apt-get update
+          apt-get install g++ cmake libsdl2-dev libpng-dev libjpeg-dev zlib1g-dev xvfb -qyy
+
+      - name: Build
+        run: |
+          cmake . -DBUILD_EXAMPLES=1 -DUSE_SDL2=ON -DENABLE_GLES2=ON
+          make -j2
+
+      - name: Test (headless)
+        run: |
+          cd bin/Linux
+          ./AutomatedTest null
+
+      - name: Test (Xvfb)
+        run: |
+          cd bin/Linux
+          LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest gles2
+
   win32:
     runs-on: ubuntu-20.04
     steps:

@@ -20,6 +20,8 @@ static video::E_DRIVER_TYPE chooseDriver(core::stringc arg_)
 		return video::EDT_OGLES2;
 	if (arg_ == "opengl")
 		return video::EDT_OPENGL;
+	if (arg_ == "opengl3")
+		return video::EDT_OPENGL3;
 	std::cerr << "Unknown driver type: " << arg_.c_str() << ". Trying OpenGL." << std::endl;
 	return video::EDT_OPENGL;
 }

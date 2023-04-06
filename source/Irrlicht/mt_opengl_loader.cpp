@@ -756,11 +756,22 @@ void OpenGLProcedures::LoadAllProcedures(irr::video::IContextManager *cmgr)
 	if (!NamedBufferPageCommitment) NamedBufferPageCommitment = (PFNGLNAMEDBUFFERPAGECOMMITMENTPROC_MT)cmgr->getProcAddress("glNamedBufferPageCommitmentARB");
 	if (!TexPageCommitment) TexPageCommitment = (PFNGLTEXPAGECOMMITMENTPROC_MT)cmgr->getProcAddress("glTexPageCommitmentARB");
 
+	// OpenGL 3 way to enumerate extensions
+	int ext_count = 0;
+	GetIntegerv(NUM_EXTENSIONS, &ext_count);
+	extensions.reserve(ext_count);
+	for (int k = 0; k < ext_count; k++)
+		extensions.emplace((char *)GetStringi(EXTENSIONS, k));
+	if (ext_count)
+		return;
+
+	// OpenGL 2 / ES 2 way to enumerate extensions
+	auto ext_str = GetString(EXTENSIONS);
+	if (!ext_str)
+		return;
 	// get the extension string, chop it up
-	std::string ext_string = std::string((char*)GetString(EXTENSIONS));
-	std::stringstream ext_ss(ext_string);
+	std::stringstream ext_ss((char*)ext_str);
 	std::string tmp;
 	while (std::getline(ext_ss, tmp, ' '))
 		extensions.emplace(tmp);
-
 }

@@ -89,8 +89,7 @@ elseif(APPLE)
 elseif(ANDROID)
 	add_definitions(-D_IRR_ANDROID_PLATFORM_ -D_IRR_COMPILE_ANDROID_ASSET_READER_)
 	if(USE_SDL2)
-		message(WARNING "SDL2 backend is not supported on Android")
-		set(USE_SDL2 FALSE)
+		message(SEND_ERROR "SDL2 backend is not supported on Android")
 	endif()
 	set(DEVICE "Android")
 elseif(EMSCRIPTEN)
@@ -140,6 +139,8 @@ endif()
 
 # OpenGL
 
+option(ENABLE_OPENGL3 "Enable OpenGL 3+" FALSE)
+
 if(ANDROID OR EMSCRIPTEN)
 	set(ENABLE_OPENGL FALSE)
 else()
@@ -185,7 +186,18 @@ if(ENABLE_OPENGL)
 	endif()
 endif()
 
+if(ENABLE_OPENGL3)
+	if (NOT USE_SDL2)
+		message(SEND_ERROR "OpenGL3 support requires SDL2")
+	endif()
+	set(USE_SDLGL ON)
+	set(USE_SDLGL3 ON)
+endif()
+
 if(ENABLE_GLES1)
+	if (USE_SDL2)
+		message(SEND_ERROR "OpenGL ES 1 is not supported with SDL2")
+	endif()
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES1_)
 	if(DEVICE MATCHES "^(WINDOWS|X11|ANDROID)$")
 		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_ -D_IRR_OGLES1_USE_EXTPOINTER_)
@@ -196,6 +208,9 @@ if(ENABLE_GLES2)
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES2_)
 	if(DEVICE MATCHES "^(WINDOWS|X11|ANDROID)$" OR EMSCRIPTEN)
 		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_ -D_IRR_OGLES2_USE_EXTPOINTER_)
+	elseif(DEVICE STREQUAL "SDL")
+		set(USE_SDLGL ON)
+		set(USE_SDLGLES2 ON)
 	endif()
 endif()
 
@@ -215,8 +230,15 @@ endif()
 
 message(STATUS "Device: ${DEVICE}")
 message(STATUS "OpenGL: ${ENABLE_OPENGL}")
+message(STATUS "OpenGL 3: ${USE_SDLGL3}")
 message(STATUS "OpenGL ES: ${ENABLE_GLES1}")
-message(STATUS "OpenGL ES 2: ${ENABLE_GLES2}")
+if (USE_SDLGLES2)
+	message(STATUS "OpenGL ES 2: ON (unified)")
+elseif (ENABLE_GLES2)
+	message(STATUS "OpenGL ES 2: ON (legacy)")
+else()
+	message(STATUS "OpenGL ES 2: OFF")
+endif()
 message(STATUS "WebGL: ${ENABLE_WEBGL1}")
 
 # Required libs
@@ -336,12 +358,6 @@ set(IRRDRVROBJ
 	COpenGLExtensionHandler.cpp
 	COGLESDriver.cpp
 	COGLESExtensionHandler.cpp
-	COGLES2Driver.cpp
-	COGLES2ExtensionHandler.cpp
-	COGLES2FixedPipelineRenderer.cpp
-	COGLES2MaterialRenderer.cpp
-	COGLES2Renderer2D.cpp
-	CWebGL1Driver.cpp
 	CGLXManager.cpp
 	CWGLManager.cpp
 	CEGLManager.cpp
@@ -366,6 +382,37 @@ add_library(IRRVIDEOOBJ OBJECT
 	${IRRIMAGEOBJ}
 )
 
+if(USE_SDLGL)
+	target_sources(IRRVIDEOOBJ PRIVATE
+		OpenGL/Driver.cpp
+		OpenGL/ExtensionHandler.cpp
+		OpenGL/FixedPipelineRenderer.cpp
+		OpenGL/MaterialRenderer.cpp
+		OpenGL/Renderer2D.cpp
+	)
+endif()
+
+if(USE_SDLGL3)
+	target_sources(IRRVIDEOOBJ PRIVATE
+		OpenGL3/Driver.cpp
+	)
+endif()
+
+if(USE_SDLGLES2)
+	target_sources(IRRVIDEOOBJ PRIVATE
+		OpenGLES2/Driver.cpp
+	)
+else()
+	target_sources(IRRVIDEOOBJ PRIVATE
+		COGLES2Driver.cpp
+		COGLES2ExtensionHandler.cpp
+		COGLES2FixedPipelineRenderer.cpp
+		COGLES2MaterialRenderer.cpp
+		COGLES2Renderer2D.cpp
+		CWebGL1Driver.cpp
+	)
+endif()
+
 add_library(IRRIOOBJ OBJECT
 	CFileList.cpp
 	CFileSystem.cpp
@@ -387,6 +434,10 @@ add_library(IRROTHEROBJ OBJECT
 	Irrlicht.cpp
 	os.cpp
 )
+
+if(ENABLE_OPENGL3)
+	target_compile_definitions(IRROTHEROBJ PRIVATE ENABLE_OPENGL3)
+endif()
 
 if(ANDROID)
 	target_sources(IRROTHEROBJ PRIVATE
