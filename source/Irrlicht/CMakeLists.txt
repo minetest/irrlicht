@@ -353,19 +353,31 @@ add_library(IRROBJ OBJECT
 
 set(IRRDRVROBJ
 	CNullDriver.cpp
-	COpenGLCacheHandler.cpp
-	COpenGLDriver.cpp
-	COpenGLShaderMaterialRenderer.cpp
-	COpenGLSLMaterialRenderer.cpp
-	COpenGLExtensionHandler.cpp
-	COGLESDriver.cpp
-	COGLESExtensionHandler.cpp
 	CGLXManager.cpp
 	CWGLManager.cpp
 	CEGLManager.cpp
 	CSDLManager.cpp
 	mt_opengl_loader.cpp
 )
+
+if(ENABLE_OPENGL)
+	set(IRRDRVROBJ
+		${IRRDRVROBJ}
+		COpenGLCacheHandler.cpp
+		COpenGLDriver.cpp
+		COpenGLShaderMaterialRenderer.cpp
+		COpenGLSLMaterialRenderer.cpp
+		COpenGLExtensionHandler.cpp
+	)
+endif()
+
+if(ENABLE_GLES1)
+	set(IRRDRVROBJ
+		${IRRDRVROBJ}
+		COGLESDriver.cpp
+		COGLESExtensionHandler.cpp
+	)
+endif()
 
 set(IRRIMAGEOBJ
 	CColorConverter.cpp
@@ -404,7 +416,7 @@ if(USE_SDLGLES2)
 	target_sources(IRRVIDEOOBJ PRIVATE
 		OpenGLES2/Driver.cpp
 	)
-else()
+elseif(ENABLE_GLES2)
 	target_sources(IRRVIDEOOBJ PRIVATE
 		COGLES2Driver.cpp
 		COGLES2ExtensionHandler.cpp
