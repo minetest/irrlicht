@@ -277,7 +277,7 @@ elseif(APPLE)
 	find_library(IOKIT_LIB IOKit REQUIRED)
 
 	add_definitions(-DGL_SILENCE_DEPRECATION)
-else()
+elseif(NOT USE_SDL2)
 	# Unix probably
 	find_package(X11 REQUIRED)
 	if(USE_XINPUT2 AND NOT X11_Xi_FOUND)
@@ -292,21 +292,21 @@ set(link_includes
 	"${ZLIB_INCLUDE_DIR}"
 	"${JPEG_INCLUDE_DIR}"
 	"${PNG_INCLUDE_DIR}"
-	"${SDL2_INCLUDE_DIRS}"
+	"$<$<BOOL:${USE_SDL2}>:${SDL2_INCLUDE_DIRS}>"
 
 	${OPENGL_INCLUDE_DIR}
 	${OPENGLES2_INCLUDE_DIR}
 	${EGL_INCLUDE_DIR}
 
 	"$<$<PLATFORM_ID:Android>:${ANDROID_NDK}/sources/android/native_app_glue>"
-	${X11_INCLUDE_DIR}
+	"$<$<BOOL:${USE_X11}>:${X11_INCLUDE_DIR}>"
 )
 
 set(link_libs
 	"${ZLIB_LIBRARY}"
 	"${JPEG_LIBRARY}"
 	"${PNG_LIBRARY}"
-	"${SDL2_LIBRARIES}"
+	"$<$<BOOL:USE_SDL2>:${SDL2_LIBRARIES}>"
 
 	${OPENGL_LIBRARIES}
 	${OPENGLES_LIBRARY}
@@ -318,8 +318,8 @@ set(link_libs
 	${IOKIT_LIB}
 	"$<$<PLATFORM_ID:Windows>:gdi32>"
 	"$<$<PLATFORM_ID:Windows>:winmm>"
-	${X11_X11_LIB}
-	${X11_Xi_LIB}
+	"$<$<BOOL:${USE_X11}>:${X11_X11_LIB}>"
+	"$<$<BOOL:${USE_X11}>:${X11_Xi_LIB}>"
 )
 
 # Source files
