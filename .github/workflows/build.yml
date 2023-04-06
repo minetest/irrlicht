@@ -97,7 +97,7 @@ jobs:
 
       - name: Build
         run: |
-          cmake . -DBUILD_EXAMPLES=1 -DUSE_SDL2=ON -DENABLE_OPENGL3=ON
+          cmake . -DBUILD_EXAMPLES=1 -DUSE_SDL2=ON -DENABLE_OPENGL=OFF -DENABLE_OPENGL3=ON
           make -j2
 
       - name: Test (headless)
@@ -124,7 +124,7 @@ jobs:
 
       - name: Build
         run: |
-          cmake . -DBUILD_EXAMPLES=1 -DUSE_SDL2=ON -DENABLE_GLES2=ON
+          cmake . -DBUILD_EXAMPLES=1 -DUSE_SDL2=ON -DENABLE_OPENGL=OFF -DENABLE_GLES2=ON
           make -j2
 
       - name: Test (headless)
@@ -135,7 +135,7 @@ jobs:
       - name: Test (Xvfb)
         run: |
           cd bin/Linux
-          LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest gles2
+          LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest ogles2
 
   win32:
     runs-on: ubuntu-20.04

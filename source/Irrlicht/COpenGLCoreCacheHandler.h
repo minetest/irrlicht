@@ -6,8 +6,6 @@
 #define __C_OGLCORE_CACHE_HANDLER_H_INCLUDED__
 
 
-#if defined(_IRR_COMPILE_WITH_OPENGL_) || defined(_IRR_COMPILE_WITH_OGLES1_) || defined(_IRR_COMPILE_WITH_OGLES2_)
-
 #include "SMaterial.h"
 #include "ITexture.h"
 
@@ -642,5 +640,4 @@ protected:
 }
 }
 
-#endif
 #endif
