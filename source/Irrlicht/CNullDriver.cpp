@@ -553,39 +553,21 @@ ITexture* CNullDriver::getTexture(io::IReadFile* file)
 //! opens the file and loads it into the surface
 video::ITexture* CNullDriver::loadTextureFromFile(io::IReadFile* file, const io::path& hashName )
 {
-	ITexture* texture = 0;
+	ITexture *texture = nullptr;
 
-	E_TEXTURE_TYPE type = ETT_2D;
+	IImage *image = createImageFromFile(file);
+	if (!image)
+		return nullptr;
 
-	core::array<IImage*> imageArray = createImagesFromFile(file, &type);
-
-	if (checkImage(imageArray))
-	{
-		switch (type)
-		{
-		case ETT_2D:
-			texture = createDeviceDependentTexture(hashName.size() ? hashName : file->getFileName(), imageArray[0]);
-			break;
-		case ETT_CUBEMAP:
-			if (imageArray.size() >= 6 && imageArray[0] && imageArray[1] && imageArray[2] && imageArray[3] && imageArray[4] && imageArray[5])
-			{
-				texture = createDeviceDependentTextureCubemap(hashName.size() ? hashName : file->getFileName(), imageArray);
-			}
-			break;
-		default:
-			_IRR_DEBUG_BREAK_IF(true);
-			break;
-		}
-
+	core::array<IImage*> imageArray;
+	imageArray.push_back(image);
+	if (checkImage(imageArray)) {
+		texture = createDeviceDependentTexture(hashName.size() ? hashName : file->getFileName(), image);
 		if (texture)
 			os::Printer::log("Loaded texture", file->getFileName(), ELL_DEBUG);
 	}
 
-	for (u32 i = 0; i < imageArray.size(); ++i)
-	{
-		if (imageArray[i])
-			imageArray[i]->drop();
-	}
+	image->drop();
 
 	return texture;
 }
@@ -1168,36 +1150,26 @@ bool CNullDriver::getTextureCreationFlag(E_TEXTURE_CREATION_FLAG flag) const
 	return (TextureCreationFlags & flag)!=0;
 }
 
-core::array<IImage*> CNullDriver::createImagesFromFile(const io::path& filename, E_TEXTURE_TYPE* type)
+IImage *CNullDriver::createImageFromFile(const io::path& filename)
 {
-	// TO-DO -> use 'move' feature from C++11 standard.
+	if (!filename.size())
+		return nullptr;
 
-	core::array<IImage*> imageArray;
-
-	if (filename.size() > 0)
-	{
-		io::IReadFile* file = FileSystem->createAndOpenFile(filename);
-
-		if (file)
-		{
-			imageArray = createImagesFromFile(file, type);
-			file->drop();
-		}
-		else
-			os::Printer::log("Could not open file of image", filename, ELL_WARNING);
+	io::IReadFile* file = FileSystem->createAndOpenFile(filename);
+	if (!file) {
+		os::Printer::log("Could not open file of image", filename, ELL_WARNING);
+		return nullptr;
 	}
 
-	return imageArray;
+	IImage *image = createImageFromFile(file);
+	file->drop();
+	return image;
 }
 
-core::array<IImage*> CNullDriver::createImagesFromFile(io::IReadFile* file, E_TEXTURE_TYPE* type)
+IImage *CNullDriver::createImageFromFile(io::IReadFile* file)
 {
-	// TO-DO -> use 'move' feature from C++11 standard.
-
-	core::array<IImage*> imageArray;
-
 	if (!file)
-		return imageArray;
+		return nullptr;
 
 	// try to load file based on file extension
 	for (int i = SurfaceLoader.size() - 1; i >= 0; --i) {
@@ -1205,10 +1177,8 @@ core::array<IImage*> CNullDriver::createImagesFromFile(io::IReadFile* file, E_TE
 			continue;
 
 		file->seek(0); // reset file position which might have changed due to previous loadImage calls
-		if (IImage *image = SurfaceLoader[i]->loadImage(file)) {
-			imageArray.push_back(image);
-			return imageArray;
-		}
+		if (IImage *image = SurfaceLoader[i]->loadImage(file))
+			return image;
 	}
 
 	// try to load file based on what is in it
@@ -1220,13 +1190,11 @@ core::array<IImage*> CNullDriver::createImagesFromFile(io::IReadFile* file, E_TE
 			continue;
 
 		file->seek(0);
-		if (IImage *image = SurfaceLoader[i]->loadImage(file)) {
-			imageArray.push_back(image);
-			return imageArray;
-		}
+		if (IImage *image = SurfaceLoader[i]->loadImage(file))
+			return image;
 	}
 
-	return imageArray;
+	return nullptr;
 }
 
 
