@@ -670,6 +670,8 @@ namespace video
 		//! checks triangle count and print warning if wrong
 		bool checkPrimitiveCount(u32 prmcnt) const;
 
+		bool checkImage(IImage *image) const;
+
 		bool checkImage(const core::array<IImage*>& image) const;
 
 		// adds a material renderer and drops it afterwards. To be used for internal creation

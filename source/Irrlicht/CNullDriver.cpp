@@ -344,10 +344,7 @@ ITexture* CNullDriver::addTexture(const core::dimension2d<u32>& size, const io::
 	IImage* image = new CImage(format, size);
 	ITexture* t = 0;
 
-	core::array<IImage*> imageArray(1);
-	imageArray.push_back(image);
-
-	if (checkImage(imageArray))
+	if (checkImage(image))
 	{
 		t = createDeviceDependentTexture(name, image);
 	}
@@ -376,10 +373,7 @@ ITexture* CNullDriver::addTexture(const io::path& name, IImage* image)
 
 	ITexture* t = 0;
 
-	core::array<IImage*> imageArray(1);
-	imageArray.push_back(image);
-
-	if (checkImage(imageArray))
+	if (checkImage(image))
 	{
 		t = createDeviceDependentTexture(name, image);
 	}
@@ -559,9 +553,7 @@ video::ITexture* CNullDriver::loadTextureFromFile(io::IReadFile* file, const io:
 	if (!image)
 		return nullptr;
 
-	core::array<IImage*> imageArray;
-	imageArray.push_back(image);
-	if (checkImage(imageArray)) {
+	if (checkImage(image)) {
 		texture = createDeviceDependentTexture(hashName.size() ? hashName : file->getFileName(), image);
 		if (texture)
 			os::Printer::log("Loaded texture", file->getFileName(), ELL_DEBUG);
@@ -1039,90 +1031,92 @@ bool CNullDriver::checkPrimitiveCount(u32 prmCount) const
 	return true;
 }
 
+bool CNullDriver::checkImage(IImage *image) const
+{
+	ECOLOR_FORMAT format = image->getColorFormat();
+	core::dimension2d<u32> size = image->getDimension();
+
+	switch (format)
+	{
+	case ECF_DXT1:
+	case ECF_DXT2:
+	case ECF_DXT3:
+	case ECF_DXT4:
+	case ECF_DXT5:
+		if (!queryFeature(EVDF_TEXTURE_COMPRESSED_DXT))
+		{
+			os::Printer::log("DXT texture compression not available.", ELL_ERROR);
+			return false;
+		}
+		else if (size.getOptimalSize(true, false) != size)
+		{
+			os::Printer::log("Invalid size of image for DXT texture, size of image must be power of two.", ELL_ERROR);
+			return false;
+		}
+		break;
+	case ECF_PVRTC_RGB2:
+	case ECF_PVRTC_ARGB2:
+	case ECF_PVRTC_RGB4:
+	case ECF_PVRTC_ARGB4:
+		if (!queryFeature(EVDF_TEXTURE_COMPRESSED_PVRTC))
+		{
+			os::Printer::log("PVRTC texture compression not available.", ELL_ERROR);
+			return false;
+		}
+		else if (size.getOptimalSize(true, false) != size)
+		{
+			os::Printer::log("Invalid size of image for PVRTC compressed texture, size of image must be power of two and squared.", ELL_ERROR);
+			return false;
+		}
+		break;
+	case ECF_PVRTC2_ARGB2:
+	case ECF_PVRTC2_ARGB4:
+		if (!queryFeature(EVDF_TEXTURE_COMPRESSED_PVRTC2))
+		{
+			os::Printer::log("PVRTC2 texture compression not available.", ELL_ERROR);
+			return false;
+		}
+		break;
+	case ECF_ETC1:
+		if (!queryFeature(EVDF_TEXTURE_COMPRESSED_ETC1))
+		{
+			os::Printer::log("ETC1 texture compression not available.", ELL_ERROR);
+			return false;
+		}
+		break;
+	case ECF_ETC2_RGB:
+	case ECF_ETC2_ARGB:
+		if (!queryFeature(EVDF_TEXTURE_COMPRESSED_ETC2))
+		{
+			os::Printer::log("ETC2 texture compression not available.", ELL_ERROR);
+			return false;
+		}
+		break;
+	default:
+		break;
+	}
+	return true;
+}
+
 bool CNullDriver::checkImage(const core::array<IImage*>& image) const
 {
-	bool status = true;
+	if (!image.size())
+		return false;
 
-	if (image.size() > 0)
-	{
-		ECOLOR_FORMAT lastFormat = image[0]->getColorFormat();
-		core::dimension2d<u32> lastSize = image[0]->getDimension();
+	ECOLOR_FORMAT lastFormat = image[0]->getColorFormat();
+	core::dimension2d<u32> lastSize = image[0]->getDimension();
 
-		for (u32 i = 0; i < image.size() && status; ++i)
-		{
-			ECOLOR_FORMAT format = image[i]->getColorFormat();
-			core::dimension2d<u32> size = image[i]->getDimension();
+	for (u32 i = 0; i < image.size(); ++i) {
+		ECOLOR_FORMAT format = image[i]->getColorFormat();
+		core::dimension2d<u32> size = image[i]->getDimension();
 
-			switch (format)
-			{
-			case ECF_DXT1:
-			case ECF_DXT2:
-			case ECF_DXT3:
-			case ECF_DXT4:
-			case ECF_DXT5:
-				if (!queryFeature(EVDF_TEXTURE_COMPRESSED_DXT))
-				{
-					os::Printer::log("DXT texture compression not available.", ELL_ERROR);
-					status = false;
-				}
-				else if (size.getOptimalSize(true, false) != size)
-				{
-					os::Printer::log("Invalid size of image for DXT texture, size of image must be power of two.", ELL_ERROR);
-					status = false;
-				}
-				break;
-			case ECF_PVRTC_RGB2:
-			case ECF_PVRTC_ARGB2:
-			case ECF_PVRTC_RGB4:
-			case ECF_PVRTC_ARGB4:
-				if (!queryFeature(EVDF_TEXTURE_COMPRESSED_PVRTC))
-				{
-					os::Printer::log("PVRTC texture compression not available.", ELL_ERROR);
-					status = false;
-				}
-				else if (size.getOptimalSize(true, false) != size)
-				{
-					os::Printer::log("Invalid size of image for PVRTC compressed texture, size of image must be power of two and squared.", ELL_ERROR);
-					status = false;
-				}
-				break;
-			case ECF_PVRTC2_ARGB2:
-			case ECF_PVRTC2_ARGB4:
-				if (!queryFeature(EVDF_TEXTURE_COMPRESSED_PVRTC2))
-				{
-					os::Printer::log("PVRTC2 texture compression not available.", ELL_ERROR);
-					status = false;
-				}
-				break;
-			case ECF_ETC1:
-				if (!queryFeature(EVDF_TEXTURE_COMPRESSED_ETC1))
-				{
-					os::Printer::log("ETC1 texture compression not available.", ELL_ERROR);
-					status = false;
-				}
-				break;
-			case ECF_ETC2_RGB:
-			case ECF_ETC2_ARGB:
-				if (!queryFeature(EVDF_TEXTURE_COMPRESSED_ETC2))
-				{
-					os::Printer::log("ETC2 texture compression not available.", ELL_ERROR);
-					status = false;
-				}
-				break;
-			default:
-				break;
-			}
+		if (!checkImage(image[i]))
+			return false;
 
-			if (format != lastFormat || size != lastSize)
-				status = false;
-		}
+		if (format != lastFormat || size != lastSize)
+			return false;
 	}
-	else
-	{
-		status = false;
-	}
-
-	return status;
+	return true;
 }
 
 //! Enables or disables a texture creation flag.
