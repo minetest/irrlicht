@@ -1196,57 +1196,33 @@ core::array<IImage*> CNullDriver::createImagesFromFile(io::IReadFile* file, E_TE
 
 	core::array<IImage*> imageArray;
 
-	if (file)
-	{
-		s32 i;
+	if (!file)
+		return imageArray;
 
-		// try to load file based on file extension
-		for (i = SurfaceLoader.size() - 1; i >= 0; --i)
-		{
-			if (SurfaceLoader[i]->isALoadableFileExtension(file->getFileName()))
-			{
-				// reset file position which might have changed due to previous loadImage calls
-				file->seek(0);
-				imageArray = SurfaceLoader[i]->loadImages(file, type);
+	// try to load file based on file extension
+	for (int i = SurfaceLoader.size() - 1; i >= 0; --i) {
+		if (!SurfaceLoader[i]->isALoadableFileExtension(file->getFileName()))
+			continue;
 
-				if (imageArray.size() == 0)
-				{
-					file->seek(0);
-					IImage* image = SurfaceLoader[i]->loadImage(file);
-
-					if (image)
-						imageArray.push_back(image);
-				}
-
-				if (imageArray.size() > 0)
-					return imageArray;
-			}
+		file->seek(0); // reset file position which might have changed due to previous loadImage calls
+		if (IImage *image = SurfaceLoader[i]->loadImage(file)) {
+			imageArray.push_back(image);
+			return imageArray;
 		}
+	}
 
-		// try to load file based on what is in it
-		for (i = SurfaceLoader.size() - 1; i >= 0; --i)
-		{
-			// dito
-			file->seek(0);
-			if (SurfaceLoader[i]->isALoadableFileFormat(file)
-				&& !SurfaceLoader[i]->isALoadableFileExtension(file->getFileName())	// extension was tried above already
-				)
-			{
-				file->seek(0);
-				imageArray = SurfaceLoader[i]->loadImages(file, type);
+	// try to load file based on what is in it
+	for (int i = SurfaceLoader.size() - 1; i >= 0; --i) {
+		if (SurfaceLoader[i]->isALoadableFileExtension(file->getFileName()))
+			continue; // extension was tried above already
+		file->seek(0); // dito
+		if (!SurfaceLoader[i]->isALoadableFileFormat(file))
+			continue;
 
-				if (imageArray.size() == 0)
-				{
-					file->seek(0);
-					IImage* image = SurfaceLoader[i]->loadImage(file);
-
-					if (image)
-						imageArray.push_back(image);
-				}
-
-				if (imageArray.size() > 0)
-					return imageArray;
-			}
+		file->seek(0);
+		if (IImage *image = SurfaceLoader[i]->loadImage(file)) {
+			imageArray.push_back(image);
+			return imageArray;
 		}
 	}
 
