@@ -314,9 +314,9 @@ namespace video
 		//! Returns if a texture creation flag is enabled or disabled.
 		bool getTextureCreationFlag(E_TEXTURE_CREATION_FLAG flag) const override;
 
-		core::array<IImage*> createImagesFromFile(const io::path& filename, E_TEXTURE_TYPE* type = 0) override;
+		IImage *createImageFromFile(const io::path& filename) override;
 
-		core::array<IImage*> createImagesFromFile(io::IReadFile* file, E_TEXTURE_TYPE* type = 0) override;
+		IImage *createImageFromFile(io::IReadFile* file) override;
 
 		//! Creates a software image from a byte array.
 		/** \param useForeignMemory: If true, the image will use the data pointer
