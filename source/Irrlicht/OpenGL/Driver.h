@@ -27,7 +27,7 @@ namespace video
 
 	class COpenGL3DriverBase : public CNullDriver, public IMaterialRendererServices, public COpenGL3ExtensionHandler
 	{
-		friend class COpenGLCoreTexture<COpenGL3DriverBase>;
+		friend class COpenGL3Texture;
 
 	protected:
 		//! constructor (use createOpenGL3Driver instead)

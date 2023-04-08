@@ -9,7 +9,7 @@
 #include "CNullDriver.h"
 #include "IContextManager.h"
 
-#include "COpenGLCoreTexture.h"
+#include "Texture.h"
 #include "COpenGLCoreRenderTarget.h"
 #include "COpenGLCoreCacheHandler.h"
 

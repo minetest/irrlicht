@@ -403,6 +403,7 @@ if(USE_SDLGL)
 		OpenGL/FixedPipelineRenderer.cpp
 		OpenGL/MaterialRenderer.cpp
 		OpenGL/Renderer2D.cpp
+		OpenGL/Texture.cpp
 	)
 endif()
 
