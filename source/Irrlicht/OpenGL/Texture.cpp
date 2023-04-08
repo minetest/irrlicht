@@ -64,16 +64,6 @@ COpenGL3Texture::COpenGL3Texture(const io::path& name, const core::array<IImage*
 	glTexParameteri(TextureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(TextureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	if (HasMipMaps) // TODO ES only
-	{
-		if (Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_SPEED))
-			glHint(GL_GENERATE_MIPMAP_HINT, GL_FASTEST);
-		else if (Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_QUALITY))
-			glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
-		else
-			glHint(GL_GENERATE_MIPMAP_HINT, GL_DONT_CARE);
-	}
-
 	for (u32 i = 0; i < (*tmpImages).size(); ++i)
 		uploadTexture(true, i, 0, (*tmpImages)[i]->getData());
 
@@ -513,47 +503,7 @@ void COpenGL3Texture::uploadTexture(bool initTexture, u32 layer, u32 level, void
 ECOLOR_FORMAT COpenGL3Texture::getBestColorFormat(ECOLOR_FORMAT format) const
 {
 	// We only try for to adapt "simple" formats
-	ECOLOR_FORMAT destFormat = (format <= ECF_A8R8G8B8) ? ECF_A8R8G8B8 : format;
-
-	switch (format)
-	{
-	case ECF_A1R5G5B5:
-		if (!Driver->getTextureCreationFlag(ETCF_ALWAYS_32_BIT))
-			destFormat = ECF_A1R5G5B5;
-		break;
-	case ECF_R5G6B5:
-		if (!Driver->getTextureCreationFlag(ETCF_ALWAYS_32_BIT))
-			destFormat = ECF_R5G6B5;
-		break;
-	case ECF_A8R8G8B8:
-		if (Driver->getTextureCreationFlag(ETCF_ALWAYS_16_BIT) ||
-			Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_SPEED))
-			destFormat = ECF_A1R5G5B5;
-		break;
-	case ECF_R8G8B8:
-		// Note: Using ECF_A8R8G8B8 even when ETCF_ALWAYS_32_BIT is not set as 24 bit textures fail with too many cards
-		if (Driver->getTextureCreationFlag(ETCF_ALWAYS_16_BIT) || Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_SPEED))
-			destFormat = ECF_A1R5G5B5;
-	default:
-		break;
-	}
-
-	if (Driver->getTextureCreationFlag(ETCF_NO_ALPHA_CHANNEL))
-	{
-		switch (destFormat)
-		{
-		case ECF_A1R5G5B5:
-			destFormat = ECF_R5G6B5;
-			break;
-		case ECF_A8R8G8B8:
-			destFormat = ECF_R8G8B8;
-			break;
-		default:
-			break;
-		}
-	}
-
-	return destFormat;
+	return (format <= ECF_A8R8G8B8) ? ECF_A8R8G8B8 : format;
 }
 
 GLenum COpenGL3Texture::TextureTypeIrrToGL(E_TEXTURE_TYPE type)
