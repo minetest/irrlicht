@@ -331,7 +331,7 @@ namespace video
 
 		void drawQuad(const VertexType &vertexType, const S3DVertex (&vertices)[4]);
 		void drawArrays(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount);
-		void drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, const u16 *indices, int indexCount);
+		void drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount, const u16 *indices, int indexCount);
 		void drawElements(GLenum primitiveType, const VertexType &vertexType, uintptr_t vertices, uintptr_t indices, int indexCount);
 
 		void beginDraw(const VertexType &vertexType, uintptr_t verticesBase);
@@ -386,7 +386,8 @@ private:
 
 		void addDummyMaterial(E_MATERIAL_TYPE type);
 
-		std::vector<u16> QuadsIndices;
+		unsigned QuadIndexCount;
+		GLuint QuadIndexBuffer = 0;
 		void initQuadsIndices(int max_vertex_count = 65536);
 
 		void debugCb(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message);

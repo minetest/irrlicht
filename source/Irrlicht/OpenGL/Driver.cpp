@@ -186,6 +186,7 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 	void COpenGL3DriverBase::initQuadsIndices(int max_vertex_count)
 	{
 		int max_quad_count = max_vertex_count / 4;
+		std::vector<GLushort> QuadsIndices;
 		QuadsIndices.reserve(6 * max_quad_count);
 		for (int k = 0; k < max_quad_count; k++) {
 			QuadsIndices.push_back(4 * k + 0);
@@ -195,6 +196,11 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 			QuadsIndices.push_back(4 * k + 2);
 			QuadsIndices.push_back(4 * k + 3);
 		}
+		glGenBuffers(1, &QuadIndexBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, QuadIndexBuffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(QuadsIndices[0]) * QuadsIndices.size(), QuadsIndices.data(), GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		QuadIndexCount = QuadsIndices.size();
 	}
 
 	bool COpenGL3DriverBase::genericDriverInit(const core::dimension2d<u32>& screenSize, bool stencilBuffer)
@@ -919,7 +925,7 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		}
 
 		const irr::u32 drawCount = core::min_<u32>(positions.size(), sourceRects.size());
-		assert(6 * std::size_t(drawCount) <= QuadsIndices.size());
+		assert(6 * drawCount <= QuadIndexCount); // FIXME split the batch? or let it crash?
 
 		core::array<S3DVertex> vtx(drawCount * 4);
 
@@ -959,7 +965,9 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 					tcoords.UpperLeftCorner.X, tcoords.LowerRightCorner.Y));
 		}
 
-		drawElements(GL_TRIANGLES, vt2DImage, vtx.const_pointer(), QuadsIndices.data(), 6 * drawCount);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, QuadIndexBuffer);
+		drawElements(GL_TRIANGLES, vt2DImage, vtx.const_pointer(), vtx.size(), 0, 6 * drawCount);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		if (clipRect)
 			glDisable(GL_SCISSOR_TEST);
@@ -1102,10 +1110,10 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		endDraw(vertexType);
 	}
 
-	void COpenGL3DriverBase::drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, const u16 *indices, int indexCount)
+	void COpenGL3DriverBase::drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount, const u16 *indices, int indexCount)
 	{
 		beginDraw(vertexType, reinterpret_cast<uintptr_t>(vertices));
-		glDrawElements(primitiveType, indexCount, GL_UNSIGNED_SHORT, indices);
+		glDrawRangeElements(primitiveType, 0, vertexCount - 1, indexCount, GL_UNSIGNED_SHORT, indices);
 		endDraw(vertexType);
 	}
 
