@@ -323,140 +323,73 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		fsFile->drop();
 	}
 
+	void COpenGL3DriverBase::addDummyMaterial(E_MATERIAL_TYPE type) {
+		auto index = addMaterialRenderer(getMaterialRenderer(EMT_SOLID), "DUMMY");
+		assert(index == type);
+	}
+
 	void COpenGL3DriverBase::createMaterialRenderers()
 	{
 		// Create callbacks.
 
 		COpenGL3MaterialSolidCB* SolidCB = new COpenGL3MaterialSolidCB();
-		COpenGL3MaterialSolid2CB* Solid2LayerCB = new COpenGL3MaterialSolid2CB();
-		COpenGL3MaterialLightmapCB* LightmapCB = new COpenGL3MaterialLightmapCB(1.f);
-		COpenGL3MaterialLightmapCB* LightmapAddCB = new COpenGL3MaterialLightmapCB(1.f);
-		COpenGL3MaterialLightmapCB* LightmapM2CB = new COpenGL3MaterialLightmapCB(2.f);
-		COpenGL3MaterialLightmapCB* LightmapM4CB = new COpenGL3MaterialLightmapCB(4.f);
-		COpenGL3MaterialLightmapCB* LightmapLightingCB = new COpenGL3MaterialLightmapCB(1.f);
-		COpenGL3MaterialLightmapCB* LightmapLightingM2CB = new COpenGL3MaterialLightmapCB(2.f);
-		COpenGL3MaterialLightmapCB* LightmapLightingM4CB = new COpenGL3MaterialLightmapCB(4.f);
-		COpenGL3MaterialSolid2CB* DetailMapCB = new COpenGL3MaterialSolid2CB();
-		COpenGL3MaterialReflectionCB* SphereMapCB = new COpenGL3MaterialReflectionCB();
-		COpenGL3MaterialReflectionCB* Reflection2LayerCB = new COpenGL3MaterialReflectionCB();
-		COpenGL3MaterialSolidCB* TransparentAddColorCB = new COpenGL3MaterialSolidCB();
 		COpenGL3MaterialSolidCB* TransparentAlphaChannelCB = new COpenGL3MaterialSolidCB();
 		COpenGL3MaterialSolidCB* TransparentAlphaChannelRefCB = new COpenGL3MaterialSolidCB();
 		COpenGL3MaterialSolidCB* TransparentVertexAlphaCB = new COpenGL3MaterialSolidCB();
-		COpenGL3MaterialReflectionCB* TransparentReflection2LayerCB = new COpenGL3MaterialReflectionCB();
 		COpenGL3MaterialOneTextureBlendCB* OneTextureBlendCB = new COpenGL3MaterialOneTextureBlendCB();
 
 		// Create built-in materials.
+		// The addition order must be the same as in the E_MATERIAL_TYPE enumeration. Thus the
+		// addDummyMaterial calls for materials no longer supported.
 
-		core::stringc VertexShader = OGLES2ShaderPath + "Solid.vsh";
+		const core::stringc VertexShader = OGLES2ShaderPath + "Solid.vsh";
+
+		// EMT_SOLID
 		core::stringc FragmentShader = OGLES2ShaderPath + "Solid.fsh";
-
 		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
 			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, SolidCB, EMT_SOLID, 0);
 
-		VertexShader = OGLES2ShaderPath + "Solid2.vsh";
-		FragmentShader = OGLES2ShaderPath + "Solid2Layer.fsh";
+		addDummyMaterial(EMT_SOLID_2_LAYER);
+		addDummyMaterial(EMT_LIGHTMAP);
+		addDummyMaterial(EMT_LIGHTMAP_ADD);
+		addDummyMaterial(EMT_LIGHTMAP_M2);
+		addDummyMaterial(EMT_LIGHTMAP_M4);
+		addDummyMaterial(EMT_LIGHTMAP_LIGHTING);
+		addDummyMaterial(EMT_LIGHTMAP_LIGHTING_M2);
+		addDummyMaterial(EMT_LIGHTMAP_LIGHTING_M4);
+		addDummyMaterial(EMT_DETAIL_MAP);
+		addDummyMaterial(EMT_SPHERE_MAP);
+		addDummyMaterial(EMT_REFLECTION_2_LAYER);
+		addDummyMaterial(EMT_TRANSPARENT_ADD_COLOR);
 
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, Solid2LayerCB, EMT_SOLID, 0);
-
-		VertexShader = OGLES2ShaderPath + "Solid2.vsh";
-		FragmentShader = OGLES2ShaderPath + "LightmapModulate.fsh";
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, LightmapCB, EMT_SOLID, 0);
-
-		FragmentShader = OGLES2ShaderPath + "LightmapAdd.fsh";
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, LightmapAddCB, EMT_SOLID, 0);
-
-		FragmentShader = OGLES2ShaderPath + "LightmapModulate.fsh";
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, LightmapM2CB, EMT_SOLID, 0);
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, LightmapM4CB, EMT_SOLID, 0);
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, LightmapLightingCB, EMT_SOLID, 0);
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, LightmapLightingM2CB, EMT_SOLID, 0);
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, LightmapLightingM4CB, EMT_SOLID, 0);
-
-		VertexShader = OGLES2ShaderPath + "Solid2.vsh";
-		FragmentShader = OGLES2ShaderPath + "DetailMap.fsh";
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, DetailMapCB, EMT_SOLID, 0);
-
-		VertexShader = OGLES2ShaderPath + "SphereMap.vsh";
-		FragmentShader = OGLES2ShaderPath + "SphereMap.fsh";
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, SphereMapCB, EMT_SOLID, 0);
-
-		VertexShader = OGLES2ShaderPath + "Reflection2Layer.vsh";
-		FragmentShader = OGLES2ShaderPath + "Reflection2Layer.fsh";
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, Reflection2LayerCB, EMT_SOLID, 0);
-
-		VertexShader = OGLES2ShaderPath + "Solid.vsh";
-		FragmentShader = OGLES2ShaderPath + "Solid.fsh";
-
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, TransparentAddColorCB, EMT_TRANSPARENT_ADD_COLOR, 0);
-
+		// EMT_TRANSPARENT_ALPHA_CHANNEL
 		FragmentShader = OGLES2ShaderPath + "TransparentAlphaChannel.fsh";
 		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
 			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, TransparentAlphaChannelCB, EMT_TRANSPARENT_ALPHA_CHANNEL, 0);
 
+		// EMT_TRANSPARENT_ALPHA_CHANNEL_REF
 		FragmentShader = OGLES2ShaderPath + "TransparentAlphaChannelRef.fsh";
-
 		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
 			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, TransparentAlphaChannelRefCB, EMT_SOLID, 0);
 
+		// EMT_TRANSPARENT_VERTEX_ALPHA
 		FragmentShader = OGLES2ShaderPath + "TransparentVertexAlpha.fsh";
-
 		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
 			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, TransparentVertexAlphaCB, EMT_TRANSPARENT_ALPHA_CHANNEL, 0);
 
-		VertexShader = OGLES2ShaderPath + "Reflection2Layer.vsh";
-		FragmentShader = OGLES2ShaderPath + "Reflection2Layer.fsh";
+		addDummyMaterial(EMT_TRANSPARENT_REFLECTION_2_LAYER);
 
-		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
-			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, TransparentReflection2LayerCB, EMT_TRANSPARENT_ALPHA_CHANNEL, 0);
-
-		VertexShader = OGLES2ShaderPath + "Solid.vsh";
+		// EMT_ONETEXTURE_BLEND
 		FragmentShader = OGLES2ShaderPath + "OneTextureBlend.fsh";
-
 		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
 			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, OneTextureBlendCB, EMT_ONETEXTURE_BLEND, 0);
 
 		// Drop callbacks.
 
 		SolidCB->drop();
-		Solid2LayerCB->drop();
-		LightmapCB->drop();
-		LightmapAddCB->drop();
-		LightmapM2CB->drop();
-		LightmapM4CB->drop();
-		LightmapLightingCB->drop();
-		LightmapLightingM2CB->drop();
-		LightmapLightingM4CB->drop();
-		DetailMapCB->drop();
-		SphereMapCB->drop();
-		Reflection2LayerCB->drop();
-		TransparentAddColorCB->drop();
 		TransparentAlphaChannelCB->drop();
 		TransparentAlphaChannelRefCB->drop();
 		TransparentVertexAlphaCB->drop();
-		TransparentReflection2LayerCB->drop();
 		OneTextureBlendCB->drop();
 
 		// Create 2D material renderers

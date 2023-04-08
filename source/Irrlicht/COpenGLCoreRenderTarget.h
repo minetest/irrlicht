@@ -6,8 +6,6 @@
 #define __C_OGLCORE_RENDER_TARGET_H_INCLUDED__
 
 
-#if defined(_IRR_COMPILE_WITH_OPENGL_) || defined(_IRR_COMPILE_WITH_OGLES1_) || defined(_IRR_COMPILE_WITH_OGLES2_)
-
 #include "IRenderTarget.h"
 
 #ifndef GL_FRAMEBUFFER_INCOMPLETE_FORMATS
@@ -399,5 +397,4 @@ protected:
 }
 }
 
-#endif
 #endif

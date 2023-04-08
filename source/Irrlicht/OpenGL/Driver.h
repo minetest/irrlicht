@@ -384,6 +384,8 @@ private:
 
 		IContextManager* ContextManager;
 
+		void addDummyMaterial(E_MATERIAL_TYPE type);
+
 		unsigned QuadIndexCount;
 		GLuint QuadIndexBuffer = 0;
 		void initQuadsIndices(int max_vertex_count = 65536);

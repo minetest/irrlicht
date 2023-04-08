@@ -70,7 +70,7 @@ endif()
 add_definitions(
 	-DIRR_ENABLE_BUILTIN_FONT
 	-D_IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-	)
+)
 
 # Platform-specific configuration
 
@@ -89,7 +89,7 @@ elseif(APPLE)
 elseif(ANDROID)
 	add_definitions(-D_IRR_ANDROID_PLATFORM_ -D_IRR_COMPILE_ANDROID_ASSET_READER_)
 	if(USE_SDL2)
-		message(SEND_ERROR "SDL2 backend is not supported on Android")
+		message(FATAL_ERROR "SDL2 device is not (yet) supported on Android")
 	endif()
 	set(DEVICE "Android")
 elseif(EMSCRIPTEN)
@@ -111,6 +111,8 @@ endif()
 
 if(USE_SDL2)
 	set(DEVICE "SDL")
+elseif(DEVICE STREQUAL "SDL")
+	message(FATAL_ERROR "SDL was used but not enabled?!")
 endif()
 
 add_definitions("-D_IRR_COMPILE_WITH_${DEVICE}_DEVICE_")
@@ -188,7 +190,7 @@ endif()
 
 if(ENABLE_OPENGL3)
 	if (NOT USE_SDL2)
-		message(SEND_ERROR "OpenGL3 support requires SDL2")
+		message(FATAL_ERROR "OpenGL 3 driver requires SDL2")
 	endif()
 	set(USE_SDLGL ON)
 	set(USE_SDLGL3 ON)
@@ -196,7 +198,7 @@ endif()
 
 if(ENABLE_GLES1)
 	if (USE_SDL2)
-		message(SEND_ERROR "OpenGL ES 1 is not supported with SDL2")
+		message(FATAL_ERROR "OpenGL ES 1 is not supported with SDL2")
 	endif()
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES1_)
 	if(DEVICE MATCHES "^(WINDOWS|X11|ANDROID)$")
@@ -230,7 +232,7 @@ endif()
 
 message(STATUS "Device: ${DEVICE}")
 message(STATUS "OpenGL: ${ENABLE_OPENGL}")
-message(STATUS "OpenGL 3: ${USE_SDLGL3}")
+message(STATUS "OpenGL 3: ${ENABLE_OPENGL3}")
 message(STATUS "OpenGL ES: ${ENABLE_GLES1}")
 if (USE_SDLGLES2)
 	message(STATUS "OpenGL ES 2: ON (unified)")
@@ -258,7 +260,7 @@ endif()
 if(ENABLE_GLES2)
 	find_package(OpenGLES2 REQUIRED)
 endif()
-if(ENABLE_OPENGL)
+if(ENABLE_OPENGL OR ENABLE_OPENGL3)
 	set(OpenGL_GL_PREFERENCE "LEGACY")
 	find_package(OpenGL REQUIRED)
 endif()
@@ -277,7 +279,7 @@ elseif(APPLE)
 	find_library(IOKIT_LIB IOKit REQUIRED)
 
 	add_definitions(-DGL_SILENCE_DEPRECATION)
-else()
+elseif(NOT USE_SDL2)
 	# Unix probably
 	find_package(X11 REQUIRED)
 	if(USE_XINPUT2 AND NOT X11_Xi_FOUND)
@@ -292,21 +294,21 @@ set(link_includes
 	"${ZLIB_INCLUDE_DIR}"
 	"${JPEG_INCLUDE_DIR}"
 	"${PNG_INCLUDE_DIR}"
-	"${SDL2_INCLUDE_DIRS}"
+	"$<$<BOOL:${USE_SDL2}>:${SDL2_INCLUDE_DIRS}>"
 
 	${OPENGL_INCLUDE_DIR}
 	${OPENGLES2_INCLUDE_DIR}
 	${EGL_INCLUDE_DIR}
 
 	"$<$<PLATFORM_ID:Android>:${ANDROID_NDK}/sources/android/native_app_glue>"
-	${X11_INCLUDE_DIR}
+	"$<$<BOOL:${USE_X11}>:${X11_INCLUDE_DIR}>"
 )
 
 set(link_libs
 	"${ZLIB_LIBRARY}"
 	"${JPEG_LIBRARY}"
 	"${PNG_LIBRARY}"
-	"${SDL2_LIBRARIES}"
+	"$<$<BOOL:${USE_SDL2}>:${SDL2_LIBRARIES}>"
 
 	${OPENGL_LIBRARIES}
 	${OPENGLES_LIBRARY}
@@ -318,8 +320,8 @@ set(link_libs
 	${IOKIT_LIB}
 	"$<$<PLATFORM_ID:Windows>:gdi32>"
 	"$<$<PLATFORM_ID:Windows>:winmm>"
-	${X11_X11_LIB}
-	${X11_Xi_LIB}
+	"$<$<BOOL:${USE_X11}>:${X11_X11_LIB}>"
+	"$<$<BOOL:${USE_X11}>:${X11_Xi_LIB}>"
 )
 
 # Source files
@@ -351,19 +353,31 @@ add_library(IRROBJ OBJECT
 
 set(IRRDRVROBJ
 	CNullDriver.cpp
-	COpenGLCacheHandler.cpp
-	COpenGLDriver.cpp
-	COpenGLShaderMaterialRenderer.cpp
-	COpenGLSLMaterialRenderer.cpp
-	COpenGLExtensionHandler.cpp
-	COGLESDriver.cpp
-	COGLESExtensionHandler.cpp
 	CGLXManager.cpp
 	CWGLManager.cpp
 	CEGLManager.cpp
 	CSDLManager.cpp
 	mt_opengl_loader.cpp
 )
+
+if(ENABLE_OPENGL)
+	set(IRRDRVROBJ
+		${IRRDRVROBJ}
+		COpenGLCacheHandler.cpp
+		COpenGLDriver.cpp
+		COpenGLShaderMaterialRenderer.cpp
+		COpenGLSLMaterialRenderer.cpp
+		COpenGLExtensionHandler.cpp
+	)
+endif()
+
+if(ENABLE_GLES1)
+	set(IRRDRVROBJ
+		${IRRDRVROBJ}
+		COGLESDriver.cpp
+		COGLESExtensionHandler.cpp
+	)
+endif()
 
 set(IRRIMAGEOBJ
 	CColorConverter.cpp
@@ -402,7 +416,7 @@ if(USE_SDLGLES2)
 	target_sources(IRRVIDEOOBJ PRIVATE
 		OpenGLES2/Driver.cpp
 	)
-else()
+elseif(ENABLE_GLES2)
 	target_sources(IRRVIDEOOBJ PRIVATE
 		COGLES2Driver.cpp
 		COGLES2ExtensionHandler.cpp

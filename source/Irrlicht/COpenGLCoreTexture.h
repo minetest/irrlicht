@@ -6,8 +6,6 @@
 #define __C_OGLCORE_TEXTURE_H_INCLUDED__
 
 
-#if defined(_IRR_COMPILE_WITH_OPENGL_) || defined(_IRR_COMPILE_WITH_OGLES1_) || defined(_IRR_COMPILE_WITH_OGLES2_)
-
 #include "irrArray.h"
 #include "SMaterialLayer.h"
 #include "ITexture.h"
@@ -665,5 +663,4 @@ protected:
 }
 }
 
-#endif
 #endif

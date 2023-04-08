@@ -14,20 +14,12 @@ uniform mat4 uWVMatrix;
 uniform mat4 uNMatrix;
 uniform mat4 uTMatrix0;
 
-uniform vec4 uGlobalAmbient;
-uniform vec4 uMaterialAmbient;
-uniform vec4 uMaterialDiffuse;
-uniform vec4 uMaterialEmissive;
-uniform vec4 uMaterialSpecular;
-uniform float uMaterialShininess;
-
 uniform float uThickness;
 
 /* Varyings */
 
 varying vec2 vTextureCoord0;
 varying vec4 vVertexColor;
-varying vec4 vSpecularColor;
 varying float vFogCoord;
 
 void main()
@@ -39,7 +31,6 @@ void main()
 	vTextureCoord0 = vec4(uTMatrix0 * TextureCoord0).xy;
 
 	vVertexColor = inVertexColor.bgra;
-	vSpecularColor = vec4(0.0, 0.0, 0.0, 0.0);
 
 	vec3 Position = (uWVMatrix * vec4(inVertexPosition, 1.0)).xyz;
 
