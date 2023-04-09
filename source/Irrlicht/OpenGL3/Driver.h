@@ -13,6 +13,9 @@ namespace video {
 	public:
 		using COpenGL3DriverBase::COpenGL3DriverBase;
 		E_DRIVER_TYPE getDriverType() const override;
+
+	protected:
+		bool readTexture(IImage *into, COpenGL3Texture *texture) override;
 	};
 
 }

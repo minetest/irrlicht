@@ -61,6 +61,16 @@ public:
 		return TextureName;
 	}
 
+	GLenum getPixelFormat() const
+	{
+		return PixelFormat;
+	}
+
+	GLenum getPixelType() const
+	{
+		return PixelType;
+	}
+
 	SStatesCache& getStatesCache() const
 	{
 		return StatesCache;

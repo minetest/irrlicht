@@ -291,6 +291,8 @@ namespace video
 
 		ITexture* createDeviceDependentTextureCubemap(const io::path& name, const core::array<IImage*>& image) override;
 
+		virtual bool readTexture(IImage *into, COpenGL3Texture *texture) = 0;
+
 		//! Map Irrlicht wrap mode to OpenGL enum
 		GLint getTextureWrapMode(u8 clamp) const;
 

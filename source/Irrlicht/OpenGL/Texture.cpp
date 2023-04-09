@@ -175,6 +175,7 @@ void* COpenGL3Texture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel, u32 layer
 {
 	assert(mipmapLevel == 0);
 	assert(layer == 0);
+	assert(lockFlags == ETLF_FLIP_Y_UP_RTT);
 
 	if (LockImage)
 		return LockImage->getData();
@@ -198,103 +199,7 @@ void* COpenGL3Texture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel, u32 layer
 
 		if (LockImage && mode != ETLM_WRITE_ONLY)
 		{
-			bool passed = true;
-
-// TODO GL/GLES are different
-#ifdef IRR_COMPILE_GL_COMMON
-			IImage* tmpImage = LockImage;	// not sure yet if the size required by glGetTexImage is always correct, if not we might have to allocate a different tmpImage and convert colors later on.
-
-			Driver->getCacheHandler()->getTextureCache().set(0, this);
-			Driver->testGLError(__LINE__);
-
-			GLenum tmpTextureType = TextureType;
-
-			if (tmpTextureType == GL_TEXTURE_CUBE_MAP)
-			{
-				tmpTextureType = GL_TEXTURE_CUBE_MAP_POSITIVE_X;
-			}
-
-			glGetTexImage(tmpTextureType, 0, PixelFormat, PixelType, tmpImage->getData());
-			Driver->testGLError(__LINE__);
-
-			if (IsRenderTarget && lockFlags == ETLF_FLIP_Y_UP_RTT)
-			{
-				const s32 pitch = tmpImage->getPitch();
-
-				u8* srcA = static_cast<u8*>(tmpImage->getData());
-				u8* srcB = srcA + (tmpImage->getDimension().Height - 1) * pitch;
-
-				u8* tmpBuffer = new u8[pitch];
-
-				for (u32 i = 0; i < tmpImage->getDimension().Height; i += 2)
-				{
-					memcpy(tmpBuffer, srcA, pitch);
-					memcpy(srcA, srcB, pitch);
-					memcpy(srcB, tmpBuffer, pitch);
-					srcA += pitch;
-					srcB -= pitch;
-				}
-
-				delete[] tmpBuffer;
-			}
-#elif (defined(IRR_COMPILE_GLES2_COMMON)	|| defined(IRR_COMPILE_GLES_COMMON))
-// TODO: on ES2 we can likely also work with glCopyTexImage2D instead of rendering which should be faster.
-			COpenGL3Texture* tmpTexture = new COpenGL3Texture("OGL_CORE_LOCK_TEXTURE", Size, ETT_2D, ColorFormat, Driver);
-
-			GLuint tmpFBO = 0;
-			Driver->irrGlGenFramebuffers(1, &tmpFBO);
-
-			GLint prevViewportX = 0;
-			GLint prevViewportY = 0;
-			GLsizei prevViewportWidth = 0;
-			GLsizei prevViewportHeight = 0;
-			Driver->getCacheHandler()->getViewport(prevViewportX, prevViewportY, prevViewportWidth, prevViewportHeight);
-			Driver->getCacheHandler()->setViewport(0, 0, Size.Width, Size.Height);
-
-			GLuint prevFBO = 0;
-			Driver->getCacheHandler()->getFBO(prevFBO);
-			Driver->getCacheHandler()->setFBO(tmpFBO);
-
-			Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tmpTexture->getOpenGLTextureName(), 0);
-
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			Driver->draw2DImage(this, 0, true);
-
-			IImage* tmpImage = Driver->createImage(ECF_A8R8G8B8, Size);
-			glReadPixels(0, 0, Size.Width, Size.Height, GL_RGBA, GL_UNSIGNED_BYTE, tmpImage->getData());
-
-			Driver->getCacheHandler()->setFBO(prevFBO);
-			Driver->getCacheHandler()->setViewport(prevViewportX, prevViewportY, prevViewportWidth, prevViewportHeight);
-
-			Driver->irrGlDeleteFramebuffers(1, &tmpFBO);
-			delete tmpTexture;
-
-			void* src = tmpImage->getData();
-			void* dest = LockImage->getData();
-
-			switch (ColorFormat)
-			{
-			case ECF_A1R5G5B5:
-				CColorConverter::convert_A8R8G8B8toA1B5G5R5(src, tmpImage->getDimension().getArea(), dest);
-				break;
-			case ECF_R5G6B5:
-				CColorConverter::convert_A8R8G8B8toR5G6B5(src, tmpImage->getDimension().getArea(), dest);
-				break;
-			case ECF_R8G8B8:
-				CColorConverter::convert_A8R8G8B8toB8G8R8(src, tmpImage->getDimension().getArea(), dest);
-				break;
-			case ECF_A8R8G8B8:
-				CColorConverter::convert_A8R8G8B8toA8B8G8R8(src, tmpImage->getDimension().getArea(), dest);
-				break;
-			default:
-				passed = false;
-				break;
-			}
-			tmpImage->drop();
-#endif
-
-			if (!passed)
+			if (!Driver->readTexture(LockImage, this))
 			{
 				LockImage->drop();
 				LockImage = 0;
