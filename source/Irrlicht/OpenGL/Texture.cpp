@@ -12,8 +12,8 @@ namespace video
 {
 
 COpenGL3Texture::COpenGL3Texture(const io::path& name, const core::array<IImage*>& images, E_TEXTURE_TYPE type, COpenGL3DriverBase* driver) : ITexture(name, type), Driver(driver), TextureType(GL_TEXTURE_2D),
-	TextureName(0), InternalFormat(GL_RGBA), PixelFormat(GL_RGBA), PixelType(GL_UNSIGNED_BYTE), Converter(0), LockReadOnly(false), LockImage(0), LockLayer(0),
-	KeepImage(false), MipLevelStored(0), LegacyAutoGenerateMipMaps(false)
+	TextureName(0), InternalFormat(GL_RGBA), PixelFormat(GL_RGBA), PixelType(GL_UNSIGNED_BYTE), Converter(0), LockReadOnly(false), LockImage(0),
+	KeepImage(false), LegacyAutoGenerateMipMaps(false)
 {
 	_IRR_DEBUG_BREAK_IF(images.size() == 0)
 
@@ -94,8 +94,8 @@ COpenGL3Texture::COpenGL3Texture(const io::path& name, const core::array<IImage*
 COpenGL3Texture::COpenGL3Texture(const io::path& name, const core::dimension2d<u32>& size, E_TEXTURE_TYPE type, ECOLOR_FORMAT format, COpenGL3DriverBase* driver)
 	: ITexture(name, type),
 	Driver(driver), TextureType(GL_TEXTURE_2D),
-	TextureName(0), InternalFormat(GL_RGBA), PixelFormat(GL_RGBA), PixelType(GL_UNSIGNED_BYTE), Converter(0), LockReadOnly(false), LockImage(0), LockLayer(0), KeepImage(false),
-	MipLevelStored(0), LegacyAutoGenerateMipMaps(false)
+	TextureName(0), InternalFormat(GL_RGBA), PixelFormat(GL_RGBA), PixelType(GL_UNSIGNED_BYTE), Converter(0), LockReadOnly(false), LockImage(0), KeepImage(false),
+	LegacyAutoGenerateMipMaps(false)
 {
 	DriverType = Driver->getDriverType();
 	TextureType = TextureTypeIrrToGL(Type);
@@ -173,33 +173,28 @@ COpenGL3Texture::~COpenGL3Texture()
 
 void* COpenGL3Texture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel, u32 layer, E_TEXTURE_LOCK_FLAGS lockFlags)
 {
+	assert(mipmapLevel == 0);
+	assert(layer == 0);
+
 	if (LockImage)
-		return getLockImageData(MipLevelStored);
+		return LockImage->getData();
 
 	if (IImage::isCompressedFormat(ColorFormat))
 		return 0;
 
 	LockReadOnly |= (mode == ETLM_READ_ONLY);
-	LockLayer = layer;
-	MipLevelStored = mipmapLevel;
 
 	if (KeepImage)
 	{
-		_IRR_DEBUG_BREAK_IF(LockLayer > Images.size())
+		_IRR_DEBUG_BREAK_IF(0 > Images.size())
 
-		if ( mipmapLevel == 0 || (Images[LockLayer] && Images[LockLayer]->getMipMapsData(mipmapLevel)) )
-		{
-			LockImage = Images[LockLayer];
-			LockImage->grab();
-		}
+		LockImage = Images[0];
+		LockImage->grab();
 	}
 
 	if ( !LockImage )
 	{
-		core::dimension2d<u32> lockImageSize( IImage::getMipMapsSize(Size, MipLevelStored));
-
-		// note: we save mipmap data also in the image because IImage doesn't allow saving single mipmap levels to the mipmap data
-		LockImage = Driver->createImage(ColorFormat, lockImageSize);
+		LockImage = Driver->createImage(ColorFormat, Size);
 
 		if (LockImage && mode != ETLM_WRITE_ONLY)
 		{
@@ -216,12 +211,10 @@ void* COpenGL3Texture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel, u32 layer
 
 			if (tmpTextureType == GL_TEXTURE_CUBE_MAP)
 			{
-				_IRR_DEBUG_BREAK_IF(layer > 5)
-
-				tmpTextureType = GL_TEXTURE_CUBE_MAP_POSITIVE_X + layer;
+				tmpTextureType = GL_TEXTURE_CUBE_MAP_POSITIVE_X;
 			}
 
-			glGetTexImage(tmpTextureType, MipLevelStored, PixelFormat, PixelType, tmpImage->getData());
+			glGetTexImage(tmpTextureType, 0, PixelFormat, PixelType, tmpImage->getData());
 			Driver->testGLError(__LINE__);
 
 			if (IsRenderTarget && lockFlags == ETLF_FLIP_Y_UP_RTT)
@@ -266,7 +259,7 @@ void* COpenGL3Texture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel, u32 layer
 
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			Driver->draw2DImage(this, layer, true);
+			Driver->draw2DImage(this, 0, true);
 
 			IImage* tmpImage = Driver->createImage(ECF_A8R8G8B8, Size);
 			glReadPixels(0, 0, Size.Width, Size.Height, GL_RGBA, GL_UNSIGNED_BYTE, tmpImage->getData());
@@ -311,7 +304,7 @@ void* COpenGL3Texture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel, u32 layer
 		Driver->testGLError(__LINE__);
 	}
 
-	return (LockImage) ? getLockImageData(MipLevelStored) : 0;
+	return LockImage ? LockImage->getData() : nullptr;
 }
 
 void COpenGL3Texture::unlock()
@@ -324,7 +317,7 @@ void COpenGL3Texture::unlock()
 		const COpenGL3Texture* prevTexture = Driver->getCacheHandler()->getTextureCache().get(0);
 		Driver->getCacheHandler()->getTextureCache().set(0, this);
 
-		uploadTexture(false, LockLayer, MipLevelStored, getLockImageData(MipLevelStored));
+		uploadTexture(false, 0, 0, LockImage->getData());
 
 		Driver->getCacheHandler()->getTextureCache().set(0, prevTexture);
 	}
@@ -333,7 +326,6 @@ void COpenGL3Texture::unlock()
 
 	LockReadOnly = false;
 	LockImage = 0;
-	LockLayer = 0;
 }
 
 void COpenGL3Texture::regenerateMipMapLevels(void *data, u32 layer)
@@ -375,16 +367,6 @@ void COpenGL3Texture::regenerateMipMapLevels(void *data, u32 layer)
 	}
 
 	Driver->getCacheHandler()->getTextureCache().set(0, prevTexture);
-}
-
-void * COpenGL3Texture::getLockImageData(irr::u32 miplevel) const
-{
-	if ( KeepImage && MipLevelStored > 0
-		&& LockImage->getMipMapsData(MipLevelStored) )
-	{
-		return LockImage->getMipMapsData(MipLevelStored);
-	}
-	return LockImage->getData();
 }
 
 void COpenGL3Texture::getImageValues(const IImage* image)

@@ -67,7 +67,6 @@ public:
 	}
 
 protected:
-	void *getLockImageData(irr::u32 miplevel) const;
 	void getImageValues(const IImage* image);
 	void uploadTexture(bool initTexture, u32 layer, u32 level, void* data);
 
@@ -85,12 +84,10 @@ protected:
 
 	bool LockReadOnly;
 	IImage* LockImage;
-	u32 LockLayer;
 
 	bool KeepImage;
 	core::array<IImage*> Images;
 
-	u8 MipLevelStored;
 	bool LegacyAutoGenerateMipMaps;
 
 	mutable SStatesCache StatesCache;
