@@ -804,7 +804,7 @@ IRenderTarget* COpenGLDriver::addRenderTarget()
 
 
 // small helper function to create vertex buffer object address offsets
-static inline const GLvoid * buffer_offset(const long offset)
+static inline const GLvoid * buffer_offset(const size_t offset)
 {
 	return (const GLvoid *)offset;
 }
