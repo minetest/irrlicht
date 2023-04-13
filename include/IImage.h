@@ -329,6 +329,12 @@ public:
 	//! Sets a pixel
 	virtual void setPixel(u32 x, u32 y, const SColor &color, bool blend = false ) = 0;
 
+	//! Copies this surface into another, if it has the exact same size and format.
+	/**	NOTE: mipmaps are ignored
+	\return True if it was copied, false otherwise.
+	*/
+	virtual bool copyToNoScaling(void *target, u32 width, u32 height, ECOLOR_FORMAT format=ECF_A8R8G8B8, u32 pitch=0) const = 0;
+
 	//! Copies the image into the target, scaling the image to fit
 	/**	NOTE: mipmaps are ignored */
 	virtual void copyToScaling(void* target, u32 width, u32 height, ECOLOR_FORMAT format=ECF_A8R8G8B8, u32 pitch=0) =0;
