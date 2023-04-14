@@ -320,6 +320,10 @@ bool CGUIComboBox::OnEvent(const SEvent& event)
 				}
 			case EMIE_MOUSE_WHEEL:
 				{
+					// Try scrolling parent first
+					if (IGUIElement::OnEvent(event))
+						return true;
+
 					s32 oldSelected = Selected;
 					setSelected( Selected + ((event.MouseInput.Wheel < 0) ? 1 : -1));
 
@@ -329,11 +333,12 @@ bool CGUIComboBox::OnEvent(const SEvent& event)
 					if (Selected >= (s32)Items.size())
 						setSelected((s32)Items.size() -1);
 
-					if (Selected != oldSelected)
-					{
+					if (Selected != oldSelected) {
 						sendSelectionChangedEvent();
 						return true;
 					}
+
+					return false;
 				}
 			default:
 				break;
