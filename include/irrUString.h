@@ -1323,7 +1323,7 @@ public:
 
 		// Determine if the string is long enough for a BOM.
 		u32 len = 0;
-		const uchar8_t* p = other;
+		const u8* p = reinterpret_cast<const u8*>(other);
 		do
 		{
 			++len;
@@ -1338,10 +1338,10 @@ public:
 		}
 
 		// If a BOM was found, don't include it in the string.
-		const uchar8_t* c2 = other;
+		const u8* c2 = reinterpret_cast<const u8*>(other);
 		if (c_bom != unicode::EUTFE_NONE)
 		{
-			c2 = other + unicode::BOM_UTF8_LEN;
+			c2 += unicode::BOM_UTF8_LEN;
 			length -= unicode::BOM_UTF8_LEN;
 		}
 
