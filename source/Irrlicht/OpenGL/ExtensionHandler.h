@@ -139,10 +139,6 @@ namespace video
 			glGenerateMipmap(target);
 		}
 
-		inline void irrGlActiveStencilFace(GLenum face)
-		{
-		}
-
 		inline void irrGlDrawBuffer(GLenum mode)
 		{
 			glDrawBuffer(mode);
@@ -161,34 +157,6 @@ namespace video
 		inline void irrGlBlendEquation(GLenum mode)
 		{
 			glBlendEquation(mode);
-		}
-
-		inline void irrGlEnableIndexed(GLenum target, GLuint index)
-		{
-		}
-
-		inline void irrGlDisableIndexed(GLenum target, GLuint index)
-		{
-		}
-
-		inline void irrGlColorMaskIndexed(GLuint buf, GLboolean r, GLboolean g, GLboolean b, GLboolean a)
-		{
-		}
-
-		inline void irrGlBlendFuncIndexed(GLuint buf, GLenum src, GLenum dst)
-		{
-		}
-
-		inline void irrGlBlendFuncSeparateIndexed(GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
-		{
-		}
-
-		inline void irrGlBlendEquationIndexed(GLuint buf, GLenum mode)
-		{
-		}
-
-		inline void irrGlBlendEquationSeparateIndexed(GLuint buf, GLenum modeRGB, GLenum modeAlpha)
-		{
 		}
 
 	private:
