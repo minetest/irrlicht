@@ -145,10 +145,12 @@ namespace video
 
 		inline void irrGlDrawBuffer(GLenum mode)
 		{
+			glDrawBuffer(mode);
 		}
 
 		inline void irrGlDrawBuffers(GLsizei n, const GLenum *bufs)
 		{
+			glDrawBuffers(n, bufs);
 		}
 
 		inline void irrGlBlendFuncSeparate(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha)
