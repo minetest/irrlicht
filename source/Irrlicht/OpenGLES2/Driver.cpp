@@ -48,12 +48,6 @@ namespace video {
 			glGetFloatv(GL_MAX_TEXTURE_LOD_BIAS, &MaxTextureLODBias);
 		glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, DimAliasedLine); // NOTE: this is not in the OpenGL ES 2.0 spec...
 		glGetFloatv(GL_ALIASED_POINT_SIZE_RANGE, DimAliasedPoint);
-
-		if (Version.Major >= 3 || FeatureAvailable[IRR_GL_ARB_framebuffer_object]) {
-			GLint val = 0;
-			glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_STENCIL, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &val);
-			StencilBuffer = val == GL_FRAMEBUFFER_DEFAULT;
-		}
 	}
 
 	IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)

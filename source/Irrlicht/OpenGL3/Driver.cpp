@@ -49,10 +49,6 @@ namespace video {
 		glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, DimAliasedLine);
 		DimAliasedPoint[0] = 1.0f;
 		DimAliasedPoint[1] = 1.0f;
-
-		GLint val = 0;
-		glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_STENCIL, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &val);
-		StencilBuffer = val == GL_FRAMEBUFFER_DEFAULT;
 	}
 
 	IVideoDriver* createOpenGL3Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
