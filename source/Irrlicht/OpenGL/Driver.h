@@ -285,6 +285,9 @@ namespace video
 		//! inits the opengl-es driver
 		virtual bool genericDriverInit(const core::dimension2d<u32>& screenSize, bool stencilBuffer);
 
+		void initVersion();
+		virtual OpenGLVersion getVersionFromOpenGL() const = 0;
+
 		void chooseMaterial2D();
 
 		ITexture* createDeviceDependentTexture(const io::path& name, IImage* image) override;
@@ -341,6 +344,7 @@ namespace video
 		core::stringw Name;
 		core::stringc VendorName;
 		SIrrlichtCreationParameters Params;
+		OpenGLVersion Version;
 
 		//! bool to make all renderstates reset if set to true.
 		bool ResetRenderStates;

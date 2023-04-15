@@ -8,11 +8,17 @@
 namespace irr {
 namespace video {
 
+	/// OpenGL 3+ driver
+	///
+	/// For OpenGL 3.2 and higher. Compatibility profile is required currently.
 	class COpenGL3Driver : public COpenGL3DriverBase {
 		friend IVideoDriver* createOpenGL3Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
 	public:
 		using COpenGL3DriverBase::COpenGL3DriverBase;
 		E_DRIVER_TYPE getDriverType() const override;
+
+	protected:
+		OpenGLVersion getVersionFromOpenGL() const override;
 	};
 
 }
