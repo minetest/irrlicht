@@ -29,8 +29,7 @@ namespace video
 
 	void COpenGL3ExtensionHandler::initExtensionsNew()
 	{
-		GLint ext_count = 0;
-		GL.GetIntegerv(GL_NUM_EXTENSIONS, &ext_count);
+		int ext_count = GetInteger(GL_NUM_EXTENSIONS);
 		for (int k = 0; k < ext_count; k++)
 			addExtension(reinterpret_cast<const char *>(GL.GetStringi(GL_EXTENSIONS, k)));
 	}
