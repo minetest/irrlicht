@@ -211,7 +211,7 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 	bool COpenGL3DriverBase::genericDriverInit(const core::dimension2d<u32>& screenSize, bool stencilBuffer)
 	{
 		initVersion();
-		initExtensions();
+		initFeatures();
 
 		// reset cache handler
 		delete CacheHandler;

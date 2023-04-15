@@ -24,7 +24,8 @@ namespace video
 	public:
 		COpenGL3ExtensionHandler() : COGLESCoreExtensionHandler() {}
 
-		void initExtensions();
+		void initExtensionsOld();
+		void initExtensionsNew();
 
 		bool queryFeature(video::E_VIDEO_DRIVER_FEATURE feature) const
 		{
@@ -79,6 +80,12 @@ namespace video
 				return false;
 			};
 		}
+
+		static GLint GetInteger(GLenum key) {
+			GLint val = 0;
+			glGetIntegerv(key, &val);
+			return val;
+		};
 
 		inline void irrGlActiveTexture(GLenum texture)
 		{
@@ -181,6 +188,9 @@ namespace video
 		inline void irrGlBlendEquationSeparateIndexed(GLuint buf, GLenum modeRGB, GLenum modeAlpha)
 		{
 		}
+
+	private:
+		void addExtension(const char *name);
 	};
 
 }

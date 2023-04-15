@@ -26,6 +26,33 @@ namespace video {
 		return {OpenGLSpec::Core, (u8)major, (u8)minor, 0};
 	}
 
+	void COpenGL3Driver::initFeatures() {
+		assert (Version.Spec == OpenGLSpec::Compat);
+		assert (Version.Major >= 3);
+		initExtensionsNew();
+
+		// COGLESCoreExtensionHandler::Feature
+		static_assert(MATERIAL_MAX_TEXTURES <= 16, "Only up to 16 textures are guaranteed");
+		Feature.BlendOperation = true;
+		Feature.ColorAttachment = GetInteger(GL_MAX_COLOR_ATTACHMENTS);
+		Feature.MaxTextureUnits = MATERIAL_MAX_TEXTURES;
+		Feature.MultipleRenderTarget = GetInteger(GL_MAX_DRAW_BUFFERS);
+
+		// COGLESCoreExtensionHandler
+		if (FeatureAvailable[IRR_GL_EXT_texture_filter_anisotropic])
+			MaxAnisotropy = GetInteger(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+		MaxIndices = GetInteger(GL_MAX_ELEMENTS_INDICES);
+		MaxTextureSize = GetInteger(GL_MAX_TEXTURE_SIZE);
+		glGetFloatv(GL_MAX_TEXTURE_LOD_BIAS, &MaxTextureLODBias);
+		glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, DimAliasedLine);
+		DimAliasedPoint[0] = 1.0f;
+		DimAliasedPoint[1] = 1.0f;
+
+		GLint val = 0;
+		glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_STENCIL, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &val);
+		StencilBuffer = val == GL_FRAMEBUFFER_DEFAULT;
+	}
+
 	IVideoDriver* createOpenGL3Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
 	{
 		os::Printer::log("Using COpenGL3Driver", ELL_INFORMATION);

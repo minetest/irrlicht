@@ -19,6 +19,7 @@ namespace video {
 
 	protected:
 		OpenGLVersion getVersionFromOpenGL() const override;
+		void initFeatures() override;
 	};
 
 }
