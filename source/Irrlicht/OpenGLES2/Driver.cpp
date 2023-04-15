@@ -21,6 +21,41 @@ namespace video {
 		return {OpenGLSpec::ES, (u8)major, (u8)minor, 0};
 	}
 
+	void COpenGLES2Driver::initFeatures() {
+		assert (Version.Major >= 2);
+		if (Version.Major >= 3)
+			initExtensionsNew();
+		else
+			initExtensionsOld();
+
+		// COGLESCoreExtensionHandler::Feature
+		static_assert(MATERIAL_MAX_TEXTURES <= 8, "Only up to 8 textures are guaranteed");
+		Feature.BlendOperation = true;
+		Feature.ColorAttachment = 1;
+		if (Version.Major >= 3 || FeatureAvailable[IRR_GL_EXT_draw_buffers])
+			Feature.ColorAttachment = GetInteger(GL_MAX_COLOR_ATTACHMENTS);
+		Feature.MaxTextureUnits = MATERIAL_MAX_TEXTURES;
+		if (Version.Major >= 3 || FeatureAvailable[IRR_GL_EXT_draw_buffers])
+			Feature.MultipleRenderTarget = GetInteger(GL_MAX_DRAW_BUFFERS);
+
+		// COGLESCoreExtensionHandler
+		if (FeatureAvailable[IRR_GL_EXT_texture_filter_anisotropic])
+			MaxAnisotropy = GetInteger(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+		if (Version.Major >= 3 || FeatureAvailable[IRR_GL_EXT_draw_range_elements])
+			MaxIndices = GetInteger(GL_MAX_ELEMENTS_INDICES);
+		MaxTextureSize = GetInteger(GL_MAX_TEXTURE_SIZE);
+		if (FeatureAvailable[IRR_GL_EXT_texture_lod_bias])
+			glGetFloatv(GL_MAX_TEXTURE_LOD_BIAS, &MaxTextureLODBias);
+		glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, DimAliasedLine); // NOTE: this is not in the OpenGL ES 2.0 spec...
+		glGetFloatv(GL_ALIASED_POINT_SIZE_RANGE, DimAliasedPoint);
+
+		if (Version.Major >= 3 || FeatureAvailable[IRR_GL_ARB_framebuffer_object]) {
+			GLint val = 0;
+			glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_STENCIL, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &val);
+			StencilBuffer = val == GL_FRAMEBUFFER_DEFAULT;
+		}
+	}
+
 	IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
 	{
 		os::Printer::log("Using COpenGLES2Driver", ELL_INFORMATION);
