@@ -208,6 +208,14 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		Version = getVersionFromOpenGL();
 	}
 
+	bool COpenGL3DriverBase::isVersionAtLeast(int major, int minor) const noexcept {
+		if (Version.Major < major)
+			return false;
+		if (Version.Major > major)
+			return true;
+		return Version.Minor >= minor;
+	}
+
 	bool COpenGL3DriverBase::genericDriverInit(const core::dimension2d<u32>& screenSize, bool stencilBuffer)
 	{
 		initVersion();
