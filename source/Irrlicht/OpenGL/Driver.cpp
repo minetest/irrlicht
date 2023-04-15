@@ -197,8 +197,7 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		}
 	}
 
-	bool COpenGL3DriverBase::genericDriverInit(const core::dimension2d<u32>& screenSize, bool stencilBuffer)
-	{
+	void COpenGL3DriverBase::initVersion() {
 		Name = glGetString(GL_VERSION);
 		printVersion();
 
@@ -206,7 +205,12 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		VendorName = glGetString(GL_VENDOR);
 		os::Printer::log(VendorName.c_str(), ELL_INFORMATION);
 
-		// load extensions
+		Version = getVersionFromOpenGL();
+	}
+
+	bool COpenGL3DriverBase::genericDriverInit(const core::dimension2d<u32>& screenSize, bool stencilBuffer)
+	{
+		initVersion();
 		initExtensions();
 
 		// reset cache handler
@@ -225,7 +229,7 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		DriverAttributes->setAttribute("MaxIndices", (s32)MaxIndices);
 		DriverAttributes->setAttribute("MaxTextureSize", (s32)MaxTextureSize);
 		DriverAttributes->setAttribute("MaxTextureLODBias", MaxTextureLODBias);
-		DriverAttributes->setAttribute("Version", Version);
+		DriverAttributes->setAttribute("Version", 100 * Version.Major + Version.Minor);
 		DriverAttributes->setAttribute("AntiAlias", AntiAlias);
 
 		glPixelStorei(GL_PACK_ALIGNMENT, 1);

@@ -32,5 +32,19 @@ namespace video
 	typedef COpenGLCoreRenderTarget<COpenGL3DriverBase, COpenGL3Texture> COpenGL3RenderTarget;
 	typedef COpenGLCoreCacheHandler<COpenGL3DriverBase, COpenGL3Texture> COpenGL3CacheHandler;
 
+	enum class OpenGLSpec: u8 {
+		Core,
+		Compat,
+		ES,
+		// WebGL, // TODO
+	};
+
+	struct OpenGLVersion {
+		OpenGLSpec Spec;
+		u8 Major;
+		u8 Minor;
+		u8 Release;
+	};
+
 }
 }
