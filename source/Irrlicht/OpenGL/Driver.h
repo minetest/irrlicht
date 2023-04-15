@@ -290,6 +290,8 @@ namespace video
 
 		virtual void initFeatures() = 0;
 
+		bool isVersionAtLeast(int major, int minor = 0) const noexcept;
+
 		void chooseMaterial2D();
 
 		ITexture* createDeviceDependentTexture(const io::path& name, IImage* image) override;
