@@ -334,6 +334,8 @@ namespace video
 			IRR_GL_SUN_multi_draw_arrays, // 69
 			IRR_GL_VIV_shader_binary, // 85
 			WGL_ARB_context_flush_control, // 191
+			IRR_GL_EXT_draw_range_elements, // 112 again?
+			IRR_GL_ARB_framebuffer_object, // 45 again?
 
 			IRR_OGLES_Feature_Count
 		};
@@ -685,7 +687,9 @@ namespace video
 				"GL_QCOM_writeonly_rendering",
 				"GL_SUN_multi_draw_arrays",
 				"GL_VIV_shader_binary",
-				"WGL_ARB_context_flush_control"
+				"WGL_ARB_context_flush_control",
+				"GL_EXT_draw_range_elements",
+				"GL_ARB_framebuffer_object",
 			};
 
 			return OGLESFeatureStrings[index];
