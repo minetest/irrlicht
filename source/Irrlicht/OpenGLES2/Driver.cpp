@@ -23,6 +23,7 @@ namespace video {
 	}
 
 	void COpenGLES2Driver::initFeatures() {
+		assert (Version.Spec == OpenGLSpec::ES);
 		assert (Version.Major >= 2);
 		if (Version.Major >= 3)
 			initExtensionsNew();

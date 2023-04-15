@@ -29,9 +29,7 @@ namespace video {
 
 	void COpenGL3Driver::initFeatures() {
 		assert (Version.Spec == OpenGLSpec::Compat);
-		assert (Version.Major >= 3);
-		if (Version.Major == 3)
-			assert (Version.Minor >= 2);
+		assert (isVersionAtLeast(3, 2));
 		initExtensionsNew();
 
 		// COGLESCoreExtensionHandler::Feature
