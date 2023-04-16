@@ -9,6 +9,7 @@
 #include "EDriverFeatures.h"
 #include "irrTypes.h"
 #include "os.h"
+#include <mt_opengl.h>
 
 #include "Common.h"
 
@@ -141,12 +142,12 @@ namespace video
 
 		inline void irrGlDrawBuffer(GLenum mode)
 		{
-			glDrawBuffer(mode);
+			GL.DrawBuffer(mode);
 		}
 
 		inline void irrGlDrawBuffers(GLsizei n, const GLenum *bufs)
 		{
-			glDrawBuffers(n, bufs);
+			GL.DrawBuffers(n, bufs);
 		}
 
 		inline void irrGlBlendFuncSeparate(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha)
