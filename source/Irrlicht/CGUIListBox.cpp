@@ -631,7 +631,7 @@ void CGUIListBox::recalculateScrollPos()
 	if (!AutoScroll)
 		return;
 
-	const s32 selPos = (Selected == -1 ? TotalItemHeight : Selected * ItemHeight) - ScrollBar->getPos();
+	const s32 selPos = (getSelected() == -1 ? TotalItemHeight : getSelected() * ItemHeight) - ScrollBar->getPos();
 
 	if (selPos < 0)
 	{
