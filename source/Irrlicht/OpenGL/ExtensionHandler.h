@@ -70,16 +70,6 @@ namespace video
 			case EVDF_MRT_BLEND_FUNC:
 			case EVDF_OCCLUSION_QUERY:
 				return false;
-			case EVDF_TEXTURE_COMPRESSED_DXT:
-				return false; // NV Tegra need improvements here
-			case EVDF_TEXTURE_COMPRESSED_PVRTC:
-				return FeatureAvailable[IRR_GL_IMG_texture_compression_pvrtc];
-			case EVDF_TEXTURE_COMPRESSED_PVRTC2:
-				return FeatureAvailable[IRR_GL_IMG_texture_compression_pvrtc2];
-			case EVDF_TEXTURE_COMPRESSED_ETC1:
-				return FeatureAvailable[IRR_GL_OES_compressed_ETC1_RGB8_texture];
-			case EVDF_TEXTURE_COMPRESSED_ETC2:
-				return false;
 			case EVDF_STENCIL_BUFFER:
 				return StencilBuffer;
 			default:
@@ -101,13 +91,13 @@ namespace video
 		inline void irrGlCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border,
 			GLsizei imageSize, const void* data)
 		{
-			glCompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, data);
+			os::Printer::log("Compressed textures aren't supported", ELL_ERROR);
 		}
 
 		inline void irrGlCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height,
 			GLenum format, GLsizei imageSize, const void* data)
 		{
-			glCompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data);
+			os::Printer::log("Compressed textures aren't supported", ELL_ERROR);
 		}
 
 		inline void irrGlUseProgram(GLuint prog)
