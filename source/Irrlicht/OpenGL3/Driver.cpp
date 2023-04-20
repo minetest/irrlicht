@@ -4,6 +4,7 @@
 
 #include "Driver.h"
 #include <cassert>
+#include "mt_opengl.h"
 
 namespace irr {
 namespace video {
@@ -32,6 +33,8 @@ namespace video {
 		assert (isVersionAtLeast(3, 2));
 		initExtensionsNew();
 
+		AnisotropicFilterSupported = isVersionAtLeast(4, 6) || queryExtension("GL_ARB_texture_filter_anisotropic") || queryExtension("GL_EXT_texture_filter_anisotropic");
+
 		// COGLESCoreExtensionHandler::Feature
 		static_assert(MATERIAL_MAX_TEXTURES <= 16, "Only up to 16 textures are guaranteed");
 		Feature.BlendOperation = true;
@@ -40,8 +43,8 @@ namespace video {
 		Feature.MultipleRenderTarget = GetInteger(GL_MAX_DRAW_BUFFERS);
 
 		// COGLESCoreExtensionHandler
-		if (FeatureAvailable[IRR_GL_EXT_texture_filter_anisotropic])
-			MaxAnisotropy = GetInteger(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+		if (AnisotropicFilterSupported)
+			MaxAnisotropy = GetInteger(GL.MAX_TEXTURE_MAX_ANISOTROPY);
 		MaxIndices = GetInteger(GL_MAX_ELEMENTS_INDICES);
 		MaxTextureSize = GetInteger(GL_MAX_TEXTURE_SIZE);
 		glGetFloatv(GL_MAX_TEXTURE_LOD_BIAS, &MaxTextureLODBias);
