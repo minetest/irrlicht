@@ -1405,6 +1405,18 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 			case EBO_REVSUBTRACT:
 				CacheHandler->setBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
 				break;
+			case EBO_MIN:
+				if (BlendMinMaxSupported)
+					CacheHandler->setBlendEquation(GL_MIN);
+				else
+					os::Printer::log("Attempt to use EBO_MIN without driver support", ELL_WARNING);
+				break;
+			case EBO_MAX:
+				if (BlendMinMaxSupported)
+					CacheHandler->setBlendEquation(GL_MAX);
+				else
+					os::Printer::log("Attempt to use EBO_MAX without driver support", ELL_WARNING);
+				break;
 			default:
 				break;
 			}

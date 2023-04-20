@@ -166,6 +166,7 @@ namespace video
 		}
 
 		bool AnisotropicFilterSupported = false;
+		bool BlendMinMaxSupported = false;
 
 	private:
 		void addExtension(std::string name);
