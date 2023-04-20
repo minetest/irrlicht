@@ -365,6 +365,15 @@ namespace video
 
 		core::matrix4 TextureFlipMatrix;
 
+		using FColorConverter = void(*)(const void *source, s32 count, void *dest);
+		struct STextureFormatInfo {
+			GLenum InternalFormat;
+			GLenum PixelFormat;
+			GLenum PixelType;
+			FColorConverter Converter;
+		};
+		STextureFormatInfo TextureFormats[ECF_UNKNOWN] = {};
+
 private:
 
 		COpenGL3Renderer2D* MaterialRenderer2DActive;
