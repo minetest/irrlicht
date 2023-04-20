@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <unordered_set>
+
 #include "EDriverFeatures.h"
 #include "irrTypes.h"
 #include "os.h"
@@ -27,6 +29,9 @@ namespace video
 
 		void initExtensionsOld();
 		void initExtensionsNew();
+
+		/// Checks whether a named extension is present
+		bool queryExtension(const std::string &name) const noexcept;
 
 		bool queryFeature(video::E_VIDEO_DRIVER_FEATURE feature) const
 		{
@@ -160,8 +165,13 @@ namespace video
 			glBlendEquation(mode);
 		}
 
+		bool AnisotropicFilterSupported = false;
+
 	private:
-		void addExtension(const char *name);
+		void addExtension(std::string name);
+		void updateLegacyExtensionList();
+
+		std::unordered_set<std::string> Extensions;
 	};
 
 }

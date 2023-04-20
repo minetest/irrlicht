@@ -1504,16 +1504,14 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 				}
 			}
 
-	#ifdef GL_EXT_texture_filter_anisotropic
-			if (FeatureAvailable[COGLESCoreExtensionHandler::IRR_GL_EXT_texture_filter_anisotropic] &&
+			if (AnisotropicFilterSupported &&
 				(!tmpTexture->getStatesCache().IsCached || material.TextureLayer[i].AnisotropicFilter != tmpTexture->getStatesCache().AnisotropicFilter))
 			{
-				glTexParameteri(tmpTextureType, GL_TEXTURE_MAX_ANISOTROPY_EXT,
+				glTexParameteri(tmpTextureType, GL.TEXTURE_MAX_ANISOTROPY,
 					material.TextureLayer[i].AnisotropicFilter>1 ? core::min_(MaxAnisotropy, material.TextureLayer[i].AnisotropicFilter) : 1);
 
 				tmpTexture->getStatesCache().AnisotropicFilter = material.TextureLayer[i].AnisotropicFilter;
 			}
-	#endif
 
 			if (!tmpTexture->getStatesCache().IsCached || material.TextureLayer[i].TextureWrapU != tmpTexture->getStatesCache().WrapU)
 			{
