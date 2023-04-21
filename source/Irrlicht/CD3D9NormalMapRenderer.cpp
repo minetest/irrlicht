@@ -6,7 +6,7 @@
 #ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
 
 #include "CD3D9NormalMapRenderer.h"
-#include "IVideoDriver.h"
+#include "CD3D9Driver.h"
 #include "IMaterialRendererServices.h"
 #include "os.h"
 #include "SLight.h"
@@ -164,7 +164,7 @@ namespace video
 		"";
 
 	CD3D9NormalMapRenderer::CD3D9NormalMapRenderer(
-		IDirect3DDevice9* d3ddev, video::IVideoDriver* driver,
+		IDirect3DDevice9* d3ddev, video::CD3D9Driver* driver,
 		s32& outMaterialTypeNr, IMaterialRenderer* baseMaterial)
 		: CD3D9ShaderMaterialRenderer(d3ddev, driver, 0, baseMaterial)
 	{

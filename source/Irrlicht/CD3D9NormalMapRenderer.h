@@ -29,7 +29,7 @@ class CD3D9NormalMapRenderer :
 public:
 
 	CD3D9NormalMapRenderer(
-		IDirect3DDevice9* d3ddev, video::IVideoDriver* driver,
+		IDirect3DDevice9* d3ddev, video::CD3D9Driver* driver,
 		s32& outMaterialTypeNr, IMaterialRenderer* baseMaterial);
 
 	~CD3D9NormalMapRenderer();

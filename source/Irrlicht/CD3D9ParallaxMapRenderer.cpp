@@ -6,8 +6,8 @@
 #ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
 
 #include "CD3D9ParallaxMapRenderer.h"
+#include "CD3D9Driver.h"
 #include "IMaterialRendererServices.h"
-#include "IVideoDriver.h"
 #include "os.h"
 #include "SLight.h"
 
@@ -222,7 +222,7 @@ namespace video
 		"\n";
 
 	CD3D9ParallaxMapRenderer::CD3D9ParallaxMapRenderer(
-		IDirect3DDevice9* d3ddev, video::IVideoDriver* driver,
+		IDirect3DDevice9* d3ddev, video::CD3D9Driver* driver,
 		s32& outMaterialTypeNr, IMaterialRenderer* baseMaterial)
 		: CD3D9ShaderMaterialRenderer(d3ddev, driver, 0, baseMaterial),
 		CurrentScale(0.0f)

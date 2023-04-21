@@ -8,6 +8,7 @@
 #include "CD3D9HLSLMaterialRenderer.h"
 #include "IShaderConstantSetCallBack.h"
 #include "IVideoDriver.h"
+#include "CD3D9Driver.h"
 #include "os.h"
 #include "irrString.h"
 
@@ -24,7 +25,7 @@ namespace video
 
 //! Public constructor
 CD3D9HLSLMaterialRenderer::CD3D9HLSLMaterialRenderer(IDirect3DDevice9* d3ddev,
-	video::IVideoDriver* driver, s32& outMaterialTypeNr,
+	video::CD3D9Driver* driver, s32& outMaterialTypeNr,
 	const c8* vertexShaderProgram,
 	const c8* vertexShaderEntryPointName,
 	E_VERTEX_SHADER_TYPE vsCompileTarget,
@@ -274,6 +275,69 @@ bool CD3D9HLSLMaterialRenderer::createHLSLPixelShader(const char* pixelShaderPro
 	return false;
 }
 
+void CD3D9HLSLMaterialRenderer::setBasicRenderStates(const SMaterial& material, const SMaterial& lastMaterial, bool resetAllRenderstates)
+{
+	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+}
+
+s32 CD3D9HLSLMaterialRenderer::getVertexShaderConstantID(const c8* name)
+{
+	return getVariableID(true, name);
+}
+
+s32 CD3D9HLSLMaterialRenderer::getPixelShaderConstantID(const c8* name)
+{
+	return getVariableID(false, name);
+}
+
+void CD3D9HLSLMaterialRenderer::setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
+{
+	// TODO: Not sure if setting constants which are not bound to the shader in hlsl
+	// I mainly kept this here so it works same as in Irrlicht 1.8 and it probably won't hurt
+	Driver->setVertexShaderConstant(data, startRegister, constantAmount);
+}
+
+void CD3D9HLSLMaterialRenderer::setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
+{
+	// TODO: Not sure if setting constants which are not bound to the shader in hlsl
+	// I mainly kept this here so it works same as in Irrlicht 1.8 and it probably won't hurt
+	static_cast<CD3D9Driver*>(Driver)->setPixelShaderConstant(data, startRegister, constantAmount);
+}
+
+bool CD3D9HLSLMaterialRenderer::setVertexShaderConstant(s32 index, const f32* floats, int count)
+{
+	return setVariable(true, index, floats, count);
+}
+
+bool CD3D9HLSLMaterialRenderer::setVertexShaderConstant(s32 index, const s32* ints, int count)
+{
+	return setVariable(true, index, ints, count);
+}
+
+bool CD3D9HLSLMaterialRenderer::setVertexShaderConstant(s32 index, const u32* ints, int count)
+{
+	return setVariable(true, index, ints, count);
+}
+
+bool CD3D9HLSLMaterialRenderer::setPixelShaderConstant(s32 index, const f32* floats, int count)
+{
+	return setVariable(false, index, floats, count);
+}
+
+bool CD3D9HLSLMaterialRenderer::setPixelShaderConstant(s32 index, const s32* ints, int count)
+{
+	return setVariable(false, index, ints, count);
+}
+
+bool CD3D9HLSLMaterialRenderer::setPixelShaderConstant(s32 index, const u32* ints, int count)
+{
+	return setVariable(false, index, ints, count);
+}
+
+IVideoDriver* CD3D9HLSLMaterialRenderer::getVideoDriver()
+{
+	return Driver;
+}
 
 s32 CD3D9HLSLMaterialRenderer::getVariableID(bool vertexShader, const c8* name)
 {
@@ -304,7 +368,6 @@ s32 CD3D9HLSLMaterialRenderer::getVariableID(bool vertexShader, const c8* name)
 
 	return -1;
 }
-
 
 bool CD3D9HLSLMaterialRenderer::setVariable(bool vertexShader, s32 index,
 					const f32* floats, int count)
@@ -383,7 +446,7 @@ bool CD3D9HLSLMaterialRenderer::OnRender(IMaterialRendererServices* service, E_V
 	if (VSConstantsTable)
 		VSConstantsTable->SetDefaults(pID3DDevice);
 
-	return CD3D9ShaderMaterialRenderer::OnRender(service, vtxtype);
+	return CD3D9ShaderMaterialRenderer::OnRender(this, vtxtype);
 }
 
 
