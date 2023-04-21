@@ -3176,6 +3176,10 @@ s32 CD3D9Driver::addShaderMaterial(const c8* vertexShaderProgram,
 		callback, getMaterialRenderer(baseMaterial), userData);
 
 	r->drop();
+
+	if (callback && nr >= 0)
+		callback->OnCreate(this, userData);
+
 	return nr;
 }
 
@@ -3212,6 +3216,9 @@ s32 CD3D9Driver::addHighLevelShaderMaterial(
 			userData);
 
 	r->drop();
+
+	if (callback && nr >= 0)
+		callback->OnCreate(r, userData);
 
 	return nr;
 }

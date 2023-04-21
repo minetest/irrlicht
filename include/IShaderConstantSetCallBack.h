@@ -22,6 +22,14 @@ class IShaderConstantSetCallBack : public virtual IReferenceCounted
 {
 public:
 
+	//! Called by the engine after a shader material has been created successfully
+	/** If you are using one callback instance per shader (much recommended)
+	this is a good place to get shader constant id's for high level shaders.
+	\param services: Pointer to an interface providing methods to set/get the constants for the shader.
+	\param userData: Userdata int which can be specified when creating the shader.	*/
+	virtual void OnCreate(IMaterialRendererServices* services, s32 userData) { }
+
+
 	//! Called to let the callBack know the used material (optional method)
 	/**
 	 \code

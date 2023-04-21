@@ -1,6 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Add IShaderConstantSetCallBack::OnCreate to allow earlier access to IMaterialRendererServices
 - CIrrDeviceWin32::yield() now uses Sleep(0) instead of Sleep(1). 
   We had Sleep(1) to allow yielding to all processes back in Windows XP time.
   But a) This caused Windows apps to sleep for 15ms usually and b) behavior for Sleep(0) was changed after Window XP to do what we want it to do.

@@ -3725,6 +3725,10 @@ s32 COpenGLDriver::addShaderMaterial(const c8* vertexShaderProgram,
 		callback, baseMaterial, userData);
 
 	r->drop();
+
+	if (callback && nr >= 0)
+		callback->OnCreate(this, userData);
+
 	return nr;
 }
 
@@ -3758,6 +3762,9 @@ s32 COpenGLDriver::addHighLevelShaderMaterial(
 			callback,baseMaterial, userData);
 
 	r->drop();
+
+	if (callback && nr >= 0)
+		callback->OnCreate(r, userData);
 
 	return nr;
 }
