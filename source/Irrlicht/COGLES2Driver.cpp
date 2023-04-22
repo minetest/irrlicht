@@ -2373,6 +2373,10 @@ COGLES2Driver::~COGLES2Driver()
 			callback, baseMaterial, userData);
 
 		r->drop();
+
+		if (callback && nr >= 0)
+			callback->OnCreate(r, userData);
+
 		return nr;
 	}
 
