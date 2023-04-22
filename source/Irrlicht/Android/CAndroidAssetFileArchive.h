@@ -37,21 +37,21 @@ namespace io
 		virtual ~CAndroidAssetFileArchive();
 
 		//! opens a file by file name
-		virtual IReadFile* createAndOpenFile(const io::path& filename);
+		virtual IReadFile* createAndOpenFile(const io::path& filename) IRR_OVERRIDE;
 
 		//! opens a file by index
-		virtual IReadFile* createAndOpenFile(u32 index);
+		virtual IReadFile* createAndOpenFile(u32 index) IRR_OVERRIDE;
 
 		//! returns the list of files
-		virtual const IFileList* getFileList() const;
+		virtual const IFileList* getFileList() const IRR_OVERRIDE;
 
 		//! get the archive type
-		virtual E_FILE_ARCHIVE_TYPE getType() const;
+		virtual E_FILE_ARCHIVE_TYPE getType() const IRR_OVERRIDE;
 
 		//! Add a directory to read files from. Since the Android
 		//! API does not return names of directories, they need to
 		//! be added manually.
-		virtual void addDirectoryToFileList(const io::path &filename);
+		virtual void addDirectoryToFileList(const io::path &filename) IRR_OVERRIDE;
 
 		//! return the name (id) of the file Archive
 		virtual const io::path& getArchiveName() const IRR_OVERRIDE {return Path;}

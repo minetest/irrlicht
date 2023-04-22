@@ -43,15 +43,15 @@ public:
 	GLuint getProgram() const;
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services);
+		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE;
 
-	virtual bool OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype);
+	virtual bool OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype) IRR_OVERRIDE;
 
-	virtual void OnUnsetMaterial();
+	virtual void OnUnsetMaterial() IRR_OVERRIDE;
 
-	virtual bool isTransparent() const;
+	virtual bool isTransparent() const IRR_OVERRIDE;
 
-	virtual s32 getRenderCapability() const;
+	virtual s32 getRenderCapability() const IRR_OVERRIDE;
 
 	virtual void setBasicRenderStates(const SMaterial& material, const SMaterial& lastMaterial, bool resetAllRenderstates) IRR_OVERRIDE;
 
