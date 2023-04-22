@@ -3101,38 +3101,12 @@ const core::matrix4& CD3D9Driver::getTransform(E_TRANSFORMATION_STATE state) con
 }
 
 
-//! Get a vertex shader constant index.
-s32 CD3D9Driver::getVertexShaderConstantID(const c8* name)
-{
-	if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
-	{
-		CD3D9MaterialRenderer* r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
-		return r->getVariableID(true, name);
-	}
-
-	return -1;
-}
-
-//! Get a pixel shader constant index.
-s32 CD3D9Driver::getPixelShaderConstantID(const c8* name)
-{
-	if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
-	{
-		CD3D9MaterialRenderer* r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
-		return r->getVariableID(false, name);
-	}
-
-	return -1;
-}
-
-
 //! Sets a vertex shader constant.
 void CD3D9Driver::setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
 {
 	if (data)
 		pID3DDevice->SetVertexShaderConstantF(startRegister, data, constantAmount);
 }
-
 
 //! Sets a pixel shader constant.
 void CD3D9Driver::setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
@@ -3141,84 +3115,53 @@ void CD3D9Driver::setPixelShaderConstant(const f32* data, s32 startRegister, s32
 		pID3DDevice->SetPixelShaderConstantF(startRegister, data, constantAmount);
 }
 
+s32 CD3D9Driver::getVertexShaderConstantID(const c8* name)
+{
+	os::Printer::log("Error: Please call services->getVertexShaderConstantID(), not VideoDriver->getVertexShaderConstantID().");
+	return -1;
+}
 
-//! Sets a constant for the vertex shader based on an index.
+s32 CD3D9Driver::getPixelShaderConstantID(const c8* name)
+{
+	os::Printer::log("Error: Please call services->getPixelShaderConstantID(), not VideoDriver->getPixelShaderConstantID().");
+	return -1;
+}
+
 bool CD3D9Driver::setVertexShaderConstant(s32 index, const f32* floats, int count)
 {
-	if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
-	{
-		CD3D9MaterialRenderer* r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
-		return r->setVariable(true, index, floats, count);
-	}
-
+	os::Printer::log("Error: Please call services->setVertexShaderConstant(), not VideoDriver->setVertexShaderConstant().");
 	return false;
 }
 
-
-//! Int interface for the above.
 bool CD3D9Driver::setVertexShaderConstant(s32 index, const s32* ints, int count)
 {
-	if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
-	{
-		CD3D9MaterialRenderer* r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
-		return r->setVariable(true, index, ints, count);
-	}
-
+	os::Printer::log("Error: Please call services->setVertexShaderConstant(), not VideoDriver->setVertexShaderConstant().");
 	return false;
 }
 
-
-//! Uint interface for the above.
 bool CD3D9Driver::setVertexShaderConstant(s32 index, const u32* ints, int count)
 {
-	if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
-	{
-		CD3D9MaterialRenderer* r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
-		return r->setVariable(true, index, ints, count);
-	}
-
+	os::Printer::log("Error: Please call services->setVertexShaderConstant(), not VideoDriver->setVertexShaderConstant().");
 	return false;
 }
 
-
-//! Sets a constant for the pixel shader based on an index.
 bool CD3D9Driver::setPixelShaderConstant(s32 index, const f32* floats, int count)
 {
-	if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
-	{
-		CD3D9MaterialRenderer* r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
-		return r->setVariable(false, index, floats, count);
-	}
-
+	os::Printer::log("Error: Please call services->setPixelShaderConstant(), not VideoDriver->setPixelShaderConstant().");
 	return false;
 }
 
-
-//! Int interface for the above.
 bool CD3D9Driver::setPixelShaderConstant(s32 index, const s32* ints, int count)
 {
-	if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
-	{
-		CD3D9MaterialRenderer* r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
-		return r->setVariable(false, index, ints, count);
-	}
-
+	os::Printer::log("Error: Please call services->setPixelShaderConstant(), not VideoDriver->setPixelShaderConstant().");
 	return false;
 }
 
-
-//! Uint interface for the above.
 bool CD3D9Driver::setPixelShaderConstant(s32 index, const u32* ints, int count)
 {
-	if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
-	{
-		CD3D9MaterialRenderer* r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
-		return r->setVariable(false, index, ints, count);
-	}
-
+	os::Printer::log("Error: Please call services->setPixelShaderConstant(), not VideoDriver->setPixelShaderConstant().");
 	return false;
 }
-
 
 
 //! Adds a new material renderer to the VideoDriver, using pixel and/or
@@ -3234,6 +3177,10 @@ s32 CD3D9Driver::addShaderMaterial(const c8* vertexShaderProgram,
 		callback, getMaterialRenderer(baseMaterial), userData);
 
 	r->drop();
+
+	if (callback && nr >= 0)
+		callback->OnCreate(this, userData);
+
 	return nr;
 }
 
@@ -3270,6 +3217,9 @@ s32 CD3D9Driver::addHighLevelShaderMaterial(
 			userData);
 
 	r->drop();
+
+	if (callback && nr >= 0)
+		callback->OnCreate(r, userData);
 
 	return nr;
 }

@@ -98,18 +98,18 @@ namespace scene
 		CVertexBuffer(video::E_VERTEX_TYPE vertexType) : Vertices(0),
 				MappingHint(EHM_NEVER), ChangedID(1)
 		{
-			setType(vertexType);
+			CVertexBuffer::setType(vertexType);
 		}
 
 		CVertexBuffer(const IVertexBuffer &VertexBufferCopy) :
 				Vertices(0), MappingHint(EHM_NEVER),
 				ChangedID(1)
 		{
-			setType(VertexBufferCopy.getType());
-			reallocate(VertexBufferCopy.size());
+			CVertexBuffer::setType(VertexBufferCopy.getType());
+			CVertexBuffer::reallocate(VertexBufferCopy.size());
 
 			for (u32 n=0;n<VertexBufferCopy.size();++n)
-				push_back(VertexBufferCopy[n]);
+				CVertexBuffer::push_back(VertexBufferCopy[n]);
 		}
 
 		virtual ~CVertexBuffer()

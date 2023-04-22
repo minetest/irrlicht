@@ -34,7 +34,7 @@ namespace gui
 		//! set behavior when menus are closed
 		virtual void setCloseHandling(ECONTEXT_MENU_CLOSE onClose) IRR_OVERRIDE;
 
-		//! get current behavior when the menue will be closed
+		//! get current behavior when the menu will be closed
 		virtual ECONTEXT_MENU_CLOSE getCloseHandling() const IRR_OVERRIDE;
 
 		//! Returns amount of menu items

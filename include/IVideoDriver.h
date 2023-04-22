@@ -514,8 +514,8 @@ namespace video
 		- For a 32-bit texture only the red channel is regarded
 		- For a 16-bit texture the rgb-values are averaged.
 		Output channels red/green for X/Y and blue for up (Z).
-		For a 32-bit texture we store additionally the height value in the 
-		alpha channel. This value is used by the video::EMT_PARALLAX_MAP_SOLID 
+		For a 32-bit texture we store additionally the height value in the
+		alpha channel. This value is used by the video::EMT_PARALLAX_MAP_SOLID
 		material and similar materials.
 		On the borders the texture is considered to repeat.
 		\param texture Height map texture which is converted to a normal map.
@@ -789,7 +789,7 @@ namespace video
 		//! Draws a 2d image without any special effects
 		/** \param texture Pointer to texture to use.
 		\param destPos Upper left 2d destination position where the
-		image will be drawn. 
+		image will be drawn.
 		\param useAlphaChannelOfTexture: If true, the alpha channel of
 		the texture is used to draw the image.*/
 		virtual void draw2DImage(const video::ITexture* texture,
@@ -1231,7 +1231,7 @@ namespace video
 		\param data A byte array with pixel color information
 		\param ownForeignMemory If true, the image will use the data
 		pointer directly and own it afterward. If false, the memory
-		will by copied internally. 
+		will by copied internally.
 		WARNING: Setting this to 'true' will not work across dll boundaries.
 		So unless you link Irrlicht statically you should keep this to 'false'.
 		The parameter is mainly for internal usage.
@@ -1334,7 +1334,7 @@ namespace video
 		E_MATERIAL_TYPE enum or a value which was returned by
 		addMaterialRenderer().
 		\return String with the name of the renderer, or 0 if not
-		exisiting */
+		existing */
 		virtual const c8* getMaterialRendererName(u32 idx) const =0;
 
 		//! Sets the name of a material renderer.
@@ -1429,7 +1429,9 @@ namespace video
 		}
 
 		//! Make a screenshot of the last rendered frame.
-		/** \return An image created from the last rendered frame. */
+		/**
+		\param target All current drivers only support ERT_FRAME_BUFFER
+		\return An image created from the last rendered frame. */
 		virtual IImage* createScreenShot(video::ECOLOR_FORMAT format=video::ECF_UNKNOWN, video::E_RENDER_TARGET target=video::ERT_FRAME_BUFFER) =0;
 
 		//! Check if the image is already loaded.

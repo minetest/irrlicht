@@ -7,6 +7,7 @@
 
 #include "IAttributeExchangingObject.h"
 #include "ESceneNodeTypes.h"
+#include "ESceneNodeUpdateAbs.h"
 #include "ECullingTypes.h"
 #include "EDebugSceneTypes.h"
 #include "ISceneNodeAnimator.h"
@@ -29,6 +30,7 @@ namespace scene
 	//! Typedef for list of scene node animators
 	typedef core::list<ISceneNodeAnimator*> ISceneNodeAnimatorList;
 
+
 	//! Scene node interface.
 	/** A scene node is a node in the hierarchical scene graph. Every scene
 	node may have children, which are also scene nodes. Children move
@@ -48,7 +50,8 @@ namespace scene
 				const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f))
 			: RelativeTranslation(position), RelativeRotation(rotation), RelativeScale(scale),
 				Parent(0), SceneManager(mgr), TriangleSelector(0), ID(id),
-				AutomaticCullingState(EAC_BOX), DebugDataVisible(EDS_OFF),
+				AbsPosUpdateBehavior(ESNUA_TRANSFORM_MATRIX), AutomaticCullingState(EAC_BOX),
+				DebugDataVisible(EDS_OFF),
 				IsVisible(true), IsDebugObject(false)
 		{
 			if (parent)
@@ -76,7 +79,7 @@ namespace scene
 
 		//! This method is called just before the rendering process of the whole scene.
 		/** Nodes may register themselves in the render pipeline during this call,
-		precalculate the geometry which should be renderered, and prevent their
+		precalculate the geometry which should be rendered, and prevent their
 		children from being able to register themselves if they are clipped by simply
 		not calling their OnRegisterSceneNode method.
 		If you are implementing your own scene node, you should overwrite this method
@@ -558,6 +561,18 @@ namespace scene
 			return AutomaticCullingState;
 		}
 
+		//! Set how updateAbsolutePosition calculates the absolute transformation matrix
+		void setUpdateAbsolutePosBehavior(ESCENE_NODE_UPDATE_ABS behavior)
+		{
+			AbsPosUpdateBehavior = behavior;
+		}
+
+		//! Get how updateAbsolutePosition calculates the absolute transformation matrix
+		ESCENE_NODE_UPDATE_ABS getUpdateAbsolutePosBehavior() const
+		{
+			return AbsPosUpdateBehavior;
+		}
+
 
 		//! Sets if debug data like bounding boxes should be drawn.
 		/** A bitwise OR of the types from @ref irr::scene::E_DEBUG_SCENE_TYPE.
@@ -659,15 +674,24 @@ namespace scene
 		}
 
 
-		//! Updates the absolute position based on the relative and the parents position
-		/** Note: This does not recursively update the parents absolute positions, so if you have a deeper
+		//! Updates the absolute transformation or position based on the relative and the parents transformation
+		/** It's exact behavior can be controlled by setUpdateAbsolutePosBehavior.
+		Note: This does not recursively update the parents absolute positions, so if you have a deeper
 			hierarchy you might want to update the parents first.*/
 		virtual void updateAbsolutePosition()
 		{
 			if (Parent)
 			{
-				AbsoluteTransformation =
-					Parent->getAbsoluteTransformation() * getRelativeTransformation();
+				if ( AbsPosUpdateBehavior == ESNUA_TRANSFORM_MATRIX )
+				{
+					AbsoluteTransformation =
+						Parent->getAbsoluteTransformation() * getRelativeTransformation();
+				}
+				else if ( AbsPosUpdateBehavior == ESNUA_TRANSFORM_POSITION )
+				{
+					AbsoluteTransformation = getRelativeTransformation();
+					Parent->getAbsoluteTransformation().transformVect(reinterpret_cast<irr::core::vector3df&>(AbsoluteTransformation[12]));
+				}
 			}
 			else
 				AbsoluteTransformation = getRelativeTransformation();
@@ -709,6 +733,7 @@ namespace scene
 			out->addVector3d("Scale", getScale() );
 
 			out->addBool("Visible", IsVisible );
+			out->addEnum("AbsPosUpdate", (s32)AbsPosUpdateBehavior, SceneNodeUpdateAbsNames);
 			out->addInt("AutomaticCulling", AutomaticCullingState);
 			out->addInt("DebugDataVisible", DebugDataVisible );
 			out->addBool("IsDebugObject", IsDebugObject );
@@ -734,8 +759,12 @@ namespace scene
 			setScale(in->getAttributeAsVector3d("Scale", RelativeScale));
 
 			IsVisible = in->getAttributeAsBool("Visible", IsVisible);
+
+			AbsPosUpdateBehavior = (ESCENE_NODE_UPDATE_ABS)in->getAttributeAsEnumeration("AbsPosUpdate", SceneNodeUpdateAbsNames, (s32)AbsPosUpdateBehavior);
+
 			if (in->existsAttribute("AutomaticCulling"))
 			{
+				// compatibility for older version, new one uses int's
 				const s32 tmpState = in->getAttributeAsEnumeration("AutomaticCulling",
 						scene::AutomaticCullingNames);
 				if (tmpState != -1)
@@ -779,6 +808,7 @@ namespace scene
 			RelativeScale = toCopyFrom->RelativeScale;
 			ID = toCopyFrom->ID;
 			setTriangleSelector(toCopyFrom->TriangleSelector);
+			AbsPosUpdateBehavior = toCopyFrom->AbsPosUpdateBehavior;
 			AutomaticCullingState = toCopyFrom->AutomaticCullingState;
 			DebugDataVisible = toCopyFrom->DebugDataVisible;
 			IsVisible = toCopyFrom->IsVisible;
@@ -852,6 +882,9 @@ namespace scene
 
 		//! ID of the node.
 		s32 ID;
+
+		//! How updateAbsolutePosition calculates AbsoluteTransformation
+		ESCENE_NODE_UPDATE_ABS AbsPosUpdateBehavior;
 
 		//! Automatic culling state
 		u32 AutomaticCullingState;

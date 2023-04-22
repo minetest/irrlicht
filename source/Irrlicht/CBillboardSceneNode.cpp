@@ -143,7 +143,7 @@ void CBillboardSceneNode::updateMesh(const irr::scene::ICameraSceneNode* camera)
 //! returns the axis aligned bounding box of this node
 const core::aabbox3d<f32>& CBillboardSceneNode::getBoundingBox() const
 {
-	// Really wrong when scaled.
+	// Really wrong when scaled (as the node does not scale it's vertices - maybe it should?)
 	return BBoxSafe;
 }
 
@@ -164,9 +164,9 @@ void CBillboardSceneNode::setSize(const core::dimension2d<f32>& size)
 	if (core::equals(Size.Height, 0.0f))
 		Size.Height = 1.0f;
 
-	const f32 avg = (Size.Width + Size.Height)/6;
-	BBoxSafe.MinEdge.set(-avg,-avg,-avg);
-	BBoxSafe.MaxEdge.set(avg,avg,avg);
+	const f32 extent = 0.5f*sqrtf(Size.Width*Size.Width + Size.Height*Size.Height);
+	BBoxSafe.MinEdge.set(-extent,-extent,-extent);
+	BBoxSafe.MaxEdge.set(extent,extent,extent);
 }
 
 
@@ -184,9 +184,9 @@ void CBillboardSceneNode::setSize(f32 height, f32 bottomEdgeWidth, f32 topEdgeWi
 		TopEdgeWidth = 1.0f;
 	}
 
-	const f32 avg = (core::max_(Size.Width,TopEdgeWidth) + Size.Height)/6;
-	BBoxSafe.MinEdge.set(-avg,-avg,-avg);
-	BBoxSafe.MaxEdge.set(avg,avg,avg);
+	const f32 extent = 0.5f*sqrtf(Size.Width*Size.Width + Size.Height*Size.Height);
+	BBoxSafe.MinEdge.set(-extent,-extent,-extent);
+	BBoxSafe.MaxEdge.set(extent,extent,extent);
 }
 
 

@@ -324,10 +324,10 @@ namespace scene
 
 		//bi-quadratic bezier patches
 		void createCurvedSurface_bezier(SMeshBufferLightMap* meshBuffer,
-				s32 faceIndex, s32 patchTesselation, s32 storevertexcolor);
+				s32 faceIndex, s32 patchTessellation, s32 storevertexcolor);
 
 		void createCurvedSurface_nosubdivision(SMeshBufferLightMap* meshBuffer,
-				s32 faceIndex, s32 patchTesselation, s32 storevertexcolor);
+				s32 faceIndex, s32 patchTessellation, s32 storevertexcolor);
 
 		struct S3DVertex2TCoords_64
 		{

@@ -318,6 +318,21 @@ namespace irr
 					UseReferenceRect = false;
 			}
 
+			virtual bool getReferenceRect(core::rect<s32>& rect) IRR_OVERRIDE
+			{ 
+				if ( UseReferenceRect )
+				{
+					rect = ReferenceRect;
+				}
+				else
+				{
+					rect.UpperLeftCorner = core::vector2di(0,0);
+					rect.LowerRightCorner.X = (irr::s32)Device->Width;
+					rect.LowerRightCorner.Y = (irr::s32)Device->Height;
+				}
+				return UseReferenceRect;
+			}
+
 			//! Sets the active cursor icon
 			virtual void setActiveIcon(gui::ECURSOR_ICON iconId) IRR_OVERRIDE;
 

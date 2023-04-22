@@ -11,6 +11,19 @@ Changes in ogl-es (not yet released - will be merged with trunk at some point)
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Add IShaderConstantSetCallBack::OnCreate to allow earlier access to IMaterialRendererServices
+- CIrrDeviceWin32::yield() now uses Sleep(0) instead of Sleep(1). 
+  We had Sleep(1) to allow yielding to all processes back in Windows XP time.
+  But a) This caused Windows apps to sleep for 15ms usually and b) behavior for Sleep(0) was changed after Window XP to do what we want it to do.
+- Add ICursorControl::getReferenceRect
+- Fix: Listbox no longer sending EGET_LISTBOX_SELECTED_AGAIN instead of EGET_LISTBOX_CHANGED when pressed mouse was moved over item before releasing the mouse button
+- Listbox items can now change individual background colors
+- Fix some bitfield sizes in SMaterial which were chosen too small for enums (PolygonOffsetDirection, ZWriteEnable, BlendOperation)
+- Add ISceneNode::UpdateAbsolutePosBehavior variable to allow nodes to ignore the scale/rotation parts of their parents transformation.
+- Add IGUISpinBox functions getValueFor and getOldValue
+- Bugfix: IGUIElement::getNextElement now passing includeInvisible and includeDisabled flags recursively instead of disabling those for children.
+  This fixes problems that elements sometimes didn't get a tab order because some parent was invisible and so tab'ing for them failed completely.
+  Also setTabOrder(-1) now also checks for disabled elements for the same reason (disabled parent causing children to not get a tab-order).
 - Fix MouseButtonStates for mouse events in CIrrDeviceSDL when middle or right button are released.
 - CGUIContextMenu no longer marks EMIE_MOUSE_MOVED as handled
 - core::array::linear_search and linear_reverse_search can now work with any types as long as corresponding operator== is implemented.
@@ -119,7 +132,7 @@ Changes in 1.9 (not yet released)
 - Bugfix: CGUIToolBar automatic placement no longer outside of screen when there are modals screens when creating it.
   Or when there are other window elements going over full window-size.
   Thanks to Stephen Lynx for the bugreport and to Sérgio Augusto Vianna for writing a test case with a bug example.
-  Changes: a) Never move the toolbar below it's parents lower border. b) No longer check all element-types, but only try to be below other toolbars or menues.
+  Changes: a) Never move the toolbar below it's parents lower border. b) No longer check all element-types, but only try to be below other toolbars or menus.
 - Add a normalType parameter to IGeometryCreator::createCylinderMesh
 - Add a normalsUpdate parameter to IMeshManipulator::transform to allow updating the normals with the inverse-transpose of the transformation matrix.
 - Bugfix: quaternion::slerp now uses lerpN instead of lerp to keep result normalized.
@@ -1501,7 +1514,7 @@ Changes in 1.7 (03.02.2010)
 
  - Let maya-cam animator react on a setTarget call to the camera which happened outside it's own control
 
- - New contextmenue features:
+ - New contextmenu features:
    automatic checking for checked flag.
    close handling now customizable
    serialization can handle incomplete xml's
@@ -1536,7 +1549,7 @@ Changes in 1.7 (03.02.2010)
 
  - More draw2dimage support in software drivers
 
- - Sphere node now properly chooses a good tesselation based on the parameters
+ - Sphere node now properly chooses a good tessellation based on the parameters
 
  - Active camera not registered twice anymore
 

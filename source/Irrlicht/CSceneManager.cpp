@@ -1095,14 +1095,14 @@ IAnimatedMesh* CSceneManager::addTerrainMesh(const io::path& name,
 //! Adds an arrow mesh to the mesh pool.
 IAnimatedMesh* CSceneManager::addArrowMesh(const io::path& name,
 		video::SColor vtxColor0, video::SColor vtxColor1,
-		u32 tesselationCylinder, u32 tesselationCone, f32 height,
+		u32 tessellationCylinder, u32 tessellationCone, f32 height,
 		f32 cylinderHeight, f32 width0,f32 width1)
 {
 	if (MeshCache->isMeshLoaded(name))
 		return MeshCache->getMeshByName(name);
 
-	IMesh* mesh = GeometryCreator->createArrowMesh( tesselationCylinder,
-			tesselationCone, height, cylinderHeight, width0,width1,
+	IMesh* mesh = GeometryCreator->createArrowMesh( tessellationCylinder,
+			tessellationCone, height, cylinderHeight, width0,width1,
 			vtxColor0, vtxColor1);
 	if (!mesh)
 		return 0;

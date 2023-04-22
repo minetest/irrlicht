@@ -48,19 +48,15 @@ class MyShaderCallBack : public video::IShaderConstantSetCallBack
 {
 public:
 	MyShaderCallBack() : WorldViewProjID(-1), TransWorldID(-1), InvWorldID(-1), PositionID(-1),
-						ColorID(-1), TextureID(-1), FirstUpdate(true)
+						ColorID(-1), TextureID(-1)
 	{
 	}
 
-	virtual void OnSetConstants(video::IMaterialRendererServices* services,
-			s32 userData)
+	virtual void OnCreate(video::IMaterialRendererServices* services, s32 userData)
 	{
-		video::IVideoDriver* driver = services->getVideoDriver();
-
-		// get shader constants id.
-
-		if (UseHighLevelShaders && FirstUpdate)
+		if (UseHighLevelShaders)
 		{
+			// get shader constants id.
 			WorldViewProjID = services->getVertexShaderConstantID("mWorldViewProj");
 			TransWorldID = services->getVertexShaderConstantID("mTransWorld");
 			InvWorldID = services->getVertexShaderConstantID("mInvWorld");
@@ -68,12 +64,16 @@ public:
 			ColorID = services->getVertexShaderConstantID("mLightColor");
 
 			// Textures ID are important only for OpenGL interface.
-
+			video::IVideoDriver* driver = services->getVideoDriver();
 			if(driver->getDriverType() == video::EDT_OPENGL)
 				TextureID = services->getVertexShaderConstantID("myTexture");
-
-			FirstUpdate = false;
 		}
+	}
+
+	virtual void OnSetConstants(video::IMaterialRendererServices* services,
+			s32 userData)
+	{
+		video::IVideoDriver* driver = services->getVideoDriver();
 
 		// set inverted world matrix
 		// if we are using highlevel shaders (the user can select this when
@@ -143,8 +143,6 @@ private:
 	s32 PositionID;
 	s32 ColorID;
 	s32 TextureID;
-
-	bool FirstUpdate;
 };
 
 /*
@@ -296,6 +294,11 @@ int main()
 
 	To demonstrate this, we create two materials with a different base
 	material, one with EMT_SOLID and one with EMT_TRANSPARENT_ADD_COLOR.
+	The role of the base material is to set the alpha (transparency)
+	and blending settings as used in the base material. Avoid the 
+	EMT_NORMAL_... or EMT_PARALLAX... types as base materials as they
+	are internally shaders themselves and will only create conflicts with 
+	your shaders.
 	*/
 
 	// create materials

@@ -153,7 +153,7 @@ namespace core
 
 		//! Calculates the cross product with another vector.
 		/** \param p Vector to multiply with.
-		\return Crossproduct of this vector with p. */
+		\return Cross product of this vector with p. */
 		vector3d<T> crossProduct(const vector3d<T>& p) const
 		{
 			return vector3d<T>(Y * p.Z - Z * p.Y, Z * p.X - X * p.Z, X * p.Y - Y * p.X);

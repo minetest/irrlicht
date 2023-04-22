@@ -72,7 +72,7 @@ int main()
 		}
 
 		// be nice to CPU
-		device->sleep(10);
+		device->yield();
 		if (!device->isWindowActive())
 			device->sleep(90);
 	}

@@ -500,7 +500,7 @@ int main()
 			app.Gui->drawAll();
 			app.Driver->endScene();
 		}
-		app.Device->sleep(10);
+		app.Device->yield(); // be nice
 	}
 
 	//app destroys device in destructor

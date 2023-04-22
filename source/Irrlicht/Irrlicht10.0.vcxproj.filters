@@ -1486,6 +1486,9 @@
     <ClInclude Include="..\..\include\EMeshBufferTypes.h">
       <Filter>include\scene</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\ESceneNodeUpdateAbs.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\changes.txt">

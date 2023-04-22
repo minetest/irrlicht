@@ -4654,6 +4654,9 @@ s32 CBurningVideoDriver::addShaderMaterial(const c8* vertexShaderProgram,
 
 	shader->drop();
 
+	if (callback && materialID >= 0)
+		callback->OnCreate(shader, userData);
+
 	return materialID;
 }
 
@@ -4690,6 +4693,9 @@ s32 CBurningVideoDriver::addHighLevelShaderMaterial(
 		callback, baseMaterial, userData);
 
 	shader->drop();
+
+	if (callback && materialID >= 0)
+		callback->OnCreate(shader, userData);
 
 	return materialID;
 }

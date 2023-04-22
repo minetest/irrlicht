@@ -351,7 +351,7 @@ you will not be able to use anything provided by the GUI Environment, including 
 #undef _IRR_COMPILE_WITH_GUI_
 #endif
 
-//! Define _IRR_COMPILE_WITH_PARTICLES to compile the engine the withe build-in particle system
+//! Define _IRR_COMPILE_WITH_PARTICLES to compile the engine the with the build-in particle system
 /** You can disable this if you don't need particles or use an external particle system. */
 #define _IRR_COMPILE_WITH_PARTICLES_
 #ifdef NO_IRR_COMPILE_WITH_PARTICLES_

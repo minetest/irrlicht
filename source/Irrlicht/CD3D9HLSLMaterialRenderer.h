@@ -12,6 +12,7 @@
 
 #include "CD3D9ShaderMaterialRenderer.h"
 #include "IGPUProgrammingServices.h"
+#include "IMaterialRendererServices.h"
 
 namespace irr
 {
@@ -23,12 +24,12 @@ class IShaderConstantSetCallBack;
 class IMaterialRenderer;
 
 //! Class for using vertex and pixel shaders via HLSL with D3D9
-class CD3D9HLSLMaterialRenderer : public CD3D9ShaderMaterialRenderer
+class CD3D9HLSLMaterialRenderer : public CD3D9ShaderMaterialRenderer, public IMaterialRendererServices
 {
 public:
 
 	//! Public constructor
-	CD3D9HLSLMaterialRenderer(IDirect3DDevice9* d3ddev, video::IVideoDriver* driver,
+	CD3D9HLSLMaterialRenderer(IDirect3DDevice9* d3ddev, video::CD3D9Driver* driver,
 		s32& outMaterialTypeNr,
 		const c8* vertexShaderProgram,
 		const c8* vertexShaderEntryPointName,
@@ -43,7 +44,25 @@ public:
 	//! Destructor
 	~CD3D9HLSLMaterialRenderer();
 
-	virtual s32 getVariableID(bool vertexShader, const c8* name);
+	bool OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype) IRR_OVERRIDE;
+
+	// implementations for IMaterialRendererServices
+	virtual void setBasicRenderStates(const SMaterial& material, const SMaterial& lastMaterial, bool resetAllRenderstates) IRR_OVERRIDE;
+	virtual s32 getVertexShaderConstantID(const c8* name) IRR_OVERRIDE;
+	virtual s32 getPixelShaderConstantID(const c8* name) IRR_OVERRIDE;
+	virtual void setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount=1) IRR_OVERRIDE;
+	virtual void setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount=1) IRR_OVERRIDE;
+	virtual bool setVertexShaderConstant(s32 index, const f32* floats, int count) IRR_OVERRIDE;
+	virtual bool setVertexShaderConstant(s32 index, const s32* ints, int count) IRR_OVERRIDE;
+	virtual bool setVertexShaderConstant(s32 index, const u32* ints, int count) IRR_OVERRIDE;
+	virtual bool setPixelShaderConstant(s32 index, const f32* floats, int count) IRR_OVERRIDE;
+	virtual bool setPixelShaderConstant(s32 index, const s32* ints, int count) IRR_OVERRIDE;
+	virtual bool setPixelShaderConstant(s32 index, const u32* ints, int count) IRR_OVERRIDE;
+	virtual IVideoDriver* getVideoDriver() IRR_OVERRIDE;
+
+protected:
+
+	s32 getVariableID(bool vertexShader, const c8* name);
 
 	//! sets a variable in the shader.
 	//! \param vertexShader: True if this should be set in the vertex shader, false if
@@ -51,17 +70,14 @@ public:
 	//! \param index: Index of the variable
 	//! \param floats: Pointer to array of floats
 	//! \param count: Amount of floats in array.
-	virtual bool setVariable(bool vertexShader, s32 index, const f32* floats, int count);
+	bool setVariable(bool vertexShader, s32 index, const f32* floats, int count);
 
 	//! Int interface for the above.
-	virtual bool setVariable(bool vertexShader, s32 index, const s32* ints, int count);
+	bool setVariable(bool vertexShader, s32 index, const s32* ints, int count);
 
 	//! Uint interface for the above.
-	virtual bool setVariable(bool vertexShader, s32 index, const u32* ints, int count);
+	bool setVariable(bool vertexShader, s32 index, const u32* ints, int count);
 
-	bool OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype) IRR_OVERRIDE;
-
-protected:
 
 	bool createHLSLVertexShader(const char* vertexShaderProgram,
 		const char* shaderEntryPointName,

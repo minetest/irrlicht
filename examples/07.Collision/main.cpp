@@ -52,8 +52,8 @@ int main()
 		return 1; // could not create selected driver.
 
 	/*
-	If we want to receive information about the material of a hit triangle we have to get 
-	collisions per meshbuffer. The only disadvantage of this is that getting them per 
+	If we want to receive information about the material of a hit triangle we have to get
+	collisions per meshbuffer. The only disadvantage of this is that getting them per
 	meshbuffer can be a little bit slower than per mesh, but usually that's not noticeable.
 	If you set this to false you will no longer get material names in the title bar.
 	*/
@@ -96,7 +96,7 @@ int main()
 
 		/*
 			There is currently no way to split an octree by material.
-			So if we need material infos we have to create one octree per 
+			So if we need material infos we have to create one octree per
 			meshbuffer and put them together in a MetaTriangleSelector.
 		*/
 		if ( separateMeshBuffers && q3node->getMesh()->getMeshBufferCount() > 1)
@@ -117,7 +117,7 @@ int main()
 		}
 		else
 		{
-			// If you don't need material infos just create one octree for the 
+			// If you don't need material infos just create one octree for the
 			// whole mesh.
 			selector = smgr->createOctreeTriangleSelector(
 					q3node->getMesh(), q3node, 128);
@@ -152,13 +152,13 @@ int main()
 	the radius of an ellipsoid. Try it out and change the radius to smaller
 	values, the camera will be able to move closer to walls after this. The
 	next parameter is the direction and speed of gravity.  We'll set it to
-	(0, -1000, 0), which approximates realistic gravity (depends on the units 
-	which are used in the scene model). You could set it to (0,0,0) to disable 
-	gravity. And the last value is just an offset: Without it the ellipsoid with 
-	which collision detection is done would be around the camera and the camera 
-	would be in the middle of the ellipsoid. But as human beings, we are used to 
-	have our eyes on top of the body, not in the middle of it. So we place the 
-	scene node 50 units over the center of the ellipsoid with this parameter. 
+	(0, -1000, 0), which approximates realistic gravity (depends on the units
+	which are used in the scene model). You could set it to (0,0,0) to disable
+	gravity. And the last value is just an offset: Without it the ellipsoid with
+	which collision detection is done would be around the camera and the camera
+	would be in the middle of the ellipsoid. But as human beings, we are used to
+	have our eyes on top of the body, not in the middle of it. So we place the
+	scene node 50 units over the center of the ellipsoid with this parameter.
 	And that's it, collision detection works now.
 	*/
 
@@ -200,19 +200,20 @@ int main()
 	selection is being performed. */
 	scene::IAnimatedMeshSceneNode* node = 0;
 
-	video::SMaterial material;
-
 	// Add an MD2 node, which uses vertex-based animation.
 	node = smgr->addAnimatedMeshSceneNode(smgr->getMesh(mediaPath + "faerie.md2"),
 						0, IDFlag_IsPickable | IDFlag_IsHighlightable);
-	node->setPosition(core::vector3df(-90,-15,-140)); // Put its feet on the floor.
-	node->setScale(core::vector3df(1.6f)); // Make it appear realistically scaled
-	node->setMD2Animation(scene::EMAT_POINT);
-	node->setAnimationSpeed(20.f);
-	material.setTexture(0, driver->getTexture(mediaPath + "faerie2.bmp"));
-	material.Lighting = true;
-	material.NormalizeNormals = true;
-	node->getMaterial(0) = material;
+	if ( node )
+	{
+		node->setPosition(core::vector3df(-90,-15,-140)); // Put its feet on the floor.
+		node->setScale(core::vector3df(1.6f)); // Make it appear realistically scaled
+		node->setMD2Animation(scene::EMAT_POINT);
+		node->setAnimationSpeed(20.f);
+		video::SMaterial& material = node->getMaterial(0);
+		material.setTexture(0, driver->getTexture(mediaPath + "faerie2.bmp"));
+		material.Lighting = true;
+		material.NormalizeNormals = true;
+	}
 
 	// Now create a triangle selector for it.  The selector will know that it
 	// is associated with an animated node, and will update itself as necessary.
@@ -223,43 +224,49 @@ int main()
 	// And this B3D file uses skinned skeletal animation.
 	node = smgr->addAnimatedMeshSceneNode(smgr->getMesh(mediaPath + "ninja.b3d"),
 						0, IDFlag_IsPickable | IDFlag_IsHighlightable);
-	node->setScale(core::vector3df(10));
-	node->setPosition(core::vector3df(-75,-66,-80));
-	node->setRotation(core::vector3df(0,90,0));
-	node->setAnimationSpeed(8.f);
-	node->getMaterial(0).NormalizeNormals = true;
-	node->getMaterial(0).Lighting = true;
-	// Just do the same as we did above.
-	selector = smgr->createTriangleSelector(node, separateMeshBuffers);
-	node->setTriangleSelector(selector);
-	selector->drop();
+	if ( node )
+	{
+		node->setScale(core::vector3df(10));
+		node->setPosition(core::vector3df(-75,-66,-80));
+		node->setRotation(core::vector3df(0,90,0));
+		node->setAnimationSpeed(8.f);
+		node->getMaterial(0).NormalizeNormals = true;
+		node->getMaterial(0).Lighting = true;
+		// Just do the same as we did above.
+		selector = smgr->createTriangleSelector(node, separateMeshBuffers);
+		node->setTriangleSelector(selector);
+		selector->drop();
+	}
 
 	// This X files uses skeletal animation, but without skinning.
 	node = smgr->addAnimatedMeshSceneNode(smgr->getMesh(mediaPath + "dwarf.x"),
 						0, IDFlag_IsPickable | IDFlag_IsHighlightable);
-	node->setPosition(core::vector3df(-70,-66,-30)); // Put its feet on the floor.
-	node->setRotation(core::vector3df(0,-90,0)); // And turn it towards the camera.
-	node->setAnimationSpeed(20.f);
-	node->getMaterial(0).Lighting = true;
-	selector = smgr->createTriangleSelector(node, separateMeshBuffers);
-	node->setTriangleSelector(selector);
-	selector->drop();
+	if ( node )
+	{
+		node->setPosition(core::vector3df(-70,-66,-30)); // Put its feet on the floor.
+		node->setRotation(core::vector3df(0,-90,0)); // And turn it towards the camera.
+		node->setAnimationSpeed(20.f);
+		node->getMaterial(0).Lighting = true;
+		selector = smgr->createTriangleSelector(node, separateMeshBuffers);
+		node->setTriangleSelector(selector);
+		selector->drop();
+	}
 
 	// And this mdl file uses skinned skeletal animation.
 	node = smgr->addAnimatedMeshSceneNode(smgr->getMesh(mediaPath + "yodan.mdl"),
 						0, IDFlag_IsPickable | IDFlag_IsHighlightable);
-	node->setPosition(core::vector3df(-90,-25,20));
-	node->setScale(core::vector3df(0.8f));
-	node->getMaterial(0).Lighting = true;
-	node->setAnimationSpeed(20.f);
+	if ( node )
+	{
+		node->setPosition(core::vector3df(-90,-25,20));
+		node->setScale(core::vector3df(0.8f));
+		node->getMaterial(0).Lighting = true;
+		node->setAnimationSpeed(20.f);
 
-	// Just do the same as we did above.
-	selector = smgr->createTriangleSelector(node, separateMeshBuffers);
-	node->setTriangleSelector(selector);
-	selector->drop();
-
-	material.setTexture(0, 0);
-	material.Lighting = false;
+		// Just do the same as we did above.
+		selector = smgr->createTriangleSelector(node, separateMeshBuffers);
+		node->setTriangleSelector(selector);
+		selector->drop();
+	}
 
 	// Add a light, so that the unselected nodes aren't completely dark.
 	scene::ILightSceneNode * light = smgr->addLightSceneNode(0, core::vector3df(-60,100,400),
@@ -271,7 +278,9 @@ int main()
 	scene::ISceneCollisionManager* collMan = smgr->getSceneCollisionManager();
 
 	// draw the selection triangle only as wireframe
-	material.Wireframe=true;
+	irr::video::SMaterial materialWireframe;
+	materialWireframe.Lighting = false;
+	materialWireframe.Wireframe=true;
 
 	while(device->run())
 	if (device->isWindowActive())
@@ -320,7 +329,7 @@ int main()
 
 			// We need to reset the transform before doing our own rendering.
 			driver->setTransform(video::ETS_WORLD, core::matrix4());
-			driver->setMaterial(material);
+			driver->setMaterial(materialWireframe);
 			driver->draw3DTriangle(hitResult.Triangle, video::SColor(0,255,0,0));	// Show which triangle has been hit
 
 			// We can check the flags for the scene node that was hit to see if it should be

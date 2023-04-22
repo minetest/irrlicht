@@ -238,13 +238,13 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 #endif
 
 	pPtr += sizeof(u16);
-	MS3DVertex *vertices = new MS3DVertex[numVertices];
 	if (pPtr + ((sizeof(MS3DVertex) - MS3DVERTEX_NUM_PAD_BYTES) * numVertices) > buffer+fileSize)
 	{
 		delete [] buffer;
 		os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 		return false;
 	}
+	MS3DVertex *vertices = new MS3DVertex[numVertices];
 	for (u16 tmp=0; tmp<numVertices; ++tmp)
 	{
 		//printf("&vertices[tmp].Vertex[0] = %p (%d)\n", &vertices[tmp].Vertex[0], (int)((long long)(&vertices[tmp].Vertex[0]) % 4));
@@ -269,13 +269,14 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 	os::Printer::log("Load Triangles", core::stringc(numTriangles).c_str());
 #endif
 	pPtr += sizeof(u16);
-	MS3DTriangle *triangles = new MS3DTriangle[numTriangles];
 	if (pPtr + ((sizeof(MS3DTriangle) - MS3DTRIANGLE_NUM_PAD_BYTES) * numTriangles) > buffer+fileSize)
 	{
 		delete [] buffer;
+		delete [] vertices;
 		os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 		return false;
 	}
+	MS3DTriangle *triangles = new MS3DTriangle[numTriangles];
 	for (u16 tmp=0; tmp<numTriangles; ++tmp)
 	{
 		memcpy(&triangles[tmp].Flags, pPtr, sizeof(struct MS3DTriangle) - MS3DTRIANGLE_NUM_PAD_BYTES);
@@ -349,6 +350,8 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 		if (pPtr > buffer+fileSize)
 		{
 			delete [] buffer;
+			delete [] vertices;
+			delete [] triangles;
 			os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 			return false;
 		}
@@ -390,6 +393,8 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 		if (pPtr > buffer+fileSize)
 		{
 			delete [] buffer;
+			delete [] vertices;
+			delete [] triangles;
 			os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 			return false;
 		}
@@ -452,6 +457,8 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 	if (pPtr > buffer+fileSize)
 	{
 		delete [] buffer;
+		delete [] vertices;
+		delete [] triangles;
 		os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 		return false;
 	}
@@ -479,6 +486,8 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 		if (pPtr > buffer+fileSize)
 		{
 			delete [] buffer;
+			delete [] vertices;
+			delete [] triangles;
 			os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 			return false;
 		}
@@ -529,6 +538,8 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 			if (pPtr > buffer+fileSize)
 			{
 				delete [] buffer;
+				delete [] vertices;
+				delete [] triangles;
 				os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 				return false;
 			}
@@ -569,6 +580,8 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 			if (pPtr > buffer+fileSize)
 			{
 				delete [] buffer;
+				delete [] vertices;
+				delete [] triangles;
 				os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 				return false;
 			}
@@ -625,6 +638,8 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 			if (pPtr > buffer+fileSize)
 			{
 				delete [] buffer;
+				delete [] vertices;
+				delete [] triangles;
 				os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 				return false;
 			}
@@ -657,6 +672,8 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 			if (pPtr > buffer+fileSize)
 			{
 				delete [] buffer;
+				delete [] vertices;
+				delete [] triangles;
 				os::Printer::log("Loading failed. Corrupted data found", file->getFileName(), ELL_ERROR);
 				return false;
 			}
@@ -837,8 +854,8 @@ bool CMS3DMeshFileLoader::load(io::IReadFile* file)
 	}
 
 	delete [] buffer;
-	delete [] triangles;
 	delete [] vertices;
+	delete [] triangles;
 
 	return true;
 }

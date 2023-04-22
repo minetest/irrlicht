@@ -142,7 +142,7 @@ namespace core
 
 			//! Set this matrix to the product of two matrices
 			/** Calculate b*a, no optimization used,
-			use it if you know you never have a identity matrix */
+			use it if you know you never have an identity matrix */
 			CMatrix4<T>& setbyproduct_nocheck(const CMatrix4<T>& other_a,const CMatrix4<T>& other_b );
 
 			//! Multiply by another matrix.
@@ -150,7 +150,8 @@ namespace core
 			CMatrix4<T> operator*(const CMatrix4<T>& other) const;
 
 			//! Multiply by another matrix.
-			/** Calculate and return other*this */
+			/** Like calling: (*this) = (*this) * other
+			*/
 			CMatrix4<T>& operator*=(const CMatrix4<T>& other);
 
 			//! Multiply by scalar.
@@ -186,14 +187,25 @@ namespace core
 			//! Make a rotation matrix from Euler angles. The 4th row and column are unmodified.
 			CMatrix4<T>& setRotationDegrees( const vector3d<T>& rotation );
 
-			//! Get the rotation, as set by setRotation() when you already know the scale.
-			/** If you already know the scale then this function is faster than the other getRotationDegrees overload.
-			NOTE: You will have the same end-rotation as used in setRotation, but it might not use the same axis values.
+			//! Get the rotation, as set by setRotation() when you already know the scale used to create the matrix
+			/** NOTE: The scale needs to be the correct one used to create this matrix.
+				You can _not_ use the result of getScale(), but have to save your scale
+				variable in another place (like ISceneNode does).
+			NOTE: No scale value can be 0 or the result is undefined.
+			NOTE: It does not necessarily return the *same* Euler angles as those set by setRotationDegrees(),
+				but the rotation will be equivalent,  i.e. will have the same result when used to rotate a vector or node.
+			NOTE: It will (usually) give wrong results when further transformations have been added in the matrix (like shear).
+			WARNING: There have been troubles with this function over the years and we may still have missed some corner cases.
+				It's generally safer to keep the rotation and scale you used to create the matrix around and work with those.
 			*/
 			core::vector3d<T> getRotationDegrees(const vector3d<T>& scale) const;
 
 			//! Returns the rotation, as set by setRotation().
 			/** NOTE: You will have the same end-rotation as used in setRotation, but it might not use the same axis values.
+				NOTE: This only works correct if no other matrix operations have been done on the inner 3x3 matrix besides
+					setting rotation (so no scale/shear). Thought it (probably) works as long as scale doesn't flip handedness.
+				NOTE: It does not necessarily return the *same* Euler angles as those set by setRotationDegrees(),
+				but the rotation will be equivalent,  i.e. will have the same result when used to rotate a vector or node.
 			*/
 			core::vector3d<T> getRotationDegrees() const;
 
@@ -221,7 +233,7 @@ namespace core
 			//! Translate a vector by the inverse of the translation part of this matrix.
 			void inverseTranslateVect( vector3df& vect ) const;
 
-			//! Tranform (rotate/scale) a vector by the inverse of the rotation part this matrix
+			//! Transform (rotate/scale) a vector by the inverse of the rotation part this matrix
 			void inverseRotateVect( vector3df& vect ) const;
 
 			//! Transform (rotate/scale) a vector by the rotation part of this matrix.
@@ -827,11 +839,9 @@ namespace core
 
 	//! Returns the absolute values of the scales of the matrix.
 	/**
-	Note that this returns the absolute (positive) values unless only scale is set.
-	Unfortunately it does not appear to be possible to extract any original negative
-	values. The best that we could do would be to arbitrarily make one scale
-	negative if one or three of them were negative.
-	FIXME - return the original values.
+	Note: You only get back original values if the matrix only set the scale.
+	Otherwise the result is a scale you can use to normalize the matrix axes,
+	but it's usually no longer what you did set with setScale.
 	*/
 	template <class T>
 	inline vector3d<T> CMatrix4<T>::getScale() const
@@ -894,33 +904,16 @@ namespace core
 	}
 
 
-	//! Returns a rotation that is equivalent to that set by setRotationDegrees().
-	/** This code was sent in by Chev.  Note that it does not necessarily return
-	the *same* Euler angles as those set by setRotationDegrees(), but the rotation will
-	be equivalent, i.e. will have the same result when used to rotate a vector or node.
-	This code was originally written by by Chev.
+	//! Returns a rotation which (mostly) works in combination with the given scale
+	/**
+	This code was originally written by by Chev (assuming no scaling back then,
+	we can be blamed for all problems added by regarding scale)
 	*/
 	template <class T>
 	inline core::vector3d<T> CMatrix4<T>::getRotationDegrees(const vector3d<T>& scale_) const
 	{
 		const CMatrix4<T> &mat = *this;
-		core::vector3d<T> scale(scale_);
-		// we need to check for negative scale on to axes, which would bring up wrong results
-		if (scale.Y<0 && scale.Z<0)
-		{
-			scale.Y =-scale.Y;
-			scale.Z =-scale.Z;
-		}
-		else if (scale.X<0 && scale.Z<0)
-		{
-			scale.X =-scale.X;
-			scale.Z =-scale.Z;
-		}
-		else if (scale.X<0 && scale.Y<0)
-		{
-			scale.X =-scale.X;
-			scale.Y =-scale.Y;
-		}
+		const core::vector3d<f64> scale(core::iszero(scale_.X) ? FLT_MAX : scale_.X , core::iszero(scale_.Y) ? FLT_MAX : scale_.Y, core::iszero(scale_.Z) ? FLT_MAX : scale_.Z);
 		const core::vector3d<f64> invScale(core::reciprocal(scale.X),core::reciprocal(scale.Y),core::reciprocal(scale.Z));
 
 		f64 Y = -asin(core::clamp(mat[2]*invScale.X, -1.0, 1.0));
@@ -929,7 +922,7 @@ namespace core
 
 		f64 rotx, roty, X, Z;
 
-		if (!core::iszero(C))
+		if (!core::iszero((T)C))
 		{
 			const f64 invC = core::reciprocal(C);
 			rotx = mat[10] * invC * invScale.Z;
@@ -956,14 +949,37 @@ namespace core
 	}
 
 	//! Returns a rotation that is equivalent to that set by setRotationDegrees().
-	/** This code was sent in by Chev.  Note that it does not necessarily return
-	the *same* Euler angles as those set by setRotationDegrees(), but the rotation will
-	be equivalent, i.e. will have the same result when used to rotate a vector or node.
-	This code was originally written by by Chev. */
 	template <class T>
 	inline core::vector3d<T> CMatrix4<T>::getRotationDegrees() const
 	{
-		return getRotationDegrees(getScale());
+		// Note: Using getScale() here make it look like it could do matrix decomposition.
+		// It can't! It works (or should work) as long as rotation doesn't flip the handedness
+		// aka scale swapping 1 or 3 axes. (I think we could catch that as well by comparing
+		// cross product of first 2 axes to direction of third axis, but TODO)
+		// And maybe it should also offer the solution for the simple calculation
+		// without regarding scaling as Irrlicht did before 1.7
+		core::vector3d<T> scale(getScale());
+
+		// We assume the matrix uses rotations instead of negative scaling 2 axes.
+		// Otherwise it fails even for some simple cases, like rotating around
+		// 2 axes by 180° which getScale thinks is a negative scaling.
+		if (scale.Y<0 && scale.Z<0)
+		{
+			scale.Y =-scale.Y;
+			scale.Z =-scale.Z;
+		}
+		else if (scale.X<0 && scale.Z<0)
+		{
+			scale.X =-scale.X;
+			scale.Z =-scale.Z;
+		}
+		else if (scale.X<0 && scale.Y<0)
+		{
+			scale.X =-scale.X;
+			scale.Y =-scale.Y;
+		}
+
+		return getRotationDegrees(scale);
 	}
 
 
@@ -2076,7 +2092,7 @@ namespace core
 		core::vector3df v(vs);
 		v.normalize();
 
-		// cosinus angle
+		// cosine angle
 		T ca = f.dotProduct(t);
 
 		core::vector3df vt(v * (1 - ca));
@@ -2137,7 +2153,7 @@ namespace core
 		// axis multiplication by sin
 		const core::vector3df vs = look.crossProduct(from);
 
-		// cosinus angle
+		// cosine angle
 		const f32 ca = from.dotProduct(look);
 
 		core::vector3df vt(up * (1.f - ca));

@@ -971,7 +971,7 @@ scene::SMesh** CQ3LevelMesh::buildMesh(s32 num)
 					break;
 				case 2: // patches
 					createCurvedSurface_bezier( buffer, i,
-									LoadParam.patchTesselation,
+									LoadParam.patchTessellation,
 									item[g].takeVertexColor
 								  );
 					break;
@@ -1274,7 +1274,7 @@ void CQ3LevelMesh::SBezier::tesselate( s32 level )
 */
 void CQ3LevelMesh::createCurvedSurface_nosubdivision(SMeshBufferLightMap* meshBuffer,
 					s32 faceIndex,
-					s32 patchTesselation,
+					s32 patchTessellation,
 					s32 storevertexcolor)
 {
 	tBSPFace * face = &Faces[faceIndex];
@@ -1318,7 +1318,7 @@ void CQ3LevelMesh::createCurvedSurface_nosubdivision(SMeshBufferLightMap* meshBu
 */
 void CQ3LevelMesh::createCurvedSurface_bezier(SMeshBufferLightMap* meshBuffer,
 					s32 faceIndex,
-					s32 patchTesselation,
+					s32 patchTessellation,
 					s32 storevertexcolor)
 {
 
@@ -1372,7 +1372,7 @@ void CQ3LevelMesh::createCurvedSurface_bezier(SMeshBufferLightMap* meshBuffer,
 			Bezier.control[7] = controlPoint[ inx + controlWidth * 2 + 1];
 			Bezier.control[8] = controlPoint[ inx + controlWidth * 2 + 2];
 
-			Bezier.tesselate( patchTesselation );
+			Bezier.tesselate( patchTessellation );
 		}
 	}
 

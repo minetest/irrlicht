@@ -229,7 +229,7 @@ namespace scene
 		//! Add a arrow mesh to the mesh pool
 		virtual IAnimatedMesh* addArrowMesh(const io::path& name,
 				video::SColor vtxColor0, video::SColor vtxColor1,
-				u32 tesselationCylinder, u32 tesselationCone,
+				u32 tessellationCylinder, u32 tessellationCone,
 				f32 height, f32 cylinderHeight, f32 width0,
 				f32 width1) IRR_OVERRIDE;
 

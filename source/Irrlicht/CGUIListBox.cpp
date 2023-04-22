@@ -23,10 +23,10 @@ namespace gui
 CGUIListBox::CGUIListBox(IGUIEnvironment* environment, IGUIElement* parent,
 			s32 id, core::rect<s32> rectangle, bool clip,
 			bool drawBack, bool moveOverSelect)
-: IGUIListBox(environment, parent, id, rectangle), Selected(-1),
+: IGUIListBox(environment, parent, id, rectangle), Selected(-1), HoverSelected(-1),
 	ItemHeight(0),ItemHeightOverride(0),
 	TotalItemHeight(0), ItemsIconWidth(0), Font(0), IconBank(0),
-	ScrollBar(0), selectTime(0), LastKeyTime(0), Selecting(false), DrawBack(drawBack),
+	ScrollBar(0), SelectTime(0), LastKeyTime(0), Selecting(false), DrawBack(drawBack),
 	MoveOverSelect(moveOverSelect), AutoScroll(true), HighlightWhenNotFocused(true)
 {
 	#ifdef _DEBUG
@@ -110,7 +110,7 @@ void CGUIListBox::removeItem(u32 id)
 	else if ((u32)Selected > id)
 	{
 		Selected -= 1;
-		selectTime = os::Timer::getTime();
+		SelectTime = os::Timer::getTime();
 	}
 
 	Items.erase(id);
@@ -142,6 +142,7 @@ void CGUIListBox::clear()
 	Items.clear();
 	ItemsIconWidth = 0;
 	Selected = -1;
+	HoverSelected = -1;
 
 	ScrollBar->setPos(0);
 
@@ -186,7 +187,7 @@ void CGUIListBox::recalculateItemHeight()
 //! returns id of selected item. returns -1 if no item is selected.
 s32 CGUIListBox::getSelected() const
 {
-	return Selected;
+	return HoverSelected >= 0 ? HoverSelected : Selected;
 }
 
 
@@ -198,7 +199,8 @@ void CGUIListBox::setSelected(s32 id)
 	else
 		Selected = id;
 
-	selectTime = os::Timer::getTime();
+	HoverSelected = -1;
+	SelectTime = os::Timer::getTime();
 
 	recalculateScrollPos();
 }
@@ -448,14 +450,19 @@ void CGUIListBox::selectNew(s32 ypos, bool onlyHover)
 	u32 now = os::Timer::getTime();
 	s32 oldSelected = Selected;
 
-	Selected = getItemAt(AbsoluteRect.UpperLeftCorner.X, ypos);
-	if (Selected<0 && !Items.empty())
-		Selected = 0;
+	HoverSelected = getItemAt(AbsoluteRect.UpperLeftCorner.X, ypos);
+	if (HoverSelected<0 && !Items.empty())
+		HoverSelected = 0;
+	if  (!onlyHover)
+	{
+		Selected = HoverSelected;
+		HoverSelected = -1;
+	}
 
 	recalculateScrollPos();
 
-	gui::EGUI_EVENT_TYPE eventType = (Selected == oldSelected && now < selectTime + 500) ? EGET_LISTBOX_SELECTED_AGAIN : EGET_LISTBOX_CHANGED;
-	selectTime = now;
+	gui::EGUI_EVENT_TYPE eventType = (Selected == oldSelected && now < SelectTime + 500) ? EGET_LISTBOX_SELECTED_AGAIN : EGET_LISTBOX_CHANGED;
+	SelectTime = now;
 	// post the news
 	if (Parent && !onlyHover)
 	{
@@ -521,14 +528,21 @@ void CGUIListBox::draw()
 	frameRect.LowerRightCorner.Y -= ScrollBar->getPos();
 
 	bool hl = (HighlightWhenNotFocused || Environment->hasFocus(this) || Environment->hasFocus(ScrollBar));
+	const irr::s32 selected = getSelected();
 
 	for (s32 i=0; i<(s32)Items.size(); ++i)
 	{
 		if (frameRect.LowerRightCorner.Y >= AbsoluteRect.UpperLeftCorner.Y &&
 			frameRect.UpperLeftCorner.Y <= AbsoluteRect.LowerRightCorner.Y)
 		{
-			if (i == Selected && hl)
-				skin->draw2DRectangle(this, skin->getColor(EGDC_HIGH_LIGHT), frameRect, &clientClip);
+			if (i == selected && hl)
+			{
+				skin->draw2DRectangle(this, hasItemOverrideColor(i, EGUI_LBC_BACKGROUND_HIGHLIGHT) ? getItemOverrideColor(i, EGUI_LBC_BACKGROUND_HIGHLIGHT) : getItemDefaultColor(EGUI_LBC_BACKGROUND_HIGHLIGHT), frameRect, &clientClip);
+			}
+			else if ( hasItemOverrideColor(i, EGUI_LBC_BACKGROUND ) )
+			{
+				skin->draw2DRectangle(this, getItemOverrideColor(i, EGUI_LBC_BACKGROUND), frameRect, &clientClip);
+			}
 
 			core::rect<s32> textRect = frameRect;
 			textRect.UpperLeftCorner.X += 3;
@@ -541,24 +555,24 @@ void CGUIListBox::draw()
 					iconPos.Y += textRect.getHeight() / 2;
 					iconPos.X += ItemsIconWidth/2;
 
-					if ( i==Selected && hl )
+					if ( i==selected && hl )
 					{
 						IconBank->draw2DSprite( (u32)Items[i].Icon, iconPos, &clientClip,
 							hasItemOverrideColor(i, EGUI_LBC_ICON_HIGHLIGHT) ?
 							getItemOverrideColor(i, EGUI_LBC_ICON_HIGHLIGHT) : getItemDefaultColor(EGUI_LBC_ICON_HIGHLIGHT),
-							selectTime, os::Timer::getTime(), false, true);
+							SelectTime, os::Timer::getTime(), false, true);
 					}
 					else
 					{
 						IconBank->draw2DSprite( (u32)Items[i].Icon, iconPos, &clientClip,
 							hasItemOverrideColor(i, EGUI_LBC_ICON) ? getItemOverrideColor(i, EGUI_LBC_ICON) : getItemDefaultColor(EGUI_LBC_ICON),
-							0 , (i==Selected) ? os::Timer::getTime() : 0, false, true);
+							0 , (i==selected) ? os::Timer::getTime() : 0, false, true);
 					}
 				}
 
 				textRect.UpperLeftCorner.X += ItemsIconWidth+3;
 
-				if ( i==Selected && hl )
+				if ( i==selected && hl )
 				{
 					Font->draw(Items[i].Text.c_str(), textRect,
 						hasItemOverrideColor(i, EGUI_LBC_TEXT_HIGHLIGHT) ?
@@ -617,7 +631,7 @@ void CGUIListBox::recalculateScrollPos()
 	if (!AutoScroll)
 		return;
 
-	const s32 selPos = (Selected == -1 ? TotalItemHeight : Selected * ItemHeight) - ScrollBar->getPos();
+	const s32 selPos = (getSelected() == -1 ? TotalItemHeight : getSelected() * ItemHeight) - ScrollBar->getPos();
 
 	if (selPos < 0)
 	{
@@ -670,6 +684,14 @@ bool CGUIListBox::getSerializationLabels(EGUI_LISTBOX_COLOR colorType, core::str
 	case EGUI_LBC_ICON_HIGHLIGHT:
 		useColorLabel = "UseColIconHl";
 		colorLabel = "ColIconHl";
+		break;
+	case EGUI_LBC_BACKGROUND:
+		useColorLabel = "UseColBg";
+		colorLabel = "ColBg";
+		break;
+	case EGUI_LBC_BACKGROUND_HIGHLIGHT:
+		useColorLabel = "UseColBgHl";
+		colorLabel = "ColBgHl";
 		break;
 	default:
 		return false;
@@ -754,6 +776,7 @@ void CGUIListBox::deserializeAttributes(io::IAttributes* in, io::SAttributeReadW
 		}
 	}
 	Selected = in->getAttributeAsInt("Selected", Selected);
+	HoverSelected = -1;
 	recalculateScrollPos();
 }
 
@@ -887,6 +910,10 @@ video::SColor CGUIListBox::getItemDefaultColor(EGUI_LISTBOX_COLOR colorType) con
 			return skin->getColor(EGDC_ICON);
 		case EGUI_LBC_ICON_HIGHLIGHT:
 			return skin->getColor(EGDC_ICON_HIGH_LIGHT);
+		case EGUI_LBC_BACKGROUND:
+			return skin->getColor(EGDC_3D_HIGH_LIGHT);
+		case EGUI_LBC_BACKGROUND_HIGHLIGHT:
+			return skin->getColor(EGDC_HIGH_LIGHT);
 		default:
 			return video::SColor();
 	}

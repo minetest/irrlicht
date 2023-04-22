@@ -846,6 +846,7 @@
     <ClInclude Include="..\..\include\EMaterialTypes.h" />
     <ClInclude Include="..\..\include\EMeshBufferTypes.h" />
     <ClInclude Include="..\..\include\EReadFileType.h" />
+    <ClInclude Include="..\..\include\ESceneNodeUpdateAbs.h" />
     <ClInclude Include="..\..\include\EShaderTypes.h" />
     <ClInclude Include="..\..\include\fast_atof.h" />
     <ClInclude Include="..\..\include\IAnimatedMeshMD3.h" />

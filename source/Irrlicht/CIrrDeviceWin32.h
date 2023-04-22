@@ -275,6 +275,30 @@ namespace irr
 					UseReferenceRect = false;
 			}
 
+			virtual bool getReferenceRect(core::rect<s32>& rect) IRR_OVERRIDE
+			{ 
+				if ( UseReferenceRect )
+				{
+					rect = ReferenceRect;
+				}
+				else
+				{
+					RECT wndRect;
+					if (GetWindowRect(HWnd, &wndRect))
+					{
+						rect.UpperLeftCorner.X = wndRect.left+BorderX;
+						rect.UpperLeftCorner.Y = wndRect.top+BorderY;
+					}
+					else // error case - not sure if it matters what we set here as coordinates returned will be -1, -1
+					{
+						rect.UpperLeftCorner = core::vector2di(0,0);
+					}
+					rect.LowerRightCorner.X = rect.UpperLeftCorner.X + (irr::s32)WindowSize.Width;
+					rect.LowerRightCorner.Y = rect.UpperLeftCorner.Y + (irr::s32)WindowSize.Height;
+				}
+				return UseReferenceRect;
+			}
+
 			/** Used to notify the cursor that the window was resized. */
 			void OnResize(const core::dimension2d<u32>& size)
 			{

@@ -19,7 +19,7 @@ enum ELOG_LEVEL
 	//! Used for printing information helpful in debugging
 	ELL_DEBUG,
 
-	//! Useful information to print. For example hardware infos or something started/stopped.
+	//! Useful information to print. For example hardware info or something started/stopped.
 	ELL_INFORMATION,
 
 	//! Warnings that something isn't as expected and can cause oddities

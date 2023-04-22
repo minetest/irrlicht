@@ -805,10 +805,10 @@ IRenderTarget* COpenGLDriver::addRenderTarget()
 }
 
 
-// small helper function to create vertex buffer object adress offsets
-static inline u8* buffer_offset(const long offset)
+// small helper function to create vertex buffer object address offsets
+static inline const GLvoid * buffer_offset(const size_t offset)
 {
-	return ((u8*)0 + offset);
+	return (const GLvoid *)offset;
 }
 
 
@@ -3728,6 +3728,10 @@ s32 COpenGLDriver::addShaderMaterial(const c8* vertexShaderProgram,
 		callback, baseMaterial, userData);
 
 	r->drop();
+
+	if (callback && nr >= 0)
+		callback->OnCreate(this, userData);
+
 	return nr;
 }
 
@@ -3761,6 +3765,9 @@ s32 COpenGLDriver::addHighLevelShaderMaterial(
 			callback,baseMaterial, userData);
 
 	r->drop();
+
+	if (callback && nr >= 0)
+		callback->OnCreate(r, userData);
 
 	return nr;
 }

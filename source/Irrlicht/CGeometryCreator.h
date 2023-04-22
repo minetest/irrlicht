@@ -34,19 +34,19 @@ public:
 		const core::dimension2d<u32>& defaultVertexBlockSize,
 		bool debugBorders=false) const IRR_OVERRIDE;
 
-	virtual IMesh* createArrowMesh(const u32 tesselationCylinder,
-			const u32 tesselationCone, const f32 height,
+	virtual IMesh* createArrowMesh(const u32 tessellationCylinder,
+			const u32 tessellationCone, const f32 height,
 			const f32 cylinderHeight, const f32 width0,
 			const f32 width1, const video::SColor vtxColor0,
 			const video::SColor vtxColor1) const IRR_OVERRIDE;
 
 	virtual IMesh* createSphereMesh(f32 radius, u32 polyCountX, u32 polyCountY) const IRR_OVERRIDE;
 
-	virtual IMesh* createCylinderMesh(f32 radius, f32 length, u32 tesselation,
+	virtual IMesh* createCylinderMesh(f32 radius, f32 length, u32 tessellation,
 				const video::SColor& color=0xffffffff,
 				bool closeTop=true, f32 oblique=0.f, u32 normalType=0) const IRR_OVERRIDE;
 
-	virtual IMesh* createConeMesh(f32 radius, f32 length, u32 tesselation,
+	virtual IMesh* createConeMesh(f32 radius, f32 length, u32 tessellation,
 				const video::SColor& colorTop=0xffffffff,
 				const video::SColor& colorBottom=0xffffffff,
 				f32 oblique=0.f) const IRR_OVERRIDE;

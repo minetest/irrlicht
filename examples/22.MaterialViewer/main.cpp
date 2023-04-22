@@ -884,7 +884,7 @@ bool CApp::update()
 	}
 
 	// be nice
-	Device->sleep( 5 );
+	Device->yield();
 
 	return true;
 }

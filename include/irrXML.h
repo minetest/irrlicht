@@ -201,7 +201,7 @@ namespace io
 		//! An xml cdata section like &lt;![CDATA[ this is some CDATA ]]&gt;
 		EXN_CDATA,
 
-		//! Unknown element.
+		//! Unknown element. Also xml headers nodes (which currently also don't read attributes)
 		EXN_UNKNOWN
 	};
 

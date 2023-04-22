@@ -1035,7 +1035,7 @@ bool CIrrDeviceLinux::run()
 								os::Printer::log("XLookupNone", ELL_INFORMATION);
 							else if ( status ==  XLookupKeySym )
 								// Getting this also when user did not set setlocale(LC_ALL, ""); and using an unknown locale
-								// XSupportsLocale doesn't seeem to catch that unfortunately - any other ideas to catch it are welcome.
+								// XSupportsLocale doesn't seem to catch that unfortunately - any other ideas to catch it are welcome.
 								os::Printer::log("XLookupKeySym", ELL_INFORMATION);
 							else if ( status ==  XBufferOverflow )
 								os::Printer::log("XBufferOverflow", ELL_INFORMATION);
@@ -1409,7 +1409,7 @@ video::IVideoModeList* CIrrDeviceLinux::getVideoModeList()
 			else
 			#endif
 			{
-				os::Printer::log("VidMode or RandR X11 extension requireed for VideoModeList." , ELL_WARNING);
+				os::Printer::log("VidMode or RandR X11 extension required for VideoModeList." , ELL_WARNING);
 			}
 		}
 		if (XDisplay && temporaryDisplay)
@@ -2080,7 +2080,7 @@ Cursor CIrrDeviceLinux::TextureToMonochromeCursor(irr::video::ITexture * tex, co
 										ZPixmap,	// XYBitmap (depth=1), ZPixmap(depth=x)
 										0, 0, sourceRect.getWidth(), sourceRect.getHeight(),
 										32, // bitmap_pad,
-										0// bytes_per_line (0 means continuos in memory)
+										0// bytes_per_line (0 means continuous in memory)
 										);
 	sourceImage->data = new char[sourceImage->height * sourceImage->bytes_per_line];
 	XImage * maskImage = XCreateImage(XDisplay, VisualInfo->visual,
@@ -2263,7 +2263,7 @@ CIrrDeviceLinux::CCursorControl::CCursorControl(CIrrDeviceLinux* dev, bool null)
 CIrrDeviceLinux::CCursorControl::~CCursorControl()
 {
 	// Do not clearCursors here as the display is already closed
-	// TODO (cutealien): droping cursorcontrol earlier might work, not sure about reason why that's done in stub currently.
+	// TODO (cutealien): dropping cursorcontrol earlier might work, not sure about reason why that's done in stub currently.
 }
 
 #ifdef _IRR_COMPILE_WITH_X11_

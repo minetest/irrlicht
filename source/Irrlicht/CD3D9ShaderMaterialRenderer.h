@@ -21,7 +21,7 @@ namespace irr
 namespace video
 {
 
-class IVideoDriver;
+class CD3D9Driver;
 class IShaderConstantSetCallBack;
 class IMaterialRenderer;
 
@@ -31,7 +31,7 @@ class CD3D9ShaderMaterialRenderer : public IMaterialRenderer
 public:
 
 	//! Public constructor
-	CD3D9ShaderMaterialRenderer(IDirect3DDevice9* d3ddev, video::IVideoDriver* driver,
+	CD3D9ShaderMaterialRenderer(IDirect3DDevice9* d3ddev, video::CD3D9Driver* driver,
 		s32& outMaterialTypeNr, const c8* vertexShaderProgram, const c8* pixelShaderProgram,
 		IShaderConstantSetCallBack* callback, IMaterialRenderer* baseMaterial, s32 userData);
 
@@ -59,7 +59,7 @@ protected:
 	//! constructor only for use by derived classes who want to
 	//! create a fall back material for example.
 	CD3D9ShaderMaterialRenderer(IDirect3DDevice9* d3ddev,
-					video::IVideoDriver* driver,
+					video::CD3D9Driver* driver,
 					IShaderConstantSetCallBack* callback,
 					IMaterialRenderer* baseMaterial,
 					s32 userData=0);
@@ -88,7 +88,7 @@ protected:
 					LPD3DXCONSTANTTABLE* ppConstantTable);
 
 	IDirect3DDevice9* pID3DDevice;
-	video::IVideoDriver* Driver;
+	video::CD3D9Driver* Driver;
 	IShaderConstantSetCallBack* CallBack;
 	IMaterialRenderer* BaseMaterial;
 

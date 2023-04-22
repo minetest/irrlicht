@@ -71,7 +71,7 @@ public:
 		return CallBack;
 	}
 
-	// implementations for the render services
+	// implementations for IMaterialRendererServices
 	virtual void setBasicRenderStates(const SMaterial& material, const SMaterial& lastMaterial, bool resetAllRenderstates) IRR_OVERRIDE;
 	virtual s32 getVertexShaderConstantID(const c8* name) IRR_OVERRIDE;
 	virtual s32 getPixelShaderConstantID(const c8* name) IRR_OVERRIDE;
