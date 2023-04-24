@@ -237,13 +237,10 @@ void COpenGLSLMaterialRenderer::OnSetMaterial(const video::SMaterial& material,
 
 	COpenGLCacheHandler* cacheHandler = Driver->getCacheHandler();
 
-	if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
-	{
-		if (Program2)
-			Driver->irrGlUseProgram(Program2);
-		else if (Program)
-			Driver->extGlUseProgramObject(Program);
-	}
+	if (Program2)
+		Driver->irrGlUseProgram(Program2);
+	else if (Program)
+		Driver->extGlUseProgramObject(Program);
 
 	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
@@ -570,6 +567,23 @@ void COpenGLSLMaterialRenderer::setBasicRenderStates(const SMaterial& material,
 {
 	// forward
 	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+}
+
+void COpenGLSLMaterialRenderer::startUseProgram()
+{
+	if (Program2)
+		Driver->irrGlUseProgram(Program2);
+	else if (Program)
+		Driver->extGlUseProgramObject(Program);
+}
+
+void COpenGLSLMaterialRenderer::stopUseProgram()
+{
+	// Not going to reset irrGlUseProgram/extGlUseProgramObject as it shouldn't really matter
+
+	// Force reset of material to ensure OnSetMaterial will be called or we can miss 
+	// the next UseProgram call
+	Driver->DoResetRenderStates();
 }
 
 s32 COpenGLSLMaterialRenderer::getVertexShaderConstantID(const c8* name)

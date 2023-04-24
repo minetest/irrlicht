@@ -73,6 +73,8 @@ public:
 
 	// implementations for IMaterialRendererServices
 	virtual void setBasicRenderStates(const SMaterial& material, const SMaterial& lastMaterial, bool resetAllRenderstates) IRR_OVERRIDE;
+	virtual void startUseProgram() IRR_OVERRIDE;
+	virtual void stopUseProgram() IRR_OVERRIDE;
 	virtual s32 getVertexShaderConstantID(const c8* name) IRR_OVERRIDE;
 	virtual s32 getPixelShaderConstantID(const c8* name) IRR_OVERRIDE;
 	virtual void setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount=1) IRR_OVERRIDE;

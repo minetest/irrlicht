@@ -56,7 +56,7 @@ public:
 	{
 		if (UseHighLevelShaders)
 		{
-			// get shader constants id.
+			// Get shader constants id.
 			WorldViewProjID = services->getVertexShaderConstantID("mWorldViewProj");
 			TransWorldID = services->getVertexShaderConstantID("mTransWorld");
 			InvWorldID = services->getVertexShaderConstantID("mInvWorld");
@@ -68,6 +68,27 @@ public:
 			if(driver->getDriverType() == video::EDT_OPENGL)
 				TextureID = services->getVertexShaderConstantID("myTexture");
 		}
+
+		// Set light color 
+		// That could be set as well in OnSetConstants, but there's some cost to setting shader constants
+		// So when we have non-changing shader constants it's more performant to set them only once.
+		video::SColorf col(0.0f,1.0f,1.0f,0.0f);
+		if (UseHighLevelShaders)
+		{
+			services->setVertexShaderConstant(ColorID, reinterpret_cast<f32*>(&col), 4);
+
+			// Note: Since Irrlicht 1.9 it's possible to call setVertexShaderConstant 
+			// from anywhere. To do that save the services pointer here in OnCreate, it
+			// won't change as long as you use one IShaderConstantSetCallBack per shader
+			// material. But when calling it ouside of IShaderConstantSetCallBack functions
+			// you have to call services->startUseProgram()stopUseProgram() before/after doing so. 
+			// At least for high-level shader constants, low level constants are not attached
+			// to programs, so for those it doesn't matter.
+			// Doing that sometimes makes sense for performance reasons, like for constants which
+			// do only change once per frame or even less.
+		}
+		else
+			services->setVertexShaderConstant(reinterpret_cast<f32*>(&col), 9, 1);
 	}
 
 	virtual void OnSetConstants(video::IMaterialRendererServices* services,
@@ -108,16 +129,6 @@ public:
 			services->setVertexShaderConstant(PositionID, reinterpret_cast<f32*>(&pos), 3);
 		else
 			services->setVertexShaderConstant(reinterpret_cast<f32*>(&pos), 8, 1);
-
-		// set light color
-
-		video::SColorf col(0.0f,1.0f,1.0f,0.0f);
-
-		if (UseHighLevelShaders)
-			services->setVertexShaderConstant(ColorID,
-					reinterpret_cast<f32*>(&col), 4);
-		else
-			services->setVertexShaderConstant(reinterpret_cast<f32*>(&col), 9, 1);
 
 		// set transposed world matrix
 
