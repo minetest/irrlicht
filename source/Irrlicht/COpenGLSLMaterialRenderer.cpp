@@ -237,10 +237,13 @@ void COpenGLSLMaterialRenderer::OnSetMaterial(const video::SMaterial& material,
 
 	COpenGLCacheHandler* cacheHandler = Driver->getCacheHandler();
 
-	if (Program2)
-		Driver->irrGlUseProgram(Program2);
-	else if (Program)
-		Driver->extGlUseProgramObject(Program);
+	if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)	// each program has it's own type
+	{
+		if (Program2)
+			Driver->irrGlUseProgram(Program2);
+		else if (Program)
+			Driver->extGlUseProgramObject(Program);
+	}
 
 	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
