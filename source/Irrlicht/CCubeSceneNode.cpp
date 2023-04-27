@@ -202,7 +202,9 @@ video::SMaterial& CCubeSceneNode::getMaterial(u32 i)
 //! returns amount of materials used by this scene node.
 u32 CCubeSceneNode::getMaterialCount() const
 {
-	return 1;
+	if ( Mesh )
+		return Mesh->getMeshBufferCount();
+	return 0;
 }
 
 
@@ -245,7 +247,8 @@ ISceneNode* CCubeSceneNode::clone(ISceneNode* newParent, ISceneManager* newManag
 		newManager, ID, RelativeTranslation, RelativeRotation, RelativeScale, MeshType);
 
 	nb->cloneMembers(this, newManager);
-	nb->getMaterial(0) = getMaterial(0);
+	for ( irr::u32 i=0; i < getMaterialCount(); ++i )
+		nb->getMaterial(i) = getMaterial(i);
 	nb->Shadow = Shadow;
 	if ( nb->Shadow )
 		nb->Shadow->grab();
