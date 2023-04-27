@@ -2375,7 +2375,10 @@ COGLES2Driver::~COGLES2Driver()
 		r->drop();
 
 		if (callback && nr >= 0)
+		{
+			r->startUseProgram();
 			callback->OnCreate(r, userData);
+		}
 
 		return nr;
 	}
