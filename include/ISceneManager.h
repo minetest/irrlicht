@@ -160,7 +160,7 @@ namespace scene
 	{
 	public:
 
-		//! Get pointer to an animateable mesh. Loads the file if not loaded already.
+		//! Get pointer to an animatable mesh. Loads the file if not loaded already.
 		/**
 		 * If you want to remove a loaded mesh from the cache again, use removeMesh().
 		 *  Currently there are the following mesh formats supported:
@@ -393,7 +393,7 @@ namespace scene
 		 **/
 		virtual IAnimatedMesh* getMesh(const io::path& filename, const io::path& alternativeCacheName=io::path("")) = 0;
 
-		//! Get pointer to an animateable mesh. Loads the file if not loaded already.
+		//! Get pointer to an animatable mesh. Loads the file if not loaded already.
 		/** Works just as getMesh(const char* filename). If you want to
 		remove a loaded mesh from the cache again, use removeMesh().
 		\param file File handle of the mesh to load.

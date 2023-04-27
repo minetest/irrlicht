@@ -14,7 +14,7 @@ namespace gui
 	class IGUIElement;
 	class IGUIEnvironment;
 
-	//!	Interface making it possible to dynamicly create gui elements
+	//!	Interface making it possible to dynamically create gui elements
 	class CGUIEditFactory : public IGUIElementFactory
 	{
 	public:

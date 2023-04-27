@@ -952,7 +952,7 @@ scene::SMesh** CQ3LevelMesh::buildMesh(s32 num)
 						item[g].index != E_Q3_MESH_FOG ? material : material2 );
 				}
 
-				// create a seperate mesh buffer
+				// create a separate mesh buffer
 				if ( 0 == buffer )
 				{
 					buffer = new scene::SMeshBufferLightMap();

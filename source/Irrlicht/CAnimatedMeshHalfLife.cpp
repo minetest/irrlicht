@@ -622,7 +622,7 @@ void CAnimatedMeshHalfLife::renderModel(u32 param, IVideoDriver * driver, const 
 		}
 	}
 
-	// attachements
+	// attachments
 	const SHalflifeAttachment *attach = (SHalflifeAttachment *) ((u8*) Header + Header->attachmentindex);
 	core::vector3df v[8];
 	for (u32 i = 0; i < Header->numattachments; i++)

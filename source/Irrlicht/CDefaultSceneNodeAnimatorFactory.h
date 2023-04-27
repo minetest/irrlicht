@@ -18,7 +18,7 @@ namespace scene
 	class ISceneNodeAnimator;
 	class ISceneManager;
 
-	//! Interface making it possible to dynamicly create scene nodes animators
+	//! Interface making it possible to dynamically create scene nodes animators
 	class CDefaultSceneNodeAnimatorFactory : public ISceneNodeAnimatorFactory
 	{
 	public:

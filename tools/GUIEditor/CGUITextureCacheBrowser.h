@@ -38,7 +38,7 @@ namespace gui
 		//! update absolute position
 		virtual void updateAbsolutePosition();
 
-		//! this shoudln't be serialized, but this is included as it's an example
+		//! this shouldn't be serialized, but this is included as it's an example
 		virtual const c8* getTypeName() const { return "textureCacheBrowser"; }
 
 		//! Returns pointer to the close button
