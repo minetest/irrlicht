@@ -119,7 +119,7 @@ CSceneManager::~CSceneManager()
 }
 
 
-//! gets an animateable mesh. loads it if needed. returned pointer must not be dropped.
+//! gets an animatable mesh. loads it if needed. returned pointer must not be dropped.
 IAnimatedMesh* CSceneManager::getMesh(io::IReadFile* file)
 {
 	if (!file)
