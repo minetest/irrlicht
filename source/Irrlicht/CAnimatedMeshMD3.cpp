@@ -31,7 +31,7 @@ struct SMD3Frame
 //! An attachment point for another MD3 model.
 struct SMD3Tag
 {
-	c8 Name[64];		//name of 'tag' as it's usually called in the md3 files try to see it as a sub-mesh/seperate mesh-part.
+	c8 Name[64];		//name of 'tag' as it's usually called in the md3 files try to see it as a sub-mesh/separate mesh-part.
 	f32 position[3];	//relative position of tag
 	f32 rotationMatrix[9];	//3x3 rotation direction of tag
 } PACK_STRUCT;

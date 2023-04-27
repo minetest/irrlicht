@@ -41,6 +41,20 @@ public:
 	//! Return an index constant for the vertex shader based on a name.
 	virtual s32 getVertexShaderConstantID(const c8* name) = 0;
 
+	//! Call when you set shader constants outside of IShaderConstantSetCallBack
+	/** Only for high-level shader functions, aka those using an index instead of 
+	an register. Shader constants are attached to shader programs, so if you want 
+	to set them you have to make sure the correct shader program is in use.
+	IShaderConstantSetCallBack functions like OnSetConstants do that for you,
+	but if you want to set shader constants outside of those (usually for performance
+	reasons) call startUseProgram() before doing so and stopUseProgram() afterwards.
+	Note: Currently only necessary in OpenGL, but no real calling costs on other drivers.
+	*/
+	virtual void startUseProgram() {}
+
+	//! Call this when you are done setting shader constants outside of OnCreate or OnSetConstants 
+	virtual void stopUseProgram() {}
+
 	//! Sets a constant for the vertex shader based on a name.
 	/** This can be used if you used a high level shader language like GLSL
 	or HLSL to create a shader. Example: If you created a shader which has

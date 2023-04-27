@@ -332,7 +332,7 @@ struct ALIGN(16) sVec4
 		out.z = (z * l) + ofs;
 	}
 
-	//shader suppport
+	//shader support
 	sVec4(const sVec4& a, double _w)
 	{
 		x = a.x;

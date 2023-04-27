@@ -3337,7 +3337,7 @@ void CBurningVideoDriver::setMaterial(const SMaterial& material)
 	//if (maxTex < 4) texture3 = 0;
 
 
-	//todo: seperate depth test from depth write
+	//todo: separate depth test from depth write
 	Material.depth_write = getWriteZBuffer(in);
 	Material.depth_test = in.ZBuffer != ECFN_DISABLED && Material.depth_write;
 

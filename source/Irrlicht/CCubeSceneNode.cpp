@@ -76,14 +76,26 @@ void CCubeSceneNode::render()
 	if (Shadow)
 		Shadow->updateShadowVolumes();
 
-	// for debug purposes only:
-	video::SMaterial mat = Mesh->getMeshBuffer(0)->getMaterial();
-
-	// overwrite half transparency
-	if (DebugDataVisible & scene::EDS_HALF_TRANSPARENCY)
-		mat.MaterialType = video::EMT_TRANSPARENT_ADD_COLOR;
-	driver->setMaterial(mat);
-	driver->drawMeshBuffer(Mesh->getMeshBuffer(0));
+	for (u32 i=0; i<Mesh->getMeshBufferCount(); ++i)
+	{
+		const scene::IMeshBuffer* mb = Mesh->getMeshBuffer(i);
+		{
+			// for debug purposes only:
+			if (DebugDataVisible & scene::EDS_HALF_TRANSPARENCY)
+			{
+				// overwrite half transparency
+				video::SMaterial mat = mb->getMaterial();
+				mat.MaterialType = video::EMT_TRANSPARENT_ADD_COLOR;
+				driver->setMaterial(mat);
+			}
+			else
+			{
+				const video::SMaterial& mat = mb->getMaterial();
+				driver->setMaterial(mat);
+			}
+			driver->drawMeshBuffer(mb);
+		}
+	}
 
 	// for debug purposes only:
 	if (DebugDataVisible)
@@ -95,21 +107,18 @@ void CCubeSceneNode::render()
 
 		if (DebugDataVisible & scene::EDS_BBOX)
 		{
-			driver->draw3DBox(Mesh->getMeshBuffer(0)->getBoundingBox(), video::SColor(255,255,255,255));
+			driver->draw3DBox(Mesh->getBoundingBox(), video::SColor(255,255,255,255));
 		}
 		if (DebugDataVisible & scene::EDS_BBOX_BUFFERS)
 		{
-			driver->draw3DBox(Mesh->getMeshBuffer(0)->getBoundingBox(),
-					video::SColor(255,190,128,128));
+			driver->draw3DBox(Mesh->getBoundingBox(), video::SColor(255,190,128,128));
 		}
 		if (DebugDataVisible & scene::EDS_NORMALS)
 		{
 			// draw normals
 			const f32 debugNormalLength = SceneManager->getParameters()->getAttributeAsFloat(DEBUG_NORMAL_LENGTH);
 			const video::SColor debugNormalColor = SceneManager->getParameters()->getAttributeAsColor(DEBUG_NORMAL_COLOR);
-			const u32 count = Mesh->getMeshBufferCount();
-
-			for (u32 i=0; i != count; ++i)
+			for (u32 i=0; i < Mesh->getMeshBufferCount(); ++i)
 			{
 				driver->drawMeshBufferNormals(Mesh->getMeshBuffer(i), debugNormalLength, debugNormalColor);
 			}
@@ -121,7 +130,10 @@ void CCubeSceneNode::render()
 			m.Wireframe = true;
 			driver->setMaterial(m);
 
-			driver->drawMeshBuffer(Mesh->getMeshBuffer(0));
+			for (u32 i=0; i < Mesh->getMeshBufferCount(); ++i)
+			{
+				driver->drawMeshBuffer(Mesh->getMeshBuffer(i));
+			}
 		}
 	}
 }
@@ -130,7 +142,7 @@ void CCubeSceneNode::render()
 //! returns the axis aligned bounding box of this node
 const core::aabbox3d<f32>& CCubeSceneNode::getBoundingBox() const
 {
-	return Mesh->getMeshBuffer(0)->getBoundingBox();
+	return Mesh->getBoundingBox();
 }
 
 
@@ -183,14 +195,16 @@ void CCubeSceneNode::OnRegisterSceneNode()
 //! returns the material based on the zero based index i.
 video::SMaterial& CCubeSceneNode::getMaterial(u32 i)
 {
-	return Mesh->getMeshBuffer(0)->getMaterial();
+	return Mesh->getMeshBuffer(i)->getMaterial();
 }
 
 
 //! returns amount of materials used by this scene node.
 u32 CCubeSceneNode::getMaterialCount() const
 {
-	return 1;
+	if ( Mesh )
+		return Mesh->getMeshBufferCount();
+	return 0;
 }
 
 
@@ -233,7 +247,8 @@ ISceneNode* CCubeSceneNode::clone(ISceneNode* newParent, ISceneManager* newManag
 		newManager, ID, RelativeTranslation, RelativeRotation, RelativeScale, MeshType);
 
 	nb->cloneMembers(this, newManager);
-	nb->getMaterial(0) = getMaterial(0);
+	for ( irr::u32 i=0; i < getMaterialCount(); ++i )
+		nb->getMaterial(i) = getMaterial(i);
 	nb->Shadow = Shadow;
 	if ( nb->Shadow )
 		nb->Shadow->grab();

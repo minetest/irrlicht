@@ -52,7 +52,7 @@ public:
 	zfail method, if not, zpass is used.
 	\param infinity: Value used by the shadow volume algorithm to
 	scale the shadow volume. For zfail shadow volumes on some drivers 
-	only suppport finite shadows, so camera zfar must be larger than 
+	only support finite shadows, so camera zfar must be larger than 
 	shadow back cap,which is depending on the infinity parameter).
 	Infinity value also scales by the scaling factors of the model.
 	If shadows don't show up with zfail then try reducing infinity.

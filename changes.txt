@@ -426,7 +426,7 @@ Changes in 1.8.5 (1st November 2021, svn [r6263])
    Additional check also added in createAndOpenFile to early out on empty names.
  - Fix bug in cursor positions when compiled with newer Windows SDK's (v110 in VS2012) and running on Systems >= Windows Vista in windowed mode.
    Thanks @Mustapha Tachouct for the bugreport and patch proposal. Also thanks @BakeMyCake for an earlier report.
- - IOSOperator::getSysteMemory() no longer returns incorrect values with >2GB. Thanks @Eduline - human development for report and patch.
+ - IOSOperator::getSystemMemory() no longer returns incorrect values with >2GB. Thanks @Eduline - human development for report and patch.
  - Increase KEY_KEY_CODES_COUNT to fix problem with laptop keyboards which return the keycode 0xff for the function key. Thx @Klokancz for bugreport and patch.
  - Fix bug when calling activateJoysticks on windows several times. It had appened joystick information instead of replacing it, thereby increasing joystick number on each call.
    Only happened compiling with _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_ (which is the default). Linux and SDL implementation not affected.
@@ -452,7 +452,7 @@ Changes in 1.8.4 (9th July 2016, svn r5321)
  - Get rid of some misleading-indentation warnings in gcc6
  - Fix serialization of the InputReceiverEnabled flag in CCameraSceneNode
  - Fix pasting text from X11 applications to Irrlicht. Thanks @est31 for the patch.
- - Tests give now a warning when stabilizing screenshots failed. Aslo trying more often now (a hack as taking screenshots otherwise fails often in windowed mode on some systems).
+ - Tests give now a warning when stabilizing screenshots failed. Also trying more often now (a hack as taking screenshots otherwise fails often in windowed mode on some systems).
 
 --------------------------
 Changes in 1.8.3 (13.9.2015)
@@ -522,7 +522,7 @@ Changes in 1.8 (7.11.2012)
 
  - user clipplanes fixed
 
- - Skip rendering of lines, points, and polygons, as these lead to crahses due to wrong access to the vertex lists. A fix would need major rewrite of the vertex cache, or at least some other render methods.
+ - Skip rendering of lines, points, and polygons, as these lead to crashes due to wrong access to the vertex lists. A fix would need major rewrite of the vertex cache, or at least some other render methods.
 
  - Add mipmap generation for makeColorKeyTexture
 
@@ -539,7 +539,7 @@ Changes in 1.8 (7.11.2012)
 
  - Colladawriter now writing matrices for node transformations as old solution did not work with CDummyTransformationSceneNode's.
 
- - Colladawriter no longer create an extra node for the scenemanger as <visual_scene> has that job in Collada.
+ - Colladawriter no longer create an extra node for the scenemanager as <visual_scene> has that job in Collada.
 
  - Colladwriter no longer makes all Scenenodes children of ambient-light as that can be parallel on the same layer instead.
 
@@ -553,7 +553,7 @@ Changes in 1.8 (7.11.2012)
 
  - Properly destroy OpenGL resources on linux (thx @curaga for the patch)
 
- - Fix diplay bux in the attribute-panel of the GUIEditor. Fixes bug 3517314 (thx @Darkcoder  for reporting).
+ - Fix display bugs in the attribute-panel of the GUIEditor. Fixes bug 3517314 (thx @Darkcoder  for reporting).
 
  - Allow caching cursor position on X11 to work around slow XQueryPointer calls (thx @Hendu for reporting+patch proposal)
 
@@ -748,7 +748,7 @@ Changes in 1.8 (7.11.2012)
 
  - Improved 2d render settings and caching
 
- - Initial suppport for sRGB render functions
+ - Initial support for sRGB render functions
 
  - Improved terrain scene node rendering
 
@@ -800,7 +800,7 @@ Changes in 1.8 (7.11.2012)
 
  - Particle sphere emitter rand values fixed
 
- - Support Unicode SHY dynamic hypen in word wrap
+ - Support Unicode SHY dynamic hyphen in word wrap
 
  - Fix OBJ reader sometimes running over EOF
 
@@ -812,7 +812,7 @@ Changes in 1.8 (7.11.2012)
 
  - Added the ability to open an archive from an IReadFile*, added a FileToHeader tool with instructions of how to make a portable app that consists of a single executable file.
 
- - Added suppport for right-to-left (RTL) text, supplied by Auria from STK
+ - Added support for right-to-left (RTL) text, supplied by Auria from STK
 
  - Added ISceneManager::createSceneNodeAnimator to create animators by name
 
@@ -1393,7 +1393,7 @@ Changes in 1.7.1 (17.02.2010)
 
  - mem leak in OBJ loader fixed
 
- - Removed some default parameters to reduce ambigious situations
+ - Removed some default parameters to reduce ambiguous situations
 
 ---------------------------
 Changes in 1.7 (03.02.2010)
@@ -1632,7 +1632,7 @@ Changes in 1.6.1 (13.01.2010)
 
  - Fix material handling in createMeshWith1TCoords
 
- - Fix another (OldValue == NewValue) before drop()/grap(), this time in CTextureAttribute::setTexture.
+ - Fix another (OldValue == NewValue) before drop()/grab(), this time in CTextureAttribute::setTexture.
 
  - Fix LIGHTMAP_LIGHTING for D3D drivers.
 
@@ -1812,7 +1812,7 @@ Changes in 1.6 (23.09.2009)
 
     One Note: in OpenGL there is know difference between sphere_map and reflection layer
     both using GL_TEXTURE_GEN_MODE GL_SPHERE_MAP, whereas in d3d one time using camera_normal
-    on sphere and reflection on refletcion_layer.
+    on sphere and reflection on reflection_layer.
 
     The visual difference is that on sphere map the "image is not moving" when you rotate the
     viewer. For Burning i took the opengl visual. always moving
@@ -2035,7 +2035,7 @@ Changes in 1.6 (23.09.2009)
 
   - CSceneNodeAnimatorCollisionResponse has the same problem as CSceneNodeAnimatorFPS
     on first update:
-    Problem. you start setting the map. (setWorld). First update cames 4000 ms later.
+    Problem. you start setting the map. (setWorld). First update comes 4000 ms later.
     The Animator applies the missing force... big problem...
     changed to react on first update like camera.
 
@@ -2044,7 +2044,7 @@ Changes in 1.6 (23.09.2009)
 
   -added #define OCTTREE_USE_HARDWARE in Octree.h
 
-    if defined octtree uses internally a derived scene::MeshBuffer which has
+    if defined octree uses internally a derived scene::MeshBuffer which has
     the possibility to use the Hardware Vertex Buffer for static vertices and
     dirty indices;-)
 
@@ -2375,7 +2375,7 @@ Changes in version 1.5.1 (05.08.2009)
 
  - Some virtuals are now overridden as expected.
 
- - Incomplete FBOs are properly signalled now
+ - Incomplete FBOs are properly signaled now
 
  - Update to libpng 1.2.35, fixed issues on 64bit machines with system's libpng.
 
@@ -2407,7 +2407,7 @@ Changes in version 1.5.1 (05.08.2009)
 
  - Fixed animator removal.
 
- - Checnged collision checks for children of invisible elements to also be ignored (as they're actually invisible due to inheritance).
+ - Changed collision checks for children of invisible elements to also be ignored (as they're actually invisible due to inheritance).
 
  - Fix terrain to use 32bit only when necessary, make terrain use hw buffers. Heightmap loading and height calculation fixed. Visibility and LOD calculations updated.
 
@@ -2526,7 +2526,7 @@ Changes in version 1.5 (15.12.2008)
 
  - Enable use of other meshes for shadow mesh generation, can be used to speed up shadow generation and rendering for complex meshes. Patch based on a version by tonic.
 
- - Fixed usage of SIrrCreationParameters struct, which dind't have copy constructor and assignment operator anymore, since the Irrlicht version string was made const.
+ - Fixed usage of SIrrCreationParameters struct, which didn't have copy constructor and assignment operator anymore, since the Irrlicht version string was made const.
 
  - New glext.h (version 41) and glxext.h (version 20) supporting OpenGL 3.0
 
@@ -2615,7 +2615,7 @@ Changes in version 1.5 (15.12.2008)
 
  - Scene node sorting uses squared distances now.
 
- - Enhanced API for hte math functions. Many of them will now return a reference to *this for chained method invocations.
+ - Enhanced API for the math functions. Many of them will now return a reference to *this for chained method invocations.
 
  - prevent .x loader to load .xml files.
 
@@ -2700,12 +2700,12 @@ Changes in version 1.5 (15.12.2008)
 
  - New method driver->getVendorInfo() to query information about the actual hardware driver.
 
- - Fixed somed CQuake3ShaderSceneNode problems.
+ - Fixed some CQuake3ShaderSceneNode problems.
 
  - Changed BurningsVideo internal Vertex Format. version changed to 0.39
 
  - SceneManager:
-   Removed the seperate rendering states for quake3 Shader Scene Nodes.
+   Removed the separate rendering states for quake3 Shader Scene Nodes.
    Nodes are now solid or transparent. ( but still more states are needed )
 
  - GUI:
@@ -2850,7 +2850,7 @@ Changes in version 1.4.1 (04 Jun 2008)
 -------------------------------------------
 Changes in version 1.4 (30 Nov 2007)
 
- - Major API change: All material properties which are available per texture layer (curently texture, texture matrix, texture filters, and texture wrap mode) are separated into a new struct SMaterialLayer. You can access them via the array TextureLayer[] in SMaterial. The texture matrix methods in SMaterial are still alive, and also textures can be accessed via methods in SMaterial now. But still, many places in user code need some update (usually changing material.Textures[i] to material.TextureLayer[i].Texture etc.)
+ - Major API change: All material properties which are available per texture layer (currently texture, texture matrix, texture filters, and texture wrap mode) are separated into a new struct SMaterialLayer. You can access them via the array TextureLayer[] in SMaterial. The texture matrix methods in SMaterial are still alive, and also textures can be accessed via methods in SMaterial now. But still, many places in user code need some update (usually changing material.Textures[i] to material.TextureLayer[i].Texture etc.)
 
  - Major API rewriting for proper const usage. Now, most getter methods are const and so are the larger parameters and return values. Moreover, many methods taking only unsigned numbers now use u32 instead of s32 in order to recognize this limitation from the method's signature.
 
@@ -3011,7 +3011,7 @@ GUI:
 
      Added navigation through the GUI using tab and the shift and control keys.
      Use these new methods to control tab navigation:
-       setTabStop - set this to true if the focus will vist the element.
+       setTabStop - set this to true if the focus will visit the element.
        isTabStop - returns true if the focus will visit the element.
        setTabOrder - Sets the order of focus within this tab group,
          Only one element in each group should have the same TabOrder number.
@@ -3259,7 +3259,7 @@ Changes in version 1.3 (15 Mar 2007)
   The pointer to M is acquired by mat.pointer(), some methods take a matrix4 reference
   instead of a f32*.
 
-- Some more suppport for tangent meshes
+- Some more support for tangent meshes
 
 - Several alpha blend fixes in several drivers and methods
 
@@ -3373,14 +3373,14 @@ Font improvements:
   a very short time. This allows other processes to execute without a major
   penalty for the Irrlicht application.
 
-- Added sleep() methd to IrrlichtDevice, for pausing the Irrlicht process for a longer
+- Added sleep() method to IrrlichtDevice, for pausing the Irrlicht process for a longer
   amount of time.
 
 - Auto-split mesh to 16bit buffers in 3ds loader
 
 - 8bit RGB332 image format support
 
-- isActive() under Linux now behaves like the Windows variant: True iff window has focus
+- isActive() under Linux now behaves like the Windows variant: True if window has focus
 
 - Fixed(?) the glXGetProcAddress problems with different drivers
 
@@ -3414,7 +3414,7 @@ Font improvements:
 - CFileList: Changed FileListEntry sorting to
   a) Directory comes first
   b) sorting ignores case
-  so it feel's more like common browers
+  so it feel's more like common browsers
 
 - added a Texture transform to IVideoDriver::setTransform
 
@@ -3475,7 +3475,7 @@ Font improvements:
    and to correct the border back on drawing, specify the parameter in IGUIFont.
    this is quite useful if you want to use more artistic fonts.
    default = 0
-   better kerning would need a seperate coordinate set for each symbol.
+   better kerning would need a separate coordinate set for each symbol.
 
 - changed MD2_FRAME_SHIFT to lower framerate
   -> lower IPol
@@ -3526,7 +3526,7 @@ Changes in version 1.2 (29 Nov 2006)
 
 - Default texture format is now A8R8G8B8 if not explicitly specified. This fixes some color artifacts with lightmaps. Bugfix submitted by hey_i_am_real.
 
-- In OnPostRender all transformations were taken as relative and multiplied with the root transformation matrix every time due to a wrong check for the real root node. This shoudl increase render performance for scenes with lots of (invisible) nodes.
+- In OnPostRender all transformations were taken as relative and multiplied with the root transformation matrix every time due to a wrong check for the real root node. This should increase render performance for scenes with lots of (invisible) nodes.
 
 - Added correct list copy constructor.
 
@@ -3557,13 +3557,13 @@ Changes in version 1.2 (29 Nov 2006)
 
 - New video driver feature to check for multitexture feature.
 
-- Direct3D drivers update the devicelost variable if reseeting failed with this return code.
+- Direct3D drivers update the devicelost variable if resetting failed with this return code.
 
 - VideoModeList under Linux is correctly filled now. No glX calls are made if GLX extension is not found - only software drivers are available then. RandR extension can be enabled with a new compile flag in IrrCompileConfig.h, either instead of XF86VidMode or in addition.
 
 - Big Endian support for MS3D loader.
 
-- Apfelbaum software renderer: basic mipmap support (per triangle), switch for using w-buffer instad z-buffer ( default on )
+- Apfelbaum software renderer: basic mipmap support (per triangle), switch for using w-buffer instead z-buffer ( default on )
 
 - Better FPU support: Changed various fpu-call's in whole project (main reason to use faster float to int conversion on x86. ( fistp ))
 
@@ -3575,7 +3575,7 @@ Changes in version 1.2 (29 Nov 2006)
 
 - Colorconverter: X8R8G8B8toA1R5G5B5, set Alpha High, minor: A1R5G5B5toA8R8G8B8   changed if (a) to conditional set
 
-- CImage: added boxfilter (weigthed average), (generic, slow)
+- CImage: added boxfilter (weighted average), (generic, slow)
 
 - The scene manager now sets an ambient light color when calling ISceneManager::drawAll().
   You can influence this by calling ISceneManager::setAmbientLight(). That light color
@@ -3658,7 +3658,7 @@ Changes in version 1.1 (06 Aug 2006)
 - Added scene node animator factories. This is the same as scene node
   factories, but for scene node animators.
 
-- Added scene node factories. This is an interface making it possible to dynamicly
+- Added scene node factories. This is an interface making it possible to dynamically
   create scene nodes. To be able to add custom scene nodes to Irrlicht and
   to make it possible for the scene manager to save and load those external scene nodes, simply
   implement this interface and register it in you scene manager via ISceneManager::
@@ -3771,8 +3771,8 @@ Changes in version 0.14.0 (30 November 2005)
   drivers: D3D8, D3D9 and OpenGL.
 
 - Irrlicht now supports the recently released new microsoft compiler. Irrlicht versions compiled
-  with older verions of this compiler can now also be used with the new one, which wasn't possible
-  previously because of a name mangeling issue.
+  with older versions of this compiler can now also be used with the new one, which wasn't possible
+  previously because of a name mangling issue.
 
 - All 2D drawing functions can now be used to draw into textures (render targets). This also
   means for example that the whole GUI environment can be rendered into textures.
@@ -3807,7 +3807,7 @@ Changes in version 0.14.0 (30 November 2005)
 
 - The scene manager has a new method getSceneNodeFromName() which finds a scene node by its name.
 
-- It is now also possible to attach scene nodes to joints/bones of sceletal animated .x files.
+- It is now also possible to attach scene nodes to joints/bones of skeletal animated .x files.
   (Using IAnimatedMesh->getXJointNode() ). This was previously only possible with milkshape models.
 
 - Billboards now draw their bounding box when debugdata is set to visible for them.
@@ -3835,7 +3835,7 @@ Changes in version 0.14.0 (30 November 2005)
 
 - Fixed a heavy bug in Irrlicht.NET causing lots of memory leaks when drawing text.
 
-- Fixed a bug in the attachement of scene nodes to animated X files.
+- Fixed a bug in the attachment of scene nodes to animated X files.
 
 - Fixed a bug in the .NET Vector3D addition operator.
 
@@ -3847,7 +3847,7 @@ Changes in version 0.14.0 (30 November 2005)
    SceneManager->getParameters()->setParameter(scene::DMF_FLIP_ALPHA_TEXTURES, true);
    you can also set material transparent reference value by setting:
    SceneManager->getParameters()->setParameter(scene::DMF_ALPHA_CHANNEL_REF, 0.01);
-   you can use every value beetween 0 and 1, but to respect DeleD rapresentation
+   you can use every value between 0 and 1, but to respect DeleD representation
    0.01 is OK, just a note, if you set 0, it's just like you set 0.5, this means
    that each pixel found corresponding to a position in alpha map that has a value<127
    won't be drawn.
@@ -4213,7 +4213,7 @@ Changes in version 0.10.0 (26 May 2005)
 - Fixed the wrongly drawn alpha channel material in OpenGL driver and a problem with the
   VertexAlpha material in the same driver.
 
-- Implemented multipass rendering in the OCTTree scene node now too. This means that octtrees can
+- Implemented multipass rendering in the OCTTree scene node now too. This means that octrees can
   now contain transparent materials as well.
 
 - Improved string comparison speed, especially when comparing with pointer to char or w_char,
@@ -4224,10 +4224,10 @@ Changes in version 0.10.0 (26 May 2005)
 
 - Added string::trim() method.
 
-- Addes string::erase() method.
+- Added string::erase() method.
 
 - Fixed a bug in array which caused data corruption if an element which already inside the
-  the array was pushed_back. Thanks to vox for reporting this and to provide a solutin
+  the array was pushed_back. Thanks to vox for reporting this and to provide a solution
 
 - Added ISceneManager::addMesh() method.
 
@@ -4241,7 +4241,7 @@ Changes in version 0.10.0 (26 May 2005)
 - After lots releases ignoring the 'make the fps camera smoother request', it is now
   finally integrated.
 
-- Removed audiere dependency and the mp3 file, reeducing SDK download size.
+- Removed audiere dependency and the mp3 file, reducing SDK download size.
 
 - A bug was fixed causing the binding of the wrong fragment program sometimes in OpenGL.
 
@@ -4249,7 +4249,7 @@ Changes in version 0.10.0 (26 May 2005)
   fit the other name conventions, CD3D9Driver.h into CD3D9Driver.h for example.
 
 - The IMaterialRenderer interface now has the new method getRenderCapability() which
-  returns if the material is able to be rendererd with all settings on current hardware.
+  returns if the material is able to be rendered with all settings on current hardware.
 
 - Added IMeshManipulator::setVertexColors();
 
@@ -4333,7 +4333,7 @@ Changes in version 0.9 (28 Mar 2005)
 
 - To be able to replace built-in meshloaders with newer external versions without the
   need of recompiling the engine, now mesh loaders which are added to the engine using
-  ISceneManager::addExternalMeshLoader() are prefered over built-in mesh loaders.
+  ISceneManager::addExternalMeshLoader() are preferred over built-in mesh loaders.
   Thanks to for his suggestion of this.
 
 - D3D8 and D3D9 support for dev-cpp has been improved. If you are using Dev-Cpp and
@@ -4349,7 +4349,7 @@ Changes in version 0.9 (28 Mar 2005)
   set a value 'CSM_TexturePath', 'LMTS_TexturePath' or 'MY3D_TexturePath' to let them know
   the path of the textures.
 
-- IAnimatedMeshSceneNode now has two new methods for being able to have more influcence
+- IAnimatedMeshSceneNode now has two new methods for being able to have more influence
   on the animation playback: It is now possible to set the playback mode to looped or
   non looped with IAnimatedMeshSceneNode::setLoopMode() and it is possible to set
   a callback interface which will be called when animation playback has finished
@@ -4405,7 +4405,7 @@ Changes in version 0.9 (28 Mar 2005)
 
 - Removed a memory leak when creating hlsl pixel shaders.
 
-- I've made varoius updates to the documentation and moved to doxygen 1.4
+- I've made various updates to the documentation and moved to doxygen 1.4
 
 - Fixed a bug in the xml reader which caused it to crash when reading empty xml files.
 
@@ -4522,7 +4522,7 @@ Changes in version 0.8 (19 Feb 2005)
   This is useful for example after locking and modifying the texture.
 
 - Gravity acceleration speed in CollisionResponseAnimator was changed thanks to a suggestion
-  by Morrog. The accelerationPerSecond value has been removed beacause of this, you
+  by Morrog. The accelerationPerSecond value has been removed because of this, you
   can now control everything just with the gravity vector. Note that the gravity value
   must now be a little bit smaller to achieve the same effect as before.
 
@@ -4549,7 +4549,7 @@ Changes in version 0.8 (19 Feb 2005)
 - A small bug in rect<T>::isValid() has been fixed, thanks to jox.
 
 - Fixed a bug in D3D8, D3D9 and OpenGL, which caused Materials be set and unset with an unequal
-  amount when mixing 3d with 2d grafics or stencil buffer shadows.
+  amount when mixing 3d with 2d graphics or stencil buffer shadows.
 
 - If you are recompiling the whole engine with Visual Studio 6 (which means
   Irrlicht.dll, NOT the application which is using Irrlicht), DirectX9 support is disabled
@@ -4790,7 +4790,7 @@ Changes in version 0.6: (09 Mar 2004)
 - Fixed a bug which prevented the possibility to compile directx8 without
   having installed directx9.
 
-- Fixed a bug in 3d line dawing in D3D 8 and 9.
+- Fixed a bug in 3d line drawing in D3D 8 and 9.
 
 - All video drivers now print out the gfx adapter type, vendor and driver version
   into the log strings.
@@ -4870,7 +4870,7 @@ Changes in version 0.5: (17 Feb 2004)
 - The GUI Environment now supports edit boxes. They should support unicode input
   from every keyboard around the world, scrolling, copying and pasting (exchanging
   data with the clipboard directly), maximum character amount, marking and all
-  shortcuts like ctrl+X, ctrl+V, ctrg+C, shift+Left, shift+Right, Home, End,
+  shortcuts like ctrl+X, ctrl+V, ctrl+C, shift+Left, shift+Right, Home, End,
   and so on. Wow, I never programmed an edit box, its much more work than it
   seems to be.
 
@@ -4899,7 +4899,7 @@ Changes in version 0.5: (17 Feb 2004)
 
 - It is now possible to draw 3d objects with fog. Simply switch on the fog flag
   in the objects material. To change to way fog is drawn (per pixel/vertex, color,
-  linear/expontential) use IVideoDriver::setFog();
+  linear/exponential) use IVideoDriver::setFog();
 
 - With IrrlichtDevice::getOSOperator() a pointer to an interface is returned, with
   which it is possible to do some operation system specific operations. Currently
@@ -4933,7 +4933,7 @@ Changes in version 0.5: (17 Feb 2004)
 
 - IGUIEnvironment::getBuildInFont() was renamed to getBuiltInFont().
 
-- IGUIElement::bringToFront() is able to brint a child to the front.
+- IGUIElement::bringToFront() is able to bring a child to the front.
   Windows for example are now using this new feature.
 
 - Changed the texture mapping of the test scene node a little bit based on
@@ -4990,7 +4990,7 @@ Changes in version 0.5: (17 Feb 2004)
 -------------------------------------------------------------------------------------
 Changes in version 0.4.2: (13 Dec 2003)
 
-- The engine does no more use only 16 bit textures internaly. Now all
+- The engine does no more use only 16 bit textures internally. Now all
   other texture formats are supported too. This means higher precision
   and better quality images. In this context, the ISurface interface has
   been replaced by IImage, and the ISurfaceLoader by IImageLoader.
@@ -5128,7 +5128,7 @@ Changes in version 0.4.1: (18 Sep 2003)
   a setMD2Animation() with a character string as parameter instead of a constant.
 
 - You do not need an event receiver anymore for sending user events to the active
-  camera, this is now done autmaticly. In addition, it is now possible to
+  camera, this is now done automatically. In addition, it is now possible to
   set a new event receiver during runtime of the engine using IrrlichtDevice::
   setEventReceiver().
 
@@ -5163,7 +5163,7 @@ Changes in version 0.4.1: (18 Sep 2003)
   which where created inside the .dll but are removed from outside.
 
 - A bug was fixed causing the engine to crash when drawing debug data of
-  octtree scene nodes with geometry data with vertices with one texture
+  octree scene nodes with geometry data with vertices with one texture
   coordiante.
 
 - Multitexturing now works with linux, too. Thanx to Jon Pry again, for showing
@@ -5175,7 +5175,7 @@ Changes in version 0.4.1: (18 Sep 2003)
 - The "Climb-Walls" bug (reported first by Matthias Gall) is fixed. Gravity
   acceleration is now quadratic instead of linear.
 
-- A warning is now printed out, if more vertices are rendererd with one call
+- A warning is now printed out, if more vertices are rendered with one call
   than the hardware supports.
 
 - Other, Minor New/Changed methods in public interfaces:
@@ -5190,7 +5190,7 @@ Changes in version 0.4.1: (18 Sep 2003)
 -------------------------------------------------------------------------------------
 Changes in version 0.4: (04 Sep 2003)
 
-- Collision detection and reponse based on ellipsoids in now implemented.
+- Collision detection and response based on ellipsoids in now implemented.
   There is a new method available in the ISceneCollisionMananger, which returns
   a collision response point. In addition, a new SceneNodeAnimator is available,
   which causes a scene node, to which it is attached to, not to move through
@@ -5235,7 +5235,7 @@ Changes in version 0.4: (04 Sep 2003)
   ISceneNode::setDebugDataVisible(true). Looks really interesting for
   animated scene nodes like particle systems or animated meshes.
 
-- There is now a IGUIInOutFader avaiable, which is able to fade in or
+- There is now a IGUIInOutFader available, which is able to fade in or
   out the whole screen or parts of it.
 
 - The new IVideoModeList is a list with all available video modes. It can
@@ -5280,7 +5280,7 @@ Changes in version 0.4: (04 Sep 2003)
 
 - All features of the FileOpenDialog are now working.
 
-- Debug informations are now printed out to the console window
+- Debug information are now printed out to the console window
   also on the win32 platform.
 
 - FPSCamera now supports setTarget(). Its not precise but working.
@@ -5362,11 +5362,11 @@ Changes in version 0.3: (18 Jul 2003)
   somebody could tell me a fast way to blit a A1R5G5B5 surface to the screen
   using X.
   All examples do compile and run, but there are some things missing:
-   * It is not yet possible to make the mouse cursor invisibe.
-   * The timer seems not to return the currect time.
+   * It is not yet possible to make the mouse cursor invisible.
+   * The timer seems not to return the correct time.
    * Multitexturing does not work correctly on all gfx adapters.
 
-- Ms3D Animations: The engine is now able to play skeletal animations directy
+- Ms3D Animations: The engine is now able to play skeletal animations directly
   from Milkshape 3D (.ms3d) files. It is also possible to attach objects to
   parts of the animated mesh. For example a weapon to the left hand of
   the animated model.
@@ -5431,7 +5431,7 @@ Changes in version 0.2.5: (22 Jun 2003)
   picking, but more is coming soon.
 
 - Automatic Culling based on Bounding Boxes is implemented now. It can be switched on
-  or off for every SceneNode seperately using ISceneNode::setAutomaticCulling().
+  or off for every SceneNode separately using ISceneNode::setAutomaticCulling().
   It is on by default.
 
 - It is now possible to remove loaded textures for freeing memory or reloading them.
@@ -5489,7 +5489,7 @@ Changes in version 0.2: (19 May 2003)
 
 - The default aspect ratio in all camera scene nodes was changed.
 
-- Some changes and extenstions to the core::matrix4, SViewFrustum, plane3d and
+- Some changes and extensions to the core::matrix4, SViewFrustum, plane3d and
   aabbox were made. The plane3dex was removed, there is now only one plane implementation
   available. Implemented some ideas and suggestions by Mark Jeacocke. Thanx a lot!
 
@@ -5507,7 +5507,7 @@ Changes in version 0.2: (19 May 2003)
   setRelativePosition() and the sceneNodeAnimators. In addition, it now supports
   multiple FPS cameras.
 
-- Mesh format loading extenstions are now possible. To extend the engine with a
+- Mesh format loading extensions are now possible. To extend the engine with a
   mesh format it currently does not support (e.g. .cob), just implement a
   IMeshLoader interface and add it to the engine calling
   ISceneManager::addExternalMeshLoader().
@@ -5561,7 +5561,7 @@ Release notes of version 0.1: (14 Mar 2003)
 
 - Software Device
   Dynamic lighting, multitexturing, 3d clipping and bilinear filtering are
-  not implemented because the Software Device was intented to to only 2d
+  not implemented because the Software Device was intended to to only 2d
   functions, the primitive 3d functions are only an addition. Until the
   first non beta release (1.0) of the Engine, some more 3d functionality
   will be added.

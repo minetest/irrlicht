@@ -40,10 +40,10 @@ namespace scene
 		//! destructor
 		virtual ~CSceneManager();
 
-		//! gets an animateable mesh. loads it if needed. returned pointer must not be dropped.
+		//! gets an animatable mesh. loads it if needed. returned pointer must not be dropped.
 		virtual IAnimatedMesh* getMesh(const io::path& filename, const io::path& alternativeCacheName) IRR_OVERRIDE;
 
-		//! gets an animateable mesh. loads it if needed. returned pointer must not be dropped.
+		//! gets an animatable mesh. loads it if needed. returned pointer must not be dropped.
 		virtual IAnimatedMesh* getMesh(io::IReadFile* file) IRR_OVERRIDE;
 
 		//! Returns an interface to the mesh cache which is shared between all existing scene managers.
@@ -124,7 +124,7 @@ namespace scene
 		virtual IOctreeSceneNode* addOctreeSceneNode(IAnimatedMesh* mesh, ISceneNode* parent=0,
 			s32 id=-1, s32 minimalPolysPerNode=512, bool alsoAddIfMeshPointerZero=false) IRR_OVERRIDE;
 
-		//! Adss a scene node for rendering using a octree. This a good method for rendering
+		//! Adds a scene node for rendering using a octree. This a good method for rendering
 		//! scenes with lots of geometry. The Octree is built on the fly from the mesh, much
 		//! faster then a bsp tree.
 		virtual IOctreeSceneNode* addOctreeSceneNode(IMesh* mesh, ISceneNode* parent=0,
@@ -141,7 +141,7 @@ namespace scene
 			const core::vector3df& lookat = core::vector3df(0,0,100),
 			s32 id=-1, bool makeActive=true) IRR_OVERRIDE;
 
-		//! Adds a camera scene node which is able to be controlle with the mouse similar
+		//! Adds a camera scene node which is able to be controlled with the mouse similar
 		//! like in the 3D Software Maya by Alias Wavefront.
 		//! The returned pointer must not be dropped.
 		virtual ICameraSceneNode* addCameraSceneNodeMaya(ISceneNode* parent=0,
@@ -151,7 +151,7 @@ namespace scene
 			, f32 rotX = 0.f, f32 rotY = 0.f
 		) IRR_OVERRIDE;
 
-		//! Adds a camera scene node which is able to be controled with the mouse and keys
+		//! Adds a camera scene node which is able to be controlled with the mouse and keys
 		//! like in most first person shooters (FPS):
 		virtual ICameraSceneNode* addCameraSceneNodeFPS(ISceneNode* parent = 0,
 			f32 rotateSpeed = 100.0f, f32 moveSpeed = .5f, s32 id=-1,
@@ -641,7 +641,7 @@ namespace scene
 		//! file system
 		io::IFileSystem* FileSystem;
 
-		//! GUI Enviroment ( Debug Purpose )
+		//! GUI Environment (debug purpose)
 		gui::IGUIEnvironment* GUIEnvironment;
 
 		//! cursor control

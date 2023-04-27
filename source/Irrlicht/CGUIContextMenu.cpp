@@ -533,7 +533,6 @@ void CGUIContextMenu::draw()
 	// loop through all menu items
 
 	rect = AbsoluteRect;
-	s32 y = AbsoluteRect.UpperLeftCorner.Y;
 
 	for (s32 i=0; i<(s32)Items.size(); ++i)
 	{
@@ -550,8 +549,6 @@ void CGUIContextMenu::draw()
 			rect.LowerRightCorner.Y += 1;
 			rect.UpperLeftCorner.Y += 1;
 			skin->draw2DRectangle(this, skin->getColor(EGDC_3D_HIGH_LIGHT), rect, clip);
-
-			y += 10;
 		}
 		else
 		{
@@ -673,19 +670,22 @@ void CGUIContextMenu::recalculateSize()
             if ( root )
             {
                 core::rect<s32> rectRoot( root->getAbsolutePosition() );
+				core::rect<s32> absRect( getAbsolutePosition() );
 
-				// if it would be drawn beyond the right border, then add it to the left side
-                if ( getAbsolutePosition().UpperLeftCorner.X+subRect.LowerRightCorner.X > rectRoot.LowerRightCorner.X )
+				// if it would be drawn beyond the right border, then add it to the left side - if there is more space
+				irr::s32 beyondRight = absRect.UpperLeftCorner.X+subRect.LowerRightCorner.X-rectRoot.LowerRightCorner.X;
+				irr::s32 beyondLeft = -(absRect.UpperLeftCorner.X - w - rectRoot.UpperLeftCorner.X);
+                if ( beyondRight > 0 && beyondRight > beyondLeft )
                 {
                     subRect.UpperLeftCorner.X = -w;
                     subRect.LowerRightCorner.X = 0;
                 }
 
                 // if it would be drawn below bottom border, move it up, but not further than to top.
-                irr::s32 belowBottom = getAbsolutePosition().UpperLeftCorner.Y+subRect.LowerRightCorner.Y - rectRoot.LowerRightCorner.Y;
+                irr::s32 belowBottom = absRect.UpperLeftCorner.Y+subRect.LowerRightCorner.Y - rectRoot.LowerRightCorner.Y;
                 if ( belowBottom > 0 )
 				{
-					irr::s32 belowTop = getAbsolutePosition().UpperLeftCorner.Y+subRect.UpperLeftCorner.Y;
+					irr::s32 belowTop = absRect.UpperLeftCorner.Y+subRect.UpperLeftCorner.Y;
 					irr::s32 moveUp = belowBottom <  belowTop ? belowBottom : belowTop;
 					subRect.UpperLeftCorner.Y -= moveUp;
 					subRect.LowerRightCorner.Y -= moveUp;

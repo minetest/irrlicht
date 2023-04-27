@@ -427,7 +427,7 @@ CSceneManager::~CSceneManager()
 }
 
 
-//! gets an animateable mesh. loads it if needed. returned pointer must not be dropped.
+//! gets an animatable mesh. loads it if needed. returned pointer must not be dropped.
 IAnimatedMesh* CSceneManager::getMesh(const io::path& filename, const io::path& alternativeCacheName)
 {
 	io::path cacheName = alternativeCacheName.empty() ? filename : alternativeCacheName;
@@ -450,7 +450,7 @@ IAnimatedMesh* CSceneManager::getMesh(const io::path& filename, const io::path& 
 }
 
 
-//! gets an animateable mesh. loads it if needed. returned pointer must not be dropped.
+//! gets an animatable mesh. loads it if needed. returned pointer must not be dropped.
 IAnimatedMesh* CSceneManager::getMesh(io::IReadFile* file)
 {
 	if (!file)

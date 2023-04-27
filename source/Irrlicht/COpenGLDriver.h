@@ -416,6 +416,12 @@ namespace video
 		//! Get current material.
 		const SMaterial& getCurrentMaterial() const;
 
+		//! Rest renderstates forcing stuff like OnSetMaterial to be called
+		void DoResetRenderStates() 
+		{
+			ResetRenderStates = true;
+		}
+
 		COpenGLCacheHandler* getCacheHandler() const;
 
 	private:
