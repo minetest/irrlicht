@@ -195,7 +195,7 @@ void CCubeSceneNode::OnRegisterSceneNode()
 //! returns the material based on the zero based index i.
 video::SMaterial& CCubeSceneNode::getMaterial(u32 i)
 {
-	return Mesh->getMeshBuffer(0)->getMaterial();
+	return Mesh->getMeshBuffer(i)->getMaterial();
 }
 
 
