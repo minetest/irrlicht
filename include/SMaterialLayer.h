@@ -45,7 +45,7 @@ namespace video
 			"texture_clamp_mirror_clamp_to_border", 0};
 
 	//! Struct for holding material parameters which exist per texture layer
-	// Note for implementors: Serialization is in CNullDriver
+	// Note for implementers: Serialization is in CNullDriver
 	class SMaterialLayer
 	{
 	public:
@@ -151,6 +151,25 @@ namespace video
 			}
 			else
 				*TextureMatrix = mat;
+		}
+
+		//! Check if we have set a custom texture matrix
+		//! Note that otherwise we get an IdentityMatrix as default
+		inline bool hasSetTextureMatrix() const
+		{
+			return TextureMatrix != 0;
+		}
+
+		//! Reset texture matrix to identity matrix
+		//! Releases memory, which is expensive, but ver rarely useful for optimizations
+		void resetTextureMatrix()
+		{
+			if ( TextureMatrix )
+			{
+				MatrixAllocator.destruct(TextureMatrix);
+				MatrixAllocator.deallocate(TextureMatrix);
+				TextureMatrix = 0;
+			}
 		}
 
 		//! Inequality operator

@@ -1,6 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Add SMaterialLayer::hasSetTextureMatrix and SMaterialLayer::resetTextureMatrix
 - Add IShaderConstantSetCallBack::OnCreate to allow earlier access to IMaterialRendererServices
 - CIrrDeviceWin32::yield() now uses Sleep(0) instead of Sleep(1). 
   We had Sleep(1) to allow yielding to all processes back in Windows XP time.
