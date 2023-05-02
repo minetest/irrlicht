@@ -79,7 +79,7 @@ namespace scene
 
 		//! This method is called just before the rendering process of the whole scene.
 		/** Nodes may register themselves in the render pipeline during this call,
-		precalculate the geometry which should be rendered, and prevent their
+		pre-calculate the geometry which should be rendered, and prevent their
 		children from being able to register themselves if they are clipped by simply
 		not calling their OnRegisterSceneNode method.
 		If you are implementing your own scene node, you should overwrite this method
@@ -543,7 +543,7 @@ namespace scene
 
 
 		//! Set a culling style or disable culling completely.
-		/** Box cullling (EAC_BOX) is set by default. Note that not
+		/** Box culling (EAC_BOX) is set by default. Note that not
 		all SceneNodes support culling and that some nodes always cull
 		their geometry because it is their only reason for existence,
 		for example the OctreeSceneNode.
@@ -682,15 +682,23 @@ namespace scene
 		{
 			if (Parent)
 			{
-				if ( AbsPosUpdateBehavior == ESNUA_TRANSFORM_MATRIX )
+				switch ( AbsPosUpdateBehavior )
+				{
+				case ESNUA_TRANSFORM_MATRIX:
 				{
 					AbsoluteTransformation =
 						Parent->getAbsoluteTransformation() * getRelativeTransformation();
 				}
-				else if ( AbsPosUpdateBehavior == ESNUA_TRANSFORM_POSITION )
+				break;
+				case ESNUA_TRANSFORM_POSITION:
 				{
 					AbsoluteTransformation = getRelativeTransformation();
 					Parent->getAbsoluteTransformation().transformVect(reinterpret_cast<irr::core::vector3df&>(AbsoluteTransformation[12]));
+				}
+				break;
+				case ESNUA_RELATIVE:
+					AbsoluteTransformation = getRelativeTransformation();
+				break;
 				}
 			}
 			else
