@@ -95,7 +95,7 @@ namespace scene
 		{
 			if (IsVisible)
 			{
-				ISceneNodeList::Iterator it = Children.begin();
+				ISceneNodeList::ConstIterator it = Children.begin();
 				for (; it != Children.end(); ++it)
 					(*it)->OnRegisterSceneNode();
 			}
@@ -114,7 +114,7 @@ namespace scene
 			{
 				// animate this node with all animators
 
-				ISceneNodeAnimatorList::Iterator ait = Animators.begin();
+				ISceneNodeAnimatorList::ConstIterator ait = Animators.begin();
 				while (ait != Animators.end())
 					{
 					// continue to the next node before calling animateNode()
@@ -133,7 +133,7 @@ namespace scene
 
 				// perform the post render process on all children
 
-				ISceneNodeList::Iterator it = Children.begin();
+				ISceneNodeList::ConstIterator it = Children.begin();
 				for (; it != Children.end(); ++it)
 					(*it)->OnAnimate(timeMs);
 			}
@@ -829,7 +829,7 @@ namespace scene
 
 			// clone children
 
-			ISceneNodeList::Iterator it = toCopyFrom->Children.begin();
+			ISceneNodeList::ConstIterator it = toCopyFrom->Children.begin();
 			for (; it != toCopyFrom->Children.end(); ++it)
 				(*it)->clone(this, newManager);
 
