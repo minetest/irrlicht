@@ -3,6 +3,7 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
 #include "CMeshSceneNode.h"
+#include "CBufferRenderNode.h"
 #include "IVideoDriver.h"
 #include "ISceneManager.h"
 #include "S3DVertex.h"
@@ -22,14 +23,12 @@ namespace irr
 namespace scene
 {
 
-
-
 //! constructor
 CMeshSceneNode::CMeshSceneNode(IMesh* mesh, ISceneNode* parent, ISceneManager* mgr, s32 id,
 			const core::vector3df& position, const core::vector3df& rotation,
 			const core::vector3df& scale)
-: IMeshSceneNode(parent, mgr, id, position, rotation, scale), Mesh(0), Shadow(0),
-	PassCount(0), ReadOnlyMaterials(false)
+	: IMeshSceneNode(parent, mgr, id, position, rotation, scale)
+	, Mesh(0), Shadow(0), ReadOnlyMaterials(false)
 {
 	#ifdef _DEBUG
 	setDebugName("CMeshSceneNode");
@@ -42,6 +41,7 @@ CMeshSceneNode::CMeshSceneNode(IMesh* mesh, ISceneNode* parent, ISceneManager* m
 //! destructor
 CMeshSceneNode::~CMeshSceneNode()
 {
+	setUsedBufferRenderNodes(0);
 	if (Shadow)
 		Shadow->drop();
 	if (Mesh)
@@ -54,39 +54,60 @@ void CMeshSceneNode::OnRegisterSceneNode()
 {
 	if (IsVisible && Mesh)
 	{
-		// because this node supports rendering of mixed mode meshes consisting of
+		Box = Mesh->getBoundingBox(); // in case mesh was modified, as clipping happens when registering nodes for rendering
+
+		// Because this node supports rendering of mixed mode meshes consisting of
 		// transparent and solid material at the same time, we need to go through all
 		// materials, check of what type they are and register this node for the right
 		// render pass according to that.
+		// Also some buffers might register into their own render node
 
 		video::IVideoDriver* driver = SceneManager->getVideoDriver();
 
-		PassCount = 0;
 		int transparentCount = 0;
 		int solidCount = 0;
 
-		// count transparent and solid materials in this scene node
-		const u32 numMaterials = ReadOnlyMaterials ? Mesh->getMeshBufferCount() : Materials.size();
-		for (u32 i=0; i<numMaterials; ++i)
+		if ( !(DebugDataVisible & scene::EDS_HALF_TRANSPARENCY) )
 		{
-			const video::SMaterial& material = ReadOnlyMaterials ? Mesh->getMeshBuffer(i)->getMaterial() : Materials[i];
+			// count transparent and solid materials in this scene node
+			const u32 numMaterials = ReadOnlyMaterials ? Mesh->getMeshBufferCount() : Materials.size();
+			const bool parentRenders = NodeRegistration == ENR_DEFAULT || numMaterials < 2;
+			for (u32 i=0; i<numMaterials; ++i)
+			{
+				const video::SMaterial& material = ReadOnlyMaterials ? Mesh->getMeshBuffer(i)->getMaterial() : Materials[i];
 
-			if ( driver->needsTransparentRenderPass(material) )
-				++transparentCount;
-			else
-				++solidCount;
-
-			if (solidCount && transparentCount)
-				break;
+				if ( driver->needsTransparentRenderPass(material) )
+				{
+					BufferRenderNodes[i]->prepareRendering(ESNRP_TRANSPARENT, parentRenders);
+					if ( parentRenders )
+					{
+						++transparentCount;
+					}
+				}
+				else
+				{
+					BufferRenderNodes[i]->prepareRendering(ESNRP_SOLID, parentRenders);
+					if ( parentRenders )
+					{
+						++solidCount;
+					}
+				}
+			}
 		}
 
 		// register according to material types counted
 
 		if (solidCount)
-			SceneManager->registerNodeForRendering(this, scene::ESNRP_SOLID);
+			SceneManager->registerNodeForRendering(this, ESNRP_SOLID);
 
 		if (transparentCount)
-			SceneManager->registerNodeForRendering(this, scene::ESNRP_TRANSPARENT);
+			SceneManager->registerNodeForRendering(this, ESNRP_TRANSPARENT);
+
+		if (Shadow)	// update (not render) shadow node after lights have been set up
+			SceneManager->registerNodeForRendering(this, ESNRP_SKY_BOX);
+
+		if (DebugDataVisible) // debug data has it's own render-stage between solid and transparence
+			SceneManager->registerNodeForRendering(this, ESNRP_SHADOW);
 
 		ISceneNode::OnRegisterSceneNode();
 	}
@@ -96,109 +117,110 @@ void CMeshSceneNode::OnRegisterSceneNode()
 //! renders the node.
 void CMeshSceneNode::render()
 {
-	video::IVideoDriver* driver = SceneManager->getVideoDriver();
-
-	if (!Mesh || !driver)
+	if (!Mesh )
 		return;
 
-	const bool isTransparentPass =
-		SceneManager->getSceneNodeRenderPass() == scene::ESNRP_TRANSPARENT;
+	const E_SCENE_NODE_RENDER_PASS renderPass = SceneManager->getSceneNodeRenderPass();
 
-	++PassCount;
-
-	driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
-	Box = Mesh->getBoundingBox();
-
-	if (Shadow && PassCount==1)
-		Shadow->updateShadowVolumes();
-
-	// for debug purposes only:
-
-	bool renderMeshes = true;
-	video::SMaterial mat;
-	if (DebugDataVisible && PassCount==1)
+	if ( renderPass == ESNRP_SKY_BOX )
 	{
-		// overwrite half transparency
-		if (DebugDataVisible & scene::EDS_HALF_TRANSPARENCY)
-		{
-			for (u32 g=0; g<Mesh->getMeshBufferCount(); ++g)
-			{
-				mat = Materials[g];
-				mat.MaterialType = video::EMT_TRANSPARENT_ADD_COLOR;
-				driver->setMaterial(mat);
-				driver->drawMeshBuffer(Mesh->getMeshBuffer(g));
-			}
-			renderMeshes = false;
-		}
+		if (Shadow )
+			Shadow->updateShadowVolumes();
 	}
-
-	// render original meshes
-	if (renderMeshes)
+	else if ( renderPass == ESNRP_SHADOW )
 	{
-		for (u32 i=0; i<Mesh->getMeshBufferCount(); ++i)
+		// for debug purposes only
+		if ( DebugDataVisible )
 		{
-			scene::IMeshBuffer* mb = Mesh->getMeshBuffer(i);
-			if (mb)
+			video::IVideoDriver* driver = SceneManager->getVideoDriver();
+			driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
+
+			// render with half transparency
+			if (DebugDataVisible & scene::EDS_HALF_TRANSPARENCY)
 			{
-				const video::SMaterial& material = ReadOnlyMaterials ? mb->getMaterial() : Materials[i];
-
-				const bool transparent = driver->needsTransparentRenderPass(material);
-
-				// only render transparent buffer if this is the transparent render pass
-				// and solid only in solid pass
-				if (transparent == isTransparentPass)
+				for (u32 g=0; g<Mesh->getMeshBufferCount(); ++g)
 				{
-					driver->setMaterial(material);
-					driver->drawMeshBuffer(mb);
+					irr::video::SMaterial mat = Materials[g];
+					mat.MaterialType = video::EMT_TRANSPARENT_ADD_COLOR;
+					driver->setMaterial(mat);
+					driver->drawMeshBuffer(Mesh->getMeshBuffer(g));
+				}
+			}
+
+			video::SMaterial m;
+			m.Lighting = false;
+			m.AntiAliasing=0;
+			driver->setMaterial(m);
+
+			if (DebugDataVisible & scene::EDS_BBOX)
+			{
+				driver->draw3DBox(Box, video::SColor(255,255,255,255));
+			}
+			if (DebugDataVisible & scene::EDS_BBOX_BUFFERS)
+			{
+				for (u32 g=0; g<Mesh->getMeshBufferCount(); ++g)
+				{
+					driver->draw3DBox(
+						Mesh->getMeshBuffer(g)->getBoundingBox(),
+						video::SColor(255,190,128,128));
+				}
+			}
+
+			if (DebugDataVisible & scene::EDS_NORMALS)
+			{
+				// draw normals
+ 				const f32 debugNormalLength = SceneManager->getParameters()->getAttributeAsFloat(DEBUG_NORMAL_LENGTH);
+				const video::SColor debugNormalColor = SceneManager->getParameters()->getAttributeAsColor(DEBUG_NORMAL_COLOR);
+				const u32 count = Mesh->getMeshBufferCount();
+
+				for (u32 i=0; i != count; ++i)
+				{
+					driver->drawMeshBufferNormals(Mesh->getMeshBuffer(i), debugNormalLength, debugNormalColor);
+				}
+			}
+
+			// show mesh
+			if (DebugDataVisible & scene::EDS_MESH_WIRE_OVERLAY)
+			{
+				m.Wireframe = true;
+				driver->setMaterial(m);
+
+				for (u32 g=0; g<Mesh->getMeshBufferCount(); ++g)
+				{
+					driver->drawMeshBuffer(Mesh->getMeshBuffer(g));
 				}
 			}
 		}
 	}
-
-	// for debug purposes only:
-	if (DebugDataVisible && PassCount==1)
+	else // solid, transparent or unknown (none when render is called without SceneManager) render stages
 	{
-		video::SMaterial m;
-		m.Lighting = false;
-		m.AntiAliasing=0;
-		driver->setMaterial(m);
+		video::IVideoDriver* driver = SceneManager->getVideoDriver();
+		driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
 
-		if (DebugDataVisible & scene::EDS_BBOX)
+		// render buffers, or at least those which don't render in their own node
+		for (u32 i=0; i<BufferRenderNodes.size(); ++i)
 		{
-			driver->draw3DBox(Box, video::SColor(255,255,255,255));
-		}
-		if (DebugDataVisible & scene::EDS_BBOX_BUFFERS)
-		{
-			for (u32 g=0; g<Mesh->getMeshBufferCount(); ++g)
+			CBufferRenderNode* bufRenderNode = BufferRenderNodes[i];
+			if ( bufRenderNode->getDoesParentRender())
 			{
-				driver->draw3DBox(
-					Mesh->getMeshBuffer(g)->getBoundingBox(),
-					video::SColor(255,190,128,128));
-			}
-		}
+				E_SCENE_NODE_RENDER_PASS bufferRenderPass = bufRenderNode->getRenderPass();
 
-		if (DebugDataVisible & scene::EDS_NORMALS)
-		{
-			// draw normals
-			const f32 debugNormalLength = SceneManager->getParameters()->getAttributeAsFloat(DEBUG_NORMAL_LENGTH);
-			const video::SColor debugNormalColor = SceneManager->getParameters()->getAttributeAsColor(DEBUG_NORMAL_COLOR);
-			const u32 count = Mesh->getMeshBufferCount();
+				// render() called without OnRegisterSceneNode, but still wants to render in a specific render stage
+				// Note: Not checking transparency every time, as check got slightly expensive (I think it's prone to cache-misses)
+				if ( bufferRenderPass == ESNRP_NONE && renderPass > ESNRP_NONE )	
+				{
+					if ( driver->needsTransparentRenderPass(getMaterial(i)) )
+					{
+						bufferRenderPass = ESNRP_TRANSPARENT;
+					}
+					else
+					{
+						bufferRenderPass = ESNRP_SOLID;
+					}
+				}
 
-			for (u32 i=0; i != count; ++i)
-			{
-				driver->drawMeshBufferNormals(Mesh->getMeshBuffer(i), debugNormalLength, debugNormalColor);
-			}
-		}
-
-		// show mesh
-		if (DebugDataVisible & scene::EDS_MESH_WIRE_OVERLAY)
-		{
-			m.Wireframe = true;
-			driver->setMaterial(m);
-
-			for (u32 g=0; g<Mesh->getMeshBufferCount(); ++g)
-			{
-				driver->drawMeshBuffer(Mesh->getMeshBuffer(g));
+				if ( bufRenderNode->getRenderPass() == renderPass )
+					bufRenderNode->renderBuffer(driver);
 			}
 		}
 	}
@@ -207,7 +229,7 @@ void CMeshSceneNode::render()
 
 //! Removes a child from this scene node.
 //! Implemented here, to be able to remove the shadow properly, if there is one,
-//! or to remove attached childs.
+//! or to remove attached children.
 bool CMeshSceneNode::removeChild(ISceneNode* child)
 {
 	if (child && Shadow == child)
@@ -256,6 +278,22 @@ u32 CMeshSceneNode::getMaterialCount() const
 	return Materials.size();
 }
 
+void CMeshSceneNode::setUsedBufferRenderNodes(irr::u32 num)
+{
+	if ( BufferRenderNodes.size() > num )
+	{
+		for ( irr::u32 i=num; i<BufferRenderNodes.size(); ++i )
+			BufferRenderNodes[i]->drop();
+		BufferRenderNodes.erase(num, BufferRenderNodes.size()-num);
+	}
+	else if ( BufferRenderNodes.size() < num )
+	{
+		for ( irr::u32 i=BufferRenderNodes.size(); i < num; ++i )
+		{
+			BufferRenderNodes.push_back( new CBufferRenderNode(*this, SceneManager, i) );
+		}
+	}
+}
 
 //! Sets a new mesh
 void CMeshSceneNode::setMesh(IMesh* mesh)
@@ -264,10 +302,16 @@ void CMeshSceneNode::setMesh(IMesh* mesh)
 	{
 		mesh->grab();
 		if (Mesh)
+		{
 			Mesh->drop();
+		}
 
 		Mesh = mesh;
+
+		// Note: Mesh can change amount of meshbuffers later and we don't handle that so far so that would cause trouble
+		// For now assuming users call setMesh again in that case
 		copyMaterials();
+		setUsedBufferRenderNodes(Mesh ? Mesh->getMeshBufferCount() : 0);
 	}
 }
 

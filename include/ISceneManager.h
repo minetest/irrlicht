@@ -66,7 +66,7 @@ namespace scene
 		//! In this pass, lights are transformed into camera space and added to the driver
 		ESNRP_LIGHT =2,
 
-		//! This is used for sky boxes.
+		//! This is mostly used for sky boxes. Stage between light and solid.
 		ESNRP_SKY_BOX =4,
 
 		//! All normal objects can use this for registering themselves.

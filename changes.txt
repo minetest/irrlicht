@@ -1,6 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Add IMeshSceneNode::setNodeRegistration to allow registering MeshSceneNodes to the SceneManager per buffer instead of per node
 - Add SMaterialLayer::hasSetTextureMatrix and SMaterialLayer::resetTextureMatrix
 - Add IShaderConstantSetCallBack::OnCreate to allow earlier access to IMaterialRendererServices
 - CIrrDeviceWin32::yield() now uses Sleep(0) instead of Sleep(1). 

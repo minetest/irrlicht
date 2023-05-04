@@ -12,6 +12,7 @@ namespace irr
 {
 namespace scene
 {
+	class CBufferRenderNode;
 
 	class CMeshSceneNode : public IMeshSceneNode
 	{
@@ -83,6 +84,7 @@ namespace scene
 
 	protected:
 
+		void setUsedBufferRenderNodes(irr::u32 num);
 		void copyMaterials();
 
 		core::array<video::SMaterial> Materials;
@@ -92,8 +94,9 @@ namespace scene
 		IMesh* Mesh;
 		IShadowVolumeSceneNode* Shadow;
 
-		s32 PassCount;
 		bool ReadOnlyMaterials;
+
+		core::array<scene::CBufferRenderNode*> BufferRenderNodes;
 	};
 
 } // end namespace scene
