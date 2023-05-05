@@ -53,8 +53,6 @@ public:
 
 	virtual s32 getRenderCapability() const IRR_OVERRIDE;
 
-	virtual void setBasicRenderStates(const SMaterial& material, const SMaterial& lastMaterial, bool resetAllRenderstates) IRR_OVERRIDE;
-
 	virtual void startUseProgram() IRR_OVERRIDE;
 
 	virtual s32 getVertexShaderConstantID(const c8* name) IRR_OVERRIDE;

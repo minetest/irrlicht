@@ -563,15 +563,6 @@ bool COpenGLSLMaterialRenderer::linkProgram()
 	return true;
 }
 
-
-void COpenGLSLMaterialRenderer::setBasicRenderStates(const SMaterial& material,
-						const SMaterial& lastMaterial,
-						bool resetAllRenderstates)
-{
-	// forward
-	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
-}
-
 void COpenGLSLMaterialRenderer::startUseProgram()
 {
 	if (Program2)
@@ -584,7 +575,7 @@ void COpenGLSLMaterialRenderer::stopUseProgram()
 {
 	// Not going to reset irrGlUseProgram/extGlUseProgramObject as it shouldn't really matter
 
-	// Force reset of material to ensure OnSetMaterial will be called or we can miss 
+	// Force reset of material to ensure OnSetMaterial will be called or we can miss
 	// the next UseProgram call
 	Driver->DoResetRenderStates();
 }

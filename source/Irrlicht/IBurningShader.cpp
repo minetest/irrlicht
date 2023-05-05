@@ -299,7 +299,7 @@ void IBurningShader::OnSetMaterial(const SMaterial& material, const SMaterial& l
 {
 	if (Driver)
 		Driver->setFallback_Material(BaseMaterial, VertexShaderProgram_buildin);
-	services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 	if (CallBack)
 		CallBack->OnSetMaterial(material);
 
@@ -329,13 +329,6 @@ bool IBurningShader::isTransparent() const
 IShaderConstantSetCallBack* IBurningShader::getShaderConstantSetCallBack() const
 {
 	return CallBack;
-}
-
-// implementations for the render services
-void IBurningShader::setBasicRenderStates(const SMaterial& material, const SMaterial& lastMaterial, bool resetAllRenderstates)
-{
-	// forward
-	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 }
 
 static BurningUniform _empty = { "null",BL_VERTEX_FLOAT,{0.f,0.f,0.f,0.f} };

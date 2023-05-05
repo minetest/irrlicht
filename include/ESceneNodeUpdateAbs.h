@@ -17,7 +17,11 @@ namespace scene
 		//! Only transform the position of the node transformation matrix 
 		//! by the parent transformation matrix.
 		//! Parent will not affect the rotation/scale of the node transformation.
-		ESNUA_TRANSFORM_POSITION
+		ESNUA_TRANSFORM_POSITION,
+
+		//! Use the relative matrix as absolute transformation matrix
+		//! Parent node transformation is ignored just like when the parent is set to 0
+		ESNUA_RELATIVE
 	};
 
 	//! Names for culling type
@@ -25,6 +29,7 @@ namespace scene
 	{
 		"matrix",
 		"pos",
+		"relative",
 		0
 	};
 

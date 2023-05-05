@@ -1489,6 +1489,9 @@
     <ClInclude Include="..\..\include\ESceneNodeUpdateAbs.h">
       <Filter>include\scene</Filter>
     </ClInclude>
+    <ClInclude Include="CBufferRenderNode.h">
+      <Filter>Irrlicht\scene\sceneNodes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\changes.txt">

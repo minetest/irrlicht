@@ -275,11 +275,6 @@ bool CD3D9HLSLMaterialRenderer::createHLSLPixelShader(const char* pixelShaderPro
 	return false;
 }
 
-void CD3D9HLSLMaterialRenderer::setBasicRenderStates(const SMaterial& material, const SMaterial& lastMaterial, bool resetAllRenderstates)
-{
-	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
-}
-
 s32 CD3D9HLSLMaterialRenderer::getVertexShaderConstantID(const c8* name)
 {
 	return getVariableID(true, name);

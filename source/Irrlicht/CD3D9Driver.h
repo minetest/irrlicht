@@ -222,8 +222,8 @@ namespace video
 		virtual void OnResize(const core::dimension2d<u32>& size) IRR_OVERRIDE;
 
 		//! Can be called by an IMaterialRenderer to make its work easier.
-		virtual void setBasicRenderStates(const SMaterial& material, const SMaterial& lastMaterial,
-			bool resetAllRenderstates) IRR_OVERRIDE;
+		void setBasicRenderStates(const SMaterial& material, const SMaterial& lastMaterial,
+			bool resetAllRenderstates);
 
 		//! Returns type of video driver
 		virtual E_DRIVER_TYPE getDriverType() const IRR_OVERRIDE;

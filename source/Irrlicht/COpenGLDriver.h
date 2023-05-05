@@ -272,8 +272,8 @@ namespace video
 		virtual const core::matrix4& getTransform(E_TRANSFORMATION_STATE state) const IRR_OVERRIDE;
 
 		//! Can be called by an IMaterialRenderer to make its work easier.
-		virtual void setBasicRenderStates(const SMaterial& material, const SMaterial& lastmaterial,
-			bool resetAllRenderstates) IRR_OVERRIDE;
+		void setBasicRenderStates(const SMaterial& material, const SMaterial& lastmaterial,
+			bool resetAllRenderstates);
 
 		//! Compare in SMaterial doesn't check texture parameters, so we should call this on each OnRender call.
 		virtual void setTextureRenderStates(const SMaterial& material, bool resetAllRenderstates);

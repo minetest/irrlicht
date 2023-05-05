@@ -340,14 +340,6 @@ bool COGLES2MaterialRenderer::linkProgram()
 	return true;
 }
 
-
-void COGLES2MaterialRenderer::setBasicRenderStates(const SMaterial& material,
-						const SMaterial& lastMaterial,
-						bool resetAllRenderstates)
-{
-	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
-}
-
 void COGLES2MaterialRenderer::startUseProgram()
 {
 	Driver->getCacheHandler()->setProgram(Program);
