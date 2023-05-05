@@ -255,7 +255,7 @@ void loadModel(const io::path& filename)
 	// that's not so simple. so we do it brute force
 	gui::IGUIContextMenu* menu = (gui::IGUIContextMenu*)Device->getGUIEnvironment()->getRootGUIElement()->getElementFromId(GUI_ID_TOGGLE_DEBUG_INFO, true);
 	if (menu)
-		for(int item = 1; item < 6; ++item)
+		for(int item = 1; item < 7; ++item)
 			menu->setItemChecked(item, false);
 	updateScaleInfo(Model);
 }
