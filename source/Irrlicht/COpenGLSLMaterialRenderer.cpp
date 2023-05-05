@@ -563,15 +563,6 @@ bool COpenGLSLMaterialRenderer::linkProgram()
 	return true;
 }
 
-
-void COpenGLSLMaterialRenderer::setBasicRenderStates(const SMaterial& material,
-						const SMaterial& lastMaterial,
-						bool resetAllRenderstates)
-{
-	// forward
-	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
-}
-
 void COpenGLSLMaterialRenderer::startUseProgram()
 {
 	if (Program2)

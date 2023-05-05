@@ -264,9 +264,9 @@ namespace video
 
 		//IMaterialRendererService
 
-		virtual void setBasicRenderStates(const SMaterial& material,
+		void setBasicRenderStates(const SMaterial& material,
 			const SMaterial& lastMaterial,
-			bool resetAllRenderstates) IRR_OVERRIDE;
+			bool resetAllRenderstates);
 
 		//pass BaseMaterialID
 		void setFallback_Material(E_MATERIAL_TYPE fallback_MaterialType

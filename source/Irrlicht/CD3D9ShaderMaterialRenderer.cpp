@@ -132,7 +132,7 @@ void CD3D9ShaderMaterialRenderer::OnSetMaterial(const video::SMaterial& material
 		}
 	}
 
-	services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
 	if (BaseMaterial)
         BaseMaterial->OnSetMaterial(material, lastMaterial, resetAllRenderstates, services);

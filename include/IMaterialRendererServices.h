@@ -24,20 +24,6 @@ public:
 	//! Destructor
 	virtual ~IMaterialRendererServices() {}
 
-	//! Can be called by an IMaterialRenderer to make its work easier.
-	/** Sets all basic renderstates if needed.
-	Basic render states are diffuse, ambient, specular, and emissive color,
-	specular power, bilinear and trilinear filtering, wireframe mode,
-	gouraudshading, lighting, zbuffer, zwriteenable, backfaceculling and
-	fog enabling.
-	\param material The new material to be used.
-	\param lastMaterial The material used until now.
-	\param resetAllRenderstates Set to true if all renderstates should be
-	set, regardless of their current state. */
-	virtual void setBasicRenderStates(const SMaterial& material,
-		const SMaterial& lastMaterial,
-		bool resetAllRenderstates) = 0;
-
 	//! Return an index constant for the vertex shader based on a name.
 	virtual s32 getVertexShaderConstantID(const c8* name) = 0;
 

@@ -82,7 +82,7 @@ public:
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
 		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
-		services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
 		if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
 		{
@@ -105,7 +105,7 @@ public:
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
 		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
-		services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
 //		if (material.MaterialType != lastMaterial.MaterialType ||
 //			material.MaterialTypeParam != lastMaterial.MaterialTypeParam ||
@@ -175,7 +175,7 @@ public:
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
 		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
-		services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
 		if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
 		{
@@ -199,7 +199,7 @@ public:
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
 		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
-		services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
         Driver->getBridgeCalls()->setBlend(true);
         Driver->getBridgeCalls()->setBlendFunc(D3DBLEND_ONE, D3DBLEND_INVSRCCOLOR);
@@ -238,7 +238,7 @@ public:
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
 		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
-		services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
         Driver->getBridgeCalls()->setBlend(true);
         Driver->getBridgeCalls()->setBlendFunc(D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
@@ -278,7 +278,7 @@ public:
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
 		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
-		services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
         Driver->getBridgeCalls()->setBlend(true);
         Driver->getBridgeCalls()->setBlendFunc(D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
@@ -325,7 +325,7 @@ public:
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
 		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
-		services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
 		if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
 		{
@@ -367,7 +367,7 @@ public:
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
 		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
-		services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
 		if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
 		{
@@ -411,7 +411,7 @@ public:
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
 		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
-		services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
 		if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
 		{
@@ -436,7 +436,7 @@ public:
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
 		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
-		services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
 		if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
 		{
@@ -471,7 +471,7 @@ public:
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
 		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
-		services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
 		if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
 		{
@@ -507,7 +507,7 @@ public:
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
 		bool resetAllRenderstates, IMaterialRendererServices* services) IRR_OVERRIDE
 	{
-		services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
 		Driver->getBridgeCalls()->setBlend(true);
         Driver->getBridgeCalls()->setBlendFunc(D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
