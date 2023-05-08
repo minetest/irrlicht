@@ -573,10 +573,14 @@ void COpenGLSLMaterialRenderer::startUseProgram()
 
 void COpenGLSLMaterialRenderer::stopUseProgram()
 {
-	// Not going to reset irrGlUseProgram/extGlUseProgramObject as it shouldn't really matter
+	// Necessary as fixed function pipeline breaks if programs are not reset to 0
+	if (Program)
+		Driver->extGlUseProgramObject(0);
+	if (Program2)
+		Driver->irrGlUseProgram(0);
 
 	// Force reset of material to ensure OnSetMaterial will be called or we can miss 
-	// the next UseProgram call
+	// the next UseProgram call as stopUseProgram can be called from anywhere
 	Driver->DoResetRenderStates();
 }
 
