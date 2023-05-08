@@ -21,6 +21,7 @@
 #include "SVertexIndex.h"
 #include "SLight.h"
 #include "SExposedVideoData.h"
+#include "SOverrideMaterial.h"
 
 #ifdef _MSC_VER
 #pragma warning( disable: 4996)

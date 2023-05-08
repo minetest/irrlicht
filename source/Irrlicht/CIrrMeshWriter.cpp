@@ -11,6 +11,7 @@
 #include "IWriteFile.h"
 #include "IXMLWriter.h"
 #include "IMesh.h"
+#include "IMeshBuffer.h"
 #include "IAttributes.h"
 
 namespace irr

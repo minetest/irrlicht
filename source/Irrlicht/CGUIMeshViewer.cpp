@@ -9,6 +9,7 @@
 #include "IVideoDriver.h"
 #include "IAnimatedMesh.h"
 #include "IMesh.h"
+#include "IMeshBuffer.h"
 #include "os.h"
 #include "IGUISkin.h"
 
