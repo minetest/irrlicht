@@ -76,6 +76,11 @@ public:
 			driver->setMaterial(material);
 			driver->drawMeshBuffer(mb);
 		}
+
+		// Resetting after each rendering so direct calls to render() for parent node continue to work
+		// Assuming each pass only runs once
+		RenderPass = ESNRP_NONE;
+		ParentDoesRender = true;
 	}
 
 	//! Renders the node.
@@ -84,10 +89,6 @@ public:
 		video::IVideoDriver* driver = SceneManager->getVideoDriver();
 		driver->setTransform(video::ETS_WORLD, MeshNodeParent.getAbsoluteTransformation());
 		renderBuffer(driver);
-
-		// resetting each time so direct calls to render() for parent node continue to work
-		RenderPass = ESNRP_NONE;
-		ParentDoesRender = true;
 	}
 
 	virtual const core::aabbox3d<f32>& getBoundingBox() const IRR_OVERRIDE
