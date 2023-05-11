@@ -85,6 +85,7 @@ _setup_toolchain () {
 
 	CMAKE_FLAGS=(
 		"-DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake"
+		"-DANDROID_USE_LEGACY_TOOLCHAIN_FILE=OFF"
 		"-DANDROID_ABI=$TARGET_ABI" "-DANDROID_NATIVE_API_LEVEL=$API"
 		"-DCMAKE_BUILD_TYPE=Release"
 	)
