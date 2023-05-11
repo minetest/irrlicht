@@ -208,10 +208,14 @@ jobs:
           path: artifact/
 
   android:
+    name: Android ${{ matrix.arch }}
     runs-on: ubuntu-20.04
     env:
        ndk_version: "r25c"
-       ANDROID_NDK: ${{ env.HOME }}/android-ndk
+       ANDROID_NDK: ${{ github.workspace }}/android-ndk
+    strategy:
+      matrix:
+        arch: [armeabi-v7a, arm64-v8a, x86, x86_64]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -237,24 +241,11 @@ jobs:
           rm "android-ndk-${ndk_version}-linux.zip"
           mv "android-ndk-${ndk_version}" "${ANDROID_NDK}"
 
-      - name: "Build → armeabi-v7a"
-        run: |
-          ./scripts/ci-build-android.sh armeabi-v7a
-
-      - name: "Build → arm64-v8a"
-        run: |
-          ./scripts/ci-build-android.sh arm64-v8a
-
-      - name: "Build → x86"
-        run: |
-          ./scripts/ci-build-android.sh x86
-
-      - name: "Build → x86_64"
-        run: |
-          ./scripts/ci-build-android.sh x86_64
+      - name: Build
+        run: ./scripts/ci-build-android.sh ${{ matrix.arch }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: irrlicht-android
-          path: ${{ runner.temp }}/pkg
+          name: irrlicht-android-${{ matrix.arch }}
+          path: ${{ runner.temp }}/pkg/${{ matrix.arch }}
