@@ -2,9 +2,6 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#include "IrrCompileConfig.h"
-#ifdef _IRR_COMPILE_WITH_OBJ_LOADER_
-
 #include "COBJMeshFileLoader.h"
 #include "IMeshManipulator.h"
 #include "IVideoDriver.h"
@@ -27,23 +24,18 @@ namespace scene
 #endif
 
 //! Constructor
-COBJMeshFileLoader::COBJMeshFileLoader(scene::ISceneManager* smgr, io::IFileSystem* fs)
-: SceneManager(smgr), FileSystem(fs)
+COBJMeshFileLoader::COBJMeshFileLoader(scene::ISceneManager* smgr)
+: SceneManager(smgr)
 {
 	#ifdef _DEBUG
 	setDebugName("COBJMeshFileLoader");
 	#endif
-
-	if (FileSystem)
-		FileSystem->grab();
 }
 
 
 //! destructor
 COBJMeshFileLoader::~COBJMeshFileLoader()
 {
-	if (FileSystem)
-		FileSystem->drop();
 }
 
 
@@ -79,7 +71,6 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 	u32 smoothingGroup=0;
 
 	const io::path fullName = file->getFileName();
-	const io::path relPath = FileSystem->getFileDir(fullName)+"/";
 
 	c8* buf = new c8[filesize];
 	memset(buf, 0, filesize);
@@ -233,7 +224,7 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 					v.Pos = vertexBuffer[Idx[0]];
 				else
 				{
-					os::Printer::log("Invalid vertex index in this line:", wordBuffer.c_str(), ELL_ERROR);
+					os::Printer::log("Invalid vertex index in this line", wordBuffer.c_str(), ELL_ERROR);
 					delete [] buf;
 					return 0;
 				}
@@ -612,6 +603,3 @@ void COBJMeshFileLoader::cleanUp()
 
 } // end namespace scene
 } // end namespace irr
-
-#endif // _IRR_COMPILE_WITH_OBJ_LOADER_
-

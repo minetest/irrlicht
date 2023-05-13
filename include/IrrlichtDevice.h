@@ -14,6 +14,7 @@
 #include "ICursorControl.h"
 #include "ITimer.h"
 #include "IOSOperator.h"
+#include "IrrCompileConfig.h"
 
 namespace irr
 {
@@ -34,6 +35,7 @@ namespace irr
 
 	namespace video {
 		class IContextManager;
+		extern "C" IRRLICHT_API bool IRRCALLCONV isDriverSupported(E_DRIVER_TYPE driver);
 	} // end namespace video
 
 	//! The Irrlicht device. You can create it with createDevice() or createDeviceEx().
@@ -130,6 +132,11 @@ namespace irr
 		/** \param text: New text of the window caption. */
 		virtual void setWindowCaption(const wchar_t* text) = 0;
 
+		//! Sets the window icon.
+		/** \param img The icon texture.
+		\return False if no icon was set. */
+		virtual bool setWindowIcon(const video::IImage *img) = 0;
+
 		//! Returns if the window is active.
 		/** If the window is inactive,
 		nothing needs to be drawn. So if you don't want to draw anything
@@ -155,6 +162,12 @@ namespace irr
 		//! Checks if the Irrlicht window is minimized
 		/** \return True if window is minimized. */
 		virtual bool isWindowMinimized() const = 0;
+
+		//! Checks if the Irrlicht window is maximized
+		//! Only fully works on SDL. Returns false, or the last value set via
+		//! maximizeWindow() and restoreWindow(), on other backends.
+		/** \return True if window is maximized. */
+		virtual bool isWindowMaximized() const = 0;
 
 		//! Checks if the Irrlicht window is running in fullscreen mode
 		/** \return True if window is fullscreen. */
@@ -229,8 +242,8 @@ namespace irr
 		as this would consume joystick info that 3rd party libraries might rely on. Call this method to
 		activate joystick support in Irrlicht and to receive irr::SJoystickEvent events.
 		\param joystickInfo On return, this will contain an array of each joystick that was found and activated.
-		\return true if joysticks are supported on this device and _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
-				is defined, false if joysticks are not supported or support is compiled out.
+		\return true if joysticks are supported on this device, false if joysticks are not
+		             supported or support is compiled out.
 		*/
 		virtual bool activateJoysticks(core::array<SJoystickInfo>& joystickInfo) =0;
 
@@ -299,42 +312,16 @@ namespace irr
 		used. */
 		virtual E_DEVICE_TYPE getType() const = 0;
 
+		//! Get the display density in dots per inch.
+		//! Returns 0.0f on failure.
+		virtual float getDisplayDensity() const = 0;
+
 		//! Check if a driver type is supported by the engine.
 		/** Even if true is returned the driver may not be available
 		for a configuration requested when creating the device. */
 		static bool isDriverSupported(video::E_DRIVER_TYPE driver)
 		{
-			switch (driver)
-			{
-				case video::EDT_NULL:
-					return true;
-				case video::EDT_OPENGL:
-#ifdef _IRR_COMPILE_WITH_OPENGL_
-					return true;
-#else
-					return false;
-#endif
-				case video::EDT_OGLES1:
-#ifdef _IRR_COMPILE_WITH_OGLES1_
-					return true;
-#else
-					return false;
-#endif
-				case video::EDT_OGLES2:
-#ifdef _IRR_COMPILE_WITH_OGLES2_
-					return true;
-#else
-					return false;
-#endif
-				case video::EDT_WEBGL1:
-#ifdef _IRR_COMPILE_WITH_WEBGL1_
-					return true;
-#else
-					return false;
-#endif
-				default:
-					return false;
-			}
+			return video::isDriverSupported(driver);
 		}
 	};
 

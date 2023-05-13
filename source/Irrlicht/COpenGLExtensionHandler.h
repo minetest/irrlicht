@@ -5,7 +5,6 @@
 #ifndef __C_OPEN_GL_FEATURE_MAP_H_INCLUDED__
 #define __C_OPEN_GL_FEATURE_MAP_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 
 #ifdef _IRR_COMPILE_WITH_OPENGL_
 

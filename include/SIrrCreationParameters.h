@@ -11,7 +11,7 @@
 #include "ILogger.h"
 #include "position2d.h"
 #include "path.h"
-#include "IrrCompileConfig.h"
+#include "IrrCompileConfig.h" // for IRRLICHT_SDK_VERSION
 
 namespace irr
 {
@@ -24,12 +24,13 @@ namespace irr
 		//! Constructs a SIrrlichtCreationParameters structure with default values.
 		SIrrlichtCreationParameters() :
 			DeviceType(EIDT_BEST),
-			DriverType(video::EDT_BURNINGSVIDEO),
+			DriverType(video::EDT_OPENGL),
 			WindowSize(core::dimension2d<u32>(800, 600)),
 			WindowPosition(core::position2di(-1,-1)),
 			Bits(32),
 			ZBufferBits(24),
 			Fullscreen(false),
+			WindowMaximized(false),
 			WindowResizable(2),
 			Stencilbuffer(true),
 			Vsync(false),
@@ -52,7 +53,7 @@ namespace irr
 			UsePerformanceTimer(true),
 			SDK_version_do_not_use(IRRLICHT_SDK_VERSION),
 			PrivateData(0),
-#if defined(_IRR_COMPILE_WITH_IOS_DEVICE_) || defined(_IRR_ANDROID_PLATFORM_) || defined(_IRR_EMSCRIPTEN_PLATFORM_)
+#ifdef IRR_MOBILE_PATHS
 			OGLES2ShaderPath("media/Shaders/")
 #else
 			OGLES2ShaderPath("../../media/Shaders/")
@@ -73,6 +74,7 @@ namespace irr
 			Bits = other.Bits;
 			ZBufferBits = other.ZBufferBits;
 			Fullscreen = other.Fullscreen;
+			WindowMaximized = other.WindowMaximized;
 			WindowResizable = other.WindowResizable;
 			Stencilbuffer = other.Stencilbuffer;
 			Vsync = other.Vsync;
@@ -126,6 +128,9 @@ namespace irr
 		//! Should be set to true if the device should run in fullscreen.
 		/** Otherwise the device runs in windowed mode. Default: false. */
 		bool Fullscreen;
+
+		//! Maximised window. (Only supported on SDL.) Default: false
+		bool WindowMaximized;
 
 		//! Should a non-fullscreen window be resizable.
 		/** Might not be supported by all devices. Ignored when Fullscreen is true.
@@ -230,7 +235,6 @@ namespace irr
 		/** If this is set to a value other than 0, the Irrlicht Engine
 		will be created in an already existing window.
 		For Windows, set this to the HWND of the window you want.
-		For iOS, assign UIView to this variable.
 		The windowSize and FullScreen options will be ignored when using
 		the WindowId parameter. Default this is set to 0.
 		To make Irrlicht run inside the custom window, you still will

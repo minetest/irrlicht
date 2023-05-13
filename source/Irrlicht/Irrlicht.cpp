@@ -2,7 +2,6 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#include "IrrCompileConfig.h"
 
 static const char* const copyright = "Irrlicht Engine (c) 2002-2017 Nikolaus Gebhardt";	// put string in binary
 
@@ -28,10 +27,6 @@ static const char* const copyright = "Irrlicht Engine (c) 2002-2017 Nikolaus Geb
 
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
 #include "CIrrDeviceSDL.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_IOS_DEVICE_
-#include "CIrrDeviceiOS.h"
 #endif
 
 #ifdef _IRR_COMPILE_WITH_ANDROID_DEVICE_
@@ -79,11 +74,6 @@ namespace irr
 		if (params.DeviceType == EIDT_X11 || (!dev && params.DeviceType == EIDT_BEST))
 			dev = new CIrrDeviceLinux(params);
 #endif
-        
-#ifdef _IRR_COMPILE_WITH_IOS_DEVICE_
-		if (params.DeviceType == EIDT_IOS || (!dev && params.DeviceType == EIDT_BEST))
-			dev = new CIrrDeviceiOS(params);
-#endif
 
 #ifdef _IRR_COMPILE_WITH_ANDROID_DEVICE_
 		if (params.DeviceType == EIDT_ANDROID || (!dev && params.DeviceType == EIDT_BEST))
@@ -114,6 +104,29 @@ namespace core
 namespace video
 {
 	SMaterial IdentityMaterial;
+
+	extern "C" IRRLICHT_API bool IRRCALLCONV isDriverSupported(E_DRIVER_TYPE driver)
+	{
+		switch (driver) {
+			case EDT_NULL: return true;
+#ifdef ENABLE_OPENGL3
+			case EDT_OPENGL3: return true;
+#endif
+#ifdef _IRR_COMPILE_WITH_OPENGL_
+			case EDT_OPENGL: return true;
+#endif
+#ifdef _IRR_COMPILE_WITH_OGLES1_
+			case EDT_OGLES1: return true;
+#endif
+#ifdef _IRR_COMPILE_WITH_OGLES2_
+			case EDT_OGLES2: return true;
+#endif
+#ifdef _IRR_COMPILE_WITH_WEBGL1_
+			case EDT_WEBGL1: return true;
+#endif
+			default: return false;
+		}
+	}
 }
 
 } // end namespace irr

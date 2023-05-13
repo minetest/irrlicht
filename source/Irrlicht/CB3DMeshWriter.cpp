@@ -4,9 +4,6 @@
 
 // TODO: replace printf's by logging messages
 
-#include "IrrCompileConfig.h"
-
-#ifdef _IRR_COMPILE_WITH_B3D_WRITER_
 
 #include "CB3DMeshWriter.h"
 #include "os.h"
@@ -97,7 +94,7 @@ bool CB3DMeshWriter::writeMesh(io::IWriteFile* file, IMesh* const mesh, s32 flag
     u32 numTexture = texs.size();
     for (u32 i = 0; i < numTexture; i++)
 	{
-        file->write(texs[i].TextureName.c_str(), texs[i].TextureName.size() + 1);
+        file->write(texs[i].TextureName.c_str(), (size_t)texs[i].TextureName.size() + 1);
         file->write(&texs[i].Flags, 7*4);
     }
 
@@ -479,7 +476,7 @@ core::array<ISkinnedMesh::SJoint*> CB3DMeshWriter::getRootJoints(const ISkinnedM
     return roots;
 }
 
-u32 CB3DMeshWriter::getUVlayerCount(IMesh* mesh)
+u32 CB3DMeshWriter::getUVlayerCount(const IMesh* mesh)
 {
     const u32 numBeshBuffers = mesh->getMeshBufferCount();
     for (u32 i = 0; i < numBeshBuffers; i++)
@@ -531,6 +528,3 @@ void CB3DMeshWriter::writeSizeFrom(io::IWriteFile* file, const u32 from, const u
 
 } // end namespace
 } // end namespace
-
-#endif // _IRR_COMPILE_WITH_B3D_WRITER_
-

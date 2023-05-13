@@ -5,7 +5,6 @@
 #ifndef __C_OGLES2_SL_MATERIAL_RENDERER_H_INCLUDED__
 #define __C_OGLES2_SL_MATERIAL_RENDERER_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 
 #ifdef _IRR_COMPILE_WITH_OGLES2_
 

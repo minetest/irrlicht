@@ -2,12 +2,15 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#include "IrrCompileConfig.h"
 
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
 
 #include "CIrrDeviceSDL.h"
 #include "IEventReceiver.h"
+#include "IGUIElement.h"
+#include "IGUIEnvironment.h"
+#include "IImageLoader.h"
+#include "IFileSystem.h"
 #include "os.h"
 #include "CTimer.h"
 #include "irrString.h"
@@ -19,15 +22,10 @@
 #include <SDL_video.h>
 
 #ifdef _IRR_EMSCRIPTEN_PLATFORM_
-#ifdef _IRR_COMPILE_WITH_OGLES2_
-#include "CEGLManager.h"
-#endif
 #include <emscripten.h>
 #endif
 
-#ifdef _IRR_COMPILE_WITH_OPENGL_
 #include "CSDLManager.h"
-#endif
 
 static int SDLDeviceInstances = 0;
 
@@ -37,14 +35,42 @@ namespace irr
 	{
 		#ifdef _IRR_COMPILE_WITH_OPENGL_
 		IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
+		#else
+		static IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
+		{
+			os::Printer::log("No OpenGL support compiled in.", ELL_ERROR);
+			return nullptr;
+		}
+		#endif
+
+		#ifdef ENABLE_OPENGL3
+		IVideoDriver* createOpenGL3Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
+		#else
+		static IVideoDriver* createOpenGL3Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
+		{
+			os::Printer::log("No OpenGL 3 support compiled in.", ELL_ERROR);
+			return nullptr;
+		}
 		#endif
 
 		#ifdef _IRR_COMPILE_WITH_OGLES2_
 		IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
+		#else
+		static IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
+		{
+			os::Printer::log("No OpenGL ES 2 support compiled in.", ELL_ERROR);
+			return nullptr;
+		}
 		#endif
 
 		#ifdef _IRR_COMPILE_WITH_WEBGL1_
 		IVideoDriver* createWebGL1Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
+		#else
+		static IVideoDriver* createWebGL1Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
+		{
+			os::Printer::log("No WebGL 1 support compiled in.", ELL_ERROR);
+			return nullptr;
+		}
 		#endif
 	} // end namespace video
 
@@ -105,13 +131,105 @@ EM_BOOL CIrrDeviceSDL::MouseLeaveCallback(int eventType, const EmscriptenMouseEv
 }
 #endif
 
+
+bool CIrrDeviceSDL::keyIsKnownSpecial(EKEY_CODE key)
+{
+	switch ( key )
+	{
+		// keys which are known to have safe special character interpretation
+		// could need changes over time (removals and additions!)
+		case KEY_RETURN:
+		case KEY_PAUSE:
+		case KEY_ESCAPE:
+		case KEY_PRIOR:
+		case KEY_NEXT:
+		case KEY_HOME:
+		case KEY_END:
+		case KEY_LEFT:
+		case KEY_UP:
+		case KEY_RIGHT:
+		case KEY_DOWN:
+		case KEY_TAB:
+		case KEY_PRINT:
+		case KEY_SNAPSHOT:
+		case KEY_INSERT:
+		case KEY_BACK:
+		case KEY_DELETE:
+		case KEY_HELP:
+		case KEY_APPS:
+		case KEY_SLEEP:
+		case KEY_F1:
+		case KEY_F2:
+		case KEY_F3:
+		case KEY_F4:
+		case KEY_F5:
+		case KEY_F6:
+		case KEY_F7:
+		case KEY_F8:
+		case KEY_F9:
+		case KEY_F10:
+		case KEY_F11:
+		case KEY_F12:
+		case KEY_F13:
+		case KEY_F14:
+		case KEY_F15:
+		case KEY_F16:
+		case KEY_F17:
+		case KEY_F18:
+		case KEY_F19:
+		case KEY_F20:
+		case KEY_F21:
+		case KEY_F22:
+		case KEY_F23:
+		case KEY_F24:
+		case KEY_NUMLOCK:
+		case KEY_SCROLL:
+		case KEY_LCONTROL:
+		case KEY_RCONTROL:
+			return true;
+
+		default:
+			return false;
+	}
+}
+
+int CIrrDeviceSDL::findCharToPassToIrrlicht(int assumedChar, EKEY_CODE key) {
+	// SDL in-place ORs values with no character representation with 1<<30
+	// https://wiki.libsdl.org/SDL2/SDLKeycodeLookup
+	if (assumedChar & (1<<30))
+		return 0;
+
+	switch (key) {
+		case KEY_PRIOR:
+		case KEY_NEXT:
+		case KEY_HOME:
+		case KEY_END:
+		case KEY_LEFT:
+		case KEY_UP:
+		case KEY_RIGHT:
+		case KEY_DOWN:
+		case KEY_NUMLOCK:
+			return 0;
+		default:
+			return assumedChar;
+	}
+}
+
+void CIrrDeviceSDL::resetReceiveTextInputEvents() {
+	gui::IGUIElement *elem = GUIEnvironment->getFocus();
+	if (elem && elem->acceptsIME())
+		SDL_StartTextInput();
+	else
+		SDL_StopTextInput();
+}
+
 //! constructor
 CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	: CIrrDeviceStub(param),
 	Window((SDL_Window*)param.WindowId), SDL_Flags(0),
 	MouseX(0), MouseY(0), MouseXRel(0), MouseYRel(0), MouseButtonStates(0),
 	Width(param.WindowSize.Width), Height(param.WindowSize.Height),
-	Resizable(param.WindowResizable == 1 ? true : false), WindowMinimized(false)
+	Resizable(param.WindowResizable == 1 ? true : false)
 {
 	#ifdef _DEBUG
 	setDebugName("CIrrDeviceSDL");
@@ -127,7 +245,7 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 #endif
 		if (SDL_Init(flags) < 0)
 		{
-			os::Printer::log( "Unable to initialize SDL!", SDL_GetError());
+			os::Printer::log("Unable to initialize SDL", SDL_GetError(), ELL_ERROR);
 			Close = true;
 		}
 		else
@@ -139,26 +257,13 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	// create keymap
 	createKeyMap();
 
-	if ( CreationParams.Fullscreen )
-		SDL_Flags |= SDL_WINDOW_FULLSCREEN;
-	else if ( Resizable )
-		SDL_Flags |= SDL_WINDOW_RESIZABLE;
-	if (CreationParams.DriverType == video::EDT_OPENGL)
-	{
-		SDL_Flags |= SDL_WINDOW_OPENGL;
-		if (!CreationParams.Doublebuffer)
-			SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
-	}
-#ifdef _IRR_EMSCRIPTEN_PLATFORM_
-	SDL_Flags |= SDL_WINDOW_OPENGL;
-#endif //_IRR_EMSCRIPTEN_PLATFORM_
-
 	// create window
 	if (CreationParams.DriverType != video::EDT_NULL)
 	{
 		// create the window, only if we do not use the null device
 		createWindow();
 	}
+
 
 	SDL_VERSION(&Info.version);
 
@@ -241,6 +346,19 @@ void CIrrDeviceSDL::logAttributes()
 
 bool CIrrDeviceSDL::createWindow()
 {
+	if (CreationParams.Fullscreen) {
+#ifdef _IRR_EMSCRIPTEN_PLATFORM_
+		SDL_Flags |= SDL_WINDOW_FULLSCREEN;
+#else
+		SDL_Flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+#endif
+	}
+	if (Resizable)
+		SDL_Flags |= SDL_WINDOW_RESIZABLE;
+	if (CreationParams.WindowMaximized)
+		SDL_Flags |= SDL_WINDOW_MAXIMIZED;
+	SDL_Flags |= SDL_WINDOW_OPENGL;
+
 #ifdef _IRR_EMSCRIPTEN_PLATFORM_
 	if ( Width != 0 || Height != 0 )
 		emscripten_set_canvas_size( Width, Height);
@@ -287,54 +405,73 @@ bool CIrrDeviceSDL::createWindow()
 	if ( Close )
 		return false;
 
-	if (CreationParams.DriverType == video::EDT_OPENGL) {
-		if (CreationParams.Bits == 16) {
-			SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 4);
-			SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 4);
-			SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 4);
-			SDL_GL_SetAttribute(
-					SDL_GL_ALPHA_SIZE, CreationParams.WithAlphaChannel ? 1 : 0);
-		} else {
-			SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-			SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-			SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-			SDL_GL_SetAttribute(
-					SDL_GL_ALPHA_SIZE, CreationParams.WithAlphaChannel ? 8 : 0);
-		}
-		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, CreationParams.ZBufferBits);
-		if (CreationParams.Doublebuffer)
-			SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, CreationParams.Stencilbuffer ? 8 : 0);
-		if (CreationParams.Stereobuffer)
-			SDL_GL_SetAttribute(SDL_GL_STEREO, 1);
-		if (CreationParams.AntiAlias > 1) {
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, CreationParams.AntiAlias);
-		}
-		if (!Window)
-			Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
-		if (!Window && CreationParams.AntiAlias > 1) {
-			while (--CreationParams.AntiAlias > 1) {
-				SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, CreationParams.AntiAlias);
-				Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
-				if (Window)
-					break;
-			}
-			if (!Window) {
-				SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
-				SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
-				Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
-				if (Window)
-					os::Printer::log("AntiAliasing disabled due to lack of support!");
-			}
-		}
+	switch (CreationParams.DriverType) {
+		case video::EDT_OPENGL:
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+			break;
+		case video::EDT_OPENGL3:
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+			break;
+		case video::EDT_OGLES1:
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+			break;
+		case video::EDT_OGLES2:
+		case video::EDT_WEBGL1:
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+			break;
+		default:;
+	}
 
-		if (Window)
-		{
-			Context = SDL_GL_CreateContext(Window);
-		}
-	} else if (!Window)
+#ifdef _DEBUG
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG | SDL_GL_CONTEXT_ROBUST_ACCESS_FLAG);
+#endif
+
+	if (CreationParams.Bits == 16) {
+		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
+		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
+		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, CreationParams.WithAlphaChannel ? 1 : 0);
+	} else {
+		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, CreationParams.WithAlphaChannel ? 8 : 0);
+	}
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, CreationParams.ZBufferBits);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, CreationParams.Doublebuffer);
+	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, CreationParams.Stencilbuffer ? 8 : 0);
+	SDL_GL_SetAttribute(SDL_GL_STEREO, CreationParams.Stereobuffer);
+	if (CreationParams.AntiAlias > 1) {
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, CreationParams.AntiAlias);
+	}
+	if (!Window)
 		Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
+	if (!Window) {
+		os::Printer::log("Could not create window...", SDL_GetError(), ELL_WARNING);
+	}
+	if (!Window && CreationParams.AntiAlias > 1) {
+		while (--CreationParams.AntiAlias > 1) {
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, CreationParams.AntiAlias);
+			Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
+			if (Window)
+				break;
+		}
+		if (!Window) {
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
+			Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
+			if (Window)
+				os::Printer::log("AntiAliasing disabled due to lack of support!", ELL_WARNING);
+		}
+	}
 
 	if ( !Window && CreationParams.Doublebuffer)
 	{
@@ -345,7 +482,14 @@ bool CIrrDeviceSDL::createWindow()
 	}
 	if ( !Window )
 	{
-		os::Printer::log( "Could not initialize display!" );
+		os::Printer::log("Could not initialize display", SDL_GetError(), ELL_ERROR);
+		return false;
+	}
+
+	Context = SDL_GL_CreateContext(Window);
+	if (!Context) {
+		os::Printer::log("Could not initialize context", SDL_GetError(), ELL_ERROR);
+		SDL_DestroyWindow(Window);
 		return false;
 	}
 
@@ -357,79 +501,22 @@ bool CIrrDeviceSDL::createWindow()
 //! create the driver
 void CIrrDeviceSDL::createDriver()
 {
+	if (CreationParams.DriverType == video::EDT_NULL) {
+		VideoDriver = video::createNullDriver(FileSystem, CreationParams.WindowSize);
+		return;
+	}
+
+	ContextManager = new video::CSDLManager(this);
 	switch(CreationParams.DriverType)
 	{
-	case video::DEPRECATED_EDT_DIRECT3D8_NO_LONGER_EXISTS:
-		os::Printer::log("DIRECT3D8 Driver is no longer supported in Irrlicht. Try another one.", ELL_ERROR);
-		break;
-
-	case video::EDT_DIRECT3D9:
-		#ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
-		os::Printer::log("SDL device does not support DIRECT3D9 driver. Try another one.", ELL_ERROR);
-		#else
-		os::Printer::log("DIRECT3D9 Driver was not compiled into this dll. Try another one.", ELL_ERROR);
-		#endif // _IRR_COMPILE_WITH_DIRECT3D_9_
-
-		break;
-
-	case video::EDT_OPENGL:
-		#ifdef _IRR_COMPILE_WITH_OPENGL_
-		ContextManager = new video::CSDLManager(this);
-		VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, ContextManager);
-		#else
-		os::Printer::log("No OpenGL support compiled in.", ELL_ERROR);
-		#endif
-		break;
-
-	case video::EDT_OGLES2:
-#if defined(_IRR_COMPILE_WITH_OGLES2_) && defined(_IRR_EMSCRIPTEN_PLATFORM_)
-		{
-			video::SExposedVideoData data;
-
-			ContextManager = new video::CEGLManager();
-			ContextManager->initialize(CreationParams, data);
-
-			VideoDriver = video::createOGLES2Driver(CreationParams, FileSystem, ContextManager);
-		}
-#else
-		os::Printer::log("No OpenGL-ES2 support compiled in.", ELL_ERROR);
-#endif
-		break;
-
-	case video::EDT_WEBGL1:
-#if defined(_IRR_COMPILE_WITH_WEBGL1_) && defined(_IRR_EMSCRIPTEN_PLATFORM_)
-		{
-			video::SExposedVideoData data;
-
-			ContextManager = new video::CEGLManager();
-			ContextManager->initialize(CreationParams, data);
-
-			VideoDriver = video::createWebGL1Driver(CreationParams, FileSystem, ContextManager);
-		}
-#else
-		os::Printer::log("No WebGL1 support compiled in.", ELL_ERROR);
-#endif
-		break;
-
-	case video::EDT_NULL:
-		VideoDriver = video::createNullDriver(FileSystem, CreationParams.WindowSize);
-		break;
-
-	default:
-		os::Printer::log("Unable to create video driver of unknown type.", ELL_ERROR);
-		break;
+	case video::EDT_OPENGL: VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, ContextManager); break;
+	case video::EDT_OPENGL3: VideoDriver = video::createOpenGL3Driver(CreationParams, FileSystem, ContextManager); break;
+	case video::EDT_OGLES2: VideoDriver = video::createOGLES2Driver(CreationParams, FileSystem, ContextManager); break;
+	case video::EDT_WEBGL1: VideoDriver = video::createWebGL1Driver(CreationParams, FileSystem, ContextManager); break;
+	default:;
 	}
-
-	// In case we got the size from the canvas
-	if ( VideoDriver && CreationParams.WindowSize.Width == 0 && CreationParams.WindowSize.Height == 0 && Width > 0 && Height > 0 )
-	{
-#ifdef _IRR_EMSCRIPTEN_PLATFORM_
-		SDL_CreateWindowAndRenderer(Width, Height, SDL_Flags, &Window, &Renderer);
-#else //_IRR_EMSCRIPTEN_PLATFORM_
-		Window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_Flags);
-#endif //_IRR_EMSCRIPTEN_PLATFOR
-		VideoDriver->OnResize(core::dimension2d<u32>(Width, Height));
-	}
+	if (!VideoDriver)
+		os::Printer::log("Could not create video driver", ELL_ERROR);
 }
 
 
@@ -606,6 +693,10 @@ bool CIrrDeviceSDL::run()
 				else
 					key = (EKEY_CODE)KeyMap[idx].Win32Key;
 
+				// Make sure to only input special characters if something is in focus, as SDL_TEXTINPUT handles normal unicode already
+				if (SDL_IsTextInputActive() && !keyIsKnownSpecial(key) && (SDL_event.key.keysym.mod & KMOD_CTRL) == 0)
+					break;
+
 #ifdef _IRR_WINDOWS_API_
 				// handle alt+f4 in Windows, because SDL seems not to
 				if ( (SDL_event.key.keysym.mod & KMOD_LALT) && key == KEY_F4)
@@ -619,12 +710,7 @@ bool CIrrDeviceSDL::run()
 				irrevent.KeyInput.PressedDown = (SDL_event.type == SDL_KEYDOWN);
 				irrevent.KeyInput.Shift = (SDL_event.key.keysym.mod & KMOD_SHIFT) != 0;
 				irrevent.KeyInput.Control = (SDL_event.key.keysym.mod & KMOD_CTRL ) != 0;
-				// These keys are handled differently in CGUIEditBox.cpp (may become out of date!)
-				// Control key is used in special character combinations, so keep that too
-				// Pass through the keysym only then so no extra text gets input
-				irrevent.KeyInput.Char = 0;
-				if (mp.SDLKey == SDLK_DELETE || mp.SDLKey == SDLK_RETURN || mp.SDLKey == SDLK_BACKSPACE || irrevent.KeyInput.Control)
-					irrevent.KeyInput.Char = mp.SDLKey;
+				irrevent.KeyInput.Char = findCharToPassToIrrlicht(mp.SDLKey, key);
 				postEventFromUser(irrevent);
 			}
 			break;
@@ -636,12 +722,6 @@ bool CIrrDeviceSDL::run()
 		case SDL_WINDOWEVENT:
 			switch (SDL_event.window.event)
 			{
-			case SDL_WINDOWEVENT_MAXIMIZED:
-				WindowMinimized = true;
-				break;
-			case SDL_WINDOWEVENT_RESTORED:
-				WindowMinimized = false;
-				break;
 			case SDL_WINDOWEVENT_RESIZED:
 				if ((SDL_event.window.data1 != (int)Width) || (SDL_event.window.data2 != (int)Height))
 				{
@@ -664,7 +744,7 @@ bool CIrrDeviceSDL::run()
 		default:
 			break;
 		} // end switch
-
+	resetReceiveTextInputEvents();
 	} // end while
 
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
@@ -793,6 +873,29 @@ bool CIrrDeviceSDL::activateJoysticks(core::array<SJoystickInfo> & joystickInfo)
 	return false;
 }
 
+
+//! Get the display density in dots per inch.
+float CIrrDeviceSDL::getDisplayDensity() const
+{
+	if (!Window)
+		return 0.0f;
+
+	int window_w;
+	int window_h;
+	SDL_GetWindowSize(Window, &window_w, &window_h);
+
+	int drawable_w;
+	int drawable_h;
+	SDL_GL_GetDrawableSize(Window, &drawable_w, &drawable_h);
+
+	// assume 96 dpi
+	float dpi_w = (float)drawable_w / (float)window_w * 96.0f;
+	float dpi_h = (float)drawable_h / (float)window_h * 96.0f;
+
+	return std::max(dpi_w, dpi_h);
+}
+
+
 void CIrrDeviceSDL::SwapWindow()
 {
 	SDL_GL_SwapWindow(Window);
@@ -830,6 +933,41 @@ void CIrrDeviceSDL::setWindowCaption(const wchar_t* text)
 }
 
 
+//! Sets the window icon.
+bool CIrrDeviceSDL::setWindowIcon(const video::IImage *img)
+{
+	if (!Window)
+		return false;
+
+	u32 height = img->getDimension().Height;
+	u32 width = img->getDimension().Width;
+
+	SDL_Surface *surface = SDL_CreateRGBSurface(0, width, height, 32,
+			0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+
+	if (!surface) {
+		os::Printer::log("Failed to create SDL suface", ELL_ERROR);
+		return false;
+	}
+
+	SDL_LockSurface(surface);
+	bool succ = img->copyToNoScaling(surface->pixels, width, height, video::ECF_A8R8G8B8, surface->pitch);
+	SDL_UnlockSurface(surface);
+
+	if (!succ) {
+		os::Printer::log("Could not copy icon image. Is the format not ECF_A8R8G8B8?", ELL_ERROR);
+		SDL_FreeSurface(surface);
+		return false;
+	}
+
+	SDL_SetWindowIcon(Window, surface);
+
+	SDL_FreeSurface(surface);
+
+	return true;
+}
+
+
 //! notifies the device that it should close itself
 void CIrrDeviceSDL::closeDevice()
 {
@@ -862,16 +1000,16 @@ void CIrrDeviceSDL::setResizable(bool resize)
 //! Minimizes window if possible
 void CIrrDeviceSDL::minimizeWindow()
 {
-	if (Window) {
+	if (Window)
 		SDL_MinimizeWindow(Window);
-	}
 }
 
 
 //! Maximize window
 void CIrrDeviceSDL::maximizeWindow()
 {
-	// do nothing
+	if (Window)
+		SDL_MaximizeWindow(Window);
 }
 
 //! Get the position of this window on screen
@@ -884,7 +1022,13 @@ core::position2di CIrrDeviceSDL::getWindowPosition()
 //! Restore original window size
 void CIrrDeviceSDL::restoreWindow()
 {
-	// do nothing
+	if (Window)
+		SDL_RestoreWindow(Window);
+}
+
+bool CIrrDeviceSDL::isWindowMaximized() const
+{
+	return Window && (SDL_GetWindowFlags(Window) & SDL_WINDOW_MAXIMIZED) != 0;
 }
 
 bool CIrrDeviceSDL::isFullscreen() const
@@ -919,14 +1063,14 @@ bool CIrrDeviceSDL::isWindowActive() const
 //! returns if window has focus.
 bool CIrrDeviceSDL::isWindowFocused() const
 {
-	return SDL_GetWindowFlags(Window) & SDL_WINDOW_INPUT_FOCUS;
+	return Window && (SDL_GetWindowFlags(Window) & SDL_WINDOW_INPUT_FOCUS) != 0;
 }
 
 
 //! returns if window is minimized.
 bool CIrrDeviceSDL::isWindowMinimized() const
 {
-	return WindowMinimized;
+	return Window && (SDL_GetWindowFlags(Window) & SDL_WINDOW_MINIMIZED) != 0;
 }
 
 

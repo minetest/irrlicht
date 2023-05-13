@@ -5,7 +5,6 @@
 #ifndef __IRR_TYPES_H_INCLUDED__
 #define __IRR_TYPES_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include <stdint.h>
 
 namespace irr
@@ -38,13 +37,11 @@ typedef uint32_t 		u32;
 typedef int32_t			s32;
 
 
-#ifdef __IRR_HAS_S64
 //! 64 bit unsigned variable.
 typedef uint64_t		u64;
 
 //! 64 bit signed variable.
 typedef int64_t			s64;
-#endif	// __IRR_HAS_S64
 
 
 

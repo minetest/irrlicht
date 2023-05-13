@@ -4,8 +4,6 @@
 
 #include "CImageLoaderTGA.h"
 
-#ifdef _IRR_COMPILE_WITH_TGA_LOADER_
-
 #include "IReadFile.h"
 #include "os.h"
 #include "CColorConverter.h"
@@ -108,7 +106,7 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 
 	if (!checkImageDimensions(header.ImageWidth, header.ImageHeight))
 	{
-		os::Printer::log("Rejecting TGA with unreasonable size.", ELL_ERROR);
+		os::Printer::log("Image dimensions too large in file", file->getFileName(), ELL_ERROR);
 		return 0;
 	}
 
@@ -238,6 +236,3 @@ IImageLoader* createImageLoaderTGA()
 
 } // end namespace video
 } // end namespace irr
-
-#endif
-

@@ -5,7 +5,6 @@
 #ifndef __C_OGLES1_DRIVER_H_INCLUDED__
 #define __C_OGLES1_DRIVER_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 
 #include "SIrrCreationParameters.h"
 

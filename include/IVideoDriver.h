@@ -56,32 +56,11 @@ namespace video
 		ETS_WORLD,
 		//! Projection transformation
 		ETS_PROJECTION,
-		//! Texture transformation
+		//! Texture 0 transformation
+		//! Use E_TRANSFORMATION_STATE(ETS_TEXTURE_0 + texture_number) to access other texture transformations
 		ETS_TEXTURE_0,
-		//! Texture transformation
-		ETS_TEXTURE_1,
-		//! Texture transformation
-		ETS_TEXTURE_2,
-		//! Texture transformation
-		ETS_TEXTURE_3,
-#if _IRR_MATERIAL_MAX_TEXTURES_>4
-		//! Texture transformation
-		ETS_TEXTURE_4,
-#if _IRR_MATERIAL_MAX_TEXTURES_>5
-		//! Texture transformation
-		ETS_TEXTURE_5,
-#if _IRR_MATERIAL_MAX_TEXTURES_>6
-		//! Texture transformation
-		ETS_TEXTURE_6,
-#if _IRR_MATERIAL_MAX_TEXTURES_>7
-		//! Texture transformation
-		ETS_TEXTURE_7,
-#endif
-#endif
-#endif
-#endif
 		//! Only used internally
-		ETS_COUNT = ETS_TEXTURE_0 + _IRR_MATERIAL_MAX_TEXTURES_
+		ETS_COUNT = ETS_TEXTURE_0 + MATERIAL_MAX_TEXTURES
 	};
 
 	//! Special render targets, which usually map to dedicated hardware
@@ -738,23 +717,6 @@ namespace video
 		virtual void draw3DLine(const core::vector3df& start,
 			const core::vector3df& end, SColor color = SColor(255,255,255,255)) =0;
 
-		//! Draws a 3d triangle.
-		/** This method calls drawVertexPrimitiveList for some triangles.
-		This method works with all drivers because it simply calls
-		drawVertexPrimitiveList, but it is hence not very fast.
-		Note that the triangle is drawn using the current
-		transformation matrix and material. So if you need to draw it
-		independently of the current transformation, use
-		\code
-		driver->setMaterial(someMaterial);
-		driver->setTransform(video::ETS_WORLD, core::IdentityMatrix);
-		\endcode
-		for some properly set up material before drawing the triangle.
-		\param triangle The triangle to draw.
-		\param color Color of the line. */
-		virtual void draw3DTriangle(const core::triangle3df& triangle,
-			SColor color = SColor(255,255,255,255)) =0;
-
 		//! Draws a 3d axis aligned box.
 		/** This method simply calls draw3DLine for the edges of the
 		box. Note that the box is drawn using the current transformation
@@ -785,7 +747,7 @@ namespace video
 		\param texture Texture to be drawn.
 		\param destPos Upper left 2d destination position where the
 		image will be drawn.
-		\param sourceRect Source rectangle in the image.
+		\param sourceRect Source rectangle in the texture (based on it's OriginalSize)
 		\param clipRect Pointer to rectangle on the screen where the
 		image is clipped to.
 		If this pointer is NULL the image is not clipped.
@@ -800,42 +762,13 @@ namespace video
 			SColor color=SColor(255,255,255,255), bool useAlphaChannelOfTexture=false) =0;
 
 		//! Draws a set of 2d images, using a color and the alpha channel of the texture.
-		/** The images are drawn beginning at pos and concatenated in
-		one line. All drawings are clipped against clipRect (if != 0).
-		The subtextures are defined by the array of sourceRects and are
-		chosen by the indices given.
-		\param texture Texture to be drawn.
-		\param pos Upper left 2d destination position where the image
-		will be drawn.
-		\param sourceRects Source rectangles of the image.
-		\param indices List of indices which choose the actual
-		rectangle used each time.
-		\param kerningWidth Offset to Position on X
-		\param clipRect Pointer to rectangle on the screen where the
-		image is clipped to.
-		If this pointer is 0 then the image is not clipped.
-		\param color Color with which the image is drawn.
-		Note that the alpha component is used. If alpha is other than
-		255, the image will be transparent.
-		\param useAlphaChannelOfTexture: If true, the alpha channel of
-		the texture is used to draw the image. */
-		virtual void draw2DImageBatch(const video::ITexture* texture,
-				const core::position2d<s32>& pos,
-				const core::array<core::rect<s32> >& sourceRects,
-				const core::array<s32>& indices,
-				s32 kerningWidth=0,
-				const core::rect<s32>* clipRect=0,
-				SColor color=SColor(255,255,255,255),
-				bool useAlphaChannelOfTexture=false) =0;
-
-		//! Draws a set of 2d images, using a color and the alpha channel of the texture.
 		/** All drawings are clipped against clipRect (if != 0).
 		The subtextures are defined by the array of sourceRects and are
 		positioned using the array of positions.
 		\param texture Texture to be drawn.
 		\param positions Array of upper left 2d destinations where the
 		images will be drawn.
-		\param sourceRects Source rectangles of the image.
+		\param sourceRects Source rectangles of the texture (based on it's OriginalSize)
 		\param clipRect Pointer to rectangle on the screen where the
 		images are clipped to.
 		If this pointer is 0 then the image is not clipped.
@@ -855,7 +788,7 @@ namespace video
 		/** Suggested and first implemented by zola.
 		\param texture The texture to draw from
 		\param destRect The rectangle to draw into
-		\param sourceRect The rectangle denoting a part of the texture
+		\param sourceRect The rectangle denoting a part of the texture (based on it's OriginalSize)
 		\param clipRect Clips the destination rectangle (may be 0)
 		\param colors Array of 4 colors denoting the color values of
 		the corners of the destRect
@@ -898,13 +831,6 @@ namespace video
 				SColor colorLeftDown, SColor colorRightDown,
 				const core::rect<s32>* clip =0) =0;
 
-		//! Draws the outline of a 2D rectangle.
-		/** \param pos Position of the rectangle.
-		\param color Color of the rectangle to draw. The alpha component
-		specifies how transparent the rectangle outline will be. */
-		virtual void draw2DRectangleOutline(const core::recti& pos,
-				SColor color=SColor(255,255,255,255)) =0;
-
 		//! Draws a 2d line.
 		/** In theory both start and end will be included in coloring.
 		BUG: Currently d3d ignores the last pixel
@@ -917,72 +843,6 @@ namespace video
 		virtual void draw2DLine(const core::position2d<s32>& start,
 					const core::position2d<s32>& end,
 					SColor color=SColor(255,255,255,255)) =0;
-
-		//! Draws a pixel.
-		/** \param x The x-position of the pixel.
-		\param y The y-position of the pixel.
-		\param color Color of the pixel to draw. */
-		virtual void drawPixel(u32 x, u32 y, const SColor& color) =0;
-
-		//! Draws a non filled concyclic regular 2d polygon.
-		/** This method can be used to draw circles, but also
-		triangles, tetragons, pentagons, hexagons, heptagons, octagons,
-		enneagons, decagons, hendecagons, dodecagon, triskaidecagons,
-		etc. I think you'll got it now. And all this by simply
-		specifying the vertex count. Welcome to the wonders of
-		geometry.
-		\param center Position of center of circle (pixels).
-		\param radius Radius of circle in pixels.
-		\param color Color of the circle.
-		\param vertexCount Amount of vertices of the polygon. Specify 2
-		to draw a line, 3 to draw a triangle, 4 for tetragons and a lot
-		(>10) for nearly a circle. */
-		virtual void draw2DPolygon(core::position2d<s32> center,
-				f32 radius,
-				video::SColor color=SColor(100,255,255,255),
-				s32 vertexCount=10) =0;
-
-		//! Draws a shadow volume into the stencil buffer.
-		/** To draw a stencil shadow, do this: First, draw all geometry.
-		Then use this method, to draw the shadow volume. Then, use
-		IVideoDriver::drawStencilShadow() to visualize the shadow.
-		Please note that the code for the opengl version of the method
-		is based on free code sent in by Philipp Dortmann, lots of
-		thanks go to him!
-		\param triangles Array of 3d vectors, specifying the shadow
-		volume.
-		\param zfail If set to true, zfail method is used, otherwise
-		zpass.
-		\param debugDataVisible The debug data that is enabled for this
-		shadow node
-		*/
-		virtual void drawStencilShadowVolume(const core::array<core::vector3df>& triangles, bool zfail=true, u32 debugDataVisible=0) =0;
-
-		//! Fills the stencil shadow with color.
-		/** After the shadow volume has been drawn into the stencil
-		buffer using IVideoDriver::drawStencilShadowVolume(), use this
-		to draw the color of the shadow.
-		Please note that the code for the opengl version of the method
-		is based on free code sent in by Philipp Dortmann, lots of
-		thanks go to him!
-		\param clearStencilBuffer Set this to false, if you want to
-		draw every shadow with the same color, and only want to call
-		drawStencilShadow() once after all shadow volumes have been
-		drawn. Set this to true, if you want to paint every shadow with
-		its own color.
-		\param leftUpEdge Color of the shadow in the upper left corner
-		of screen.
-		\param rightUpEdge Color of the shadow in the upper right
-		corner of screen.
-		\param leftDownEdge Color of the shadow in the lower left
-		corner of screen.
-		\param rightDownEdge Color of the shadow in the lower right
-		corner of screen. */
-		virtual void drawStencilShadow(bool clearStencilBuffer=false,
-			video::SColor leftUpEdge = video::SColor(255,0,0,0),
-			video::SColor rightUpEdge = video::SColor(255,0,0,0),
-			video::SColor leftDownEdge = video::SColor(255,0,0,0),
-			video::SColor rightDownEdge = video::SColor(255,0,0,0)) =0;
 
 		//! Draws a mesh buffer
 		/** \param mb Buffer to draw */
@@ -1099,28 +959,6 @@ namespace video
 		\return The current texture creation flag enabled mode. */
 		virtual bool getTextureCreationFlag(E_TEXTURE_CREATION_FLAG flag) const =0;
 
-		//! Creates a software images from a file.
-		/** No hardware texture will be created for those images. This
-		method is useful for example if you want to read a heightmap
-		for a terrain renderer.
-		\param filename Name of the file from which the images are created.
-		\param type Pointer to E_TEXTURE_TYPE where a recommended type of the texture will be stored.
-		\return The array of created images.
-		If you no longer need those images, you should call IImage::drop() on each of them.
-		See IReferenceCounted::drop() for more information. */
-		virtual core::array<IImage*> createImagesFromFile(const io::path& filename, E_TEXTURE_TYPE* type = 0) = 0;
-
-		//! Creates a software images from a file.
-		/** No hardware texture will be created for those images. This
-		method is useful for example if you want to read a heightmap
-		for a terrain renderer.
-		\param file File from which the image is created.
-		\param type Pointer to E_TEXTURE_TYPE where a recommended type of the texture will be stored.
-		\return The array of created images.
-		If you no longer need those images, you should call IImage::drop() on each of them.
-		See IReferenceCounted::drop() for more information. */
-		virtual core::array<IImage*> createImagesFromFile(io::IReadFile* file, E_TEXTURE_TYPE* type = 0) = 0;
-
 		//! Creates a software image from a file.
 		/** No hardware texture will be created for this image. This
 		method is useful for example if you want to read a heightmap
@@ -1130,15 +968,7 @@ namespace video
 		\return The created image.
 		If you no longer need the image, you should call IImage::drop().
 		See IReferenceCounted::drop() for more information. */
-		IImage* createImageFromFile(const io::path& filename)
-		{
-			core::array<IImage*> imageArray = createImagesFromFile(filename);
-
-			for (u32 i = 1; i < imageArray.size(); ++i)
-				imageArray[i]->drop();
-
-			return (imageArray.size() > 0) ? imageArray[0] : 0;
-		}
+		virtual IImage* createImageFromFile(const io::path& filename) = 0;
 
 		//! Creates a software image from a file.
 		/** No hardware texture will be created for this image. This
@@ -1148,15 +978,7 @@ namespace video
 		\return The created image.
 		If you no longer need the image, you should call IImage::drop().
 		See IReferenceCounted::drop() for more information. */
-		IImage* createImageFromFile(io::IReadFile* file)
-		{
-			core::array<IImage*> imageArray = createImagesFromFile(file);
-
-			for (u32 i = 1; i < imageArray.size(); ++i)
-				imageArray[i]->drop();
-
-			return (imageArray.size() > 0) ? imageArray[0] : 0;
-		}
+		virtual IImage* createImageFromFile(io::IReadFile* file) = 0;
 
 		//! Writes the provided image to a file.
 		/** Requires that there is a suitable image writer registered
@@ -1300,7 +1122,7 @@ namespace video
 		E_MATERIAL_TYPE enum or a value which was returned by
 		addMaterialRenderer().
 		\param name: New name of the material renderer. */
-		virtual void setMaterialRendererName(s32 idx, const c8* name) =0;
+		virtual void setMaterialRendererName(u32 idx, const c8* name) =0;
 
 		//! Swap the material renderers used for certain id's
 		/** Swap the IMaterialRenderers responsible for rendering specific

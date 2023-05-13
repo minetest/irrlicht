@@ -5,9 +5,6 @@
 #ifndef __C_OGLCORE_FEATURE_H_INCLUDED__
 #define __C_OGLCORE_FEATURE_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
-
-#if defined(_IRR_COMPILE_WITH_OPENGL_) || defined(_IRR_COMPILE_WITH_OGLES1_) || defined(_IRR_COMPILE_WITH_OGLES2_)
 
 #include "irrTypes.h"
 
@@ -37,5 +34,4 @@ public:
 }
 }
 
-#endif
 #endif

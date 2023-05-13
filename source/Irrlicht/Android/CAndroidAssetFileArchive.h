@@ -6,7 +6,6 @@
 #define __C_ANDROID_ASSET_FILE_ARCHIVE_H_INCLUDED__
 
 
-#include "IrrCompileConfig.h"
 
 #ifdef  _IRR_COMPILE_ANDROID_ASSET_READER_
 

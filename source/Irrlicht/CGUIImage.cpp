@@ -3,7 +3,6 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
 #include "CGUIImage.h"
-#ifdef _IRR_COMPILE_WITH_GUI_
 
 #include "IGUISkin.h"
 #include "IGUIEnvironment.h"
@@ -177,7 +176,3 @@ core::rect<f32> CGUIImage::getDrawBounds() const
 
 } // end namespace gui
 } // end namespace irr
-
-
-#endif // _IRR_COMPILE_WITH_GUI_
-

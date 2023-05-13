@@ -6,7 +6,6 @@
 // File format designed by Mark Sibly for the Blitz3D engine and has been
 // declared public domain
 
-#include "IrrCompileConfig.h"
 
 #ifndef SB3DSTRUCTS_H
 #define SB3DSTRUCTS_H

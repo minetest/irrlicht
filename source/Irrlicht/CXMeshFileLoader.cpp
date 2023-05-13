@@ -2,9 +2,6 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#include "IrrCompileConfig.h"
-
-#ifdef _IRR_COMPILE_WITH_X_LOADER_
 
 #include "CXMeshFileLoader.h"
 #include "os.h"
@@ -13,7 +10,6 @@
 #include "coreutil.h"
 #include "ISceneManager.h"
 #include "IVideoDriver.h"
-#include "IFileSystem.h"
 #include "IReadFile.h"
 
 #ifdef _DEBUG
@@ -27,7 +23,7 @@ namespace scene
 {
 
 //! Constructor
-CXMeshFileLoader::CXMeshFileLoader(scene::ISceneManager* smgr, io::IFileSystem* fs)
+CXMeshFileLoader::CXMeshFileLoader(scene::ISceneManager* smgr)
 : AnimatedMesh(0), Buffer(0), P(0), End(0), BinaryNumCount(0), Line(0),
 	CurFrame(0), MajorVersion(0), MinorVersion(0), BinaryFormat(false), FloatSize(0)
 {
@@ -483,7 +479,7 @@ bool CXMeshFileLoader::parseDataObject()
 
 	// parse specific object
 #ifdef _XREADER_DEBUG
-	os::Printer::log("debug DataObject:", objectName.c_str(), ELL_DEBUG);
+	os::Printer::log("debug DataObject", objectName.c_str(), ELL_DEBUG);
 #endif
 
 	if (objectName == "template")
@@ -836,7 +832,7 @@ bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 		}
 
 #ifdef _XREADER_DEBUG
-		os::Printer::log("debug DataObject in mesh:", objectName.c_str(), ELL_DEBUG);
+		os::Printer::log("debug DataObject in mesh", objectName.c_str(), ELL_DEBUG);
 #endif
 
 		if (objectName == "MeshNormals")
@@ -2359,6 +2355,3 @@ bool CXMeshFileLoader::readMatrix(core::matrix4& mat)
 
 } // end namespace scene
 } // end namespace irr
-
-#endif // _IRR_COMPILE_WITH_X_LOADER_
-

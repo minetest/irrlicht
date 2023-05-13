@@ -5,7 +5,6 @@
 #ifndef __C_OGLES1_MATERIAL_RENDERER_H_INCLUDED__
 #define __C_OGLES1_MATERIAL_RENDERER_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #ifdef _IRR_COMPILE_WITH_OGLES1_
 
 #include "COGLESDriver.h"

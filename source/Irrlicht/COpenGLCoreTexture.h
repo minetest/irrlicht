@@ -5,9 +5,6 @@
 #ifndef __C_OGLCORE_TEXTURE_H_INCLUDED__
 #define __C_OGLCORE_TEXTURE_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
-
-#if defined(_IRR_COMPILE_WITH_OPENGL_) || defined(_IRR_COMPILE_WITH_OGLES1_) || defined(_IRR_COMPILE_WITH_OGLES2_)
 
 #include "irrArray.h"
 #include "SMaterialLayer.h"
@@ -434,9 +431,6 @@ public:
 		else
 		{
 #ifdef IRR_OPENGL_HAS_glGenerateMipmap
-	#if !defined(IRR_COMPILE_GLES2_COMMON)
-			glEnable(GL_TEXTURE_2D);	// Hack some ATI cards need this glEnable according to https://www.khronos.org/opengl/wiki/Common_Mistakes
-	#endif
 			Driver->irrGlGenerateMipmap(TextureType);
 #endif
 		}
@@ -669,5 +663,4 @@ protected:
 }
 }
 
-#endif
 #endif

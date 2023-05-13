@@ -5,9 +5,6 @@
 #ifndef _C_IMAGE_WRITER_JPG_H_INCLUDED__
 #define _C_IMAGE_WRITER_JPG_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
-
-#ifdef _IRR_COMPILE_WITH_JPG_WRITER_
 
 #include "IImageWriter.h"
 
@@ -33,5 +30,3 @@ public:
 }
 
 #endif // _C_IMAGE_WRITER_JPG_H_INCLUDED__
-#endif
-

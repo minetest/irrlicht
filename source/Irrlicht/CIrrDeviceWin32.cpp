@@ -2,7 +2,6 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#include "IrrCompileConfig.h"
 
 #ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
 
@@ -122,8 +121,8 @@ namespace irr
 			if (dev)
 			{
 				dev->Unacquire();
+				dev->Release();
 			}
-			dev->Release();
 		}
 
 		if (DirectInputDevice)
@@ -784,7 +783,8 @@ namespace irr
 //! constructor
 CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params)
 : CIrrDeviceStub(params), HWnd(0), Resized(false),
-	ExternalWindow(false), Win32CursorControl(0), JoyControl(0)
+	ExternalWindow(false), Win32CursorControl(0), JoyControl(0),
+	WindowMaximized(params.WindowMaximized)
 {
 	#ifdef _DEBUG
 	setDebugName("CIrrDeviceWin32");
@@ -923,6 +923,9 @@ CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params)
 
 	// inform driver about the window size etc.
 	resizeIfNecessary();
+
+	if (params.WindowMaximized)
+		maximizeWindow();
 }
 
 
@@ -1109,6 +1112,26 @@ void CIrrDeviceWin32::setWindowCaption(const wchar_t* text)
 }
 
 
+//! Sets the window icon.
+bool CIrrDeviceWin32::setWindowIcon(const video::IImage *img)
+{
+	// Ignore the img, instead load the ICON from resource file
+	// (This is minetest-specific!)
+	const HICON hicon = LoadIcon(GetModuleHandle(NULL),
+			MAKEINTRESOURCE(130) // The ID of the ICON defined in
+					     // winresource.rc
+	);
+
+	if (hicon) {
+		SendMessage(HWnd, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(hicon));
+		SendMessage(HWnd, WM_SETICON, ICON_SMALL,
+				reinterpret_cast<LPARAM>(hicon));
+		return true;
+	}
+	return false;
+}
+
+
 //! notifies the device that it should close itself
 void CIrrDeviceWin32::closeDevice()
 {
@@ -1151,6 +1174,13 @@ bool CIrrDeviceWin32::isWindowMinimized() const
 	if (GetWindowPlacement(HWnd,&plc))
 		ret = plc.showCmd == SW_SHOWMINIMIZED;
 	return ret;
+}
+
+
+//! returns last state from maximizeWindow() and restoreWindow()
+bool CIrrDeviceWin32::isWindowMaximized() const
+{
+	return WindowMaximized;
 }
 
 
@@ -1278,6 +1308,8 @@ void CIrrDeviceWin32::maximizeWindow()
 	GetWindowPlacement(HWnd, &wndpl);
 	wndpl.showCmd = SW_SHOWMAXIMIZED;
 	SetWindowPlacement(HWnd, &wndpl);
+
+	WindowMaximized = true;
 }
 
 
@@ -1289,6 +1321,8 @@ void CIrrDeviceWin32::restoreWindow()
 	GetWindowPlacement(HWnd, &wndpl);
 	wndpl.showCmd = SW_SHOWNORMAL;
 	SetWindowPlacement(HWnd, &wndpl);
+
+	WindowMaximized = false;
 }
 
 core::position2di CIrrDeviceWin32::getWindowPosition()
@@ -1358,6 +1392,17 @@ void CIrrDeviceWin32::clearSystemMessages()
 	while (PeekMessage(&msg, NULL, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE))
 	{}
 }
+
+
+//! Get the display density in dots per inch.
+float CIrrDeviceWin32::getDisplayDensity() const
+{
+	HDC hdc = GetDC(HWnd);
+	float dpi = GetDeviceCaps(hdc, LOGPIXELSX);
+	ReleaseDC(HWnd, hdc);
+	return dpi;
+}
+
 
 // Convert an Irrlicht texture to a Windows cursor
 // Based on http://www.codeguru.com/cpp/w-p/win32/cursors/article.php/c4529/

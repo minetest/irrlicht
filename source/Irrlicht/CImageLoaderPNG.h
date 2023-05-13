@@ -9,9 +9,6 @@
 #ifndef __C_IMAGE_LOADER_PNG_H_INCLUDED__
 #define __C_IMAGE_LOADER_PNG_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
-
-#ifdef _IRR_COMPILE_WITH_PNG_LOADER_
 
 #include "IImageLoader.h"
 
@@ -41,5 +38,3 @@ public:
 } // end namespace irr
 
 #endif
-#endif
-

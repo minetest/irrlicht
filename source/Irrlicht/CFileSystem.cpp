@@ -2,7 +2,6 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#include "IrrCompileConfig.h"
 
 #include "CFileSystem.h"
 #include "IReadFile.h"
@@ -25,7 +24,7 @@
 	#include <direct.h> // for _chdir
 	#include <io.h> // for _access
 	#include <tchar.h>
-#elif (defined(_IRR_POSIX_API_) || defined(_IRR_OSX_PLATFORM_) || defined(_IRR_IOS_PLATFORM_) || defined(_IRR_ANDROID_PLATFORM_))
+#elif (defined(_IRR_POSIX_API_) || defined(_IRR_OSX_PLATFORM_) || defined(_IRR_ANDROID_PLATFORM_))
 		#include <stdio.h>
 		#include <stdlib.h>
 		#include <string.h>
@@ -54,9 +53,7 @@ CFileSystem::CFileSystem()
 	//! reset current working directory
 	getWorkingDirectory();
 
-#ifdef __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_
 	ArchiveLoader.push_back(new CArchiveLoaderZIP(this));
-#endif
 
 }
 
@@ -799,7 +796,7 @@ IFileList* CFileSystem::createFileList()
 					size = buf.st_size;
 					isDirectory = S_ISDIR(buf.st_mode);
 				}
-				#if !defined(_IRR_SOLARIS_PLATFORM_) && !defined(__CYGWIN__)
+				#if !defined(_IRR_SOLARIS_PLATFORM_) && !defined(__CYGWIN__) && !defined(__HAIKU__)
 				// only available on some systems
 				else
 				{

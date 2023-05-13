@@ -24,6 +24,8 @@
 #include "SIrrCreationParameters.h"
 #include "SExposedVideoData.h"
 #include "IGUISpriteBank.h"
+#include "IImageLoader.h"
+#include "IFileSystem.h"
 #include <X11/XKBlib.h>
 #include <X11/Xatom.h>
 
@@ -118,7 +120,7 @@ CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 	currentTouchedCount(0),
 #endif
 	Width(param.WindowSize.Width), Height(param.WindowSize.Height),
-	WindowHasFocus(false), WindowMinimized(false),
+	WindowHasFocus(false), WindowMinimized(false), WindowMaximized(param.WindowMaximized),
 	ExternalWindow(false), AutorepeatSupport(0)
 {
 	#ifdef _DEBUG
@@ -168,6 +170,11 @@ CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 		return;
 
 	createGUIAndScene();
+
+	if (param.WindowMaximized)
+		maximizeWindow();
+
+	setupTopLevelXorgWindow();
 }
 
 
@@ -279,31 +286,97 @@ bool CIrrDeviceLinux::switchToFullscreen()
 }
 
 
+void CIrrDeviceLinux::setupTopLevelXorgWindow()
+{
+#ifdef _IRR_COMPILE_WITH_X11_
+	if (CreationParams.DriverType == video::EDT_NULL)
+		return; // no display and window
+
+	os::Printer::log("Configuring X11-specific top level window properties", ELL_DEBUG);
+
+	// Set application name and class hints. For now name and class are the same.
+	// Note: SDL uses the executable name here (i.e. "minetest").
+	XClassHint *classhint = XAllocClassHint();
+	classhint->res_name = const_cast<char *>("Minetest");
+	classhint->res_class = const_cast<char *>("Minetest");
+
+	XSetClassHint(XDisplay, XWindow, classhint);
+	XFree(classhint);
+
+	// FIXME: In the future WMNormalHints should be set ... e.g see the
+	// gtk/gdk code (gdk/x11/gdksurface-x11.c) for the setup_top_level
+	// method. But for now (as it would require some significant changes)
+	// leave the code as is.
+
+	// The following is borrowed from the above gdk source for setting top
+	// level windows. The source indicates and the Xlib docs suggest that
+	// this will set the WM_CLIENT_MACHINE and WM_LOCAL_NAME. This will not
+	// set the WM_CLIENT_MACHINE to a Fully Qualified Domain Name (FQDN) which is
+	// required by the Extended Window Manager Hints (EWMH) spec when setting
+	// the _NET_WM_PID (see further down) but running Minetest in an env
+	// where the window manager is on another machine from Minetest (therefore
+	// making the PID useless) is not expected to be a problem. Further
+	// more, using gtk/gdk as the model it would seem that not using a FQDN is
+	// not an issue for modern Xorg window managers.
+
+	os::Printer::log("Setting Xorg window manager Properties", ELL_DEBUG);
+
+	XSetWMProperties (XDisplay, XWindow, NULL, NULL, NULL, 0, NULL, NULL, NULL);
+
+	// Set the _NET_WM_PID window property according to the EWMH spec. _NET_WM_PID
+	// (in conjunction with WM_CLIENT_MACHINE) can be used by window managers to
+	// force a shutdown of an application if it doesn't respond to the destroy
+	// window message.
+
+	os::Printer::log("Setting Xorg _NET_WM_PID extended window manager property", ELL_DEBUG);
+
+	Atom NET_WM_PID = XInternAtom(XDisplay, "_NET_WM_PID", false);
+
+	pid_t pid = getpid();
+
+	XChangeProperty(XDisplay, XWindow, NET_WM_PID,
+			XA_CARDINAL, 32, PropModeReplace,
+			reinterpret_cast<unsigned char *>(&pid),1);
+
+	// Set the WM_CLIENT_LEADER window property here. Minetest has only one
+	// window and that window will always be the leader.
+
+	os::Printer::log("Setting Xorg WM_CLIENT_LEADER property", ELL_DEBUG);
+
+	Atom WM_CLIENT_LEADER = XInternAtom(XDisplay, "WM_CLIENT_LEADER", false);
+
+	XChangeProperty (XDisplay, XWindow, WM_CLIENT_LEADER,
+		XA_WINDOW, 32, PropModeReplace,
+		reinterpret_cast<unsigned char *>(&XWindow), 1);
+#endif
+}
+
+
 #if defined(_IRR_COMPILE_WITH_X11_)
 void IrrPrintXGrabError(int grabResult, const c8 * grabCommand )
 {
 	if ( grabResult == GrabSuccess )
 	{
-//		os::Printer::log(grabCommand, ": GrabSuccess", ELL_INFORMATION);
+//		os::Printer::log(grabCommand, "GrabSuccess", ELL_INFORMATION);
 		return;
 	}
 
 	switch ( grabResult )
 	{
 		case AlreadyGrabbed:
-			os::Printer::log(grabCommand, ": AlreadyGrabbed", ELL_WARNING);
+			os::Printer::log(grabCommand, "AlreadyGrabbed", ELL_WARNING);
 			break;
 		case GrabNotViewable:
-			os::Printer::log(grabCommand, ": GrabNotViewable", ELL_WARNING);
+			os::Printer::log(grabCommand, "GrabNotViewable", ELL_WARNING);
 			break;
 		case GrabFrozen:
-			os::Printer::log(grabCommand, ": GrabFrozen", ELL_WARNING);
+			os::Printer::log(grabCommand, "GrabFrozen", ELL_WARNING);
 			break;
 		case GrabInvalidTime:
-			os::Printer::log(grabCommand, ": GrabInvalidTime", ELL_WARNING);
+			os::Printer::log(grabCommand, "GrabInvalidTime", ELL_WARNING);
 			break;
 		default:
-			os::Printer::log(grabCommand, ": grab failed with unknown problem", ELL_WARNING);
+			os::Printer::log(grabCommand, "grab failed with unknown problem", ELL_WARNING);
 			break;
 	}
 }
@@ -377,7 +450,7 @@ bool CIrrDeviceLinux::createWindow()
 	}
 #ifdef _DEBUG
 	else
-		os::Printer::log("Visual chosen: ", core::stringc(static_cast<u32>(VisualInfo->visualid)).c_str(), ELL_DEBUG);
+		os::Printer::log("Visual chosen", core::stringc(static_cast<u32>(VisualInfo->visualid)).c_str(), ELL_DEBUG);
 #endif
 
 	// create color map
@@ -997,12 +1070,15 @@ bool CIrrDeviceLinux::run()
 						send_response(req->property);
 					};
 
-					if (req->selection != X_ATOM_CLIPBOARD ||
+					if ((req->selection != X_ATOM_CLIPBOARD &&
+							req->selection != XA_PRIMARY) ||
 							req->owner != XWindow) {
 						// we are not the owner, refuse request
 						send_response_refuse();
 						break;
 					}
+					const core::stringc &text_buffer = req->selection == X_ATOM_CLIPBOARD ?
+							Clipboard : PrimarySelection;
 
 					// for debugging:
 					//~ {
@@ -1023,8 +1099,8 @@ bool CIrrDeviceLinux::run()
 								req->target, X_ATOM_UTF8_STRING,
 								8, // format = 8-bit
 								PropModeReplace,
-								(unsigned char *)Clipboard.c_str(),
-								Clipboard.size());
+								(unsigned char *)text_buffer.c_str(),
+								text_buffer.size());
 						send_response(req->target);
 						break;
 					}
@@ -1049,8 +1125,8 @@ bool CIrrDeviceLinux::run()
 						set_property_and_notify(
 								X_ATOM_UTF8_STRING,
 								8,
-								Clipboard.c_str(),
-								Clipboard.size()
+								text_buffer.c_str(),
+								text_buffer.size()
 							);
 
 					} else {
@@ -1172,6 +1248,50 @@ void CIrrDeviceLinux::setWindowCaption(const wchar_t* text)
 }
 
 
+//! Sets the window icon.
+bool CIrrDeviceLinux::setWindowIcon(const video::IImage *img)
+{
+	if (CreationParams.DriverType == video::EDT_NULL)
+		return false; // no display and window
+
+	u32 height = img->getDimension().Height;
+	u32 width = img->getDimension().Width;
+
+	size_t icon_buffer_len = 2 + height * width;
+	long *icon_buffer = new long[icon_buffer_len];
+
+	icon_buffer[0] = width;
+	icon_buffer[1] = height;
+
+	for (u32 x = 0; x < width; x++) {
+		for (u32 y = 0; y < height; y++) {
+			video::SColor col = img->getPixel(x, y);
+			long pixel_val = 0;
+			pixel_val |= (u8)col.getAlpha() << 24;
+			pixel_val |= (u8)col.getRed() << 16;
+			pixel_val |= (u8)col.getGreen() << 8;
+			pixel_val |= (u8)col.getBlue();
+			icon_buffer[2 + x + y * width] = pixel_val;
+		}
+	}
+
+	if (XDisplay == NULL) {
+		os::Printer::log("Could not find x11 display for setting its icon.", ELL_ERROR);
+		delete[] icon_buffer;
+		return false;
+	}
+
+	Atom net_wm_icon = XInternAtom(XDisplay, "_NET_WM_ICON", False);
+	Atom cardinal = XInternAtom(XDisplay, "CARDINAL", False);
+	XChangeProperty(XDisplay, XWindow, net_wm_icon, cardinal, 32, PropModeReplace,
+			(const unsigned char *)icon_buffer, icon_buffer_len);
+
+	delete[] icon_buffer;
+
+	return true;
+}
+
+
 //! notifies the device that it should close itself
 void CIrrDeviceLinux::closeDevice()
 {
@@ -1197,6 +1317,13 @@ bool CIrrDeviceLinux::isWindowFocused() const
 bool CIrrDeviceLinux::isWindowMinimized() const
 {
 	return WindowMinimized;
+}
+
+
+//! returns last state from maximizeWindow() and restoreWindow()
+bool CIrrDeviceLinux::isWindowMaximized() const
+{
+	return WindowMaximized;
 }
 
 
@@ -1284,6 +1411,8 @@ void CIrrDeviceLinux::maximizeWindow()
 	}
 
 	XMapWindow(XDisplay, XWindow);
+
+	WindowMaximized = true;
 #endif
 }
 
@@ -1310,6 +1439,8 @@ void CIrrDeviceLinux::restoreWindow()
 	}
 
 	XMapWindow(XDisplay, XWindow);
+
+	WindowMaximized = false;
 #endif
 }
 
@@ -1662,47 +1793,49 @@ void CIrrDeviceLinux::pollJoysticks()
 }
 
 
+#if defined(_IRR_COMPILE_WITH_X11_)
 //! gets text from the clipboard
 //! \return Returns 0 if no string is in there, otherwise utf-8 text.
-const c8 *CIrrDeviceLinux::getTextFromClipboard() const
+const c8 *CIrrDeviceLinux::getTextFromSelection(Atom selection, core::stringc &text_buffer) const
 {
-#if defined(_IRR_COMPILE_WITH_X11_)
-	Window ownerWindow = XGetSelectionOwner(XDisplay, X_ATOM_CLIPBOARD);
+	Window ownerWindow = XGetSelectionOwner(XDisplay, selection);
 	if (ownerWindow == XWindow) {
-		return Clipboard.c_str();
+		return text_buffer.c_str();
 	}
 
-	Clipboard = "";
+	text_buffer = "";
 
 	if (ownerWindow == None) {
-		return Clipboard.c_str();
+		return text_buffer.c_str();
 	}
 
 	// delete the property to be set beforehand
 	XDeleteProperty(XDisplay, XWindow, XA_PRIMARY);
 
-	XConvertSelection(XDisplay, X_ATOM_CLIPBOARD, X_ATOM_UTF8_STRING, XA_PRIMARY,
+	XConvertSelection(XDisplay, selection, X_ATOM_UTF8_STRING, XA_PRIMARY,
 			XWindow, CurrentTime);
 	XFlush(XDisplay);
 
 	// wait for event via a blocking call
 	XEvent event_ret;
+	std::pair<Window, Atom> args(XWindow, selection);
 	XIfEvent(XDisplay, &event_ret, [](Display *_display, XEvent *event, XPointer arg) {
+		auto p = reinterpret_cast<std::pair<Window, Atom> *>(arg);
 		return (Bool) (event->type == SelectionNotify &&
-				event->xselection.requestor == *(Window *)arg &&
-				event->xselection.selection == X_ATOM_CLIPBOARD &&
+				event->xselection.requestor == p->first &&
+				event->xselection.selection == p->second &&
 				event->xselection.target == X_ATOM_UTF8_STRING);
-	}, (XPointer)&XWindow);
+	}, (XPointer)&args);
 
 	_IRR_DEBUG_BREAK_IF(!(event_ret.type == SelectionNotify &&
 			event_ret.xselection.requestor == XWindow &&
-			event_ret.xselection.selection == X_ATOM_CLIPBOARD &&
+			event_ret.xselection.selection == selection &&
 			event_ret.xselection.target == X_ATOM_UTF8_STRING));
 
 	Atom property_set = event_ret.xselection.property;
 	if (event_ret.xselection.property == None) {
 		// request failed => empty string
-		return Clipboard.c_str();
+		return text_buffer.c_str();
 	}
 
 	// check for data
@@ -1729,15 +1862,15 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 	// for debugging:
 	//~ {
 		//~ char *type_name = XGetAtomName(XDisplay, type);
-		//~ fprintf(stderr, "CIrrDeviceLinux::getTextFromClipboard: actual type: %s (=%ld)\n",
+		//~ fprintf(stderr, "CIrrDeviceLinux::getTextFromSelection: actual type: %s (=%ld)\n",
 				//~ type_name, type);
 		//~ XFree(type_name);
 	//~ }
 
 	if (type != X_ATOM_UTF8_STRING && type != X_ATOM_UTF8_MIME_TYPE) {
-		os::Printer::log("CIrrDeviceLinux::getTextFromClipboard: did not get utf-8 string",
+		os::Printer::log("CIrrDeviceLinux::getTextFromSelection: did not get utf-8 string",
 				ELL_WARNING);
-		return Clipboard.c_str();
+		return text_buffer.c_str();
 	}
 
 	if (bytesLeft > 0) {
@@ -1746,19 +1879,48 @@ const c8 *CIrrDeviceLinux::getTextFromClipboard() const
 									bytesLeft, 0, AnyPropertyType, &type, &format,
 									&numItems, &dummy, &data);
 		if (result == Success)
-			Clipboard = (irr::c8 *)data;
+			text_buffer = (irr::c8 *)data;
 		XFree (data);
 	}
 
 	// delete the property again, to inform the owner about the successful transfer
 	XDeleteProperty(XDisplay, XWindow, property_set);
 
-	return Clipboard.c_str();
+	return text_buffer.c_str();
+}
+#endif
 
+//! gets text from the clipboard
+//! \return Returns 0 if no string is in there, otherwise utf-8 text.
+const c8 *CIrrDeviceLinux::getTextFromClipboard() const
+{
+#if defined(_IRR_COMPILE_WITH_X11_)
+	return getTextFromSelection(X_ATOM_CLIPBOARD, Clipboard);
 #else
 	return nullptr;
 #endif
 }
+
+//! gets text from the primary selection
+//! \return Returns 0 if no string is in there, otherwise utf-8 text.
+const c8 *CIrrDeviceLinux::getTextFromPrimarySelection() const
+{
+#if defined(_IRR_COMPILE_WITH_X11_)
+	return getTextFromSelection(XA_PRIMARY, PrimarySelection);
+#else
+	return nullptr;
+#endif
+}
+
+#if defined(_IRR_COMPILE_WITH_X11_)
+bool CIrrDeviceLinux::becomeSelectionOwner(Atom selection) const
+{
+	XSetSelectionOwner (XDisplay, selection, XWindow, CurrentTime);
+	XFlush (XDisplay);
+	Window owner = XGetSelectionOwner(XDisplay, selection);
+	return owner == XWindow;
+}
+#endif
 
 //! copies text to the clipboard
 void CIrrDeviceLinux::copyToClipboard(const c8 *text) const
@@ -1767,11 +1929,19 @@ void CIrrDeviceLinux::copyToClipboard(const c8 *text) const
 	// Actually there is no clipboard on X but applications just say they own the clipboard and return text when asked.
 	// Which btw. also means that on X you lose clipboard content when closing applications.
 	Clipboard = text;
-	XSetSelectionOwner (XDisplay, X_ATOM_CLIPBOARD, XWindow, CurrentTime);
-	XFlush (XDisplay);
-	Window owner = XGetSelectionOwner(XDisplay, X_ATOM_CLIPBOARD);
-	if (owner != XWindow) {
+	if (!becomeSelectionOwner(X_ATOM_CLIPBOARD)) {
 		os::Printer::log("CIrrDeviceLinux::copyToClipboard: failed to set owner", ELL_WARNING);
+	}
+#endif
+}
+
+//! copies text to the primary selection
+void CIrrDeviceLinux::copyToPrimarySelection(const c8 *text) const
+{
+#if defined(_IRR_COMPILE_WITH_X11_)
+	PrimarySelection = text;
+	if (!becomeSelectionOwner(XA_PRIMARY)) {
+		os::Printer::log("CIrrDeviceLinux::copyToPrimarySelection: failed to set owner", ELL_WARNING);
 	}
 #endif
 }
@@ -1782,7 +1952,7 @@ Bool PredicateIsEventType(Display *display, XEvent *event, XPointer arg)
 {
 	if ( event && event->type == *(int*)arg )
 	{
-//		os::Printer::log("remove event:", core::stringc((int)arg).c_str(), ELL_INFORMATION);
+//		os::Printer::log("remove event", core::stringc((int)arg).c_str(), ELL_INFORMATION);
 		return True;
 	}
 	return False;
@@ -1808,6 +1978,28 @@ void CIrrDeviceLinux::clearSystemMessages()
 		while ( XCheckIfEvent(XDisplay, &event, PredicateIsEventType, XPointer(&usrArg)) == True ) {}
 	}
 #endif //_IRR_COMPILE_WITH_X11_
+}
+
+//! Get the display density in dots per inch.
+float CIrrDeviceLinux::getDisplayDensity() const
+{
+#ifdef _IRR_COMPILE_WITH_X11_
+	if (XDisplay != NULL) {
+		/* try x direct */
+		int dh = DisplayHeight(XDisplay, 0);
+		int dw = DisplayWidth(XDisplay, 0);
+		int dh_mm = DisplayHeightMM(XDisplay, 0);
+		int dw_mm = DisplayWidthMM(XDisplay, 0);
+
+		if (dh_mm != 0 && dw_mm != 0) {
+			float dpi_height = floor(dh / (dh_mm * 0.039370) + 0.5);
+			float dpi_width = floor(dw / (dw_mm * 0.039370) + 0.5);
+			return std::max(dpi_height, dpi_width);
+		}
+	}
+#endif //_IRR_COMPILE_WITH_X11_
+
+	return 0.0f;
 }
 
 void CIrrDeviceLinux::initXAtoms()

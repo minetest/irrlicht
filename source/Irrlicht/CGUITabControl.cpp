@@ -3,7 +3,6 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
 #include "CGUITabControl.h"
-#ifdef _IRR_COMPILE_WITH_GUI_
 
 #include "CGUIButton.h"
 #include "IGUISkin.h"
@@ -1030,6 +1029,3 @@ void CGUITabControl::updateAbsolutePosition()
 
 } // end namespace irr
 } // end namespace gui
-
-#endif // _IRR_COMPILE_WITH_GUI_
-

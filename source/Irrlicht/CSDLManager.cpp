@@ -4,7 +4,7 @@
 
 #include "CSDLManager.h"
 
-#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && defined(_IRR_COMPILE_WITH_OPENGL_)
+#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
 
 #include "CIrrDeviceSDL.h"
 #include "COpenGLCommon.h"
@@ -34,8 +34,6 @@ const SExposedVideoData& CSDLManager::getContext() const
 
 bool CSDLManager::activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero)
 {
-	// unclear if this is still needed:
-	glFrontFace(GL_CW);
 	return true;
 }
 

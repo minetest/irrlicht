@@ -5,9 +5,8 @@
 #ifndef __C_SDL_MANAGER_H_INCLUDED__
 #define __C_SDL_MANAGER_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 
-#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && defined(_IRR_COMPILE_WITH_OPENGL_)
+#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
 
 #include "IContextManager.h"
 

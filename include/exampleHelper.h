@@ -5,7 +5,6 @@
 #ifndef __EXAMPLE_HELPER_H_INCLUDED__
 #define __EXAMPLE_HELPER_H_INCLUDED__
 
-#include "IrrCompileConfig.h"
 #include "path.h"
 
 namespace irr
@@ -13,7 +12,7 @@ namespace irr
 
 static io::path getExampleMediaPath()
 {
-#if defined (_IRR_IOS_PLATFORM_) || defined (_IRR_ANDROID_PLATFORM_) || defined (_IRR_OSX_PLATFORM_) || defined (_IRR_EMSCRIPTEN_PLATFORM_)
+#ifdef IRR_MOBILE_PATHS
 	return io::path("media/");
 #else
 	return io::path("../../media/");

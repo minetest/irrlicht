@@ -3,7 +3,6 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
 #include "CGUIComboBox.h"
-#ifdef _IRR_COMPILE_WITH_GUI_
 
 #include "IGUIEnvironment.h"
 #include "IVideoDriver.h"
@@ -321,6 +320,10 @@ bool CGUIComboBox::OnEvent(const SEvent& event)
 				}
 			case EMIE_MOUSE_WHEEL:
 				{
+					// Try scrolling parent first
+					if (IGUIElement::OnEvent(event))
+						return true;
+
 					s32 oldSelected = Selected;
 					setSelected( Selected + ((event.MouseInput.Wheel < 0) ? 1 : -1));
 
@@ -330,11 +333,12 @@ bool CGUIComboBox::OnEvent(const SEvent& event)
 					if (Selected >= (s32)Items.size())
 						setSelected((s32)Items.size() -1);
 
-					if (Selected != oldSelected)
-					{
+					if (Selected != oldSelected) {
 						sendSelectionChangedEvent();
 						return true;
 					}
+
+					return false;
 				}
 			default:
 				break;
@@ -488,7 +492,3 @@ void CGUIComboBox::openCloseMenu()
 
 } // end namespace gui
 } // end namespace irr
-
-
-#endif // _IRR_COMPILE_WITH_GUI_
-

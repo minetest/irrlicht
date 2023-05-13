@@ -173,6 +173,50 @@ void CImage::copyToWithAlpha(IImage* target, const core::position2d<s32>& pos, c
 }
 
 
+//! copies this surface into another, if it has the exact same size and format.
+bool CImage::copyToNoScaling(void *target, u32 width, u32 height, ECOLOR_FORMAT format, u32 pitch) const
+{
+	if (IImage::isCompressedFormat(Format))
+	{
+		os::Printer::log("IImage::copyToNoScaling method doesn't work with compressed images.", ELL_WARNING);
+		return false;
+	}
+
+	if (!target || !width || !height || !Size.Width || !Size.Height)
+		return false;
+
+	const u32 bpp=getBitsPerPixelFromFormat(format)/8;
+	if (0==pitch)
+		pitch = width*bpp;
+
+	if (!(Format==format && Size.Width==width && Size.Height==height))
+		return false;
+
+	if (pitch==Pitch)
+	{
+		memcpy(target, Data, (size_t)height*pitch);
+	}
+	else
+	{
+		u8* tgtpos = (u8*) target;
+		u8* srcpos = Data;
+		const u32 bwidth = width*bpp;
+		const u32 rest = pitch-bwidth;
+		for (u32 y=0; y<height; ++y)
+		{
+			// copy scanline
+			memcpy(tgtpos, srcpos, bwidth);
+			// clear pitch
+			memset(tgtpos+bwidth, 0, rest);
+			tgtpos += pitch;
+			srcpos += Pitch;
+		}
+	}
+
+	return true;
+}
+
+
 //! copies this surface into another, scaling it to the target image size
 // note: this is very very slow.
 void CImage::copyToScaling(void* target, u32 width, u32 height, ECOLOR_FORMAT format, u32 pitch)
@@ -190,31 +234,8 @@ void CImage::copyToScaling(void* target, u32 width, u32 height, ECOLOR_FORMAT fo
 	if (0==pitch)
 		pitch = width*bpp;
 
-	if (Format==format && Size.Width==width && Size.Height==height)
-	{
-		if (pitch==Pitch)
-		{
-			memcpy(target, Data, height*pitch);
-			return;
-		}
-		else
-		{
-			u8* tgtpos = (u8*) target;
-			u8* srcpos = Data;
-			const u32 bwidth = width*bpp;
-			const u32 rest = pitch-bwidth;
-			for (u32 y=0; y<height; ++y)
-			{
-				// copy scanline
-				memcpy(tgtpos, srcpos, bwidth);
-				// clear pitch
-				memset(tgtpos+bwidth, 0, rest);
-				tgtpos += pitch;
-				srcpos += Pitch;
-			}
-			return;
-		}
-	}
+	if (copyToNoScaling(target, width, height, format, pitch))
+		return;
 
 	// NOTE: Scaling is coded to keep the border pixels intact.
 	// Alternatively we could for example work with first pixel being taken at half step-size.

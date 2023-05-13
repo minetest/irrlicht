@@ -4,11 +4,7 @@
 
 #include "CImageLoaderPNG.h"
 
-#ifdef _IRR_COMPILE_WITH_PNG_LOADER_
-
-#ifdef _IRR_COMPILE_WITH_LIBPNG_
-	#include <png.h> // use system lib png
-#endif // _IRR_COMPILE_WITH_LIBPNG_
+#include <png.h> // use system lib png
 
 #include "CImage.h"
 #include "CReadFile.h"
@@ -19,7 +15,6 @@ namespace irr
 namespace video
 {
 
-#ifdef _IRR_COMPILE_WITH_LIBPNG_
 // PNG function for error handling
 static void png_cpexcept_error(png_structp png_ptr, png_const_charp msg)
 {
@@ -46,25 +41,19 @@ void PNGAPI user_read_data_fcn(png_structp png_ptr, png_bytep data, png_size_t l
 	if (check != length)
 		png_error(png_ptr, "Read Error");
 }
-#endif // _IRR_COMPILE_WITH_LIBPNG_
 
 
 //! returns true if the file maybe is able to be loaded by this class
 //! based on the file extension (e.g. ".tga")
 bool CImageLoaderPng::isALoadableFileExtension(const io::path& filename) const
 {
-#ifdef _IRR_COMPILE_WITH_LIBPNG_
 	return core::hasFileExtension ( filename, "png" );
-#else
-	return false;
-#endif // _IRR_COMPILE_WITH_LIBPNG_
 }
 
 
 //! returns true if the file maybe is able to be loaded by this class
 bool CImageLoaderPng::isALoadableFileFormat(io::IReadFile* file) const
 {
-#ifdef _IRR_COMPILE_WITH_LIBPNG_
 	if (!file)
 		return false;
 
@@ -75,16 +64,12 @@ bool CImageLoaderPng::isALoadableFileFormat(io::IReadFile* file) const
 
 	// Check if it really is a PNG file
 	return !png_sig_cmp(buffer, 0, 8);
-#else
-	return false;
-#endif // _IRR_COMPILE_WITH_LIBPNG_
 }
 
 
 // load in the image data
 IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 {
-#ifdef _IRR_COMPILE_WITH_LIBPNG_
 	if (!file)
 		return 0;
 
@@ -95,14 +80,14 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 	// Read the first few bytes of the PNG file
 	if( file->read(buffer, 8) != 8 )
 	{
-		os::Printer::log("LOAD PNG: can't read file\n", file->getFileName(), ELL_ERROR);
+		os::Printer::log("LOAD PNG: can't read file (filesize < 8)", file->getFileName(), ELL_ERROR);
 		return 0;
 	}
 
 	// Check if it really is a PNG file
 	if( png_sig_cmp(buffer, 0, 8) )
 	{
-		os::Printer::log("LOAD PNG: not really a png\n", file->getFileName(), ELL_ERROR);
+		os::Printer::log("LOAD PNG: not really a png (wrong signature)", file->getFileName(), ELL_ERROR);
 		return 0;
 	}
 
@@ -111,7 +96,7 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 		NULL, (png_error_ptr)png_cpexcept_error, (png_error_ptr)png_cpexcept_warn);
 	if (!png_ptr)
 	{
-		os::Printer::log("LOAD PNG: Internal PNG create read struct failure\n", file->getFileName(), ELL_ERROR);
+		os::Printer::log("LOAD PNG: Internal PNG create read struct failure", file->getFileName(), ELL_ERROR);
 		return 0;
 	}
 
@@ -119,7 +104,7 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 	png_infop info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr)
 	{
-		os::Printer::log("LOAD PNG: Internal PNG create info struct failure\n", file->getFileName(), ELL_ERROR);
+		os::Printer::log("LOAD PNG: Internal PNG create info struct failure", file->getFileName(), ELL_ERROR);
 		png_destroy_read_struct(&png_ptr, NULL, NULL);
 		return 0;
 	}
@@ -227,7 +212,7 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 		image = new CImage(ECF_R8G8B8, core::dimension2d<u32>(Width, Height));
 	if (!image)
 	{
-		os::Printer::log("LOAD PNG: Internal PNG create image struct failure\n", file->getFileName(), ELL_ERROR);
+		os::Printer::log("LOAD PNG: Internal PNG create image struct failure", file->getFileName(), ELL_ERROR);
 		png_destroy_read_struct(&png_ptr, NULL, NULL);
 		return 0;
 	}
@@ -236,7 +221,7 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 	RowPointers = new png_bytep[Height];
 	if (!RowPointers)
 	{
-		os::Printer::log("LOAD PNG: Internal PNG create row pointers failure\n", file->getFileName(), ELL_ERROR);
+		os::Printer::log("LOAD PNG: Internal PNG create row pointers failure", file->getFileName(), ELL_ERROR);
 		png_destroy_read_struct(&png_ptr, NULL, NULL);
 		delete image;
 		return 0;
@@ -267,9 +252,6 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 	png_destroy_read_struct(&png_ptr,&info_ptr, 0); // Clean up memory
 
 	return image;
-#else
-	return 0;
-#endif // _IRR_COMPILE_WITH_LIBPNG_
 }
 
 
@@ -281,6 +263,3 @@ IImageLoader* createImageLoaderPNG()
 
 }// end namespace irr
 }//end namespace video
-
-#endif
-

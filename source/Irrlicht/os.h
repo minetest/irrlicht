@@ -5,7 +5,6 @@
 #ifndef __IRR_OS_H_INCLUDED__
 #define __IRR_OS_H_INCLUDED__
 
-#include "IrrCompileConfig.h" // for endian check
 #include "irrTypes.h"
 #include "irrString.h"
 #include "path.h"
@@ -39,6 +38,8 @@ namespace os
 		static void print(const c8* message, ELOG_LEVEL ll = ELL_INFORMATION);
 		static void log(const c8* message, ELOG_LEVEL ll = ELL_INFORMATION);
 		static void log(const wchar_t* message, ELOG_LEVEL ll = ELL_INFORMATION);
+
+		// The string ": " is added between message and hint
 		static void log(const c8* message, const c8* hint, ELOG_LEVEL ll = ELL_INFORMATION);
 		static void log(const c8* message, const io::path& hint, ELOG_LEVEL ll = ELL_INFORMATION);
 		static ILogger* Logger;
