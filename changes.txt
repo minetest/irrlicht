@@ -11,6 +11,10 @@ Changes in ogl-es (not yet released - will be merged with trunk at some point)
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Bugfix: SMaterialLayer::operator!= no longer returns true when comparing a layer without texture matrix with one with a set identity texture matrix. Those are the same.
+- SMaterialLayer no longer releases allocated texture memory before destructor unless explicitly requested.
+  This can avoid constantly allocation/releasing memory in the active driver material when setting materials.
+  Note that it does not copy texture memory when it's unused. This is still optimized.
 - Add IMeshSceneNode::setNodeRegistration to allow registering MeshSceneNodes to the SceneManager per buffer instead of per node
 - Add SMaterialLayer::hasSetTextureMatrix and SMaterialLayer::resetTextureMatrix
 - Add IShaderConstantSetCallBack::OnCreate to allow earlier access to IMaterialRendererServices

@@ -7,6 +7,7 @@
 #include "IVideoDriver.h"
 #include "IFileSystem.h"
 #include "SAnimatedMesh.h"
+#include "SOverrideMaterial.h"
 #include "CMeshCache.h"
 #include "IXMLWriter.h"
 #include "ISceneUserDataSerializer.h"

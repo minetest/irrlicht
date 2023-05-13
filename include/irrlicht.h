@@ -179,6 +179,7 @@
 #include "SKeyMap.h"
 #include "SLight.h"
 #include "SMaterial.h"
+#include "SOverrideMaterial.h"
 #include "SMesh.h"
 #include "SMeshBuffer.h"
 #include "SMeshBufferLightMap.h"

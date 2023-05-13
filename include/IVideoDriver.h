@@ -13,12 +13,13 @@
 #include "plane3d.h"
 #include "dimension2d.h"
 #include "position2d.h"
-#include "IMeshBuffer.h"
 #include "triangle3d.h"
 #include "EDriverTypes.h"
 #include "EDriverFeatures.h"
+#include "EPrimitiveTypes.h"
 #include "SExposedVideoData.h"
-#include "SOverrideMaterial.h"
+#include "S3DVertex.h"
+#include "SVertexIndex.h"
 
 namespace irr
 {
@@ -43,6 +44,8 @@ namespace video
 	struct S3DVertex2TCoords;
 	struct S3DVertexTangents;
 	struct SLight;
+	struct SOverrideMaterial;
+	class SMaterial;
 	class IImageLoader;
 	class IImageWriter;
 	class IMaterialRenderer;

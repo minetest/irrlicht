@@ -71,9 +71,41 @@ static bool polygonOffset(video::E_DRIVER_TYPE type)
     return result;
 }
 
+static bool testSMaterial()
+{
+	irr::video::SMaterial a;
+	irr::video::SMaterial b;
+
+	// Same by default?
+	if ( !(a == b) )
+		return false;
+	if ( a != b )
+		return false;
+
+	// getting (creating) one texture matrix shouldn't change things
+	b.TextureLayer[0].getTextureMatrix();
+	if ( a != b )
+		return false;
+
+	// no longer same now
+	b.TextureLayer[0].getTextureMatrix().setTextureScale(5.f, 0.5f);
+	if ( a == b )
+		return false;
+
+	return true;
+}
+
 bool material()
 {
 	bool result = true;
+
 	TestWithAllDrivers(polygonOffset);
+
+	if ( !testSMaterial() )
+	{
+		logTestString("testSMaterial failed\n\n");
+		result = false;
+	}
+
 	return result;
 }

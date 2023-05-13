@@ -219,7 +219,7 @@ void CMeshSceneNode::render()
 					}
 				}
 
-				if ( bufRenderNode->getRenderPass() == renderPass )
+				if ( bufRenderNode->getRenderPass() == renderPass || renderPass == ESNRP_NONE)
 					bufRenderNode->renderBuffer(driver);
 			}
 		}
