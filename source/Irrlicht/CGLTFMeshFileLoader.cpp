@@ -218,7 +218,7 @@ static void getVertices
 	}
 }
 
-CGLTFMeshFileLoader::CGLTFMeshFileLoader()
+CGLTFMeshFileLoader::CGLTFMeshFileLoader() noexcept
 {
 }
 
