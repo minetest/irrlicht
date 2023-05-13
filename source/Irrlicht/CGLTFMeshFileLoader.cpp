@@ -81,7 +81,7 @@ static bool tryParseGLTF(io::IReadFile* file, tinygltf::Model& model)
 	auto buf = std::make_unique<char[]>(file->getSize());
 	file->read(buf.get(), file->getSize());
 
-	if (err != "" || warn != "") {
+	if (err != "") {
 		return false;
 	}
 
