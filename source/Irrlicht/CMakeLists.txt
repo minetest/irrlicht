@@ -260,7 +260,6 @@ endif()
 if(ENABLE_GLES2)
 	find_package(OpenGLES2 REQUIRED)
 endif()
-
 if(ENABLE_OPENGL OR ENABLE_OPENGL3)
 	find_package(OpenGL REQUIRED)
 endif()
