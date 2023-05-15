@@ -20,6 +20,7 @@ The following libraries are required to be installed:
 Aside from standard search options (`ZLIB_INCLUDE_DIR`, `ZLIB_LIBRARY`, ...) the following options are available:
 * `BUILD_SHARED_LIBS` (default: `ON`) - Build IrrlichtMt as a shared library
 * `BUILD_EXAMPLES` (default: `OFF`) - Build example applications
+* `BUILD_TESTING` (default: `ON`) - Build Catch2 tests (only in top-level project)
 * `ENABLE_OPENGL` - Enable OpenGL driver
 * `ENABLE_OPENGL3` (default: `OFF`) - Enable OpenGL 3+ driver
 * `ENABLE_GLES1` - Enable OpenGL ES driver, legacy
