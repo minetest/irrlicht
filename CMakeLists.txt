@@ -6,7 +6,7 @@ set(IRRLICHTMT_REVISION 15)
 # https://gitlab.kitware.com/cmake/cmake/-/merge_requests/487
 project(Irrlicht
 	VERSION 1.9.0.${IRRLICHTMT_REVISION}
-        LANGUAGES C CXX
+	LANGUAGES C CXX
 )
 
 message(STATUS "*** Building IrrlichtMt ${PROJECT_VERSION} ***")
@@ -36,7 +36,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-        include(CTest)
+	include(CTest)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")

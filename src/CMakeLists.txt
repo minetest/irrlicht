@@ -360,13 +360,13 @@ add_library(IRRMESHOBJ OBJECT
 )
 
 get_property(tinygltf_INCLUDE_DIRS
-        TARGET tinygltf::tinygltf
-        PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+	TARGET tinygltf::tinygltf
+	PROPERTY INTERFACE_INCLUDE_DIRECTORIES
 )
 
 get_property(tinygltf_COMPILE_DEFS
-        TARGET tinygltf::tinygltf
-        PROPERTY INTERFACE_COMPILE_DEFINITIONS
+	TARGET tinygltf::tinygltf
+	PROPERTY INTERFACE_COMPILE_DEFINITIONS
 )
 
 target_include_directories(IRRMESHOBJ PRIVATE ${tinygltf_INCLUDE_DIRS})

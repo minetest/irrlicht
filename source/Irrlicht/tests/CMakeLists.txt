@@ -20,7 +20,7 @@ target_link_libraries(tests
 )
 
 add_test(
-        NAME tests
-        COMMAND "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/tests"
-        WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+	NAME tests
+	COMMAND "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/tests"
+	WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
 )
