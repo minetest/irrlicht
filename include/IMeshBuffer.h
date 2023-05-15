@@ -126,17 +126,17 @@ namespace scene
 		virtual const video::SColor& getColor(u32 i) const = 0;
 
 		//! Append the vertices and indices to the current buffer
-		/** Only works for compatible vertex types
-		and not implemented for most buffers for now.
+		/** Only works for compatible vertex and index types 
+		and not implemented for some buffers for now.
 		\param vertices Pointer to a vertex array.
 		\param numVertices Number of vertices in the array.
 		\param indices Pointer to index array.
 		\param numIndices Number of indices in array. */
 		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices) = 0;
 
-		//! Not supported right now by any meshbuffer
+		//! Not supported right now by all meshbuffer
 		//! In theory: Append the meshbuffer to the current buffer
-		/** Only works for compatible vertex types
+		/** Only works for compatible vertex and index types
 		\param other Buffer to append to this one. */
 		virtual void append(const IMeshBuffer* const other) = 0;
 

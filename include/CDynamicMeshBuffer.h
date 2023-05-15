@@ -110,15 +110,66 @@ namespace scene
 		\param numIndices Number of indices in array. */
 		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices) IRR_OVERRIDE
 		{
-			// TODO
+			if (vertices == getVertices() || indices == getIndices())	// can't do that because we're doing reallocations on those blocks
+				return;
+
+			const u32 vertexCount = getVertexCount();
+
+			VertexBuffer->reallocate(vertexCount+numVertices);
+			switch ( VertexBuffer->getType() )
+			{
+				case video::EVT_STANDARD:
+					for (u32 i=0; i<numVertices; ++i)
+					{
+						VertexBuffer->push_back(static_cast<const video::S3DVertex*>(vertices)[i]);
+						BoundingBox.addInternalPoint(static_cast<const video::S3DVertex*>(vertices)[i].Pos);
+					}
+					break;
+				case video::EVT_2TCOORDS:
+					for (u32 i=0; i<numVertices; ++i)
+					{
+						VertexBuffer->push_back(static_cast<const video::S3DVertex2TCoords*>(vertices)[i]);
+						BoundingBox.addInternalPoint(static_cast<const video::S3DVertex2TCoords*>(vertices)[i].Pos);
+					}
+					break;
+				case video::EVT_TANGENTS:
+					for (u32 i=0; i<numVertices; ++i)
+					{
+						VertexBuffer->push_back(static_cast<const video::S3DVertexTangents*>(vertices)[i]);
+						BoundingBox.addInternalPoint(static_cast<const video::S3DVertexTangents*>(vertices)[i].Pos);
+					}
+					break;
+			}
+
+			IndexBuffer->reallocate(getIndexCount()+numIndices);
+			switch ( IndexBuffer->getType() )
+			{
+				case video::EIT_16BIT:
+					for (u32 i=0; i<numIndices; ++i)
+					{
+						IndexBuffer->push_back(indices[i]+vertexCount);
+					}
+					break;
+				case video::EIT_32BIT:
+					for (u32 i=0; i<numIndices; ++i)
+					{
+						IndexBuffer->push_back(reinterpret_cast<const irr::u32*>(indices)[i]+vertexCount);
+					}
+					break;
+			}
+
+			setDirty();
 		}
 
 		//! Append the meshbuffer to the current buffer
-		/** Only works for compatible vertex types
+		/** Only works for compatible vertex and index types
 		\param other Buffer to append to this one. */
 		virtual void append(const IMeshBuffer* const other) IRR_OVERRIDE
 		{
-			// TODO
+			if ( getVertexType() != other->getVertexType() )
+				return;
+
+			append(other->getVertices(), other->getVertexCount(), other->getIndices(), other->getIndexCount());
 		}
 
 
