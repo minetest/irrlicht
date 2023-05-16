@@ -201,14 +201,14 @@ namespace scene
 			const u32 vertexCount = getVertexCount();
 			u32 i;
 
-			Vertices.reallocate(vertexCount+numVertices);
+			Vertices.reallocate(vertexCount+numVertices, false);
 			for (i=0; i<numVertices; ++i)
 			{
 				Vertices.push_back(static_cast<const T*>(vertices)[i]);
 				BoundingBox.addInternalPoint(static_cast<const T*>(vertices)[i].Pos);
 			}
 
-			Indices.reallocate(getIndexCount()+numIndices);
+			Indices.reallocate(getIndexCount()+numIndices, false);
 			for (i=0; i<numIndices; ++i)
 			{
 				Indices.push_back(indices[i]+vertexCount);

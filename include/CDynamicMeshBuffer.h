@@ -128,7 +128,7 @@ namespace scene
 
 			const u32 vertexCount = getVertexCount();
 
-			VertexBuffer->reallocate(vertexCount+numVertices);
+			VertexBuffer->reallocate(vertexCount+numVertices, false);
 			switch ( vertexType )
 			{
 				case video::EVT_STANDARD:
@@ -154,7 +154,7 @@ namespace scene
 					break;
 			}
 
-			IndexBuffer->reallocate(getIndexCount()+numIndices);
+			IndexBuffer->reallocate(getIndexCount()+numIndices, false);
 			switch ( indexType )
 			{
 				case video::EIT_16BIT:
