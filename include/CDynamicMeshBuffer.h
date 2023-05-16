@@ -110,13 +110,26 @@ namespace scene
 		\param numIndices Number of indices in array. */
 		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices) IRR_OVERRIDE
 		{
+			// We simply assume it has the same vertex and index type as this object. If other types are passed this will crash
+			append(getVertexType(), vertices, numVertices, getIndexType(), indices, numIndices);
+		}
+
+		//! Append the meshbuffer to the current buffer
+		/** \param other Buffer to append to this one. */
+		virtual void append(const IMeshBuffer* const other) IRR_OVERRIDE
+		{
+			append(other->getVertexType(), other->getVertices(), other->getVertexCount(), other->getIndexType(), other->getIndices(), other->getIndexCount());
+		}
+
+		void append(video::E_VERTEX_TYPE vertexType, const void* const vertices, u32 numVertices, video::E_INDEX_TYPE indexType, const void* const indices, u32 numIndices)
+		{
 			if (vertices == getVertices() || indices == getIndices())	// can't do that because we're doing reallocations on those blocks
 				return;
 
 			const u32 vertexCount = getVertexCount();
 
 			VertexBuffer->reallocate(vertexCount+numVertices);
-			switch ( VertexBuffer->getType() )
+			switch ( vertexType )
 			{
 				case video::EVT_STANDARD:
 					for (u32 i=0; i<numVertices; ++i)
@@ -142,34 +155,30 @@ namespace scene
 			}
 
 			IndexBuffer->reallocate(getIndexCount()+numIndices);
-			switch ( IndexBuffer->getType() )
+			switch ( indexType )
 			{
 				case video::EIT_16BIT:
+				{
+					const irr::u16* indices16 = reinterpret_cast<const irr::u16*>(indices);
 					for (u32 i=0; i<numIndices; ++i)
 					{
-						IndexBuffer->push_back(indices[i]+vertexCount);
+						// Note: This can overflow, not checked. Will result in broken models, but no crashes.
+						IndexBuffer->push_back(indices16[i]+vertexCount);
 					}
 					break;
+				}
 				case video::EIT_32BIT:
+				{
+					const irr::u32* indices32 = reinterpret_cast<const irr::u32*>(indices);
 					for (u32 i=0; i<numIndices; ++i)
 					{
-						IndexBuffer->push_back(reinterpret_cast<const irr::u32*>(indices)[i]+vertexCount);
+						IndexBuffer->push_back(indices32[i]+vertexCount);
 					}
 					break;
+				}
 			}
 
 			setDirty();
-		}
-
-		//! Append the meshbuffer to the current buffer
-		/** Only works for compatible vertex and index types
-		\param other Buffer to append to this one. */
-		virtual void append(const IMeshBuffer* const other) IRR_OVERRIDE
-		{
-			if ( getVertexType() != other->getVertexType() )
-				return;
-
-			append(other->getVertices(), other->getVertexCount(), other->getIndices(), other->getIndexCount());
 		}
 
 
