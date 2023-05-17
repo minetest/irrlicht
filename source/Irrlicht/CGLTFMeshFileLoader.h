@@ -83,10 +83,10 @@ private:
 				const std::size_t accessorId) const;
 
 		void copyNormals(const Span<video::S3DVertex> vertices,
-			const std::size_t accessorId) const;
+				const std::size_t accessorId) const;
 
 		void copyTCoords(const Span<video::S3DVertex> vertices,
-			const std::size_t accessorId) const;
+				const std::size_t accessorId) const;
 
 		float getScale() const;
 	};
