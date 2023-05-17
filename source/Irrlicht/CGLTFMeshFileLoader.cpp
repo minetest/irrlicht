@@ -30,7 +30,7 @@ static bool dummyImageLoader(tinygltf::Image *a,
 		int f,
 		const unsigned char * g,
 		int h,
-		void *user_pointer)
+		void *userPointer)
 {
 	return false;
 };
@@ -83,25 +83,25 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 	SMesh* mesh { new SMesh {} };
 
 	// Iterate models
-	for (std::size_t mesh_index = 0;
-		mesh_index < model.meshes.size(); mesh_index++) {
+	for (std::size_t meshIndex = 0;
+		meshIndex < model.meshes.size(); meshIndex++) {
 	// Iterate primitives
-	for (std::size_t primitive_index = 0; primitive_index < model
-		.meshes[mesh_index].primitives.size(); primitive_index++) {
+	for (std::size_t primitiveIndex = 0; primitiveIndex < model
+		.meshes[meshIndex].primitives.size(); primitiveIndex++) {
 
-		const auto positionAccessorId = model.meshes[mesh_index]
-			.primitives[primitive_index].attributes["POSITION"];
-		const auto indicesAccessorId = model.meshes[mesh_index]
-			.primitives[primitive_index].indices;
+		const auto positionAccessorId = model.meshes[meshIndex]
+			.primitives[primitiveIndex].attributes["POSITION"];
+		const auto indicesAccessorId = model.meshes[meshIndex]
+			.primitives[primitiveIndex].indices;
 
 		// Creates counts for preallocation
-		std::size_t vertices_count = model.accessors[positionAccessorId].count;
+		std::size_t vertexCount = model.accessors[positionAccessorId].count;
 
 		// We must count to create containers for the data
 		// Create new buffer for vertices, positions, and normals
-		auto* vertexBuffer = new video::S3DVertex[vertices_count]();
+		auto* vertexBuffer = new video::S3DVertex[vertexCount]();
 		// This is used to copy data into the vertexBuffer
-		Span<video::S3DVertex> verticesBuffer{vertexBuffer,vertices_count};
+		Span<video::S3DVertex> verticesBuffer{vertexBuffer,vertexCount};
 		// Create dynamic indices buffer so it's easier to work with.
 		// Preallocate needed resources to boost game startup speed
 		std::vector<u16> indicesBuffer(model.accessors[
@@ -112,8 +112,8 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 		parser.getIndices(indicesAccessorId, indicesBuffer);
 		parser.getVertices(positionAccessorId,
 			verticesBuffer,
-			mesh_index,
-			primitive_index);
+			meshIndex,
+			primitiveIndex);
 
 		// Inverse the order of indices due to the axis of the model being
 		// inverted when going from left handed to right handed coordinates
@@ -121,7 +121,7 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 
 		// Create the mesh buffer
 		SMeshBuffer* meshbuf { new SMeshBuffer {} };
-		meshbuf->append(vertexBuffer, vertices_count, indicesBuffer.data(),
+		meshbuf->append(vertexBuffer, vertexCount, indicesBuffer.data(),
 			indicesBuffer.size());
 
 		mesh->addMeshBuffer(meshbuf);
