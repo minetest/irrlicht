@@ -67,12 +67,11 @@ private:
 		std::vector<u16> getIndices(std::size_t meshIdx,
 				std::size_t primitiveIdx) const;
 
-		void getVertices(const std::size_t accessorId,
-			Span<video::S3DVertex>& outVertices,
-			std::size_t meshIndex,
-			std::size_t primitiveIndex) const;
+		std::vector<video::S3DVertex> getVertices(std::size_t meshIdx,
+				std::size_t primitiveIdx) const;
 
 		std::size_t getMeshCount() const;
+
 		std::size_t getPrimitiveCount(std::size_t meshIdx) const;
 
 	private:
@@ -106,6 +105,9 @@ private:
 				std::size_t accessorIdx) const;
 
 		std::size_t getIndicesAccessorIdx(std::size_t meshIdx,
+				std::size_t primitiveIdx) const;
+
+		std::size_t getPositionAccessorIdx(std::size_t meshIdx,
 				std::size_t primitiveIdx) const;
 	};
 

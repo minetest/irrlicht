@@ -86,44 +86,26 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 {
 	tinygltf::Model model {};
 
-	if (file->getSize() == 0 || !tryParseGLTF(file, model)) {
+	if (file->getSize() <= 0 || !tryParseGLTF(file, model)) {
 		return nullptr;
 	}
 
 	ModelParser parser(std::move(model));
 	SMesh* baseMesh(new SMesh {});
 
-	// Iterate models
-	for (std::size_t meshIndex = 0;
-		meshIndex < parser.getMeshCount(); meshIndex++) {
-		// Iterate primitives
-		for (std::size_t primitiveIndex = 0; primitiveIndex < parser.getPrimitiveCount(meshIndex); primitiveIndex++) {
-			const auto positionAccessorId = model.meshes[meshIndex]
-				.primitives[primitiveIndex].attributes["POSITION"];
-
-			// Creates counts for preallocation
-			std::size_t vertexCount = model.accessors[positionAccessorId].count;
-
-			// We must count to create containers for the data
-			// Create new buffer for vertices, positions, and normals
-			auto* vertexBuffer = new video::S3DVertex[vertexCount]();
-			// This is used to copy data into the vertexBuffer
-			Span<video::S3DVertex> verticesBuffer{vertexBuffer,vertexCount};
-			auto indices = parser.getIndices(meshIndex, primitiveIndex);
-			parser.getVertices(positionAccessorId,
-				verticesBuffer,
-				meshIndex,
-				primitiveIndex);
+	for (std::size_t i = 0; i < parser.getMeshCount(); ++i) {
+		for (std::size_t j = 0; j < parser.getPrimitiveCount(i); ++j) {
+			auto indices = parser.getIndices(i, j);
+			auto vertices = parser.getVertices(i, j);
 
 			SMeshBuffer* meshbuf(new SMeshBuffer {});
-			meshbuf->append(vertexBuffer, vertexCount,
+			meshbuf->append(vertices.data(), vertices.size(),
 				indices.data(), indices.size());
 			baseMesh->addMeshBuffer(meshbuf);
 		}
 	}
 
-	// Create the mesh animations
-	SAnimatedMesh* animatedMesh { new SAnimatedMesh {} };
+	SAnimatedMesh* animatedMesh(new SAnimatedMesh {});
 	animatedMesh->addMesh(baseMesh);
 
 	return animatedMesh;
@@ -159,31 +141,36 @@ std::vector<u16> CGLTFMeshFileLoader::ModelParser::getIndices(
 	return indices;
 }
 
-//Returns a tuple of the current counts (current_vertex_index,
-//	current_normals_index, current_tcoords_index)
-void CGLTFMeshFileLoader::ModelParser::getVertices(
-		const std::size_t accessorId,
-		Span<video::S3DVertex>& outVertices,
-		std::size_t meshIndex,
-		std::size_t primitiveIndex) const
+std::vector<video::S3DVertex> CGLTFMeshFileLoader::ModelParser::getVertices(
+		std::size_t meshIdx,
+		std::size_t primitiveIdx) const
 {
-	copyPositions(outVertices, accessorId);
+	auto positionAccessorIdx = getPositionAccessorIdx(meshIdx, primitiveIdx);
+	auto vertexCount = getElemCount(positionAccessorIdx);
+	std::vector<video::S3DVertex> vertices{};
+	vertices.resize(vertexCount);
 
-	const auto normalsField = m_model.meshes[meshIndex]
-		.primitives[primitiveIndex].attributes.find("NORMAL");
+	Span<video::S3DVertex> outVertices {vertices.data(), vertexCount};
 
-	if (normalsField != m_model.meshes[meshIndex]
-		.primitives[primitiveIndex].attributes.end()) {
+	copyPositions(outVertices, positionAccessorIdx);
+
+	const auto normalsField = m_model.meshes[meshIdx]
+		.primitives[primitiveIdx].attributes.find("NORMAL");
+
+	if (normalsField != m_model.meshes[meshIdx]
+		.primitives[primitiveIdx].attributes.end()) {
 		copyNormals(outVertices, normalsField->second);
 	}
 
-	const auto tCoordsField = m_model.meshes[meshIndex]
-		.primitives[primitiveIndex].attributes.find("TEXCOORD_0");
+	const auto tCoordsField = m_model.meshes[meshIdx]
+		.primitives[primitiveIdx].attributes.find("TEXCOORD_0");
 
-	if (tCoordsField != m_model.meshes[meshIndex]
-		.primitives[primitiveIndex].attributes.end()) {
+	if (tCoordsField != m_model.meshes[meshIdx]
+		.primitives[primitiveIdx].attributes.end()) {
 		copyTCoords(outVertices, tCoordsField->second);
 	}
+
+	return vertices;
 }
 
 std::size_t CGLTFMeshFileLoader::ModelParser::getMeshCount() const
@@ -313,6 +300,14 @@ std::size_t CGLTFMeshFileLoader::ModelParser::getIndicesAccessorIdx(
 		std::size_t primitiveIdx) const
 {
 	return m_model.meshes[meshIdx].primitives[primitiveIdx].indices;
+}
+
+std::size_t CGLTFMeshFileLoader::ModelParser::getPositionAccessorIdx(
+		std::size_t meshIdx,
+		std::size_t primitiveIdx) const
+{
+	return m_model.meshes[meshIdx].primitives[primitiveIdx]
+		.attributes.find("POSITION")->second;
 }
 
 bool CGLTFMeshFileLoader::tryParseGLTF(io::IReadFile* file,
