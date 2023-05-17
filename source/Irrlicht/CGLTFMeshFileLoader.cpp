@@ -22,6 +22,17 @@
 #include <utility>
 #include <vector>
 
+/* Notes on the coordinate system.
+ *
+ * glTF uses a right-handed coordinate system where +Z is the
+ * front-facing axis, and Irrlicht uses a left-handed coordinate
+ * system where -Z is the front-facing axis.
+ * We convert between them by reflecting the mesh across the X axis.
+ * Doing this correctly requires negating the Z coordinate on
+ * vertex positions and normals, and reversing the winding order
+ * of the vertex indices.
+ */
+
 // A helper function to disable tinygltf embedded image loading
 static bool dummyImageLoader(tinygltf::Image *a,
 		const int b, std::string *c,
@@ -115,8 +126,6 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 			meshIndex,
 			primitiveIndex);
 
-		// Inverse the order of indices due to the axis of the model being
-		// inverted when going from left handed to right handed coordinates
 		std::reverse(indicesBuffer.begin(),indicesBuffer.end());
 
 		// Create the mesh buffer
@@ -217,8 +226,6 @@ core::vector3df CGLTFMeshFileLoader::ModelParser::readVec3DF(
 		const BufferOffset& readFrom,
 		const float scale = 1.0f)
 {
-	// glTF's coordinate system is right-handed, Irrlicht's is left-handed
-	// glTF's +Z axis corresponds to Irrlicht's -Z axis
 	return core::vector3df(
 		scale * readPrimitive<float>(readFrom),
 		scale * readPrimitive<float>(BufferOffset(readFrom, sizeof(float))),
