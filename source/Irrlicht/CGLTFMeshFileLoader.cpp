@@ -19,6 +19,7 @@
 #include <memory>
 #include <string>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 // A helper function to disable tinygltf embedded image loading
@@ -106,7 +107,7 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 		std::vector<u16> indicesBuffer(model.accessors[
 			indicesAccessorId].count);
 
-		ModelParser parser(model);
+		ModelParser parser(std::move(model));
 
 		parser.getIndices(indicesAccessorId, indicesBuffer);
 		parser.getVertices(positionAccessorId,
@@ -137,6 +138,12 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 
 CGLTFMeshFileLoader::ModelParser::ModelParser(
 		const tinygltf::Model& model)
+	: m_model(model)
+{
+}
+
+CGLTFMeshFileLoader::ModelParser::ModelParser(
+		const tinygltf::Model&& model)
 	: m_model(model)
 {
 }

@@ -58,6 +58,8 @@ private:
 	public:
 		ModelParser(const tinygltf::Model& model);
 
+		ModelParser(const tinygltf::Model&& model);
+
 		void getIndices(const std::size_t accessorId,
 				std::vector<u16>& outIndices) const;
 
