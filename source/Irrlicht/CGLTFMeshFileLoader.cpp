@@ -106,9 +106,13 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 		std::vector<u16> indicesBuffer(model.accessors[
 			indicesAccessorId].count);
 
-		getIndices(model, indicesAccessorId, indicesBuffer);
-		getVertices(model, positionAccessorId, verticesBuffer,
-			mesh_index, primitive_index);
+		ModelParser parser(model);
+
+		parser.getIndices(indicesAccessorId, indicesBuffer);
+		parser.getVertices(positionAccessorId,
+			verticesBuffer,
+			mesh_index,
+			primitive_index);
 
 		// Inverse the order of indices due to the axis of the model being
 		// inverted when going from left handed to right handed coordinates
@@ -131,8 +135,59 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 	return animatedMesh;
 }
 
+CGLTFMeshFileLoader::ModelParser::ModelParser(
+		const tinygltf::Model& model)
+	: m_model(model)
+{
+}
+
+void CGLTFMeshFileLoader::ModelParser::getIndices(
+		const std::size_t accessorId,
+		std::vector<u16>& outIndices) const
+{
+	const auto& view = m_model.bufferViews[
+		m_model.accessors[accessorId].bufferView];
+	const auto& modelIndices = m_model.buffers[view.buffer];
+
+	auto buffOffset = BufferOffset(modelIndices.data, view.byteOffset);
+	auto count = m_model.accessors[accessorId].count;
+
+	for (std::size_t i = 0; i < count; i++) {
+		outIndices[i] = readPrimitive<u16>(BufferOffset(
+			buffOffset, i * sizeof(u16)));
+	}
+}
+
+//Returns a tuple of the current counts (current_vertex_index,
+//	current_normals_index, current_tcoords_index)
+void CGLTFMeshFileLoader::ModelParser::getVertices(
+		const std::size_t accessorId,
+		Span<video::S3DVertex>& outVertices,
+		std::size_t meshIndex,
+		std::size_t primitiveIndex) const
+{
+	copyPositions(outVertices, accessorId);
+
+	const auto normalsField = m_model.meshes[meshIndex]
+		.primitives[primitiveIndex].attributes.find("NORMAL");
+
+	if (normalsField != m_model.meshes[meshIndex]
+		.primitives[primitiveIndex].attributes.end()) {
+		copyNormals(outVertices, normalsField->second);
+	}
+
+	const auto tCoordsField = m_model.meshes[meshIndex]
+		.primitives[primitiveIndex].attributes.find("TEXCOORD_0");
+
+	if (tCoordsField != m_model.meshes[meshIndex]
+		.primitives[primitiveIndex].attributes.end()) {
+		copyTCoords(outVertices, tCoordsField->second);
+	}
+}
+
 template <typename T>
-T CGLTFMeshFileLoader::readPrimitive(const BufferOffset& readFrom)
+T CGLTFMeshFileLoader::ModelParser::readPrimitive(
+		const BufferOffset& readFrom)
 {
 	unsigned char d[sizeof(T)]{};
 	for (std::size_t i = 0; i < sizeof(T); ++i) {
@@ -143,7 +198,7 @@ T CGLTFMeshFileLoader::readPrimitive(const BufferOffset& readFrom)
 	return dest;
 }
 
-core::vector2df CGLTFMeshFileLoader::readVec2DF(
+core::vector2df CGLTFMeshFileLoader::ModelParser::readVec2DF(
 		const CGLTFMeshFileLoader::BufferOffset& readFrom)
 {
 	return core::vector2df(readPrimitive<float>(readFrom),
@@ -151,8 +206,8 @@ core::vector2df CGLTFMeshFileLoader::readVec2DF(
 
 }
 
-core::vector3df CGLTFMeshFileLoader::readVec3DF(
-		const CGLTFMeshFileLoader::BufferOffset& readFrom,
+core::vector3df CGLTFMeshFileLoader::ModelParser::readVec3DF(
+		const BufferOffset& readFrom,
 		const float scale = 1.0f)
 {
 	// glTF's coordinate system is right-handed, Irrlicht's is left-handed
@@ -164,33 +219,33 @@ core::vector3df CGLTFMeshFileLoader::readVec3DF(
 		sizeof(float))));
 }
 
-void CGLTFMeshFileLoader::copyPositions(const tinygltf::Model& model,
+void CGLTFMeshFileLoader::ModelParser::copyPositions(
 		const Span<video::S3DVertex> vertices,
-		const std::size_t accessorId)
+		const std::size_t accessorId) const
 {
 
-	const auto& view = model.bufferViews[
-		model.accessors[accessorId].bufferView];
-	const auto& buffer = model.buffers[view.buffer];
-	const auto count = model.accessors[accessorId].count;
-
-	float scale = getScale(model);
+	const auto& view = m_model.bufferViews[
+		m_model.accessors[accessorId].bufferView];
+	const auto& buffer = m_model.buffers[view.buffer];
+	const auto count = m_model.accessors[accessorId].count;
 
 	for (std::size_t i = 0; i < count; i++) {
 		const auto v = readVec3DF(BufferOffset(
-			buffer.data, view.byteOffset + (3 * sizeof(float) * i)),scale);
+			buffer.data,
+			view.byteOffset + (3 * sizeof(float) * i)),
+			getScale());
 		vertices.buffer[i].Pos = v;
 	}
 }
 
-void CGLTFMeshFileLoader::copyNormals(const tinygltf::Model& model,
+void CGLTFMeshFileLoader::ModelParser::copyNormals(
 		const Span<video::S3DVertex> vertices,
-		const std::size_t accessorId)
+		const std::size_t accessorId) const
 {
-	const auto& view = model.bufferViews[
-		model.accessors[accessorId].bufferView];
-	const auto& buffer = model.buffers[view.buffer];
-	const auto count = model.accessors[accessorId].count;
+	const auto& view = m_model.bufferViews[
+		m_model.accessors[accessorId].bufferView];
+	const auto& buffer = m_model.buffers[view.buffer];
+	const auto count = m_model.accessors[accessorId].count;
 	
 	for (std::size_t i = 0; i < count; i++) {
 		const auto n = readVec3DF(BufferOffset( buffer.data,
@@ -199,14 +254,14 @@ void CGLTFMeshFileLoader::copyNormals(const tinygltf::Model& model,
 	}
 }
 
-void CGLTFMeshFileLoader::copyTCoords(const tinygltf::Model& model,
+void CGLTFMeshFileLoader::ModelParser::copyTCoords(
 		const Span<video::S3DVertex> vertices,
-		const std::size_t accessorId)
+		const std::size_t accessorId) const
 {
-	const auto& view = model.bufferViews[
-		model.accessors[accessorId].bufferView];
-	const auto& buffer = model.buffers[view.buffer];
-	const auto count = model.accessors[accessorId].count;
+	const auto& view = m_model.bufferViews[
+		m_model.accessors[accessorId].bufferView];
+	const auto& buffer = m_model.buffers[view.buffer];
+	const auto count = m_model.accessors[accessorId].count;
 
 	for (std::size_t i = 0; i < count; ++i) {
 		const auto t = readVec2DF(BufferOffset(
@@ -215,48 +270,13 @@ void CGLTFMeshFileLoader::copyTCoords(const tinygltf::Model& model,
 	}
 }
 
-void CGLTFMeshFileLoader::getIndices(const tinygltf::Model& model,
-		const std::size_t accessorId,
-		std::vector<u16>& indicesBuffer)
+float CGLTFMeshFileLoader::ModelParser::getScale() const
 {
-	const auto& view = model.bufferViews[
-		model.accessors[accessorId].bufferView];
-	const auto& modelIndices = model.buffers[view.buffer];
-
-	auto buffOffset = BufferOffset(modelIndices.data, view.byteOffset);
-	auto count = model.accessors[accessorId].count;
-
-	for (std::size_t i = 0; i < count; i++) {
-		indicesBuffer[i] = readPrimitive<u16>(BufferOffset(
-			buffOffset, i * sizeof(u16)));
+	if (m_model.nodes[0].scale.size() > 0) {
+		return static_cast<float>(m_model.nodes[0].scale[0]);
 	}
-}
 
-//Returns a tuple of the current counts (current_vertex_index,
-//	current_normals_index, current_tcoords_index)
-void CGLTFMeshFileLoader::getVertices(const tinygltf::Model& model,
-		const std::size_t accessorId,
-		Span<video::S3DVertex>& verticesBuffer,
-		std::size_t mesh_index,
-		std::size_t primitive_index)
-{
-	copyPositions(model, verticesBuffer, accessorId);
-
-	const auto normalsField = model.meshes[mesh_index]
-		.primitives[primitive_index].attributes.find("NORMAL");
-
-	if (normalsField != model.meshes[mesh_index]
-		.primitives[primitive_index].attributes.end()) {
-		copyNormals(model, verticesBuffer, normalsField->second);
-	}
-	
-	const auto tCoordsField = model.meshes[mesh_index]
-		.primitives[primitive_index].attributes.find("TEXCOORD_0");
-
-	if (tCoordsField != model.meshes[mesh_index]
-		.primitives[primitive_index].attributes.end()) {
-		copyTCoords(model, verticesBuffer, tCoordsField->second);
-	}
+	return 1.0f;
 }
 
 bool CGLTFMeshFileLoader::tryParseGLTF(io::IReadFile* file,
@@ -279,14 +299,6 @@ bool CGLTFMeshFileLoader::tryParseGLTF(io::IReadFile* file,
 
 	return loader.LoadASCIIFromString(&model, &err, &warn, buf.get(),
 		file->getSize(), "", 1);
-}
-
-float CGLTFMeshFileLoader::getScale(const tinygltf::Model& model)
-{
-	if (model.nodes[0].scale.size() > 0) {
-		return static_cast<float>(model.nodes[0].scale[0]);
-	}
-	return 1.0f;
 }
 
 } // namespace scene

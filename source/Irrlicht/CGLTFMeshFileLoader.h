@@ -4,6 +4,7 @@
 #include "IAnimatedMesh.h"
 #include "IMeshLoader.h"
 #include "IReadFile.h"
+#include "irrTypes.h"
 #include "path.h"
 #include "S3DVertex.h"
 #include "vector2d.h"
@@ -53,42 +54,45 @@ private:
 		int m_filesize;
 	};
 
-	template <typename T>
-	static T readPrimitive(const BufferOffset& readFrom);
+	class ModelParser {
+	public:
+		ModelParser(const tinygltf::Model& model);
 
-	static core::vector2df readVec2DF(
-			const BufferOffset& readFrom);
+		void getIndices(const std::size_t accessorId,
+				std::vector<u16>& outIndices) const;
 
-	static core::vector3df readVec3DF(
-			const BufferOffset& readFrom,
-			const float scale);
-
-	static void copyPositions(const tinygltf::Model& model,
-			const Span<video::S3DVertex> vertices,
-			const std::size_t accessorId);
-
-	static void copyNormals(const tinygltf::Model& model,
-			const Span<video::S3DVertex> vertices,
-			const std::size_t accessorId);
-
-	static void copyTCoords(const tinygltf::Model& model,
-			const Span<video::S3DVertex> vertices,
-			const std::size_t accessorId);
-
-	static void getIndices(const tinygltf::Model& model,
-			const std::size_t accessorId,
-			std::vector<u16>& indicesBuffer);
-
-	static void getVertices(const tinygltf::Model& model,
-			const std::size_t accessorId,
+		void getVertices(const std::size_t accessorId,
 			Span<video::S3DVertex>& outVertices,
 			std::size_t meshIndex,
-			std::size_t primitiveIndex);
+			std::size_t primitiveIndex) const;
+
+	private:
+		tinygltf::Model m_model;
+
+		template <typename T>
+		static T readPrimitive(const BufferOffset& readFrom);
+
+		static core::vector2df readVec2DF(
+				const BufferOffset& readFrom);
+
+		static core::vector3df readVec3DF(
+				const BufferOffset& readFrom,
+				const float scale);
+
+		void copyPositions(const Span<video::S3DVertex> vertices,
+				const std::size_t accessorId) const;
+
+		void copyNormals(const Span<video::S3DVertex> vertices,
+			const std::size_t accessorId) const;
+
+		void copyTCoords(const Span<video::S3DVertex> vertices,
+			const std::size_t accessorId) const;
+
+		float getScale() const;
+	};
 
 	static bool tryParseGLTF(io::IReadFile* file,
 			tinygltf::Model& model);
-
-	static float getScale(const tinygltf::Model& model);
 };
 
 } // namespace scene
