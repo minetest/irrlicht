@@ -193,7 +193,7 @@ namespace scene
 		or the main buffer is of standard type. Otherwise, behavior is
 		undefined. Also can't append it's own vertices/indices to itself.
 		*/
-		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices) IRR_OVERRIDE
+		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices, bool updateBoundingBox=true) IRR_OVERRIDE
 		{
 			if (vertices == getVertices() || indices == getIndices())	// can't do that because we're doing reallocations on those blocks
 				return;
@@ -205,7 +205,15 @@ namespace scene
 			for (i=0; i<numVertices; ++i)
 			{
 				Vertices.push_back(static_cast<const T*>(vertices)[i]);
-				BoundingBox.addInternalPoint(static_cast<const T*>(vertices)[i].Pos);
+			}
+
+			if ( updateBoundingBox && numVertices > 0)
+			{
+				if ( vertexCount == 0 )
+					BoundingBox.reset(static_cast<const T*>(vertices)[0].Pos);
+
+				for (i=0; i<numVertices; ++i)
+					BoundingBox.addInternalPoint(static_cast<const T*>(vertices)[i].Pos);
 			}
 
 			Indices.reallocate(getIndexCount()+numIndices, false);
@@ -219,12 +227,12 @@ namespace scene
 
 
 		//! Append the meshbuffer to the current buffer
-		virtual void append(const IMeshBuffer* const other) IRR_OVERRIDE
+		virtual void append(const IMeshBuffer* const other, bool updateBoundingBox=true) IRR_OVERRIDE
 		{
 			if ( getVertexType() != other->getVertexType() )
 				return;
 
-			append(other->getVertices(), other->getVertexCount(), other->getIndices(), other->getIndexCount());
+			append(other->getVertices(), other->getVertexCount(), other->getIndices(), other->getIndexCount(), updateBoundingBox);
 		}
 
 

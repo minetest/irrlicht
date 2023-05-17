@@ -108,20 +108,20 @@ namespace scene
 		\param numVertices Number of vertices in the array.
 		\param indices Pointer to index array.
 		\param numIndices Number of indices in array. */
-		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices) IRR_OVERRIDE
+		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices, bool updateBoundingBox=true) IRR_OVERRIDE
 		{
 			// We simply assume it has the same vertex and index type as this object. If other types are passed this will crash
-			append(getVertexType(), vertices, numVertices, getIndexType(), indices, numIndices);
+			append(getVertexType(), vertices, numVertices, getIndexType(), indices, numIndices, updateBoundingBox);
 		}
 
 		//! Append the meshbuffer to the current buffer
 		/** \param other Buffer to append to this one. */
-		virtual void append(const IMeshBuffer* const other) IRR_OVERRIDE
+		virtual void append(const IMeshBuffer* const other, bool updateBoundingBox=true) IRR_OVERRIDE
 		{
-			append(other->getVertexType(), other->getVertices(), other->getVertexCount(), other->getIndexType(), other->getIndices(), other->getIndexCount());
+			append(other->getVertexType(), other->getVertices(), other->getVertexCount(), other->getIndexType(), other->getIndices(), other->getIndexCount(), updateBoundingBox);
 		}
 
-		void append(video::E_VERTEX_TYPE vertexType, const void* const vertices, u32 numVertices, video::E_INDEX_TYPE indexType, const void* const indices, u32 numIndices)
+		void append(video::E_VERTEX_TYPE vertexType, const void* const vertices, u32 numVertices, video::E_INDEX_TYPE indexType, const void* const indices, u32 numIndices, bool updateBoundingBox)
 		{
 			if (vertices == getVertices() || indices == getIndices())	// can't do that because we're doing reallocations on those blocks
 				return;
@@ -129,29 +129,49 @@ namespace scene
 			const u32 vertexCount = getVertexCount();
 
 			VertexBuffer->reallocate(vertexCount+numVertices, false);
-			switch ( vertexType )
+			if ( vertexType == getVertexType() )
 			{
-				case video::EVT_STANDARD:
-					for (u32 i=0; i<numVertices; ++i)
-					{
-						VertexBuffer->push_back(static_cast<const video::S3DVertex*>(vertices)[i]);
-						BoundingBox.addInternalPoint(static_cast<const video::S3DVertex*>(vertices)[i].Pos);
-					}
-					break;
-				case video::EVT_2TCOORDS:
-					for (u32 i=0; i<numVertices; ++i)
-					{
-						VertexBuffer->push_back(static_cast<const video::S3DVertex2TCoords*>(vertices)[i]);
-						BoundingBox.addInternalPoint(static_cast<const video::S3DVertex2TCoords*>(vertices)[i].Pos);
-					}
-					break;
-				case video::EVT_TANGENTS:
-					for (u32 i=0; i<numVertices; ++i)
-					{
-						VertexBuffer->push_back(static_cast<const video::S3DVertexTangents*>(vertices)[i]);
-						BoundingBox.addInternalPoint(static_cast<const video::S3DVertexTangents*>(vertices)[i].Pos);
-					}
-					break;
+				const irr::u32 typeSize = getVertexPitchFromType(vertexType);
+				VertexBuffer->set_used(vertexCount+numVertices);
+				irr::u8* target = &static_cast<irr::u8*>(VertexBuffer->pointer())[vertexCount*typeSize];
+				memcpy(target, vertices, numVertices*typeSize);
+			}
+			else
+			{
+				switch ( vertexType )
+				{
+					case video::EVT_STANDARD:
+						for (u32 i=0; i<numVertices; ++i)
+						{
+							VertexBuffer->push_back(static_cast<const video::S3DVertex*>(vertices)[i]);
+						}
+						break;
+					case video::EVT_2TCOORDS:
+						for (u32 i=0; i<numVertices; ++i)
+						{
+							VertexBuffer->push_back(static_cast<const video::S3DVertex2TCoords*>(vertices)[i]);
+						}
+						break;
+					case video::EVT_TANGENTS:
+						for (u32 i=0; i<numVertices; ++i)
+						{
+							VertexBuffer->push_back(static_cast<const video::S3DVertexTangents*>(vertices)[i]);
+						}
+						break;
+				}
+			}
+
+			if ( updateBoundingBox && numVertices > 0)
+			{
+				if ( vertexCount == 0 )
+					BoundingBox.reset( static_cast<const video::S3DVertex*>(vertices)[0].Pos );
+
+				const u32 typePitch = getVertexPitchFromType(vertexType);
+				const irr::u8* v8 = static_cast<const irr::u8*>(vertices);
+				for (u32 i=0; i<numVertices; ++i, v8 += typePitch)
+				{
+					BoundingBox.addInternalPoint(reinterpret_cast<const video::S3DVertex*>(v8)->Pos);
+				}
 			}
 
 			IndexBuffer->reallocate(getIndexCount()+numIndices, false);

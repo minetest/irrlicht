@@ -187,13 +187,13 @@ namespace scene
 
 
 		//! append the vertices and indices to the current buffer
-		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices)  IRR_OVERRIDE 
+		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices, bool updateBoundingBox)  IRR_OVERRIDE 
 		{
 			// can't do that as it doesn't own the vertex memory
 		}
 
 		//! append the meshbuffer to the current buffer
-		virtual void append(const IMeshBuffer* const other) IRR_OVERRIDE 
+		virtual void append(const IMeshBuffer* const other, bool updateBoundingBox) IRR_OVERRIDE 
 		{
 			// can't do that as it doesn't own the vertex memory
 		}
