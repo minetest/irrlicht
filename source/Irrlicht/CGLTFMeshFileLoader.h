@@ -60,13 +60,20 @@ private:
 
 		ModelParser(const tinygltf::Model&& model);
 
-		void getIndices(const std::size_t accessorId,
-				std::vector<u16>& outIndices) const;
+		/* Gets indices for the given mesh/primitive.
+		 *
+		 * Values are return in Irrlicht winding order.
+		 */
+		std::vector<u16> getIndices(std::size_t meshIdx,
+				std::size_t primitiveIdx) const;
 
 		void getVertices(const std::size_t accessorId,
 			Span<video::S3DVertex>& outVertices,
 			std::size_t meshIndex,
 			std::size_t primitiveIndex) const;
+
+		std::size_t getMeshCount() const;
+		std::size_t getPrimitiveCount(std::size_t meshIdx) const;
 
 	private:
 		tinygltf::Model m_model;
@@ -91,6 +98,15 @@ private:
 				const std::size_t accessorId) const;
 
 		float getScale() const;
+
+		std::size_t getElemCount(std::size_t accessorIdx) const;
+
+		BufferOffset getBuffer(std::size_t meshIdx,
+				std::size_t primitiveIdx,
+				std::size_t accessorIdx) const;
+
+		std::size_t getIndicesAccessorIdx(std::size_t meshIdx,
+				std::size_t primitiveIdx) const;
 	};
 
 	static bool tryParseGLTF(io::IReadFile* file,

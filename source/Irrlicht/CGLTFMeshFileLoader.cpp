@@ -84,63 +84,47 @@ bool CGLTFMeshFileLoader::isALoadableFileExtension(
 
 IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 {
-	tinygltf::Model model{};
+	tinygltf::Model model {};
 
 	if (file->getSize() == 0 || !tryParseGLTF(file, model)) {
 		return nullptr;
 	}
 
-	// Create the base mesh
-	SMesh* mesh { new SMesh {} };
+	ModelParser parser(std::move(model));
+	SMesh* baseMesh(new SMesh {});
 
 	// Iterate models
 	for (std::size_t meshIndex = 0;
-		meshIndex < model.meshes.size(); meshIndex++) {
-	// Iterate primitives
-	for (std::size_t primitiveIndex = 0; primitiveIndex < model
-		.meshes[meshIndex].primitives.size(); primitiveIndex++) {
+		meshIndex < parser.getMeshCount(); meshIndex++) {
+		// Iterate primitives
+		for (std::size_t primitiveIndex = 0; primitiveIndex < parser.getPrimitiveCount(meshIndex); primitiveIndex++) {
+			const auto positionAccessorId = model.meshes[meshIndex]
+				.primitives[primitiveIndex].attributes["POSITION"];
 
-		const auto positionAccessorId = model.meshes[meshIndex]
-			.primitives[primitiveIndex].attributes["POSITION"];
-		const auto indicesAccessorId = model.meshes[meshIndex]
-			.primitives[primitiveIndex].indices;
+			// Creates counts for preallocation
+			std::size_t vertexCount = model.accessors[positionAccessorId].count;
 
-		// Creates counts for preallocation
-		std::size_t vertexCount = model.accessors[positionAccessorId].count;
+			// We must count to create containers for the data
+			// Create new buffer for vertices, positions, and normals
+			auto* vertexBuffer = new video::S3DVertex[vertexCount]();
+			// This is used to copy data into the vertexBuffer
+			Span<video::S3DVertex> verticesBuffer{vertexBuffer,vertexCount};
+			auto indices = parser.getIndices(meshIndex, primitiveIndex);
+			parser.getVertices(positionAccessorId,
+				verticesBuffer,
+				meshIndex,
+				primitiveIndex);
 
-		// We must count to create containers for the data
-		// Create new buffer for vertices, positions, and normals
-		auto* vertexBuffer = new video::S3DVertex[vertexCount]();
-		// This is used to copy data into the vertexBuffer
-		Span<video::S3DVertex> verticesBuffer{vertexBuffer,vertexCount};
-		// Create dynamic indices buffer so it's easier to work with.
-		// Preallocate needed resources to boost game startup speed
-		std::vector<u16> indicesBuffer(model.accessors[
-			indicesAccessorId].count);
-
-		ModelParser parser(std::move(model));
-
-		parser.getIndices(indicesAccessorId, indicesBuffer);
-		parser.getVertices(positionAccessorId,
-			verticesBuffer,
-			meshIndex,
-			primitiveIndex);
-
-		std::reverse(indicesBuffer.begin(),indicesBuffer.end());
-
-		// Create the mesh buffer
-		SMeshBuffer* meshbuf { new SMeshBuffer {} };
-		meshbuf->append(vertexBuffer, vertexCount, indicesBuffer.data(),
-			indicesBuffer.size());
-
-		mesh->addMeshBuffer(meshbuf);
-
-	}
+			SMeshBuffer* meshbuf(new SMeshBuffer {});
+			meshbuf->append(vertexBuffer, vertexCount,
+				indices.data(), indices.size());
+			baseMesh->addMeshBuffer(meshbuf);
+		}
 	}
 
 	// Create the mesh animations
 	SAnimatedMesh* animatedMesh { new SAnimatedMesh {} };
-	animatedMesh->addMesh(mesh);
+	animatedMesh->addMesh(baseMesh);
 
 	return animatedMesh;
 }
@@ -157,21 +141,22 @@ CGLTFMeshFileLoader::ModelParser::ModelParser(
 {
 }
 
-void CGLTFMeshFileLoader::ModelParser::getIndices(
-		const std::size_t accessorId,
-		std::vector<u16>& outIndices) const
+std::vector<u16> CGLTFMeshFileLoader::ModelParser::getIndices(
+		std::size_t meshIdx,
+		std::size_t primitiveIdx) const
 {
-	const auto& view = m_model.bufferViews[
-		m_model.accessors[accessorId].bufferView];
-	const auto& modelIndices = m_model.buffers[view.buffer];
+	auto accessorIdx = getIndicesAccessorIdx(meshIdx, primitiveIdx);
+	auto buf = getBuffer(meshIdx, primitiveIdx, accessorIdx);
 
-	auto buffOffset = BufferOffset(modelIndices.data, view.byteOffset);
-	auto count = m_model.accessors[accessorId].count;
-
-	for (std::size_t i = 0; i < count; i++) {
-		outIndices[i] = readPrimitive<u16>(BufferOffset(
-			buffOffset, i * sizeof(u16)));
+	std::vector<u16> indices{};
+	std::size_t count = getElemCount(accessorIdx);
+	for (std::size_t i = 0; i < count; ++i) {
+		std::size_t elemIdx = count - i - 1;
+		indices.push_back(readPrimitive<u16>(
+			BufferOffset(buf, elemIdx * sizeof(u16))));
 	}
+
+	return indices;
 }
 
 //Returns a tuple of the current counts (current_vertex_index,
@@ -200,6 +185,18 @@ void CGLTFMeshFileLoader::ModelParser::getVertices(
 		copyTCoords(outVertices, tCoordsField->second);
 	}
 }
+
+std::size_t CGLTFMeshFileLoader::ModelParser::getMeshCount() const
+{
+	return m_model.meshes.size();
+}
+
+std::size_t CGLTFMeshFileLoader::ModelParser::getPrimitiveCount(
+		std::size_t meshIdx) const
+{
+	return m_model.meshes[meshIdx].primitives.size();
+}
+
 
 template <typename T>
 T CGLTFMeshFileLoader::ModelParser::readPrimitive(
@@ -262,7 +259,7 @@ void CGLTFMeshFileLoader::ModelParser::copyNormals(
 	const auto count = m_model.accessors[accessorId].count;
 	
 	for (std::size_t i = 0; i < count; i++) {
-		const auto n = readVec3DF(BufferOffset( buffer.data,
+		const auto n = readVec3DF(BufferOffset(buffer.data,
 			view.byteOffset + 3 * sizeof(float) * i ));
 		vertices.buffer[i].Normal = n;
 	}
@@ -291,6 +288,31 @@ float CGLTFMeshFileLoader::ModelParser::getScale() const
 	}
 
 	return 1.0f;
+}
+
+std::size_t CGLTFMeshFileLoader::ModelParser::getElemCount(
+		std::size_t accessorIdx) const
+{
+	return m_model.accessors[accessorIdx].count;
+}
+
+CGLTFMeshFileLoader::BufferOffset CGLTFMeshFileLoader::ModelParser::getBuffer(
+		std::size_t meshIdx,
+		std::size_t primitiveIdx,
+		std::size_t accessorIdx) const
+{
+	const auto& accessor = m_model.accessors[accessorIdx];
+	const auto& view = m_model.bufferViews[accessor.bufferView];
+	const auto& buffer = m_model.buffers[view.buffer];
+
+	return BufferOffset(buffer.data, view.byteOffset);
+}
+
+std::size_t CGLTFMeshFileLoader::ModelParser::getIndicesAccessorIdx(
+		std::size_t meshIdx,
+		std::size_t primitiveIdx) const
+{
+	return m_model.meshes[meshIdx].primitives[primitiveIdx].indices;
 }
 
 bool CGLTFMeshFileLoader::tryParseGLTF(io::IReadFile* file,
