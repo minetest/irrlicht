@@ -369,7 +369,7 @@ get_property(tinygltf_COMPILE_DEFS
 	PROPERTY INTERFACE_COMPILE_DEFINITIONS
 )
 
-target_include_directories(IRRMESHOBJ PRIVATE ${tinygltf_INCLUDE_DIRS})
+target_include_directories(IRRMESHOBJ PUBLIC ${tinygltf_INCLUDE_DIRS})
 target_compile_definitions(IRRMESHOBJ PUBLIC ${tinygltf_COMPILE_DEFS})
 
 add_library(IRROBJ OBJECT
