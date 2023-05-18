@@ -90,7 +90,7 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 		return nullptr;
 	}
 
-	ModelParser parser(std::move(model));
+	MeshExtractor parser(std::move(model));
 	SMesh* baseMesh(new SMesh {});
 
 	for (std::size_t i = 0; i < parser.getMeshCount(); ++i) {
@@ -111,19 +111,19 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 	return animatedMesh;
 }
 
-CGLTFMeshFileLoader::ModelParser::ModelParser(
+CGLTFMeshFileLoader::MeshExtractor::MeshExtractor(
 		const tinygltf::Model& model) noexcept
 	: m_model(model)
 {
 }
 
-CGLTFMeshFileLoader::ModelParser::ModelParser(
+CGLTFMeshFileLoader::MeshExtractor::MeshExtractor(
 		const tinygltf::Model&& model) noexcept
 	: m_model(model)
 {
 }
 
-std::vector<u16> CGLTFMeshFileLoader::ModelParser::getIndices(
+std::vector<u16> CGLTFMeshFileLoader::MeshExtractor::getIndices(
 		const std::size_t meshIdx,
 		const std::size_t primitiveIdx) const
 {
@@ -141,7 +141,7 @@ std::vector<u16> CGLTFMeshFileLoader::ModelParser::getIndices(
 	return indices;
 }
 
-std::vector<video::S3DVertex> CGLTFMeshFileLoader::ModelParser::getVertices(
+std::vector<video::S3DVertex> CGLTFMeshFileLoader::MeshExtractor::getVertices(
 		const std::size_t meshIdx,
 		const std::size_t primitiveIdx) const
 {
@@ -173,12 +173,12 @@ std::vector<video::S3DVertex> CGLTFMeshFileLoader::ModelParser::getVertices(
 	return vertices;
 }
 
-std::size_t CGLTFMeshFileLoader::ModelParser::getMeshCount() const
+std::size_t CGLTFMeshFileLoader::MeshExtractor::getMeshCount() const
 {
 	return m_model.meshes.size();
 }
 
-std::size_t CGLTFMeshFileLoader::ModelParser::getPrimitiveCount(
+std::size_t CGLTFMeshFileLoader::MeshExtractor::getPrimitiveCount(
 		const std::size_t meshIdx) const
 {
 	return m_model.meshes[meshIdx].primitives.size();
@@ -186,7 +186,7 @@ std::size_t CGLTFMeshFileLoader::ModelParser::getPrimitiveCount(
 
 
 template <typename T>
-T CGLTFMeshFileLoader::ModelParser::readPrimitive(
+T CGLTFMeshFileLoader::MeshExtractor::readPrimitive(
 		const BufferOffset& readFrom)
 {
 	unsigned char d[sizeof(T)]{};
@@ -198,7 +198,7 @@ T CGLTFMeshFileLoader::ModelParser::readPrimitive(
 	return dest;
 }
 
-core::vector2df CGLTFMeshFileLoader::ModelParser::readVec2DF(
+core::vector2df CGLTFMeshFileLoader::MeshExtractor::readVec2DF(
 		const CGLTFMeshFileLoader::BufferOffset& readFrom)
 {
 	return core::vector2df(readPrimitive<float>(readFrom),
@@ -206,7 +206,7 @@ core::vector2df CGLTFMeshFileLoader::ModelParser::readVec2DF(
 
 }
 
-core::vector3df CGLTFMeshFileLoader::ModelParser::readVec3DF(
+core::vector3df CGLTFMeshFileLoader::MeshExtractor::readVec3DF(
 		const BufferOffset& readFrom,
 		const float scale)
 {
@@ -217,7 +217,7 @@ core::vector3df CGLTFMeshFileLoader::ModelParser::readVec3DF(
 		sizeof(float))));
 }
 
-void CGLTFMeshFileLoader::ModelParser::copyPositions(
+void CGLTFMeshFileLoader::MeshExtractor::copyPositions(
 		const Span<video::S3DVertex> vertices,
 		const std::size_t accessorId) const
 {
@@ -236,7 +236,7 @@ void CGLTFMeshFileLoader::ModelParser::copyPositions(
 	}
 }
 
-void CGLTFMeshFileLoader::ModelParser::copyNormals(
+void CGLTFMeshFileLoader::MeshExtractor::copyNormals(
 		const Span<video::S3DVertex> vertices,
 		const std::size_t accessorId) const
 {
@@ -252,7 +252,7 @@ void CGLTFMeshFileLoader::ModelParser::copyNormals(
 	}
 }
 
-void CGLTFMeshFileLoader::ModelParser::copyTCoords(
+void CGLTFMeshFileLoader::MeshExtractor::copyTCoords(
 		const Span<video::S3DVertex> vertices,
 		const std::size_t accessorId) const
 {
@@ -268,7 +268,7 @@ void CGLTFMeshFileLoader::ModelParser::copyTCoords(
 	}
 }
 
-float CGLTFMeshFileLoader::ModelParser::getScale() const
+float CGLTFMeshFileLoader::MeshExtractor::getScale() const
 {
 	if (m_model.nodes[0].scale.size() > 0) {
 		return static_cast<float>(m_model.nodes[0].scale[0]);
@@ -277,13 +277,13 @@ float CGLTFMeshFileLoader::ModelParser::getScale() const
 	return 1.0f;
 }
 
-std::size_t CGLTFMeshFileLoader::ModelParser::getElemCount(
+std::size_t CGLTFMeshFileLoader::MeshExtractor::getElemCount(
 		const std::size_t accessorIdx) const
 {
 	return m_model.accessors[accessorIdx].count;
 }
 
-CGLTFMeshFileLoader::BufferOffset CGLTFMeshFileLoader::ModelParser::getBuffer(
+CGLTFMeshFileLoader::BufferOffset CGLTFMeshFileLoader::MeshExtractor::getBuffer(
 		const std::size_t meshIdx,
 		const std::size_t primitiveIdx,
 		const std::size_t accessorIdx) const
@@ -295,14 +295,14 @@ CGLTFMeshFileLoader::BufferOffset CGLTFMeshFileLoader::ModelParser::getBuffer(
 	return BufferOffset(buffer.data, view.byteOffset);
 }
 
-std::size_t CGLTFMeshFileLoader::ModelParser::getIndicesAccessorIdx(
+std::size_t CGLTFMeshFileLoader::MeshExtractor::getIndicesAccessorIdx(
 		const std::size_t meshIdx,
 		const std::size_t primitiveIdx) const
 {
 	return m_model.meshes[meshIdx].primitives[primitiveIdx].indices;
 }
 
-std::size_t CGLTFMeshFileLoader::ModelParser::getPositionAccessorIdx(
+std::size_t CGLTFMeshFileLoader::MeshExtractor::getPositionAccessorIdx(
 		const std::size_t meshIdx,
 		const std::size_t primitiveIdx) const
 {
