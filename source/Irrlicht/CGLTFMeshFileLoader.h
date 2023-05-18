@@ -32,13 +32,6 @@ public:
 	IAnimatedMesh* createMesh(io::IReadFile* file) override;
 
 private:
-	template <typename T>
-	struct Span
-	{
-		T* buffer = nullptr;
-		std::size_t size = 0;
-	};
-
 	class BufferOffset
 	{
 	public:
@@ -57,6 +50,8 @@ private:
 
 	class MeshExtractor {
 	public:
+		using vertex_t = video::S3DVertex;
+
 		MeshExtractor(const tinygltf::Model& model) noexcept;
 
 		MeshExtractor(const tinygltf::Model&& model) noexcept;
@@ -68,7 +63,7 @@ private:
 		std::vector<u16> getIndices(const std::size_t meshIdx,
 				const std::size_t primitiveIdx) const;
 
-		std::vector<video::S3DVertex> getVertices(std::size_t meshIdx,
+		std::vector<vertex_t> getVertices(std::size_t meshIdx,
 				const std::size_t primitiveIdx) const;
 
 		std::size_t getMeshCount() const;
@@ -92,14 +87,14 @@ private:
 				const BufferOffset& readFrom,
 				const float scale = 1.0f);
 
-		void copyPositions(const Span<video::S3DVertex> vertices,
-				const std::size_t accessorId) const;
+		void copyPositions(const std::size_t accessorIdx,
+				std::vector<vertex_t>& vertices) const;
 
-		void copyNormals(const Span<video::S3DVertex> vertices,
-				const std::size_t accessorId) const;
+		void copyNormals(const std::size_t accessorIdx,
+				std::vector<vertex_t>& vertices) const;
 
-		void copyTCoords(const Span<video::S3DVertex> vertices,
-				const std::size_t accessorId) const;
+		void copyTCoords(const std::size_t accessorIdx,
+				std::vector<vertex_t>& vertices) const;
 
 		/* Get the scale factor from the glTF mesh information.
 		 *
@@ -109,14 +104,26 @@ private:
 
 		std::size_t getElemCount(const std::size_t accessorIdx) const;
 
-		BufferOffset getBuffer(const std::size_t meshIdx,
-				const std::size_t primitiveIdx,
-				const std::size_t accessorIdx) const;
+		BufferOffset getBuffer(const std::size_t accessorIdx) const;
 
 		std::size_t getIndicesAccessorIdx(const std::size_t meshIdx,
 				const std::size_t primitiveIdx) const;
 
 		std::size_t getPositionAccessorIdx(const std::size_t meshIdx,
+				const std::size_t primitiveIdx) const;
+
+		/* Get the accessor id of the normals of a primitive.
+		 *
+		 * -1 is returned if none are present.
+		 */
+		std::size_t getNormalAccessorIdx(const std::size_t meshIdx,
+				const std::size_t primitiveIdx) const;
+
+		/* Get the accessor id for the tcoords of a primitive.
+		 *
+		 * -1 is returned if none are present.
+		 */
+		std::size_t getTCoordAccessorIdx(const std::size_t meshIdx,
 				const std::size_t primitiveIdx) const;
 	};
 

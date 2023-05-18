@@ -18,7 +18,6 @@
 #include <cstring>
 #include <memory>
 #include <string>
-#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -133,8 +132,8 @@ std::vector<u16> CGLTFMeshFileLoader::MeshExtractor::getIndices(
 		const std::size_t meshIdx,
 		const std::size_t primitiveIdx) const
 {
-	auto accessorIdx = getIndicesAccessorIdx(meshIdx, primitiveIdx);
-	auto buf = getBuffer(meshIdx, primitiveIdx, accessorIdx);
+	const auto accessorIdx = getIndicesAccessorIdx(meshIdx, primitiveIdx);
+	const auto& buf = getBuffer(accessorIdx);
 
 	std::vector<u16> indices{};
 	const auto count = getElemCount(accessorIdx);
@@ -151,29 +150,22 @@ std::vector<video::S3DVertex> CGLTFMeshFileLoader::MeshExtractor::getVertices(
 		const std::size_t meshIdx,
 		const std::size_t primitiveIdx) const
 {
-	auto positionAccessorIdx = getPositionAccessorIdx(meshIdx, primitiveIdx);
-	auto vertexCount = getElemCount(positionAccessorIdx);
-	std::vector<video::S3DVertex> vertices{};
-	vertices.resize(vertexCount);
+	const auto positionAccessorIdx = getPositionAccessorIdx(
+			meshIdx, primitiveIdx);
+	std::vector<vertex_t> vertices{};
+	vertices.resize(getElemCount(positionAccessorIdx));
+	copyPositions(positionAccessorIdx, vertices);
 
-	Span<video::S3DVertex> outVertices {vertices.data(), vertexCount};
-
-	copyPositions(outVertices, positionAccessorIdx);
-
-	const auto normalsField = m_model.meshes[meshIdx]
-		.primitives[primitiveIdx].attributes.find("NORMAL");
-
-	if (normalsField != m_model.meshes[meshIdx]
-		.primitives[primitiveIdx].attributes.end()) {
-		copyNormals(outVertices, normalsField->second);
+	const auto normalAccessorIdx = getNormalAccessorIdx(
+			meshIdx, primitiveIdx);
+	if (normalAccessorIdx != static_cast<std::size_t>(-1)) {
+		copyNormals(normalAccessorIdx, vertices);
 	}
 
-	const auto tCoordsField = m_model.meshes[meshIdx]
-		.primitives[primitiveIdx].attributes.find("TEXCOORD_0");
-
-	if (tCoordsField != m_model.meshes[meshIdx]
-		.primitives[primitiveIdx].attributes.end()) {
-		copyTCoords(outVertices, tCoordsField->second);
+	const auto tCoordAccessorIdx = getTCoordAccessorIdx(
+			meshIdx, primitiveIdx);
+	if (tCoordAccessorIdx != static_cast<std::size_t>(-1)) {
+		copyTCoords(tCoordAccessorIdx, vertices);
 	}
 
 	return vertices;
@@ -224,53 +216,45 @@ core::vector3df CGLTFMeshFileLoader::MeshExtractor::readVec3DF(
 }
 
 void CGLTFMeshFileLoader::MeshExtractor::copyPositions(
-		const Span<video::S3DVertex> vertices,
-		const std::size_t accessorId) const
+		const std::size_t accessorIdx,
+		std::vector<vertex_t>& vertices) const
 {
 
-	const auto& view = m_model.bufferViews[
-		m_model.accessors[accessorId].bufferView];
-	const auto& buffer = m_model.buffers[view.buffer];
-	const auto count = m_model.accessors[accessorId].count;
+	const auto& buffer = getBuffer(accessorIdx);
+	const auto count = getElemCount(accessorIdx);
 
 	for (std::size_t i = 0; i < count; i++) {
-		const auto v = readVec3DF(BufferOffset(
-			buffer.data,
-			view.byteOffset + (3 * sizeof(float) * i)),
-			getScale());
-		vertices.buffer[i].Pos = v;
+		const auto v = readVec3DF(BufferOffset(buffer,
+			3 * sizeof(float) * i), getScale());
+		vertices[i].Pos = v;
 	}
 }
 
 void CGLTFMeshFileLoader::MeshExtractor::copyNormals(
-		const Span<video::S3DVertex> vertices,
-		const std::size_t accessorId) const
+		const std::size_t accessorIdx,
+		std::vector<vertex_t>& vertices) const
 {
-	const auto& view = m_model.bufferViews[
-		m_model.accessors[accessorId].bufferView];
-	const auto& buffer = m_model.buffers[view.buffer];
-	const auto count = m_model.accessors[accessorId].count;
+	const auto& buffer = getBuffer(accessorIdx);
+	const auto count = getElemCount(accessorIdx);
 	
 	for (std::size_t i = 0; i < count; i++) {
-		const auto n = readVec3DF(BufferOffset(buffer.data,
-			view.byteOffset + 3 * sizeof(float) * i ));
-		vertices.buffer[i].Normal = n;
+		const auto n = readVec3DF(BufferOffset(buffer,
+			3 * sizeof(float) * i));
+		vertices[i].Normal = n;
 	}
 }
 
 void CGLTFMeshFileLoader::MeshExtractor::copyTCoords(
-		const Span<video::S3DVertex> vertices,
-		const std::size_t accessorId) const
+		const std::size_t accessorIdx,
+		std::vector<vertex_t>& vertices) const
 {
-	const auto& view = m_model.bufferViews[
-		m_model.accessors[accessorId].bufferView];
-	const auto& buffer = m_model.buffers[view.buffer];
-	const auto count = m_model.accessors[accessorId].count;
+	const auto& buffer = getBuffer(accessorIdx);
+	const auto count = getElemCount(accessorIdx);
 
 	for (std::size_t i = 0; i < count; ++i) {
-		const auto t = readVec2DF(BufferOffset(
-			buffer.data, view.byteOffset + 2 * sizeof(float) * i));
-		vertices.buffer[i].TCoords = t;
+		const auto t = readVec2DF(BufferOffset(buffer,
+			2 * sizeof(float) * i));
+		vertices[i].TCoords = t;
 	}
 }
 
@@ -290,8 +274,6 @@ std::size_t CGLTFMeshFileLoader::MeshExtractor::getElemCount(
 }
 
 CGLTFMeshFileLoader::BufferOffset CGLTFMeshFileLoader::MeshExtractor::getBuffer(
-		const std::size_t meshIdx,
-		const std::size_t primitiveIdx,
 		const std::size_t accessorIdx) const
 {
 	const auto& accessor = m_model.accessors[accessorIdx];
@@ -314,6 +296,36 @@ std::size_t CGLTFMeshFileLoader::MeshExtractor::getPositionAccessorIdx(
 {
 	return m_model.meshes[meshIdx].primitives[primitiveIdx]
 		.attributes.find("POSITION")->second;
+}
+
+std::size_t CGLTFMeshFileLoader::MeshExtractor::getNormalAccessorIdx(
+		const std::size_t meshIdx,
+		const std::size_t primitiveIdx) const
+{
+	const auto& attributes = m_model.meshes[meshIdx]
+		.primitives[primitiveIdx].attributes;
+	const auto result = attributes.find("NORMAL");
+
+	if (result == attributes.end()) {
+		return -1;
+	} else {
+		return result->second;
+	}
+}
+
+std::size_t CGLTFMeshFileLoader::MeshExtractor::getTCoordAccessorIdx(
+		const std::size_t meshIdx,
+		const std::size_t primitiveIdx) const
+{
+	const auto& attributes = m_model.meshes[meshIdx]
+		.primitives[primitiveIdx].attributes;
+	const auto result = attributes.find("TEXCOORD_0");
+
+	if (result == attributes.end()) {
+		return -1;
+	} else {
+		return result->second;
+	}
 }
 
 bool CGLTFMeshFileLoader::tryParseGLTF(io::IReadFile* file,
