@@ -92,7 +92,18 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 
 	MeshExtractor parser(std::move(model));
 	SMesh* baseMesh(new SMesh {});
+	loadPrimitives(parser, baseMesh);
 
+	SAnimatedMesh* animatedMesh(new SAnimatedMesh {});
+	animatedMesh->addMesh(baseMesh);
+
+	return animatedMesh;
+}
+
+void CGLTFMeshFileLoader::loadPrimitives(
+		const MeshExtractor& parser,
+		SMesh* mesh)
+{
 	for (std::size_t i = 0; i < parser.getMeshCount(); ++i) {
 		for (std::size_t j = 0; j < parser.getPrimitiveCount(i); ++j) {
 			auto indices = parser.getIndices(i, j);
@@ -101,14 +112,9 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 			SMeshBuffer* meshbuf(new SMeshBuffer {});
 			meshbuf->append(vertices.data(), vertices.size(),
 				indices.data(), indices.size());
-			baseMesh->addMeshBuffer(meshbuf);
+			mesh->addMeshBuffer(meshbuf);
 		}
 	}
-
-	SAnimatedMesh* animatedMesh(new SAnimatedMesh {});
-	animatedMesh->addMesh(baseMesh);
-
-	return animatedMesh;
 }
 
 CGLTFMeshFileLoader::MeshExtractor::MeshExtractor(

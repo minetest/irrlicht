@@ -7,6 +7,7 @@
 #include "irrTypes.h"
 #include "path.h"
 #include "S3DVertex.h"
+#include "SMesh.h"
 #include "vector2d.h"
 #include "vector3d.h"
 
@@ -118,6 +119,8 @@ private:
 		std::size_t getPositionAccessorIdx(const std::size_t meshIdx,
 				const std::size_t primitiveIdx) const;
 	};
+
+	void loadPrimitives(const MeshExtractor& parser, SMesh* mesh);
 
 	static bool tryParseGLTF(io::IReadFile* file,
 			tinygltf::Model& model);
