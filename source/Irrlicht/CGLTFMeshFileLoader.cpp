@@ -208,7 +208,7 @@ core::vector2df CGLTFMeshFileLoader::ModelParser::readVec2DF(
 
 core::vector3df CGLTFMeshFileLoader::ModelParser::readVec3DF(
 		const BufferOffset& readFrom,
-		const float scale = 1.0f)
+		const float scale)
 {
 	return core::vector3df(
 		scale * readPrimitive<float>(readFrom),

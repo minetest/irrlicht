@@ -83,9 +83,13 @@ private:
 		static core::vector2df readVec2DF(
 				const BufferOffset& readFrom);
 
+		/* Read a vec3df from a buffer with transformations applied.
+		 *
+		 * Values are returned in Irrlicht coordinates.
+		 */
 		static core::vector3df readVec3DF(
 				const BufferOffset& readFrom,
-				const float scale);
+				const float scale = 1.0f);
 
 		void copyPositions(const Span<video::S3DVertex> vertices,
 				const std::size_t accessorId) const;
@@ -96,6 +100,10 @@ private:
 		void copyTCoords(const Span<video::S3DVertex> vertices,
 				const std::size_t accessorId) const;
 
+		/* Get the scale factor from the glTF mesh information.
+		 *
+		 * Returns 1.0f if no scale factor is present.
+		 */
 		float getScale() const;
 
 		std::size_t getElemCount(const std::size_t accessorIdx) const;
