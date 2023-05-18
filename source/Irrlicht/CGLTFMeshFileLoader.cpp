@@ -112,13 +112,13 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 }
 
 CGLTFMeshFileLoader::ModelParser::ModelParser(
-		const tinygltf::Model& model)
+		const tinygltf::Model& model) noexcept
 	: m_model(model)
 {
 }
 
 CGLTFMeshFileLoader::ModelParser::ModelParser(
-		const tinygltf::Model&& model)
+		const tinygltf::Model&& model) noexcept
 	: m_model(model)
 {
 }
