@@ -64,15 +64,15 @@ private:
 		 *
 		 * Values are return in Irrlicht winding order.
 		 */
-		std::vector<u16> getIndices(std::size_t meshIdx,
-				std::size_t primitiveIdx) const;
+		std::vector<u16> getIndices(const std::size_t meshIdx,
+				const std::size_t primitiveIdx) const;
 
 		std::vector<video::S3DVertex> getVertices(std::size_t meshIdx,
-				std::size_t primitiveIdx) const;
+				const std::size_t primitiveIdx) const;
 
 		std::size_t getMeshCount() const;
 
-		std::size_t getPrimitiveCount(std::size_t meshIdx) const;
+		std::size_t getPrimitiveCount(const std::size_t meshIdx) const;
 
 	private:
 		tinygltf::Model m_model;
@@ -98,17 +98,17 @@ private:
 
 		float getScale() const;
 
-		std::size_t getElemCount(std::size_t accessorIdx) const;
+		std::size_t getElemCount(const std::size_t accessorIdx) const;
 
-		BufferOffset getBuffer(std::size_t meshIdx,
-				std::size_t primitiveIdx,
-				std::size_t accessorIdx) const;
+		BufferOffset getBuffer(const std::size_t meshIdx,
+				const std::size_t primitiveIdx,
+				const std::size_t accessorIdx) const;
 
-		std::size_t getIndicesAccessorIdx(std::size_t meshIdx,
-				std::size_t primitiveIdx) const;
+		std::size_t getIndicesAccessorIdx(const std::size_t meshIdx,
+				const std::size_t primitiveIdx) const;
 
-		std::size_t getPositionAccessorIdx(std::size_t meshIdx,
-				std::size_t primitiveIdx) const;
+		std::size_t getPositionAccessorIdx(const std::size_t meshIdx,
+				const std::size_t primitiveIdx) const;
 	};
 
 	static bool tryParseGLTF(io::IReadFile* file,
