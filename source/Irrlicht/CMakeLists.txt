@@ -272,7 +272,6 @@ endif()
 
 if(ANDROID)
 	enable_language(C)
-	add_library(native_app_glue STATIC ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 elseif(APPLE)
 	find_library(COCOA_LIB Cocoa REQUIRED)
 	find_library(IOKIT_LIB IOKit REQUIRED)
@@ -314,7 +313,7 @@ set(link_libs
 	${OPENGLES2_LIBRARIES}
 	${EGL_LIBRARY}
 
-	"$<$<PLATFORM_ID:Android>:native_app_glue -landroid -llog>"
+	"$<$<PLATFORM_ID:Android>:-landroid -llog>"
 	${COCOA_LIB}
 	${IOKIT_LIB}
 	"$<$<PLATFORM_ID:Windows>:gdi32>"
@@ -541,13 +540,7 @@ if(WIN32)
 endif()
 
 # Installation of library
-if(ANDROID)
-	set(INSTALL_TARGETS IrrlichtMt native_app_glue)
-else()
-	set(INSTALL_TARGETS IrrlichtMt)
-endif()
-
-install(TARGETS ${INSTALL_TARGETS}
+install(TARGETS IrrlichtMt
 	EXPORT IrrlichtMt-export
 	DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 )
