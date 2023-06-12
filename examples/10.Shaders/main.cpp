@@ -57,6 +57,9 @@ public:
 		if (UseHighLevelShaders)
 		{
 			// Get shader constants id.
+			// Constants are "uniforms" in most modern shading languages.
+			// And they are not constant at all but can be changed before every draw call
+			// (the naming probably has some historical reasons which got lost in time)
 			WorldViewProjID = services->getVertexShaderConstantID("mWorldViewProj");
 			TransWorldID = services->getVertexShaderConstantID("mTransWorld");
 			InvWorldID = services->getVertexShaderConstantID("mInvWorld");
