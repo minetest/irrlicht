@@ -38,30 +38,11 @@ public:
 		const SMaterial& lastMaterial,
 		bool resetAllRenderstates) = 0;
 
-	//! Return an index constant for the vertex shader based on a name.
+	//! Return an index constant for the vertex shader based on a uniform variable name.
 	virtual s32 getVertexShaderConstantID(const c8* name) = 0;
 
-	//! Sets a constant for the vertex shader based on a name.
-	/** This can be used if you used a high level shader language like GLSL
-	or HLSL to create a shader. Example: If you created a shader which has
-	variables named 'mWorldViewProj' (containing the WorldViewProjection
-	matrix) and another one named 'fTime' containing one float, you can set
-	them in your IShaderConstantSetCallBack derived class like this:
-	\code
-	virtual void OnSetConstants(video::IMaterialRendererServices* services, s32 userData)
-	{
-		video::IVideoDriver* driver = services->getVideoDriver();
-
-		f32 time = (f32)os::Timer::getTime()/100000.0f;
-		services->setVertexShaderConstant("fTime", &time, 1);
-
-		core::matrix4 worldViewProj(driver->getTransform(video::ETS_PROJECTION));
-		worldViewProj *= driver->getTransform(video::ETS_VIEW);
-		worldViewProj *= driver->getTransform(video::ETS_WORLD);
-		services->setVertexShaderConstant("mWorldViewProj", worldViewProj.M, 16);
-	}
-	\endcode
-	\param index Index of the variable
+	//! Sets a value for a vertex shader uniform variable.
+	/** \param index Index of the variable (as received from getVertexShaderConstantID)
 	\param floats Pointer to array of floats
 	\param count Amount of floats in array.
 	\return True if successful.
@@ -85,14 +66,14 @@ public:
 	\param constantAmount: Amount of registers to be set. One register consists of 4 floats. */
 	virtual void setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount=1) = 0;
 
-	//! Return an index constant for the pixel shader based on a name.
+	//! Return an index constant for the pixel shader for the given uniform variable name
 	virtual s32 getPixelShaderConstantID(const c8* name) = 0;
 
-	//! Sets a constant for the pixel shader based on a name.
+	//! Sets a value for the given pixel shader uniform variable
 	/** This can be used if you used a high level shader language like GLSL
 	or HLSL to create a shader. See setVertexShaderConstant() for an
 	example on how to use this.
-	\param index Index of the variable
+	\param index Index of the variable (as received from getPixelShaderConstantID)
 	\param floats Pointer to array of floats
 	\param count Amount of floats in array.
 	\return True if successful. */
