@@ -77,7 +77,6 @@ protected:
 	// Note that SMaterial.BlendOperation + SMaterial.BlendFactor are in some drivers already evaluated before OnSetMaterial.
 	bool Alpha;
 	bool Blending;
-	bool FixedBlending;
 	bool AlphaTest;
 
 	GLuint VertexShader;

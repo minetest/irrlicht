@@ -335,11 +335,6 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		fsFile->drop();
 	}
 
-	void COpenGL3DriverBase::addDummyMaterial(E_MATERIAL_TYPE type) {
-		auto index = addMaterialRenderer(getMaterialRenderer(EMT_SOLID), "DUMMY");
-		assert(index == type);
-	}
-
 	void COpenGL3DriverBase::createMaterialRenderers()
 	{
 		// Create callbacks.
@@ -352,7 +347,6 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 
 		// Create built-in materials.
 		// The addition order must be the same as in the E_MATERIAL_TYPE enumeration. Thus the
-		// addDummyMaterial calls for materials no longer supported.
 
 		const core::stringc VertexShader = OGLES2ShaderPath + "Solid.vsh";
 
@@ -360,19 +354,6 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		core::stringc FragmentShader = OGLES2ShaderPath + "Solid.fsh";
 		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
 			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, SolidCB, EMT_SOLID, 0);
-
-		addDummyMaterial(EMT_SOLID_2_LAYER);
-		addDummyMaterial(EMT_LIGHTMAP);
-		addDummyMaterial(EMT_LIGHTMAP_ADD);
-		addDummyMaterial(EMT_LIGHTMAP_M2);
-		addDummyMaterial(EMT_LIGHTMAP_M4);
-		addDummyMaterial(EMT_LIGHTMAP_LIGHTING);
-		addDummyMaterial(EMT_LIGHTMAP_LIGHTING_M2);
-		addDummyMaterial(EMT_LIGHTMAP_LIGHTING_M4);
-		addDummyMaterial(EMT_DETAIL_MAP);
-		addDummyMaterial(EMT_SPHERE_MAP);
-		addDummyMaterial(EMT_REFLECTION_2_LAYER);
-		addDummyMaterial(EMT_TRANSPARENT_ADD_COLOR);
 
 		// EMT_TRANSPARENT_ALPHA_CHANNEL
 		FragmentShader = OGLES2ShaderPath + "TransparentAlphaChannel.fsh";
@@ -388,8 +369,6 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		FragmentShader = OGLES2ShaderPath + "TransparentVertexAlpha.fsh";
 		addHighLevelShaderMaterialFromFiles(VertexShader, "main", EVST_VS_2_0, FragmentShader, "main", EPST_PS_2_0, "", "main",
 			EGST_GS_4_0, scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0, TransparentVertexAlphaCB, EMT_TRANSPARENT_ALPHA_CHANNEL, 0);
-
-		addDummyMaterial(EMT_TRANSPARENT_REFLECTION_2_LAYER);
 
 		// EMT_ONETEXTURE_BLEND
 		FragmentShader = OGLES2ShaderPath + "OneTextureBlend.fsh";

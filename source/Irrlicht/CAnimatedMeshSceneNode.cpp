@@ -274,54 +274,23 @@ void CAnimatedMeshSceneNode::render()
 
 	driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
 
-	// for debug purposes only:
-
-	bool renderMeshes = true;
-	video::SMaterial mat;
-	if (DebugDataVisible && PassCount==1)
+	for (u32 i=0; i<m->getMeshBufferCount(); ++i)
 	{
-		// overwrite half transparency
-		if (DebugDataVisible & scene::EDS_HALF_TRANSPARENCY)
+		const bool transparent = driver->needsTransparentRenderPass(Materials[i]);
+
+		// only render transparent buffer if this is the transparent render pass
+		// and solid only in solid pass
+		if (transparent == isTransparentPass)
 		{
+			scene::IMeshBuffer* mb = m->getMeshBuffer(i);
+			const video::SMaterial& material = ReadOnlyMaterials ? mb->getMaterial() : Materials[i];
+			if (RenderFromIdentity)
+				driver->setTransform(video::ETS_WORLD, core::IdentityMatrix );
+			else if (Mesh->getMeshType() == EAMT_SKINNED)
+				driver->setTransform(video::ETS_WORLD, AbsoluteTransformation * ((SSkinMeshBuffer*)mb)->Transformation);
 
-			for (u32 i=0; i<m->getMeshBufferCount(); ++i)
-			{
-				scene::IMeshBuffer* mb = m->getMeshBuffer(i);
-				mat = ReadOnlyMaterials ? mb->getMaterial() : Materials[i];
-				mat.MaterialType = video::EMT_TRANSPARENT_ADD_COLOR;
-				if (RenderFromIdentity)
-					driver->setTransform(video::ETS_WORLD, core::IdentityMatrix );
-				else if (Mesh->getMeshType() == EAMT_SKINNED)
-					driver->setTransform(video::ETS_WORLD, AbsoluteTransformation * ((SSkinMeshBuffer*)mb)->Transformation);
-
-				driver->setMaterial(mat);
-				driver->drawMeshBuffer(mb);
-			}
-			renderMeshes = false;
-		}
-	}
-
-	// render original meshes
-	if (renderMeshes)
-	{
-		for (u32 i=0; i<m->getMeshBufferCount(); ++i)
-		{
-			const bool transparent = driver->needsTransparentRenderPass(Materials[i]);
-
-			// only render transparent buffer if this is the transparent render pass
-			// and solid only in solid pass
-			if (transparent == isTransparentPass)
-			{
-				scene::IMeshBuffer* mb = m->getMeshBuffer(i);
-				const video::SMaterial& material = ReadOnlyMaterials ? mb->getMaterial() : Materials[i];
-				if (RenderFromIdentity)
-					driver->setTransform(video::ETS_WORLD, core::IdentityMatrix );
-				else if (Mesh->getMeshType() == EAMT_SKINNED)
-					driver->setTransform(video::ETS_WORLD, AbsoluteTransformation * ((SSkinMeshBuffer*)mb)->Transformation);
-
-				driver->setMaterial(material);
-				driver->drawMeshBuffer(mb);
-			}
+			driver->setMaterial(material);
+			driver->drawMeshBuffer(mb);
 		}
 	}
 

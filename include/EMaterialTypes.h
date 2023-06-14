@@ -18,75 +18,6 @@ namespace video
 		diffuse material. */
 		EMT_SOLID = 0,
 
-		//! Solid material with 2 texture layers.
-		/** The second is blended onto the first using the alpha value
-		of the vertex colors. This material is currently not implemented in OpenGL.
-		*/
-		EMT_SOLID_2_LAYER,
-
-		//! Material type with standard lightmap technique
-		/** There should be 2 textures: The first texture layer is a
-		diffuse map, the second is a light map. Dynamic light is
-		ignored. */
-		EMT_LIGHTMAP,
-
-		//! Material type with lightmap technique like EMT_LIGHTMAP.
-		/** But lightmap and diffuse texture are added instead of modulated. */
-		EMT_LIGHTMAP_ADD,
-
-		//! Material type with standard lightmap technique
-		/** There should be 2 textures: The first texture layer is a
-		diffuse map, the second is a light map. Dynamic light is
-		ignored. The texture colors are effectively multiplied by 2
-		for brightening. Like known in DirectX as D3DTOP_MODULATE2X. */
-		EMT_LIGHTMAP_M2,
-
-		//! Material type with standard lightmap technique
-		/** There should be 2 textures: The first texture layer is a
-		diffuse map, the second is a light map. Dynamic light is
-		ignored. The texture colors are effectively multiplied by 4
-		for brightening. Like known in DirectX as D3DTOP_MODULATE4X. */
-		EMT_LIGHTMAP_M4,
-
-		//! Like EMT_LIGHTMAP, but also supports dynamic lighting.
-		EMT_LIGHTMAP_LIGHTING,
-
-		//! Like EMT_LIGHTMAP_M2, but also supports dynamic lighting.
-		EMT_LIGHTMAP_LIGHTING_M2,
-
-		//! Like EMT_LIGHTMAP_M4, but also supports dynamic lighting.
-		EMT_LIGHTMAP_LIGHTING_M4,
-
-		//! Detail mapped material.
-		/** The first texture is diffuse color map, the second is added
-		to this and usually displayed with a bigger scale value so that
-		it adds more detail. The detail map is added to the diffuse map
-		using ADD_SIGNED, so that it is possible to add and subtract
-		color from the diffuse map. For example a value of
-		(127,127,127) will not change the appearance of the diffuse map
-		at all. Often used for terrain rendering. */
-		EMT_DETAIL_MAP,
-
-		//! Look like a reflection of the environment around it.
-		/** To make this possible, a texture called 'sphere map' is
-		used, which must be set as the first texture. */
-		EMT_SPHERE_MAP,
-
-		//! A reflecting material with an optional non reflecting texture layer.
-		/** The reflection map should be set as first texture. */
-		EMT_REFLECTION_2_LAYER,
-
-		//! A transparent material.
-		/** Only the first texture is used. The new color is calculated
-		by simply adding the source color and the dest color. This
-		means if for example a billboard using a texture with black
-		background and a red circle on it is drawn with this material,
-		the result is that only the red circle will be drawn a little
-		bit transparent, and everything which was black is 100%
-		transparent and not visible. This material type is useful for
-		particle effects. */
-		EMT_TRANSPARENT_ADD_COLOR,
-
 		//! Makes the material transparent based on the texture alpha channel.
 		/** The final color is blended together from the destination
 		color and the texture color, using the alpha channel value as
@@ -115,12 +46,6 @@ namespace video
 		//! Makes the material transparent based on the vertex alpha value.
 		EMT_TRANSPARENT_VERTEX_ALPHA,
 
-		//! A transparent reflecting material with an optional additional non reflecting texture layer.
-		/** The reflection map should be set as first texture. The
-		transparency depends on the alpha value in the vertex colors. A
-		texture which will not reflect can be set as second texture.*/
-		EMT_TRANSPARENT_REFLECTION_2_LAYER,
-
 		//! BlendFunc = source * sourceFactor + dest * destFactor ( E_BLEND_FUNC )
 		/** Using only first texture. Generic blending method. 
 		The blend function is set to SMaterial::MaterialTypeParam with 
@@ -135,22 +60,9 @@ namespace video
 	const char* const sBuiltInMaterialTypeNames[] =
 	{
 		"solid",
-		"solid_2layer",
-		"lightmap",
-		"lightmap_add",
-		"lightmap_m2",
-		"lightmap_m4",
-		"lightmap_light",
-		"lightmap_light_m2",
-		"lightmap_light_m4",
-		"detail_map",
-		"sphere_map",
-		"reflection_2layer",
-		"trans_add",
 		"trans_alphach",
 		"trans_alphach_ref",
 		"trans_vertex_alpha",
-		"trans_reflection_2layer",
 		"onetexture_blend",
 		0
 	};

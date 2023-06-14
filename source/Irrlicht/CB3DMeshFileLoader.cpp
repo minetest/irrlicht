@@ -943,19 +943,8 @@ bool CB3DMeshFileLoader::readChunkBRUS()
 		//Two textures:
 		if (B3dMaterial.Textures[1])
 		{
-			if (B3dMaterial.alpha==1.f)
-			{
-				if (B3dMaterial.Textures[1]->Blend == 5) //(Multiply 2)
-					B3dMaterial.Material.MaterialType = video::EMT_LIGHTMAP_M2;
-				else
-					B3dMaterial.Material.MaterialType = video::EMT_LIGHTMAP;
-				B3dMaterial.Material.Lighting = false;
-			}
-			else
-			{
-				B3dMaterial.Material.MaterialType = video::EMT_TRANSPARENT_VERTEX_ALPHA;
-				B3dMaterial.Material.ZWriteEnable = video::EZW_OFF;
-			}
+			B3dMaterial.Material.MaterialType = video::EMT_TRANSPARENT_VERTEX_ALPHA;
+			B3dMaterial.Material.ZWriteEnable = video::EZW_OFF;
 		}
 		else if (B3dMaterial.Textures[0]) //One texture:
 		{
@@ -967,10 +956,6 @@ bool CB3DMeshFileLoader::readChunkBRUS()
 			}
 			else if (B3dMaterial.Textures[0]->Flags & 0x4) //(Masked)
 				B3dMaterial.Material.MaterialType = video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF; // TODO: create color key texture
-			else if (B3dMaterial.Textures[0]->Flags & 0x40)
-				B3dMaterial.Material.MaterialType = video::EMT_SPHERE_MAP;
-			else if (B3dMaterial.Textures[0]->Flags & 0x80)
-				B3dMaterial.Material.MaterialType = video::EMT_SPHERE_MAP; // TODO: Should be cube map
 			else if (B3dMaterial.alpha == 1.f)
 				B3dMaterial.Material.MaterialType = video::EMT_SOLID;
 			else

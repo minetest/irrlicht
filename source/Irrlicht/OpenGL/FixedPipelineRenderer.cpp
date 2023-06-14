@@ -94,7 +94,7 @@ void COpenGL3MaterialBaseCB::OnSetConstants(IMaterialRendererServices* services,
 	services->setPixelShaderConstant(ThicknessID, &Thickness, 1);
 }
 
-// EMT_SOLID + EMT_TRANSPARENT_ADD_COLOR + EMT_TRANSPARENT_ALPHA_CHANNEL + EMT_TRANSPARENT_VERTEX_ALPHA
+// EMT_SOLID + EMT_TRANSPARENT_ALPHA_CHANNEL + EMT_TRANSPARENT_VERTEX_ALPHA
 
 COpenGL3MaterialSolidCB::COpenGL3MaterialSolidCB() :
 	FirstUpdate(true), TMatrix0ID(-1), AlphaRefID(-1), TextureUsage0ID(-1), TextureUnit0ID(-1), AlphaRef(0.5f), TextureUsage0(0), TextureUnit0(0)
