@@ -154,16 +154,10 @@ bool COGLES1Driver::genericDriverInit(const core::dimension2d<u32>& screenSize, 
 
 void COGLES1Driver::createMaterialRenderers()
 {
-	// create OGLES1 material renderers
-
 	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_SOLID(this));
-
-	// add remaining material renderer
 	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_TRANSPARENT_ALPHA_CHANNEL(this));
 	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_TRANSPARENT_ALPHA_CHANNEL_REF(this));
 	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_TRANSPARENT_VERTEX_ALPHA(this));
-
-	// add basic 1 texture blending
 	addAndDropMaterialRenderer(new COGLES1MaterialRenderer_ONETEXTURE_BLEND(this));
 }
 
