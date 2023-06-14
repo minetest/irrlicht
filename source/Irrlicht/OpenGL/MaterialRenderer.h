@@ -80,7 +80,6 @@ protected:
 
 	bool Alpha;
 	bool Blending;
-	bool FixedBlending;
 
 	struct SUniformInfo
 	{

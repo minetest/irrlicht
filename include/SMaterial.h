@@ -292,7 +292,7 @@ namespace video
 		SMaterial()
 		: MaterialType(EMT_SOLID), AmbientColor(255,255,255,255), DiffuseColor(255,255,255,255),
 			EmissiveColor(0,0,0,0), SpecularColor(255,255,255,255),
-			Shininess(0.0f), MaterialTypeParam(0.0f), MaterialTypeParam2(0.0f), Thickness(1.0f),
+			Shininess(0.0f), MaterialTypeParam(0.0f), Thickness(1.0f),
 			ZBuffer(ECFN_LESSEQUAL), AntiAliasing(EAAM_SIMPLE), ColorMask(ECP_ALL),
 			ColorMaterial(ECM_DIFFUSE), BlendOperation(EBO_NONE), BlendFactor(0.0f),
 			PolygonOffsetFactor(0), PolygonOffsetDirection(EPO_FRONT),
@@ -349,10 +349,6 @@ namespace video
 		/** Mostly ignored, used for example in
 		EMT_TRANSPARENT_ALPHA_CHANNEL and EMT_ONETEXTURE_BLEND. */
 		f32 MaterialTypeParam;
-
-		//! Second free parameter, dependent on the material type.
-		/** Mostly ignored. */
-		f32 MaterialTypeParam2;
 
 		//! Thickness of non-3dimensional elements such as lines and points.
 		f32 Thickness;
@@ -664,7 +660,6 @@ namespace video
 				SpecularColor != b.SpecularColor ||
 				Shininess != b.Shininess ||
 				MaterialTypeParam != b.MaterialTypeParam ||
-				MaterialTypeParam2 != b.MaterialTypeParam2 ||
 				Thickness != b.Thickness ||
 				Wireframe != b.Wireframe ||
 				PointCloud != b.PointCloud ||
@@ -728,10 +723,8 @@ namespace video
 		//! as it asks the material renders directly what they do with the material.
 		bool isTransparent() const
 		{
-			if ( MaterialType==EMT_TRANSPARENT_ADD_COLOR ||
-				MaterialType==EMT_TRANSPARENT_ALPHA_CHANNEL ||
-				MaterialType==EMT_TRANSPARENT_VERTEX_ALPHA ||
-				MaterialType==EMT_TRANSPARENT_REFLECTION_2_LAYER )
+			if ( MaterialType==EMT_TRANSPARENT_ALPHA_CHANNEL ||
+				MaterialType==EMT_TRANSPARENT_VERTEX_ALPHA )
 				return true;
 
 			return false;

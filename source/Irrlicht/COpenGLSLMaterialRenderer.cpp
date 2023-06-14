@@ -48,7 +48,7 @@ COpenGLSLMaterialRenderer::COpenGLSLMaterialRenderer(video::COpenGLDriver* drive
 		IShaderConstantSetCallBack* callback,
 		E_MATERIAL_TYPE baseMaterial,
 		s32 userData)
-	: Driver(driver), CallBack(callback), Alpha(false), Blending(false), FixedBlending(false), AlphaTest(false), Program(0), Program2(0), UserData(userData)
+	: Driver(driver), CallBack(callback), Alpha(false), Blending(false), AlphaTest(false), Program(0), Program2(0), UserData(userData)
 {
 	#ifdef _DEBUG
 	setDebugName("COpenGLSLMaterialRenderer");
@@ -59,9 +59,6 @@ COpenGLSLMaterialRenderer::COpenGLSLMaterialRenderer(video::COpenGLDriver* drive
 	case EMT_TRANSPARENT_VERTEX_ALPHA:
 	case EMT_TRANSPARENT_ALPHA_CHANNEL:
 		Alpha = true;
-		break;
-	case EMT_TRANSPARENT_ADD_COLOR:
-		FixedBlending = true;
 		break;
 	case EMT_ONETEXTURE_BLEND:
 		Blending = true;
@@ -88,16 +85,13 @@ COpenGLSLMaterialRenderer::COpenGLSLMaterialRenderer(video::COpenGLDriver* drive
 COpenGLSLMaterialRenderer::COpenGLSLMaterialRenderer(COpenGLDriver* driver,
 					IShaderConstantSetCallBack* callback,
 					E_MATERIAL_TYPE baseMaterial, s32 userData)
-: Driver(driver), CallBack(callback), Alpha(false), Blending(false), FixedBlending(false), AlphaTest(false), Program(0), Program2(0), UserData(userData)
+: Driver(driver), CallBack(callback), Alpha(false), Blending(false), AlphaTest(false), Program(0), Program2(0), UserData(userData)
 {
 	switch (baseMaterial)
 	{
 	case EMT_TRANSPARENT_VERTEX_ALPHA:
 	case EMT_TRANSPARENT_ALPHA_CHANNEL:
 		Alpha = true;
-		break;
-	case EMT_TRANSPARENT_ADD_COLOR:
-		FixedBlending = true;
 		break;
 	case EMT_ONETEXTURE_BLEND:
 		Blending = true;
@@ -246,11 +240,6 @@ void COpenGLSLMaterialRenderer::OnSetMaterial(const video::SMaterial& material,
 		cacheHandler->setAlphaTest(true);
 		cacheHandler->setAlphaFunc(GL_GREATER, 0.f);
 	}
-	else if (FixedBlending)
-	{
-		cacheHandler->setBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
-		cacheHandler->setBlend(true);
-	}
 	else if (Blending)
 	{
 		E_BLEND_FACTOR srcRGBFact,dstRGBFact,srcAlphaFact,dstAlphaFact;
@@ -289,7 +278,7 @@ void COpenGLSLMaterialRenderer::OnUnsetMaterial()
 		Driver->irrGlUseProgram(0);
 
 	COpenGLCacheHandler* cacheHandler = Driver->getCacheHandler();
-	if (Alpha || FixedBlending || Blending)
+	if (Alpha || Blending)
 	{
 		cacheHandler->setBlend(false);
 	}
@@ -303,7 +292,7 @@ void COpenGLSLMaterialRenderer::OnUnsetMaterial()
 //! Returns if the material is transparent.
 bool COpenGLSLMaterialRenderer::isTransparent() const
 {
-	return (Alpha || Blending || FixedBlending);
+	return (Alpha || Blending);
 }
 
 

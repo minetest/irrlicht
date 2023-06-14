@@ -30,7 +30,7 @@ COGLES2MaterialRenderer::COGLES2MaterialRenderer(COGLES2Driver* driver,
 		IShaderConstantSetCallBack* callback,
 		E_MATERIAL_TYPE baseMaterial,
 		s32 userData)
-	: Driver(driver), CallBack(callback), Alpha(false), Blending(false), FixedBlending(false), Program(0), UserData(userData)
+	: Driver(driver), CallBack(callback), Alpha(false), Blending(false), Program(0), UserData(userData)
 {
 #ifdef _DEBUG
 	setDebugName("COGLES2MaterialRenderer");
@@ -41,9 +41,6 @@ COGLES2MaterialRenderer::COGLES2MaterialRenderer(COGLES2Driver* driver,
 	case EMT_TRANSPARENT_VERTEX_ALPHA:
 	case EMT_TRANSPARENT_ALPHA_CHANNEL:
 		Alpha = true;
-		break;
-	case EMT_TRANSPARENT_ADD_COLOR:
-		FixedBlending = true;
 		break;
 	case EMT_ONETEXTURE_BLEND:
 		Blending = true;
@@ -62,16 +59,13 @@ COGLES2MaterialRenderer::COGLES2MaterialRenderer(COGLES2Driver* driver,
 COGLES2MaterialRenderer::COGLES2MaterialRenderer(COGLES2Driver* driver,
 					IShaderConstantSetCallBack* callback,
 					E_MATERIAL_TYPE baseMaterial, s32 userData)
-: Driver(driver), CallBack(callback), Alpha(false), Blending(false), FixedBlending(false), Program(0), UserData(userData)
+: Driver(driver), CallBack(callback), Alpha(false), Blending(false), Program(0), UserData(userData)
 {
 	switch (baseMaterial)
 	{
 	case EMT_TRANSPARENT_VERTEX_ALPHA:
 	case EMT_TRANSPARENT_ALPHA_CHANNEL:
 		Alpha = true;
-		break;
-	case EMT_TRANSPARENT_ADD_COLOR:
-		FixedBlending = true;
 		break;
 	case EMT_ONETEXTURE_BLEND:
 		Blending = true;
@@ -167,11 +161,6 @@ void COGLES2MaterialRenderer::OnSetMaterial(const video::SMaterial& material,
 		cacheHandler->setBlend(true);
 		cacheHandler->setBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
-	else if (FixedBlending)
-	{
-		cacheHandler->setBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
-		cacheHandler->setBlend(true);
-	}
 	else if (Blending)
 	{
 		E_BLEND_FACTOR srcRGBFact,dstRGBFact,srcAlphaFact,dstAlphaFact;
@@ -197,7 +186,7 @@ void COGLES2MaterialRenderer::OnUnsetMaterial()
 
 bool COGLES2MaterialRenderer::isTransparent() const
 {
-	return (Alpha || Blending || FixedBlending);
+	return (Alpha || Blending);
 }
 
 
