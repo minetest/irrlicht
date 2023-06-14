@@ -206,15 +206,10 @@ bool COpenGLDriver::genericDriverInit()
 
 void COpenGLDriver::createMaterialRenderers()
 {
-	// create OpenGL material renderers
 	addAndDropMaterialRenderer(new COpenGLMaterialRenderer_SOLID(this));
-
-	// add remaining material renderer
 	addAndDropMaterialRenderer(new COpenGLMaterialRenderer_TRANSPARENT_ALPHA_CHANNEL(this));
 	addAndDropMaterialRenderer(new COpenGLMaterialRenderer_TRANSPARENT_ALPHA_CHANNEL_REF(this));
 	addAndDropMaterialRenderer(new COpenGLMaterialRenderer_TRANSPARENT_VERTEX_ALPHA(this));
-
-	// add basic 1 texture blending
 	addAndDropMaterialRenderer(new COpenGLMaterialRenderer_ONETEXTURE_BLEND(this));
 }
 
