@@ -117,13 +117,6 @@ namespace scene
 			}
 		}
 
-		//! sets a flag of all contained materials to a new value
-		void setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue) override
-		{
-			for (u32 i=0; i<MeshBuffers.size(); ++i)
-				MeshBuffers[i]->getMaterial().setFlag(flag, newvalue);
-		}
-
 		//! set the hardware mapping hint, for driver
 		void setHardwareMappingHint( E_HARDWARE_MAPPING newMappingHint, E_BUFFER_TYPE buffer=EBT_VERTEX_AND_INDEX ) override
 		{

@@ -97,11 +97,6 @@ namespace scene
 		/** \param box New bounding box to use for the mesh. */
 		virtual void setBoundingBox( const core::aabbox3df& box) = 0;
 
-		//! Sets a flag of all contained materials to a new value.
-		/** \param flag: Flag to set in all materials.
-		\param newvalue: New value to set in all materials. */
-		virtual void setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue) = 0;
-
 		//! Set the hardware mapping hint
 		/** This methods allows to define optimization hints for the
 		hardware. This enables, e.g., the use of hardware buffers on
