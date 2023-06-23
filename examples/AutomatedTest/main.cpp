@@ -100,10 +100,12 @@ int main(int argc, char *argv[])
 		scene::IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode(mesh);
 		if (node)
 		{
-			node->setMaterialFlag(video::EMF_LIGHTING, false);
+			node->forEachMaterial([tex] (video::SMaterial &mat) {
+				mat.Lighting = false;
+				mat.setTexture(0, tex);
+			});
 			node->setFrameLoop(0, 29);
 			node->setAnimationSpeed(30);
-			node->setMaterialTexture(0, tex);
 		}
 	}
 

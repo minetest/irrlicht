@@ -147,13 +147,6 @@ namespace scene
 			return Meshes[0]->getMeshBuffer(material);
 		}
 
-		//! Set a material flag for all meshbuffers of this mesh.
-		void setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue) override
-		{
-			for (u32 i=0; i<Meshes.size(); ++i)
-				Meshes[i]->setMaterialFlag(flag, newvalue);
-		}
-
 		//! set the hardware mapping hint, for driver
 		void setHardwareMappingHint( E_HARDWARE_MAPPING newMappingHint, E_BUFFER_TYPE buffer=EBT_VERTEX_AND_INDEX ) override
 		{

@@ -352,38 +352,14 @@ namespace scene
 		}
 
 
-		//! Sets all material flags at once to a new value.
-		/** Useful, for example, if you want the whole mesh to be
-		affected by light.
-		\param flag Which flag of all materials to be set.
-		\param newvalue New value of that flag. */
-		void setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue)
-		{
-			for (u32 i=0; i<getMaterialCount(); ++i)
-				getMaterial(i).setFlag(flag, newvalue);
-		}
-
-
-		//! Sets the texture of the specified layer in all materials of this scene node to the new texture.
-		/** \param textureLayer Layer of texture to be set. Must be a
-		value smaller than MATERIAL_MAX_TEXTURES.
-		\param texture New texture to be used. */
-		void setMaterialTexture(u32 textureLayer, video::ITexture* texture)
-		{
-			if (textureLayer >= video::MATERIAL_MAX_TEXTURES)
-				return;
-
-			for (u32 i=0; i<getMaterialCount(); ++i)
-				getMaterial(i).setTexture(textureLayer, texture);
-		}
-
-
-		//! Sets the material type of all materials in this scene node to a new material type.
-		/** \param newType New type of material to be set. */
-		void setMaterialType(video::E_MATERIAL_TYPE newType)
-		{
-			for (u32 i=0; i<getMaterialCount(); ++i)
-				getMaterial(i).MaterialType = newType;
+		//! Execute a function on all materials of this scene node.
+		/** Useful for setting material properties, e.g. if you want the whole
+		mesh to be affected by light. */
+		template <typename F>
+		void forEachMaterial(F &&fn) {
+			for (u32 i = 0; i < getMaterialCount(); i++) {
+				fn(getMaterial(i));
+			}
 		}
 
 

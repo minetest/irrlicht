@@ -13,83 +13,69 @@ namespace video
 	//! Material flags
 	enum E_MATERIAL_FLAG
 	{
-		//! Draw as wireframe or filled triangles? Default: false
+		//! Corresponds to SMaterial::Wireframe.
 		EMF_WIREFRAME = 0x1,
 
-		//! Draw as point cloud or filled triangles? Default: false
+		//! Corresponds to SMaterial::PointCloud.
 		EMF_POINTCLOUD = 0x2,
 
-		//! Flat or Gouraud shading? Default: true
+		//! Corresponds to SMaterial::GouraudShading.
 		EMF_GOURAUD_SHADING = 0x4,
 
-		//! Will this material be lighted? Default: true
+		//! Corresponds to SMaterial::Lighting.
 		EMF_LIGHTING = 0x8,
 
-		//! Is the ZBuffer enabled? Default: true
+		//! Corresponds to SMaterial::ZBuffer.
 		EMF_ZBUFFER = 0x10,
 
-		//! May be written to the zbuffer or is it readonly. Default: true
-		/** This flag is ignored, if the material type is a transparent type. */
+		//! Corresponds to SMaterial::ZWriteEnable.
 		EMF_ZWRITE_ENABLE = 0x20,
 
-		//! Is backface culling enabled? Default: true
+		//! Corresponds to SMaterial::BackfaceCulling.
 		EMF_BACK_FACE_CULLING = 0x40,
 
-		//! Is frontface culling enabled? Default: false
-		/** Overrides EMF_BACK_FACE_CULLING if both are enabled. */
+		//! Corresponds to SMaterial::FrontfaceCulling.
 		EMF_FRONT_FACE_CULLING = 0x80,
 
-		//! Is bilinear filtering enabled? Default: true
+		//! Corresponds to SMaterialLayer::BilinearFilter.
 		EMF_BILINEAR_FILTER = 0x100,
 
-		//! Is trilinear filtering enabled? Default: false
-		/** If the trilinear filter flag is enabled,
-		the bilinear filtering flag is ignored. */
+		//! Corresponds to SMaterialLayer::TrilinearFilter.
 		EMF_TRILINEAR_FILTER = 0x200,
 
-		//! Is anisotropic filtering? Default: false
-		/** In Irrlicht you can use anisotropic texture filtering in
-		conjunction with bilinear or trilinear texture filtering
-		to improve rendering results. Primitives will look less
-		blurry with this flag switched on. */
+		//! Corresponds to SMaterialLayer::AnisotropicFilter.
 		EMF_ANISOTROPIC_FILTER = 0x400,
 
-		//! Is fog enabled? Default: false
+		//! Corresponds to SMaterial::FogEnable.
 		EMF_FOG_ENABLE = 0x800,
 
-		//! Normalizes normals. Default: false
-		/** You can enable this if you need to scale a dynamic lighted
-		model. Usually, its normals will get scaled too then and it
-		will get darker. If you enable the EMF_NORMALIZE_NORMALS flag,
-		the normals will be normalized again, and the model will look
-		as bright as it should. */
+		//! Corresponds to SMaterial::NormalizeNormals.
 		EMF_NORMALIZE_NORMALS = 0x1000,
 
-		//! Access to all layers texture wrap settings. Overwrites separate layer settings.
-		/** Note that if you want to change TextureWrapU, TextureWrapV, TextureWrapW 
-		independently, then you can't work with this flag, but will have to set the variables
-		directly. */
+		//! Corresponds to SMaterialLayer::TextureWrapU, TextureWrapV and
+		//! TextureWrapW.
 		EMF_TEXTURE_WRAP = 0x2000,
 
-		//! AntiAliasing mode
+		//! Corresponds to SMaterial::AntiAliasing.
 		EMF_ANTI_ALIASING = 0x4000,
 
-		//! ColorMask bits, for enabling the color planes
+		//! Corresponds to SMaterial::ColorMask.
 		EMF_COLOR_MASK = 0x8000,
 
-		//! ColorMaterial enum for vertex color interpretation
+		//! Corresponds to SMaterial::ColorMaterial.
 		EMF_COLOR_MATERIAL = 0x10000,
 
-		//! Flag for enabling/disabling mipmap usage
+		//! Corresponds to SMaterial::UseMipMaps.
 		EMF_USE_MIP_MAPS = 0x20000,
 
-		//! Flag for blend operation
+		//! Corresponds to SMaterial::BlendOperation.
 		EMF_BLEND_OPERATION = 0x40000,
 
-		//! Flag for polygon offset
+		//! Corresponds to SMaterial::PolygonOffsetFactor, PolygonOffsetDirection,
+		//! PolygonOffsetDepthBias and PolygonOffsetSlopeScale.
 		EMF_POLYGON_OFFSET = 0x80000,
 
-        //! Flag for blend factor
+		//! Corresponds to SMaterial::BlendFactor.
 		EMF_BLEND_FACTOR = 0x160000
 	};
 

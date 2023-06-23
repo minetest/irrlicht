@@ -690,14 +690,6 @@ void CSkinnedMesh::setBoundingBox( const core::aabbox3df& box)
 }
 
 
-//! sets a flag of all contained materials to a new value
-void CSkinnedMesh::setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue)
-{
-	for (u32 i=0; i<LocalBuffers.size(); ++i)
-		LocalBuffers[i]->Material.setFlag(flag,newvalue);
-}
-
-
 //! set the hardware mapping hint, for driver
 void CSkinnedMesh::setHardwareMappingHint(E_HARDWARE_MAPPING newMappingHint,
 		E_BUFFER_TYPE buffer)
