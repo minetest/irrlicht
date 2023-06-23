@@ -426,7 +426,6 @@ namespace video
 		f32 PolygonOffsetSlopeScale;
 
 		//! Draw as wireframe or filled triangles? Default: false
-		/** The user can access a material flag using \code material.Wireframe = true; \endcode */
 		bool Wireframe:1;
 
 		//! Draw as point cloud or filled triangles? Default: false

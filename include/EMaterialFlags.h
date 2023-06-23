@@ -37,11 +37,11 @@ namespace video
 		//! Corresponds to SMaterial::FrontfaceCulling.
 		EMF_FRONT_FACE_CULLING = 0x80,
 
-		//! Corresponds to SMaterialLayer::BilinearFilter.
-		EMF_BILINEAR_FILTER = 0x100,
+		//! Corresponds to SMaterialLayer::MinFilter.
+		EMF_MIN_FILTER = 0x100,
 
-		//! Corresponds to SMaterialLayer::TrilinearFilter.
-		EMF_TRILINEAR_FILTER = 0x200,
+		//! Corresponds to SMaterialLayer::MagFilter.
+		EMF_MAG_FILTER = 0x200,
 
 		//! Corresponds to SMaterialLayer::AnisotropicFilter.
 		EMF_ANISOTROPIC_FILTER = 0x400,

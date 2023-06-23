@@ -31,8 +31,8 @@ public:
 	struct SStatesCache
 	{
 		SStatesCache() : WrapU(ETC_REPEAT), WrapV(ETC_REPEAT), WrapW(ETC_REPEAT),
-			LODBias(0), AnisotropicFilter(0), BilinearFilter(false), TrilinearFilter(false),
-			MipMapStatus(false), IsCached(false)
+			LODBias(0), AnisotropicFilter(0), MinFilter(video::ETMINF_NEAREST),
+			MagFilter(video::ETMAGF_NEAREST), MipMapStatus(false), IsCached(false)
 		{
 		}
 
@@ -41,8 +41,8 @@ public:
 		u8 WrapW;
 		s8 LODBias;
 		u8 AnisotropicFilter;
-		bool BilinearFilter;
-		bool TrilinearFilter;
+		video::E_TEXTURE_MIN_FILTER MinFilter;
+		video::E_TEXTURE_MAG_FILTER MagFilter;
 		bool MipMapStatus;
 		bool IsCached;
 	};
