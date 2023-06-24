@@ -10,7 +10,7 @@
 #include "irrArray.h"
 #include "irrMath.h"
 #include "EMaterialTypes.h"
-#include "EMaterialFlags.h"
+#include "EMaterialProps.h"
 #include "SMaterialLayer.h"
 #include "IrrCompileConfig.h" // for IRRLICHT_API
 

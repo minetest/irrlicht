@@ -42,7 +42,7 @@
 #include "EGUIAlignment.h"
 #include "EGUIElementTypes.h"
 #include "EHardwareBufferFlags.h"
-#include "EMaterialFlags.h"
+#include "EMaterialProps.h"
 #include "EMaterialTypes.h"
 #include "EMeshWriterEnums.h"
 #include "ESceneNodeTypes.h"
