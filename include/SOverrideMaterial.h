@@ -109,7 +109,7 @@ namespace video
 							{
 								if ( EnableLayerProps[i] )
 								{
-									material.TextureLayer[i].MinFilter = Material.TextureLayer[i].MinFilter;
+									material.TextureLayers[i].MinFilter = Material.TextureLayers[i].MinFilter;
 								}
 							}
 							break;
@@ -118,7 +118,7 @@ namespace video
 							{
 								if ( EnableLayerProps[i] )
 								{
-									material.TextureLayer[i].MagFilter = Material.TextureLayer[i].MagFilter;
+									material.TextureLayers[i].MagFilter = Material.TextureLayers[i].MagFilter;
 								}
 							}
 							break;
@@ -127,7 +127,7 @@ namespace video
 							{
 								if ( EnableLayerProps[i] )
 								{
-									material.TextureLayer[i].AnisotropicFilter = Material.TextureLayer[i].AnisotropicFilter;
+									material.TextureLayers[i].AnisotropicFilter = Material.TextureLayers[i].AnisotropicFilter;
 								}
 							}
 							break;
@@ -138,9 +138,9 @@ namespace video
 							{
 								if ( EnableLayerProps[i] )
 								{
-									material.TextureLayer[i].TextureWrapU = Material.TextureLayer[i].TextureWrapU;
-									material.TextureLayer[i].TextureWrapV = Material.TextureLayer[i].TextureWrapV;
-									material.TextureLayer[i].TextureWrapW = Material.TextureLayer[i].TextureWrapW;
+									material.TextureLayers[i].TextureWrapU = Material.TextureLayers[i].TextureWrapU;
+									material.TextureLayers[i].TextureWrapV = Material.TextureLayers[i].TextureWrapV;
+									material.TextureLayers[i].TextureWrapW = Material.TextureLayers[i].TextureWrapW;
 								}
 							}
 							break;
@@ -163,11 +163,11 @@ namespace video
 				{
 					if ( EnableLayers[i] )
 					{
-						material.TextureLayer[i] = Material.TextureLayer[i];
+						material.TextureLayers[i] = Material.TextureLayers[i];
 					}
 					else if ( EnableTextures[i] )
 					{
-						material.TextureLayer[i].Texture = Material.TextureLayer[i].Texture;
+						material.TextureLayers[i].Texture = Material.TextureLayers[i].Texture;
 					}
 				}
 			}
