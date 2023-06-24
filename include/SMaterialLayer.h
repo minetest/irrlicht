@@ -45,26 +45,28 @@ namespace video
 
 
 	//! Texture minification filter.
-	/** Used when scaling textures down. */
+	/** Used when scaling textures down. See the documentation on OpenGL's
+	`GL_TEXTURE_MIN_FILTER` for more information. */
 	enum E_TEXTURE_MIN_FILTER {
-		//! Nearest-neighbor interpolation.
-		ETMINF_NEAREST = 0,
-		//! Linear interpolation.
-		ETMINF_BILINEAR,
-		//! Linear interpolation across mipmaps.
-		/** Is equivalent to ETMINF_BILINEAR if mipmaps are disabled.
-		Only available as a minification filter since mipmaps are only used
-		when scaling down. */
-		ETMINF_TRILINEAR,
+		//! Aka nearest-neighbor.
+		ETMINF_NEAREST_MIPMAP_NEAREST = 0,
+		//! Aka bilinear.
+		ETMINF_LINEAR_MIPMAP_NEAREST,
+		//! Isn't known by any other name.
+		ETMINF_NEAREST_MIPMAP_LINEAR,
+		//! Aka trilinear.
+		ETMINF_LINEAR_MIPMAP_LINEAR,
 	};
 
 	//! Texture magnification filter.
-	/** Used when scaling textures up. */
+	/** Used when scaling textures up. See the documentation on OpenGL's
+	`GL_TEXTURE_MAG_FILTER` for more information.
+	Note that mipmaps are only used for minification, not for magnification. */
 	enum E_TEXTURE_MAG_FILTER {
-		//! Nearest-neighbor interpolation.
+		//! Aka nearest-neighbor.
 		ETMAGF_NEAREST = 0,
-		//! Linear interpolation.
-		ETMAGF_BILINEAR,
+		//! Aka bilinear.
+		ETMAGF_LINEAR,
 	};
 
 	//! Struct for holding material parameters which exist per texture layer
@@ -74,7 +76,7 @@ namespace video
 	public:
 		//! Default constructor
 		SMaterialLayer() : Texture(0), TextureWrapU(ETC_REPEAT), TextureWrapV(ETC_REPEAT), TextureWrapW(ETC_REPEAT),
-			MinFilter(ETMINF_BILINEAR), MagFilter(ETMAGF_BILINEAR), AnisotropicFilter(0), LODBias(0), TextureMatrix(0)
+			MinFilter(ETMINF_LINEAR_MIPMAP_NEAREST), MagFilter(ETMAGF_LINEAR), AnisotropicFilter(0), LODBias(0), TextureMatrix(0)
 		{
 		}
 
@@ -234,9 +236,9 @@ namespace video
 		//! to the three relevant boolean values found in the Minetest settings.
 		/** The value of `trilinear` takes precedence over the value of `bilinear`. */
 		void setFiltersMinetest(bool bilinear, bool trilinear, bool anisotropic) {
-			MinFilter = trilinear ? ETMINF_TRILINEAR :
-					(bilinear ? ETMINF_BILINEAR : ETMINF_NEAREST);
-			MagFilter = (trilinear || bilinear) ? ETMAGF_BILINEAR : ETMAGF_NEAREST;
+			MinFilter = trilinear ? ETMINF_LINEAR_MIPMAP_LINEAR :
+					(bilinear ? ETMINF_LINEAR_MIPMAP_NEAREST : ETMINF_NEAREST_MIPMAP_NEAREST);
+			MagFilter = (trilinear || bilinear) ? ETMAGF_LINEAR : ETMAGF_NEAREST;
 			AnisotropicFilter = anisotropic ? 0xFF : 0;
 		}
 

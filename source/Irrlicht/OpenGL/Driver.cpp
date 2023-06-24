@@ -1460,7 +1460,8 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 			{
 				E_TEXTURE_MAG_FILTER magFilter = material.TextureLayers[i].MagFilter;
 				glTexParameteri(tmpTextureType, GL_TEXTURE_MAG_FILTER,
-					magFilter == ETMAGF_BILINEAR  ? GL_LINEAR : GL_NEAREST);
+					magFilter == ETMAGF_NEAREST ? GL_NEAREST :
+					(assert(magFilter == ETMAGF_LINEAR), GL_LINEAR));
 
 				tmpTexture->getStatesCache().MagFilter = magFilter;
 			}
@@ -1472,9 +1473,10 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 				{
 					E_TEXTURE_MIN_FILTER minFilter = material.TextureLayers[i].MinFilter;
 					glTexParameteri(tmpTextureType, GL_TEXTURE_MIN_FILTER,
-						minFilter == ETMINF_TRILINEAR ? GL_LINEAR_MIPMAP_LINEAR :
-						minFilter == ETMINF_BILINEAR ? GL_LINEAR_MIPMAP_NEAREST :
-						GL_NEAREST_MIPMAP_NEAREST);
+						minFilter == ETMINF_NEAREST_MIPMAP_NEAREST ? GL_NEAREST_MIPMAP_NEAREST :
+						minFilter == ETMINF_LINEAR_MIPMAP_NEAREST ? GL_LINEAR_MIPMAP_NEAREST :
+						minFilter == ETMINF_NEAREST_MIPMAP_LINEAR ? GL_NEAREST_MIPMAP_LINEAR :
+						(assert(minFilter == ETMINF_LINEAR_MIPMAP_LINEAR), GL_LINEAR_MIPMAP_LINEAR));
 
 					tmpTexture->getStatesCache().MinFilter = minFilter;
 					tmpTexture->getStatesCache().MipMapStatus = true;
@@ -1487,7 +1489,8 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 				{
 					E_TEXTURE_MIN_FILTER minFilter = material.TextureLayers[i].MinFilter;
 					glTexParameteri(tmpTextureType, GL_TEXTURE_MIN_FILTER,
-						(minFilter == ETMINF_TRILINEAR || minFilter == ETMINF_BILINEAR) ? GL_LINEAR : GL_NEAREST);
+						(minFilter == ETMINF_NEAREST_MIPMAP_NEAREST || minFilter == ETMINF_NEAREST_MIPMAP_LINEAR) ? GL_NEAREST :
+						(assert(minFilter == ETMINF_LINEAR_MIPMAP_NEAREST || minFilter == ETMINF_LINEAR_MIPMAP_LINEAR), GL_LINEAR));
 
 					tmpTexture->getStatesCache().MinFilter = minFilter;
 					tmpTexture->getStatesCache().MipMapStatus = false;
