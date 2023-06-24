@@ -112,7 +112,7 @@ void COGLES2MaterialSolidCB::OnSetMaterial(const SMaterial& material)
 	COGLES2MaterialBaseCB::OnSetMaterial(material);
 
 	AlphaRef = material.MaterialTypeParam;
-	TextureUsage0 = (material.TextureLayer[0].Texture) ? 1 : 0;
+	TextureUsage0 = (material.TextureLayers[0].Texture) ? 1 : 0;
 }
 
 void COGLES2MaterialSolidCB::OnSetConstants(IMaterialRendererServices* services, s32 userData)
@@ -169,7 +169,7 @@ void COGLES2MaterialOneTextureBlendCB::OnSetMaterial(const SMaterial& material)
 		}
 	}
 
-	TextureUsage0 = (material.TextureLayer[0].Texture) ? 1 : 0;
+	TextureUsage0 = (material.TextureLayers[0].Texture) ? 1 : 0;
 }
 
 void COGLES2MaterialOneTextureBlendCB::OnSetConstants(IMaterialRendererServices* services, s32 userData)

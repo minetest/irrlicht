@@ -2673,24 +2673,24 @@ void COpenGLDriver::setTextureRenderStates(const SMaterial& material, bool reset
 #ifdef GL_VERSION_2_1
 			if (Version >= 201)
 			{
-				if (!statesCache.IsCached || material.TextureLayer[i].LODBias != statesCache.LODBias)
+				if (!statesCache.IsCached || material.TextureLayers[i].LODBias != statesCache.LODBias)
 				{
-					if (material.TextureLayer[i].LODBias)
+					if (material.TextureLayers[i].LODBias)
 					{
-						const float tmp = core::clamp(material.TextureLayer[i].LODBias * 0.125f, -MaxTextureLODBias, MaxTextureLODBias);
+						const float tmp = core::clamp(material.TextureLayers[i].LODBias * 0.125f, -MaxTextureLODBias, MaxTextureLODBias);
 						glTexParameterf(tmpType, GL_TEXTURE_LOD_BIAS, tmp);
 					}
 					else
 						glTexParameterf(tmpType, GL_TEXTURE_LOD_BIAS, 0.f);
 
-					statesCache.LODBias = material.TextureLayer[i].LODBias;
+					statesCache.LODBias = material.TextureLayers[i].LODBias;
 				}
 			}
 			else if (FeatureAvailable[IRR_EXT_texture_lod_bias])
 			{
-				if (material.TextureLayer[i].LODBias)
+				if (material.TextureLayers[i].LODBias)
 				{
-					const float tmp = core::clamp(material.TextureLayer[i].LODBias * 0.125f, -MaxTextureLODBias, MaxTextureLODBias);
+					const float tmp = core::clamp(material.TextureLayers[i].LODBias * 0.125f, -MaxTextureLODBias, MaxTextureLODBias);
 					glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, tmp);
 				}
 				else
@@ -2699,9 +2699,9 @@ void COpenGLDriver::setTextureRenderStates(const SMaterial& material, bool reset
 #elif defined(GL_EXT_texture_lod_bias)
 			if (FeatureAvailable[IRR_EXT_texture_lod_bias])
 			{
-				if (material.TextureLayer[i].LODBias)
+				if (material.TextureLayers[i].LODBias)
 				{
-					const float tmp = core::clamp(material.TextureLayer[i].LODBias * 0.125f, -MaxTextureLODBias, MaxTextureLODBias);
+					const float tmp = core::clamp(material.TextureLayers[i].LODBias * 0.125f, -MaxTextureLODBias, MaxTextureLODBias);
 					glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, tmp);
 				}
 				else
@@ -2709,9 +2709,9 @@ void COpenGLDriver::setTextureRenderStates(const SMaterial& material, bool reset
 			}
 #endif
 
-			if (!statesCache.IsCached || material.TextureLayer[i].MagFilter != statesCache.MagFilter)
+			if (!statesCache.IsCached || material.TextureLayers[i].MagFilter != statesCache.MagFilter)
 			{
-				E_TEXTURE_MAG_FILTER magFilter = material.TextureLayer[i].MagFilter;
+				E_TEXTURE_MAG_FILTER magFilter = material.TextureLayers[i].MagFilter;
 				glTexParameteri(tmpType, GL_TEXTURE_MAG_FILTER,
 					magFilter == ETMAGF_BILINEAR ? GL_LINEAR : GL_NEAREST);
 
@@ -2720,10 +2720,10 @@ void COpenGLDriver::setTextureRenderStates(const SMaterial& material, bool reset
 
 			if (material.UseMipMaps && tmpTexture->hasMipMaps())
 			{
-				if (!statesCache.IsCached || material.TextureLayer[i].MinFilter != statesCache.MinFilter ||
+				if (!statesCache.IsCached || material.TextureLayers[i].MinFilter != statesCache.MinFilter ||
 					!statesCache.MipMapStatus)
 				{
-					E_TEXTURE_MIN_FILTER minFilter = material.TextureLayer[i].MinFilter;
+					E_TEXTURE_MIN_FILTER minFilter = material.TextureLayers[i].MinFilter;
 					glTexParameteri(tmpType, GL_TEXTURE_MIN_FILTER,
 						minFilter == ETMINF_TRILINEAR ? GL_LINEAR_MIPMAP_LINEAR :
 						minFilter == ETMINF_BILINEAR ? GL_LINEAR_MIPMAP_NEAREST :
@@ -2735,10 +2735,10 @@ void COpenGLDriver::setTextureRenderStates(const SMaterial& material, bool reset
 			}
 			else
 			{
-				if (!statesCache.IsCached || material.TextureLayer[i].MinFilter != statesCache.MinFilter ||
+				if (!statesCache.IsCached || material.TextureLayers[i].MinFilter != statesCache.MinFilter ||
 					statesCache.MipMapStatus)
 				{
-					E_TEXTURE_MIN_FILTER minFilter = material.TextureLayer[i].MinFilter;
+					E_TEXTURE_MIN_FILTER minFilter = material.TextureLayers[i].MinFilter;
 					glTexParameteri(tmpType, GL_TEXTURE_MIN_FILTER,
 						(minFilter == ETMINF_TRILINEAR || minFilter == ETMINF_BILINEAR) ? GL_LINEAR : GL_NEAREST);
 
@@ -2749,31 +2749,31 @@ void COpenGLDriver::setTextureRenderStates(const SMaterial& material, bool reset
 
 #ifdef GL_EXT_texture_filter_anisotropic
 			if (FeatureAvailable[IRR_EXT_texture_filter_anisotropic] &&
-				(!statesCache.IsCached || material.TextureLayer[i].AnisotropicFilter != statesCache.AnisotropicFilter))
+				(!statesCache.IsCached || material.TextureLayers[i].AnisotropicFilter != statesCache.AnisotropicFilter))
 			{
 				glTexParameteri(tmpType, GL_TEXTURE_MAX_ANISOTROPY_EXT,
-					material.TextureLayer[i].AnisotropicFilter > 1 ? core::min_(MaxAnisotropy, material.TextureLayer[i].AnisotropicFilter) : 1);
+					material.TextureLayers[i].AnisotropicFilter > 1 ? core::min_(MaxAnisotropy, material.TextureLayers[i].AnisotropicFilter) : 1);
 
-				statesCache.AnisotropicFilter = material.TextureLayer[i].AnisotropicFilter;
+				statesCache.AnisotropicFilter = material.TextureLayers[i].AnisotropicFilter;
 			}
 #endif
 
-			if (!statesCache.IsCached || material.TextureLayer[i].TextureWrapU != statesCache.WrapU)
+			if (!statesCache.IsCached || material.TextureLayers[i].TextureWrapU != statesCache.WrapU)
 			{
-				glTexParameteri(tmpType, GL_TEXTURE_WRAP_S, getTextureWrapMode(material.TextureLayer[i].TextureWrapU));
-				statesCache.WrapU = material.TextureLayer[i].TextureWrapU;
+				glTexParameteri(tmpType, GL_TEXTURE_WRAP_S, getTextureWrapMode(material.TextureLayers[i].TextureWrapU));
+				statesCache.WrapU = material.TextureLayers[i].TextureWrapU;
 			}
 
-			if (!statesCache.IsCached || material.TextureLayer[i].TextureWrapV != statesCache.WrapV)
+			if (!statesCache.IsCached || material.TextureLayers[i].TextureWrapV != statesCache.WrapV)
 			{
-				glTexParameteri(tmpType, GL_TEXTURE_WRAP_T, getTextureWrapMode(material.TextureLayer[i].TextureWrapV));
-				statesCache.WrapV = material.TextureLayer[i].TextureWrapV;
+				glTexParameteri(tmpType, GL_TEXTURE_WRAP_T, getTextureWrapMode(material.TextureLayers[i].TextureWrapV));
+				statesCache.WrapV = material.TextureLayers[i].TextureWrapV;
 			}
 
-			if (!statesCache.IsCached || material.TextureLayer[i].TextureWrapW != statesCache.WrapW)
+			if (!statesCache.IsCached || material.TextureLayers[i].TextureWrapW != statesCache.WrapW)
 			{
-				glTexParameteri(tmpType, GL_TEXTURE_WRAP_R, getTextureWrapMode(material.TextureLayer[i].TextureWrapW));
-				statesCache.WrapW = material.TextureLayer[i].TextureWrapW;
+				glTexParameteri(tmpType, GL_TEXTURE_WRAP_R, getTextureWrapMode(material.TextureLayers[i].TextureWrapW));
+				statesCache.WrapW = material.TextureLayers[i].TextureWrapW;
 			}
 
 			statesCache.IsCached = true;

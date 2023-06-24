@@ -106,7 +106,7 @@ void COpenGL3MaterialSolidCB::OnSetMaterial(const SMaterial& material)
 	COpenGL3MaterialBaseCB::OnSetMaterial(material);
 
 	AlphaRef = material.MaterialTypeParam;
-	TextureUsage0 = (material.TextureLayer[0].Texture) ? 1 : 0;
+	TextureUsage0 = (material.TextureLayers[0].Texture) ? 1 : 0;
 }
 
 void COpenGL3MaterialSolidCB::OnSetConstants(IMaterialRendererServices* services, s32 userData)
@@ -163,7 +163,7 @@ void COpenGL3MaterialOneTextureBlendCB::OnSetMaterial(const SMaterial& material)
 		}
 	}
 
-	TextureUsage0 = (material.TextureLayer[0].Texture) ? 1 : 0;
+	TextureUsage0 = (material.TextureLayers[0].Texture) ? 1 : 0;
 }
 
 void COpenGL3MaterialOneTextureBlendCB::OnSetConstants(IMaterialRendererServices* services, s32 userData)

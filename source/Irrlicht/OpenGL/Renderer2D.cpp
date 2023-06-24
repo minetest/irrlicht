@@ -69,7 +69,7 @@ void COpenGL3Renderer2D::OnSetMaterial(const video::SMaterial& material,
 
 	if ( WithTexture )
 	{
-		s32 TextureUsage = material.TextureLayer[0].Texture ? 1 : 0;
+		s32 TextureUsage = material.TextureLayers[0].Texture ? 1 : 0;
 		setPixelShaderConstant(TextureUsageID, &TextureUsage, 1);
 	}
 }

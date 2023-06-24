@@ -303,7 +303,7 @@ namespace video
 		{ }
 
 		//! Texture layer array.
-		SMaterialLayer TextureLayer[MATERIAL_MAX_TEXTURES];
+		SMaterialLayer TextureLayers[MATERIAL_MAX_TEXTURES];
 
 		//! Type of the material. Specifies how everything is blended together
 		E_MATERIAL_TYPE MaterialType;
@@ -465,7 +465,7 @@ namespace video
 		template <typename F>
 		void forEachTexture(F &&fn) {
 			for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; i++) {
-				fn(TextureLayer[i]);
+				fn(TextureLayers[i]);
 			}
 		}
 
@@ -474,7 +474,7 @@ namespace video
 		\return Texture matrix for texture level i. */
 		core::matrix4& getTextureMatrix(u32 i)
 		{
-			return TextureLayer[i].getTextureMatrix();
+			return TextureLayers[i].getTextureMatrix();
 		}
 
 		//! Gets the immutable texture transformation matrix for level i
@@ -483,7 +483,7 @@ namespace video
 		const core::matrix4& getTextureMatrix(u32 i) const
 		{
 			if (i<MATERIAL_MAX_TEXTURES)
-				return TextureLayer[i].getTextureMatrix();
+				return TextureLayers[i].getTextureMatrix();
 			else
 				return core::IdentityMatrix;
 		}
@@ -495,7 +495,7 @@ namespace video
 		{
 			if (i>=MATERIAL_MAX_TEXTURES)
 				return;
-			TextureLayer[i].setTextureMatrix(mat);
+			TextureLayers[i].setTextureMatrix(mat);
 		}
 
 		//! Gets the i-th texture
@@ -503,7 +503,7 @@ namespace video
 		\return Texture for texture level i, if defined, else 0. */
 		ITexture* getTexture(u32 i) const
 		{
-			return i < MATERIAL_MAX_TEXTURES ? TextureLayer[i].Texture : 0;
+			return i < MATERIAL_MAX_TEXTURES ? TextureLayers[i].Texture : 0;
 		}
 
 		//! Sets the i-th texture
@@ -514,7 +514,7 @@ namespace video
 		{
 			if (i>=MATERIAL_MAX_TEXTURES)
 				return;
-			TextureLayer[i].Texture = tex;
+			TextureLayers[i].Texture = tex;
 		}
 
 		//! Inequality operator
@@ -554,7 +554,7 @@ namespace video
 				;
 			for (u32 i=0; (i<MATERIAL_MAX_TEXTURES) && !different; ++i)
 			{
-				different |= (TextureLayer[i] != b.TextureLayer[i]);
+				different |= (TextureLayers[i] != b.TextureLayers[i]);
 			}
 			return different;
 		}

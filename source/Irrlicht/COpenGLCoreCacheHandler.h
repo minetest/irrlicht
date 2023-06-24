@@ -590,9 +590,9 @@ public:
 		// Fix textures which got removed
 		for ( u32 i=0; i < MATERIAL_MAX_TEXTURES; ++i )
 		{
-			if ( material.TextureLayer[i].Texture && !TextureCache[i] )
+			if ( material.TextureLayers[i].Texture && !TextureCache[i] )
 			{
-				material.TextureLayer[i].Texture = 0;
+				material.TextureLayers[i].Texture = 0;
 			}
 		}
 	}
