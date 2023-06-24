@@ -3,6 +3,7 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
 #include "COpenGLDriver.h"
+#include <cassert>
 #include "CNullDriver.h"
 #include "IContextManager.h"
 
@@ -2713,7 +2714,8 @@ void COpenGLDriver::setTextureRenderStates(const SMaterial& material, bool reset
 			{
 				E_TEXTURE_MAG_FILTER magFilter = material.TextureLayers[i].MagFilter;
 				glTexParameteri(tmpType, GL_TEXTURE_MAG_FILTER,
-					magFilter == ETMAGF_BILINEAR ? GL_LINEAR : GL_NEAREST);
+					magFilter == ETMAGF_NEAREST ? GL_NEAREST :
+					(assert(magFilter == ETMAGF_LINEAR), GL_LINEAR));
 
 				statesCache.MagFilter = magFilter;
 			}
@@ -2725,9 +2727,10 @@ void COpenGLDriver::setTextureRenderStates(const SMaterial& material, bool reset
 				{
 					E_TEXTURE_MIN_FILTER minFilter = material.TextureLayers[i].MinFilter;
 					glTexParameteri(tmpType, GL_TEXTURE_MIN_FILTER,
-						minFilter == ETMINF_TRILINEAR ? GL_LINEAR_MIPMAP_LINEAR :
-						minFilter == ETMINF_BILINEAR ? GL_LINEAR_MIPMAP_NEAREST :
-						GL_NEAREST_MIPMAP_NEAREST);
+						minFilter == ETMINF_NEAREST_MIPMAP_NEAREST ? GL_NEAREST_MIPMAP_NEAREST :
+						minFilter == ETMINF_LINEAR_MIPMAP_NEAREST ? GL_LINEAR_MIPMAP_NEAREST :
+						minFilter == ETMINF_NEAREST_MIPMAP_LINEAR ? GL_NEAREST_MIPMAP_LINEAR :
+						(assert(minFilter == ETMINF_LINEAR_MIPMAP_LINEAR), GL_LINEAR_MIPMAP_LINEAR));
 
 					statesCache.MinFilter = minFilter;
 					statesCache.MipMapStatus = true;
@@ -2740,7 +2743,8 @@ void COpenGLDriver::setTextureRenderStates(const SMaterial& material, bool reset
 				{
 					E_TEXTURE_MIN_FILTER minFilter = material.TextureLayers[i].MinFilter;
 					glTexParameteri(tmpType, GL_TEXTURE_MIN_FILTER,
-						(minFilter == ETMINF_TRILINEAR || minFilter == ETMINF_BILINEAR) ? GL_LINEAR : GL_NEAREST);
+						(minFilter == ETMINF_NEAREST_MIPMAP_NEAREST || minFilter == ETMINF_NEAREST_MIPMAP_LINEAR) ? GL_NEAREST :
+						(assert(minFilter == ETMINF_LINEAR_MIPMAP_NEAREST || minFilter == ETMINF_LINEAR_MIPMAP_LINEAR), GL_LINEAR));
 
 					statesCache.MinFilter = minFilter;
 					statesCache.MipMapStatus = false;

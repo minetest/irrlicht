@@ -31,7 +31,7 @@ public:
 	struct SStatesCache
 	{
 		SStatesCache() : WrapU(ETC_REPEAT), WrapV(ETC_REPEAT), WrapW(ETC_REPEAT),
-			LODBias(0), AnisotropicFilter(0), MinFilter(video::ETMINF_NEAREST),
+			LODBias(0), AnisotropicFilter(0), MinFilter(video::ETMINF_NEAREST_MIPMAP_NEAREST),
 			MagFilter(video::ETMAGF_NEAREST), MipMapStatus(false), IsCached(false)
 		{
 		}
