@@ -76,7 +76,7 @@ namespace video
 		EMP_POLYGON_OFFSET = 0x80000,
 
 		//! Corresponds to SMaterial::BlendFactor.
-		EMP_BLEND_FACTOR = 0x160000
+		EMP_BLEND_FACTOR = 0x100000,
 	};
 
 } // end namespace video
