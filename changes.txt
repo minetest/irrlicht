@@ -1,6 +1,8 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Shader materials shows now how to pass material values.
+  In 1.8 we could still use gl_FrontMaterial, but that is no longer supported in shaders
 - Get IMeshBuffer::append functions working for a few more cases and adapt interface so one can prevent the BoundingBox update.
 - Bugfix: SMaterialLayer::operator!= no longer returns true when comparing a layer without texture matrix with one with a set identity texture matrix. Those are the same.
 - SMaterialLayer no longer releases allocated texture memory before destructor unless explicitly requested.
