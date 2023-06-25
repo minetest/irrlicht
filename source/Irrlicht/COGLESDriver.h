@@ -6,8 +6,6 @@
 
 #include "SIrrCreationParameters.h"
 
-#ifdef _IRR_COMPILE_WITH_OGLES1_
-
 #include "CNullDriver.h"
 #include "IMaterialRendererServices.h"
 #include "EDriverFeatures.h"
@@ -354,5 +352,3 @@ namespace video
 
 } // end namespace video
 } // end namespace irr
-
-#endif // _IRR_COMPILE_WITH_OGLES1_

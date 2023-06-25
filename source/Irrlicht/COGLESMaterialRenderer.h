@@ -4,8 +4,6 @@
 
 #pragma once
 
-#ifdef _IRR_COMPILE_WITH_OGLES1_
-
 #include "COGLESDriver.h"
 #include "IMaterialRenderer.h"
 
@@ -283,5 +281,3 @@ public:
 
 } // end namespace video
 } // end namespace irr
-
-#endif

@@ -4,8 +4,6 @@
 
 #pragma once
 
-#ifdef _IRR_COMPILE_WITH_OGLES1_
-
 #if defined(_IRR_COMPILE_WITH_IOS_DEVICE_)
 #include <OpenGLES/ES1/gl.h>
 #include <OpenGLES/ES1/glext.h>
@@ -115,5 +113,3 @@ namespace video
 
 }
 }
-
-#endif

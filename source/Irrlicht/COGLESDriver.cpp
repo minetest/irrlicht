@@ -6,8 +6,6 @@
 #include "CNullDriver.h"
 #include "IContextManager.h"
 
-#ifdef _IRR_COMPILE_WITH_OGLES1_
-
 #include "COpenGLCoreTexture.h"
 #include "COpenGLCoreRenderTarget.h"
 #include "COpenGLCoreCacheHandler.h"
@@ -3068,25 +3066,14 @@ COGLES1CacheHandler* COGLES1Driver::getCacheHandler() const
 } // end namespace
 } // end namespace
 
-#endif // _IRR_COMPILE_WITH_OGLES1_
-
 namespace irr
 {
 namespace video
 {
 
-#ifndef _IRR_COMPILE_WITH_OGLES1_
-class IVideoDriver;
-class IContextManager;
-#endif
-
 IVideoDriver* createOGLES1Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
 {
-#ifdef _IRR_COMPILE_WITH_OGLES1_
 	return new COGLES1Driver(params, io, contextManager);
-#else
-	return 0;
-#endif //  _IRR_COMPILE_WITH_OGLES1_
 }
 
 } // end namespace

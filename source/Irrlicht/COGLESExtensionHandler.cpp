@@ -6,8 +6,6 @@
 
 #include "COGLESExtensionHandler.h"
 
-#ifdef _IRR_COMPILE_WITH_OGLES1_
-
 #include "irrString.h"
 #include "SMaterial.h"
 #include "fast_atof.h"
@@ -98,6 +96,3 @@ namespace video
 
 } // end namespace video
 } // end namespace irr
-
-
-#endif // _IRR_COMPILE_WITH_OGLES2_
