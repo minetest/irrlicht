@@ -7,8 +7,7 @@
 	- changed behavior for log2 textures ( replaced multiplies by shift )
 */
 
-#ifndef __S_VIDEO_2_SOFTWARE_HELPER_H_INCLUDED__
-#define __S_VIDEO_2_SOFTWARE_HELPER_H_INCLUDED__
+#pragma once
 
 #include "irrMath.h"
 #include "SMaterial.h"
@@ -300,6 +299,3 @@ inline bool intersect ( AbsRectangle &dest, const AbsRectangle& a, const AbsRect
 
 
 } // end namespace irr
-
-#endif
-

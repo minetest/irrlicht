@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_IRR_C_TIMER_H_INCLUDED__
-#define __C_IRR_C_TIMER_H_INCLUDED__
+#pragma once
 
 #include "ITimer.h"
 #include "os.h"
@@ -102,6 +101,4 @@ namespace irr
 	};
 
 } // end namespace
-
-#endif
 

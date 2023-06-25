@@ -4,8 +4,7 @@
 
 //New skinned mesh
 
-#ifndef __C_SKINNED_MESH_H_INCLUDED__
-#define __C_SKINNED_MESH_H_INCLUDED__
+#pragma once
 
 #include "ISkinnedMesh.h"
 #include "SMeshBuffer.h"
@@ -218,6 +217,3 @@ private:
 
 } // end namespace scene
 } // end namespace irr
-
-#endif
-

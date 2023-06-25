@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_IRR_DEVICE_STUB_H_INCLUDED__
-#define __C_IRR_DEVICE_STUB_H_INCLUDED__
+#pragma once
 
 #include "IrrlichtDevice.h"
 #include "SIrrCreationParameters.h"
@@ -206,6 +205,3 @@ namespace irr
 	};
 
 } // end namespace irr
-
-#endif
-

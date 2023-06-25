@@ -2,9 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_IRR_DEVICE_LINUX_H_INCLUDED__
-#define __C_IRR_DEVICE_LINUX_H_INCLUDED__
-
+#pragma once
 
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 
@@ -483,5 +481,3 @@ namespace irr
 } // end namespace irr
 
 #endif // _IRR_COMPILE_WITH_X11_DEVICE_
-#endif // __C_IRR_DEVICE_LINUX_H_INCLUDED__
-

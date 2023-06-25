@@ -7,8 +7,7 @@
 // declared public domain
 
 
-#ifndef SB3DSTRUCTS_H
-#define SB3DSTRUCTS_H
+#pragma once
 
 #include "SMaterial.h"
 
@@ -66,5 +65,3 @@ struct SB3dMaterial
 
 } // end namespace scene
 } // end namespace irr
-
-#endif

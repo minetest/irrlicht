@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef _C_BLIT_H_INCLUDED_
-#define _C_BLIT_H_INCLUDED_
+#pragma once
 
 #include "SoftwareDriver2_helper.h"
 
@@ -1058,6 +1057,3 @@ static s32 Blit(eBlitter operation,
 }
 
 }
-
-#endif
-

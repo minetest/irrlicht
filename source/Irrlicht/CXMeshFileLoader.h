@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_X_MESH_FILE_LOADER_H_INCLUDED__
-#define __C_X_MESH_FILE_LOADER_H_INCLUDED__
+#pragma once
 
 #include "IMeshLoader.h"
 #include "irrString.h"
@@ -180,5 +179,3 @@ private:
 
 } // end namespace scene
 } // end namespace irr
-
-#endif
