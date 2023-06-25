@@ -4,8 +4,6 @@
 
 #pragma once
 
-#ifdef _IRR_COMPILE_WITH_OGLES2_
-
 #include "COGLES2MaterialRenderer.h"
 
 namespace irr
@@ -33,5 +31,3 @@ protected:
 
 }
 }
-
-#endif

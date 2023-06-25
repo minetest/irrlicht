@@ -4,8 +4,6 @@
 
 #include "COGLES2FixedPipelineRenderer.h"
 
-#ifdef _IRR_COMPILE_WITH_OGLES2_
-
 #include "IVideoDriver.h"
 
 namespace irr
@@ -198,6 +196,3 @@ void COGLES2MaterialOneTextureBlendCB::OnSetConstants(IMaterialRendererServices*
 
 }
 }
-
-#endif
-

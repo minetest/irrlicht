@@ -5,8 +5,6 @@
 
 #pragma once
 
-#ifdef _IRR_COMPILE_WITH_OGLES2_
-
 #include "EDriverFeatures.h"
 #include "irrTypes.h"
 #include "os.h"
@@ -186,5 +184,3 @@ namespace video
 
 }
 }
-
-#endif

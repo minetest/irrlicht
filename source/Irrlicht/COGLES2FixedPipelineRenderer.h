@@ -4,8 +4,6 @@
 
 #pragma once
 
-#ifdef _IRR_COMPILE_WITH_OGLES2_
-
 #include "IShaderConstantSetCallBack.h"
 #include "IMaterialRendererServices.h"
 
@@ -107,5 +105,3 @@ protected:
 
 }
 }
-
-#endif
