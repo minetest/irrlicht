@@ -448,7 +448,6 @@ add_library(IRRIOOBJ OBJECT
 
 add_library(IRROTHEROBJ OBJECT
 	CIrrDeviceSDL.cpp
-	CIrrDeviceLinux.cpp
 	CIrrDeviceStub.cpp
 	CIrrDeviceWin32.cpp
 	CLogger.cpp
@@ -456,6 +455,10 @@ add_library(IRROTHEROBJ OBJECT
 	Irrlicht.cpp
 	os.cpp
 )
+
+if(LINUX_PLATFORM)
+	target_sources(IRROTHEROBJ PRIVATE CIrrDeviceLinux.cpp)
+endif()
 
 if(ENABLE_OPENGL3)
 	target_compile_definitions(IRROTHEROBJ PRIVATE ENABLE_OPENGL3)
