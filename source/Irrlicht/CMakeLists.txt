@@ -150,6 +150,9 @@ else()
 	option(ENABLE_OPENGL "Enable OpenGL" TRUE)
 endif()
 
+# EGL
+option(ENABLE_EGL "Enable EGL" FALSE)
+
 if(EMSCRIPTEN OR APPLE)
 	set(ENABLE_GLES1 FALSE)
 else()
@@ -221,10 +224,6 @@ endif()
 
 if(ENABLE_EGL)
 	add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_)
-	set(IRRDRVROBJ
-		${IRRDRVROBJ}
-		CEGLManager.cpp
-	)
 endif()
 
 if(ENABLE_WEBGL1)
@@ -253,6 +252,7 @@ else()
 	message(STATUS "OpenGL ES 2: OFF")
 endif()
 message(STATUS "WebGL: ${ENABLE_WEBGL1}")
+message(STATUS "EGL: ${ENABLE_EGL}")
 
 # Required libs
 
@@ -367,6 +367,13 @@ set(IRRDRVROBJ
 	CSDLManager.cpp
 	mt_opengl_loader.cpp
 )
+
+if(ENABLE_EGL)
+	set(IRRDRVROBJ
+		${IRRDRVROBJ}
+		CEGLManager.cpp
+	)
+endif()
 
 if(ENABLE_OPENGL)
 	set(IRRDRVROBJ
