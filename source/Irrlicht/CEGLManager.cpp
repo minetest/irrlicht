@@ -4,8 +4,6 @@
 
 #include "CEGLManager.h"
 
-#ifdef _IRR_COMPILE_WITH_EGL_MANAGER_
-
 #include "irrString.h"
 #include "irrArray.h"
 #include "os.h"
@@ -664,4 +662,3 @@ bool CEGLManager::testEGLError()
 }
 }
 
-#endif

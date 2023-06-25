@@ -4,8 +4,6 @@
 
 #pragma once
 
-#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
-
 #include "CIrrDeviceStub.h"
 #include "IrrlichtDevice.h"
 #include "ICursorControl.h"
@@ -479,5 +477,3 @@ namespace irr
 
 
 } // end namespace irr
-
-#endif // _IRR_COMPILE_WITH_X11_DEVICE_

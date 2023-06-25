@@ -4,8 +4,6 @@
 
 #include "CIrrDeviceLinux.h"
 
-#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/utsname.h>
@@ -2383,5 +2381,4 @@ irr::core::dimension2di CIrrDeviceLinux::CCursorControl::getSupportedIconSize() 
 
 } // end namespace
 
-#endif // _IRR_COMPILE_WITH_X11_DEVICE_
 

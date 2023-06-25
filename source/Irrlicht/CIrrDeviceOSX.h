@@ -5,8 +5,6 @@
 
 #pragma once
 
-#ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
-
 #include "CIrrDeviceStub.h"
 #include "IrrlichtDevice.h"
 #include "IGUIEnvironment.h"
@@ -245,5 +243,3 @@ namespace irr
 
 
 } // end namespace irr
-
-#endif // _IRR_COMPILE_WITH_OSX_DEVICE_

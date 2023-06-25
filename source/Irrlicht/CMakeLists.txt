@@ -93,7 +93,8 @@ elseif(ANDROID)
 	endif()
 	set(DEVICE "ANDROID")
 elseif(EMSCRIPTEN)
-	add_definitions(-D_IRR_EMSCRIPTEN_PLATFORM_ -D_IRR_COMPILE_WITH_EGL_MANAGER_)
+	add_definitions(-D_IRR_EMSCRIPTEN_PLATFORM_)
+	set(ENABLE_EGL ON)
 	set(LINUX_PLATFORM TRUE)
 	set(DEVICE "SDL")
 elseif(SOLARIS)
@@ -202,18 +203,28 @@ if(ENABLE_GLES1)
 	endif()
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES1_)
 	if(DEVICE MATCHES "^(WINDOWS|X11|ANDROID)$")
-		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_ -D_IRR_OGLES1_USE_EXTPOINTER_)
+		add_definitions(-D_IRR_OGLES1_USE_EXTPOINTER_)
+		set(ENABLE_EGL ON)
 	endif()
 endif()
 
 if(ENABLE_GLES2)
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES2_)
 	if(DEVICE MATCHES "^(WINDOWS|X11|ANDROID)$" OR EMSCRIPTEN)
-		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_ -D_IRR_OGLES2_USE_EXTPOINTER_)
+		add_definitions(-D_IRR_OGLES2_USE_EXTPOINTER_)
+		set(ENABLE_EGL ON)
 	elseif(DEVICE STREQUAL "SDL")
 		set(USE_SDLGL ON)
 		set(USE_SDLGLES2 ON)
 	endif()
+endif()
+
+if(ENABLE_EGL)
+	add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_)
+	set(IRRDRVROBJ
+		${IRRDRVROBJ}
+		CEGLManager.cpp
+	)
 endif()
 
 if(ENABLE_WEBGL1)
@@ -353,7 +364,6 @@ set(IRRDRVROBJ
 	CNullDriver.cpp
 	CGLXManager.cpp
 	CWGLManager.cpp
-	CEGLManager.cpp
 	CSDLManager.cpp
 	mt_opengl_loader.cpp
 )

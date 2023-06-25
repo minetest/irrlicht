@@ -5,8 +5,6 @@
 // For conditions of distribution and use, see copyright notice in Irrlicht.h
 
 
-#ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
-
 #import <Cocoa/Cocoa.h>
 #import <OpenGL/gl.h>
 
@@ -471,12 +469,12 @@ static bool firstLaunch = true;
 - (id)initWithDevice:(irr::CIrrDeviceMacOSX*)device
 {
     self = [super init];
-    
+
     if (self)
         Device = device;
-    
+
     Quit = false;
-    
+
     return (self);
 }
 
@@ -528,7 +526,7 @@ static bool firstLaunch = true;
 {
     NSWindow	*window;
     NSRect		frame;
-    
+
     window = [aNotification object];
     frame = [window frame];
     Device->setResize((int)frame.size.width,(int)frame.size.height);
@@ -646,15 +644,15 @@ bool CIrrDeviceMacOSX::createWindow()
     CGDisplayErr error;
     bool result = false;
     Display = CGMainDisplayID();
-    
+
     CGRect displayRect;
     CGDisplayModeRef displaymode, olddisplaymode;
-    
+
     ScreenWidth = (int)CGDisplayPixelsWide(Display);
     ScreenHeight = (int)CGDisplayPixelsHigh(Display);
-    
+
     const NSBackingStoreType type = (CreationParams.DriverType == video::EDT_OPENGL) ? NSBackingStoreBuffered : NSBackingStoreNonretained;
-    
+
     // TODO: fullscreen
     //if (!CreationParams.Fullscreen)
     {
@@ -662,25 +660,25 @@ bool CIrrDeviceMacOSX::createWindow()
         {
             int x = (CreationParams.WindowPosition.X > 0) ? CreationParams.WindowPosition.X : 0;
             int y = (CreationParams.WindowPosition.Y > 0) ? CreationParams.WindowPosition.Y : 0;
-            
+
             if (CreationParams.WindowPosition.Y > -1)
             {
                 int screenHeight = [[[NSScreen screens] objectAtIndex:0] frame].size.height;
                 y = screenHeight - y - CreationParams.WindowSize.Height;
             }
-            
+
             Window = [[NSWindow alloc] initWithContentRect:NSMakeRect(x, y, CreationParams.WindowSize.Width,CreationParams.WindowSize.Height) styleMask:NSTitledWindowMask+NSClosableWindowMask+NSResizableWindowMask backing:type defer:FALSE];
 
             if (CreationParams.WindowPosition.X == -1 && CreationParams.WindowPosition.Y == -1)
                 [Window center];
         }
-        
+
         DeviceWidth = CreationParams.WindowSize.Width;
         DeviceHeight = CreationParams.WindowSize.Height;
-        
+
         result = true;
     }
-    
+
     if (result)
     {
         if (Window)
@@ -691,7 +689,7 @@ bool CIrrDeviceMacOSX::createWindow()
             [Window makeKeyAndOrderFront:nil];
         }
     }
-    
+
     return result;
 }
 
@@ -706,7 +704,7 @@ void CIrrDeviceMacOSX::setResize(int width, int height)
 	if (CreationParams.DriverType == video::EDT_OPENGL)
     {
         NSOpenGLContext* Context = (NSOpenGLContext*)ContextManager->getContext().OpenGLOSX.Context;
-        
+
         if (Context)
             [Context update];
     }
@@ -741,13 +739,13 @@ void CIrrDeviceMacOSX::createDriver()
                 {
                     os::Printer::log("Could not create OpenGL driver.", ELL_ERROR);
                 }
-                
-				if (Window) 
+
+				if (Window)
 				{
 					[[Window contentView] setWantsBestResolutionOpenGLSurface:NO];
 					[(NSOpenGLContext*)ContextManager->getContext().OpenGLOSX.Context setView:[Window contentView]];
 				}
-				else 
+				else
 				{
 					[(NSView*)CreationParams.WindowId setWantsBestResolutionOpenGLSurface:NO];
 					[(NSOpenGLContext*)ContextManager->getContext().OpenGLOSX.Context setView:(NSView*)CreationParams.WindowId];
@@ -1084,7 +1082,7 @@ void CIrrDeviceMacOSX::postMouseEvent(void *event,irr::SEvent &ievent)
 	{
 		ievent.MouseInput.Shift = ([(NSEvent *)event modifierFlags] & NSShiftKeyMask) != 0;
 		ievent.MouseInput.Control = ([(NSEvent *)event modifierFlags] & NSControlKeyMask) != 0;
-		
+
 		postEventFromUser(ievent);
 	}
 
@@ -1164,8 +1162,8 @@ void CIrrDeviceMacOSX::setCursorVisible(bool visible)
 	else
 		CGDisplayHideCursor(CGMainDisplayID());
 }
-    
-    
+
+
 void CIrrDeviceMacOSX::setWindow(NSWindow* window)
 {
     Window = window;
@@ -1328,7 +1326,7 @@ void CIrrDeviceMacOSX::restoreWindow()
 {
 	[Window deminiaturize:[NSApp self]];
 }
-    
+
 //! Get the position of this window on screen
 core::position2di CIrrDeviceMacOSX::getWindowPosition()
 {
@@ -1577,6 +1575,3 @@ void CIrrDeviceMacOSX::pollJoysticks()
 }
 
 } // end namespace
-
-#endif // _IRR_COMPILE_WITH_OSX_DEVICE_
-
