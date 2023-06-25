@@ -440,7 +440,6 @@ add_library(IRROTHEROBJ OBJECT
 	CIrrDeviceSDL.cpp
 	CIrrDeviceLinux.cpp
 	CIrrDeviceStub.cpp
-	CIrrDeviceWin32.cpp
 	CLogger.cpp
 	COSOperator.cpp
 	Irrlicht.cpp
@@ -524,6 +523,7 @@ target_include_directories(IrrlichtMt
 target_link_libraries(IrrlichtMt PRIVATE ${link_libs})
 
 if(WIN32)
+	target_sources(IRROTHEROBJ PRIVATE CIrrDeviceWin32.cpp)
 	target_compile_definitions(IrrlichtMt INTERFACE _IRR_WINDOWS_API_) # used in _IRR_DEBUG_BREAK_IF definition in a public header
 endif()
 target_compile_definitions(IrrlichtMt INTERFACE "IRRLICHT_API=${API_IMPORT}")
