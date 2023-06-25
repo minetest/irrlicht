@@ -2,9 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in Irrlicht.h
 
-#ifndef __C_WEBGL1_DRIVER_H_INCLUDED__
-#define __C_WEBGL1_DRIVER_H_INCLUDED__
-
+#pragma once
 
 #include "SIrrCreationParameters.h"
 
@@ -141,5 +139,3 @@ namespace video
 } // end namespace irr
 
 #endif // _IRR_COMPILE_WITH_WEBGL1_
-
-#endif // __C_WEBGL1_DRIVER_H_INCLUDED__

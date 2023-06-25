@@ -1,9 +1,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_IRR_KEY_EVENT_WRAPPER_H_INCLUDED__
-#define __C_IRR_KEY_EVENT_WRAPPER_H_INCLUDED__
-
+#pragma once
 
 #ifdef _IRR_COMPILE_WITH_ANDROID_DEVICE_
 
@@ -28,7 +26,7 @@ public:
 	int getUnicodeChar(int metaState);
 
 private:
-	static jclass Class_KeyEvent; 
+	static jclass Class_KeyEvent;
 	static jmethodID Method_getUnicodeChar;
 	static jmethodID Method_constructor;
 	JNIEnv* JniEnv;
@@ -39,4 +37,3 @@ private:
 } // namespace irr
 
 #endif // _IRR_COMPILE_WITH_ANDROID_DEVICE_
-#endif // __C_IRR_KEY_EVENT_WRAPPER_H_INCLUDED__

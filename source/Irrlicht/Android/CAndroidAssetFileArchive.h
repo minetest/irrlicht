@@ -2,10 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_ANDROID_ASSET_FILE_ARCHIVE_H_INCLUDED__
-#define __C_ANDROID_ASSET_FILE_ARCHIVE_H_INCLUDED__
-
-
+#pragma once
 
 #ifdef  _IRR_COMPILE_ANDROID_ASSET_READER_
 
@@ -47,7 +44,7 @@ namespace io
 		//! get the archive type
 		virtual E_FILE_ARCHIVE_TYPE getType() const;
 
-		//! Add a directory to read files from. Since the Android 
+		//! Add a directory to read files from. Since the Android
 		//! API does not return names of directories, they need to
 		//! be added manually.
 		virtual void addDirectoryToFileList(const io::path &filename);
@@ -65,5 +62,3 @@ namespace io
 } // end namespace irr
 
 #endif //   _IRR_COMPILE_ANDROID_ASSET_READER_
-#endif //  __C_ANDROID_ASSET_READER_H_INCLUDED__
-

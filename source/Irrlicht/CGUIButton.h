@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_GUI_BUTTON_H_INCLUDED__
-#define __C_GUI_BUTTON_H_INCLUDED__
+#pragma once
 
 #include "IGUIButton.h"
 #include "IGUISpriteBank.h"
@@ -240,5 +239,3 @@ namespace gui
 
 } // end namespace gui
 } // end namespace irr
-
-#endif // __C_GUI_BUTTON_H_INCLUDED__

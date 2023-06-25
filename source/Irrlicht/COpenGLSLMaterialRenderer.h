@@ -2,9 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_OPENGL_SHADER_LANGUAGE_MATERIAL_RENDERER_H_INCLUDED__
-#define __C_OPENGL_SHADER_LANGUAGE_MATERIAL_RENDERER_H_INCLUDED__
-
+#pragma once
 
 #ifdef _IRR_COMPILE_WITH_OPENGL_
 
@@ -66,7 +64,7 @@ public:
 
 	//! Access the callback provided by the users when creating shader materials
 	IShaderConstantSetCallBack* getShaderConstantSetCallBack() const override
-	{ 
+	{
 		return CallBack;
 	}
 
@@ -130,5 +128,3 @@ protected:
 } // end namespace irr
 
 #endif // compile with OpenGL
-#endif // if included
-

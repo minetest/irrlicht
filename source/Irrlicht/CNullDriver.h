@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_VIDEO_NULL_H_INCLUDED__
-#define __C_VIDEO_NULL_H_INCLUDED__
+#pragma once
 
 #include "IVideoDriver.h"
 #include "IFileSystem.h"
@@ -662,7 +661,7 @@ namespace video
 
 		//! adds a surface, not loaded or created by the Irrlicht Engine
 		void addTexture(ITexture* surface);
-		
+
 		virtual ITexture* createDeviceDependentTexture(const io::path& name, IImage* image);
 
 		virtual ITexture* createDeviceDependentTextureCubemap(const io::path& name, const core::array<IImage*>& image);
@@ -838,6 +837,3 @@ namespace video
 
 } // end namespace video
 } // end namespace irr
-
-
-#endif

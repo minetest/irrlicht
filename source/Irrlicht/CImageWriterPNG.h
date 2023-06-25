@@ -2,9 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef _C_IMAGE_WRITER_PNG_H_INCLUDED__
-#define _C_IMAGE_WRITER_PNG_H_INCLUDED__
-
+#pragma once
 
 #include "IImageWriter.h"
 
@@ -28,5 +26,3 @@ public:
 
 } // namespace video
 } // namespace irr
-
-#endif // _C_IMAGE_WRITER_PNG_H_INCLUDED__

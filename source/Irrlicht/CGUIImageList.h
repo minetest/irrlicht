@@ -1,8 +1,7 @@
 // This file is part of the "Irrlicht Engine".
 // written by Reinhard Ostermeier, reinhard@nospam.r-ostermeier.de
 
-#ifndef __C_GUI_IMAGE_LIST_H_INCLUDED__
-#define __C_GUI_IMAGE_LIST_H_INCLUDED__
+#pragma once
 
 #include "IGUIImageList.h"
 #include "IVideoDriver.h"
@@ -62,6 +61,3 @@ private:
 
 } // end namespace gui
 } // end namespace irr
-
-#endif
-
