@@ -2,9 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_OGLCORE_FEATURE_H_INCLUDED__
-#define __C_OGLCORE_FEATURE_H_INCLUDED__
-
+#pragma once
 
 #include "irrTypes.h"
 
@@ -25,7 +23,7 @@ public:
 	}
 
 	bool BlendOperation;
-	
+
 	u8 ColorAttachment;
 	u8 MultipleRenderTarget;
 	u8 MaxTextureUnits;
@@ -33,5 +31,3 @@ public:
 
 }
 }
-
-#endif

@@ -2,9 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_OGLCORE_RENDER_TARGET_H_INCLUDED__
-#define __C_OGLCORE_RENDER_TARGET_H_INCLUDED__
-
+#pragma once
 
 #include "IRenderTarget.h"
 
@@ -135,7 +133,7 @@ public:
 			TOpenGLTexture* currentTexture = (depthStencil && depthStencil->getDriverType() == DriverType) ? static_cast<TOpenGLTexture*>(depthStencil) : 0;
 
 			if (currentTexture)
-			{	
+			{
 				if (currentTexture->getType() == ETT_2D)
 				{
 					GLuint textureID = currentTexture->getOpenGLTextureName();
@@ -396,5 +394,3 @@ protected:
 
 }
 }
-
-#endif

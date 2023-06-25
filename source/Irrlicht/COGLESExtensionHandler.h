@@ -3,9 +3,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in Irrlicht.h
 
-#ifndef __C_OGLES_EXTENSION_HANDLER_H_INCLUDED__
-#define __C_OGLES_EXTENSION_HANDLER_H_INCLUDED__
-
+#pragma once
 
 #ifdef _IRR_COMPILE_WITH_OGLES1_
 
@@ -235,5 +233,4 @@ namespace video
 }
 }
 
-#endif
 #endif

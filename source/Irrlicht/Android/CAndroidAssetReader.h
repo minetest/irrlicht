@@ -2,10 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_ANDROID_ASSET_READER_H_INCLUDED__
-#define __C_ANDROID_ASSET_READER_H_INCLUDED__
-
-
+#pragma once
 
 #ifdef  _IRR_COMPILE_ANDROID_ASSET_READER_
 
@@ -70,5 +67,3 @@ namespace io
 } // end namespace irr
 
 #endif //   _IRR_COMPILE_ANDROID_ASSET_READER_
-#endif //  __C_ANDROID_ASSET_READER_H_INCLUDED__
-

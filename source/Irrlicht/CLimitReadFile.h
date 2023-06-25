@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_LIMIT_READ_FILE_H_INCLUDED__
-#define __C_LIMIT_READ_FILE_H_INCLUDED__
+#pragma once
 
 #include "IReadFile.h"
 #include "irrString.h"
@@ -63,6 +62,3 @@ namespace io
 
 } // end namespace io
 } // end namespace irr
-
-#endif
-
