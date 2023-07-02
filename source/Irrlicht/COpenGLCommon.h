@@ -19,7 +19,11 @@
 	#define GL_GLEXT_LEGACY 1
 	#include <SDL_video.h>
 	#include <SDL_opengl.h>
-	#include <GL/glext.h>
+	#ifdef __APPLE__
+		#include <OpenGL/glext.h>
+	#else
+		#include <GL/glext.h>
+	#endif
 #else
 	#define GL_GLEXT_LEGACY 1
 	#define GLX_GLXEXT_LEGACY 1
