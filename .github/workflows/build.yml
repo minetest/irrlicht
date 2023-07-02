@@ -174,17 +174,30 @@ jobs:
           path: ./irrlicht-${{matrix.config.variant}}${{matrix.config.extras}}.zip
 
   macos:
+    name: macOS ${{matrix.sdl.label}}
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sdl:
+          -
+            use: FALSE
+            label: '(no SDL)'
+          -
+            use: TRUE
+            label: '(with SDL)'
+            pkgs: SDL2
+
     steps:
       - uses: actions/checkout@v3
       - name: Install deps
         run: |
           brew update
-          brew install cmake libpng jpeg
+          brew install cmake libpng jpeg ${{matrix.sdl.pkgs}}
 
       - name: Build
         run: |
-          cmake . -DCMAKE_FIND_FRAMEWORK=LAST -DBUILD_EXAMPLES=1
+          cmake . -DUSE_SDL2=${{matrix.sdl.use}} -DCMAKE_FIND_FRAMEWORK=LAST -DBUILD_EXAMPLES=1
           make -j3
 
       - name: Test (headless)
