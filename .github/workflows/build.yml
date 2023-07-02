@@ -137,49 +137,38 @@ jobs:
           cd bin/Linux
           LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest ogles2
 
-  win32:
+  mingw:
+    name: MinGW ${{matrix.config.arch}}
     runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          -
+            bits: 32
+            arch: i686
+          -
+            bits: 64
+            arch: x86_64
     steps:
       - uses: actions/checkout@v3
       - name: Install compiler
         run: |
           sudo apt-get update && sudo apt-get install cmake -qyy
-          wget http://minetest.kitsunemimi.pw/mingw-w64-i686_11.2.0_ubuntu20.04.tar.xz -O mingw.tar.xz
+          wget http://minetest.kitsunemimi.pw/mingw-w64-${{matrix.config.arch}}_11.2.0_ubuntu20.04.tar.xz -O mingw.tar.xz
           sudo tar -xaf mingw.tar.xz -C /usr
 
       - name: Build
         run: |
           ./scripts/ci-build-mingw.sh package
         env:
-          CC: i686-w64-mingw32-gcc
-          CXX: i686-w64-mingw32-g++
+          CC: ${{matrix.config.arch}}-w64-mingw32-gcc
+          CXX: ${{matrix.config.arch}}-w64-mingw32-g++
 
       - uses: actions/upload-artifact@v3
         with:
-          name: irrlicht-win32
-          path: ./irrlicht-win32.zip
-
-  win64:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install compiler
-        run: |
-          sudo apt-get update && sudo apt-get install cmake -qyy
-          wget http://minetest.kitsunemimi.pw/mingw-w64-x86_64_11.2.0_ubuntu20.04.tar.xz -O mingw.tar.xz
-          sudo tar -xaf mingw.tar.xz -C /usr
-
-      - name: Build
-        run: |
-          ./scripts/ci-build-mingw.sh package
-        env:
-          CC: x86_64-w64-mingw32-gcc
-          CXX: x86_64-w64-mingw32-g++
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: irrlicht-win64
-          path: ./irrlicht-win64.zip
+          name: irrlicht-win${{matrix.config.bits}}
+          path: ./irrlicht-win${{matrix.config.bits}}.zip
 
   macos:
     runs-on: macos-latest
