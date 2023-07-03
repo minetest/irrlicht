@@ -555,7 +555,7 @@ bool CIrrDeviceSDL::run()
 
 			irrevent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 			irrevent.MouseInput.Event = irr::EMIE_MOUSE_WHEEL;
-			irrevent.MouseInput.Wheel = static_cast<float>(SDL_event.wheel.y);
+			irrevent.MouseInput.Wheel = SDL_event.wheel.preciseY;
 			irrevent.MouseInput.Shift = (keymod & KMOD_SHIFT) != 0;
 			irrevent.MouseInput.Control = (keymod & KMOD_CTRL) != 0;
 			irrevent.MouseInput.X = MouseX;
