@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine" and the "irrXML" project.
 // For conditions of distribution and use, see copyright notice in irrlicht.h and irrXML.h
 
-#ifndef __IRR_STRING_H_INCLUDED__
-#define __IRR_STRING_H_INCLUDED__
+#pragma once
 
 #include "irrTypes.h"
 #include <string>
@@ -35,8 +34,6 @@ outside the string class for explicit use.
 // forward declarations
 template <typename T>
 class string;
-static size_t multibyteToWString(string<wchar_t>& destination, const char* source, u32 sourceSize);
-static size_t wStringToMultibyte(string<c8>& destination, const wchar_t* source, u32 sourceSize);
 
 //! Returns a character converted to lower case
 static inline u32 locale_lower ( u32 x )
@@ -919,111 +916,8 @@ typedef string<c8> stringc;
 //! Typedef for wide character strings
 typedef string<wchar_t> stringw;
 
-//! Convert multibyte string to wide-character string
-/** Wrapper around mbstowcs from standard library, but directly using Irrlicht string class.
-What the function does exactly depends on the LC_CTYPE of the current c locale.
-\param destination Wide-character string receiving the converted source
-\param source multibyte string
-\return The number of wide characters written to destination, not including the eventual terminating null character or -1 when conversion failed */
-static inline size_t multibyteToWString(string<wchar_t>& destination, const core::string<c8>& source)
-{
-	return multibyteToWString(destination, source.c_str(), (u32)source.size());
-}
-
-//! Convert multibyte string to wide-character string
-/** Wrapper around mbstowcs from standard library, but directly writing to Irrlicht string class.
-What the function does exactly depends on the LC_CTYPE of the current c locale.
-\param destination Wide-character string receiving the converted source
-\param source multibyte string
-\return The number of wide characters written to destination, not including the eventual terminating null character  or -1 when conversion failed. */
-static inline size_t multibyteToWString(string<wchar_t>& destination, const char* source)
-{
-	const u32 s = source ? (u32)strlen(source) : 0;
-	return multibyteToWString(destination, source, s);
-}
-
-//! Internally used by the other multibyteToWString functions
-static size_t multibyteToWString(string<wchar_t>& destination, const char* source, u32 sourceSize)
-{
-	if ( sourceSize )
-	{
-		destination.str.resize(sourceSize+1);
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4996)	// 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead.
-#endif
-		const size_t written = mbstowcs(&destination[0], source, (size_t)sourceSize);
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
-		if ( written != (size_t)-1 )
-		{
-			destination.str.resize(written);
-		}
-		else
-		{
-			// Likely character which got converted until the invalid character was encountered are in destination now.
-			// And it seems even 0-terminated, but I found no documentation anywhere that this (the 0-termination) is guaranteed :-(
-			destination.clear();
-		}
-		return written;
-	}
-	else
-	{
-		destination.clear();
-		return 0;
-	}
-}
-
-//! Same as multibyteToWString, but the other way around
-static inline size_t wStringToMultibyte(string<c8>& destination, const core::string<wchar_t>& source)
-{
-	return wStringToMultibyte(destination, source.c_str(), (u32)source.size());
-}
-
-//! Same as multibyteToWString, but the other way around
-static inline size_t wStringToMultibyte(string<c8>& destination, const wchar_t* source)
-{
-	const u32 s = source ? (u32)wcslen(source) : 0;
-	return wStringToMultibyte(destination, source, s);
-}
-
-//! Same as multibyteToWString, but the other way around
-static size_t wStringToMultibyte(string<c8>& destination, const wchar_t* source, u32 sourceSize)
-{
-	if ( sourceSize )
-	{
-		destination.str.resize(sizeof(wchar_t)*sourceSize+1);
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4996)	// 'wcstombs': This function or variable may be unsafe. Consider using wcstombs_s instead.
-#endif
-		const size_t written = wcstombs(&destination[0], source, destination.size());
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
-		if ( written != (size_t)-1 )
-		{
-			destination.str.resize(written);
-		}
-		else
-		{
-			// Likely character which got converted until the invalid character was encountered are in destination now.
-			// And it seems even 0-terminated, but I found no documentation anywhere that this (the 0-termination) is guaranteed :-(
-			destination.clear();
-		}
-		return written;
-	}
-	else
-	{
-		destination.clear();
-		return 0;
-	}
-}
-
 
 } // end namespace core
 } // end namespace irr
 
-#endif
-
+#include "irr_string_conv.h"
