@@ -473,7 +473,6 @@ add_library(IRROTHEROBJ OBJECT
 	COSOperator.cpp
 	Irrlicht.cpp
 	os.cpp
-	irr_string_conv.cpp
 )
 
 if(ENABLE_OPENGL3)

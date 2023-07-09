@@ -2,7 +2,8 @@
 // This file is part of the "Irrlicht Engine" and the "irrXML" project.
 // For conditions of distribution and use, see copyright notice in irrlicht.h and irrXML.h
 
-#pragma once
+#ifndef __IRR_STRING_H_INCLUDED__
+#define __IRR_STRING_H_INCLUDED__
 
 #include "irrTypes.h"
 #include <string>
@@ -10,6 +11,9 @@
 #include <cstdio>
 #include <cstring>
 #include <cwchar>
+
+extern std::wstring utf8_to_wide(const std::string &input);
+extern std::string wide_to_utf8(const std::wstring &input);
 
 namespace irr
 {
@@ -34,6 +38,12 @@ outside the string class for explicit use.
 // forward declarations
 template <typename T>
 class string;
+
+//! Typedef for character strings
+typedef string<c8> stringc;
+
+//! Typedef for wide character strings
+typedef string<wchar_t> stringw;
 
 //! Returns a character converted to lower case
 static inline u32 locale_lower ( u32 x )
@@ -856,8 +866,10 @@ public:
 		return ret.size()-oldSize;
 	}
 
-	friend size_t multibyteToWString(string<wchar_t>& destination, const char* source, u32 sourceSize);
-	friend size_t wStringToMultibyte(string<c8>& destination, const wchar_t* source, u32 sourceSize);
+	friend size_t multibyteToWString(irr::core::stringw &destination, const irr::core::stringc &source);
+	friend size_t multibyteToWString(irr::core::stringw &destination, const char *source);
+	friend size_t wStringToMultibyte(irr::core::stringc &destination, const irr::core::stringw &source);
+	friend size_t wStringToMultibyte(irr::core::stringc &destination, const wchar_t *source);
 
 private:
 
@@ -910,14 +922,33 @@ private:
 };
 
 
-//! Typedef for character strings
-typedef string<c8> stringc;
+inline size_t multibyteToWString(irr::core::stringw &destination, const irr::core::stringc &source)
+{
+	destination = utf8_to_wide(source.str);
+	return destination.size();
+}
 
-//! Typedef for wide character strings
-typedef string<wchar_t> stringw;
+inline size_t multibyteToWString(irr::core::stringw &destination, const char *source)
+{
+	destination = utf8_to_wide(source);
+	return destination.size();
+}
+
+inline size_t wStringToMultibyte(irr::core::stringc &destination, const irr::core::stringw &source)
+{
+	destination = wide_to_utf8(source.str);
+	return destination.size();
+}
+
+inline size_t wStringToMultibyte(irr::core::stringc &destination, const wchar_t *source)
+{
+	destination = wide_to_utf8(source);
+	return destination.size();
+}
 
 
 } // end namespace core
 } // end namespace irr
 
-#include "irr_string_conv.h"
+#endif
+
