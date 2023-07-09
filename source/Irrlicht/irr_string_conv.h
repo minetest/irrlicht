@@ -59,16 +59,5 @@ size_t wStringToMultibyte(irr::core::stringc &destination, const wchar_t *source
 	std::string / irr::core::stringw this time.
 */
 
-//! Create a UTF8 std::string from an irr::core::stringw.
-inline std::string stringw_to_utf8(const irr::core::stringw &input)
-{
-	std::wstring str(input.c_str());
-	return wide_to_utf8(str);
-}
-
-//! Create an irr::core:stringw from a UTF8 std::string.
-inline irr::core::stringw utf8_to_stringw(const std::string &input)
-{
-	std::wstring str = utf8_to_wide(input);
-	return irr::core::stringw(str.c_str());
-}
+std::string stringw_to_utf8(const irr::core::stringw &input);
+irr::core::stringw utf8_to_stringw(const std::string &input);
