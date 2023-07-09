@@ -118,8 +118,8 @@ std::string wide_to_utf8(const std::wstring &input)
 	out.resize(outbuf_size);
 
 	if (!convert("UTF-8", DEFAULT_ENCODING, &out[0], &outbuf_size, inbuf, inbuf_size)) {
-		irr::os::Printer::log(("Couldn't convert UTF-8 string 0x" + hex_encode(inbuf, inbuf_size) +
-			" into wstring").c_str(), irr::ELL_WARNING);
+		irr::os::Printer::log(("Couldn't convert wstring 0x" + hex_encode(inbuf, inbuf_size) +
+			" into UTF-8 string").c_str(), irr::ELL_WARNING);
 		delete[] inbuf;
 		return "<invalid wide string>";
 	}
