@@ -19,3 +19,6 @@ scripts/glext.h
 *.dir/
 *.sln
 *visualstudio/
+
+# vscode cmake plugin
+build/*
