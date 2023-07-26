@@ -4,8 +4,6 @@
 
 #pragma once
 
-#ifdef _IRR_COMPILE_WITH_EGL_MANAGER_
-
 #include <EGL/egl.h>
 
 #include "SIrrCreationParameters.h"
@@ -111,4 +109,3 @@ namespace video
 	};
 }
 }
-#endif

@@ -92,8 +92,11 @@ elseif(ANDROID)
 		message(FATAL_ERROR "SDL2 device is not (yet) supported on Android")
 	endif()
 	set(DEVICE "ANDROID")
+	# EGL is required for Android
+	set(ENABLE_EGL ON)
 elseif(EMSCRIPTEN)
-	add_definitions(-D_IRR_EMSCRIPTEN_PLATFORM_ -D_IRR_COMPILE_WITH_EGL_MANAGER_)
+	add_definitions(-D_IRR_EMSCRIPTEN_PLATFORM_)
+	set(ENABLE_EGL ON)
 	set(LINUX_PLATFORM TRUE)
 	set(DEVICE "SDL")
 elseif(SOLARIS)
@@ -138,6 +141,10 @@ endif()
 if(NOT (BSD OR SOLARIS OR EMSCRIPTEN))
 	add_definitions(-D_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
 endif()
+
+# EGL
+
+option(ENABLE_EGL "Enable EGL" FALSE)
 
 # OpenGL
 
@@ -202,18 +209,22 @@ if(ENABLE_GLES1)
 	endif()
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES1_)
 	if(DEVICE MATCHES "^(WINDOWS|X11|ANDROID)$")
-		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_ -D_IRR_OGLES1_USE_EXTPOINTER_)
+		add_definitions(-D_IRR_OGLES1_USE_EXTPOINTER_)
 	endif()
+	# We need EGL for GLES1
+	set(ENABLE_EGL ON)
 endif()
 
 if(ENABLE_GLES2)
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES2_)
 	if(DEVICE MATCHES "^(WINDOWS|X11|ANDROID)$" OR EMSCRIPTEN)
-		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_ -D_IRR_OGLES2_USE_EXTPOINTER_)
+		add_definitions(-D_IRR_OGLES2_USE_EXTPOINTER_)
 	elseif(DEVICE STREQUAL "SDL")
 		set(USE_SDLGL ON)
 		set(USE_SDLGLES2 ON)
 	endif()
+	# We need EGL for GLES2
+	set(ENABLE_EGL ON)
 endif()
 
 if(ENABLE_WEBGL1)
@@ -241,6 +252,7 @@ elseif (ENABLE_GLES2)
 else()
 	message(STATUS "OpenGL ES 2: OFF")
 endif()
+message(STATUS "EGL: ${ENABLE_EGL}")
 message(STATUS "WebGL: ${ENABLE_WEBGL1}")
 
 # Required libs
@@ -353,10 +365,15 @@ set(IRRDRVROBJ
 	CNullDriver.cpp
 	CGLXManager.cpp
 	CWGLManager.cpp
-	CEGLManager.cpp
 	CSDLManager.cpp
 	mt_opengl_loader.cpp
 )
+
+if(WIN32)
+	set(IRRDRVROBJ ${IRRDRVROBJ}
+		CIrrDeviceWin32.cpp
+	)
+endif()
 
 if(ENABLE_OPENGL)
 	set(IRRDRVROBJ
@@ -374,6 +391,14 @@ if(ENABLE_GLES1)
 		${IRRDRVROBJ}
 		COGLESDriver.cpp
 		COGLESExtensionHandler.cpp
+	)
+endif()
+
+
+if(ENABLE_EGL)
+	set(IRRDRVROBJ
+		${IRRDRVROBJ}
+		CEGLManager.cpp
 	)
 endif()
 
@@ -523,7 +548,6 @@ target_include_directories(IrrlichtMt
 target_link_libraries(IrrlichtMt PRIVATE ${link_libs})
 
 if(WIN32)
-	target_sources(IRROTHEROBJ PRIVATE CIrrDeviceWin32.cpp)
 	target_compile_definitions(IrrlichtMt INTERFACE _IRR_WINDOWS_API_) # used in _IRR_DEBUG_BREAK_IF definition in a public header
 endif()
 target_compile_definitions(IrrlichtMt INTERFACE "IRRLICHT_API=${API_IMPORT}")

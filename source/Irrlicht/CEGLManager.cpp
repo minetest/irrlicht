@@ -4,8 +4,6 @@
 
 #include "CEGLManager.h"
 
-#ifdef _IRR_COMPILE_WITH_EGL_MANAGER_
-
 #include "irrString.h"
 #include "irrArray.h"
 #include "os.h"
@@ -44,7 +42,7 @@ bool CEGLManager::initialize(const SIrrlichtCreationParameters& params, const SE
         return true;
 
 	// Window is depend on platform.
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
+#if defined(_IRR_WINDOWS_API_)
 	EglWindow = (NativeWindowType)Data.OpenGLWin32.HWnd;
 	Data.OpenGLWin32.HDc = GetDC((HWND)EglWindow);
 	EglDisplay = eglGetDisplay((NativeDisplayType)Data.OpenGLWin32.HDc);
@@ -99,7 +97,7 @@ void CEGLManager::terminate()
 		EglDisplay = EGL_NO_DISPLAY;
 	}
 
-#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
+#if defined(_IRR_WINDOWS_API_)
 	if (Data.OpenGLWin32.HDc)
     {
 		ReleaseDC((HWND)EglWindow, (HDC)Data.OpenGLWin32.HDc);
@@ -664,4 +662,3 @@ bool CEGLManager::testEGLError()
 }
 }
 
-#endif

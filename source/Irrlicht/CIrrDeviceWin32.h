@@ -4,8 +4,6 @@
 
 #pragma once
 
-#ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
-
 #include "CIrrDeviceStub.h"
 #include "IrrlichtDevice.h"
 
@@ -425,5 +423,3 @@ namespace irr
 	};
 
 } // end namespace irr
-
-#endif // _IRR_COMPILE_WITH_WINDOWS_DEVICE_
