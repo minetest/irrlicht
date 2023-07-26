@@ -396,7 +396,10 @@ Changes in 1.9 (not yet released)
 - burningvideo: mipmaplevel adjusted ( not that bad bokeh...(sometimes) )
 
 --------------------------
-Changes in 1.8.6 
+Changes in 1.8.6
+- Backport removing register keywords (deprecated by c++17)
+- Backport bugfix from trunk to make CUserPointerAttribute::setString work on 64-bit systems.
+- Remove unnecessary implemented assignment operator in quaternion, irrMap, SViewFrustum, line2d and IQ3Shader which cause warnings with -Wdeprecated in newer gcc
 - Avoid warning about stringop-overflow in string<T>::subString when compiling in release with newer gcc
 - Update library zlib to 1.2.11 (from 1.2.8)
 - Update library bzip2 to 1.0.8 (from 1.0.6)
