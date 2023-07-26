@@ -144,7 +144,7 @@ endif()
 
 # EGL
 
-option(ENABLE_EGL "Enable EGL" FALSE)
+set(ENABLE_EGL OFF)
 
 # OpenGL
 
@@ -185,7 +185,7 @@ endif()
 if(ENABLE_OPENGL)
 	add_definitions(-D_IRR_COMPILE_WITH_OPENGL_)
 	if(DEVICE STREQUAL "WINDOWS")
-		add_definitions(-D_IRR_COMPILE_WITH_WGL_MANAGER_ -D_IRR_OPENGL_USE_EXTPOINTER_)
+		add_definitions(-D_IRR_OPENGL_USE_EXTPOINTER_)
 	elseif(DEVICE STREQUAL "X11")
 		add_definitions(-D_IRR_COMPILE_WITH_GLX_MANAGER_ -D_IRR_OPENGL_USE_EXTPOINTER_)
 	elseif(DEVICE STREQUAL "OSX")
@@ -364,7 +364,6 @@ add_library(IRROBJ OBJECT
 set(IRRDRVROBJ
 	CNullDriver.cpp
 	CGLXManager.cpp
-	CWGLManager.cpp
 	CSDLManager.cpp
 	mt_opengl_loader.cpp
 )
@@ -373,6 +372,11 @@ if(WIN32)
 	set(IRRDRVROBJ ${IRRDRVROBJ}
 		CIrrDeviceWin32.cpp
 	)
+	if(ENABLE_OPENGL)
+		set(IRRDRVROBJ ${IRRDRVROBJ}
+			CWGLManager.cpp
+		)
+	endif()
 endif()
 
 if(ENABLE_OPENGL)
