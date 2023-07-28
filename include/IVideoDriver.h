@@ -392,8 +392,7 @@ namespace video
 				const io::path& name = "rt", const ECOLOR_FORMAT format = ECF_UNKNOWN) =0;
 
 		//! Adds a new render target texture with 6 sides for a cubemap map to the texture cache.
-		/** NOTE: Only supported on D3D9 so far.
-		\param sideLen Length of one cubemap side.
+		/** \param sideLen Length of one cubemap side.
 		\param name A name for the texture. Later calls of getTexture() with this name will return this texture.
 		The name can _not_ be empty.
 		\param format The color format of the render target. Floating point formats are supported.
