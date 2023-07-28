@@ -78,6 +78,10 @@ if(CMAKE_SYSTEM_NAME STREQUAL "SunOS")
 	set(SOLARIS TRUE)
 endif()
 
+# EGL
+
+set(ENABLE_EGL OFF)
+
 # Device
 
 if(WIN32)
@@ -141,10 +145,6 @@ endif()
 if(NOT (BSD OR SOLARIS OR EMSCRIPTEN))
 	add_definitions(-D_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
 endif()
-
-# EGL
-
-set(ENABLE_EGL OFF)
 
 # OpenGL
 
