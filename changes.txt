@@ -1,6 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Optimize quaternion::rotationFromTo. Thanks @Robert Eisele for patch and proof (https://raw.org/proof/quaternion-from-two-vectors)
 - Shader materials shows now how to pass material values.
   In 1.8 we could still use gl_FrontMaterial, but that is no longer supported in shaders
 - Get IMeshBuffer::append functions working for a few more cases and adapt interface so one can prevent the BoundingBox update.
