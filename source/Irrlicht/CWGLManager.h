@@ -4,8 +4,6 @@
 
 #pragma once
 
-#ifdef _IRR_COMPILE_WITH_WGL_MANAGER_
-
 #include "SIrrCreationParameters.h"
 #include "SExposedVideoData.h"
 #include "IContextManager.h"
@@ -72,5 +70,3 @@ namespace video
 	};
 }
 }
-
-#endif
