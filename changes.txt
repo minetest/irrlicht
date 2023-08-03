@@ -398,6 +398,11 @@ Changes in 1.9 (not yet released)
 
 --------------------------
 Changes in 1.8.6
+- Fix compiling on OSX with case-sensitive filesystems: IrrFramework-Info.plist now always starting with upper-case. 
+  Thanks @Ryan Schmidt for bug report and patch.
+- Fix: The build-in libpng now uses same zlib headers as rest of Irrlicht. 
+  This fixes OSX compiling (which didn't have zlib in include path and used system header for this one instead).
+  Thanks @Ryan Schmidt for bug report.
 - Backport parts of COpenGLCommon.h to ensure that COpenGLExtensionHandler, COpenGLShaderMaterialRenderer and COpenGLTexture all use identical GL extension settings
 - Backport removing register keywords (deprecated by c++17)
 - Backport bugfix from trunk to make CUserPointerAttribute::setString work on 64-bit systems.
