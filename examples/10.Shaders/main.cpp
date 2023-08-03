@@ -48,8 +48,10 @@ class MyShaderCallBack : public video::IShaderConstantSetCallBack
 {
 public:
 	MyShaderCallBack() : WorldViewProjID(-1), TransWorldID(-1), InvWorldID(-1), PositionID(-1),
-						ColorID(-1), TextureID(-1)
+						ColorID(-1), TextureID(-1), EmissiveID(-1)
 	{
+		for ( int i=0; i<4; ++i )
+			Emissive[i] = 0.f;
 	}
 
 	virtual void OnCreate(video::IMaterialRendererServices* services, s32 userData)
@@ -57,11 +59,15 @@ public:
 		if (UseHighLevelShaders)
 		{
 			// Get shader constants id.
+			// Constants are "uniforms" in other shading languages.
+			// And they are not constant at all but can be changed before every draw call
+			// (the naming probably comes from Direct3D where they are called constants)
 			WorldViewProjID = services->getVertexShaderConstantID("mWorldViewProj");
 			TransWorldID = services->getVertexShaderConstantID("mTransWorld");
 			InvWorldID = services->getVertexShaderConstantID("mInvWorld");
 			PositionID = services->getVertexShaderConstantID("mLightPos");
 			ColorID = services->getVertexShaderConstantID("mLightColor");
+			EmissiveID = services->getPixelShaderConstantID("mEmissive");
 
 			// Textures ID are important only for OpenGL interface.
 			video::IVideoDriver* driver = services->getVideoDriver();
@@ -89,6 +95,21 @@ public:
 		}
 		else
 			services->setVertexShaderConstant(reinterpret_cast<f32*>(&col), 9, 1);
+	}
+
+	// Called when any SMaterial value changes
+	virtual void OnSetMaterial(const irr::video::SMaterial& material)
+	{
+		// Remember material values to pass them on to shader in OnSetConstants
+		Emissive[0] = material.EmissiveColor.getRed() / 255.0f;
+		Emissive[1] = material.EmissiveColor.getGreen() / 255.0f;
+		Emissive[2] = material.EmissiveColor.getBlue() / 255.0f;
+		Emissive[3] = material.EmissiveColor.getAlpha() / 255.0f;
+
+		// Note: Until Irrlicht 1.8 it was possible to use gl_FrontMaterial in glsl
+		// This is no longer supported since Irrlicht 1.9
+		// Reason: Passing always every material value is slow, harder to port 
+		//         and generally getting deprecated in newer shader systems.
 	}
 
 	virtual void OnSetConstants(video::IMaterialRendererServices* services,
@@ -145,6 +166,12 @@ public:
 		}
 		else
 			services->setVertexShaderConstant(world.pointer(), 10, 4);
+
+		// Set material values
+		if (UseHighLevelShaders)
+		{
+			services->setPixelShaderConstant(EmissiveID, Emissive, 4);
+		}
 	}
 
 private:
@@ -154,6 +181,9 @@ private:
 	s32 PositionID;
 	s32 ColorID;
 	s32 TextureID;
+
+	s32 EmissiveID;
+	irr::f32 Emissive[4];
 };
 
 /*
@@ -398,6 +428,7 @@ int main()
 	node->setMaterialFlag(video::EMF_LIGHTING, false);
 	node->setMaterialFlag(video::EMF_BLEND_OPERATION, true);
 	node->setMaterialType((video::E_MATERIAL_TYPE)newMaterialType2);
+	node->getMaterial(0).EmissiveColor = irr::video::SColor(0,50,0,50);
 
 	smgr->addTextSceneNode(gui->getBuiltInFont(),
 			L"PS & VS & EMT_TRANSPARENT",

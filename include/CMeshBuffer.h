@@ -191,59 +191,48 @@ namespace scene
 		//! Append the vertices and indices to the current buffer
 		/** Only works for compatible types, i.e. either the same type
 		or the main buffer is of standard type. Otherwise, behavior is
-		undefined.
+		undefined. Also can't append it's own vertices/indices to itself.
 		*/
-		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices) IRR_OVERRIDE
+		virtual void append(const void* const vertices, u32 numVertices, const u16* const indices, u32 numIndices, bool updateBoundingBox=true) IRR_OVERRIDE
 		{
-			if (vertices == getVertices())
+			if (vertices == getVertices() || indices == getIndices())	// can't do that because we're doing reallocations on those blocks
 				return;
 
 			const u32 vertexCount = getVertexCount();
 			u32 i;
 
-			Vertices.reallocate(vertexCount+numVertices);
+			Vertices.reallocate(vertexCount+numVertices, false);
 			for (i=0; i<numVertices; ++i)
 			{
 				Vertices.push_back(static_cast<const T*>(vertices)[i]);
-				BoundingBox.addInternalPoint(static_cast<const T*>(vertices)[i].Pos);
 			}
 
-			Indices.reallocate(getIndexCount()+numIndices);
+			if ( updateBoundingBox && numVertices > 0)
+			{
+				if ( vertexCount == 0 )
+					BoundingBox.reset(static_cast<const T*>(vertices)[0].Pos);
+
+				for (i=0; i<numVertices; ++i)
+					BoundingBox.addInternalPoint(static_cast<const T*>(vertices)[i].Pos);
+			}
+
+			Indices.reallocate(getIndexCount()+numIndices, false);
 			for (i=0; i<numIndices; ++i)
 			{
 				Indices.push_back(indices[i]+vertexCount);
 			}
+
+			setDirty();
 		}
 
 
 		//! Append the meshbuffer to the current buffer
-		/** Only works for compatible types, i.e. either the same type
-		or the main buffer is of standard type. Otherwise, behavior is
-		undefined.
-		\param other Meshbuffer to be appended to this one.
-		*/
-		virtual void append(const IMeshBuffer* const other) IRR_OVERRIDE
+		virtual void append(const IMeshBuffer* const other, bool updateBoundingBox=true) IRR_OVERRIDE
 		{
-			/*
-			if (this==other)
+			if ( getVertexType() != other->getVertexType() )
 				return;
 
-			const u32 vertexCount = getVertexCount();
-			u32 i;
-
-			Vertices.reallocate(vertexCount+other->getVertexCount());
-			for (i=0; i<other->getVertexCount(); ++i)
-			{
-				Vertices.push_back(reinterpret_cast<const T*>(other->getVertices())[i]);
-			}
-
-			Indices.reallocate(getIndexCount()+other->getIndexCount());
-			for (i=0; i<other->getIndexCount(); ++i)
-			{
-				Indices.push_back(other->getIndices()[i]+vertexCount);
-			}
-			BoundingBox.addInternalBox(other->getBoundingBox());
-			*/
+			append(other->getVertices(), other->getVertexCount(), other->getIndices(), other->getIndexCount(), updateBoundingBox);
 		}
 
 

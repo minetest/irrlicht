@@ -1164,7 +1164,6 @@
     <ClInclude Include="CZBuffer.h" />
     <ClInclude Include="ITriangleRenderer.h" />
     <ClInclude Include="IZBuffer.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="S2DVertex.h" />
     <ClInclude Include="SB3DStructs.h" />
     <ClInclude Include="CColorConverter.h" />

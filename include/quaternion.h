@@ -721,6 +721,8 @@ inline core::quaternion& quaternion::makeIdentity()
 inline core::quaternion& quaternion::rotationFromTo(const vector3df& from, const vector3df& to)
 {
 	// Based on Stan Melax's article in Game Programming Gems
+	// Optimized by Robert Eisele: https://raw.org/proof/quaternion-from-two-vectors
+
 	// Copy, since cannot modify local
 	vector3df v0 = from;
 	vector3df v1 = to;
@@ -745,10 +747,8 @@ inline core::quaternion& quaternion::rotationFromTo(const vector3df& from, const
 		return set(axis.X, axis.Y, axis.Z, 0).normalize();
 	}
 
-	const f32 s = sqrtf( (1+d)*2 ); // optimize inv_sqrt
-	const f32 invs = 1.f / s;
-	const vector3df c = v0.crossProduct(v1)*invs;
-	return set(c.X, c.Y, c.Z, s * 0.5f).normalize();
+	const vector3df c = v0.crossProduct(v1);
+	return set(c.X, c.Y, c.Z, 1 + d).normalize();
 }
 
 

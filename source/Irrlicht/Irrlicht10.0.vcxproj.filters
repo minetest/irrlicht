@@ -1269,7 +1269,6 @@
     <ClInclude Include="..\..\include\IAnimatedMeshMD3.h">
       <Filter>include\scene</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="CSceneLoaderIrr.h">
       <Filter>Irrlicht\scene\loaders</Filter>
     </ClInclude>

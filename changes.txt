@@ -11,6 +11,10 @@ Changes in ogl-es (not yet released - will be merged with trunk at some point)
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Optimize quaternion::rotationFromTo. Thanks @Robert Eisele for patch and proof (https://raw.org/proof/quaternion-from-two-vectors)
+- Shader material example shows now how to pass material values.
+  In 1.8 we could still use gl_FrontMaterial, but that is no longer supported in shaders
+- Get IMeshBuffer::append functions working for a few more cases and adapt interface so one can prevent the BoundingBox update.
 - Bugfix: SMaterialLayer::operator!= no longer returns true when comparing a layer without texture matrix with one with a set identity texture matrix. Those are the same.
 - SMaterialLayer no longer releases allocated texture memory before destructor unless explicitly requested.
   This can avoid constantly allocation/releasing memory in the active driver material when setting materials.
@@ -403,7 +407,16 @@ Changes in 1.9 (not yet released)
 - burningvideo: mipmaplevel adjusted ( not that bad bokeh...(sometimes) )
 
 --------------------------
-Changes in 1.8.6 
+Changes in 1.8.6
+- Fix compiling on OSX with case-sensitive filesystems: IrrFramework-Info.plist now always starting with upper-case. 
+  Thanks @Ryan Schmidt for bug report and patch.
+- Fix: The build-in libpng now uses same zlib headers as rest of Irrlicht. 
+  This fixes OSX compiling (which didn't have zlib in include path and used system header for this one instead).
+  Thanks @Ryan Schmidt for bug report.
+- Backport parts of COpenGLCommon.h to ensure that COpenGLExtensionHandler, COpenGLShaderMaterialRenderer and COpenGLTexture all use identical GL extension settings
+- Backport removing register keywords (deprecated by c++17)
+- Backport bugfix from trunk to make CUserPointerAttribute::setString work on 64-bit systems.
+- Remove unnecessary implemented assignment operator in quaternion, irrMap, SViewFrustum, line2d and IQ3Shader which cause warnings with -Wdeprecated in newer gcc
 - Avoid warning about stringop-overflow in string<T>::subString when compiling in release with newer gcc
 - Update library zlib to 1.2.11 (from 1.2.8)
 - Update library bzip2 to 1.0.8 (from 1.0.6)

@@ -864,6 +864,7 @@
 		<Unit filename="COpenGLCoreFeature.h" />
 		<Unit filename="COpenGLCoreRenderTarget.h" />
 		<Unit filename="COpenGLCoreTexture.h" />
+		<Unit filename="COpenGLCommon.h" />
 		<Unit filename="COpenGLDriver.cpp" />
 		<Unit filename="COpenGLDriver.h" />
 		<Unit filename="COpenGLExtensionHandler.cpp" />

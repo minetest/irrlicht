@@ -11,6 +11,7 @@ float4x4 mInvWorld;      // Inverted world matrix
 float4x4 mTransWorld;    // Transposed world matrix
 float3 mLightPos;        // Light position (actually just camera-pos in this case)
 float4 mLightColor;      // Light color
+float4 mEmissive;        // Emissive material color
 
 
 // Vertex shader output structure
@@ -83,6 +84,7 @@ PS_OUTPUT pixelMain(float2 TexCoord : TEXCOORD0,
 	// multiply with diffuse and do other senseless operations
 	Output.RGBColor = Diffuse * col;
 	Output.RGBColor *= 4.0;
+	Output.RGBColor += mEmissive;
 
 	return Output;
 }
