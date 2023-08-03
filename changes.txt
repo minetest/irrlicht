@@ -398,6 +398,7 @@ Changes in 1.9 (not yet released)
 
 --------------------------
 Changes in 1.8.6
+- Backport parts of COpenGLCommon.h to ensure that COpenGLExtensionHandler, COpenGLShaderMaterialRenderer and COpenGLTexture all use identical GL extension settings
 - Backport removing register keywords (deprecated by c++17)
 - Backport bugfix from trunk to make CUserPointerAttribute::setString work on 64-bit systems.
 - Remove unnecessary implemented assignment operator in quaternion, irrMap, SViewFrustum, line2d and IQ3Shader which cause warnings with -Wdeprecated in newer gcc
