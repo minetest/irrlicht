@@ -398,6 +398,9 @@ Changes in 1.9 (not yet released)
 
 --------------------------
 Changes in 1.8.6
+- Fix OSX 10.9X build problem related to NSApplication setDelegate calls getting casted to wrong class (Bug #462 and also fixing older Bug #297)
+  Thanks @Ryan Schmidt for bug report and patch.
+- Backport: Fix compiling for Apple silicon (Bugs #452 and #461). Thanks @Ryan Schmidt for bug report and updated patch.
 - Fix compiling on OSX with case-sensitive filesystems: IrrFramework-Info.plist now always starting with upper-case. 
   Thanks @Ryan Schmidt for bug report and patch.
 - Fix: The build-in libpng now uses same zlib headers as rest of Irrlicht. 

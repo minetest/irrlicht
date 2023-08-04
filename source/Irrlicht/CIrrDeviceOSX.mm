@@ -579,7 +579,7 @@ CIrrDeviceMacOSX::CIrrDeviceMacOSX(const SIrrlichtCreationParameters& param)
 		{
 			[[NSAutoreleasePool alloc] init];
 			[[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
-			[NSApp setDelegate:(id<NSApplicationDelegate>)[[[CIrrDelegateOSX alloc] initWithDevice:this] autorelease]];
+			[[NSApplication sharedApplication] setDelegate:[[[CIrrDelegateOSX alloc] initWithDevice:this] autorelease]];
             
             // Create menu
             
@@ -794,7 +794,7 @@ bool CIrrDeviceMacOSX::createWindow()
     {
         if (Window)
         {
-            [Window setDelegate:(id<NSWindowDelegate>)[NSApp delegate]];
+            [Window setDelegate:(CIrrDelegateOSX *)[NSApp delegate]];
             [Window setAcceptsMouseMovedEvents:TRUE];
             [Window setIsVisible:TRUE];
             [Window makeKeyAndOrderFront:nil];
