@@ -867,7 +867,7 @@ void CIrrDeviceMacOSX::createDriver()
 			SoftwareRendererType = 2;
 			if (Window)
 			{
-				Window.contentView.wantsLayer = YES;
+				[[Window contentView] setWantsLayer:YES];
 			}
 #else
 			os::Printer::log("No Software driver support compiled in.", ELL_ERROR);
@@ -880,7 +880,7 @@ void CIrrDeviceMacOSX::createDriver()
 			SoftwareRendererType = 1;
 			if (Window)
 			{
-				Window.contentView.wantsLayer = YES;
+				[[Window contentView] setWantsLayer:YES];
 				[ Window setOpaque:YES];
 			}
 			
@@ -1600,7 +1600,7 @@ bool CIrrDeviceMacOSX::present(video::IImage* surface, void* windowId, core::rec
         NSImage *image = [[[NSImage alloc] initWithSize: imageSize] autorelease];
 		
         [image addRepresentation: rep];
-        Window.contentView.layer.contents = image;
+        [[[Window contentView] layer] setContents:image];
 		}
 		return true;		
 	}

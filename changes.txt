@@ -1,6 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Fix compile error with OS X 10.10 SDK, bug #463. Thanks @Ryan Schmidt for report and patch.
 - Optimize quaternion::rotationFromTo. Thanks @Robert Eisele for patch and proof (https://raw.org/proof/quaternion-from-two-vectors)
 - Shader material example shows now how to pass material values.
   In 1.8 we could still use gl_FrontMaterial, but that is no longer supported in shaders
