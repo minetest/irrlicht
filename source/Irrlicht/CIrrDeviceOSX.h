@@ -22,7 +22,7 @@ namespace irr
     class CIrrDeviceMacOSX;
 }
 
-@interface CIrrDelegateOSX : NSObject
+@interface CIrrDelegateOSX : NSObject <NSApplicationDelegate, NSWindowDelegate>
 
 - (id)initWithDevice:(irr::CIrrDeviceMacOSX*)device;
 - (void)terminate:(id)sender;
