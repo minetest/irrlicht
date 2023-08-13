@@ -5,8 +5,6 @@
 #ifndef IRR_I_SCENE_USER_DATA_SERIALIZER_H_INCLUDED
 #define IRR_I_SCENE_USER_DATA_SERIALIZER_H_INCLUDED
 
-#include "IReferenceCounted.h"
-
 namespace irr
 {
 namespace io

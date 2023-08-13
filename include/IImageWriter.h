@@ -6,7 +6,6 @@
 #define IRR_I_IMAGE_WRITER_H_INCLUDED
 
 #include "IReferenceCounted.h"
-#include "irrString.h"
 #include "coreutil.h"
 
 namespace irr

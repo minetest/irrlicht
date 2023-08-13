@@ -10,6 +10,7 @@
 #ifdef _IRR_COMPILE_WITH_OPENGL_
 
 #include "IMaterialRenderer.h"
+#include "irrArray.h"
 
 #include "COpenGLCommon.h"
 

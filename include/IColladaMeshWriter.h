@@ -7,7 +7,6 @@
 
 #include "IMeshWriter.h"
 #include "ISceneNode.h"
-#include "IAnimatedMesh.h"
 #include "SMaterial.h"
 
 namespace irr

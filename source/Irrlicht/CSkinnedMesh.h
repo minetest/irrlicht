@@ -21,6 +21,7 @@ namespace scene
 
 	class IAnimatedMeshSceneNode;
 	class IBoneSceneNode;
+	class ISceneManager;
 
 	class CSkinnedMesh: public ISkinnedMesh
 	{

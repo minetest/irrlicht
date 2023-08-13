@@ -8,7 +8,6 @@
 #include "IReferenceCounted.h"
 #include "path.h"
 #include "IMeshTextureLoader.h"
-#include "SVertexIndex.h"
 
 namespace irr
 {

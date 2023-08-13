@@ -6,7 +6,6 @@
 #define IRR_I_INDEX_BUFFER_H_INCLUDED
 
 #include "IReferenceCounted.h"
-#include "irrArray.h"
 #include "EHardwareBufferFlags.h"
 #include "SVertexIndex.h"
 
