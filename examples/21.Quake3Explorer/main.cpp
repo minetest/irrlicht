@@ -734,7 +734,7 @@ void CQuake3EventHandler::CreateGUI()
 	gui.Tesselation->setMax ( 12 );
 	gui.Tesselation->setSmallStep ( 1 );
 	gui.Tesselation->setLargeStep ( 1 );
-	gui.Tesselation->setPos ( Game->loadParam.patchTesselation );
+	gui.Tesselation->setPos ( Game->loadParam.patchTessellation );
 	gui.Tesselation->setToolTipText ( L"How smooth should curved surfaces be rendered" );
 
 	gui.Collision = env->addCheckBox ( true, rect<s32>( dim.Width - 400, 150, dim.Width - 300, 166 ), gui.Window,-1, L"Collision" );
@@ -1381,7 +1381,7 @@ bool CQuake3EventHandler::OnEvent(const SEvent& eve)
 		else
 		if ( eve.GUIEvent.Caller == gui.Tesselation && eve.GUIEvent.EventType == gui::EGET_SCROLL_BAR_CHANGED )
 		{
-			Game->loadParam.patchTesselation = gui.Tesselation->getPos ();
+			Game->loadParam.patchTessellation = gui.Tesselation->getPos ();
 		}
 		else
 		if ( eve.GUIEvent.Caller == gui.Gamma && eve.GUIEvent.EventType == gui::EGET_SCROLL_BAR_CHANGED )
