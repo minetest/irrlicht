@@ -2,7 +2,6 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#include "CAttributes.h"
 #include "fast_atof.h"
 #include "ITexture.h"
 #include "IVideoDriver.h"

@@ -7,7 +7,7 @@
 #ifdef __IRR_COMPILE_WITH_TAR_ARCHIVE_LOADER_
 
 #include "CFileList.h"
-#include "CLimitReadFile.h"
+#include "IReadFile.h"
 #include "os.h"
 #include "coreutil.h"
 #include "errno.h"

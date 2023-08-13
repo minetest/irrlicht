@@ -9,13 +9,9 @@
 
 #include "IGUISkin.h"
 #include "IGUIEnvironment.h"
-#include "IVideoDriver.h"
 #include "IGUIButton.h"
-#include "IGUIStaticText.h"
 #include "IGUIFont.h"
-#include "IGUIFontBitmap.h"
 #include "IFileList.h"
-#include "os.h"
 
 namespace irr
 {

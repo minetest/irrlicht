@@ -7,7 +7,6 @@
 #ifdef __IRR_COMPILE_WITH_MOUNT_ARCHIVE_LOADER_
 
 #include "CReadFile.h"
-#include "os.h"
 
 namespace irr
 {

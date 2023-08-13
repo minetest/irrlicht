@@ -6,7 +6,6 @@
 
 #ifdef _IRR_COMPILE_WITH_XML_
 
-#include <wchar.h>
 #include "irrString.h"
 #include "IrrCompileConfig.h"
 

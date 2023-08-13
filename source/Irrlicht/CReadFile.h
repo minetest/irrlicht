@@ -7,7 +7,6 @@
 
 #include <stdio.h>
 #include "IReadFile.h"
-#include "irrString.h"
 
 namespace irr
 {

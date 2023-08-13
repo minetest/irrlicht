@@ -5,13 +5,12 @@
 #include "CGUITabControl.h"
 #ifdef _IRR_COMPILE_WITH_GUI_
 
-#include "CGUIButton.h"
+#include "IGUIButton.h"
 #include "IGUISkin.h"
 #include "IGUIEnvironment.h"
 #include "IGUIFont.h"
 #include "IVideoDriver.h"
 #include "rect.h"
-#include "os.h"
 
 namespace irr
 {
