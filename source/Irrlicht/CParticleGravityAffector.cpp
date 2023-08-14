@@ -6,7 +6,6 @@
 
 #ifdef _IRR_COMPILE_WITH_PARTICLES_
 
-#include "os.h"
 #include "IAttributes.h"
 
 namespace irr

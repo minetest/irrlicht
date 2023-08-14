@@ -14,7 +14,6 @@
 #include "IWriteFile.h"
 #include "IXMLWriter.h"
 #include "IMesh.h"
-#include "IAttributes.h"
 #include "IAnimatedMeshSceneNode.h"
 #include "IMeshSceneNode.h"
 #include "ITerrainSceneNode.h"

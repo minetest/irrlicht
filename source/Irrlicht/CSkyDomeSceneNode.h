@@ -7,7 +7,7 @@
 #define IRR_C_SKY_DOME_SCENE_NODE_H_INCLUDED
 
 #include "ISceneNode.h"
-#include "SMeshBuffer.h"
+#include "CMeshBuffer.h"
 
 namespace irr
 {

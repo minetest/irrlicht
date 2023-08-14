@@ -38,9 +38,7 @@
 #ifndef __CSM_LOADER_H_INCLUDED__
 #define __CSM_LOADER_H_INCLUDED__
 
-#include "irrArray.h"
 #include "IMesh.h"
-#include "irrString.h"
 #include "IFileSystem.h"
 #include "IMeshLoader.h"
 

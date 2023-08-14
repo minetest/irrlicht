@@ -9,7 +9,7 @@
 #include "CSMFMeshFileLoader.h"
 #include "CMeshTextureLoader.h"
 #include "SAnimatedMesh.h"
-#include "SMeshBuffer.h"
+#include "CMeshBuffer.h"
 #include "IReadFile.h"
 #include "coreutil.h"
 #include "os.h"

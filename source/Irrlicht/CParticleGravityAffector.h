@@ -9,7 +9,6 @@
 #ifdef _IRR_COMPILE_WITH_PARTICLES_
 
 #include "IParticleGravityAffector.h"
-#include "SColor.h"
 
 namespace irr
 {

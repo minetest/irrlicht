@@ -7,7 +7,6 @@
 #include "ISceneManager.h"
 #include "ICameraSceneNode.h"
 #include "S3DVertex.h"
-#include "os.h"
 
 namespace irr
 {

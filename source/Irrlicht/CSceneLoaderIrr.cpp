@@ -3,7 +3,6 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
 #include "CSceneLoaderIrr.h"
-#include "ISceneNodeAnimatorFactory.h"
 #include "ISceneUserDataSerializer.h"
 #include "ISceneManager.h"
 #include "ISceneNode.h"

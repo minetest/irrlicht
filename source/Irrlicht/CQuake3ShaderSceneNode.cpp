@@ -13,7 +13,6 @@
 #include "SViewFrustum.h"
 #include "IMeshManipulator.h"
 #include "SMesh.h"
-#include "IMaterialRenderer.h"
 #ifdef _IRR_COMPILE_WITH_SHADOW_VOLUME_SCENENODE_
 #include "CShadowVolumeSceneNode.h"
 #else

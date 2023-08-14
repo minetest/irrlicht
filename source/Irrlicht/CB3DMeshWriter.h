@@ -9,10 +9,7 @@
 
 #include "IMeshWriter.h"
 #include "IWriteFile.h"
-#include "SB3DStructs.h"
 #include "ISkinnedMesh.h"
-
-
 
 namespace irr
 {

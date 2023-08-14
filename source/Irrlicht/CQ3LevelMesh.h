@@ -9,11 +9,10 @@
 #include "IReadFile.h"
 #include "IFileSystem.h"
 #include "SMesh.h"
-#include "SMeshBufferLightMap.h"
+#include "CMeshBuffer.h"
 #include "IVideoDriver.h"
 #include "irrString.h"
 #include "ISceneManager.h"
-#include "os.h"
 
 namespace irr
 {

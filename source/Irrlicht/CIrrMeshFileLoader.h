@@ -7,10 +7,6 @@
 
 #include "IMeshLoader.h"
 #include "IFileSystem.h"
-#include "IVideoDriver.h"
-#include "irrString.h"
-#include "SMesh.h"
-#include "SMeshBuffer.h"
 #include "CDynamicMeshBuffer.h"
 #include "ISceneManager.h"
 

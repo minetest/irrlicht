@@ -6,10 +6,7 @@
 #define IRR_C_MD3_MESH_FILE_LOADER_H_INCLUDED
 
 #include "IMeshLoader.h"
-#include "IFileSystem.h"
-#include "IVideoDriver.h"
 #include "ISceneManager.h"
-#include "IQ3Shader.h"
 
 namespace irr
 {

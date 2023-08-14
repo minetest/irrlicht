@@ -9,9 +9,8 @@
 #ifdef _IRR_COMPILE_WITH_PARTICLES_
 
 #include "IParticleMeshEmitter.h"
+#include "IMesh.h"
 #include "irrArray.h"
-#include "aabbox3d.h"
-#include "IMeshBuffer.h"
 
 namespace irr
 {

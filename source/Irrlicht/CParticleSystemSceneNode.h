@@ -11,7 +11,7 @@
 #include "IParticleSystemSceneNode.h"
 #include "irrArray.h"
 #include "irrList.h"
-#include "SMeshBuffer.h"
+#include "CMeshBuffer.h"
 
 namespace irr
 {

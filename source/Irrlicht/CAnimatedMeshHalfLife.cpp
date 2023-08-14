@@ -10,7 +10,7 @@
 #include "CColorConverter.h"
 #include "CImage.h"
 #include "coreutil.h"
-#include "SMeshBuffer.h"
+#include "CMeshBuffer.h"
 #include "IVideoDriver.h"
 #include "IFileSystem.h"
 

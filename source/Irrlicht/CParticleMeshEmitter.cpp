@@ -8,6 +8,7 @@
 #ifdef _IRR_COMPILE_WITH_PARTICLES_
 
 #include "os.h"
+#include "IMeshBuffer.h"
 
 namespace irr
 {

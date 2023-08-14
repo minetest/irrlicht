@@ -8,7 +8,7 @@
 #include "C3DSMeshFileLoader.h"
 #include "CMeshTextureLoader.h"
 #include "os.h"
-#include "SMeshBuffer.h"
+#include "CMeshBuffer.h"
 #include "SAnimatedMesh.h"
 #include "IReadFile.h"
 #include "IVideoDriver.h"

@@ -6,7 +6,6 @@
 #ifdef _IRR_COMPILE_WITH_MD2_LOADER_
 
 #include "CAnimatedMeshMD2.h"
-#include "SColor.h"
 #include "irrMath.h"
 
 namespace irr

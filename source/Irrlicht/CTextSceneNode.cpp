@@ -7,7 +7,7 @@
 #include "IVideoDriver.h"
 #include "ICameraSceneNode.h"
 #include "IGUISpriteBank.h"
-#include "SMeshBuffer.h"
+#include "CMeshBuffer.h"
 #include "os.h"
 
 

@@ -7,6 +7,7 @@
 
 #include "CColladaFileLoader.h"
 #include "CMeshTextureLoader.h"
+#include "CAttributes.h"
 #include "os.h"
 #include "IXMLReader.h"
 #include "IDummyTransformationSceneNode.h"
@@ -21,6 +22,7 @@
 #include "IMeshCache.h"
 #include "IMeshSceneNode.h"
 #include "CDynamicMeshBuffer.h"
+#include "IVideoDriver.h"
 #include "irrMap.h"
 
 #ifdef _DEBUG

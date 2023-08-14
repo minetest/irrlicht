@@ -18,7 +18,7 @@
 #include "SMesh.h"
 #include "IVideoDriver.h"
 #include "SAnimatedMesh.h"
-#include "SMeshBufferLightMap.h"
+#include "CMeshBuffer.h"
 
 #ifdef _DEBUG
 #define _IRR_DEBUG_CSM_LOADER_

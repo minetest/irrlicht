@@ -15,7 +15,7 @@
 #include "CMeshTextureLoader.h"
 
 #include "SAnimatedMesh.h"
-#include "SMeshBuffer.h"
+#include "SMesh.h"
 #include "IReadFile.h"
 #include "IAttributes.h"
 

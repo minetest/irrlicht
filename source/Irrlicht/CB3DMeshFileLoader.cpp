@@ -14,7 +14,6 @@
 
 #include "IVideoDriver.h"
 #include "IAttributes.h"
-#include "IFileSystem.h"
 #include "os.h"
 
 #ifdef _DEBUG

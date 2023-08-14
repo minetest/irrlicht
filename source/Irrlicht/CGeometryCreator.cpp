@@ -3,8 +3,6 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
 #include "CGeometryCreator.h"
-#include "SAnimatedMesh.h"
-#include "SMeshBuffer.h"
 #include "SMesh.h"
 #include "IMesh.h"
 #include "IVideoDriver.h"

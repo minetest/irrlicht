@@ -10,7 +10,6 @@
 #include "IMeshManipulator.h"
 #include "IVideoDriver.h"
 #include "SMesh.h"
-#include "SMeshBuffer.h"
 #include "SAnimatedMesh.h"
 #include "IReadFile.h"
 #include "IAttributes.h"

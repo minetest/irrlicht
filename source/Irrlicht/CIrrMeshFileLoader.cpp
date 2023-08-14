@@ -9,12 +9,12 @@
 #include "os.h"
 #include "IXMLReader.h"
 #include "SAnimatedMesh.h"
+#include "SMesh.h"
 #include "fast_atof.h"
 #include "IReadFile.h"
 #include "IAttributes.h"
-#include "IMeshSceneNode.h"
+#include "IVideoDriver.h"
 #include "CDynamicMeshBuffer.h"
-#include "SMeshBufferLightMap.h"
 
 namespace irr
 {

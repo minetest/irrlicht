@@ -7,7 +7,7 @@
 
 #include "ISceneNodeAnimatorCameraMaya.h"
 #include "ICameraSceneNode.h"
-#include "vector2d.h"
+#include "position2d.h"
 
 namespace irr
 {

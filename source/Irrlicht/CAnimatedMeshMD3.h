@@ -8,11 +8,8 @@
 #include "IAnimatedMeshMD3.h"
 #include "IReadFile.h"
 #include "IFileSystem.h"
-#include "irrArray.h"
-#include "irrString.h"
 #include "SMesh.h"
-#include "SMeshBuffer.h"
-#include "IQ3Shader.h"
+#include "CMeshBuffer.h"
 
 namespace irr
 {
