@@ -18,9 +18,7 @@
 
 #include "IReadFile.h"
 #include "os.h"
-#include "CColorConverter.h"
 #include "CImage.h"
-#include "irrString.h"
 
 // Header flag values
 #define DDSD_CAPS			0x00000001
@@ -721,9 +719,8 @@ IImage* CImageLoaderDDS::loadImage(io::IReadFile* file) const
 
 		image = new CImage(ECF_A8R8G8B8, core::dimension2d<u32>(width, height));
 
-		if (DDSDecompress(&header, memFile, (u8*)image->lock()) == -1)
+		if (DDSDecompress(&header, memFile, (u8*)image->getData()) == -1)
 		{
-			image->unlock();
 			image->drop();
 			image = 0;
 		}

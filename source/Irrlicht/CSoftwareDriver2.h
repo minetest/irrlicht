@@ -7,6 +7,7 @@
 
 #include "SoftwareDriver2_compile_config.h"
 #include "IBurningShader.h"
+#include "IImagePresenter.h"
 #include "CNullDriver.h"
 #include "CImage.h"
 #include "os.h"

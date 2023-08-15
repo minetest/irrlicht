@@ -6,8 +6,6 @@
 
 #ifdef _IRR_COMPILE_WITH_OPENGL_
 
-#include "IGPUProgrammingServices.h"
-#include "IShaderConstantSetCallBack.h"
 #include "IVideoDriver.h"
 #include "os.h"
 

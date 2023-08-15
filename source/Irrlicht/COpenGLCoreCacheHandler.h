@@ -9,6 +9,8 @@
 
 #if defined(_IRR_COMPILE_WITH_OPENGL_) || defined(_IRR_COMPILE_WITH_OGLES1_) || defined(_IRR_COMPILE_WITH_OGLES2_)
 
+#include "COpenGLCoreFeature.h"
+#include "COpenGLCoreTexture.h"
 #include "SMaterial.h"
 #include "ITexture.h"
 

@@ -9,8 +9,6 @@
 #include "CImage.h"
 #include "os.h"
 #include "dimension2d.h"
-#include "IVideoDriver.h"
-#include "IFileSystem.h"
 #include "IReadFile.h"
 #include "irrString.h"
 

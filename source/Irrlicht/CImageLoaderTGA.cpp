@@ -10,7 +10,6 @@
 #include "os.h"
 #include "CColorConverter.h"
 #include "CImage.h"
-#include "irrString.h"
 
 
 namespace irr

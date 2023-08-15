@@ -6,10 +6,9 @@
 
 #ifdef _IRR_COMPILE_WITH_PCX_WRITER_
 
-#include "CImageLoaderPCX.h"
 #include "IWriteFile.h"
+#include "IImage.h"
 #include "os.h" // for logging
-#include "irrString.h"
 
 namespace irr
 {

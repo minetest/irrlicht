@@ -9,7 +9,6 @@
 #include "IWriteFile.h"
 #include "IImage.h"
 #include "dimension2d.h"
-#include "irrString.h"
 
 namespace irr
 {

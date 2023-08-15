@@ -8,8 +8,7 @@
 
 #include "CColorConverter.h"
 #include "IWriteFile.h"
-#include "CImage.h"
-#include "irrString.h"
+#include "IImage.h"
 #include "os.h"
 
 #ifdef _IRR_COMPILE_WITH_LIBJPEG_

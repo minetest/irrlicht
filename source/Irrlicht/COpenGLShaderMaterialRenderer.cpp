@@ -6,14 +6,12 @@
 
 #ifdef _IRR_COMPILE_WITH_OPENGL_
 
-#include "IGPUProgrammingServices.h"
 #include "IShaderConstantSetCallBack.h"
 #include "IVideoDriver.h"
 #include "os.h"
 
 #include "COpenGLDriver.h"
 #include "COpenGLCacheHandler.h"
-#include "COpenGLMaterialRenderer.h"
 
 namespace irr
 {

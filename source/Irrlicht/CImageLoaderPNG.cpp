@@ -15,7 +15,7 @@
 #endif // _IRR_COMPILE_WITH_LIBPNG_
 
 #include "CImage.h"
-#include "CReadFile.h"
+#include "IReadFile.h"
 #include "os.h"
 
 namespace irr
