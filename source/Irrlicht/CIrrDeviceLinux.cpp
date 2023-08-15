@@ -332,7 +332,7 @@ void CIrrDeviceLinux::setupTopLevelXorgWindow()
 
 	Atom NET_WM_PID = XInternAtom(XDisplay, "_NET_WM_PID", false);
 
-	pid_t pid = getpid();
+	long pid = static_cast<long>(getpid());
 
 	XChangeProperty(XDisplay, XWindow, NET_WM_PID,
 			XA_CARDINAL, 32, PropModeReplace,
