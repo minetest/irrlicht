@@ -232,16 +232,6 @@ namespace video
 		if the value is positive. */
 		s8 LODBias;
 
-		//! Sets the MinFilter, MagFilter and AnisotropicFilter properties according
-		//! to the three relevant boolean values found in the Minetest settings.
-		/** The value of `trilinear` takes precedence over the value of `bilinear`. */
-		void setFiltersMinetest(bool bilinear, bool trilinear, bool anisotropic) {
-			MinFilter = trilinear ? ETMINF_LINEAR_MIPMAP_LINEAR :
-					(bilinear ? ETMINF_LINEAR_MIPMAP_NEAREST : ETMINF_NEAREST_MIPMAP_NEAREST);
-			MagFilter = (trilinear || bilinear) ? ETMAGF_LINEAR : ETMAGF_NEAREST;
-			AnisotropicFilter = anisotropic ? 0xFF : 0;
-		}
-
 	private:
 		friend class SMaterial;
 
