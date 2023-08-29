@@ -597,7 +597,7 @@ public:
 					return difference_type();
 
 				_Iter i = iter;
-				difference_type ret;
+				difference_type ret{};
 
 				// Walk up.
 				if (pos > i.pos)
