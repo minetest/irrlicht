@@ -11,9 +11,8 @@
 #include <cstdio>
 #include <cstring>
 #include <cwchar>
-
-extern std::wstring utf8_to_wide(const std::string &input);
-extern std::string wide_to_utf8(const std::wstring &input);
+#include <locale>
+#include <codecvt>
 
 namespace irr
 {
@@ -866,10 +865,10 @@ public:
 		return ret.size()-oldSize;
 	}
 
-	friend size_t multibyteToWString(irr::core::stringw &destination, const irr::core::stringc &source);
-	friend size_t multibyteToWString(irr::core::stringw &destination, const char *source);
-	friend size_t wStringToMultibyte(irr::core::stringc &destination, const irr::core::stringw &source);
-	friend size_t wStringToMultibyte(irr::core::stringc &destination, const wchar_t *source);
+	friend size_t multibyteToWString(stringw &destination, const stringc &source);
+	friend size_t multibyteToWString(stringw &destination, const char *source);
+	friend size_t wStringToMultibyte(stringc &destination, const stringw &source);
+	friend size_t wStringToMultibyte(stringc &destination, const wchar_t *source);
 
 private:
 
@@ -922,27 +921,31 @@ private:
 };
 
 
-inline size_t multibyteToWString(irr::core::stringw &destination, const irr::core::stringc &source)
+inline size_t multibyteToWString(stringw &destination, const stringc &source)
 {
-	destination = utf8_to_wide(source.str);
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+	destination = conv.from_bytes(source.str);
 	return destination.size();
 }
 
-inline size_t multibyteToWString(irr::core::stringw &destination, const char *source)
+inline size_t multibyteToWString(stringw &destination, const char *source)
 {
-	destination = utf8_to_wide(source);
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+	destination = conv.from_bytes(source);
 	return destination.size();
 }
 
-inline size_t wStringToMultibyte(irr::core::stringc &destination, const irr::core::stringw &source)
+inline size_t wStringToMultibyte(stringc &destination, const stringw &source)
 {
-	destination = wide_to_utf8(source.str);
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+	destination = conv.to_bytes(source.str);
 	return destination.size();
 }
 
-inline size_t wStringToMultibyte(irr::core::stringc &destination, const wchar_t *source)
+inline size_t wStringToMultibyte(stringc &destination, const wchar_t *source)
 {
-	destination = wide_to_utf8(source);
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+	destination = conv.to_bytes(source);
 	return destination.size();
 }
 

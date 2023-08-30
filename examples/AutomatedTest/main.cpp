@@ -1,20 +1,6 @@
-#include <cassert>
 #include <iostream>
-#include <string>
 #include <irrlicht.h>
 #include "exampleHelper.h"
-
-// usually provided by Minetest
-std::wstring utf8_to_wide(const std::string &input) {
-	assert(false);
-	return L"false";
-}
-
-// usually provided by Minetest
-std::string wide_to_utf8(const std::wstring &input) {
-	assert(false);
-	return "false";
-}
 
 using namespace irr;
 
