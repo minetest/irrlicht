@@ -14,6 +14,9 @@
 #include <locale>
 #include <codecvt>
 
+// silence MSVC warnings
+#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+
 namespace irr
 {
 namespace core
