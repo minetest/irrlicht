@@ -920,6 +920,8 @@ private:
 	stl_type str;
 };
 
+// Don't replace std::wstring_convert with mbstowcs / wcstombs.
+// See https://github.com/minetest/irrlicht/issues/216.
 
 inline size_t multibyteToWString(stringw &destination, const stringc &source)
 {
