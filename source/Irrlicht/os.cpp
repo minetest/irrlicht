@@ -16,7 +16,6 @@
 	#define bswap_16(X) _byteswap_ushort(X)
 	#define bswap_32(X) _byteswap_ulong(X)
 	#define bswap_64(X) _byteswap_uint64(X)
-	#define localtime _localtime_s
 #elif defined(_IRR_OSX_PLATFORM_)
 	#include <libkern/OSByteOrder.h>
 	#define bswap_16(X) OSReadSwapInt16(&X,0)
@@ -38,6 +37,10 @@
 	#define bswap_16(X) ((((X)&0xFF) << 8) | (((X)&0xFF00) >> 8))
 	#define bswap_32(X) ((((X)&0x000000FF) << 24) | (((X)&0xFF000000) >> 24) | (((X)&0x0000FF00) << 8) | (((X) &0x00FF0000) >> 8))
 	#define bswap_64(X) ((((X)&0x00000000000000FF) << 56) | (((X)&0xFF00000000000000) >> 56) | (((X)&0x000000000000FF00) << 40) | (((X)&0x00FF000000000000) >> 40) | (((X)&0x0000000000FF0000) << 24) | (((X)&0x0000FF0000000000) >> 24) | (((X)&0x00000000FF000000) << 8) | (((X) &0x000000FF00000000) >> 8))
+#endif
+
+#if defined(_IRR_WINDOWS_API_)
+#define localtime_r(a, b) localtime_s(b, a)
 #endif
 
 namespace irr
@@ -303,8 +306,9 @@ namespace os
 		time_t rawtime;
 		time(&rawtime);
 
-		struct tm * timeinfo;
-		timeinfo = localtime(&rawtime);
+		struct tm timeinfo2;
+		localtime_r(&rawtime, &timeinfo2);
+		const auto *timeinfo = &timeinfo2;
 
 		// init with all 0 to indicate error
 		ITimer::RealTimeDate date;
