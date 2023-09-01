@@ -1480,7 +1480,7 @@ void CIrrDeviceLinux::createKeyMap()
 	KeyMap.push_back(SKeyMap(XK_Next, KEY_NEXT));
 	KeyMap.push_back(SKeyMap(XK_Page_Down, KEY_NEXT));
 	KeyMap.push_back(SKeyMap(XK_End, KEY_END));
-	KeyMap.push_back(SKeyMap(XK_Begin, KEY_HOME));
+	KeyMap.push_back(SKeyMap(XK_Begin, KEY_NUMPAD5));
 	KeyMap.push_back(SKeyMap(XK_Num_Lock, KEY_NUMLOCK));
 	KeyMap.push_back(SKeyMap(XK_KP_Space, KEY_SPACE));
 	KeyMap.push_back(SKeyMap(XK_KP_Tab, KEY_TAB));
@@ -1500,7 +1500,7 @@ void CIrrDeviceLinux::createKeyMap()
 	KeyMap.push_back(SKeyMap(XK_KP_Next, KEY_NEXT));
 	KeyMap.push_back(SKeyMap(XK_KP_Page_Down, KEY_NEXT));
 	KeyMap.push_back(SKeyMap(XK_KP_End, KEY_END));
-	KeyMap.push_back(SKeyMap(XK_KP_Begin, KEY_HOME));
+	KeyMap.push_back(SKeyMap(XK_KP_Begin, KEY_NUMPAD5));
 	KeyMap.push_back(SKeyMap(XK_KP_Insert, KEY_INSERT));
 	KeyMap.push_back(SKeyMap(XK_KP_Delete, KEY_DELETE));
 	KeyMap.push_back(SKeyMap(XK_KP_Equal, 0)); // ???
