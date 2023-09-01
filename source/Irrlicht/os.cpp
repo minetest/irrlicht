@@ -16,7 +16,6 @@
 	#define bswap_16(X) _byteswap_ushort(X)
 	#define bswap_32(X) _byteswap_ulong(X)
 	#define bswap_64(X) _byteswap_uint64(X)
-	#define localtime _localtime_s
 #elif defined(_IRR_OSX_PLATFORM_)
 	#include <libkern/OSByteOrder.h>
 	#define bswap_16(X) OSReadSwapInt16(&X,0)
@@ -82,12 +81,9 @@ namespace os
 	static LARGE_INTEGER HighPerformanceFreq;
 	static BOOL HighPerformanceTimerSupport = FALSE;
 
-	void Timer::initTimer(bool usePerformanceTimer)
+	void Timer::initTimer()
 	{
-		if (usePerformanceTimer)
-			HighPerformanceTimerSupport = QueryPerformanceFrequency(&HighPerformanceFreq);
-		else
-			HighPerformanceTimerSupport = FALSE;
+		HighPerformanceTimerSupport = QueryPerformanceFrequency(&HighPerformanceFreq);
 		initVirtualTimer();
 	}
 
@@ -158,7 +154,7 @@ namespace os
 		__android_log_print(LogLevel, "Irrlicht", "%s\n", &message[start]);
 	}
 
-	void Timer::initTimer(bool usePerformanceTimer)
+	void Timer::initTimer()
 	{
 		initVirtualTimer();
 	}
@@ -211,7 +207,7 @@ namespace os
         emscripten_log(log_level, "%s", message);	// Note: not adding \n as emscripten_log seems to do that already.
 	}
 
-	void Timer::initTimer(bool usePerformanceTimer)
+	void Timer::initTimer()
 	{
 		initVirtualTimer();
 	}
@@ -244,7 +240,7 @@ namespace os
 		printf("%s\n", message);
 	}
 
-	void Timer::initTimer(bool usePerformanceTimer)
+	void Timer::initTimer()
 	{
 		initVirtualTimer();
 	}
@@ -296,35 +292,6 @@ namespace os
 	u32 Timer::LastVirtualTime = 0;
 	u32 Timer::StartRealTime = 0;
 	u32 Timer::StaticTime = 0;
-
-	//! Get real time and date in calendar form
-	ITimer::RealTimeDate Timer::getRealTimeAndDate()
-	{
-		time_t rawtime;
-		time(&rawtime);
-
-		struct tm * timeinfo;
-		timeinfo = localtime(&rawtime);
-
-		// init with all 0 to indicate error
-		ITimer::RealTimeDate date;
-		memset(&date, 0, sizeof(date));
-		// at least Windows returns NULL on some illegal dates
-		if (timeinfo)
-		{
-			// set useful values if succeeded
-			date.Hour=(u32)timeinfo->tm_hour;
-			date.Minute=(u32)timeinfo->tm_min;
-			date.Second=(u32)timeinfo->tm_sec;
-			date.Day=(u32)timeinfo->tm_mday;
-			date.Month=(u32)timeinfo->tm_mon+1;
-			date.Year=(u32)timeinfo->tm_year+1900;
-			date.Weekday=(ITimer::EWeekday)timeinfo->tm_wday;
-			date.Yearday=(u32)timeinfo->tm_yday+1;
-			date.IsDST=timeinfo->tm_isdst != 0;
-		}
-		return date;
-	}
 
 	//! returns current virtual time
 	u32 Timer::getTime()

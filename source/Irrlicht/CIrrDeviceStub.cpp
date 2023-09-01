@@ -24,7 +24,7 @@ CIrrDeviceStub::CIrrDeviceStub(const SIrrlichtCreationParameters& params)
 	InputReceivingSceneManager(0), ContextManager(0),
 	CreationParams(params), Close(false)
 {
-	Timer = new CTimer(params.UsePerformanceTimer);
+	Timer = new CTimer();
 	if (os::Printer::Logger)
 	{
 		os::Printer::Logger->grab();

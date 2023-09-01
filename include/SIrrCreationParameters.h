@@ -50,7 +50,6 @@ namespace irr
 #endif
 			DisplayAdapter(0),
 			DriverMultithreaded(false),
-			UsePerformanceTimer(true),
 			SDK_version_do_not_use(IRRLICHT_SDK_VERSION),
 			PrivateData(0),
 #ifdef IRR_MOBILE_PATHS
@@ -90,7 +89,6 @@ namespace irr
 			LoggingLevel = other.LoggingLevel;
 			DisplayAdapter = other.DisplayAdapter;
 			DriverMultithreaded = other.DriverMultithreaded;
-			UsePerformanceTimer = other.UsePerformanceTimer;
 			PrivateData = other.PrivateData;
 			OGLES2ShaderPath = other.OGLES2ShaderPath;
 			return *this;
@@ -301,13 +299,6 @@ namespace irr
 			Note that this does _not_ make Irrlicht threadsafe, but only the underlying driver-API for the graphiccard.
 			So far only supported on D3D. */
 		bool DriverMultithreaded;
-
-		//! Enables use of high performance timers on Windows platform.
-		/** When performance timers are not used, standard GetTickCount()
-		is used instead which usually has worse resolution, but also less
-		problems with speed stepping and other techniques.
-		*/
-		bool UsePerformanceTimer;
 
 		//! Don't use or change this parameter.
 		/** Always set it to IRRLICHT_SDK_VERSION, which is done by default.

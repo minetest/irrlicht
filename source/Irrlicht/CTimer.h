@@ -14,9 +14,9 @@ namespace irr
 	{
 	public:
 
-		CTimer(bool usePerformanceTimer=true)
+		CTimer()
 		{
-			os::Timer::initTimer(usePerformanceTimer);
+			os::Timer::initTimer();
 		}
 
 		//! Returns current real time in milliseconds of the system.
@@ -26,12 +26,6 @@ namespace irr
 		u32 getRealTime() const override
 		{
 			return os::Timer::getRealTime();
-		}
-
-		//! Get current time and date in calendar form
-		RealTimeDate getRealTimeAndDate() const override
-		{
-			return os::Timer::getRealTimeAndDate();
 		}
 
 		//! Returns current virtual time in milliseconds.

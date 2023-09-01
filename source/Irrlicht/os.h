@@ -51,11 +51,8 @@ namespace os
 		//! returns the current time in milliseconds
 		static u32 getTime();
 
-		//! get current time and date in calendar form
-		static ITimer::RealTimeDate getRealTimeAndDate();
-
 		//! initializes the real timer
-		static void initTimer(bool usePerformanceTimer=true);
+		static void initTimer();
 
 		//! sets the current virtual (game) time
 		static void setTime(u32 time);
