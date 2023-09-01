@@ -26,8 +26,8 @@ namespace os
 		static s64 byteswap(s64 num);
 		static f32 byteswap(f32 num);
 		// prevent accidental swapping of chars
-		static u8  byteswap(u8  num);
-		static c8  byteswap(c8  num);
+		static inline u8 byteswap(u8 num) { return num; }
+		static inline c8 byteswap(c8 num) { return num; }
 	};
 
 	class Printer

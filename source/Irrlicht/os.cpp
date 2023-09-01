@@ -50,9 +50,6 @@ namespace os
 	u64 Byteswap::byteswap(u64 num) {return bswap_64(num);}
 	s64 Byteswap::byteswap(s64 num) {return bswap_64(num);}
 	f32 Byteswap::byteswap(f32 num) {u32 tmp=IR(num); tmp=bswap_32(tmp); return (FR(tmp));}
-	// prevent accidental byte swapping of chars
-	u8  Byteswap::byteswap(u8 num)  {return num;}
-	c8  Byteswap::byteswap(c8 num)  {return num;}
 }
 }
 
