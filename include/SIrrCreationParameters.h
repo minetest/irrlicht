@@ -40,7 +40,6 @@ namespace irr
 			Doublebuffer(true),
 			IgnoreInput(false),
 			Stereobuffer(false),
-			HighPrecisionFPU(false),
 			EventReceiver(0),
 			WindowId(0),
 #ifdef _DEBUG
@@ -48,8 +47,6 @@ namespace irr
 #else
 			LoggingLevel(ELL_INFORMATION),
 #endif
-			DisplayAdapter(0),
-			DriverMultithreaded(false),
 			SDK_version_do_not_use(IRRLICHT_SDK_VERSION),
 			PrivateData(0),
 #ifdef IRR_MOBILE_PATHS
@@ -83,12 +80,9 @@ namespace irr
 			Doublebuffer = other.Doublebuffer;
 			IgnoreInput = other.IgnoreInput;
 			Stereobuffer = other.Stereobuffer;
-			HighPrecisionFPU = other.HighPrecisionFPU;
 			EventReceiver = other.EventReceiver;
 			WindowId = other.WindowId;
 			LoggingLevel = other.LoggingLevel;
-			DisplayAdapter = other.DisplayAdapter;
-			DriverMultithreaded = other.DriverMultithreaded;
 			PrivateData = other.PrivateData;
 			OGLES2ShaderPath = other.OGLES2ShaderPath;
 			return *this;
@@ -106,9 +100,6 @@ namespace irr
 		E_DEVICE_TYPE DeviceType;
 
 		//! Type of video driver used to render graphics.
-		/** This can currently be video::EDT_NULL, video::EDT_SOFTWARE,
-		video::EDT_BURNINGSVIDEO, video::EDT_DIRECT3D9, and video::EDT_OPENGL.
-		Default: EDT_BURNINGSVIDEO. */
 		video::E_DRIVER_TYPE DriverType;
 
 		//! Size of the window or the video mode in fullscreen mode. Default: 800x600
@@ -217,15 +208,6 @@ namespace irr
 		Default value: false */
 		bool Stereobuffer;
 
-		//! Specifies if the device should use high precision FPU setting
-		/** This is only relevant for DirectX Devices, which switch to
-		low FPU precision by default for performance reasons. However,
-		this may lead to problems with the other computations of the
-		application. In this case setting this flag to true should help
-		- on the expense of performance loss, though.
-		Default value: false */
-		bool HighPrecisionFPU;
-
 		//! A user created event receiver.
 		IEventReceiver* EventReceiver;
 
@@ -289,16 +271,6 @@ namespace irr
 		then you have to change it here.
 		*/
 		ELOG_LEVEL LoggingLevel;
-
-		//! Allows to select which graphic card is used for rendering when more than one card is in the system.
-		/** So far only supported on D3D */
-		u32 DisplayAdapter;
-
-		//! Create the driver multithreaded.
-		/** Default is false. Enabling this can slow down your application.
-			Note that this does _not_ make Irrlicht threadsafe, but only the underlying driver-API for the graphiccard.
-			So far only supported on D3D. */
-		bool DriverMultithreaded;
 
 		//! Don't use or change this parameter.
 		/** Always set it to IRRLICHT_SDK_VERSION, which is done by default.

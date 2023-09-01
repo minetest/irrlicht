@@ -20,13 +20,6 @@ namespace video
 		render and display any graphics. */
 		EDT_NULL,
 
-		// obsolete constants to make some code happy
-		// TODO delete
-		EDT_SOFTWARE,
-		EDT_BURNINGSVIDEO,
-		DEPRECATED_EDT_DIRECT3D8_NO_LONGER_EXISTS,
-		EDT_DIRECT3D9,
-
 		//! OpenGL device, available on most platforms.
 		/** Performs hardware accelerated rendering of 3D and 2D
 		primitives. */

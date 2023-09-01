@@ -633,11 +633,6 @@ void CIrrDeviceLinux::createDriver()
 		os::Printer::log("No WebGL1 support compiled in.", ELL_ERROR);
 #endif
 		break;
-	case video::DEPRECATED_EDT_DIRECT3D8_NO_LONGER_EXISTS:
-	case video::EDT_DIRECT3D9:
-		os::Printer::log("This driver is not available in Linux. Try OpenGL or Software renderer.",
-			ELL_ERROR);
-		break;
 	case video::EDT_NULL:
 		VideoDriver = video::createNullDriver(FileSystem, CreationParams.WindowSize);
 		break;

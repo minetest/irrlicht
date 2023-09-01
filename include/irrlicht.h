@@ -255,8 +255,7 @@ namespace irr
 	//! Creates an Irrlicht device. The Irrlicht device is the root object for using the engine.
 	/** If you need more parameters to be passed to the creation of the Irrlicht Engine device,
 	use the createDeviceEx() function.
-	\param driverType: Type of the video driver to use. This can currently be video::EDT_NULL,
-	video::EDT_SOFTWARE, video::EDT_BURNINGSVIDEO, video::EDT_DIRECT3D9 and video::EDT_OPENGL.
+	\param driverType: Type of the video driver to use.
 	\param windowSize: Size of the window or the video mode in fullscreen mode.
 	\param bits: Bits per pixel in fullscreen mode. Ignored if windowed mode.
 	\param fullscreen: Should be set to true if the device should run in fullscreen. Otherwise
@@ -280,16 +279,6 @@ namespace irr
 		bool vsync = false,
 		IEventReceiver* receiver = 0);
 
-	//! typedef for Function Pointer
-	typedef IrrlichtDevice* (IRRCALLCONV *funcptr_createDevice )(
-			video::E_DRIVER_TYPE driverType,
-			const core::dimension2d<u32>& windowSize,
-			u32 bits,
-			bool fullscreen,
-			bool stencilbuffer,
-			bool vsync,
-			IEventReceiver* receiver);
-
 
 	//! Creates an Irrlicht device with the option to specify advanced parameters.
 	/** Usually you should used createDevice() for creating an Irrlicht Engine device.
@@ -301,10 +290,6 @@ namespace irr
 	device could not be created. */
 	extern "C" IRRLICHT_API IrrlichtDevice* IRRCALLCONV createDeviceEx(
 		const SIrrlichtCreationParameters& parameters);
-
-	//! typedef for Function Pointer
-	typedef IrrlichtDevice* (IRRCALLCONV *funcptr_createDeviceEx )( const SIrrlichtCreationParameters& parameters );
-
 
 	// THE FOLLOWING IS AN EMPTY LIST OF ALL SUB NAMESPACES
 	// EXISTING ONLY FOR THE DOCUMENTATION SOFTWARE DOXYGEN.
