@@ -59,10 +59,6 @@ namespace scene
 		IBoneSceneNode(ISceneNode* parent, ISceneManager* mgr, s32 id=-1) :
 			ISceneNode(parent, mgr, id),positionHint(-1),scaleHint(-1),rotationHint(-1) { }
 
-		//! Get the name of the bone
-		/** \deprecated Use getName instead. This method may be removed by Irrlicht 1.9 */
-		_IRR_DEPRECATED_ virtual const c8* getBoneName() const { return getName(); }
-
 		//! Get the index of the bone
 		virtual u32 getBoneIndex() const = 0;
 
