@@ -296,11 +296,11 @@ namespace video
 				const io::path& name, const ECOLOR_FORMAT format) override;
 
 		//! Creates an 1bit alpha channel of the texture based of an color key.
-		void makeColorKeyTexture(video::ITexture* texture, video::SColor color, bool zeroTexels) const override;
+		void makeColorKeyTexture(video::ITexture* texture, video::SColor color) const override;
 
 		//! Creates an 1bit alpha channel of the texture based of an color key position.
-		virtual void makeColorKeyTexture(video::ITexture* texture, core::position2d<s32> colorKeyPixelPos,
-			bool zeroTexels) const override;
+		virtual void makeColorKeyTexture(video::ITexture* texture,
+				core::position2d<s32> colorKeyPixelPos) const override;
 
 		//! Returns the maximum amount of primitives (mostly vertices) which
 		//! the device is able to render with one drawIndexedTriangleList
@@ -327,14 +327,6 @@ namespace video
 
 		//! Creates an empty software image.
 		IImage* createImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size) override;
-
-		//! Creates a software image from another image.
-		IImage* createImage(ECOLOR_FORMAT format, IImage *imageToCopy) override;
-
-		//! Creates a software image from part of another image.
-		virtual IImage* createImage(IImage* imageToCopy,
-				const core::position2d<s32>& pos,
-				const core::dimension2d<u32>& size) override;
 
 		//! Creates a software image from part of a texture.
 		virtual IImage* createImage(ITexture* texture,

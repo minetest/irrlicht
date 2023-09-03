@@ -302,24 +302,6 @@ namespace video
 		getTexture() with this name will return this texture.
 		The name can _not_ be empty.
 		\param image Image the texture is created from.
-		\param mipmapData Optional pointer to a mipmaps data.
-		If this parameter is not given, the mipmaps are derived from image.
-		\return Pointer to the newly created texture. This pointer
-		should not be dropped. See IReferenceCounted::drop() for more
-		information. */
-		_IRR_DEPRECATED_ ITexture* addTexture(const io::path& name, IImage* image, void* mipmapData)
-		{
-			if (image)
-				image->setMipMapsData(mipmapData, false);
-
-			return addTexture(name, image);
-		}
-
-		//! Creates a texture from an IImage.
-		/** \param name A name for the texture. Later calls of
-		getTexture() with this name will return this texture.
-		The name can _not_ be empty.
-		\param image Image the texture is created from.
 		\return Pointer to the newly created texture. This pointer
 		should not be dropped. See IReferenceCounted::drop() for more
 		information. */
@@ -458,15 +440,9 @@ namespace video
 		color values may not be exactly the same in the engine and for
 		example in picture edit programs. To avoid this problem, you
 		could use the makeColorKeyTexture method, which takes the
-		position of a pixel instead a color value.
-		\param zeroTexels (deprecated) If set to true, then any texels that match
-		the color key will have their color, as well as their alpha, set to zero
-		(i.e. black). This behavior matches the legacy (buggy) behavior prior
-		to release 1.5 and is provided for backwards compatibility only.
-		This parameter may be removed by Irrlicht 1.9. */
+		position of a pixel instead a color value. */
 		virtual void makeColorKeyTexture(video::ITexture* texture,
-						video::SColor color,
-						bool zeroTexels = false) const =0;
+						video::SColor color) const =0;
 
 		//! Sets a boolean alpha channel on the texture based on the color at a position.
 		/** This makes the texture fully transparent at the texels where
@@ -475,15 +451,9 @@ namespace video
 		\param texture Texture whose alpha channel is modified.
 		\param colorKeyPixelPos Position of a pixel with the color key
 		color. Every texel with this color will become fully transparent as
-		described above.
-		\param zeroTexels (deprecated) If set to true, then any texels that match
-		the color key will have their color, as well as their alpha, set to zero
-		(i.e. black). This behavior matches the legacy (buggy) behavior prior
-		to release 1.5 and is provided for backwards compatibility only.
-		This parameter may be removed by Irrlicht 1.9. */
+		described above. */
 		virtual void makeColorKeyTexture(video::ITexture* texture,
-				core::position2d<s32> colorKeyPixelPos,
-				bool zeroTexels = false) const =0;
+				core::position2d<s32> colorKeyPixelPos) const =0;
 
 		//! Set a render target.
 		/** This will only work if the driver supports the
@@ -1031,27 +1001,6 @@ namespace video
 		See IReferenceCounted::drop() for more information. */
 		virtual IImage* createImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size) =0;
 
-		//! Creates a software image by converting it to given format from another image.
-		/** \deprecated Create an empty image and use copyTo(). This method may be removed by Irrlicht 1.9.
-		\param format Desired color format of the image.
-		\param imageToCopy Image to copy to the new image.
-		\return The created image.
-		If you no longer need the image, you should call IImage::drop().
-		See IReferenceCounted::drop() for more information. */
-		_IRR_DEPRECATED_ virtual IImage* createImage(ECOLOR_FORMAT format, IImage *imageToCopy) =0;
-
-		//! Creates a software image from a part of another image.
-		/** \deprecated Create an empty image and use copyTo(). This method may be removed by Irrlicht 1.9.
-		\param imageToCopy Image to copy to the new image in part.
-		\param pos Position of rectangle to copy.
-		\param size Extents of rectangle to copy.
-		\return The created image.
-		If you no longer need the image, you should call IImage::drop().
-		See IReferenceCounted::drop() for more information. */
-		_IRR_DEPRECATED_ virtual IImage* createImage(IImage* imageToCopy,
-				const core::position2d<s32>& pos,
-				const core::dimension2d<u32>& size) =0;
-
 		//! Creates a software image from a part of a texture.
 		/**
 		\param texture Texture to copy to the new image in part.
@@ -1154,23 +1103,6 @@ namespace video
 
 		//! Clear the color, depth and/or stencil buffers.
 		virtual void clearBuffers(u16 flag, SColor color = SColor(255,0,0,0), f32 depth = 1.f, u8 stencil = 0) = 0;
-
-		//! Clear the color, depth and/or stencil buffers.
-		_IRR_DEPRECATED_ void clearBuffers(bool backBuffer, bool depthBuffer, bool stencilBuffer, SColor color)
-		{
-			u16 flag = 0;
-
-			if (backBuffer)
-				flag |= ECBF_COLOR;
-
-			if (depthBuffer)
-				flag |= ECBF_DEPTH;
-
-			if (stencilBuffer)
-				flag |= ECBF_STENCIL;
-
-			clearBuffers(flag, color);
-		}
 
 		//! Clears the ZBuffer.
 		/** Note that you usually need not to call this method, as it
