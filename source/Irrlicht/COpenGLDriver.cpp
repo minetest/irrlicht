@@ -1034,15 +1034,6 @@ void COpenGLDriver::renderArray(const void* indexList, u32 primitiveCount,
 		case scene::EPT_TRIANGLES:
 			glDrawElements(GL_TRIANGLES, primitiveCount*3, indexSize, indexList);
 			break;
-		case scene::EPT_QUAD_STRIP:
-			glDrawElements(GL_QUAD_STRIP, primitiveCount*2+2, indexSize, indexList);
-			break;
-		case scene::EPT_QUADS:
-			glDrawElements(GL_QUADS, primitiveCount*4, indexSize, indexList);
-			break;
-		case scene::EPT_POLYGON:
-			glDrawElements(GL_POLYGON, primitiveCount, indexSize, indexList);
-			break;
 	}
 }
 
@@ -3893,12 +3884,6 @@ GLenum COpenGLDriver::primitiveTypeToGL(scene::E_PRIMITIVE_TYPE type) const
 			return GL_TRIANGLE_FAN;
 		case scene::EPT_TRIANGLES:
 			return GL_TRIANGLES;
-		case scene::EPT_QUAD_STRIP:
-			return GL_QUAD_STRIP;
-		case scene::EPT_QUADS:
-			return GL_QUADS;
-		case scene::EPT_POLYGON:
-			return GL_POLYGON;
 		case scene::EPT_POINT_SPRITES:
 #ifdef GL_ARB_point_sprite
 			return GL_POINT_SPRITE_ARB;
