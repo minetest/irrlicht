@@ -210,58 +210,6 @@ public:
 	\return A pointer to the specified loader, 0 if the index is incorrect. */
 	virtual IArchiveLoader* getArchiveLoader(u32 index) const = 0;
 
-	//! Adds a zip archive to the file system.
-	/** \deprecated This function is provided for compatibility
-	with older versions of Irrlicht and may be removed in Irrlicht 1.9,
-	you should use addFileArchive instead.
-	After calling this, the Irrlicht Engine will search and open files directly from this archive too.
-	This is useful for hiding data from the end user, speeding up file access and making it possible to
-	access for example Quake3 .pk3 files, which are no different than .zip files.
-	\param filename: Filename of the zip archive to add to the file system.
-	\param ignoreCase: If set to true, files in the archive can be accessed without
-	writing all letters in the right case.
-	\param ignorePaths: If set to true, files in the added archive can be accessed
-	without its complete path.
-	\return True if the archive was added successfully, false if not. */
-	_IRR_DEPRECATED_ virtual bool addZipFileArchive(const c8* filename, bool ignoreCase=true, bool ignorePaths=true)
-	{
-		return addFileArchive(filename, ignoreCase, ignorePaths, EFAT_ZIP);
-	}
-
-	//! Adds an unzipped archive (or basedirectory with subdirectories..) to the file system.
-	/** \deprecated This function is provided for compatibility
-	with older versions of Irrlicht and may be removed in Irrlicht 1.9,
-	you should use addFileArchive instead.
-	Useful for handling data which will be in a zip file
-	\param filename: Filename of the unzipped zip archive base directory to add to the file system.
-	\param ignoreCase: If set to true, files in the archive can be accessed without
-	writing all letters in the right case.
-	\param ignorePaths: If set to true, files in the added archive can be accessed
-	without its complete path.
-	\return True if the archive was added successful, false if not. */
-	_IRR_DEPRECATED_ virtual bool addFolderFileArchive(const c8* filename, bool ignoreCase=true, bool ignorePaths=true)
-	{
-		return addFileArchive(filename, ignoreCase, ignorePaths, EFAT_FOLDER);
-	}
-
-	//! Adds a pak archive to the file system.
-	/** \deprecated This function is provided for compatibility
-	with older versions of Irrlicht and may be removed in Irrlicht 1.9,
-	you should use addFileArchive instead.
-	After calling this, the Irrlicht Engine will search and open files directly from this archive too.
-	This is useful for hiding data from the end user, speeding up file access and making it possible to
-	access for example Quake2/KingPin/Hexen2 .pak files
-	\param filename: Filename of the pak archive to add to the file system.
-	\param ignoreCase: If set to true, files in the archive can be accessed without
-	writing all letters in the right case.
-	\param ignorePaths: If set to true, files in the added archive can be accessed
-	without its complete path.(should not use with Quake2 paks
-	\return True if the archive was added successful, false if not. */
-	_IRR_DEPRECATED_ virtual bool addPakFileArchive(const c8* filename, bool ignoreCase=true, bool ignorePaths=true)
-	{
-		return addFileArchive(filename, ignoreCase, ignorePaths, EFAT_PAK);
-	}
-
 	//! Get the current working directory.
 	/** \return Current working directory as a string. */
 	virtual const path& getWorkingDirectory() =0;
