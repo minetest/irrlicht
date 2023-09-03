@@ -41,12 +41,12 @@ namespace gui
 
 		//! Insert an existing tab
 		/** Note that it will also add the tab as a child of this TabControl.
-		\param idx Index at which tab will be inserted. Later tabs will be moved. 
-		           Previous active tab will stay active unless this is the first 
+		\param idx Index at which tab will be inserted. Later tabs will be moved.
+		           Previous active tab will stay active unless this is the first
 				   element to be inserted in which case it becomes active.
 		\param tab New tab to insert.
 		\param serializationMode Internally used for serialization. You should not need this.
-		       When true it reserves space for the index, doesn't move but replaces tabs 
+		       When true it reserves space for the index, doesn't move but replaces tabs
 			   and it doesn't change the active tab.
 		\return Index of added tab (should be same as the one passed) or -1 for failure*/
 		virtual s32 insertTab(s32 idx, IGUITab* tab, bool serializationMode=false) = 0;
@@ -67,8 +67,8 @@ namespace gui
 		virtual IGUITab* getTab(s32 idx) const = 0;
 
 		//! For given element find if it's a tab and return it's zero-based index (or -1 for not found)
-		/** \param tab Tab for which we are looking (usually you will look for an IGUITab* type as only  
-		              those can be tabs, but we allow looking for any kind of IGUIElement* as there are some 
+		/** \param tab Tab for which we are looking (usually you will look for an IGUITab* type as only
+		              those can be tabs, but we allow looking for any kind of IGUIElement* as there are some
 					  use-cases for that even if it just returns 0. For example this way you can check for
 					  all children of this gui-element if they are tabs or some non-tab children.*/
 		virtual s32 getTabIndex(const IGUIElement *tab) const = 0;
@@ -128,15 +128,6 @@ namespace gui
 		//! constructor
 		IGUITab(IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle)
 			: IGUIElement(EGUIET_TAB, environment, parent, id, rectangle) {}
-
-		//! Returns zero based index of tab if in tabcontrol.
-		/** \deprecated Deprecated in 1.9, use IGUITabControl::getTabIndex instead*/
-		_IRR_DEPRECATED_ virtual s32 getNumber() const
-		{
-			if (Parent && Parent->getType() == EGUIET_TAB_CONTROL)
-				return static_cast<IGUITabControl*>(Parent)->getTabIndex(this);
-			return -1;
-		}
 
 		//! sets if the tab should draw its background
 		virtual void setDrawBackground(bool draw=true) = 0;
