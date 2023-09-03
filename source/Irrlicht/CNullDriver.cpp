@@ -869,8 +869,7 @@ const wchar_t* CNullDriver::getName() const
 
 //! Creates a boolean alpha channel of the texture based of an color key.
 void CNullDriver::makeColorKeyTexture(video::ITexture* texture,
-									video::SColor color,
-									bool zeroTexels) const
+									video::SColor color) const
 {
 	if (!texture)
 		return;
@@ -905,12 +904,7 @@ void CNullDriver::makeColorKeyTexture(video::ITexture* texture,
 			// If the color matches the reference color, ignoring alphas,
 			// set the alpha to zero.
 			if(((*p) & 0x7fff) == refZeroAlpha)
-			{
-				if(zeroTexels)
-					(*p) = 0;
-				else
-					(*p) = refZeroAlpha;
-			}
+				(*p) = refZeroAlpha;
 
 			++p;
 		}
@@ -939,12 +933,7 @@ void CNullDriver::makeColorKeyTexture(video::ITexture* texture,
 			// If the color matches the reference color, ignoring alphas,
 			// set the alpha to zero.
 			if(((*p) & 0x00ffffff) == refZeroAlpha)
-			{
-				if(zeroTexels)
-					(*p) = 0;
-				else
 					(*p) = refZeroAlpha;
-			}
 
 			++p;
 		}
@@ -958,8 +947,7 @@ void CNullDriver::makeColorKeyTexture(video::ITexture* texture,
 
 //! Creates an boolean alpha channel of the texture based of an color key position.
 void CNullDriver::makeColorKeyTexture(video::ITexture* texture,
-					core::position2d<s32> colorKeyPixelPos,
-					bool zeroTexels) const
+					core::position2d<s32> colorKeyPixelPos) const
 {
 	if (!texture)
 		return;
@@ -1004,7 +992,7 @@ void CNullDriver::makeColorKeyTexture(video::ITexture* texture,
 	}
 
 	texture->unlock();
-	makeColorKeyTexture(texture, colorKey, zeroTexels);
+	makeColorKeyTexture(texture, colorKey);
 }
 
 
@@ -1239,27 +1227,6 @@ IImage* CNullDriver::createImageFromData(ECOLOR_FORMAT format,
 IImage* CNullDriver::createImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size)
 {
 	return new CImage(format, size);
-}
-
-
-//! Creates a software image from another image.
-IImage* CNullDriver::createImage(ECOLOR_FORMAT format, IImage *imageToCopy)
-{
-	os::Printer::log("Deprecated method, please create an empty image instead and use copyTo().", ELL_WARNING);
-
-	CImage* tmp = new CImage(format, imageToCopy->getDimension());
-	imageToCopy->copyTo(tmp);
-	return tmp;
-}
-
-
-//! Creates a software image from part of another image.
-IImage* CNullDriver::createImage(IImage* imageToCopy, const core::position2d<s32>& pos, const core::dimension2d<u32>& size)
-{
-	os::Printer::log("Deprecated method, please create an empty image instead and use copyTo().", ELL_WARNING);
-	CImage* tmp = new CImage(imageToCopy->getColorFormat(), imageToCopy->getDimension());
-	imageToCopy->copyTo(tmp, core::position2di(0,0), core::recti(pos,size));
-	return tmp;
 }
 
 
