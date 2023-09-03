@@ -172,9 +172,6 @@ namespace scene
                 case scene::EPT_TRIANGLE_STRIP: return (indexCount-2);
                 case scene::EPT_TRIANGLE_FAN:   return (indexCount-2);
                 case scene::EPT_TRIANGLES:      return indexCount/3;
-                case scene::EPT_QUAD_STRIP:     return (indexCount-2)/2;
-                case scene::EPT_QUADS:          return indexCount/4;
-                case scene::EPT_POLYGON:        return indexCount; // (not really primitives, that would be 1, works like line_strip)
                 case scene::EPT_POINT_SPRITES:  return indexCount;
 			}
 			return 0;
