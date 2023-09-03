@@ -151,7 +151,7 @@ namespace core
 			CMatrix4<T> operator*(const CMatrix4<T>& other) const;
 
 			//! Multiply by another matrix.
-			/** Like calling: (*this) = (*this) * other 
+			/** Like calling: (*this) = (*this) * other
 			*/
 			CMatrix4<T>& operator*=(const CMatrix4<T>& other);
 
@@ -190,10 +190,10 @@ namespace core
 
 			//! Get the rotation, as set by setRotation() when you already know the scale used to create the matrix
 			/** NOTE: The scale needs to be the correct one used to create this matrix.
-				You can _not_ use the result of getScale(), but have to save your scale 
+				You can _not_ use the result of getScale(), but have to save your scale
 				variable in another place (like ISceneNode does).
 			NOTE: No scale value can be 0 or the result is undefined.
-			NOTE: It does not necessarily return the *same* Euler angles as those set by setRotationDegrees(), 
+			NOTE: It does not necessarily return the *same* Euler angles as those set by setRotationDegrees(),
 				but the rotation will be equivalent,  i.e. will have the same result when used to rotate a vector or node.
 			NOTE: It will (usually) give wrong results when further transformations have been added in the matrix (like shear).
 			WARNING: There have been troubles with this function over the years and we may still have missed some corner cases.
@@ -203,9 +203,9 @@ namespace core
 
 			//! Returns the rotation, as set by setRotation().
 			/** NOTE: You will have the same end-rotation as used in setRotation, but it might not use the same axis values.
-				NOTE: This only works correct if no other matrix operations have been done on the inner 3x3 matrix besides 
+				NOTE: This only works correct if no other matrix operations have been done on the inner 3x3 matrix besides
 					setting rotation (so no scale/shear). Thought it (probably) works as long as scale doesn't flip handedness.
-				NOTE: It does not necessarily return the *same* Euler angles as those set by setRotationDegrees(), 
+				NOTE: It does not necessarily return the *same* Euler angles as those set by setRotationDegrees(),
 				but the rotation will be equivalent,  i.e. will have the same result when used to rotate a vector or node.
 			*/
 			core::vector3d<T> getRotationDegrees() const;
@@ -278,13 +278,6 @@ namespace core
 			void transformPlane( const core::plane3d<f32> &in, core::plane3d<f32> &out) const;
 
 			//! Transforms a axis aligned bounding box
-			/** The result box of this operation may not be accurate at all. For
-			correct results, use transformBoxEx() */
-			void transformBox(core::aabbox3d<f32>& box) const;
-
-			//! Transforms a axis aligned bounding box
-			/** The result box of this operation should be accurate, but this operation
-			is slower than transformBox(). */
 			void transformBoxEx(core::aabbox3d<f32>& box) const;
 
 			//! Multiplies this matrix by a 1x4 matrix
@@ -906,8 +899,8 @@ namespace core
 
 
 	//! Returns a rotation which (mostly) works in combination with the given scale
-	/** 
-	This code was originally written by by Chev (assuming no scaling back then, 
+	/**
+	This code was originally written by by Chev (assuming no scaling back then,
 	we can be blamed for all problems added by regarding scale)
 	*/
 	template <class T>
@@ -953,17 +946,17 @@ namespace core
 	template <class T>
 	inline core::vector3d<T> CMatrix4<T>::getRotationDegrees() const
 	{
-		// Note: Using getScale() here make it look like it could do matrix decomposition. 
-		// It can't! It works (or should work) as long as rotation doesn't flip the handedness 
-		// aka scale swapping 1 or 3 axes. (I think we could catch that as well by comparing 
+		// Note: Using getScale() here make it look like it could do matrix decomposition.
+		// It can't! It works (or should work) as long as rotation doesn't flip the handedness
+		// aka scale swapping 1 or 3 axes. (I think we could catch that as well by comparing
 		// crossproduct of first 2 axes to direction of third axis, but TODO)
-		// And maybe it should also offer the solution for the simple calculation 
+		// And maybe it should also offer the solution for the simple calculation
 		// without regarding scaling as Irrlicht did before 1.7
 		core::vector3d<T> scale(getScale());
 
 		// We assume the matrix uses rotations instead of negative scaling 2 axes.
-		// Otherwise it fails even for some simple cases, like rotating around 
-		// 2 axes by 180° which getScale thinks is a negative scaling.
+		// Otherwise it fails even for some simple cases, like rotating around
+		// 2 axes by 180Â° which getScale thinks is a negative scaling.
 		if (scale.Y<0 && scale.Z<0)
 		{
 			scale.Y =-scale.Y;
@@ -1276,22 +1269,6 @@ namespace core
 	{
 		out = in;
 		transformPlane( out );
-	}
-
-	//! Transforms the edge-points of a bounding box
-	//! Deprecated as it's usually not what people need (regards only 2 corners, but other corners might be outside the box after transformation)
-	//! Use transformBoxEx instead.
-	template <class T>
-	_IRR_DEPRECATED_ inline void CMatrix4<T>::transformBox(core::aabbox3d<f32>& box) const
-	{
-#if defined ( USE_MATRIX_TEST )
-		if (isIdentity())
-			return;
-#endif
-
-		transformVect(box.MinEdge);
-		transformVect(box.MaxEdge);
-		box.repair();
 	}
 
 	//! Transforms a axis aligned bounding box more accurately than transformBox()
