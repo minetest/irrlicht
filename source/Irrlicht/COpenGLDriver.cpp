@@ -2523,8 +2523,6 @@ void COpenGLDriver::setBasicRenderStates(const SMaterial& material, const SMater
 
 	// Polygon Offset
 	if (queryFeature(EVDF_POLYGON_OFFSET) && (resetAllRenderStates ||
-		lastmaterial.PolygonOffsetDirection != material.PolygonOffsetDirection ||
-		lastmaterial.PolygonOffsetFactor != material.PolygonOffsetFactor ||
 		lastmaterial.PolygonOffsetSlopeScale != material.PolygonOffsetSlopeScale ||
 		lastmaterial.PolygonOffsetDepthBias != material.PolygonOffsetDepthBias ))
 	{
@@ -2534,15 +2532,6 @@ void COpenGLDriver::setBasicRenderStates(const SMaterial& material, const SMater
 			glEnable(material.Wireframe?GL_POLYGON_OFFSET_LINE:material.PointCloud?GL_POLYGON_OFFSET_POINT:GL_POLYGON_OFFSET_FILL);
 
 			glPolygonOffset(material.PolygonOffsetSlopeScale, material.PolygonOffsetDepthBias);
-		}
-		else if (material.PolygonOffsetFactor)
-		{
-			glEnable(material.Wireframe?GL_POLYGON_OFFSET_LINE:material.PointCloud?GL_POLYGON_OFFSET_POINT:GL_POLYGON_OFFSET_FILL);
-
-			if (material.PolygonOffsetDirection==EPO_BACK)
-				glPolygonOffset(1.0f, (GLfloat)material.PolygonOffsetFactor);
-			else
-				glPolygonOffset(-1.0f, (GLfloat)-material.PolygonOffsetFactor);
 		}
 		else
 		{

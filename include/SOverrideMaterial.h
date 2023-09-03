@@ -35,10 +35,10 @@ namespace video
 		u16 EnablePasses;
 
 		//! Global enable flag, overwritten by the SceneManager in each pass
-		/** NOTE: This is generally _not_ set by users of the engine, but the 
-		Scenemanager uses the EnablePass array and sets Enabled to true if the 
+		/** NOTE: This is generally _not_ set by users of the engine, but the
+		Scenemanager uses the EnablePass array and sets Enabled to true if the
 		Override material is enabled in the current pass.
-		As user you generally _only_ set EnablePasses. 
+		As user you generally _only_ set EnablePasses.
 		The exception is when rendering without SceneManager but using draw calls in the VideoDriver. */
 		bool Enabled;
 
@@ -47,7 +47,7 @@ namespace video
 			SMaterialTypeReplacement(s32 original, u32 replacement) : Original(original), Replacement(replacement) {}
 			SMaterialTypeReplacement(u32 replacement) : Original(-1), Replacement(replacement) {}
 
-			//! SMaterial.MaterialType to replace. 
+			//! SMaterial.MaterialType to replace.
 			//! -1 for all types or a specific value to only replace that one (which is either one of E_MATERIAL_TYPE or a shader material id)
 			s32 Original;
 
@@ -151,8 +151,6 @@ namespace video
 						case EMP_BLEND_OPERATION: material.BlendOperation = Material.BlendOperation; break;
 						case EMP_BLEND_FACTOR: material.BlendFactor = Material.BlendFactor; break;
 						case EMP_POLYGON_OFFSET:
-							material.PolygonOffsetDirection = Material.PolygonOffsetDirection;
-							material.PolygonOffsetFactor = Material.PolygonOffsetFactor;
 							material.PolygonOffsetDepthBias = Material.PolygonOffsetDepthBias;
 							material.PolygonOffsetSlopeScale = Material.PolygonOffsetSlopeScale;
 							break;
