@@ -35,7 +35,7 @@ public:
 
 	virtual ~COpenGL3MaterialRenderer();
 
-	GLuint getProgram() const;
+	unsigned int getProgram() const;
 
 	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
 		bool resetAllRenderstates, IMaterialRendererServices* services);
@@ -72,7 +72,7 @@ protected:
 
 	void init(s32& outMaterialTypeNr, const c8* vertexShaderProgram, const c8* pixelShaderProgram, bool addMaterial = true);
 
-	bool createShader(GLenum shaderType, const char* shader);
+	bool createShader(unsigned int shaderType, const char* shader);
 	bool linkProgram();
 
 	COpenGL3DriverBase* Driver;
@@ -84,11 +84,11 @@ protected:
 	struct SUniformInfo
 	{
 		core::stringc name;
-		GLenum type;
-		GLint location;
+		unsigned int type;
+		int location;
 	};
 
-	GLuint Program;
+	unsigned int Program;
 	core::array<SUniformInfo> UniformInfo;
 	s32 UserData;
 };

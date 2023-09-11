@@ -43,7 +43,7 @@ public:
 		AssignedTextures.set_used(static_cast<u32>(ColorAttachment));
 
 		for (u32 i = 0; i < AssignedTextures.size(); ++i)
-			AssignedTextures[i] = GL_NONE;
+			AssignedTextures[i] = GL.NONE;
 	}
 
 	virtual ~COpenGLCoreRenderTarget()
@@ -87,7 +87,7 @@ public:
 			{
 				TOpenGLTexture* currentTexture = (textures[i] && textures[i]->getDriverType() == DriverType) ? static_cast<TOpenGLTexture*>(textures[i]) : 0;
 
-				GLuint textureID = 0;
+				unsigned int textureID = 0;
 
 				if (currentTexture)
 				{
@@ -136,7 +136,7 @@ public:
 			{
 				if (currentTexture->getType() == ETT_2D)
 				{
-					GLuint textureID = currentTexture->getOpenGLTextureName();
+					unsigned int textureID = currentTexture->getOpenGLTextureName();
 
 					const ECOLOR_FORMAT textureFormat = (textureID != 0) ? depthStencil->getColorFormat() : ECF_UNKNOWN;
 					if (IImage::isDepthFormat(textureFormat))
@@ -191,21 +191,21 @@ public:
 				for (u32 i = 0; i < textureSize; ++i)
 				{
 					TOpenGLTexture* currentTexture = static_cast<TOpenGLTexture*>(Textures[i]);
-					GLuint textureID = currentTexture ? currentTexture->getOpenGLTextureName() : 0;
+					unsigned int textureID = currentTexture ? currentTexture->getOpenGLTextureName() : 0;
 
 					if (textureID != 0)
 					{
-						AssignedTextures[i] = GL_COLOR_ATTACHMENT0 + i;
-						GLenum textarget = currentTexture->getType() == ETT_2D ? GL_TEXTURE_2D : GL_TEXTURE_CUBE_MAP_POSITIVE_X + (int)CubeSurfaces[i];
-						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, AssignedTextures[i], textarget, textureID, 0);
+						AssignedTextures[i] = GL.COLOR_ATTACHMENT0 + i;
+						unsigned int textarget = currentTexture->getType() == ETT_2D ? GL.TEXTURE_2D : GL.TEXTURE_CUBE_MAP_POSITIVE_X + (int)CubeSurfaces[i];
+						Driver->irrGlFramebufferTexture2D(GL.FRAMEBUFFER, AssignedTextures[i], textarget, textureID, 0);
 #ifdef _DEBUG
 						Driver->testGLError(__LINE__);
 #endif
 					}
-					else if (AssignedTextures[i] != GL_NONE)
+					else if (AssignedTextures[i] != GL.NONE)
 					{
-						AssignedTextures[i] = GL_NONE;
-						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, AssignedTextures[i], GL_TEXTURE_2D, 0, 0);
+						AssignedTextures[i] = GL.NONE;
+						Driver->irrGlFramebufferTexture2D(GL.FRAMEBUFFER, AssignedTextures[i], GL.TEXTURE_2D, 0, 0);
 
 						os::Printer::log("Error: Could not set render target.", ELL_ERROR);
 					}
@@ -215,10 +215,10 @@ public:
 
 				for (u32 i = textureSize; i < AssignedTextures.size(); ++i)
 				{
-					if (AssignedTextures[i] != GL_NONE)
+					if (AssignedTextures[i] != GL.NONE)
 					{
-						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, AssignedTextures[i], GL_TEXTURE_2D, 0, 0);
-						AssignedTextures[i] = GL_NONE;
+						Driver->irrGlFramebufferTexture2D(GL.FRAMEBUFFER, AssignedTextures[i], GL.TEXTURE_2D, 0, 0);
+						AssignedTextures[i] = GL.NONE;
 					}
 				}
 
@@ -233,33 +233,33 @@ public:
 
 				if (IImage::isDepthFormat(textureFormat))
 				{
-					GLuint textureID = static_cast<TOpenGLTexture*>(DepthStencil)->getOpenGLTextureName();
+					unsigned int textureID = static_cast<TOpenGLTexture*>(DepthStencil)->getOpenGLTextureName();
 
 #ifdef _IRR_EMSCRIPTEN_PLATFORM_	// The WEBGL_depth_texture extension does not allow attaching stencil+depth separate.
 					if (textureFormat == ECF_D24S8)
 					{
-						GLenum attachment = 0x821A; // GL_DEPTH_STENCIL_ATTACHMENT
-						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, textureID, 0);
+						unsigned int attachment = 0x821A; // GL_DEPTH_STENCIL_ATTACHMENT
+						Driver->irrGlFramebufferTexture2D(GL.FRAMEBUFFER, attachment, GL.TEXTURE_2D, textureID, 0);
 						AssignedStencil = true;
 					}
 					else
 					{
-						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, textureID, 0);
+						Driver->irrGlFramebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, textureID, 0);
 						AssignedStencil = false;
 					}
 #else
-					Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, textureID, 0);
+					Driver->irrGlFramebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, textureID, 0);
 
 					if (textureFormat == ECF_D24S8)
 					{
-						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, textureID, 0);
+						Driver->irrGlFramebufferTexture2D(GL.FRAMEBUFFER, GL.STENCIL_ATTACHMENT, GL.TEXTURE_2D, textureID, 0);
 
 						AssignedStencil = true;
 					}
 					else
 					{
 						if (AssignedStencil)
-							Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
+							Driver->irrGlFramebufferTexture2D(GL.FRAMEBUFFER, GL.STENCIL_ATTACHMENT, GL.TEXTURE_2D, 0, 0);
 
 						AssignedStencil = false;
 					}
@@ -269,10 +269,10 @@ public:
 				else
 				{
 					if (AssignedDepth)
-						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
+						Driver->irrGlFramebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, 0, 0);
 
 					if (AssignedStencil)
-						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
+						Driver->irrGlFramebufferTexture2D(GL.FRAMEBUFFER, GL.STENCIL_ATTACHMENT, GL.TEXTURE_2D, 0, 0);
 
 					AssignedDepth = false;
 					AssignedStencil = false;
@@ -291,9 +291,9 @@ public:
 				const u32 textureSize = Textures.size();
 
 				if (textureSize == 0)
-					Driver->irrGlDrawBuffer(GL_NONE);
+					Driver->irrGlDrawBuffer(GL.NONE);
 				else if (textureSize == 1 || MultipleRenderTarget == 0)
-					Driver->irrGlDrawBuffer(GL_COLOR_ATTACHMENT0);
+					Driver->irrGlDrawBuffer(GL.COLOR_ATTACHMENT0);
 				else
 				{
 					const u32 bufferCount = core::min_(MultipleRenderTarget, core::min_(textureSize, AssignedTextures.size()));
@@ -313,7 +313,7 @@ public:
 		}
 	}
 
-	GLuint getBufferID() const
+	unsigned int getBufferID() const
 	{
 		return BufferID;
 	}
@@ -340,31 +340,31 @@ protected:
 		if (ColorAttachment == 0)
 			return true;
 
-		GLenum status = driver->irrGlCheckFramebufferStatus(GL_FRAMEBUFFER);
+		unsigned int status = driver->irrGlCheckFramebufferStatus(GL.FRAMEBUFFER);
 
 		switch (status)
 		{
-			case GL_FRAMEBUFFER_COMPLETE:
+			case OpenGLProcedures::FRAMEBUFFER_COMPLETE:
 				return true;
-			case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+			case OpenGLProcedures::FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
 				os::Printer::log("FBO has invalid read buffer", ELL_ERROR);
 				break;
-			case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+			case OpenGLProcedures::FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
 				os::Printer::log("FBO has invalid draw buffer", ELL_ERROR);
 				break;
-			case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+			case OpenGLProcedures::FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
 				os::Printer::log("FBO has one or several incomplete image attachments", ELL_ERROR);
 				break;
-			case GL_FRAMEBUFFER_INCOMPLETE_FORMATS:
-				os::Printer::log("FBO has one or several image attachments with different internal formats", ELL_ERROR);
-				break;
-			case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
-				os::Printer::log("FBO has one or several image attachments with different dimensions", ELL_ERROR);
-				break;
-			case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+//			case OpenGLProcedures::FRAMEBUFFER_INCOMPLETE_FORMATS:
+//				os::Printer::log("FBO has one or several image attachments with different internal formats", ELL_ERROR);
+//				break;
+//			case OpenGLProcedures::FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
+//				os::Printer::log("FBO has one or several image attachments with different dimensions", ELL_ERROR);
+//				break;
+			case OpenGLProcedures::FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
 				os::Printer::log("FBO missing an image attachment", ELL_ERROR);
 				break;
-			case GL_FRAMEBUFFER_UNSUPPORTED:
+			case OpenGLProcedures::FRAMEBUFFER_UNSUPPORTED:
 				os::Printer::log("FBO format unsupported", ELL_ERROR);
 				break;
 			default:
@@ -375,14 +375,14 @@ protected:
 		return false;
 	}
 
-	core::array<GLenum> AssignedTextures;
+	core::array<unsigned int> AssignedTextures;
 	bool AssignedDepth;
 	bool AssignedStencil;
 
 	bool RequestTextureUpdate;
 	bool RequestDepthStencilUpdate;
 
-	GLuint BufferID;
+	unsigned int BufferID;
 
 	core::dimension2d<u32> Size;
 

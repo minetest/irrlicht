@@ -17,7 +17,7 @@ namespace video
 {
 	void COpenGL3ExtensionHandler::initExtensionsOld()
 	{
-		auto extensions_string = reinterpret_cast<const char *>(glGetString(GL_EXTENSIONS));
+		auto extensions_string = reinterpret_cast<const char *>(GL.GetString(GL.EXTENSIONS));
 		const char *pos = extensions_string;
 		while (const char *next = strchr(pos, ' ')) {
 			addExtension(std::string{pos, next});
@@ -29,9 +29,9 @@ namespace video
 
 	void COpenGL3ExtensionHandler::initExtensionsNew()
 	{
-		int ext_count = GetInteger(GL_NUM_EXTENSIONS);
+		int ext_count = GetInteger(GL.NUM_EXTENSIONS);
 		for (int k = 0; k < ext_count; k++)
-			addExtension(reinterpret_cast<const char *>(GL.GetStringi(GL_EXTENSIONS, k)));
+			addExtension(reinterpret_cast<const char *>(GL.GetStringi(GL.EXTENSIONS, k)));
 		updateLegacyExtensionList();
 	}
 

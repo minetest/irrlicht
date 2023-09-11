@@ -84,21 +84,21 @@ COpenGL3MaterialRenderer::~COpenGL3MaterialRenderer()
 
 	if (Program)
 	{
-		GLuint shaders[8];
-		GLint count;
-		glGetAttachedShaders(Program, 8, &count, shaders);
+		unsigned int shaders[8];
+		int count;
+		GL.GetAttachedShaders(Program, 8, &count, shaders);
 
 		count=core::min_(count,8);
-		for (GLint i=0; i<count; ++i)
-			glDeleteShader(shaders[i]);
-		glDeleteProgram(Program);
+		for (int i=0; i<count; ++i)
+			GL.DeleteShader(shaders[i]);
+		GL.DeleteProgram(Program);
 		Program = 0;
 	}
 
 	UniformInfo.clear();
 }
 
-GLuint COpenGL3MaterialRenderer::getProgram() const
+unsigned int COpenGL3MaterialRenderer::getProgram() const
 {
 	return Program;
 }
@@ -110,21 +110,21 @@ void COpenGL3MaterialRenderer::init(s32& outMaterialTypeNr,
 {
 	outMaterialTypeNr = -1;
 
-	Program = glCreateProgram();
+	Program = GL.CreateProgram();
 
 	if (!Program)
 		return;
 
 	if (vertexShaderProgram)
-		if (!createShader(GL_VERTEX_SHADER, vertexShaderProgram))
+		if (!createShader(GL.VERTEX_SHADER, vertexShaderProgram))
 			return;
 
 	if (pixelShaderProgram)
-		if (!createShader(GL_FRAGMENT_SHADER, pixelShaderProgram))
+		if (!createShader(GL.FRAGMENT_SHADER, pixelShaderProgram))
 			return;
 
 	for ( size_t i = 0; i < EVA_COUNT; ++i )
-			glBindAttribLocation( Program, i, sBuiltInVertexAttributeNames[i]);
+			GL.BindAttribLocation( Program, i, sBuiltInVertexAttributeNames[i]);
 
 	if (!linkProgram())
 		return;
@@ -157,7 +157,7 @@ void COpenGL3MaterialRenderer::OnSetMaterial(const video::SMaterial& material,
 	if (Alpha)
 	{
 		cacheHandler->setBlend(true);
-		cacheHandler->setBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		cacheHandler->setBlendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
 	}
 	else if (Blending)
 	{
@@ -194,32 +194,32 @@ s32 COpenGL3MaterialRenderer::getRenderCapability() const
 }
 
 
-bool COpenGL3MaterialRenderer::createShader(GLenum shaderType, const char* shader)
+bool COpenGL3MaterialRenderer::createShader(unsigned int shaderType, const char* shader)
 {
 	if (Program)
 	{
-		GLuint shaderHandle = glCreateShader(shaderType);
-		glShaderSource(shaderHandle, 1, &shader, NULL);
-		glCompileShader(shaderHandle);
+		unsigned int shaderHandle = GL.CreateShader(shaderType);
+		GL.ShaderSource(shaderHandle, 1, &shader, NULL);
+		GL.CompileShader(shaderHandle);
 
-		GLint status = 0;
+		int status = 0;
 
-		glGetShaderiv(shaderHandle, GL_COMPILE_STATUS, &status);
+		GL.GetShaderiv(shaderHandle, GL.COMPILE_STATUS, &status);
 
-		if (status != GL_TRUE)
+		if (status != true)
 		{
 			os::Printer::log("GLSL shader failed to compile", ELL_ERROR);
 
-			GLint maxLength=0;
-			GLint length;
+			int maxLength=0;
+			int length;
 
-			glGetShaderiv(shaderHandle, GL_INFO_LOG_LENGTH,
+			GL.GetShaderiv(shaderHandle, GL.INFO_LOG_LENGTH,
 					&maxLength);
 
 			if (maxLength)
 			{
-				GLchar *infoLog = new GLchar[maxLength];
-				glGetShaderInfoLog(shaderHandle, maxLength, &length, infoLog);
+				char *infoLog = new char[maxLength];
+				GL.GetShaderInfoLog(shaderHandle, maxLength, &length, infoLog);
 				os::Printer::log(reinterpret_cast<const c8*>(infoLog), ELL_ERROR);
 				delete [] infoLog;
 			}
@@ -227,7 +227,7 @@ bool COpenGL3MaterialRenderer::createShader(GLenum shaderType, const char* shade
 			return false;
 		}
 
-		glAttachShader(Program, shaderHandle);
+		GL.AttachShader(Program, shaderHandle);
 	}
 
 	return true;
@@ -238,25 +238,25 @@ bool COpenGL3MaterialRenderer::linkProgram()
 {
 	if (Program)
 	{
-		glLinkProgram(Program);
+		GL.LinkProgram(Program);
 
-		GLint status = 0;
+		int status = 0;
 
-		glGetProgramiv(Program, GL_LINK_STATUS, &status);
+		GL.GetProgramiv(Program, GL.LINK_STATUS, &status);
 
 		if (!status)
 		{
 			os::Printer::log("GLSL shader program failed to link", ELL_ERROR);
 
-			GLint maxLength=0;
-			GLsizei length;
+			int maxLength=0;
+			int length;
 
-			glGetProgramiv(Program, GL_INFO_LOG_LENGTH, &maxLength);
+			GL.GetProgramiv(Program, GL.INFO_LOG_LENGTH, &maxLength);
 
 			if (maxLength)
 			{
-				GLchar *infoLog = new GLchar[maxLength];
-				glGetProgramInfoLog(Program, maxLength, &length, infoLog);
+				char *infoLog = new char[maxLength];
+				GL.GetProgramInfoLog(Program, maxLength, &length, infoLog);
 				os::Printer::log(reinterpret_cast<const c8*>(infoLog), ELL_ERROR);
 				delete [] infoLog;
 			}
@@ -264,16 +264,16 @@ bool COpenGL3MaterialRenderer::linkProgram()
 			return false;
 		}
 
-		GLint num = 0;
+		int num = 0;
 
-		glGetProgramiv(Program, GL_ACTIVE_UNIFORMS, &num);
+		GL.GetProgramiv(Program, GL.ACTIVE_UNIFORMS, &num);
 
 		if (num == 0)
 			return true;
 
-		GLint maxlen = 0;
+		int maxlen = 0;
 
-		glGetProgramiv(Program, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxlen);
+		GL.GetProgramiv(Program, GL.ACTIVE_UNIFORM_MAX_LENGTH, &maxlen);
 
 		if (maxlen == 0)
 		{
@@ -288,13 +288,13 @@ bool COpenGL3MaterialRenderer::linkProgram()
 		UniformInfo.clear();
 		UniformInfo.reallocate(num);
 
-		for (GLint i=0; i < num; ++i)
+		for (int i=0; i < num; ++i)
 		{
 			SUniformInfo ui;
 			memset(buf, 0, maxlen);
 
-			GLint size;
-			glGetActiveUniform(Program, i, maxlen, 0, &size, &ui.type, reinterpret_cast<GLchar*>(buf));
+			int size;
+			GL.GetActiveUniform(Program, i, maxlen, 0, &size, &ui.type, reinterpret_cast<char*>(buf));
 
             core::stringc name = "";
 
@@ -308,7 +308,7 @@ bool COpenGL3MaterialRenderer::linkProgram()
 			}
 
 			ui.name = name;
-			ui.location = glGetUniformLocation(Program, buf);
+			ui.location = GL.GetUniformLocation(Program, buf);
 
 			UniformInfo.push_back(ui);
 		}
@@ -377,34 +377,34 @@ bool COpenGL3MaterialRenderer::setPixelShaderConstant(s32 index, const f32* floa
 
 	switch (UniformInfo[index].type)
 	{
-		case GL_FLOAT:
-			glUniform1fv(UniformInfo[index].location, count, floats);
+		case OpenGLProcedures::FLOAT:
+			GL.Uniform1fv(UniformInfo[index].location, count, floats);
 			break;
-		case GL_FLOAT_VEC2:
-			glUniform2fv(UniformInfo[index].location, count/2, floats);
+		case OpenGLProcedures::FLOAT_VEC2:
+			GL.Uniform2fv(UniformInfo[index].location, count/2, floats);
 			break;
-		case GL_FLOAT_VEC3:
-			glUniform3fv(UniformInfo[index].location, count/3, floats);
+		case OpenGLProcedures::FLOAT_VEC3:
+			GL.Uniform3fv(UniformInfo[index].location, count/3, floats);
 			break;
-		case GL_FLOAT_VEC4:
-			glUniform4fv(UniformInfo[index].location, count/4, floats);
+		case OpenGLProcedures::FLOAT_VEC4:
+			GL.Uniform4fv(UniformInfo[index].location, count/4, floats);
 			break;
-		case GL_FLOAT_MAT2:
-			glUniformMatrix2fv(UniformInfo[index].location, count/4, false, floats);
+		case OpenGLProcedures::FLOAT_MAT2:
+			GL.UniformMatrix2fv(UniformInfo[index].location, count/4, false, floats);
 			break;
-		case GL_FLOAT_MAT3:
-			glUniformMatrix3fv(UniformInfo[index].location, count/9, false, floats);
+		case OpenGLProcedures::FLOAT_MAT3:
+			GL.UniformMatrix3fv(UniformInfo[index].location, count/9, false, floats);
 			break;
-		case GL_FLOAT_MAT4:
-			glUniformMatrix4fv(UniformInfo[index].location, count/16, false, floats);
+		case OpenGLProcedures::FLOAT_MAT4:
+			GL.UniformMatrix4fv(UniformInfo[index].location, count/16, false, floats);
 			break;
-		case GL_SAMPLER_2D:
-		case GL_SAMPLER_CUBE:
+		case OpenGLProcedures::SAMPLER_2D:
+		case OpenGLProcedures::SAMPLER_CUBE:
 			{
 				if(floats)
 				{
-					const GLint id = (GLint)(*floats);
-					glUniform1iv(UniformInfo[index].location, 1, &id);
+					const int id = (int)(*floats);
+					GL.Uniform1iv(UniformInfo[index].location, 1, &id);
 				}
 				else
 					status = false;
@@ -427,25 +427,25 @@ bool COpenGL3MaterialRenderer::setPixelShaderConstant(s32 index, const s32* ints
 
 	switch (UniformInfo[index].type)
 	{
-		case GL_INT:
-		case GL_BOOL:
-			glUniform1iv(UniformInfo[index].location, count, ints);
+		case OpenGLProcedures::INT:
+		case OpenGLProcedures::BOOL:
+			GL.Uniform1iv(UniformInfo[index].location, count, ints);
 			break;
-		case GL_INT_VEC2:
-		case GL_BOOL_VEC2:
-			glUniform2iv(UniformInfo[index].location, count/2, ints);
+		case OpenGLProcedures::INT_VEC2:
+		case OpenGLProcedures::BOOL_VEC2:
+			GL.Uniform2iv(UniformInfo[index].location, count/2, ints);
 			break;
-		case GL_INT_VEC3:
-		case GL_BOOL_VEC3:
-			glUniform3iv(UniformInfo[index].location, count/3, ints);
+		case OpenGLProcedures::INT_VEC3:
+		case OpenGLProcedures::BOOL_VEC3:
+			GL.Uniform3iv(UniformInfo[index].location, count/3, ints);
 			break;
-		case GL_INT_VEC4:
-		case GL_BOOL_VEC4:
-			glUniform4iv(UniformInfo[index].location, count/4, ints);
+		case OpenGLProcedures::INT_VEC4:
+		case OpenGLProcedures::BOOL_VEC4:
+			GL.Uniform4iv(UniformInfo[index].location, count/4, ints);
 			break;
-		case GL_SAMPLER_2D:
-		case GL_SAMPLER_CUBE:
-			glUniform1iv(UniformInfo[index].location, 1, ints);
+		case OpenGLProcedures::SAMPLER_2D:
+		case OpenGLProcedures::SAMPLER_CUBE:
+			GL.Uniform1iv(UniformInfo[index].location, 1, ints);
 			break;
 		default:
 			status = false;

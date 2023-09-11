@@ -271,10 +271,10 @@ namespace video
 		bool needsTransparentRenderPass(const irr::video::SMaterial& material) const override;
 
 		//! Convert E_BLEND_FACTOR to OpenGL equivalent
-		GLenum getGLBlend(E_BLEND_FACTOR factor) const;
+		unsigned int getGLBlend(E_BLEND_FACTOR factor) const;
 
-		virtual bool getColorFormatParameters(ECOLOR_FORMAT format, GLint& internalFormat, GLenum& pixelFormat,
-			GLenum& pixelType, void(**converter)(const void*, s32, void*)) const;
+		virtual bool getColorFormatParameters(ECOLOR_FORMAT format, int& internalFormat, unsigned int& pixelFormat,
+			unsigned int& pixelType, void(**converter)(const void*, s32, void*)) const;
 
 		//! Get current material.
 		const SMaterial& getCurrentMaterial() const;
@@ -299,7 +299,7 @@ namespace video
 		ITexture* createDeviceDependentTextureCubemap(const io::path& name, const core::array<IImage*>& image) override;
 
 		//! Map Irrlicht wrap mode to OpenGL enum
-		GLint getTextureWrapMode(u8 clamp) const;
+		int getTextureWrapMode(u8 clamp) const;
 
 		//! sets the needed renderstates
 		void setRenderStates3DMode();
@@ -337,9 +337,9 @@ namespace video
 		virtual void setViewPortRaw(u32 width, u32 height);
 
 		void drawQuad(const VertexType &vertexType, const S3DVertex (&vertices)[4]);
-		void drawArrays(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount);
-		void drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount, const u16 *indices, int indexCount);
-		void drawElements(GLenum primitiveType, const VertexType &vertexType, uintptr_t vertices, uintptr_t indices, int indexCount);
+		void drawArrays(unsigned int primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount);
+		void drawElements(unsigned int primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount, const u16 *indices, int indexCount);
+		void drawElements(unsigned int primitiveType, const VertexType &vertexType, uintptr_t vertices, uintptr_t indices, int indexCount);
 
 		void beginDraw(const VertexType &vertexType, int vertexCount, uintptr_t verticesBase);
 		void endDraw(const VertexType &vertexType);
@@ -367,9 +367,9 @@ namespace video
 
 		using FColorConverter = void(*)(const void *source, s32 count, void *dest);
 		struct STextureFormatInfo {
-			GLenum InternalFormat;
-			GLenum PixelFormat;
-			GLenum PixelType;
+			unsigned int InternalFormat;
+			unsigned int PixelFormat;
+			unsigned int PixelType;
 			FColorConverter Converter;
 		};
 		STextureFormatInfo TextureFormats[ECF_UNKNOWN] = {};
@@ -413,11 +413,11 @@ private:
 		void addDummyMaterial(E_MATERIAL_TYPE type);
 
 		unsigned QuadIndexCount;
-		GLuint QuadIndexBuffer = 0;
+		unsigned int QuadIndexBuffer = 0;
 		void initQuadsIndices(int max_vertex_count = 65536);
 
-		void debugCb(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message);
-		static void APIENTRY debugCb(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
+		void debugCb(unsigned int source, unsigned int type, unsigned int id, unsigned int severity, int length, const char *message);
+		static void APIENTRY debugCb(unsigned int source, unsigned int type, unsigned int id, unsigned int severity, int length, const char *message, const void *userParam);
 	};
 
 } // end namespace video

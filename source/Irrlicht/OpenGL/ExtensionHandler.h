@@ -77,82 +77,82 @@ namespace video
 			};
 		}
 
-		static GLint GetInteger(GLenum key) {
-			GLint val = 0;
-			glGetIntegerv(key, &val);
+		static int GetInteger(unsigned int key) {
+			int val = 0;
+			GL.GetIntegerv(key, &val);
 			return val;
 		};
 
-		inline void irrGlActiveTexture(GLenum texture)
+		inline void irrGlActiveTexture(unsigned int texture)
 		{
-			glActiveTexture(texture);
+			GL.ActiveTexture(texture);
 		}
 
-		inline void irrGlCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border,
-			GLsizei imageSize, const void* data)
-		{
-			os::Printer::log("Compressed textures aren't supported", ELL_ERROR);
-		}
-
-		inline void irrGlCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height,
-			GLenum format, GLsizei imageSize, const void* data)
+		inline void irrGlCompressedTexImage2D(unsigned int target, int level, unsigned int internalformat, int width, int height, int border,
+			int imageSize, const void* data)
 		{
 			os::Printer::log("Compressed textures aren't supported", ELL_ERROR);
 		}
 
-		inline void irrGlUseProgram(GLuint prog)
+		inline void irrGlCompressedTexSubImage2D(unsigned int target, int level, int xoffset, int yoffset, int width, int height,
+			unsigned int format, int imageSize, const void* data)
 		{
-			glUseProgram(prog);
+			os::Printer::log("Compressed textures aren't supported", ELL_ERROR);
 		}
 
-		inline void irrGlBindFramebuffer(GLenum target, GLuint framebuffer)
+		inline void irrGlUseProgram(unsigned int prog)
 		{
-			glBindFramebuffer(target, framebuffer);
+			GL.UseProgram(prog);
 		}
 
-		inline void irrGlDeleteFramebuffers(GLsizei n, const GLuint *framebuffers)
+		inline void irrGlBindFramebuffer(unsigned int target, unsigned int framebuffer)
 		{
-			glDeleteFramebuffers(n, framebuffers);
+			GL.BindFramebuffer(target, framebuffer);
 		}
 
-		inline void irrGlGenFramebuffers(GLsizei n, GLuint *framebuffers)
+		inline void irrGlDeleteFramebuffers(int n, const unsigned int *framebuffers)
 		{
-			glGenFramebuffers(n, framebuffers);
+			GL.DeleteFramebuffers(n, framebuffers);
 		}
 
-		inline GLenum irrGlCheckFramebufferStatus(GLenum target)
+		inline void irrGlGenFramebuffers(int n, unsigned int *framebuffers)
 		{
-			return glCheckFramebufferStatus(target);
+			GL.GenFramebuffers(n, framebuffers);
 		}
 
-		inline void irrGlFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
+		inline unsigned int irrGlCheckFramebufferStatus(unsigned int target)
 		{
-			glFramebufferTexture2D(target, attachment, textarget, texture, level);
+			return GL.CheckFramebufferStatus(target);
 		}
 
-		inline void irrGlGenerateMipmap(GLenum target)
+		inline void irrGlFramebufferTexture2D(unsigned int target, unsigned int attachment, unsigned int textarget, unsigned int texture, int level)
 		{
-			glGenerateMipmap(target);
+			GL.FramebufferTexture2D(target, attachment, textarget, texture, level);
 		}
 
-		inline void irrGlDrawBuffer(GLenum mode)
+		inline void irrGlGenerateMipmap(unsigned int target)
+		{
+			GL.GenerateMipmap(target);
+		}
+
+		inline void irrGlDrawBuffer(unsigned int mode)
 		{
 			GL.DrawBuffer(mode);
 		}
 
-		inline void irrGlDrawBuffers(GLsizei n, const GLenum *bufs)
+		inline void irrGlDrawBuffers(int n, const unsigned int *bufs)
 		{
 			GL.DrawBuffers(n, bufs);
 		}
 
-		inline void irrGlBlendFuncSeparate(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha)
+		inline void irrGlBlendFuncSeparate(unsigned int sfactorRGB, unsigned int dfactorRGB, unsigned int sfactorAlpha, unsigned int dfactorAlpha)
 		{
-			glBlendFuncSeparate(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
+			GL.BlendFuncSeparate(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
 		}
 
-		inline void irrGlBlendEquation(GLenum mode)
+		inline void irrGlBlendEquation(unsigned int mode)
 		{
-			glBlendEquation(mode);
+			GL.BlendEquation(mode);
 		}
 
 		bool AnisotropicFilterSupported = false;

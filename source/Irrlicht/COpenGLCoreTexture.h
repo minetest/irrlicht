@@ -12,6 +12,8 @@
 #include "CImage.h"
 #include "CColorConverter.h"
 
+#include <mt_opengl.h>
+
 // Check if GL version we compile with should have the glGenerateMipmap function.
 #if defined(GL_VERSION_3_0) || defined(GL_ES_VERSION_2_0)
 	#define IRR_OPENGL_HAS_glGenerateMipmap
@@ -45,8 +47,8 @@ public:
 		bool IsCached;
 	};
 
-	COpenGLCoreTexture(const io::path& name, const core::array<IImage*>& images, E_TEXTURE_TYPE type, TOpenGLDriver* driver) : ITexture(name, type), Driver(driver), TextureType(GL_TEXTURE_2D),
-		TextureName(0), InternalFormat(GL_RGBA), PixelFormat(GL_RGBA), PixelType(GL_UNSIGNED_BYTE), Converter(0), LockReadOnly(false), LockImage(0), LockLayer(0),
+	COpenGLCoreTexture(const io::path& name, const core::array<IImage*>& images, E_TEXTURE_TYPE type, TOpenGLDriver* driver) : ITexture(name, type), Driver(driver), TextureType(GL.TEXTURE_2D),
+		TextureName(0), InternalFormat(GL.RGBA), PixelFormat(GL.RGBA), PixelType(GL.UNSIGNED_BYTE), Converter(0), LockReadOnly(false), LockImage(0), LockLayer(0),
 		KeepImage(false), MipLevelStored(0), LegacyAutoGenerateMipMaps(false)
 	{
 		_IRR_DEBUG_BREAK_IF(images.size() == 0)
@@ -90,13 +92,13 @@ public:
 			tmpImages = &Images;
 		}
 
-		glGenTextures(1, &TextureName);
+		GL.GenTextures(1, &TextureName);
 
 		const COpenGLCoreTexture* prevTexture = Driver->getCacheHandler()->getTextureCache().get(0);
 		Driver->getCacheHandler()->getTextureCache().set(0, this);
 
-		glTexParameteri(TextureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(TextureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		GL.TexParameteri(TextureType, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
+		GL.TexParameteri(TextureType, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 
 #if 0
 		if (HasMipMaps)
@@ -148,8 +150,8 @@ public:
 
 	COpenGLCoreTexture(const io::path& name, const core::dimension2d<u32>& size, E_TEXTURE_TYPE type, ECOLOR_FORMAT format, TOpenGLDriver* driver)
 		: ITexture(name, type),
-		Driver(driver), TextureType(GL_TEXTURE_2D),
-		TextureName(0), InternalFormat(GL_RGBA), PixelFormat(GL_RGBA), PixelType(GL_UNSIGNED_BYTE), Converter(0), LockReadOnly(false), LockImage(0), LockLayer(0), KeepImage(false),
+		Driver(driver), TextureType(GL.TEXTURE_2D),
+		TextureName(0), InternalFormat(GL.RGBA), PixelFormat(GL.RGBA), PixelType(GL.UNSIGNED_BYTE), Converter(0), LockReadOnly(false), LockImage(0), LockLayer(0), KeepImage(false),
 		MipLevelStored(0), LegacyAutoGenerateMipMaps(false)
 	{
 		DriverType = Driver->getDriverType();
@@ -174,16 +176,16 @@ public:
 			os::Printer::log("COpenGLCoreTexture: Color format is not supported", ColorFormatNames[ColorFormat < ECF_UNKNOWN?ColorFormat:ECF_UNKNOWN], ELL_ERROR);
 		}
 
-		glGenTextures(1, &TextureName);
+		GL.GenTextures(1, &TextureName);
 
 		const COpenGLCoreTexture* prevTexture = Driver->getCacheHandler()->getTextureCache().get(0);
 		Driver->getCacheHandler()->getTextureCache().set(0, this);
 
 
-		glTexParameteri(TextureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(TextureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(TextureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(TextureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		GL.TexParameteri(TextureType, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
+		GL.TexParameteri(TextureType, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
+		GL.TexParameteri(TextureType, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
+		GL.TexParameteri(TextureType, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
 
 #if defined(GL_VERSION_1_2)
 		glTexParameteri(TextureType, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -196,15 +198,15 @@ public:
 		switch (Type)
 		{
 		case ETT_2D:
-			glTexImage2D(GL_TEXTURE_2D, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
+			GL.TexImage2D(GL.TEXTURE_2D, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
 			break;
 		case ETT_CUBEMAP:
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
+			GL.TexImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
+			GL.TexImage2D(GL.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
+			GL.TexImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
+			GL.TexImage2D(GL.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
+			GL.TexImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
+			GL.TexImage2D(GL.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
 			break;
 		}
 
@@ -220,7 +222,7 @@ public:
 	virtual ~COpenGLCoreTexture()
 	{
 		if (TextureName)
-			glDeleteTextures(1, &TextureName);
+			GL.DeleteTextures(1, &TextureName);
 
 		if (LockImage)
 			LockImage->drop();
@@ -269,7 +271,7 @@ public:
 				Driver->getCacheHandler()->getTextureCache().set(0, this);
 				Driver->testGLError(__LINE__);
 
-				GLenum tmpTextureType = TextureType;
+				unsigned int tmpTextureType = TextureType;
 
 				if (tmpTextureType == GL_TEXTURE_CUBE_MAP)
 				{
@@ -305,17 +307,17 @@ public:
 // TODO: on ES2 we can likely also work with glCopyTexImage2D instead of rendering which should be faster.
 				COpenGLCoreTexture* tmpTexture = new COpenGLCoreTexture("OGL_CORE_LOCK_TEXTURE", Size, ETT_2D, ColorFormat, Driver);
 
-				GLuint tmpFBO = 0;
+				unsigned int tmpFBO = 0;
 				Driver->irrGlGenFramebuffers(1, &tmpFBO);
 
-				GLint prevViewportX = 0;
-				GLint prevViewportY = 0;
+				int prevViewportX = 0;
+				int prevViewportY = 0;
 				GLsizei prevViewportWidth = 0;
 				GLsizei prevViewportHeight = 0;
 				Driver->getCacheHandler()->getViewport(prevViewportX, prevViewportY, prevViewportWidth, prevViewportHeight);
 				Driver->getCacheHandler()->setViewport(0, 0, Size.Width, Size.Height);
 
-				GLuint prevFBO = 0;
+				unsigned int prevFBO = 0;
 				Driver->getCacheHandler()->getFBO(prevFBO);
 				Driver->getCacheHandler()->setFBO(tmpFBO);
 
@@ -436,12 +438,12 @@ public:
 		Driver->getCacheHandler()->getTextureCache().set(0, prevTexture);
 	}
 
-	GLenum getOpenGLTextureType() const
+	unsigned int getOpenGLTextureType() const
 	{
 		return TextureType;
 	}
 
-	GLuint getOpenGLTextureName() const
+	unsigned int getOpenGLTextureName() const
 	{
 		return TextureName;
 	}
@@ -562,13 +564,13 @@ protected:
 		u32 width = Size.Width >> level;
 		u32 height = Size.Height >> level;
 
-		GLenum tmpTextureType = TextureType;
+		unsigned int tmpTextureType = TextureType;
 
-		if (tmpTextureType == GL_TEXTURE_CUBE_MAP)
+		if (tmpTextureType == GL.TEXTURE_CUBE_MAP)
 		{
 			_IRR_DEBUG_BREAK_IF(layer > 5)
 
-			tmpTextureType = GL_TEXTURE_CUBE_MAP_POSITIVE_X + layer;
+			tmpTextureType = GL.TEXTURE_CUBE_MAP_POSITIVE_X + layer;
 		}
 
 		if (!IImage::isCompressedFormat(ColorFormat))
@@ -588,12 +590,12 @@ protected:
 
 			switch (TextureType)
 			{
-			case GL_TEXTURE_2D:
-			case GL_TEXTURE_CUBE_MAP:
+			case OpenGLProcedures::TEXTURE_2D:
+			case OpenGLProcedures::TEXTURE_CUBE_MAP:
 				if (initTexture)
-					glTexImage2D(tmpTextureType, level, InternalFormat, width, height, 0, PixelFormat, PixelType, tmpData);
+					GL.TexImage2D(tmpTextureType, level, InternalFormat, width, height, 0, PixelFormat, PixelType, tmpData);
 				else
-					glTexSubImage2D(tmpTextureType, level, 0, 0, width, height, PixelFormat, PixelType, tmpData);
+					GL.TexSubImage2D(tmpTextureType, level, 0, 0, width, height, PixelFormat, PixelType, tmpData);
 				Driver->testGLError(__LINE__);
 				break;
 			default:
@@ -608,8 +610,8 @@ protected:
 
 			switch (TextureType)
 			{
-			case GL_TEXTURE_2D:
-			case GL_TEXTURE_CUBE_MAP:
+			case OpenGLProcedures::TEXTURE_2D:
+			case OpenGLProcedures::TEXTURE_CUBE_MAP:
 				if (initTexture)
 					Driver->irrGlCompressedTexImage2D(tmpTextureType, level, InternalFormat, width, height, 0, dataSize, data);
 				else
@@ -622,27 +624,27 @@ protected:
 		}
 	}
 
-	GLenum TextureTypeIrrToGL(E_TEXTURE_TYPE type) const
+	unsigned int TextureTypeIrrToGL(E_TEXTURE_TYPE type) const
 	{
 		switch ( type)
 		{
 		case ETT_2D:
-			return GL_TEXTURE_2D;
+			return GL.TEXTURE_2D;
 		case ETT_CUBEMAP:
-			return GL_TEXTURE_CUBE_MAP;
+			return GL.TEXTURE_CUBE_MAP;
 		}
 
 		os::Printer::log("COpenGLCoreTexture::TextureTypeIrrToGL unknown texture type", ELL_WARNING);
-		return GL_TEXTURE_2D;
+		return GL.TEXTURE_2D;
 	}
 
 	TOpenGLDriver* Driver;
 
-	GLenum TextureType;
-	GLuint TextureName;
-	GLint InternalFormat;
-	GLenum PixelFormat;
-	GLenum PixelType;
+	unsigned int TextureType;
+	unsigned int TextureName;
+	int InternalFormat;
+	unsigned int PixelFormat;
+	unsigned int PixelType;
 	void (*Converter)(const void*, s32, void*);
 
 	bool LockReadOnly;

@@ -7,7 +7,8 @@
 
 #define GL_GLEXT_PROTOTYPES
 #include <SDL_video.h>
-#include <SDL_opengl.h>
+
+#include <mt_opengl.h>
 
 namespace irr
 {

@@ -64,14 +64,14 @@ class COpenGLCoreCacheHandler
 			if (index < MATERIAL_MAX_TEXTURES && index < TextureCount)
 			{
 				if ( esa == EST_ACTIVE_ALWAYS )
-					CacheHandler.setActiveTexture(GL_TEXTURE0 + index);
+					CacheHandler.setActiveTexture(GL.TEXTURE0 + index);
 
 				const TOpenGLTexture* prevTexture = Texture[index];
 
 				if (texture != prevTexture)
 				{
 					if ( esa == EST_ACTIVE_ON_CHANGE )
-						CacheHandler.setActiveTexture(GL_TEXTURE0 + index);
+						CacheHandler.setActiveTexture(GL.TEXTURE0 + index);
 
 					if (texture)
 					{
@@ -82,24 +82,24 @@ class COpenGLCoreCacheHandler
 							texture->grab();
 
 							const TOpenGLTexture* curTexture = static_cast<const TOpenGLTexture*>(texture);
-							const GLenum curTextureType = curTexture->getOpenGLTextureType();
-							const GLenum prevTextureType = (prevTexture) ? prevTexture->getOpenGLTextureType() : curTextureType;
+							const unsigned int curTextureType = curTexture->getOpenGLTextureType();
+							const unsigned int prevTextureType = (prevTexture) ? prevTexture->getOpenGLTextureType() : curTextureType;
 
 							if (curTextureType != prevTextureType)
 							{
-								glBindTexture(prevTextureType, 0);
+								GL.BindTexture(prevTextureType, 0);
 
 #if ( defined(IRR_COMPILE_GL_COMMON) || defined(IRR_COMPILE_GLES_COMMON) )
-								glDisable(prevTextureType);
-								glEnable(curTextureType);
+								GL.Disable(prevTextureType);
+								GL.Enable(curTextureType);
 #endif
 							}
 #if ( defined(IRR_COMPILE_GL_COMMON) || defined(IRR_COMPILE_GLES_COMMON) )
 							else if (!prevTexture)
-								glEnable(curTextureType);
+								GL.Enable(curTextureType);
 #endif
 
-							glBindTexture(curTextureType, static_cast<const TOpenGLTexture*>(texture)->getOpenGLTextureName());
+							GL.BindTexture(curTextureType, static_cast<const TOpenGLTexture*>(texture)->getOpenGLTextureName());
 						}
 						else
 						{
@@ -113,12 +113,12 @@ class COpenGLCoreCacheHandler
 
 					if (!texture && prevTexture)
 					{
-						const GLenum prevTextureType = prevTexture->getOpenGLTextureType();
+						const unsigned int prevTextureType = prevTexture->getOpenGLTextureType();
 
-						glBindTexture(prevTextureType, 0);
+						GL.BindTexture(prevTextureType, 0);
 
 #if ( defined(IRR_COMPILE_GL_COMMON) || defined(IRR_COMPILE_GLES_COMMON) )
-						glDisable(prevTextureType);
+						GL.Disable(prevTextureType);
 #endif
 					}
 
@@ -187,18 +187,18 @@ public:
 #endif
 		FrameBufferCount(0), BlendEquation(0), BlendSourceRGB(0),
 		BlendDestinationRGB(0), BlendSourceAlpha(0), BlendDestinationAlpha(0), Blend(0), BlendEquationInvalid(false), BlendFuncInvalid(false), BlendInvalid(false),
-		ColorMask(0), ColorMaskInvalid(false), CullFaceMode(GL_BACK), CullFace(false), DepthFunc(GL_LESS), DepthMask(true), DepthTest(false), FrameBufferID(0),
-		ProgramID(0), ActiveTexture(GL_TEXTURE0), ViewportX(0), ViewportY(0)
+		ColorMask(0), ColorMaskInvalid(false), CullFaceMode(GL.BACK), CullFace(false), DepthFunc(GL.LESS), DepthMask(true), DepthTest(false), FrameBufferID(0),
+		ProgramID(0), ActiveTexture(GL.TEXTURE0), ViewportX(0), ViewportY(0)
 	{
 		const COpenGLCoreFeature& feature = Driver->getFeature();
 
-		FrameBufferCount = core::max_(static_cast<GLuint>(1), static_cast<GLuint>(feature.MultipleRenderTarget));
+		FrameBufferCount = core::max_(static_cast<unsigned int>(1), static_cast<unsigned int>(feature.MultipleRenderTarget));
 
-		BlendEquation = new GLenum[FrameBufferCount];
-		BlendSourceRGB = new GLenum[FrameBufferCount];
-		BlendDestinationRGB = new GLenum[FrameBufferCount];
-		BlendSourceAlpha = new GLenum[FrameBufferCount];
-		BlendDestinationAlpha = new GLenum[FrameBufferCount];
+		BlendEquation = new unsigned int[FrameBufferCount];
+		BlendSourceRGB = new unsigned int[FrameBufferCount];
+		BlendDestinationRGB = new unsigned int[FrameBufferCount];
+		BlendSourceAlpha = new unsigned int[FrameBufferCount];
+		BlendDestinationAlpha = new unsigned int[FrameBufferCount];
 		Blend = new bool[FrameBufferCount];
 		ColorMask = new u8[FrameBufferCount];
 
@@ -206,44 +206,44 @@ public:
 
 		if (feature.BlendOperation)
 		{
-			Driver->irrGlBlendEquation(GL_FUNC_ADD);
+			Driver->irrGlBlendEquation(GL.FUNC_ADD);
 		}
 
 		for (u32 i = 0; i < FrameBufferCount; ++i)
 		{
-			BlendEquation[i] = GL_FUNC_ADD;
+			BlendEquation[i] = GL.FUNC_ADD;
 
-			BlendSourceRGB[i] = GL_ONE;
-			BlendDestinationRGB[i] = GL_ZERO;
-			BlendSourceAlpha[i] = GL_ONE;
-			BlendDestinationAlpha[i] = GL_ZERO;
+			BlendSourceRGB[i] = GL.ONE;
+			BlendDestinationRGB[i] = GL.ZERO;
+			BlendSourceAlpha[i] = GL.ONE;
+			BlendDestinationAlpha[i] = GL.ZERO;
 
 			Blend[i] = false;
 			ColorMask[i] = ECP_ALL;
 		}
 
-		glBlendFunc(GL_ONE, GL_ZERO);
-		glDisable(GL_BLEND);
+		GL.BlendFunc(GL.ONE, GL.ZERO);
+		GL.Disable(GL.BLEND);
 
-		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		GL.ColorMask(true, true, true, true);
 
-		glCullFace(CullFaceMode);
-		glDisable(GL_CULL_FACE);
+		GL.CullFace(CullFaceMode);
+		GL.Disable(GL.CULL_FACE);
 
-		glDepthFunc(DepthFunc);
-		glDepthMask(GL_TRUE);
-		glDisable(GL_DEPTH_TEST);
+		GL.DepthFunc(DepthFunc);
+		GL.DepthMask(true);
+		GL.Disable(GL.DEPTH_TEST);
 
 		Driver->irrGlActiveTexture(ActiveTexture);
 
 #if ( defined(IRR_COMPILE_GL_COMMON) || defined(IRR_COMPILE_GLES_COMMON) )
-		glDisable(GL_TEXTURE_2D);
+		GL.Disable(GL.TEXTURE_2D);
 #endif
 
 		const core::dimension2d<u32> ScreenSize = Driver->getScreenSize();
 		ViewportWidth = ScreenSize.Width;
 		ViewportHeight = ScreenSize.Height;
-		glViewport(ViewportX, ViewportY, ViewportWidth, ViewportHeight);
+		GL.Viewport(ViewportX, ViewportY, ViewportWidth, ViewportHeight);
 	}
 
 	virtual ~COpenGLCoreCacheHandler()
@@ -270,20 +270,20 @@ public:
 
 	// Blending calls.
 
-	void setBlendEquation(GLenum mode)
+	void setBlendEquation(unsigned int mode)
 	{
 		if (BlendEquation[0] != mode || BlendEquationInvalid)
 		{
 			Driver->irrGlBlendEquation(mode);
 
-			for (GLuint i = 0; i < FrameBufferCount; ++i)
+			for (unsigned int i = 0; i < FrameBufferCount; ++i)
 				BlendEquation[i] = mode;
 
 			BlendEquationInvalid = false;
 		}
 	}
 
-	void setBlendEquationIndexed(GLuint index, GLenum mode)
+	void setBlendEquationIndexed(unsigned int index, unsigned int mode)
 	{
 		if (index < FrameBufferCount && BlendEquation[index] != mode)
 		{
@@ -294,15 +294,15 @@ public:
 		}
 	}
 
-	void setBlendFunc(GLenum source, GLenum destination)
+	void setBlendFunc(unsigned int source, unsigned int destination)
 	{
 		if (BlendSourceRGB[0] != source || BlendDestinationRGB[0] != destination ||
 			BlendSourceAlpha[0] != source || BlendDestinationAlpha[0] != destination ||
 			BlendFuncInvalid)
 		{
-			glBlendFunc(source, destination);
+			GL.BlendFunc(source, destination);
 
-			for (GLuint i = 0; i < FrameBufferCount; ++i)
+			for (unsigned int i = 0; i < FrameBufferCount; ++i)
 			{
 				BlendSourceRGB[i] = source;
 				BlendDestinationRGB[i] = destination;
@@ -314,7 +314,7 @@ public:
 		}
 	}
 
-	void setBlendFuncSeparate(GLenum sourceRGB, GLenum destinationRGB, GLenum sourceAlpha, GLenum destinationAlpha)
+	void setBlendFuncSeparate(unsigned int sourceRGB, unsigned int destinationRGB, unsigned int sourceAlpha, unsigned int destinationAlpha)
 	{
 		if (sourceRGB != sourceAlpha || destinationRGB != destinationAlpha)
 		{
@@ -324,7 +324,7 @@ public:
 			{
 				Driver->irrGlBlendFuncSeparate(sourceRGB, destinationRGB, sourceAlpha, destinationAlpha);
 
-				for (GLuint i = 0; i < FrameBufferCount; ++i)
+				for (unsigned int i = 0; i < FrameBufferCount; ++i)
 				{
 					BlendSourceRGB[i] = sourceRGB;
 					BlendDestinationRGB[i] = destinationRGB;
@@ -341,7 +341,7 @@ public:
 		}
 	}
 
-	void setBlendFuncIndexed(GLuint index, GLenum source, GLenum destination)
+	void setBlendFuncIndexed(unsigned int index, unsigned int source, unsigned int destination)
 	{
 		if (index < FrameBufferCount && (BlendSourceRGB[index] != source || BlendDestinationRGB[index] != destination ||
 			BlendSourceAlpha[index] != source || BlendDestinationAlpha[index] != destination))
@@ -356,7 +356,7 @@ public:
 		}
 	}
 
-	void setBlendFuncSeparateIndexed(GLuint index, GLenum sourceRGB, GLenum destinationRGB, GLenum sourceAlpha, GLenum destinationAlpha)
+	void setBlendFuncSeparateIndexed(unsigned int index, unsigned int sourceRGB, unsigned int destinationRGB, unsigned int sourceAlpha, unsigned int destinationAlpha)
 	{
 		if (sourceRGB != sourceAlpha || destinationRGB != destinationAlpha)
 		{
@@ -383,25 +383,25 @@ public:
 		if (Blend[0] != enable || BlendInvalid)
 		{
 			if (enable)
-				glEnable(GL_BLEND);
+				GL.Enable(GL.BLEND);
 			else
-				glDisable(GL_BLEND);
+				GL.Disable(GL.BLEND);
 
-			for (GLuint i = 0; i < FrameBufferCount; ++i)
+			for (unsigned int i = 0; i < FrameBufferCount; ++i)
 				Blend[i] = enable;
 
 			BlendInvalid = false;
 		}
 	}
 
-	void setBlendIndexed(GLuint index, bool enable)
+	void setBlendIndexed(unsigned int index, bool enable)
 	{
 		if (index < FrameBufferCount && Blend[index] != enable)
 		{
 			if (enable)
-				Driver->irrGlEnableIndexed(GL_BLEND, index);
+				Driver->irrGlEnableIndexed(GL.BLEND, index);
 			else
-				Driver->irrGlDisableIndexed(GL_BLEND, index);
+				Driver->irrGlDisableIndexed(GL.BLEND, index);
 
 			Blend[index] = enable;
 			BlendInvalid = true;
@@ -419,20 +419,20 @@ public:
 	{
 		if (ColorMask[0] != mask || ColorMaskInvalid)
 		{
-			glColorMask((mask & ECP_RED) ? GL_TRUE : GL_FALSE, (mask & ECP_GREEN) ? GL_TRUE : GL_FALSE, (mask & ECP_BLUE) ? GL_TRUE : GL_FALSE, (mask & ECP_ALPHA) ? GL_TRUE : GL_FALSE);
+			GL.ColorMask((mask & ECP_RED) ? true : false, (mask & ECP_GREEN) ? true : false, (mask & ECP_BLUE) ? true : false, (mask & ECP_ALPHA) ? true : false);
 
-			for (GLuint i = 0; i < FrameBufferCount; ++i)
+			for (unsigned int i = 0; i < FrameBufferCount; ++i)
 				ColorMask[i] = mask;
 
 			ColorMaskInvalid = false;
 		}
 	}
 
-	void setColorMaskIndexed(GLuint index, u8 mask)
+	void setColorMaskIndexed(unsigned int index, u8 mask)
 	{
 		if (index < FrameBufferCount && ColorMask[index] != mask)
 		{
-			Driver->irrGlColorMaskIndexed(index, (mask & ECP_RED) ? GL_TRUE : GL_FALSE, (mask & ECP_GREEN) ? GL_TRUE : GL_FALSE, (mask & ECP_BLUE) ? GL_TRUE : GL_FALSE, (mask & ECP_ALPHA) ? GL_TRUE : GL_FALSE);
+			Driver->irrGlColorMaskIndexed(index, (mask & ECP_RED) ? true : false, (mask & ECP_GREEN) ? true : false, (mask & ECP_BLUE) ? true : false, (mask & ECP_ALPHA) ? true : false);
 
 			ColorMask[index] = mask;
 			ColorMaskInvalid = true;
@@ -441,11 +441,11 @@ public:
 
 	// Cull face calls.
 
-	void setCullFaceFunc(GLenum mode)
+	void setCullFaceFunc(unsigned int mode)
 	{
 		if (CullFaceMode != mode)
 		{
-			glCullFace(mode);
+			GL.CullFace(mode);
 			CullFaceMode = mode;
 		}
 	}
@@ -455,9 +455,9 @@ public:
 		if (CullFace != enable)
 		{
 			if (enable)
-				glEnable(GL_CULL_FACE);
+				GL.Enable(GL.CULL_FACE);
 			else
-				glDisable(GL_CULL_FACE);
+				GL.Disable(GL.CULL_FACE);
 
 			CullFace = enable;
 		}
@@ -465,11 +465,11 @@ public:
 
 	// Depth calls.
 
-	void setDepthFunc(GLenum mode)
+	void setDepthFunc(unsigned int mode)
 	{
 		if (DepthFunc != mode)
 		{
-			glDepthFunc(mode);
+			GL.DepthFunc(mode);
 			DepthFunc = mode;
 		}
 	}
@@ -484,9 +484,9 @@ public:
 		if (DepthMask != enable)
 		{
 			if (enable)
-				glDepthMask(GL_TRUE);
+				GL.DepthMask(true);
 			else
-				glDepthMask(GL_FALSE);
+				GL.DepthMask(false);
 
 			DepthMask = enable;
 		}
@@ -502,9 +502,9 @@ public:
 		if (DepthTest != enable)
 		{
 			if (enable)
-				glEnable(GL_DEPTH_TEST);
+				GL.Enable(GL.DEPTH_TEST);
 			else
-				glDisable(GL_DEPTH_TEST);
+				GL.Disable(GL.DEPTH_TEST);
 
 			DepthTest = enable;
 		}
@@ -512,28 +512,28 @@ public:
 
 	// FBO calls.
 
-	void getFBO(GLuint& frameBufferID) const
+	void getFBO(unsigned int& frameBufferID) const
 	{
 		frameBufferID = FrameBufferID;
 	}
 
-	void setFBO(GLuint frameBufferID)
+	void setFBO(unsigned int frameBufferID)
 	{
 		if (FrameBufferID != frameBufferID)
 		{
-			Driver->irrGlBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
+			Driver->irrGlBindFramebuffer(GL.FRAMEBUFFER, frameBufferID);
 			FrameBufferID = frameBufferID;
 		}
 	}
 
 	// Shaders calls.
 
-	void getProgram(GLuint& programID) const
+	void getProgram(unsigned int& programID) const
 	{
 		programID = ProgramID;
 	}
 
-	void setProgram(GLuint programID)
+	void setProgram(unsigned int programID)
 	{
 		if (ProgramID != programID)
 		{
@@ -544,12 +544,12 @@ public:
 
 	// Texture calls.
 
-	void getActiveTexture(GLenum& texture) const
+	void getActiveTexture(unsigned int& texture) const
 	{
 		texture = ActiveTexture;
 	}
 
-	void setActiveTexture(GLenum texture)
+	void setActiveTexture(unsigned int texture)
 	{
 		if (ActiveTexture != texture)
 		{
@@ -560,7 +560,7 @@ public:
 
 	// Viewport calls.
 
-	void getViewport(GLint& viewportX, GLint& viewportY, GLsizei& viewportWidth, GLsizei& viewportHeight) const
+	void getViewport(int& viewportX, int& viewportY, int& viewportWidth, int& viewportHeight) const
 	{
 		viewportX = ViewportX;
 		viewportY = ViewportY;
@@ -568,11 +568,11 @@ public:
 		viewportHeight = ViewportHeight;
 	}
 
-	void setViewport(GLint viewportX, GLint viewportY, GLsizei viewportWidth, GLsizei viewportHeight)
+	void setViewport(int viewportX, int viewportY, int viewportWidth, int viewportHeight)
 	{
 		if (ViewportX != viewportX || ViewportY != viewportY || ViewportWidth != viewportWidth || ViewportHeight != viewportHeight)
 		{
-			glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
+			GL.Viewport(viewportX, viewportY, viewportWidth, viewportHeight);
 			ViewportX = viewportX;
 			ViewportY = viewportY;
 			ViewportWidth = viewportWidth;
@@ -600,13 +600,13 @@ protected:
 
 	STextureCache TextureCache;
 
-	GLuint FrameBufferCount;
+	unsigned int FrameBufferCount;
 
-	GLenum* BlendEquation;
-	GLenum* BlendSourceRGB;
-	GLenum* BlendDestinationRGB;
-	GLenum* BlendSourceAlpha;
-	GLenum* BlendDestinationAlpha;
+	unsigned int* BlendEquation;
+	unsigned int* BlendSourceRGB;
+	unsigned int* BlendDestinationRGB;
+	unsigned int* BlendSourceAlpha;
+	unsigned int* BlendDestinationAlpha;
 	bool* Blend;
 	bool BlendEquationInvalid;
 	bool BlendFuncInvalid;
@@ -616,23 +616,23 @@ protected:
 	u8* ColorMask;
 	bool ColorMaskInvalid;
 
-	GLenum CullFaceMode;
+	unsigned int CullFaceMode;
 	bool CullFace;
 
-	GLenum DepthFunc;
+	unsigned int DepthFunc;
 	bool DepthMask;
 	bool DepthTest;
 
-	GLuint FrameBufferID;
+	unsigned int FrameBufferID;
 
-	GLuint ProgramID;
+	unsigned int ProgramID;
 
-	GLenum ActiveTexture;
+	unsigned int ActiveTexture;
 
-	GLint ViewportX;
-	GLint ViewportY;
-	GLsizei ViewportWidth;
-	GLsizei ViewportHeight;
+	int ViewportX;
+	int ViewportY;
+	int ViewportWidth;
+	int ViewportHeight;
 };
 
 }

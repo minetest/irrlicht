@@ -10,6 +10,8 @@
 #include "irrMath.h"
 #include "COpenGLCoreFeature.h"
 
+#include <mt_opengl.h>
+
 namespace irr
 {
 namespace video
@@ -697,7 +699,7 @@ namespace video
 			Version = 0;
 			s32 multiplier = 100;
 
-			core::stringc version(glGetString(GL_VERSION));
+			core::stringc version(GL.GetString(GL.VERSION));
 
 			for (u32 i = 0; i < version.size(); ++i)
 			{
@@ -718,7 +720,7 @@ namespace video
 
 		void getGLExtensions()
 		{
-			core::stringc extensions = glGetString(GL_EXTENSIONS);
+			core::stringc extensions = GL.GetString(GL.EXTENSIONS);
 			os::Printer::log(extensions.c_str());
 
 			// typo in the simulator (note the postfixed s)
