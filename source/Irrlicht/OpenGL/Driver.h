@@ -341,8 +341,8 @@ namespace video
 		void drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount, const u16 *indices, int indexCount);
 		void drawElements(GLenum primitiveType, const VertexType &vertexType, uintptr_t vertices, uintptr_t indices, int indexCount);
 
-		unsigned int beginDraw(const VertexType &vertexType, int vertexCount, uintptr_t verticesBase);
-		void endDraw(const VertexType &vertexType, unsigned int vbo);
+		void beginDraw(const VertexType &vertexType, int vertexCount, uintptr_t verticesBase);
+		void endDraw(const VertexType &vertexType);
 
 		COpenGL3CacheHandler* CacheHandler;
 		core::stringw Name;
@@ -395,8 +395,13 @@ private:
 		irr::io::path OGLES2ShaderPath;
 
 		// Changes the behavior of the beginDraw and endDraw methods. If true, the
-		// beginDraw method allocates a VBO, and if false, it uses the already bound VBO.
-		bool CreateNewVBOs;
+		// beginDraw method uses the global VBO, and if false, it uses the currently bound
+		// VBO.
+		bool UseGlobalVBO;
+
+		// A nice global VAO and VBO to implement modern OpenGL as simply as possible
+		unsigned int GlobalVAO;
+		unsigned int GlobalVBO;
 
 		SMaterial Material, LastMaterial;
 
