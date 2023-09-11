@@ -1122,7 +1122,6 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 
 	void COpenGL3DriverBase::beginDraw(const VertexType &vertexType, int vertexCount, uintptr_t verticesBase)
 	{
-
 		if (UseGlobalVBO) {
 			GL.BindBuffer(GL.ARRAY_BUFFER, GlobalVBO);
 			GL.BufferData(GL.ARRAY_BUFFER, vertexType.VertexSize * vertexCount, reinterpret_cast<void *>(verticesBase), GL.DYNAMIC_DRAW);
@@ -1188,23 +1187,23 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 	bool COpenGL3DriverBase::testGLError(int code)
 	{
 #ifdef _DEBUG
-		unsigned int g = glGetError();
+		unsigned int g = GL.GetError();
 		switch (g)
 		{
-			case GL_NO_ERROR:
-				return false;
-			case GL_INVALID_ENUM:
+			case OpenGLProcedures::INVALID_ENUM:
 				os::Printer::log("GL_INVALID_ENUM", core::stringc(code).c_str(), ELL_ERROR);
 				break;
-			case GL_INVALID_VALUE:
+			case OpenGLProcedures::INVALID_VALUE:
 				os::Printer::log("GL_INVALID_VALUE", core::stringc(code).c_str(), ELL_ERROR);
 				break;
-			case GL_INVALID_OPERATION:
+			case OpenGLProcedures::INVALID_OPERATION:
 				os::Printer::log("GL_INVALID_OPERATION", core::stringc(code).c_str(), ELL_ERROR);
 				break;
-			case GL_OUT_OF_MEMORY:
+			case OpenGLProcedures::OUT_OF_MEMORY:
 				os::Printer::log("GL_OUT_OF_MEMORY", core::stringc(code).c_str(), ELL_ERROR);
 				break;
+			default:
+				return false;
 		};
 		return true;
 #else
