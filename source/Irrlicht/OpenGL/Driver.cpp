@@ -254,7 +254,7 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 			setTransform(static_cast<E_TRANSFORMATION_STATE>(i), core::IdentityMatrix);
 
 		setAmbientLight(SColorf(0.0f, 0.0f, 0.0f, 0.0f));
-		glClearDepthf(1.0f);
+		glClearDepthf(1.0);
 
 		glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
 		glFrontFace(GL_CW);
