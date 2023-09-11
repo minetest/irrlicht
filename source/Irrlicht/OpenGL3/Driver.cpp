@@ -29,8 +29,8 @@ namespace video {
 	}
 
 	void COpenGL3Driver::initFeatures() {
-		assert (Version.Spec == OpenGLSpec::Core);
-		assert (isVersionAtLeast(3, 2));
+		//assert (Version.Spec == OpenGLSpec::Core);
+		assert (isVersionAtLeast(3, 3));
 		initExtensionsNew();
 
 		TextureFormats[ECF_A1R5G5B5] = {GL_RGB5_A1, GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV}; // WARNING: may not be renderable
