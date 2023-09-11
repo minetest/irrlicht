@@ -156,6 +156,11 @@ COpenGL3DriverBase::COpenGL3DriverBase(const SIrrlichtCreationParameters& params
 	ContextManager->activateContext(ExposedData, false);
 	GL.LoadAllProcedures(ContextManager);
 	GL.DebugMessageCallback(debugCb, this);
+
+	unsigned int vao;
+	GL.GenVertexArrays(1, &vao);
+	GL.BindVertexArray(vao);
+
 	initQuadsIndices();
 }
 
@@ -256,7 +261,7 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		setAmbientLight(SColorf(0.0f, 0.0f, 0.0f, 0.0f));
 		glClearDepthf(1.0);
 
-		glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+		//glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
 		glFrontFace(GL_CW);
 
 		// create material renderers
@@ -716,7 +721,6 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		setRenderStates3DMode();
 
 		auto &vTypeDesc = getVertexTypeDescription(vType);
-		beginDraw(vTypeDesc, reinterpret_cast<uintptr_t>(vertices));
 		GLenum indexSize = 0;
 
 		switch (iType)
@@ -740,6 +744,8 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 				break;
 			}
 		}
+
+		unsigned int vbo = beginDraw(vTypeDesc, vertexCount, reinterpret_cast<uintptr_t>(vertices));
 
 		switch (pType)
 		{
@@ -769,7 +775,7 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 				break;
 		}
 
-		endDraw(vTypeDesc);
+		endDraw(vTypeDesc, vbo);
 	}
 
 
@@ -1096,32 +1102,41 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 
 	void COpenGL3DriverBase::drawArrays(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount)
 	{
-		beginDraw(vertexType, reinterpret_cast<uintptr_t>(vertices));
+		unsigned int vbo = beginDraw(vertexType, vertexCount, reinterpret_cast<uintptr_t>(vertices));
 		glDrawArrays(primitiveType, 0, vertexCount);
-		endDraw(vertexType);
+		endDraw(vertexType, vbo);
 	}
 
 	void COpenGL3DriverBase::drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount, const u16 *indices, int indexCount)
 	{
-		beginDraw(vertexType, reinterpret_cast<uintptr_t>(vertices));
+		unsigned int vbo = beginDraw(vertexType, vertexCount, reinterpret_cast<uintptr_t>(vertices));
 		glDrawRangeElements(primitiveType, 0, vertexCount - 1, indexCount, GL_UNSIGNED_SHORT, indices);
-		endDraw(vertexType);
+		endDraw(vertexType, vbo);
 	}
 
-	void COpenGL3DriverBase::beginDraw(const VertexType &vertexType, uintptr_t verticesBase)
+	unsigned int COpenGL3DriverBase::beginDraw(const VertexType &vertexType, int vertexCount, uintptr_t verticesBase)
 	{
+		unsigned int vbo;
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, vertexType.VertexSize * vertexCount, reinterpret_cast<void *>(verticesBase), GL_STREAM_DRAW);
+
 		for (auto attr: vertexType) {
 			glEnableVertexAttribArray(attr.Index);
 			switch (attr.mode) {
-			case VertexAttribute::Mode::Regular: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_FALSE, vertexType.VertexSize, reinterpret_cast<void *>(verticesBase + attr.Offset)); break;
-			case VertexAttribute::Mode::Normalized: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_TRUE, vertexType.VertexSize, reinterpret_cast<void *>(verticesBase + attr.Offset)); break;
-			case VertexAttribute::Mode::Integral: glVertexAttribIPointer(attr.Index, attr.ComponentCount, attr.ComponentType, vertexType.VertexSize, reinterpret_cast<void *>(verticesBase + attr.Offset)); break;
+			case VertexAttribute::Mode::Regular: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_FALSE, vertexType.VertexSize, reinterpret_cast<void *>(attr.Offset)); break;
+			case VertexAttribute::Mode::Normalized: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_TRUE, vertexType.VertexSize, reinterpret_cast<void *>(attr.Offset)); break;
+			case VertexAttribute::Mode::Integral: glVertexAttribIPointer(attr.Index, attr.ComponentCount, attr.ComponentType, vertexType.VertexSize, reinterpret_cast<void *>(attr.Offset)); break;
 			}
 		}
+
+		return vbo;
 	}
 
-	void COpenGL3DriverBase::endDraw(const VertexType &vertexType)
+	void COpenGL3DriverBase::endDraw(const VertexType &vertexType, unsigned int vbo)
 	{
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glDeleteBuffers(1, &vbo);
 		for (auto attr: vertexType)
 			glDisableVertexAttribArray(attr.Index);
 	}

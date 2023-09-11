@@ -341,8 +341,8 @@ namespace video
 		void drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount, const u16 *indices, int indexCount);
 		void drawElements(GLenum primitiveType, const VertexType &vertexType, uintptr_t vertices, uintptr_t indices, int indexCount);
 
-		void beginDraw(const VertexType &vertexType, uintptr_t verticesBase);
-		void endDraw(const VertexType &vertexType);
+		unsigned int beginDraw(const VertexType &vertexType, int vertexCount, uintptr_t verticesBase);
+		void endDraw(const VertexType &vertexType, unsigned int vbo);
 
 		COpenGL3CacheHandler* CacheHandler;
 		core::stringw Name;
