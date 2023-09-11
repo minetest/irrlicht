@@ -134,13 +134,15 @@ void COpenGL3DriverBase::debugCb(GLenum source, GLenum type, GLuint id, GLenum s
 	printf("%04x %04x %x %x %.*s\n", source, type, id, severity, length, message);
 }
 
-COpenGL3DriverBase::COpenGL3DriverBase(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager) :
-	CNullDriver(io, params.WindowSize), COpenGL3ExtensionHandler(), CacheHandler(0),
-	Params(params), ResetRenderStates(true), LockRenderStateMode(false), AntiAlias(params.AntiAlias),
-	MaterialRenderer2DActive(0), MaterialRenderer2DTexture(0), MaterialRenderer2DNoTexture(0),
-	CurrentRenderMode(ERM_NONE), Transformation3DChanged(true),
-	OGLES2ShaderPath(params.OGLES2ShaderPath),
-	ColorFormat(ECF_R8G8B8), ContextManager(contextManager)
+COpenGL3DriverBase::COpenGL3DriverBase(const SIrrlichtCreationParameters &params,
+		io::IFileSystem *io, IContextManager *contextManager) :
+		CNullDriver(io, params.WindowSize),
+		COpenGL3ExtensionHandler(), CacheHandler(0), Params(params),
+		ResetRenderStates(true), LockRenderStateMode(false), AntiAlias(params.AntiAlias),
+		MaterialRenderer2DActive(0), MaterialRenderer2DTexture(0),
+		MaterialRenderer2DNoTexture(0), CurrentRenderMode(ERM_NONE),
+		Transformation3DChanged(true), OGLES2ShaderPath(params.OGLES2ShaderPath),
+		CreateNewVBOs(true), ColorFormat(ECF_R8G8B8), ContextManager(contextManager)
 {
 #ifdef _DEBUG
 	setDebugName("Driver");
@@ -675,11 +677,14 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 			indexList = 0;
 		}
 
+		CreateNewVBOs = false;
 
 		drawVertexPrimitiveList(vertices, mb->getVertexCount(),
 				indexList, mb->getPrimitiveCount(),
 				mb->getVertexType(), mb->getPrimitiveType(),
 				mb->getIndexType());
+
+		CreateNewVBOs = true;
 
 		if (HWBuffer->Mapped_Vertex != scene::EHM_NEVER)
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -1116,17 +1121,28 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 
 	unsigned int COpenGL3DriverBase::beginDraw(const VertexType &vertexType, int vertexCount, uintptr_t verticesBase)
 	{
-		unsigned int vbo;
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, vertexType.VertexSize * vertexCount, reinterpret_cast<void *>(verticesBase), GL_STREAM_DRAW);
+		unsigned int vbo = 0;
 
-		for (auto attr: vertexType) {
-			glEnableVertexAttribArray(attr.Index);
-			switch (attr.mode) {
-			case VertexAttribute::Mode::Regular: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_FALSE, vertexType.VertexSize, reinterpret_cast<void *>(attr.Offset)); break;
-			case VertexAttribute::Mode::Normalized: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_TRUE, vertexType.VertexSize, reinterpret_cast<void *>(attr.Offset)); break;
-			case VertexAttribute::Mode::Integral: glVertexAttribIPointer(attr.Index, attr.ComponentCount, attr.ComponentType, vertexType.VertexSize, reinterpret_cast<void *>(attr.Offset)); break;
+		if (CreateNewVBOs) {
+			glGenBuffers(1, &vbo);
+			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			glBufferData(GL_ARRAY_BUFFER, vertexType.VertexSize * vertexCount, reinterpret_cast<void *>(verticesBase), GL_STREAM_DRAW);
+			for (auto attr: vertexType) {
+				glEnableVertexAttribArray(attr.Index);
+				switch (attr.mode) {
+				case VertexAttribute::Mode::Regular: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_FALSE, vertexType.VertexSize, reinterpret_cast<void *>(attr.Offset)); break;
+				case VertexAttribute::Mode::Normalized: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_TRUE, vertexType.VertexSize, reinterpret_cast<void *>(attr.Offset)); break;
+				case VertexAttribute::Mode::Integral: glVertexAttribIPointer(attr.Index, attr.ComponentCount, attr.ComponentType, vertexType.VertexSize, reinterpret_cast<void *>(attr.Offset)); break;
+				}
+			}
+		} else {
+			for (auto attr: vertexType) {
+				glEnableVertexAttribArray(attr.Index);
+				switch (attr.mode) {
+				case VertexAttribute::Mode::Regular: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_FALSE, vertexType.VertexSize, reinterpret_cast<void *>(verticesBase + attr.Offset)); break;
+				case VertexAttribute::Mode::Normalized: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_TRUE, vertexType.VertexSize, reinterpret_cast<void *>(verticesBase + attr.Offset)); break;
+				case VertexAttribute::Mode::Integral: glVertexAttribIPointer(attr.Index, attr.ComponentCount, attr.ComponentType, vertexType.VertexSize, reinterpret_cast<void *>(verticesBase + attr.Offset)); break;
+				}
 			}
 		}
 
@@ -1135,10 +1151,12 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 
 	void COpenGL3DriverBase::endDraw(const VertexType &vertexType, unsigned int vbo)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glDeleteBuffers(1, &vbo);
 		for (auto attr: vertexType)
 			glDisableVertexAttribArray(attr.Index);
+		if (CreateNewVBOs) {
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glDeleteBuffers(1, &vbo);
+		}
 	}
 
 	ITexture* COpenGL3DriverBase::createDeviceDependentTexture(const io::path& name, IImage* image)
