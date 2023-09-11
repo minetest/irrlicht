@@ -394,6 +394,10 @@ private:
 		bool Transformation3DChanged;
 		irr::io::path OGLES2ShaderPath;
 
+		// Changes the behavior of the beginDraw and endDraw methods. If true, the
+		// beginDraw method allocates a VBO, and if false, it uses the already bound VBO.
+		bool CreateNewVBOs;
+
 		SMaterial Material, LastMaterial;
 
 		//! Color buffer format
