@@ -265,23 +265,9 @@ namespace video
 		IReferenceCounted::drop() for more information. */
 		virtual ITexture* getTexture(io::IReadFile* file) =0;
 
-		//! Returns a texture by index
-		/** \param index: Index of the texture, must be smaller than
-		getTextureCount() Please note that this index might change when
-		adding or removing textures
-		\return Pointer to the texture, or 0 if the texture was not
-		set or index is out of bounds. This pointer should not be
-		dropped. See IReferenceCounted::drop() for more information. */
-		virtual ITexture* getTextureByIndex(u32 index) =0;
-
 		//! Returns amount of textures currently loaded
 		/** \return Amount of textures currently loaded */
 		virtual u32 getTextureCount() const = 0;
-
-		//! Renames a texture
-		/** \param texture Pointer to the texture to rename.
-		\param newName New name for the texture. This should be a unique name. */
-		virtual void renameTexture(ITexture* texture, const io::path& newName) = 0;
 
 		//! Creates an empty texture of specified size.
 		/** \param size: Size of the texture.
