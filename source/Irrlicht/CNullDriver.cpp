@@ -303,35 +303,12 @@ void CNullDriver::removeAllTextures()
 }
 
 
-//! Returns a texture by index
-ITexture* CNullDriver::getTextureByIndex(u32 i)
-{
-	if ( i < Textures.size() )
-		return Textures[i].Surface;
-
-	return 0;
-}
-
-
 //! Returns amount of textures currently loaded
 u32 CNullDriver::getTextureCount() const
 {
 	return Textures.size();
 }
 
-
-//! Renames a texture
-void CNullDriver::renameTexture(ITexture* texture, const io::path& newName)
-{
-	// we can do a const_cast here safely, the name of the ITexture interface
-	// is just readonly to prevent the user changing the texture name without invoking
-	// this method, because the textures will need resorting afterwards
-
-	io::SNamedPath& name = const_cast<io::SNamedPath&>(texture->getName());
-	name.setPath(newName);
-
-	Textures.sort();
-}
 
 ITexture* CNullDriver::addTexture(const core::dimension2d<u32>& size, const io::path& name, ECOLOR_FORMAT format)
 {

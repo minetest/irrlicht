@@ -79,14 +79,8 @@ namespace video
 		//! loads a Texture
 		ITexture* getTexture(io::IReadFile* file) override;
 
-		//! Returns a texture by index
-		ITexture* getTextureByIndex(u32 index) override;
-
 		//! Returns amount of textures currently loaded
 		u32 getTextureCount() const override;
-
-		//! Renames a texture
-		void renameTexture(ITexture* texture, const io::path& newName) override;
 
 		ITexture* addTexture(const core::dimension2d<u32>& size, const io::path& name, ECOLOR_FORMAT format = ECF_A8R8G8B8) override;
 
