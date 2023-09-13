@@ -29,7 +29,7 @@ namespace video {
 	}
 
 	void COpenGL3Driver::initFeatures() {
-		//assert (Version.Spec == OpenGLSpec::Core);
+		assert (Version.Spec == OpenGLSpec::Core);
 		assert (isVersionAtLeast(3, 3));
 		initExtensionsNew();
 

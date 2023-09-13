@@ -98,17 +98,19 @@ public:
 		glTexParameteri(TextureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(TextureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-#if 0
-		if (HasMipMaps)
-		{
-			if (Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_SPEED))
-				glHint(GL_GENERATE_MIPMAP_HINT, GL_FASTEST);
-			else if (Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_QUALITY))
-				glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
-			else
-				glHint(GL_GENERATE_MIPMAP_HINT, GL_DONT_CARE);
-		}
-#endif
+		// TODO: The OpenGL core profile does not support GL_GENERATE_MIPMAP_HINT, is
+		// there a good replacement?
+		//#ifdef GL_GENERATE_MIPMAP
+		//		if (HasMipMaps)
+		//		{
+		//			if (Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_SPEED))
+		//				glHint(GL_GENERATE_MIPMAP_HINT, GL_FASTEST);
+		//			else if (Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_QUALITY))
+		//				glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+		//			else
+		//				glHint(GL_GENERATE_MIPMAP_HINT, GL_DONT_CARE);
+		//		}
+		//#endif
 
 #if !defined(IRR_OPENGL_HAS_glGenerateMipmap) && defined(GL_GENERATE_MIPMAP)
 		if (HasMipMaps)

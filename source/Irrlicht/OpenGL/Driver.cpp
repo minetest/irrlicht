@@ -264,7 +264,10 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		setAmbientLight(SColorf(0.0f, 0.0f, 0.0f, 0.0f));
 		glClearDepthf(1.0);
 
-		//glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+		// TODO: The OpenGL core profile does not support GL_GENERATE_MIPMAP_HINT, is
+		// there a good replacement?
+		// glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+
 		glFrontFace(GL_CW);
 
 		// create material renderers
