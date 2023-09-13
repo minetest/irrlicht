@@ -286,10 +286,16 @@ void CNullDriver::removeTexture(ITexture* texture)
 	SSurface s;
 	s.Surface = texture;
 
-	s32 index = Textures.binary_search(s);
-	if (index != -1) {
-		texture->drop();
-		Textures.erase(index);
+	s32 last;
+	s32 first = Textures.binary_search_multi(s, last);
+	if (first == -1)
+		return;
+	for (u32 i = first; i <= (u32)last; i++) {
+		if (Textures[i].Surface == texture) {
+			texture->drop();
+			Textures.erase(i);
+			return;
+		}
 	}
 }
 
