@@ -1122,26 +1122,21 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 
 	void COpenGL3DriverBase::beginDraw(const VertexType &vertexType, int vertexCount, uintptr_t verticesBase)
 	{
+		void *offset;
 
-		if (UseGlobalVBO) {
-			glBindBuffer(GL_ARRAY_BUFFER, GlobalVBO);
-			glBufferData(GL_ARRAY_BUFFER, vertexType.VertexSize * vertexCount, reinterpret_cast<void *>(verticesBase), GL_DYNAMIC_DRAW);
-			for (auto attr: vertexType) {
-				glEnableVertexAttribArray(attr.Index);
-				switch (attr.mode) {
-				case VertexAttribute::Mode::Regular: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_FALSE, vertexType.VertexSize, reinterpret_cast<void *>(attr.Offset)); break;
-				case VertexAttribute::Mode::Normalized: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_TRUE, vertexType.VertexSize, reinterpret_cast<void *>(attr.Offset)); break;
-				case VertexAttribute::Mode::Integral: glVertexAttribIPointer(attr.Index, attr.ComponentCount, attr.ComponentType, vertexType.VertexSize, reinterpret_cast<void *>(attr.Offset)); break;
-				}
+		for (auto attr: vertexType) {
+			if (UseGlobalVBO) {
+				glBindBuffer(GL_ARRAY_BUFFER, GlobalVBO);
+				glBufferData(GL_ARRAY_BUFFER, vertexType.VertexSize * vertexCount, reinterpret_cast<void *>(verticesBase), GL_DYNAMIC_DRAW);
+				offset = reinterpret_cast<void *>(attr.Offset);
+			} else {
+				offset = reinterpret_cast<void *>(verticesBase + attr.Offset);
 			}
-		} else {
-			for (auto attr: vertexType) {
-				glEnableVertexAttribArray(attr.Index);
-				switch (attr.mode) {
-				case VertexAttribute::Mode::Regular: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_FALSE, vertexType.VertexSize, reinterpret_cast<void *>(verticesBase + attr.Offset)); break;
-				case VertexAttribute::Mode::Normalized: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_TRUE, vertexType.VertexSize, reinterpret_cast<void *>(verticesBase + attr.Offset)); break;
-				case VertexAttribute::Mode::Integral: glVertexAttribIPointer(attr.Index, attr.ComponentCount, attr.ComponentType, vertexType.VertexSize, reinterpret_cast<void *>(verticesBase + attr.Offset)); break;
-				}
+			glEnableVertexAttribArray(attr.Index);
+			switch (attr.mode) {
+			case VertexAttribute::Mode::Regular: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_FALSE, vertexType.VertexSize, offset); break;
+			case VertexAttribute::Mode::Normalized: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_TRUE, vertexType.VertexSize, offset); break;
+			case VertexAttribute::Mode::Integral: glVertexAttribIPointer(attr.Index, attr.ComponentCount, attr.ComponentType, vertexType.VertexSize, offset); break;
 			}
 		}
 	}
