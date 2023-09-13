@@ -578,10 +578,7 @@ void CNullDriver::addTexture(video::ITexture* texture)
 
 		// the new texture is now at the end of the texture list. when searching for
 		// the next new texture, the texture array will be sorted and the index of this texture
-		// will be changed. to let the order be more consistent to the user, sort
-		// the textures now already although this isn't necessary:
-
-		Textures.sort();
+		// will be changed.
 	}
 }
 
