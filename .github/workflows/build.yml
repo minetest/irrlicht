@@ -138,18 +138,16 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest ogles2
 
   mingw:
-    name: MinGW ${{matrix.config.arch}}
+    name: "MinGW ${{matrix.config.variant}}${{matrix.config.extras}}"
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
         config:
-          -
-            bits: 32
-            arch: i686
-          -
-            bits: 64
-            arch: x86_64
+          - {variant: win32, arch: i686}
+          - {variant: win64, arch: x86_64}
+          - {variant: win32, arch: i686, extras: "-sdl"}
+          - {variant: win64, arch: x86_64, extras: "-sdl"}
     steps:
       - uses: actions/checkout@v3
       - name: Install compiler
@@ -164,11 +162,12 @@ jobs:
         env:
           CC: ${{matrix.config.arch}}-w64-mingw32-gcc
           CXX: ${{matrix.config.arch}}-w64-mingw32-g++
+          extras: ${{matrix.config.extras}}
 
       - uses: actions/upload-artifact@v3
         with:
-          name: irrlicht-win${{matrix.config.bits}}
-          path: ./irrlicht-win${{matrix.config.bits}}.zip
+          name: irrlicht-${{matrix.config.variant}}${{matrix.config.extras}}
+          path: ./irrlicht-${{matrix.config.variant}}${{matrix.config.extras}}.zip
 
   macos:
     runs-on: macos-latest
