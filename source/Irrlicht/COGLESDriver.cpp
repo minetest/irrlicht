@@ -775,10 +775,6 @@ void COGLES1Driver::drawVertexPrimitiveList2d3d(const void* vertices, u32 vertex
 		case scene::EPT_TRIANGLES:
 			glDrawElements((LastMaterial.Wireframe)?GL_LINES:(LastMaterial.PointCloud)?GL_POINTS:GL_TRIANGLES, primitiveCount*3, indexSize, indexList);
 			break;
-		case scene::EPT_QUAD_STRIP:
-		case scene::EPT_QUADS:
-		case scene::EPT_POLYGON:
-			break;
 	}
 
 	if (Feature.MaxTextureUnits > 0)
