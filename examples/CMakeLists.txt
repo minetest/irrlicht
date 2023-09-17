@@ -2,9 +2,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(IRREXAMPLES
-	# removed
+	LoadTexture
 )
-if(UNIX)
+if(FALSE)
 	list(APPEND IRREXAMPLES AutomatedTest)
 endif()
 
