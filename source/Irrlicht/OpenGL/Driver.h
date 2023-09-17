@@ -322,6 +322,13 @@ namespace video
 			LockRenderStateMode = false;
 		}
 
+		// This function is like drawVertexPrimitiveList, but it does not use GlobalVBO,
+		// allowing the user to draw with their own VBOs such as with the
+		// drawHardwareBuffer function.
+		void drawVertexPrimitiveListWithBoundVBO(const void *vertices, u32 vertexCount,
+				const void *indexList, u32 primitiveCount, E_VERTEX_TYPE vType,
+				scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType, uintptr_t offset);
+
 		void draw2D3DVertexPrimitiveList(const void* vertices,
 				u32 vertexCount, const void* indexList, u32 primitiveCount,
 				E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
@@ -340,6 +347,11 @@ namespace video
 		void drawArrays(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount);
 		void drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount, const u16 *indices, int indexCount);
 		void drawElements(GLenum primitiveType, const VertexType &vertexType, uintptr_t vertices, uintptr_t indices, int indexCount);
+
+		// This function is like beginDraw, but it does not use GlobalVBO, allowing the
+		// user to draw with their own VBOs such as with the
+		// drawHardwareBuffer function.
+		void beginDrawWithBoundVBO(const VertexType &vertexType, uintptr_t offset);
 
 		void beginDraw(const VertexType &vertexType, int vertexCount, uintptr_t verticesBase);
 		void endDraw(const VertexType &vertexType);
@@ -393,11 +405,6 @@ private:
 		E_RENDER_MODE CurrentRenderMode;
 		bool Transformation3DChanged;
 		irr::io::path OGLES2ShaderPath;
-
-		// Changes the behavior of the beginDraw and endDraw methods. If true, the
-		// beginDraw method uses the global VBO, and if false, it uses the currently bound
-		// VBO.
-		bool UseGlobalVBO;
 
 		// A nice global VAO and VBO to implement modern OpenGL as simply as possible
 		unsigned int GlobalVAO;

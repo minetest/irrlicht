@@ -142,7 +142,7 @@ COpenGL3DriverBase::COpenGL3DriverBase(const SIrrlichtCreationParameters &params
 		MaterialRenderer2DActive(0), MaterialRenderer2DTexture(0),
 		MaterialRenderer2DNoTexture(0), CurrentRenderMode(ERM_NONE),
 		Transformation3DChanged(true), OGLES2ShaderPath(params.OGLES2ShaderPath),
-		UseGlobalVBO(true), ColorFormat(ECF_R8G8B8), ContextManager(contextManager)
+		ColorFormat(ECF_R8G8B8), ContextManager(contextManager)
 {
 #ifdef _DEBUG
 	setDebugName("Driver");
@@ -681,14 +681,9 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 			indexList = 0;
 		}
 
-		UseGlobalVBO = false;
-
-		drawVertexPrimitiveList(vertices, mb->getVertexCount(),
-				indexList, mb->getPrimitiveCount(),
-				mb->getVertexType(), mb->getPrimitiveType(),
-				mb->getIndexType());
-
-		UseGlobalVBO = true;
+		drawVertexPrimitiveListWithBoundVBO(vertices, mb->getVertexCount(), indexList,
+				mb->getPrimitiveCount(), mb->getVertexType(), mb->getPrimitiveType(),
+				mb->getIndexType(), reinterpret_cast<uintptr_t>(vertices));
 
 		if (HWBuffer->Mapped_Vertex != scene::EHM_NEVER)
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -718,6 +713,21 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 	void COpenGL3DriverBase::drawVertexPrimitiveList(const void* vertices, u32 vertexCount,
 			const void* indexList, u32 primitiveCount,
 			E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType)
+	{
+		auto &vTypeDesc = getVertexTypeDescription(vType);
+
+		// Use global vbo
+		glBindBuffer(GL_ARRAY_BUFFER, GlobalVBO);
+		glBufferData(GL_ARRAY_BUFFER, vTypeDesc.VertexSize * vertexCount, vertices, GL_DYNAMIC_DRAW);
+
+		drawVertexPrimitiveListWithBoundVBO(vertices, vertexCount, indexList, primitiveCount, vType, pType, iType, 0);
+	}
+
+
+	void COpenGL3DriverBase::drawVertexPrimitiveListWithBoundVBO(const void *vertices,
+			u32 vertexCount, const void *indexList, u32 primitiveCount,
+			E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType,
+			uintptr_t offset)
 	{
 		if (!primitiveCount || !vertexCount)
 			return;
@@ -754,7 +764,7 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 			}
 		}
 
-		beginDraw(vTypeDesc, vertexCount, reinterpret_cast<uintptr_t>(vertices));
+		beginDrawWithBoundVBO(vTypeDesc, offset);
 
 		switch (pType)
 		{
@@ -1123,33 +1133,36 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		endDraw(vertexType);
 	}
 
-	void COpenGL3DriverBase::beginDraw(const VertexType &vertexType, int vertexCount, uintptr_t verticesBase)
+	void COpenGL3DriverBase::beginDrawWithBoundVBO(const VertexType &vertexType, uintptr_t offset)
 	{
-		void *offset;
+		void *openGLOffset;
 
 		for (auto attr: vertexType) {
-			if (UseGlobalVBO) {
-				glBindBuffer(GL_ARRAY_BUFFER, GlobalVBO);
-				glBufferData(GL_ARRAY_BUFFER, vertexType.VertexSize * vertexCount, reinterpret_cast<void *>(verticesBase), GL_DYNAMIC_DRAW);
-				offset = reinterpret_cast<void *>(attr.Offset);
-			} else {
-				offset = reinterpret_cast<void *>(verticesBase + attr.Offset);
-			}
+			openGLOffset = reinterpret_cast<void *>(attr.Offset + offset);
+
 			glEnableVertexAttribArray(attr.Index);
 			switch (attr.mode) {
-			case VertexAttribute::Mode::Regular: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_FALSE, vertexType.VertexSize, offset); break;
-			case VertexAttribute::Mode::Normalized: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_TRUE, vertexType.VertexSize, offset); break;
-			case VertexAttribute::Mode::Integral: glVertexAttribIPointer(attr.Index, attr.ComponentCount, attr.ComponentType, vertexType.VertexSize, offset); break;
+			case VertexAttribute::Mode::Regular: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_FALSE, vertexType.VertexSize, openGLOffset); break;
+			case VertexAttribute::Mode::Normalized: glVertexAttribPointer(attr.Index, attr.ComponentCount, attr.ComponentType, GL_TRUE, vertexType.VertexSize, openGLOffset); break;
+			case VertexAttribute::Mode::Integral: glVertexAttribIPointer(attr.Index, attr.ComponentCount, attr.ComponentType, vertexType.VertexSize, openGLOffset); break;
 			}
+
 		}
+	}
+
+	void COpenGL3DriverBase::beginDraw(const VertexType &vertexType, int vertexCount, uintptr_t verticesBase)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, GlobalVBO);
+		glBufferData(GL_ARRAY_BUFFER, vertexType.VertexSize * vertexCount, reinterpret_cast<void *>(verticesBase), GL_DYNAMIC_DRAW);
+		beginDrawWithBoundVBO(vertexType, 0);
 	}
 
 	void COpenGL3DriverBase::endDraw(const VertexType &vertexType)
 	{
 		for (auto attr: vertexType)
 			glDisableVertexAttribArray(attr.Index);
-		if (UseGlobalVBO)
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
+		// Unbind GL_ARRAY_BUFFER
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 	ITexture* COpenGL3DriverBase::createDeviceDependentTexture(const io::path& name, IImage* image)
