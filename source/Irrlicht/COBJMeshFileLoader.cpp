@@ -72,8 +72,8 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 
 	const io::path fullName = file->getFileName();
 
-	c8* buf = new c8[filesize];
-	memset(buf, 0, filesize);
+	c8* buf = new c8[filesize+1]; // plus null-terminator
+	memset(buf, 0, filesize+1);
 	file->read((void*)buf, filesize);
 	const c8* const bufEnd = buf+filesize;
 
@@ -100,7 +100,7 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 				c8 name[WORD_BUFFER_LENGTH];
 				bufPtr = goAndCopyNextWord(name, bufPtr, WORD_BUFFER_LENGTH, bufEnd);
 #ifdef _IRR_DEBUG_OBJ_LOADER_
-				os::Printer::log("Reading material file",name);
+				os::Printer::log("Ignoring material file",name);
 #endif
 			}
 		}
@@ -226,6 +226,7 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 				{
 					os::Printer::log("Invalid vertex index in this line", wordBuffer.c_str(), ELL_ERROR);
 					delete [] buf;
+					cleanUp();
 					return 0;
 				}
 				if ( -1 != Idx[1] && Idx[1] < (irr::s32)textureCoordBuffer.size() )
@@ -257,6 +258,14 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 
 				// go to next vertex
 				linePtr = goNextWord(linePtr, endPtr);
+			}
+
+			if (faceCorners.size() < 3)
+			{
+				os::Printer::log("Too few vertices in this line", wordBuffer.c_str(), ELL_ERROR);
+				delete [] buf;
+				cleanUp();
+				return 0;
 			}
 
 			// triangulate the face
