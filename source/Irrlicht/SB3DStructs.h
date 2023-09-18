@@ -10,6 +10,7 @@
 #pragma once
 
 #include "SMaterial.h"
+#include "irrMath.h"
 
 namespace irr {
 namespace scene {
@@ -25,6 +26,7 @@ struct SB3dChunk
 	SB3dChunk(const SB3dChunkHeader& header, long sp)
 		: length(header.size+8), startposition(sp)
 	{
+		length = core::max_(length, 8);
 		name[0]=header.name[0];
 		name[1]=header.name[1];
 		name[2]=header.name[2];

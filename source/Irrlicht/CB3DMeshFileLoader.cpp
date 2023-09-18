@@ -274,7 +274,14 @@ bool CB3DMeshFileLoader::readChunkMESH(CSkinnedMesh::SJoint *inJoint)
 		{
 			scene::SSkinMeshBuffer *meshBuffer = AnimatedMesh->addMeshBuffer();
 
-			if (brushID!=-1)
+			if (brushID == -1)
+			{ /* ok */ }
+			else if (brushID < 0 || (u32)brushID >= Materials.size())
+			{
+				os::Printer::log("Illegal brush ID found", B3DFile->getFileName(), ELL_ERROR);
+				return false;
+			}
+			else
 			{
 				meshBuffer->Material=Materials[brushID].Material;
 			}
@@ -354,7 +361,8 @@ bool CB3DMeshFileLoader::readChunkVRTS(CSkinnedMesh::SJoint *inJoint)
 	tex_coord_set_size = os::Byteswap::byteswap(tex_coord_set_size);
 #endif
 
-	if (tex_coord_sets >= max_tex_coords || tex_coord_set_size >= 4) // Something is wrong
+	if (tex_coord_sets < 0 || tex_coord_set_size < 0 ||
+		tex_coord_sets >= max_tex_coords || tex_coord_set_size >= 4) // Something is wrong
 	{
 		os::Printer::log("tex_coord_sets or tex_coord_set_size too big", B3DFile->getFileName(), ELL_ERROR);
 		return false;
@@ -458,13 +466,18 @@ bool CB3DMeshFileLoader::readChunkTRIS(scene::SSkinMeshBuffer *meshBuffer, u32 m
 
 	SB3dMaterial *B3dMaterial;
 
-	if (triangle_brush_id != -1)
+	if (triangle_brush_id == -1)
+		B3dMaterial = 0;
+	else if (triangle_brush_id < 0 || (u32)triangle_brush_id >= Materials.size())
+	{
+		os::Printer::log("Illegal material index found", B3DFile->getFileName(), ELL_ERROR);
+		return false;
+	}
+	else
 	{
 		B3dMaterial = &Materials[triangle_brush_id];
 		meshBuffer->Material = B3dMaterial->Material;
 	}
-	else
-		B3dMaterial = 0;
 
 	const s32 memoryNeeded = B3dStack.getLast().length / sizeof(s32);
 	meshBuffer->Indices.reallocate(memoryNeeded + meshBuffer->Indices.size() + 1);
@@ -582,6 +595,12 @@ bool CB3DMeshFileLoader::readChunkBONE(CSkinnedMesh::SJoint *inJoint)
 			strength = os::Byteswap::byteswap(strength);
 #endif
 			globalVertexID += VerticesStart;
+
+			if (globalVertexID >= AnimatedVertices_VertexID.size())
+			{
+				os::Printer::log("Illegal vertex index found", B3DFile->getFileName(), ELL_ERROR);
+				return false;
+			}
 
 			if (AnimatedVertices_VertexID[globalVertexID]==-1)
 			{
