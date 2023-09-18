@@ -1034,10 +1034,11 @@ bool CB3DMeshFileLoader::readChunkBRUS()
 void CB3DMeshFileLoader::readString(core::stringc& newstring)
 {
 	newstring="";
-	while (B3DFile->getPos() <= B3DFile->getSize())
+	while (true)
 	{
 		c8 character;
-		B3DFile->read(&character, sizeof(character));
+		if (B3DFile->read(&character, sizeof(character)) == 0)
+			return; // eof
 		if (character==0)
 			return;
 		newstring.append(character);
