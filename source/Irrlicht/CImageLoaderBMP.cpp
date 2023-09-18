@@ -262,12 +262,16 @@ IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
 	// read palette
 
 	long pos = file->getPos();
+	constexpr s32 paletteAllocSize = 256;
 	s32 paletteSize = (header.BitmapDataOffset - pos) / 4;
+	paletteSize = core::clamp(paletteSize, 0, paletteAllocSize);
 
 	s32* paletteData = 0;
 	if (paletteSize)
 	{
-		paletteData = new s32[paletteSize];
+		// always allocate an 8-bit palette to ensure enough space
+		paletteData = new s32[paletteAllocSize];
+		memset(paletteData, 0, paletteAllocSize * sizeof(s32));
 		file->read(paletteData, paletteSize * sizeof(s32));
 #ifdef __BIG_ENDIAN__
 		for (s32 i=0; i<paletteSize; ++i)
