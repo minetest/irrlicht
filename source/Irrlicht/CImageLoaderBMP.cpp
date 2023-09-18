@@ -45,20 +45,32 @@ bool CImageLoaderBMP::isALoadableFileFormat(io::IReadFile* file) const
 	return headerID == 0x4d42;
 }
 
+// UB-safe overflow check
+static inline bool overflowCheck(const void *base, size_t offset, const void *end)
+{
+	auto baseI = reinterpret_cast<uintptr_t>(base),
+		endI = reinterpret_cast<uintptr_t>(end);
+	return baseI > endI || offset >= (endI - baseI);
+}
+// check whether &p[0] to &p[_off - 1] can be accessed
+#define CHECKP(_off) if ((_off) < 0 || overflowCheck(p, _off, pEnd)) goto exit
+// same for d
+#define CHECKD(_off) if ((_off) < 0 || overflowCheck(d, _off, destEnd)) goto exit
 
 void CImageLoaderBMP::decompress8BitRLE(u8*& bmpData, s32 size, s32 width, s32 height, s32 pitch) const
 {
 	u8* p = bmpData;
+	const u8* pEnd = bmpData + size;
 	u8* newBmp = new u8[(width+pitch)*height];
 	u8* d = newBmp;
-	u8* destEnd = newBmp + (width+pitch)*height;
+	const u8* destEnd = newBmp + (width+pitch)*height;
 	s32 line = 0;
 
-	while (bmpData - p < size && d < destEnd)
+	while (p < pEnd && d < destEnd)
 	{
 		if (*p == 0)
 		{
-			++p;
+			++p; CHECKP(1);
 
 			switch(*p)
 			{
@@ -68,29 +80,28 @@ void CImageLoaderBMP::decompress8BitRLE(u8*& bmpData, s32 size, s32 width, s32 h
 				d = newBmp + (line*(width+pitch));
 				break;
 			case 1: // end of bmp
-				delete [] bmpData;
-				bmpData = newBmp;
-				return;
+				goto exit;
 			case 2:
-				++p; d +=(u8)*p;  // delta
-				++p; d += ((u8)*p)*(width+pitch);
-				++p;
+				++p; CHECKP(2);
+				d += (u8)*p; ++p; // delta
+				d += ((u8)*p)*(width+pitch); ++p;
 				break;
 			default:
 				{
 					// absolute mode
 					s32 count = (u8)*p; ++p;
 					s32 readAdditional = ((2-(count%2))%2);
-					s32 i;
 
-					for (i=0; i<count; ++i)
+					CHECKP(count); CHECKD(count);
+					for (s32 i=0; i<count; ++i)
 					{
 						*d = *p;
 						++p;
 						++d;
 					}
 
-					for (i=0; i<readAdditional; ++i)
+					CHECKP(readAdditional);
+					for (s32 i=0; i<readAdditional; ++i)
 						++p;
 				}
 			}
@@ -98,7 +109,9 @@ void CImageLoaderBMP::decompress8BitRLE(u8*& bmpData, s32 size, s32 width, s32 h
 		else
 		{
 			s32 count = (u8)*p; ++p;
+			CHECKP(1);
 			u8 color = *p; ++p;
+			CHECKD(count);
 			for (s32 i=0; i<count; ++i)
 			{
 				*d = color;
@@ -107,26 +120,37 @@ void CImageLoaderBMP::decompress8BitRLE(u8*& bmpData, s32 size, s32 width, s32 h
 		}
 	}
 
+exit:
 	delete [] bmpData;
 	bmpData = newBmp;
 }
 
+// how many bytes will be touched given the current state of decompress4BitRLE
+static inline u32 shiftedCount(s32 count, s32 shift)
+{
+	_IRR_DEBUG_BREAK_IF(count < 0)
+	u32 ret = count / 2;
+	if (shift == 0 || count % 2 == 1)
+		++ret;
+	return ret;
+}
 
 void CImageLoaderBMP::decompress4BitRLE(u8*& bmpData, s32 size, s32 width, s32 height, s32 pitch) const
 {
-	s32 lineWidth = (width+1)/2+pitch;
+	const s32 lineWidth = (width+1)/2+pitch;
 	u8* p = bmpData;
+	const u8* pEnd = bmpData + size;
 	u8* newBmp = new u8[lineWidth*height];
 	u8* d = newBmp;
-	u8* destEnd = newBmp + lineWidth*height;
+	const u8* destEnd = newBmp + lineWidth*height;
 	s32 line = 0;
 	s32 shift = 4;
 
-	while (bmpData - p < size && d < destEnd)
+	while (p < pEnd && d < destEnd)
 	{
 		if (*p == 0)
 		{
-			++p;
+			++p; CHECKP(1);
 
 			switch(*p)
 			{
@@ -137,12 +161,10 @@ void CImageLoaderBMP::decompress4BitRLE(u8*& bmpData, s32 size, s32 width, s32 h
 				shift = 4;
 				break;
 			case 1: // end of bmp
-				delete [] bmpData;
-				bmpData = newBmp;
-				return;
+				goto exit;
 			case 2:
 				{
-					++p;
+					++p; CHECKP(2);
 					s32 x = (u8)*p; ++p;
 					s32 y = (u8)*p; ++p;
 					d += x/2 + y*lineWidth;
@@ -155,15 +177,16 @@ void CImageLoaderBMP::decompress4BitRLE(u8*& bmpData, s32 size, s32 width, s32 h
 					s32 count = (u8)*p; ++p;
 					s32 readAdditional = ((2-((count)%2))%2);
 					s32 readShift = 4;
-					s32 i;
 
-					for (i=0; i<count; ++i)
+					CHECKP(shiftedCount(count, readShift));
+					CHECKD(shiftedCount(count, shift));
+					for (s32 i=0; i<count; ++i)
 					{
 						s32 color = (((u8)*p) >> readShift) & 0x0f;
 						readShift -= 4;
 						if (readShift < 0)
 						{
-							++*p;
+							++*p; // <- bug?
 							readShift = 4;
 						}
 
@@ -179,7 +202,8 @@ void CImageLoaderBMP::decompress4BitRLE(u8*& bmpData, s32 size, s32 width, s32 h
 
 					}
 
-					for (i=0; i<readAdditional; ++i)
+					CHECKP(readAdditional);
+					for (s32 i=0; i<readAdditional; ++i)
 						++p;
 				}
 			}
@@ -187,10 +211,12 @@ void CImageLoaderBMP::decompress4BitRLE(u8*& bmpData, s32 size, s32 width, s32 h
 		else
 		{
 			s32 count = (u8)*p; ++p;
+			CHECKP(1);
 			s32 color1 = (u8)*p; color1 = color1 & 0x0f;
 			s32 color2 = (u8)*p; color2 = (color2 >> 4) & 0x0f;
 			++p;
 
+			CHECKD(shiftedCount(count, shift));
 			for (s32 i=0; i<count; ++i)
 			{
 				u8 mask = 0x0f << shift;
@@ -207,11 +233,14 @@ void CImageLoaderBMP::decompress4BitRLE(u8*& bmpData, s32 size, s32 width, s32 h
 		}
 	}
 
+exit:
 	delete [] bmpData;
 	bmpData = newBmp;
 }
 
-
+#undef CHECKOFF
+#undef CHECKP
+#undef CHECKD
 
 //! creates a surface from the file
 IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
