@@ -220,7 +220,7 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 				u32 wlength = copyWord(vertexWord, linePtr, WORD_BUFFER_LENGTH, endPtr);
 				// this function will also convert obj's 1-based index to c++'s 0-based index
 				retrieveVertexIndices(vertexWord, Idx, vertexWord+wlength+1, vertexBuffer.size(), textureCoordBuffer.size(), normalsBuffer.size());
-				if ( -1 != Idx[0] && Idx[0] < (irr::s32)vertexBuffer.size() )
+				if ( Idx[0] >= 0 && Idx[0] < (irr::s32)vertexBuffer.size() )
 					v.Pos = vertexBuffer[Idx[0]];
 				else
 				{
@@ -229,11 +229,11 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 					cleanUp();
 					return 0;
 				}
-				if ( -1 != Idx[1] && Idx[1] < (irr::s32)textureCoordBuffer.size() )
+				if ( Idx[1] >= 0 && Idx[1] < (irr::s32)textureCoordBuffer.size() )
 					v.TCoords = textureCoordBuffer[Idx[1]];
 				else
 					v.TCoords.set(0.0f,0.0f);
-				if ( -1 != Idx[2] && Idx[2] < (irr::s32)normalsBuffer.size() )
+				if ( Idx[2] >= 0 && Idx[2] < (irr::s32)normalsBuffer.size() )
 					v.Normal = normalsBuffer[Idx[2]];
 				else
 				{
