@@ -290,14 +290,17 @@ IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
 
 	file->seek(header.BitmapDataOffset);
 
-	f32 t = (header.Width) * (header.BPP / 8.0f);
-	s32 widthInBytes = (s32)t;
-	t -= widthInBytes;
-	if (t!=0.0f)
-		++widthInBytes;
+	s32 widthInBytes;
+	{
+		f32 t = (header.Width) * (header.BPP / 8.0f);
+		widthInBytes = (s32)t;
+		t -= widthInBytes;
+		if (t!=0.0f)
+			++widthInBytes;
+	}
 
-	s32 lineData = widthInBytes + ((4-(widthInBytes%4)))%4;
-	pitch = lineData - widthInBytes;
+	const s32 lineSize = widthInBytes + ((4-(widthInBytes%4)))%4;
+	pitch = lineSize - widthInBytes;
 
 	u8* bmpData = new u8[header.BitmapDataSize];
 	file->read(bmpData, header.BitmapDataSize);
@@ -307,15 +310,24 @@ IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
 	{
 	case 1: // 8 bit rle
 		decompress8BitRLE(bmpData, header.BitmapDataSize, header.Width, header.Height, pitch);
+		header.BitmapDataSize = (header.Width + pitch) * header.Height;
 		break;
 	case 2: // 4 bit rle
 		decompress4BitRLE(bmpData, header.BitmapDataSize, header.Width, header.Height, pitch);
+		header.BitmapDataSize = ((header.Width+1)/2 + pitch) * header.Height;
 		break;
 	}
 
-	// create surface
+	if (header.BitmapDataSize < lineSize * header.Height)
+	{
+		os::Printer::log("Bitmap data is cut off.", ELL_ERROR);
 
-	// no default constructor from packed area! ARM problem!
+		delete [] paletteData;
+		delete [] bmpData;
+		return 0;
+	}
+
+	// create surface
 	core::dimension2d<u32> dim;
 	dim.Width = header.Width;
 	dim.Height = header.Height;
