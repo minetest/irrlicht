@@ -396,7 +396,8 @@ bool CXMeshFileLoader::readFileIntoMemory(io::IReadFile* file)
 		return false;
 	}
 
-	Buffer = new c8[size];
+	Buffer = new c8[size+1];
+	Buffer[size] = 0x0; // null-terminate
 
 	//! read all into memory
 	if (file->read(Buffer, size) != static_cast<size_t>(size))
