@@ -3,6 +3,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(IRREXAMPLES
 	LoadTexture
+	LoadMesh
 )
 if(FALSE)
 	list(APPEND IRREXAMPLES AutomatedTest)

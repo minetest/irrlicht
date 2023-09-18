@@ -1,7 +1,7 @@
 #!/bin/bash
 aflout=out/default
 myout=out_rep
-exe=./bin/Linux/LoadTexture
+exe=./bin/Linux/LoadMesh
 rm -rf "$myout" && mkdir -p "$myout"
 find $aflout/crashes -name 'id:*' -print | \
 while read file; do
@@ -14,7 +14,7 @@ while read file; do
 	if grep -Fq '==ERROR: AddressSanitizer: SEGV on unknown address' "$fout"; then
 		gdb -q --batch -iex 'set confirm off' -ex r -ex bt --args \
 			${exe}_noasan "$file" >"$fout" 2>&1
-		if grep -q '^Thread.*received signal'; then
+		if grep -Eq '^(Thread|Program).*received signal' "$fout"; then
 			cp "$file" "$myout/$short.bin"
 			echo "✔ Reproduced (gdb)"
 		else
