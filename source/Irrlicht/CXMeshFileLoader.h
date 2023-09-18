@@ -167,6 +167,8 @@ private:
 	u32 Line;
 	io::path FilePath;
 
+	bool ErrorState;
+
 	CSkinnedMesh::SJoint *CurFrame;
 
 	core::array<SXMesh*> Meshes;
