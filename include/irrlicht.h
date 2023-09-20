@@ -30,7 +30,6 @@
 #define __IRRLICHT_H_INCLUDED__
 
 #include "aabbox3d.h"
-#include "CIndexBuffer.h"
 #include "CMeshBuffer.h"
 #include "coreutil.h"
 #include "dimension2d.h"
