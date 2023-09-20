@@ -33,7 +33,6 @@
 #include "CIndexBuffer.h"
 #include "CMeshBuffer.h"
 #include "coreutil.h"
-#include "CVertexBuffer.h"
 #include "dimension2d.h"
 #include "ECullingTypes.h"
 #include "EDebugSceneTypes.h"
