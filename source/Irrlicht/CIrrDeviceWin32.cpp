@@ -814,9 +814,6 @@ CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params)
 		wcex.lpszClassName	= ClassName;
 		wcex.hIconSm		= 0;
 
-		// if there is an icon, load it
-		wcex.hIcon = (HICON)LoadImageW(hInstance, L"irrlicht.ico", IMAGE_ICON, 0,0, LR_LOADFROMFILE | LR_DEFAULTSIZE);
-
 		RegisterClassExW(&wcex);
 
 		// calculate client size
