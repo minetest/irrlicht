@@ -681,9 +681,18 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 			indexList = 0;
 		}
 
-		drawVertexPrimitiveListWithBoundVBO(vertices, mb->getVertexCount(), indexList,
-				mb->getPrimitiveCount(), mb->getVertexType(), mb->getPrimitiveType(),
-				mb->getIndexType(), reinterpret_cast<uintptr_t>(vertices));
+		if (HWBuffer->Mapped_Vertex == scene::EHM_NEVER)
+		{
+			drawVertexPrimitiveList(vertices, mb->getVertexCount(), indexList,
+					mb->getPrimitiveCount(), mb->getVertexType(), mb->getPrimitiveType(),
+					mb->getIndexType());
+		}
+		else
+		{
+			drawVertexPrimitiveListWithBoundVBO(vertices, mb->getVertexCount(), indexList,
+					mb->getPrimitiveCount(), mb->getVertexType(), mb->getPrimitiveType(),
+					mb->getIndexType(), reinterpret_cast<uintptr_t>(vertices));
+		}
 
 		if (HWBuffer->Mapped_Vertex != scene::EHM_NEVER)
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
