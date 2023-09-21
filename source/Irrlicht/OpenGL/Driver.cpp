@@ -587,18 +587,22 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 			}
 		}
 
-		if (HWBuffer->Mapped_Index != scene::EHM_NEVER)
+		// Should EHM_NEVER for index buffers just be ignored? Does this make sense?
+
+		//if (HWBuffer->Mapped_Index != scene::EHM_NEVER)
+		//{
+
+		if (HWBuffer->ChangedID_Index != HWBuffer->MeshBuffer->getChangedID_Index()
+			|| !static_cast<SHWBufferLink_opengl*>(HWBuffer)->vbo_indicesID)
 		{
-			if (HWBuffer->ChangedID_Index != HWBuffer->MeshBuffer->getChangedID_Index()
-				|| !static_cast<SHWBufferLink_opengl*>(HWBuffer)->vbo_indicesID)
-			{
 
-				HWBuffer->ChangedID_Index = HWBuffer->MeshBuffer->getChangedID_Index();
+			HWBuffer->ChangedID_Index = HWBuffer->MeshBuffer->getChangedID_Index();
 
-				if (!updateIndexHardwareBuffer((SHWBufferLink_opengl*)HWBuffer))
-					return false;
-			}
+			if (!updateIndexHardwareBuffer((SHWBufferLink_opengl*)HWBuffer))
+				return false;
 		}
+
+		//}
 
 		return true;
 	}
@@ -607,7 +611,7 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 	//! Create hardware buffer from meshbuffer
 	COpenGL3DriverBase::SHWBufferLink *COpenGL3DriverBase::createHardwareBuffer(const scene::IMeshBuffer* mb)
 	{
-		if (!mb || (mb->getHardwareMappingHint_Index() == scene::EHM_NEVER && mb->getHardwareMappingHint_Vertex() == scene::EHM_NEVER))
+		if (!mb)
 			return 0;
 
 		SHWBufferLink_opengl *HWBuffer = new SHWBufferLink_opengl(mb);
@@ -675,11 +679,13 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 			vertices = 0;
 		}
 
-		if (HWBuffer->Mapped_Index != scene::EHM_NEVER)
-		{
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, HWBuffer->vbo_indicesID);
-			indexList = 0;
-		}
+		// Should EHM_NEVER for index buffers just be ignored? Does this make sense?
+
+		//if (HWBuffer->Mapped_Index != scene::EHM_NEVER)
+		//{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, HWBuffer->vbo_indicesID);
+		indexList = 0;
+		//}
 
 		if (HWBuffer->Mapped_Vertex == scene::EHM_NEVER)
 		{
@@ -697,8 +703,10 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		if (HWBuffer->Mapped_Vertex != scene::EHM_NEVER)
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		if (HWBuffer->Mapped_Index != scene::EHM_NEVER)
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		//if (HWBuffer->Mapped_Index != scene::EHM_NEVER)
+		//{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		//}
 	}
 
 
