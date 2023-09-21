@@ -353,7 +353,7 @@ namespace video
 		// drawHardwareBuffer function.
 		void beginDrawWithBoundVBO(const VertexType &vertexType, uintptr_t offset);
 
-		void beginDraw(const VertexType &vertexType, int vertexCount, uintptr_t verticesBase);
+		void beginDraw(const VertexType &vertexType, int vertexCount, const void *verticesBase);
 		void endDraw(const VertexType &vertexType);
 
 		COpenGL3CacheHandler* CacheHandler;

@@ -1121,14 +1121,14 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 
 	void COpenGL3DriverBase::drawArrays(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount)
 	{
-		beginDraw(vertexType, vertexCount, reinterpret_cast<uintptr_t>(vertices));
+		beginDraw(vertexType, vertexCount, vertices);
 		glDrawArrays(primitiveType, 0, vertexCount);
 		endDraw(vertexType);
 	}
 
 	void COpenGL3DriverBase::drawElements(GLenum primitiveType, const VertexType &vertexType, const void *vertices, int vertexCount, const u16 *indices, int indexCount)
 	{
-		beginDraw(vertexType, vertexCount, reinterpret_cast<uintptr_t>(vertices));
+		beginDraw(vertexType, vertexCount, vertices);
 		glDrawRangeElements(primitiveType, 0, vertexCount - 1, indexCount, GL_UNSIGNED_SHORT, indices);
 		endDraw(vertexType);
 	}
@@ -1150,10 +1150,10 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		}
 	}
 
-	void COpenGL3DriverBase::beginDraw(const VertexType &vertexType, int vertexCount, uintptr_t verticesBase)
+	void COpenGL3DriverBase::beginDraw(const VertexType &vertexType, int vertexCount, const void *verticesBase)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, GlobalVBO);
-		glBufferData(GL_ARRAY_BUFFER, vertexType.VertexSize * vertexCount, reinterpret_cast<void *>(verticesBase), GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertexType.VertexSize * vertexCount, verticesBase, GL_DYNAMIC_DRAW);
 		beginDrawWithBoundVBO(vertexType, 0);
 	}
 
