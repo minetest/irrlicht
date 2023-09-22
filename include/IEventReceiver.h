@@ -263,6 +263,10 @@ namespace irr
 			//! A checkbox has changed its check state.
 			EGET_CHECKBOX_CHANGED,
 
+			//! A listbox would like to open.
+			/** You can prevent the listbox from opening by absorbing the event. */
+			EGET_LISTBOX_OPENED,
+
 			//! A new item in a listbox was selected.
 			/** NOTE: You also get this event currently when the same item was clicked again after more than 500 ms. */
 			EGET_LISTBOX_CHANGED,

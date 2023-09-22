@@ -185,6 +185,15 @@ void CGUIComboBox::setSelected(s32 idx)
 }
 
 
+//! Sets the selected item and emits a change event.
+/** Set this to -1 if no item should be selected */
+void CGUIComboBox::setAndSendSelected(s32 idx)
+{
+	setSelected(idx);
+	sendSelectionChangedEvent();
+}
+
+
 //! called if an event happened.
 bool CGUIComboBox::OnEvent(const SEvent& event)
 {
@@ -451,8 +460,19 @@ void CGUIComboBox::openCloseMenu()
 	}
 	else
 	{
-		if (Parent)
+		if (Parent) {
+			SEvent event;
+			event.EventType = EET_GUI_EVENT;
+			event.GUIEvent.Caller = this;
+			event.GUIEvent.Element = 0;
+			event.GUIEvent.EventType = EGET_LISTBOX_OPENED;
+
+			// Allow to prevent the listbox from opening.
+			if (Parent->OnEvent(event))
+				return;
+
 			Parent->bringToFront(this);
+		}
 
 		IGUISkin* skin = Environment->getSkin();
 		u32 h = Items.size();
