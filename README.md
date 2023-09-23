@@ -1,9 +1,8 @@
 IrrlichtMt version 1.9
 ======================
 
-The Irrlicht Engine is an open source realtime 3D engine written in C++.
-
-This is a fork by the [Minetest](https://github.com/minetest) developers that was stripped-down and customized specifically for use in Minetest.
+IrrlichtMt is the 3D engine of [Minetest](https://github.com/minetest).
+It is based on the [Irrlicht Engine](https://irrlicht.sourceforge.io/) but is now developed independently.
 It is intentionally not compatible to upstream and is planned to be eventually absorbed into Minetest.
 
 Build
