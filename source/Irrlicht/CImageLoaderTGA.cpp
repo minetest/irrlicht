@@ -63,8 +63,13 @@ u8 *CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const STGAHeader& 
 
 			for(s32 counter = 1; counter < chunkheader; counter++)
 			{
-				for(s32 elementCounter=0; elementCounter < bytesPerPixel; elementCounter++)
-					data[currentByte + elementCounter] = data[dataOffset + elementCounter];
+				if ( currentByte + bytesPerPixel <= imageSize )
+				{
+					for(s32 elementCounter=0; elementCounter < bytesPerPixel; elementCounter++)
+					{
+						data[currentByte + elementCounter] = data[dataOffset + elementCounter];
+					}
+				}
 
 				currentByte += bytesPerPixel;
 			}
