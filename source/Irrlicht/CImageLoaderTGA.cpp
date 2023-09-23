@@ -117,8 +117,17 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 
 	if (header.ColorMapType)
 	{
-		// create 32 bit palette
-		palette = new u32[ header.ColorMapLength];
+		// Create 32 bit palette
+		const irr::u16 paletteSize = core::max_((u16)256, header.ColorMapLength);	// ColorMapLength can lie, but so far we only use palette for 8-bit, so ensure it has 256 entries
+		palette = new u32[paletteSize];
+
+		if( paletteSize > header.ColorMapLength )
+		{
+			// To catch images using palette colors with invalid indices
+			const irr::u32 errorCol = irr::video::SColor(255,255, 0, 205).color; // bright magenta
+			for ( irr::u16 i = header.ColorMapLength; i< paletteSize; ++i )
+				palette[i] = errorCol;
+		}
 
 		// read color map
 		u8 * colorMap = new u8[header.ColorMapEntrySize/8 * header.ColorMapLength];
