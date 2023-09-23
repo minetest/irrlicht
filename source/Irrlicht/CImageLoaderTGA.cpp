@@ -163,7 +163,7 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 			header.ImageType == 3 // Uncompressed, black and white images
 		)
 	{
-		const s32 imageSize = header.ImageHeight * header.ImageWidth * header.PixelDepth/8;
+		const s32 imageSize = header.ImageHeight * header.ImageWidth * (header.PixelDepth/8);
 		data = new u8[imageSize];
 	  	file->read(data, imageSize);
 	}

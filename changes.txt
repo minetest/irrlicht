@@ -1,6 +1,9 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Fix number overflow in TGA loader causing crashes later on. Thanks @sfan5 for fuzzing test.
+- Fix several buffer overflows in TGA loader. Thanks @erlehmann for report and @sfan5 for fuzzing test: https://github.com/minetest/irrlicht/issues/236
+- TGA loader no longer reduces 24&32 bit TGA's with palettes to 16 bit. Thanks @erlehmann for report: https://irrlicht.sourceforge.io/forum/viewtopic.php?t=52925
 - Fix compile error with OS X 10.10 SDK, bug #463. Thanks @Ryan Schmidt for report and patch.
 - Optimize quaternion::rotationFromTo. Thanks @Robert Eisele for patch and proof (https://raw.org/proof/quaternion-from-two-vectors)
 - Shader material example shows now how to pass material values.
