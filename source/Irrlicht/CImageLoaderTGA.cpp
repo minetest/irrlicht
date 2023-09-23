@@ -193,14 +193,28 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 			}
 			else
 			{
-				image = new CImage(ECF_A1R5G5B5,
-					core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
-				if (image)
-					CColorConverter::convert8BitTo16Bit((u8*)data,
-						(s16*)image->getData(),
-						header.ImageWidth,header.ImageHeight,
-						(s32*) palette, 0,
-						(header.ImageDescriptor&0x20)==0);
+				switch ( header.ColorMapEntrySize )
+				{
+					case 16:
+						image = new CImage(ECF_A1R5G5B5, core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
+						if ( image )
+							CColorConverter::convert8BitTo16Bit((u8*)data,
+							(s16*)image->getData(),
+							header.ImageWidth,header.ImageHeight,
+							(s32*) palette, 0,
+							(header.ImageDescriptor&0x20)==0);
+						break;
+					// Note: 24 bit with palette would need a 24 bit palette, too lazy doing that now (textures will prefer 32-bit later anyway)
+					default:
+						image = new CImage(ECF_A8R8G8B8, core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
+						if ( image )
+							CColorConverter::convert8BitTo32Bit((u8*)data,
+							(u8*)image->getData(),
+							header.ImageWidth,header.ImageHeight,
+							(u8*) palette, 0,
+							(header.ImageDescriptor&0x20)==0);
+						break;
+				}
 			}
 		}
 		break;
