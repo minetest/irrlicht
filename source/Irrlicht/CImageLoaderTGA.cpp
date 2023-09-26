@@ -106,8 +106,8 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 	header.ImageHeight = os::Byteswap::byteswap(header.ImageHeight);
 #endif
 
-	if (!checkImageDimensions(header.ImageWidth, header.ImageHeight))
-	{
+	const u64 imageSize = (u64)header.ImageHeight * header.ImageWidth * header.PixelDepth / 8;
+	if (imageSize >= 0x1000'0000) { // 1/4 GiB
 		os::Printer::log("Image dimensions too large in file", file->getFileName(), ELL_ERROR);
 		return nullptr;
 	}
@@ -146,7 +146,6 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 			header.ImageType == 3 // Uncompressed, black and white images
 		)
 	{
-		const s32 imageSize = header.ImageHeight * header.ImageWidth * header.PixelDepth/8;
 		data = new u8[imageSize];
 	  	file->read(data, imageSize);
 	}
