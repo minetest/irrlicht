@@ -4,6 +4,8 @@
 
 #include "CImageLoaderTGA.h"
 
+#include <array>
+
 #include "IReadFile.h"
 #include "os.h"
 #include "CColorConverter.h"
@@ -93,8 +95,8 @@ bool CImageLoaderTGA::isALoadableFileFormat(io::IReadFile* file) const
 //! creates a surface from the file
 IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 {
-	STGAHeader header;
-	u32 *palette = 0;
+	STGAHeader header = {};
+	std::array<s32, 256> palette = {}; // large enough for all 8bpp images to avoid out-of-bounds access
 
 	file->read(&header, sizeof(STGAHeader));
 
@@ -107,36 +109,32 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 	if (!checkImageDimensions(header.ImageWidth, header.ImageHeight))
 	{
 		os::Printer::log("Image dimensions too large in file", file->getFileName(), ELL_ERROR);
-		return 0;
+		return nullptr;
 	}
 
 	// skip image identification field
 	if (header.IdLength)
 		file->seek(header.IdLength, true);
 
-	if (header.ColorMapType)
-	{
-		// create 32 bit palette
-		palette = new u32[ header.ColorMapLength];
-
-		// read color map
-		u8 * colorMap = new u8[header.ColorMapEntrySize/8 * header.ColorMapLength];
-		file->read(colorMap,header.ColorMapEntrySize/8 * header.ColorMapLength);
-
-		// convert to 32-bit palette
-		switch ( header.ColorMapEntrySize )
-		{
-			case 16:
-				CColorConverter::convert_A1R5G5B5toA8R8G8B8(colorMap, header.ColorMapLength, palette);
-				break;
-			case 24:
-				CColorConverter::convert_B8G8R8toA8R8G8B8(colorMap, header.ColorMapLength, palette);
-				break;
-			case 32:
-				CColorConverter::convert_B8G8R8A8toA8R8G8B8(colorMap, header.ColorMapLength, palette);
-				break;
+	if (header.ColorMapType) {
+		if (header.ColorMapLength > palette.size()) {
+			os::Printer::log("Image palette too large in file", file->getFileName(), ELL_ERROR);
+			return nullptr;
 		}
-		delete [] colorMap;
+
+		void (*convert_palette)(const void* sP, s32 sN, void* dP);
+		switch (header.ColorMapEntrySize) {
+			case 16: convert_palette = CColorConverter::convert_A1R5G5B5toA8R8G8B8; break;
+			case 24: convert_palette = CColorConverter::convert_B8G8R8toA8R8G8B8; break;
+			case 32: convert_palette = CColorConverter::convert_B8G8R8A8toA8R8G8B8; break;
+			default:
+				os::Printer::log("Image palette has wrong entry size in file", file->getFileName(), ELL_ERROR);
+				return nullptr;
+		}
+
+		std::vector<u8> original_palette(header.ColorMapEntrySize/8 * header.ColorMapLength);
+		file->read(original_palette.data(), original_palette.size());
+		convert_palette(original_palette.data(), header.ColorMapLength, palette.data());
 	}
 
 	// read image
@@ -161,7 +159,6 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 	else
 	{
 		os::Printer::log("Unsupported TGA file type", file->getFileName(), ELL_ERROR);
-		delete [] palette;
 		return 0;
 	}
 
@@ -189,7 +186,7 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 					CColorConverter::convert8BitTo16Bit((u8*)data,
 						(s16*)image->getData(),
 						header.ImageWidth,header.ImageHeight,
-						(s32*) palette, 0,
+						palette.data(), 0,
 						(header.ImageDescriptor&0x20)==0);
 			}
 		}
@@ -221,7 +218,6 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 	}
 
 	delete [] data;
-	delete [] palette;
 
 	return image;
 }
