@@ -41,14 +41,16 @@ std::vector<u8> CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const 
 	while(currentByte < imageSize)
 	{
 		u8 chunkheader = 0;
-		file->read(&chunkheader, sizeof(u8)); // Read The Chunk's Header
+		if (file->read(&chunkheader, sizeof(u8)) != sizeof(u8)) // Read The Chunk's Header
+			return {};
 
 		if (chunkheader < 128) { // If The Chunk Is A 'RAW' Chunk
 			chunkheader++; // Add 1 To The Value To Get Total Number Of Raw Pixels
 			s32 byteCount = bytesPerPixel * chunkheader;
 			if (byteCount > imageSize - currentByte)
 				return {};
-			file->read(&data[currentByte], byteCount);
+			if (file->read(&data[currentByte], byteCount) != byteCount)
+				return {};
 			currentByte += byteCount;
 		} else {
 			// thnx to neojzs for some fixes with this code
@@ -62,8 +64,8 @@ std::vector<u8> CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const 
 				return {};
 
 			s32 dataOffset = currentByte;
-			file->read(&data[dataOffset], bytesPerPixel);
-
+			if (file->read(&data[dataOffset], bytesPerPixel) != bytesPerPixel)
+				return {};
 			currentByte += bytesPerPixel;
 
 			for(s32 counter = 1; counter < chunkheader; counter++)
