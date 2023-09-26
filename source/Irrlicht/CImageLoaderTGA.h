@@ -5,6 +5,7 @@
 #pragma once
 
 #include "IImageLoader.h"
+#include <vector>
 
 
 namespace irr
@@ -61,7 +62,7 @@ public:
 private:
 
 	//! loads a compressed tga. Was written and sent in by Jon Pry, thank you very much!
-	u8* loadCompressedImage(io::IReadFile *file, const STGAHeader& header) const;
+	std::vector<u8> loadCompressedImage(io::IReadFile *file, const STGAHeader& header) const;
 };
 
 } // end namespace video

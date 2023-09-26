@@ -28,14 +28,14 @@ bool CImageLoaderTGA::isALoadableFileExtension(const io::path& filename) const
 
 
 //! loads a compressed tga.
-u8 *CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const STGAHeader& header) const
+std::vector<u8> CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const STGAHeader& header) const
 {
 	// This was written and sent in by Jon Pry, thank you very much!
 	// I only changed the formatting a little bit.
 
 	s32 bytesPerPixel = header.PixelDepth/8;
 	s32 imageSize =  header.ImageHeight * header.ImageWidth * bytesPerPixel;
-	u8* data = new u8[imageSize];
+	std::vector<u8> data(imageSize);
 	s32 currentByte = 0;
 
 	while(currentByte < imageSize)
@@ -139,14 +139,14 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 
 	// read image
 
-	u8* data = 0;
+	std::vector<u8> data;
 
 	if (	header.ImageType == 1 || // Uncompressed, color-mapped images.
 			header.ImageType == 2 || // Uncompressed, RGB images
 			header.ImageType == 3 // Uncompressed, black and white images
 		) {
-		data = new u8[imageSize];
-		if (file->read(data, imageSize) != imageSize) {
+		data.resize(imageSize);
+		if (file->read(data.data(), imageSize) != imageSize) {
 			os::Printer::log("Failed to read image data from file", file->getFileName(), ELL_ERROR);
 			return nullptr;
 		}
@@ -174,7 +174,7 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 				image = new CImage(ECF_R8G8B8,
 					core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
 				if (image)
-					CColorConverter::convert8BitTo24Bit((u8*)data,
+					CColorConverter::convert8BitTo24Bit((u8*)data.data(),
 						(u8*)image->getData(),
 						header.ImageWidth,header.ImageHeight,
 						0, 0, (header.ImageDescriptor&0x20)==0);
@@ -184,7 +184,7 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 				image = new CImage(ECF_A1R5G5B5,
 					core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
 				if (image)
-					CColorConverter::convert8BitTo16Bit((u8*)data,
+					CColorConverter::convert8BitTo16Bit((u8*)data.data(),
 						(s16*)image->getData(),
 						header.ImageWidth,header.ImageHeight,
 						palette.data(), 0,
@@ -196,7 +196,7 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 		image = new CImage(ECF_A1R5G5B5,
 			core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
 		if (image)
-			CColorConverter::convert16BitTo16Bit((s16*)data,
+			CColorConverter::convert16BitTo16Bit((s16*)data.data(),
 				(s16*)image->getData(), header.ImageWidth,	header.ImageHeight, 0, (header.ImageDescriptor&0x20)==0);
 		break;
 	case 24:
@@ -204,21 +204,19 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 				core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
 			if (image)
 				CColorConverter::convert24BitTo24Bit(
-					(u8*)data, (u8*)image->getData(), header.ImageWidth, header.ImageHeight, 0, (header.ImageDescriptor&0x20)==0, true);
+					(u8*)data.data(), (u8*)image->getData(), header.ImageWidth, header.ImageHeight, 0, (header.ImageDescriptor&0x20)==0, true);
 		break;
 	case 32:
 			image = new CImage(ECF_A8R8G8B8,
 				core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
 			if (image)
-				CColorConverter::convert32BitTo32Bit((s32*)data,
+				CColorConverter::convert32BitTo32Bit((s32*)data.data(),
 					(s32*)image->getData(), header.ImageWidth, header.ImageHeight, 0, (header.ImageDescriptor&0x20)==0);
 		break;
 	default:
 		os::Printer::log("Unsupported TGA format", file->getFileName(), ELL_ERROR);
 		break;
 	}
-
-	delete [] data;
 
 	return image;
 }
