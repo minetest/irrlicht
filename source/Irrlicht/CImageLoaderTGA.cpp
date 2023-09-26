@@ -144,10 +144,12 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 	if (	header.ImageType == 1 || // Uncompressed, color-mapped images.
 			header.ImageType == 2 || // Uncompressed, RGB images
 			header.ImageType == 3 // Uncompressed, black and white images
-		)
-	{
+		) {
 		data = new u8[imageSize];
-	  	file->read(data, imageSize);
+		if (file->read(data, imageSize) != imageSize) {
+			os::Printer::log("Failed to read image data from file", file->getFileName(), ELL_ERROR);
+			return nullptr;
+		}
 	}
 	else
 	if(header.ImageType == 10)
