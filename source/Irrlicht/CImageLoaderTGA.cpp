@@ -43,19 +43,23 @@ std::vector<u8> CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const 
 		u8 chunkheader = 0;
 		file->read(&chunkheader, sizeof(u8)); // Read The Chunk's Header
 
-		if(chunkheader < 128) // If The Chunk Is A 'RAW' Chunk
-		{
+		if (chunkheader < 128) { // If The Chunk Is A 'RAW' Chunk
 			chunkheader++; // Add 1 To The Value To Get Total Number Of Raw Pixels
-
-			file->read(&data[currentByte], bytesPerPixel * chunkheader);
-			currentByte += bytesPerPixel * chunkheader;
-		}
-		else
-		{
+			s32 byteCount = bytesPerPixel * chunkheader;
+			if (byteCount > imageSize - currentByte)
+				return {};
+			file->read(&data[currentByte], byteCount);
+			currentByte += byteCount;
+		} else {
 			// thnx to neojzs for some fixes with this code
 
 			// If It's An RLE Header
 			chunkheader -= 127; // Subtract 127 To Get Rid Of The ID Bit
+			// Read one pixel but write it `chunkheader` times
+
+			s32 byteCount = bytesPerPixel * chunkheader;
+			if (byteCount > imageSize - currentByte)
+				return {};
 
 			s32 dataOffset = currentByte;
 			file->read(&data[dataOffset], bytesPerPixel);
@@ -156,6 +160,10 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 	{
 		// Runlength encoded RGB images
 		data = loadCompressedImage(file, header);
+		if (data.empty()) {
+			os::Printer::log("Not a valid TGA file", file->getFileName(), ELL_ERROR);
+			return nullptr;
+		}
 	}
 	else
 	{
