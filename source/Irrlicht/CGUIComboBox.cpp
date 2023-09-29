@@ -22,9 +22,9 @@ namespace gui
 CGUIComboBox::CGUIComboBox(IGUIEnvironment* environment, IGUIElement* parent,
 	s32 id, core::rect<s32> rectangle)
 	: IGUIComboBox(environment, parent, id, rectangle),
-	ListButton(0), SelectedText(0), ListBox(0), LastFocus(0),
+	ListButton(nullptr), SelectedText(nullptr), ListBox(nullptr), LastFocus(nullptr),
 	Selected(-1), HAlign(EGUIA_UPPERLEFT), VAlign(EGUIA_CENTER), MaxSelectionRows(5), HasFocus(false),
-	ActiveFont(0)
+	ActiveFont(nullptr)
 {
 	#ifdef _DEBUG
 	setDebugName("CGUIComboBox");
@@ -217,7 +217,7 @@ bool CGUIComboBox::OnEvent(const SEvent& event)
 					openCloseMenu();
 				}
 
-				ListButton->setPressed(ListBox == 0);
+				ListButton->setPressed(ListBox == nullptr);
 
 				return true;
 			}
@@ -370,7 +370,7 @@ void CGUIComboBox::sendSelectionChangedEvent()
 
 		event.EventType = EET_GUI_EVENT;
 		event.GUIEvent.Caller = this;
-		event.GUIEvent.Element = 0;
+		event.GUIEvent.Element = nullptr;
 		event.GUIEvent.EventType = EGET_COMBO_BOX_CHANGED;
 		Parent->OnEvent(event);
 	}
@@ -456,7 +456,7 @@ void CGUIComboBox::openCloseMenu()
 		// close list box
 		Environment->setFocus(this);
 		ListBox->remove();
-		ListBox = 0;
+		ListBox = nullptr;
 	}
 	else
 	{
@@ -464,7 +464,7 @@ void CGUIComboBox::openCloseMenu()
 			SEvent event;
 			event.EventType = EET_GUI_EVENT;
 			event.GUIEvent.Caller = this;
-			event.GUIEvent.Element = 0;
+			event.GUIEvent.Element = nullptr;
 			event.GUIEvent.EventType = EGET_LISTBOX_OPENED;
 
 			// Allow to prevent the listbox from opening.
