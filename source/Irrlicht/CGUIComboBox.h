@@ -55,6 +55,10 @@ namespace gui
 		//! sets the selected item. Set this to -1 if no item should be selected
 		void setSelected(s32 idx) override;
 
+		//! Sets the selected item and emits a change event.
+		/** Set this to -1 if no item should be selected */
+		void setAndSendSelected(s32 idx) override;
+
 		//! sets the text alignment of the text part
 		void setTextAlignment(EGUI_ALIGNMENT horizontal, EGUI_ALIGNMENT vertical) override;
 
