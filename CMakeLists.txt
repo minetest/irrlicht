@@ -41,7 +41,9 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+enable_testing()
 add_subdirectory(source/Irrlicht)
+add_subdirectory(test)
 
 option(BUILD_EXAMPLES "Build example applications" FALSE)
 if(BUILD_EXAMPLES)
