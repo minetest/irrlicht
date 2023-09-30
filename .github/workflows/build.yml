@@ -24,6 +24,10 @@ jobs:
           cmake .
           make VERBOSE=1 -j2
 
+      - name: Test
+        run: |
+          ctest --output-on-failure
+
       - name: Package
         run: |
           make DESTDIR=$PWD/_install install
