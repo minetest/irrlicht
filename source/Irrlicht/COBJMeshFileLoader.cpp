@@ -255,6 +255,7 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 				{
 					os::Printer::log("Invalid vertex index in this line", wordBuffer.c_str(), ELL_ERROR);
 					delete [] buf;
+					cleanUp();
 					return 0;
 				}
 				if ( Idx[1] >= 0 && Idx[1] < (irr::s32)textureCoordBuffer.size() )
