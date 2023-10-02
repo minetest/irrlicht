@@ -402,6 +402,18 @@ Changes in 1.9 (not yet released)
 
 --------------------------
 Changes in 1.8.6
+- COBJMeshFilerLoder: prevent buffer overruns from loading files passing negative indices. Thanks @sfan5 fore report and patch.
+  Patch (commit 827710f to Minetest): https://github.com/minetest/irrlicht/commit/827710f74a615f53b2a1b0c539c58c2b6124f883
+- COBJMeshFilerLoder: fix buffer overruns when loading empty face lines. Thanks @sfan5 fore report and patch.
+  Patch (commit 80e1609 to Minetest): https://github.com/minetest/irrlicht/commit/80e160935d3c2677344b0968c2690f63083a98dd (partially applied)
+- CObjMeshFileLoader: Backport fixes from trunk to avoid unnecessary memory allocations (speedup)
+- CObjMeshFileLoader: Backport fixes from trunk to avoid some buffer overruns
+- CImageLoaderBMP: Fix handling 4 bit RLE encoding. Thanks @sfan5 finding first bug and reporting (had some more)
+- CImageLoaderBMP: add bound checks to RLE decompression. Thanks @sfan5 for report and patch
+  Patch (commit 4506d23 to Minetest): https://github.com/minetest/irrlicht/commit/4506d23dc3fa48332b5ca6c05633aebdbac673be
+- CImageLoaderBMP: check bitmap data against required size. Thanks @sfan5 for report and patch 
+  Report: https://irrlicht.sourceforge.io/forum/viewtopic.php?p=307195
+  Patch (commit 028cb8d to Minetest): https://github.com/minetest/irrlicht/commit/028cb8dbed8266264a5804108191f56e238db1bc
 - Fix OSX 10.9X build problem related to NSApplication setDelegate calls getting casted to wrong class (Bug #462 and also fixing older Bug #297)
   Thanks @Ryan Schmidt for bug report and patch.
 - Backport: Fix compiling for Apple silicon (Bugs #452 and #461). Thanks @Ryan Schmidt for bug report and updated patch.
