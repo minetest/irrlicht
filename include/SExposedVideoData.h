@@ -53,11 +53,11 @@ struct SExposedVideoData
         //! The NSWindow object.
         void* Window;
     };
-	
+
 	struct SOpenGLFB
 	{
 		//! The EGLNativeWindowType object.
-		void* Window;	
+		void* Window;
 	};
 
 	struct SOGLESAndroid

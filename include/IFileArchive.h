@@ -80,9 +80,9 @@ public:
 
 	//! return the name (id) of the file Archive
 	virtual const io::path& getArchiveName() const =0;
-	
+
 	//! Add a directory in the archive and all it's files to the FileList
-	/** Only needed for file-archives which have no information about their own 
+	/** Only needed for file-archives which have no information about their own
 	directory structure. In that case the user must add directories manually.
 	Currently this is necessary for archives of type EFAT_ANDROID_ASSET.
 	The root-path itself is already set by the engine.

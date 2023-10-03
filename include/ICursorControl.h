@@ -134,16 +134,16 @@ namespace gui
 		virtual void setPosition(s32 x, s32 y) = 0;
 
 		//! Returns the current position of the mouse cursor.
-		/** \param updateCursor When true ask system/OS for current cursor position. 
-			When false return the last known (buffered) position ( this is useful to 
+		/** \param updateCursor When true ask system/OS for current cursor position.
+			When false return the last known (buffered) position ( this is useful to
 			check what has become of a setPosition call with float numbers).
 		\return Returns the current position of the cursor. The returned position
 		is the position of the mouse cursor in pixel units. */
 		virtual const core::position2d<s32>& getPosition(bool updateCursor=true) = 0;
 
 		//! Returns the current position of the mouse cursor.
-		/** \param updateCursor When true ask system/OS for current cursor position. 
-			When false return the last known (buffered) position (this is 
+		/** \param updateCursor When true ask system/OS for current cursor position.
+			When false return the last known (buffered) position (this is
 			useful to check what has become of a setPosition call with float numbers
 			and is often different from the values you passed in setPosition).
 		\return Returns the current position of the cursor. The returned position
@@ -160,7 +160,7 @@ namespace gui
 		\param rect: A pointer to an reference rectangle or 0 to disable the reference rectangle.*/
 		virtual void setReferenceRect(core::rect<s32>* rect=0) = 0;
 
-		//! Internally fixes the mouse position, and reports relative mouse movement compared to the old position 
+		//! Internally fixes the mouse position, and reports relative mouse movement compared to the old position
 		/** Specific to SDL */
 		virtual void setRelativeMode(bool relative) {};
 

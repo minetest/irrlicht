@@ -146,7 +146,7 @@ namespace irr
 		KEY_BROWSER_FORWARD  = 0xA7,  // Browser Forward key
 		KEY_BROWSER_REFRESH  = 0xA8,  // Browser Refresh key
 		KEY_BROWSER_STOP     = 0xA9,  // Browser Stop key
-		KEY_BROWSER_SEARCH   = 0xAA,  // Browser Search key 
+		KEY_BROWSER_SEARCH   = 0xAA,  // Browser Search key
 		KEY_BROWSER_FAVORITES =0xAB,  // Browser Favorites key
 		KEY_BROWSER_HOME     = 0xAC,  // Browser Start and Home key
 		KEY_VOLUME_MUTE      = 0xAD,  // Volume Mute key

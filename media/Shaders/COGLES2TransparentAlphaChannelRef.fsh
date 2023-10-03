@@ -52,7 +52,7 @@ void main()
 
 	if (Color.a < uAlphaRef)
 		discard;
-		
+
 	Color += vSpecularColor;
 
 	if (bool(uFogEnable))

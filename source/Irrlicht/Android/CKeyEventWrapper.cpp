@@ -12,10 +12,10 @@ namespace irr
 namespace jni
 {
 
-jclass CKeyEventWrapper::Class_KeyEvent = 0; 
+jclass CKeyEventWrapper::Class_KeyEvent = 0;
 jmethodID CKeyEventWrapper::Method_constructor = 0;
 jmethodID CKeyEventWrapper::Method_getUnicodeChar = 0;
-	
+
 CKeyEventWrapper::CKeyEventWrapper(JNIEnv* jniEnv, int action, int code)
 	: JniEnv(jniEnv), JniKeyEvent(0)
 {
@@ -30,14 +30,14 @@ CKeyEventWrapper::CKeyEventWrapper(JNIEnv* jniEnv, int action, int code)
 			{
 				Class_KeyEvent = reinterpret_cast<jclass>(JniEnv->NewGlobalRef(localClass));
 			}
-			
-			Method_constructor = JniEnv->GetMethodID(Class_KeyEvent, "<init>", "(II)V");		
+
+			Method_constructor = JniEnv->GetMethodID(Class_KeyEvent, "<init>", "(II)V");
 			Method_getUnicodeChar = JniEnv->GetMethodID(Class_KeyEvent, "getUnicodeChar", "(I)I");
 		}
-		
+
 		if ( Class_KeyEvent && Method_constructor )
 		{
-			JniKeyEvent = JniEnv->NewObject(Class_KeyEvent, Method_constructor, action, code);	
+			JniKeyEvent = JniEnv->NewObject(Class_KeyEvent, Method_constructor, action, code);
 		}
 		else
 		{
@@ -55,7 +55,7 @@ int CKeyEventWrapper::getUnicodeChar(int metaState)
 {
 	return JniEnv->CallIntMethod(JniKeyEvent, Method_getUnicodeChar, metaState);
 }
-	
+
 } // namespace jni
 } // namespace irr
 

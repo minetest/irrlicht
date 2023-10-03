@@ -117,7 +117,7 @@ public:
 	//! Set (copy) data from given memory block
 	/** \param newData data to set, must have newSize elements
 	\param newSize Amount of elements in newData
-	\param canShrink When true we reallocate the array even it can shrink. 
+	\param canShrink When true we reallocate the array even it can shrink.
 	May reduce memory usage, but call is more whenever size changes.
 	\param newDataIsSorted Info if you pass sorted/unsorted data
 	*/

@@ -50,7 +50,7 @@ void main()
 	if (bool(uTextureUsage0))
 	{
 		Color *= texture2D(uTextureUnit0, vTextureCoord0);
-		
+
 		// TODO: uAlphaRef should rather control sharpness of alpha, don't know how to do that right now and this works in most cases.
 		if (Color.a < uAlphaRef)
 			discard;

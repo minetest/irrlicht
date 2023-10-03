@@ -47,8 +47,8 @@ namespace video
 		EMT_TRANSPARENT_VERTEX_ALPHA,
 
 		//! BlendFunc = source * sourceFactor + dest * destFactor ( E_BLEND_FUNC )
-		/** Using only first texture. Generic blending method. 
-		The blend function is set to SMaterial::MaterialTypeParam with 
+		/** Using only first texture. Generic blending method.
+		The blend function is set to SMaterial::MaterialTypeParam with
 		pack_textureBlendFunc (for 2D) or pack_textureBlendFuncSeparate (for 3D). */
 		EMT_ONETEXTURE_BLEND,
 
