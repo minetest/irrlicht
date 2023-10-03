@@ -67,8 +67,8 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 {
 	if (!file)
 		return 0;
-	long filesize = file->getSize();
-	if (!filesize)
+	size_t filesize = file->getSize();
+	if (filesize == 0 || filesize == -1L)
 		return 0;
 
 	const io::path fullName = file->getFileName();
@@ -76,7 +76,7 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 
 	c8* buf = new c8[filesize+1]; // plus null-terminator (some string functions used in parsing)
 	filesize = file->read((void*)buf, filesize);
-	if ( filesize <= 0 )
+	if ( filesize == 0 )
 	{
 		delete[] buf;
 		return 0;
