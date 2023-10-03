@@ -400,6 +400,8 @@ Changes in 1.9 (not yet released)
 
 --------------------------
 Changes in 1.8.6
+- CXMeshFileLoader: fix buffer overreads with text format. Thanks @sfan5 for report and patch.
+  Patch (commit 6f4f7c4 to Minetest): https://github.com/minetest/irrlicht/commit/6f4f7c4d75c9d563e98d3936ed8bc6e248dc14a8
 - Fix CB3DMeshFileLoader::readString. Prevent adding a character beyond file-end. Thanks @sfan5 for report and patch.
   Original patch (commit 103ab16 to Minetest): https://github.com/minetest/irrlicht/commit/103ab16679a42cb1bfa4cc4e6316195ec2d139b6
 - CB3DMeshFileLoader: add some bounds checks. Thanks @sfan5 for report and patch.
