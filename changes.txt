@@ -400,6 +400,10 @@ Changes in 1.9 (not yet released)
 
 --------------------------
 Changes in 1.8.6
+- Fix CB3DMeshFileLoader::readString. Prevent adding a character beyond file-end. Thanks @sfan5 for report and patch.
+  Original patch (commit 103ab16 to Minetest): https://github.com/minetest/irrlicht/commit/103ab16679a42cb1bfa4cc4e6316195ec2d139b6
+- CB3DMeshFileLoader: add some bounds checks. Thanks @sfan5 for report and patch.
+  Original patch (commit 64688f4 to Minetest): https://github.com/minetest/irrlicht/commit/64688f449099246ec27eb013f58d72a0abb1c6e6
 - TGA loader: Fix number overflow causing crashes. Thanks @sfan5 for fuzzing test.
 - TGA loader: Fix several buffer overflows. Thanks @erlehmann for report and @sfan5 for fuzzing test: https://github.com/minetest/irrlicht/issues/236
 - COBJMeshFilerLoder: prevent buffer overruns from loading files passing negative indices. Thanks @sfan5 fore report and patch.
