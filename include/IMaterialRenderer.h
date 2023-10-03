@@ -94,7 +94,7 @@ public:
 	virtual s32 getRenderCapability() const { return 0; }
 
 	//! Access the callback provided by the users when creating shader materials
-	/** \returns Returns either the users provided callback or 0 when no such 
+	/** \returns Returns either the users provided callback or 0 when no such
 	callback exists. Non-shader materials will always return 0.	*/
 	virtual IShaderConstantSetCallBack* getShaderConstantSetCallBack() const { return 0; }
 };

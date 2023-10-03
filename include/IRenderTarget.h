@@ -22,7 +22,7 @@ namespace video
 		ECS_NEGX,
 		ECS_POSY,
 		ECS_NEGY,
-		ECS_POSZ, 
+		ECS_POSZ,
 		ECS_NEGZ
 	};
 

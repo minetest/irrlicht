@@ -160,7 +160,7 @@ namespace video
 		}
 
 		//! Sets the texture transformation matrix to mat
-		/** NOTE: Pipelines can ignore this matrix when the 
+		/** NOTE: Pipelines can ignore this matrix when the
 		texture	is 0.
 		\param mat New texture matrix for this layer. */
 		void setTextureMatrix(const core::matrix4& mat)

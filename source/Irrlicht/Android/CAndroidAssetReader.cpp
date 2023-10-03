@@ -23,7 +23,7 @@ namespace io
 CAndroidAssetReader::CAndroidAssetReader(AAssetManager *assetManager, const io::path &filename)
 	: AssetManager(assetManager), Filename(filename)
 {
-	Asset = AAssetManager_open(AssetManager, 
+	Asset = AAssetManager_open(AssetManager,
 					core::stringc(filename).c_str(),
 				    AASSET_MODE_RANDOM);
 
@@ -40,9 +40,9 @@ size_t CAndroidAssetReader::read(void* buffer, size_t sizeToRead)
 	int readBytes = AAsset_read(Asset, buffer, sizeToRead);
 	if ( readBytes >= 0 )
 		return size_t(readBytes);
-	return 0;	// direct fd access is not possible (for example, if the asset is compressed). 
+	return 0;	// direct fd access is not possible (for example, if the asset is compressed).
 }
-      
+
 bool CAndroidAssetReader::seek(long finalPos, bool relativeMovement)
 {
 	off_t status =  AAsset_seek(Asset, finalPos, relativeMovement ? SEEK_CUR : SEEK_SET);
@@ -54,12 +54,12 @@ long CAndroidAssetReader::getSize() const
 {
 	return AAsset_getLength(Asset);
 }
-      
+
 long CAndroidAssetReader::getPos() const
 {
 	return AAsset_getLength(Asset) - AAsset_getRemainingLength(Asset);
 }
-      
+
 const io::path& CAndroidAssetReader::getFileName() const
 {
 	return Filename;

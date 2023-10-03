@@ -36,12 +36,12 @@ namespace irr
 		will be tried. This ensures that Irrlicht will run even if your platform is unsupported,
 		although it may not be able to render anything. */
 		EIDT_BEST,
-		
+
 		//! A device for Android platforms
 		/** Best used with embedded devices and mobile systems.
 		Does not need X11 or other graphical subsystems.
 		May support hw-acceleration via OpenGL-ES */
-		EIDT_ANDROID,		
+		EIDT_ANDROID,
 	};
 
 } // end namespace irr

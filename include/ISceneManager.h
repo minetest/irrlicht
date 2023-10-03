@@ -92,7 +92,7 @@ namespace scene
 		//! Drawn after the solid nodes, before the transparent nodes, the time for drawing shadow volumes
 		ESNRP_SHADOW =64,
 
-		//! Drawn after transparent effect nodes. For custom gui's. Unsorted (in order nodes registered themselves). 
+		//! Drawn after transparent effect nodes. For custom gui's. Unsorted (in order nodes registered themselves).
 		ESNRP_GUI = 128
 
 	};
@@ -501,7 +501,7 @@ namespace scene
 		\param pass: Specifies when the node wants to be drawn in relation to the other nodes.
 		For example, if the node is a shadow, it usually wants to be drawn after all other nodes
 		and will use ESNRP_SHADOW for this. See scene::E_SCENE_NODE_RENDER_PASS for details.
-		Note: This is _not_ a bitfield. If you want to register a note for several render passes, then 
+		Note: This is _not_ a bitfield. If you want to register a note for several render passes, then
 		call this function once for each pass.
 		\return scene will be rendered ( passed culling ) */
 		virtual u32 registerNodeForRendering(ISceneNode* node,

@@ -61,7 +61,7 @@ class IGUIEnvironment : public virtual IReferenceCounted
 public:
 
 	//! Draws all gui elements by traversing the GUI environment starting at the root node.
-	/** \param  When true ensure the GuiEnvironment (aka the RootGUIElement) has the same size as the current driver screensize. 
+	/** \param  When true ensure the GuiEnvironment (aka the RootGUIElement) has the same size as the current driver screensize.
 	            Can be set to false to control that size yourself, p.E when not the full size should be used for UI. */
 	virtual void drawAll(bool useScreenSize=true) = 0;
 
@@ -404,10 +404,10 @@ public:
 	//! Adds a IGUIElement to deletion queue.
 	/** Queued elements will be removed at the end of each drawAll call.
 	Or latest in the destructor of the GUIEnvironment.
-	This can be used to allow an element removing itself safely in a function 
-	iterating over gui elements, like an overloaded	IGUIElement::draw or 
+	This can be used to allow an element removing itself safely in a function
+	iterating over gui elements, like an overloaded	IGUIElement::draw or
 	IGUIElement::OnPostRender function.
-	Note that in general just calling IGUIElement::remove() is enough. 
+	Note that in general just calling IGUIElement::remove() is enough.
 	Unless you create your own GUI elements removing themselves you won't need it.
 	\param element: Element to remove */
 	virtual void addToDeletionQueue(IGUIElement* element) = 0;

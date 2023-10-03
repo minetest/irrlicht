@@ -98,7 +98,7 @@ void CGUIStaticText::draw()
 						font->getDimension(Text.c_str()).Width;
 				}
 
-				font->draw(Text.c_str(), frameRect, 
+				font->draw(Text.c_str(), frameRect,
 					getActiveColor(),
 					HAlign == EGUIA_CENTER, VAlign == EGUIA_CENTER, (RestrainTextInside ? &AbsoluteClippingRect : NULL));
 			}
