@@ -583,8 +583,7 @@ inline quaternion &quaternion::slerp(quaternion q1, quaternion q2, f32 time, f32
 		angle *= -1.0f;
 	}
 
-	if (angle <= (1 - threshold)) // spherical interpolation
-	{
+	if (angle <= (1 - threshold)) { // spherical interpolation
 		const f32 theta = acosf(angle);
 		const f32 invsintheta = reciprocal(sinf(theta));
 		const f32 scale = sinf(theta * (1.0f - time)) * invsintheta;
@@ -698,11 +697,9 @@ inline core::quaternion &quaternion::rotationFromTo(const vector3df &from, const
 	v1.normalize();
 
 	const f32 d = v0.dotProduct(v1);
-	if (d >= 1.0f) // If dot == 1, vectors are the same
-	{
+	if (d >= 1.0f) { // If dot == 1, vectors are the same
 		return makeIdentity();
-	} else if (d <= -1.0f) // exactly opposite
-	{
+	} else if (d <= -1.0f) { // exactly opposite
 		core::vector3df axis(1.0f, 0.f, 0.f);
 		axis = axis.crossProduct(v0);
 		if (axis.getLength() == 0) {

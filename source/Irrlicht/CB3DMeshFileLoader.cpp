@@ -456,15 +456,13 @@ bool CB3DMeshFileLoader::readChunkTRIS(scene::SSkinMeshBuffer *meshBuffer, u32 m
 			}
 
 			if (AnimatedVertices_VertexID[vertex_id[i]] != -1) {
-				if (AnimatedVertices_BufferID[vertex_id[i]] != (s32)meshBufferID) // If this vertex is linked in a different meshbuffer
-				{
+				if (AnimatedVertices_BufferID[vertex_id[i]] != (s32)meshBufferID) { // If this vertex is linked in a different meshbuffer
 					AnimatedVertices_VertexID[vertex_id[i]] = -1;
 					AnimatedVertices_BufferID[vertex_id[i]] = -1;
 					showVertexWarning = true;
 				}
 			}
-			if (AnimatedVertices_VertexID[vertex_id[i]] == -1) // If this vertex is not in the meshbuffer
-			{
+			if (AnimatedVertices_VertexID[vertex_id[i]] == -1) { // If this vertex is not in the meshbuffer
 				// Check for lightmapping:
 				if (BaseVertices[vertex_id[i]].TCoords2 != core::vector2df(0.f, 0.f))
 					meshBuffer->convertTo2TCoords(); // Will only affect the meshbuffer the first time this is called
@@ -843,8 +841,7 @@ bool CB3DMeshFileLoader::readChunkBRUS()
 
 		// Fixes problems when the lightmap is on the first texture:
 		if (B3dMaterial.Textures[0] != 0) {
-			if (B3dMaterial.Textures[0]->Flags & 65536) // 65536 = secondary UV
-			{
+			if (B3dMaterial.Textures[0]->Flags & 65536) { // 65536 = secondary UV
 				SB3dTexture *TmpTexture;
 				TmpTexture = B3dMaterial.Textures[1];
 				B3dMaterial.Textures[1] = B3dMaterial.Textures[0];
@@ -868,11 +865,9 @@ bool CB3DMeshFileLoader::readChunkBRUS()
 		if (B3dMaterial.Textures[1]) {
 			B3dMaterial.Material.MaterialType = video::EMT_TRANSPARENT_VERTEX_ALPHA;
 			B3dMaterial.Material.ZWriteEnable = video::EZW_OFF;
-		} else if (B3dMaterial.Textures[0]) // One texture:
-		{
+		} else if (B3dMaterial.Textures[0]) { // One texture:
 			// Flags & 0x1 is usual SOLID, 0x8 is mipmap (handled before)
-			if (B3dMaterial.Textures[0]->Flags & 0x2) //(Alpha mapped)
-			{
+			if (B3dMaterial.Textures[0]->Flags & 0x2) { // (Alpha mapped)
 				B3dMaterial.Material.MaterialType = video::EMT_TRANSPARENT_ALPHA_CHANNEL;
 				B3dMaterial.Material.ZWriteEnable = video::EZW_OFF;
 			} else if (B3dMaterial.Textures[0]->Flags & 0x4)								  //(Masked)
@@ -898,8 +893,7 @@ bool CB3DMeshFileLoader::readChunkBRUS()
 
 		//------ Material fx ------
 
-		if (B3dMaterial.fx & 1) // full-bright
-		{
+		if (B3dMaterial.fx & 1) { // full-bright
 			B3dMaterial.Material.AmbientColor = video::SColor(255, 255, 255, 255);
 			B3dMaterial.Material.Lighting = false;
 		} else
@@ -914,8 +908,7 @@ bool CB3DMeshFileLoader::readChunkBRUS()
 		if (B3dMaterial.fx & 16) // disable backface culling
 			B3dMaterial.Material.BackfaceCulling = false;
 
-		if (B3dMaterial.fx & 32) // force vertex alpha-blending
-		{
+		if (B3dMaterial.fx & 32) { // force vertex alpha-blending
 			B3dMaterial.Material.MaterialType = video::EMT_TRANSPARENT_VERTEX_ALPHA;
 			B3dMaterial.Material.ZWriteEnable = video::EZW_OFF;
 		}

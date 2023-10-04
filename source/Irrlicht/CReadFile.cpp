@@ -60,8 +60,7 @@ long CReadFile::getPos() const
 //! opens the file
 void CReadFile::openFile()
 {
-	if (Filename.size() == 0) // bugfix posted by rt
-	{
+	if (Filename.size() == 0) { // bugfix posted by rt
 		File = 0;
 		return;
 	}

@@ -117,8 +117,7 @@ int main(int argc, char *argv[])
 		if (device->getTimer()->getTime() >= 1000) {
 			device->getTimer()->setTime(0);
 			++n;
-			if (n == 1) // Tooltip display
-			{
+			if (n == 1) { // Tooltip display
 				bzero(&event, sizeof(SEvent));
 				event.EventType = irr::EET_MOUSE_INPUT_EVENT;
 				event.MouseInput.Event = irr::EMIE_MOUSE_MOVED;
@@ -127,8 +126,7 @@ int main(int argc, char *argv[])
 				device->postEventFromUser(event);
 			} else if (n == 2) // Text input focus
 				guienv->setFocus(editbox);
-			else if (n == 3) // Keypress for Text input
-			{
+			else if (n == 3) { // Keypress for Text input
 				bzero(&event, sizeof(SEvent));
 				event.EventType = irr::EET_KEY_INPUT_EVENT;
 				event.KeyInput.Char = L'a';

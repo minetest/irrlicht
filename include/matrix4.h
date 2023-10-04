@@ -1553,8 +1553,7 @@ inline CMatrix4<T> &CMatrix4<T>::buildProjectionMatrixPerspectiveFovRH(
 	// M[14]
 	M[15] = 0;
 
-	if (zClipFromZero) // DirectX version
-	{
+	if (zClipFromZero) { // DirectX version
 		M[10] = (T)(zFar / (zNear - zFar));
 		M[14] = (T)(zNear * zFar / (zNear - zFar));
 	} else // OpenGL version
@@ -1599,8 +1598,7 @@ inline CMatrix4<T> &CMatrix4<T>::buildProjectionMatrixPerspectiveFovLH(
 	// M[14]
 	M[15] = 0;
 
-	if (zClipFromZero) // DirectX version
-	{
+	if (zClipFromZero) { // DirectX version
 		M[10] = (T)(zFar / (zFar - zNear));
 		M[14] = (T)(-zNear * zFar / (zFar - zNear));
 	} else // OpenGL version
@@ -1762,8 +1760,7 @@ inline CMatrix4<T> &CMatrix4<T>::buildProjectionMatrixPerspectiveRH(
 	// M[14]
 	M[15] = 0;
 
-	if (zClipFromZero) // DirectX version
-	{
+	if (zClipFromZero) { // DirectX version
 		M[10] = (T)(zFar / (zNear - zFar));
 		M[14] = (T)(zNear * zFar / (zNear - zFar));
 	} else // OpenGL version
@@ -1806,8 +1803,7 @@ inline CMatrix4<T> &CMatrix4<T>::buildProjectionMatrixPerspectiveLH(
 	// M[14] = (T)(zNear*zFar/(zNear-zFar));
 	M[15] = 0;
 
-	if (zClipFromZero) // DirectX version
-	{
+	if (zClipFromZero) { // DirectX version
 		M[10] = (T)(zFar / (zFar - zNear));
 		M[14] = (T)(zNear * zFar / (zNear - zFar));
 	} else // OpenGL version

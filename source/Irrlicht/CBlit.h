@@ -620,8 +620,7 @@ static void executeBlit_TextureCombineColor_16_to_24(const SBlitJob *job)
 				const u32 src_x = (u32)(dx * wscale);
 				u32 color = PixelMul16_2(video::A1R5G5B5toA8R8G8B8(src[src_x]), jobColor);
 				u8 *writeTo = &dst[dx * 3];
-				if (video::getAlpha(src[src_x]) > 0) // only overlay if source has visible alpha (alpha == 1)
-				{
+				if (video::getAlpha(src[src_x]) > 0) { // only overlay if source has visible alpha (alpha == 1)
 					*writeTo++ = (color >> 16) & 0xFF;
 					*writeTo++ = (color >> 8) & 0xFF;
 					*writeTo++ = color & 0xFF;
@@ -634,8 +633,7 @@ static void executeBlit_TextureCombineColor_16_to_24(const SBlitJob *job)
 			for (u32 dx = 0; dx != w; ++dx) {
 				u32 color = PixelMul16_2(video::A1R5G5B5toA8R8G8B8(src[dx]), jobColor);
 				u8 *writeTo = &dst[dx * 3];
-				if (video::getAlpha(src[dx]) > 0) // only overlay if source has visible alpha (alpha == 1)
-				{
+				if (video::getAlpha(src[dx]) > 0) { // only overlay if source has visible alpha (alpha == 1)
 					*writeTo++ = (color >> 16) & 0xFF;
 					*writeTo++ = (color >> 8) & 0xFF;
 					*writeTo++ = color & 0xFF;

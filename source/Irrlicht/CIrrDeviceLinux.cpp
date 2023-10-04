@@ -476,8 +476,7 @@ bool CIrrDeviceLinux::createWindow()
 
 		if (CreationParams.Fullscreen) {
 			// Don't try to set window position
-		} else if (CreationParams.WindowPosition.X >= 0 || CreationParams.WindowPosition.Y >= 0) // default is -1, -1
-		{
+		} else if (CreationParams.WindowPosition.X >= 0 || CreationParams.WindowPosition.Y >= 0) { // default is -1, -1
 			// Window managers are free to ignore positions above, so give it another shot
 			XMoveWindow(XDisplay, XWindow, x, y);
 		}
@@ -1971,8 +1970,7 @@ Cursor CIrrDeviceLinux::TextureToMonochromeCursor(irr::video::ITexture *tex, con
 			pixelCol.setData((const void *)data, format);
 			data += bytesPerPixel;
 
-			if (pixelCol.getAlpha() == 0) // transparent
-			{
+			if (pixelCol.getAlpha() == 0) { // transparent
 				XPutPixel(maskImage, x, y, 0);
 				XPutPixel(sourceImage, x, y, 0);
 			} else // color

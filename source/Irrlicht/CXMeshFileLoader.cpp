@@ -893,8 +893,7 @@ bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 			u32 *data = new u32[datasize];
 			for (u32 j = 0; j < datasize; ++j)
 				data[j] = readInt();
-			if (dataformat & 0x102) // 2nd uv set
-			{
+			if (dataformat & 0x102) { // 2nd uv set
 				mesh.TCoords2.reallocate(mesh.Vertices.size());
 				u8 *dataptr = (u8 *)data;
 				const u32 size = ((dataformat >> 8) & 0xf) * sizeof(core::vector2df);
@@ -1082,8 +1081,7 @@ bool CXMeshFileLoader::parseDataObjectMeshNormals(SXMesh &mesh)
 	// read face normal indices
 	const u32 nFNormals = readInt();
 	// if (nFNormals >= mesh.IndexCountPerFace.size())
-	if (0) // this condition doesn't work for some reason
-	{
+	if (0) { // this condition doesn't work for some reason
 		os::Printer::log("Too many face normals found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1150,8 +1148,7 @@ bool CXMeshFileLoader::parseDataObjectMeshTextureCoords(SXMesh &mesh)
 
 	const u32 nCoords = readInt();
 	// if (nCoords >= mesh.Vertices.size())
-	if (0) // this condition doesn't work for some reason
-	{
+	if (0) { // this condition doesn't work for some reason
 		os::Printer::log("Too many texture coords found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1257,8 +1254,7 @@ bool CXMeshFileLoader::parseDataObjectMeshMaterialList(SXMesh &mesh)
 
 	// in version 03.02, the face indices end with two semicolons.
 	// commented out version check, as version 03.03 exported from blender also has 2 semicolons
-	if (!BinaryFormat) // && MajorVersion == 3 && MinorVersion <= 2)
-	{
+	if (!BinaryFormat) { // && MajorVersion == 3 && MinorVersion <= 2)
 		if (P[0] == ';')
 			++P;
 	}

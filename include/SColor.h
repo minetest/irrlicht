@@ -744,8 +744,7 @@ inline void SColorHSL::fromRGB(const SColorf &color)
 inline void SColorHSL::toRGB(SColorf &color) const
 {
 	const f32 l = Luminance / 100;
-	if (core::iszero(Saturation)) // grey
-	{
+	if (core::iszero(Saturation)) { // grey
 		color.set(l, l, l);
 		return;
 	}

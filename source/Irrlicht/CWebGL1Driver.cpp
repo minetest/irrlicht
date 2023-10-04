@@ -1031,8 +1031,7 @@ void CWebGL1Driver::initWebGLExtensions()
 	}
 #endif
 
-	if (WebGLExtensions.queryWebGLFeature(CWebGLExtensionHandler::IRR_OES_element_index_uint)) // note: WebGL2 won't need extension as that got default there
-	{
+	if (WebGLExtensions.queryWebGLFeature(CWebGLExtensionHandler::IRR_OES_element_index_uint)) { // note: WebGL2 won't need extension as that got default there
 		MaxIndices = 0xffffffff;
 	}
 
