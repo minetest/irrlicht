@@ -306,17 +306,14 @@ void CGUIStaticText::breakText()
 			c = Text[i];
 			bool lineBreak = false;
 
-			if (c == L'\r') // Mac or Windows breaks
-			{
+			if (c == L'\r') { // Mac or Windows breaks
 				lineBreak = true;
-				if (Text[i + 1] == L'\n') // Windows breaks
-				{
+				if (Text[i + 1] == L'\n') { // Windows breaks
 					Text.erase(i + 1);
 					--size;
 				}
 				c = '\0';
-			} else if (c == L'\n') // Unix breaks
-			{
+			} else if (c == L'\n') { // Unix breaks
 				lineBreak = true;
 				c = '\0';
 			}
@@ -397,17 +394,14 @@ void CGUIStaticText::breakText()
 			c = Text[i];
 			bool lineBreak = false;
 
-			if (c == L'\r') // Mac or Windows breaks
-			{
+			if (c == L'\r') { // Mac or Windows breaks
 				lineBreak = true;
-				if ((i > 0) && Text[i - 1] == L'\n') // Windows breaks
-				{
+				if ((i > 0) && Text[i - 1] == L'\n') { // Windows breaks
 					Text.erase(i - 1);
 					--size;
 				}
 				c = '\0';
-			} else if (c == L'\n') // Unix breaks
-			{
+			} else if (c == L'\n') { // Unix breaks
 				lineBreak = true;
 				c = '\0';
 			}

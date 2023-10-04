@@ -252,8 +252,7 @@ IAnimatedMesh *COBJMeshFileLoader::createMesh(io::IReadFile *file)
 				// Add a triangle
 				const int a = faceCorners[i + 1];
 				const int b = faceCorners[i];
-				if (a != b && a != c && b != c) // ignore degenerated faces. We can get them when we merge vertices above in the VertMap.
-				{
+				if (a != b && a != c && b != c) { // ignore degenerated faces. We can get them when we merge vertices above in the VertMap.
 					currMtl->Meshbuffer->Indices.push_back(a);
 					currMtl->Meshbuffer->Indices.push_back(b);
 					currMtl->Meshbuffer->Indices.push_back(c);

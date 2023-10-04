@@ -633,8 +633,7 @@ bool CIrrDeviceMacOSX::createWindow()
 	// TODO: fullscreen
 	// if (!CreationParams.Fullscreen)
 	{
-		if (!CreationParams.WindowId) // create another window when WindowId is null
-		{
+		if (!CreationParams.WindowId) { // create another window when WindowId is null
 			int x = (CreationParams.WindowPosition.X > 0) ? CreationParams.WindowPosition.X : 0;
 			int y = (CreationParams.WindowPosition.Y > 0) ? CreationParams.WindowPosition.Y : 0;
 

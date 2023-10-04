@@ -39,8 +39,7 @@ u8 *CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const STGAHeader &
 		u8 chunkheader = 0;
 		file->read(&chunkheader, sizeof(u8)); // Read The Chunk's Header
 
-		if (chunkheader < 128) // If The Chunk Is A 'RAW' Chunk
-		{
+		if (chunkheader < 128) { // If The Chunk Is A 'RAW' Chunk
 			chunkheader++; // Add 1 To The Value To Get Total Number Of Raw Pixels
 
 			const u32 bytesToRead = bytesPerPixel * chunkheader;
@@ -173,8 +172,7 @@ IImage *CImageLoaderTGA::loadImage(io::IReadFile *file) const
 
 	switch (header.PixelDepth) {
 	case 8: {
-		if (header.ImageType == 3) // grey image
-		{
+		if (header.ImageType == 3) { // grey image
 			image = new CImage(ECF_R8G8B8,
 					core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
 			if (image)

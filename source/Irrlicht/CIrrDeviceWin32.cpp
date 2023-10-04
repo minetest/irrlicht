@@ -551,12 +551,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		m += 1;
 
 	if (m->group >= 0) {
-		if (m->group == 0) // down
-		{
+		if (m->group == 0) { // down
 			ClickCount++;
 			SetCapture(hWnd);
-		} else if (m->group == 1) // up
-		{
+		} else if (m->group == 1) { // up
 			ClickCount--;
 			if (ClickCount < 1) {
 				ClickCount = 0;
@@ -1312,8 +1310,7 @@ HCURSOR CIrrDeviceWin32::TextureToCursor(HWND hwnd, irr::video::ITexture *tex, c
 			pixelCol.setData((const void *)data, format);
 			data += bytesPerPixel;
 
-			if (pixelCol.getAlpha() == 0) // transparent
-			{
+			if (pixelCol.getAlpha() == 0) { // transparent
 				SetPixel(andDc, x, y, RGB(255, 255, 255));
 				SetPixel(xorDc, x, y, RGB(0, 0, 0));
 			} else // color
