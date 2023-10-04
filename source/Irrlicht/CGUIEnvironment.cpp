@@ -381,8 +381,7 @@ void CGUIEnvironment::OnPostRender(u32 time)
 		ToolTip.Element->setRelativePosition(pos);
 	}
 
-	if (ToolTip.Element && ToolTip.Element->isVisible()) // (isVisible() check only because we might use visibility for ToolTip one day)
-	{
+	if (ToolTip.Element && ToolTip.Element->isVisible()) { // (isVisible() check only because we might use visibility for ToolTip one day)
 		ToolTip.LastTime = time;
 
 		// got invisible or removed in the meantime?

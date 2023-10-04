@@ -327,8 +327,7 @@ bool CGUIEditBox::processKey(const SEvent &event)
 						s.append(widep);
 						s.append(Text.subString(CursorPos, Text.size() - CursorPos));
 
-						if (!Max || s.size() <= Max) // thx to Fish FH for fix
-						{
+						if (!Max || s.size() <= Max) { // thx to Fish FH for fix
 							Text = s;
 							s = widep;
 							CursorPos += s.size();
@@ -340,8 +339,7 @@ bool CGUIEditBox::processKey(const SEvent &event)
 						s.append(widep);
 						s.append(Text.subString(realmend, Text.size() - realmend));
 
-						if (!Max || s.size() <= Max) // thx to Fish FH for fix
-						{
+						if (!Max || s.size() <= Max) { // thx to Fish FH for fix
 							Text = s;
 							s = widep;
 							CursorPos = realmbgn + s.size();
@@ -975,8 +973,7 @@ bool CGUIEditBox::processMouse(const SEvent &event)
 		}
 	} break;
 	case EMIE_LMOUSE_PRESSED_DOWN:
-		if (!Environment->hasFocus(this)) // can happen when events are manually send to the element
-		{
+		if (!Environment->hasFocus(this)) { // can happen when events are manually send to the element
 			BlinkStartTime = os::Timer::getTime();
 			MouseMarking = true;
 			CursorPos = getCursorPos(event.MouseInput.X, event.MouseInput.Y);
@@ -1106,12 +1103,10 @@ void CGUIEditBox::breakText()
 		c = Text[i];
 		bool lineBreak = false;
 
-		if (c == L'\r') // Mac or Windows breaks
-		{
+		if (c == L'\r') { // Mac or Windows breaks
 			lineBreak = true;
 			c = 0;
-			if (Text[i + 1] == L'\n') // Windows breaks
-			{
+			if (Text[i + 1] == L'\n') { // Windows breaks
 				// TODO: I (Michael) think that we shouldn't change the text given by the user for whatever reason.
 				// Instead rework the cursor positioning to be able to handle this (but not in stable release
 				// branch as users might already expect this behavior).
@@ -1120,8 +1115,7 @@ void CGUIEditBox::breakText()
 				if (CursorPos > i)
 					--CursorPos;
 			}
-		} else if (c == L'\n') // Unix breaks
-		{
+		} else if (c == L'\n') { // Unix breaks
 			lineBreak = true;
 			c = 0;
 		}

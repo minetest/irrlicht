@@ -268,8 +268,7 @@ IImage *CImageLoaderBMP::loadImage(io::IReadFile *file) const
 	if (header.Id != 0x4d42)
 		return 0;
 
-	if (header.Compression > 2) // we'll only handle RLE-Compression
-	{
+	if (header.Compression > 2) { // we'll only handle RLE-Compression
 		os::Printer::log("Compression mode not supported.", ELL_ERROR);
 		return 0;
 	}

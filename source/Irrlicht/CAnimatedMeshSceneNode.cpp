@@ -87,8 +87,7 @@ void CAnimatedMeshSceneNode::buildFrameNr(u32 timeMs)
 
 		// We have no interpolation between EndFrame and StartFrame,
 		// the last frame must be identical to first one with our current solution.
-		if (FramesPerSecond > 0.f) // forwards...
-		{
+		if (FramesPerSecond > 0.f) { // forwards...
 			if (CurrentFrameNr > EndFrame)
 				CurrentFrameNr = StartFrame + fmodf(CurrentFrameNr - StartFrame, (f32)(EndFrame - StartFrame));
 		} else // backwards...
@@ -100,8 +99,7 @@ void CAnimatedMeshSceneNode::buildFrameNr(u32 timeMs)
 		// play animation non looped
 
 		CurrentFrameNr += timeMs * FramesPerSecond;
-		if (FramesPerSecond > 0.f) // forwards...
-		{
+		if (FramesPerSecond > 0.f) { // forwards...
 			if (CurrentFrameNr > (f32)EndFrame) {
 				CurrentFrameNr = (f32)EndFrame;
 				if (LoopCallBack)
@@ -178,8 +176,7 @@ IMesh *CAnimatedMeshSceneNode::getMeshForCurrentFrame()
 		// Update the skinned mesh for the current joint transforms.
 		skinnedMesh->skinMesh();
 
-		if (JointMode == EJUOR_READ) // read from mesh
-		{
+		if (JointMode == EJUOR_READ) { // read from mesh
 			skinnedMesh->recoverJointsFromMesh(JointChildSceneNodes);
 
 			//---slow---
@@ -201,8 +198,7 @@ IMesh *CAnimatedMeshSceneNode::getMeshForCurrentFrame()
 //! OnAnimate() is called just before rendering the whole scene.
 void CAnimatedMeshSceneNode::OnAnimate(u32 timeMs)
 {
-	if (LastTimeMs == 0) // first frame
-	{
+	if (LastTimeMs == 0) { // first frame
 		LastTimeMs = timeMs;
 	}
 
@@ -465,8 +461,7 @@ u32 CAnimatedMeshSceneNode::getJointCount() const
 bool CAnimatedMeshSceneNode::removeChild(ISceneNode *child)
 {
 	if (ISceneNode::removeChild(child)) {
-		if (JointsUsed) // stop weird bugs caused while changing parents as the joints are being created
-		{
+		if (JointsUsed) { // stop weird bugs caused while changing parents as the joints are being created
 			for (u32 i = 0; i < JointChildSceneNodes.size(); ++i) {
 				if (JointChildSceneNodes[i] == child) {
 					JointChildSceneNodes[i] = 0; // remove link to child

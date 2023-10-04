@@ -466,8 +466,7 @@ io::path CFileSystem::getAbsolutePath(const io::path &filename) const
 	p = realpath(filename.c_str(), fpath);
 	if (!p) {
 		// content in fpath is unclear at this point
-		if (!fpath[0]) // seems like fpath wasn't altered, use our best guess
-		{
+		if (!fpath[0]) { // seems like fpath wasn't altered, use our best guess
 			io::path tmp(filename);
 			return flattenFilename(tmp);
 		} else

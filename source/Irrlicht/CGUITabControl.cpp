@@ -256,8 +256,7 @@ s32 CGUITabControl::insertTab(s32 idx, IGUITab *tab, bool serializationMode)
 		}
 		Tabs[idx] = tab;
 
-		if (idx == ActiveTabIndex) // in serialization that can happen for any index
-		{
+		if (idx == ActiveTabIndex) { // in serialization that can happen for any index
 			setVisibleTab(ActiveTabIndex);
 			tab->setVisible(true);
 		}

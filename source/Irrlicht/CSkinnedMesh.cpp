@@ -323,8 +323,7 @@ void CSkinnedMesh::getFrameData(f32 frame, SJoint *joint,
 			// The hint test failed, do a full scan...
 			if (foundPositionIndex == -1) {
 				for (u32 i = 0; i < PositionKeys.size(); ++i) {
-					if (PositionKeys[i].frame >= frame) // Keys should to be sorted by frame
-					{
+					if (PositionKeys[i].frame >= frame) { // Keys should to be sorted by frame
 						foundPositionIndex = i;
 						positionHint = i;
 						break;
@@ -370,8 +369,7 @@ void CSkinnedMesh::getFrameData(f32 frame, SJoint *joint,
 			// The hint test failed, do a full scan...
 			if (foundScaleIndex == -1) {
 				for (u32 i = 0; i < ScaleKeys.size(); ++i) {
-					if (ScaleKeys[i].frame >= frame) // Keys should to be sorted by frame
-					{
+					if (ScaleKeys[i].frame >= frame) { // Keys should to be sorted by frame
 						foundScaleIndex = i;
 						scaleHint = i;
 						break;
@@ -417,8 +415,7 @@ void CSkinnedMesh::getFrameData(f32 frame, SJoint *joint,
 			// The hint test failed, do a full scan...
 			if (foundRotationIndex == -1) {
 				for (u32 i = 0; i < RotationKeys.size(); ++i) {
-					if (RotationKeys[i].frame >= frame) // Keys should be sorted by frame
-					{
+					if (RotationKeys[i].frame >= frame) { // Keys should be sorted by frame
 						foundRotationIndex = i;
 						rotationHint = i;
 						break;
@@ -757,8 +754,7 @@ void CSkinnedMesh::calculateGlobalMatrices(SJoint *joint, SJoint *parentJoint)
 	joint->LocalAnimatedMatrix = joint->LocalMatrix;
 	joint->GlobalAnimatedMatrix = joint->GlobalMatrix;
 
-	if (joint->GlobalInversedMatrix.isIdentity()) // might be pre calculated
-	{
+	if (joint->GlobalInversedMatrix.isIdentity()) { // might be pre calculated
 		joint->GlobalInversedMatrix = joint->GlobalMatrix;
 		joint->GlobalInversedMatrix.makeInverse(); // slow
 	}
@@ -1143,8 +1139,7 @@ void CSkinnedMesh::normalizeWeights()
 	for (i = 0; i < AllJoints.size(); ++i) {
 		SJoint *joint = AllJoints[i];
 		for (j = 0; j < joint->Weights.size(); ++j) {
-			if (joint->Weights[j].strength <= 0) // Check for invalid weights
-			{
+			if (joint->Weights[j].strength <= 0) { // Check for invalid weights
 				joint->Weights.erase(j);
 				--j;
 			} else {

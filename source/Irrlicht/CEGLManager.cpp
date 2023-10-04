@@ -223,8 +223,7 @@ EGLConfig CEGLManager::chooseConfig(EConfigStyle confStyle)
 				}
 				break;
 			case 4:				// alpha
-				if (Attribs[7]) // Params.WithAlphaChannel
-				{
+				if (Attribs[7]) { // Params.WithAlphaChannel
 					Attribs[7] = 0;
 
 					if (Params.AntiAlias) {
@@ -236,8 +235,7 @@ EGLConfig CEGLManager::chooseConfig(EConfigStyle confStyle)
 					--steps;
 				break;
 			case 3:				 // stencil
-				if (Attribs[15]) // Params.Stencilbuffer
-				{
+				if (Attribs[15]) { // Params.Stencilbuffer
 					Attribs[15] = 0;
 
 					if (Params.AntiAlias) {
@@ -249,15 +247,13 @@ EGLConfig CEGLManager::chooseConfig(EConfigStyle confStyle)
 					--steps;
 				break;
 			case 2:					  // depth size
-				if (Attribs[13] > 16) // Params.ZBufferBits
-				{
+				if (Attribs[13] > 16) { // Params.ZBufferBits
 					Attribs[13] -= 8;
 				} else
 					--steps;
 				break;
 			case 1:					 // buffer size
-				if (Attribs[9] > 16) // Params.Bits
-				{
+				if (Attribs[9] > 16) { // Params.Bits
 					Attribs[9] -= 8;
 				} else
 					--steps;

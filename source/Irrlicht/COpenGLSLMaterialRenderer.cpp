@@ -167,8 +167,7 @@ void COpenGLSLMaterialRenderer::init(s32 &outMaterialTypeNr,
 		if (!createShader(GL_GEOMETRY_SHADER_EXT, geometryShaderProgram))
 			return;
 #if defined(GL_ARB_geometry_shader4) || defined(GL_EXT_geometry_shader4) || defined(GL_NV_geometry_shader4)
-		if (Program2) // Geometry shaders are supported only in OGL2.x+ drivers.
-		{
+		if (Program2) { // Geometry shaders are supported only in OGL2.x+ drivers.
 			Driver->extGlProgramParameteri(Program2, GL_GEOMETRY_INPUT_TYPE_EXT, Driver->primitiveTypeToGL(inType));
 			Driver->extGlProgramParameteri(Program2, GL_GEOMETRY_OUTPUT_TYPE_EXT, Driver->primitiveTypeToGL(outType));
 			if (verticesOut == 0)
