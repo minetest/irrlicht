@@ -11,12 +11,10 @@
 #include "os.h"
 
 #include <stdio.h> // required for jpeglib.h
-extern "C"
-{
-	#include <jpeglib.h>
-	#include <jerror.h>
+extern "C" {
+#include <jpeglib.h>
+#include <jerror.h>
 }
-
 
 namespace irr
 {
@@ -27,33 +25,30 @@ namespace video
 #define OUTPUT_BUF_SIZE 4096
 typedef struct
 {
-	struct jpeg_destination_mgr pub;/* public fields */
+	struct jpeg_destination_mgr pub; /* public fields */
 
-	io::IWriteFile* file;		/* target file */
-	JOCTET buffer[OUTPUT_BUF_SIZE];	/* image buffer */
+	io::IWriteFile *file;			/* target file */
+	JOCTET buffer[OUTPUT_BUF_SIZE]; /* image buffer */
 } mem_destination_mgr;
 
-
-typedef mem_destination_mgr * mem_dest_ptr;
-
+typedef mem_destination_mgr *mem_dest_ptr;
 
 // init
 static void jpeg_init_destination(j_compress_ptr cinfo)
 {
-	mem_dest_ptr dest = (mem_dest_ptr) cinfo->dest;
+	mem_dest_ptr dest = (mem_dest_ptr)cinfo->dest;
 	dest->pub.next_output_byte = dest->buffer;
 	dest->pub.free_in_buffer = OUTPUT_BUF_SIZE;
 }
 
-
 // flush to disk and reset buffer
 static boolean jpeg_empty_output_buffer(j_compress_ptr cinfo)
 {
-	mem_dest_ptr dest = (mem_dest_ptr) cinfo->dest;
+	mem_dest_ptr dest = (mem_dest_ptr)cinfo->dest;
 
 	// for now just exit upon file error
 	if (dest->file->write(dest->buffer, OUTPUT_BUF_SIZE) != OUTPUT_BUF_SIZE)
-		ERREXIT (cinfo, JERR_FILE_WRITE);
+		ERREXIT(cinfo, JERR_FILE_WRITE);
 
 	dest->pub.next_output_byte = dest->buffer;
 	dest->pub.free_in_buffer = OUTPUT_BUF_SIZE;
@@ -61,29 +56,25 @@ static boolean jpeg_empty_output_buffer(j_compress_ptr cinfo)
 	return TRUE;
 }
 
-
 static void jpeg_term_destination(j_compress_ptr cinfo)
 {
-	mem_dest_ptr dest = (mem_dest_ptr) cinfo->dest;
+	mem_dest_ptr dest = (mem_dest_ptr)cinfo->dest;
 	const size_t datacount = OUTPUT_BUF_SIZE - dest->pub.free_in_buffer;
 	// for now just exit upon file error
 	if (dest->file->write(dest->buffer, datacount) != datacount)
-		ERREXIT (cinfo, JERR_FILE_WRITE);
+		ERREXIT(cinfo, JERR_FILE_WRITE);
 }
 
-
 // set up buffer data
-static void jpeg_file_dest(j_compress_ptr cinfo, io::IWriteFile* file)
+static void jpeg_file_dest(j_compress_ptr cinfo, io::IWriteFile *file)
 {
-	if (cinfo->dest == NULL)
-	{ /* first time for this JPEG object? */
-		cinfo->dest = (struct jpeg_destination_mgr *)
-			(*cinfo->mem->alloc_small) ((j_common_ptr) cinfo,
-						JPOOL_PERMANENT,
-						sizeof(mem_destination_mgr));
+	if (cinfo->dest == NULL) { /* first time for this JPEG object? */
+		cinfo->dest = (struct jpeg_destination_mgr *)(*cinfo->mem->alloc_small)((j_common_ptr)cinfo,
+				JPOOL_PERMANENT,
+				sizeof(mem_destination_mgr));
 	}
 
-	mem_dest_ptr dest = (mem_dest_ptr) cinfo->dest;  /* for casting */
+	mem_dest_ptr dest = (mem_dest_ptr)cinfo->dest; /* for casting */
 
 	/* Initialize method pointers */
 	dest->pub.init_destination = jpeg_init_destination;
@@ -94,33 +85,31 @@ static void jpeg_file_dest(j_compress_ptr cinfo, io::IWriteFile* file)
 	dest->file = file;
 }
 
-
 /* write_JPEG_memory: store JPEG compressed image into memory.
-*/
-static bool writeJPEGFile(io::IWriteFile* file, IImage* image, u32 quality)
+ */
+static bool writeJPEGFile(io::IWriteFile *file, IImage *image, u32 quality)
 {
-	void (*format)(const void*, s32, void*) = 0;
-	switch( image->getColorFormat () )
-	{
-		case ECF_R8G8B8:
-			format = CColorConverter::convert_R8G8B8toR8G8B8;
-			break;
-		case ECF_A8R8G8B8:
-			format = CColorConverter::convert_A8R8G8B8toR8G8B8;
-			break;
-		case ECF_A1R5G5B5:
-			format = CColorConverter::convert_A1R5G5B5toB8G8R8;
-			break;
-		case ECF_R5G6B5:
-			format = CColorConverter::convert_R5G6B5toR8G8B8;
-			break;
-		default:
-			os::Printer::log("writeJPEGFile does not support image format", ColorFormatNames[image->getColorFormat()], ELL_WARNING);
-			break;
+	void (*format)(const void *, s32, void *) = 0;
+	switch (image->getColorFormat()) {
+	case ECF_R8G8B8:
+		format = CColorConverter::convert_R8G8B8toR8G8B8;
+		break;
+	case ECF_A8R8G8B8:
+		format = CColorConverter::convert_A8R8G8B8toR8G8B8;
+		break;
+	case ECF_A1R5G5B5:
+		format = CColorConverter::convert_A1R5G5B5toB8G8R8;
+		break;
+	case ECF_R5G6B5:
+		format = CColorConverter::convert_R5G6B5toR8G8B8;
+		break;
+	default:
+		os::Printer::log("writeJPEGFile does not support image format", ColorFormatNames[image->getColorFormat()], ELL_WARNING);
+		break;
 	}
 
 	// couldn't find a color converter
-	if ( 0 == format )
+	if (0 == format)
 		return false;
 
 	const core::dimension2du dim = image->getDimension();
@@ -138,31 +127,29 @@ static bool writeJPEGFile(io::IWriteFile* file, IImage* image, u32 quality)
 
 	jpeg_set_defaults(&cinfo);
 
-	if ( 0 == quality )
+	if (0 == quality)
 		quality = 75;
 
 	jpeg_set_quality(&cinfo, quality, TRUE);
 	jpeg_start_compress(&cinfo, TRUE);
 
-	u8 * dest = new u8[dim.Width*3];
+	u8 *dest = new u8[dim.Width * 3];
 
-	if (dest)
-	{
+	if (dest) {
 		const u32 pitch = image->getPitch();
-		JSAMPROW row_pointer[1];      /* pointer to JSAMPLE row[s] */
+		JSAMPROW row_pointer[1]; /* pointer to JSAMPLE row[s] */
 		row_pointer[0] = dest;
 
-		u8* src = (u8*)image->getData();
+		u8 *src = (u8 *)image->getData();
 
-		while (cinfo.next_scanline < cinfo.image_height)
-		{
+		while (cinfo.next_scanline < cinfo.image_height) {
 			// convert next line
-			format( src, dim.Width, dest );
+			format(src, dim.Width, dest);
 			src += pitch;
 			jpeg_write_scanlines(&cinfo, row_pointer, 1);
 		}
 
-		delete [] dest;
+		delete[] dest;
 
 		/* Step 6: Finish compression */
 		jpeg_finish_compress(&cinfo);
@@ -174,18 +161,15 @@ static bool writeJPEGFile(io::IWriteFile* file, IImage* image, u32 quality)
 	return (dest != 0);
 }
 
-
 } // namespace video
 } // namespace irr
-
-
 
 namespace irr
 {
 namespace video
 {
 
-IImageWriter* createImageWriterJPG()
+IImageWriter *createImageWriterJPG()
 {
 	return new CImageWriterJPG;
 }
@@ -197,12 +181,10 @@ CImageWriterJPG::CImageWriterJPG()
 #endif
 }
 
-
-bool CImageWriterJPG::isAWriteableFileExtension(const io::path& filename) const
+bool CImageWriterJPG::isAWriteableFileExtension(const io::path &filename) const
 {
-	return core::hasFileExtension ( filename, "jpg", "jpeg" );
+	return core::hasFileExtension(filename, "jpg", "jpeg");
 }
-
 
 bool CImageWriterJPG::writeImage(io::IWriteFile *file, IImage *image, u32 quality) const
 {

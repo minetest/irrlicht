@@ -12,12 +12,12 @@ namespace irr
 namespace io
 {
 
-CAttributes::CAttributes(video::IVideoDriver* driver)
-: Driver(driver)
+CAttributes::CAttributes(video::IVideoDriver *driver) :
+		Driver(driver)
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("CAttributes");
-	#endif
+#endif
 
 	if (Driver)
 		Driver->grab();
@@ -31,30 +31,28 @@ CAttributes::~CAttributes()
 		Driver->drop();
 }
 
-
 //! Removes all attributes
 void CAttributes::clear()
 {
-	for (u32 i=0; i<Attributes.size(); ++i)
+	for (u32 i = 0; i < Attributes.size(); ++i)
 		Attributes[i]->drop();
 
 	Attributes.clear();
 }
 
 //! Returns attribute index from name, -1 if not found
-s32 CAttributes::findAttribute(const c8* attributeName) const
+s32 CAttributes::findAttribute(const c8 *attributeName) const
 {
-	for (u32 i=0; i<Attributes.size(); ++i)
+	for (u32 i = 0; i < Attributes.size(); ++i)
 		if (Attributes[i]->Name == attributeName)
 			return i;
 
 	return -1;
 }
 
-
-IAttribute* CAttributes::getAttributeP(const c8* attributeName) const
+IAttribute *CAttributes::getAttributeP(const c8 *attributeName) const
 {
-	for (u32 i=0; i<Attributes.size(); ++i)
+	for (u32 i = 0; i < Attributes.size(); ++i)
 		if (Attributes[i]->Name == attributeName)
 			return Attributes[i];
 
@@ -62,13 +60,12 @@ IAttribute* CAttributes::getAttributeP(const c8* attributeName) const
 }
 
 //! Sets a attribute as boolean value
-void CAttributes::setAttribute(const c8* attributeName, bool value)
+void CAttributes::setAttribute(const c8 *attributeName, bool value)
 {
-	IAttribute* att = getAttributeP(attributeName);
+	IAttribute *att = getAttributeP(attributeName);
 	if (att)
 		att->setBool(value);
-	else
-	{
+	else {
 		Attributes.push_back(new CBoolAttribute(attributeName, value));
 	}
 }
@@ -77,9 +74,9 @@ void CAttributes::setAttribute(const c8* attributeName, bool value)
 //! \param attributeName: Name of the attribute to get.
 //! \return Returns value of the attribute previously set by setAttribute() as bool
 //! or 0 if attribute is not set.
-bool CAttributes::getAttributeAsBool(const c8* attributeName, bool defaultNotFound) const
+bool CAttributes::getAttributeAsBool(const c8 *attributeName, bool defaultNotFound) const
 {
-	const IAttribute* att = getAttributeP(attributeName);
+	const IAttribute *att = getAttributeP(attributeName);
 	if (att)
 		return att->getBool();
 	else
@@ -87,13 +84,12 @@ bool CAttributes::getAttributeAsBool(const c8* attributeName, bool defaultNotFou
 }
 
 //! Sets a attribute as integer value
-void CAttributes::setAttribute(const c8* attributeName, s32 value)
+void CAttributes::setAttribute(const c8 *attributeName, s32 value)
 {
-	IAttribute* att = getAttributeP(attributeName);
+	IAttribute *att = getAttributeP(attributeName);
 	if (att)
 		att->setInt(value);
-	else
-	{
+	else {
 		Attributes.push_back(new CIntAttribute(attributeName, value));
 	}
 }
@@ -102,9 +98,9 @@ void CAttributes::setAttribute(const c8* attributeName, s32 value)
 //! \param attributeName: Name of the attribute to get.
 //! \return Returns value of the attribute previously set by setAttribute() as integer
 //! or 0 if attribute is not set.
-s32 CAttributes::getAttributeAsInt(const c8* attributeName, irr::s32 defaultNotFound) const
+s32 CAttributes::getAttributeAsInt(const c8 *attributeName, irr::s32 defaultNotFound) const
 {
-	const IAttribute* att = getAttributeP(attributeName);
+	const IAttribute *att = getAttributeP(attributeName);
 	if (att)
 		return att->getInt();
 	else
@@ -112,9 +108,9 @@ s32 CAttributes::getAttributeAsInt(const c8* attributeName, irr::s32 defaultNotF
 }
 
 //! Sets a attribute as float value
-void CAttributes::setAttribute(const c8* attributeName, f32 value)
+void CAttributes::setAttribute(const c8 *attributeName, f32 value)
 {
-	IAttribute* att = getAttributeP(attributeName);
+	IAttribute *att = getAttributeP(attributeName);
 	if (att)
 		att->setFloat(value);
 	else
@@ -125,9 +121,9 @@ void CAttributes::setAttribute(const c8* attributeName, f32 value)
 //! \param attributeName: Name of the attribute to get.
 //! \return Returns value of the attribute previously set by setAttribute() as float value
 //! or 0 if attribute is not set.
-f32 CAttributes::getAttributeAsFloat(const c8* attributeName, irr::f32 defaultNotFound) const
+f32 CAttributes::getAttributeAsFloat(const c8 *attributeName, irr::f32 defaultNotFound) const
 {
-	const IAttribute* att = getAttributeP(attributeName);
+	const IAttribute *att = getAttributeP(attributeName);
 	if (att)
 		return att->getFloat();
 
@@ -142,7 +138,7 @@ u32 CAttributes::getAttributeCount() const
 
 //! Returns string attribute name by index.
 //! \param index: Index value, must be between 0 and getStringAttributeCount()-1.
-const c8* CAttributes::getAttributeName(s32 index) const
+const c8 *CAttributes::getAttributeName(s32 index) const
 {
 	if ((u32)index >= Attributes.size())
 		return 0;
@@ -151,11 +147,11 @@ const c8* CAttributes::getAttributeName(s32 index) const
 }
 
 //! Returns the type of an attribute
-E_ATTRIBUTE_TYPE CAttributes::getAttributeType(const c8* attributeName) const
+E_ATTRIBUTE_TYPE CAttributes::getAttributeType(const c8 *attributeName) const
 {
 	E_ATTRIBUTE_TYPE ret = EAT_UNKNOWN;
 
-	const IAttribute* att = getAttributeP(attributeName);
+	const IAttribute *att = getAttributeP(attributeName);
 	if (att)
 		ret = att->getType();
 
@@ -173,9 +169,9 @@ E_ATTRIBUTE_TYPE CAttributes::getAttributeType(s32 index) const
 }
 
 //! Returns the type of an attribute
-const wchar_t* CAttributes::getAttributeTypeString(const c8* attributeName, const wchar_t* defaultNotFound) const
+const wchar_t *CAttributes::getAttributeTypeString(const c8 *attributeName, const wchar_t *defaultNotFound) const
 {
-	const IAttribute* att = getAttributeP(attributeName);
+	const IAttribute *att = getAttributeP(attributeName);
 	if (att)
 		return att->getTypeString();
 	else
@@ -184,7 +180,7 @@ const wchar_t* CAttributes::getAttributeTypeString(const c8* attributeName, cons
 
 //! Returns attribute type string by index.
 //! \param index: Index value, must be between 0 and getAttributeCount()-1.
-const wchar_t* CAttributes::getAttributeTypeString(s32 index, const wchar_t* defaultNotFound) const
+const wchar_t *CAttributes::getAttributeTypeString(s32 index, const wchar_t *defaultNotFound) const
 {
 	if ((u32)index >= Attributes.size())
 		return defaultNotFound;
@@ -225,25 +221,25 @@ bool CAttributes::getAttributeAsBool(s32 index) const
 }
 
 //! Adds an attribute as integer
-void CAttributes::addInt(const c8* attributeName, s32 value)
+void CAttributes::addInt(const c8 *attributeName, s32 value)
 {
 	Attributes.push_back(new CIntAttribute(attributeName, value));
 }
 
 //! Adds an attribute as float
-void CAttributes::addFloat(const c8* attributeName, f32 value)
+void CAttributes::addFloat(const c8 *attributeName, f32 value)
 {
 	Attributes.push_back(new CFloatAttribute(attributeName, value));
 }
 
 //! Adds an attribute as bool
-void CAttributes::addBool(const c8* attributeName, bool value)
+void CAttributes::addBool(const c8 *attributeName, bool value)
 {
 	Attributes.push_back(new CBoolAttribute(attributeName, value));
 }
 
 //! Returns if an attribute with a name exists
-bool CAttributes::existsAttribute(const c8* attributeName) const
+bool CAttributes::existsAttribute(const c8 *attributeName) const
 {
 	return getAttributeP(attributeName) != 0;
 }
@@ -271,4 +267,3 @@ void CAttributes::setAttribute(s32 index, f32 value)
 
 } // end namespace io
 } // end namespace irr
-

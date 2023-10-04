@@ -20,56 +20,56 @@ namespace irr
 {
 namespace video
 {
-    // GLX manager.
-    class CGLXManager : public IContextManager
-    {
-    public:
-        //! Constructor.
-        CGLXManager(const SIrrlichtCreationParameters& params, const SExposedVideoData& videodata, int screennr);
+// GLX manager.
+class CGLXManager : public IContextManager
+{
+public:
+	//! Constructor.
+	CGLXManager(const SIrrlichtCreationParameters &params, const SExposedVideoData &videodata, int screennr);
 
-        //! Destructor
-        ~CGLXManager();
+	//! Destructor
+	~CGLXManager();
 
-        // Initialize
-        bool initialize(const SIrrlichtCreationParameters& params, const SExposedVideoData& data) override;
+	// Initialize
+	bool initialize(const SIrrlichtCreationParameters &params, const SExposedVideoData &data) override;
 
-        // Terminate
-        void terminate() override;
+	// Terminate
+	void terminate() override;
 
-        // Create surface.
-        bool generateSurface() override;
+	// Create surface.
+	bool generateSurface() override;
 
-        // Destroy surface.
-        void destroySurface() override;
+	// Destroy surface.
+	void destroySurface() override;
 
-        // Create context.
-        bool generateContext() override;
+	// Create context.
+	bool generateContext() override;
 
-        // Destroy context.
-        void destroyContext() override;
+	// Destroy context.
+	void destroyContext() override;
 
-        //! Get current context
-        const SExposedVideoData& getContext() const override;
+	//! Get current context
+	const SExposedVideoData &getContext() const override;
 
-        //! Change render context, disable old and activate new defined by videoData
-        bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero) override;
+	//! Change render context, disable old and activate new defined by videoData
+	bool activateContext(const SExposedVideoData &videoData, bool restorePrimaryOnZero) override;
 
-		// Get procedure address.
-		void* getProcAddress(const std::string &procName) override;
+	// Get procedure address.
+	void *getProcAddress(const std::string &procName) override;
 
-        // Swap buffers.
-        bool swapBuffers() override;
+	// Swap buffers.
+	bool swapBuffers() override;
 
-        XVisualInfo* getVisual() const {return VisualInfo;} // return XVisualInfo
+	XVisualInfo *getVisual() const { return VisualInfo; } // return XVisualInfo
 
-    private:
-        SIrrlichtCreationParameters Params;
-        SExposedVideoData PrimaryContext;
-        SExposedVideoData CurrentContext;
-        XVisualInfo* VisualInfo;
-        void* glxFBConfig; // GLXFBConfig
-        XID GlxWin; // GLXWindow
-	};
+private:
+	SIrrlichtCreationParameters Params;
+	SExposedVideoData PrimaryContext;
+	SExposedVideoData CurrentContext;
+	XVisualInfo *VisualInfo;
+	void *glxFBConfig; // GLXFBConfig
+	XID GlxWin;		   // GLXWindow
+};
 }
 }
 

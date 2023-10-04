@@ -15,38 +15,41 @@ namespace irr
 {
 namespace video
 {
-	void COpenGL3ExtensionHandler::initExtensionsOld()
-	{
-		auto extensions_string = reinterpret_cast<const char *>(GL.GetString(GL_EXTENSIONS));
-		const char *pos = extensions_string;
-		while (const char *next = strchr(pos, ' ')) {
-			addExtension(std::string{pos, next});
-			pos = next + 1;
-		}
-		addExtension(pos);
-		updateLegacyExtensionList();
+void COpenGL3ExtensionHandler::initExtensionsOld()
+{
+	auto extensions_string = reinterpret_cast<const char *>(GL.GetString(GL_EXTENSIONS));
+	const char *pos = extensions_string;
+	while (const char *next = strchr(pos, ' ')) {
+		addExtension(std::string{pos, next});
+		pos = next + 1;
 	}
+	addExtension(pos);
+	updateLegacyExtensionList();
+}
 
-	void COpenGL3ExtensionHandler::initExtensionsNew()
-	{
-		int ext_count = GetInteger(GL_NUM_EXTENSIONS);
-		for (int k = 0; k < ext_count; k++)
-			addExtension(reinterpret_cast<const char *>(GL.GetStringi(GL_EXTENSIONS, k)));
-		updateLegacyExtensionList();
-	}
+void COpenGL3ExtensionHandler::initExtensionsNew()
+{
+	int ext_count = GetInteger(GL_NUM_EXTENSIONS);
+	for (int k = 0; k < ext_count; k++)
+		addExtension(reinterpret_cast<const char *>(GL.GetStringi(GL_EXTENSIONS, k)));
+	updateLegacyExtensionList();
+}
 
-	void COpenGL3ExtensionHandler::addExtension(std::string name) {
-		Extensions.emplace(std::move(name));
-	}
+void COpenGL3ExtensionHandler::addExtension(std::string name)
+{
+	Extensions.emplace(std::move(name));
+}
 
-	bool COpenGL3ExtensionHandler::queryExtension(const std::string &name) const noexcept {
-		return Extensions.find(name) != Extensions.end();
-	}
+bool COpenGL3ExtensionHandler::queryExtension(const std::string &name) const noexcept
+{
+	return Extensions.find(name) != Extensions.end();
+}
 
-	void COpenGL3ExtensionHandler::updateLegacyExtensionList() {
-		for (size_t j = 0; j < IRR_OGLES_Feature_Count; ++j)
-			FeatureAvailable[j] = queryExtension(getFeatureString(j));
-	}
+void COpenGL3ExtensionHandler::updateLegacyExtensionList()
+{
+	for (size_t j = 0; j < IRR_OGLES_Feature_Count; ++j)
+		FeatureAvailable[j] = queryExtension(getFeatureString(j));
+}
 
 } // end namespace video
 } // end namespace irr

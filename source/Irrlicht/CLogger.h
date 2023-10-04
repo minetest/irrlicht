@@ -16,8 +16,7 @@ namespace irr
 class CLogger : public ILogger
 {
 public:
-
-	CLogger(IEventReceiver* r);
+	CLogger(IEventReceiver *r);
 
 	//! Returns the current set log level.
 	ELOG_LEVEL getLogLevel() const override;
@@ -26,27 +25,26 @@ public:
 	void setLogLevel(ELOG_LEVEL ll) override;
 
 	//! Prints out a text into the log
-	void log(const c8* text, ELOG_LEVEL ll=ELL_INFORMATION) override;
+	void log(const c8 *text, ELOG_LEVEL ll = ELL_INFORMATION) override;
 
 	//! Prints out a text into the log
-	void log(const wchar_t* text, ELOG_LEVEL ll=ELL_INFORMATION) override;
+	void log(const wchar_t *text, ELOG_LEVEL ll = ELL_INFORMATION) override;
 
 	//! Prints out a text into the log
-	void log(const c8* text, const c8* hint, ELOG_LEVEL ll=ELL_INFORMATION) override;
+	void log(const c8 *text, const c8 *hint, ELOG_LEVEL ll = ELL_INFORMATION) override;
 
 	//! Prints out a text into the log
-	void log(const c8* text, const wchar_t* hint, ELOG_LEVEL ll=ELL_INFORMATION) override;
+	void log(const c8 *text, const wchar_t *hint, ELOG_LEVEL ll = ELL_INFORMATION) override;
 
 	//! Prints out a text into the log
-	void log(const wchar_t* text, const wchar_t* hint, ELOG_LEVEL ll=ELL_INFORMATION) override;
+	void log(const wchar_t *text, const wchar_t *hint, ELOG_LEVEL ll = ELL_INFORMATION) override;
 
 	//! Sets a new event receiver
-	void setReceiver(IEventReceiver* r);
+	void setReceiver(IEventReceiver *r);
 
 private:
-
 	ELOG_LEVEL LogLevel;
-	IEventReceiver* Receiver;
+	IEventReceiver *Receiver;
 };
 
 } // end namespace

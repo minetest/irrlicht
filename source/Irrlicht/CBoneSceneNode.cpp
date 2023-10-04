@@ -10,24 +10,23 @@ namespace scene
 {
 
 //! constructor
-CBoneSceneNode::CBoneSceneNode(ISceneNode* parent, ISceneManager* mgr, s32 id,
-	u32 boneIndex, const c8* boneName)
-: IBoneSceneNode(parent, mgr, id), BoneIndex(boneIndex),
-	AnimationMode(EBAM_AUTOMATIC), SkinningSpace(EBSS_LOCAL)
+CBoneSceneNode::CBoneSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id,
+		u32 boneIndex, const c8 *boneName) :
+		IBoneSceneNode(parent, mgr, id),
+		BoneIndex(boneIndex),
+		AnimationMode(EBAM_AUTOMATIC), SkinningSpace(EBSS_LOCAL)
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("CBoneSceneNode");
-	#endif
+#endif
 	setName(boneName);
 }
-
 
 //! Returns the index of the bone
 u32 CBoneSceneNode::getBoneIndex() const
 {
 	return BoneIndex;
 }
-
 
 //! Sets the animation mode of the bone. Returns true if successful.
 bool CBoneSceneNode::setAnimationMode(E_BONE_ANIMATION_MODE mode)
@@ -36,20 +35,17 @@ bool CBoneSceneNode::setAnimationMode(E_BONE_ANIMATION_MODE mode)
 	return true;
 }
 
-
 //! Gets the current animation mode of the bone
 E_BONE_ANIMATION_MODE CBoneSceneNode::getAnimationMode() const
 {
 	return AnimationMode;
 }
 
-
 //! returns the axis aligned bounding box of this node
-const core::aabbox3d<f32>& CBoneSceneNode::getBoundingBox() const
+const core::aabbox3d<f32> &CBoneSceneNode::getBoundingBox() const
 {
 	return Box;
 }
-
 
 /*
 //! Returns the relative transformation of the scene node.
@@ -59,13 +55,11 @@ core::matrix4 CBoneSceneNode::getRelativeTransformation() const
 }
 */
 
-
 void CBoneSceneNode::OnAnimate(u32 timeMs)
 {
-	if (IsVisible)
-	{
+	if (IsVisible) {
 		// update absolute position
-		//updateAbsolutePosition();
+		// updateAbsolutePosition();
 
 		// perform the post render process on all children
 		ISceneNodeList::iterator it = Children.begin();
@@ -74,24 +68,20 @@ void CBoneSceneNode::OnAnimate(u32 timeMs)
 	}
 }
 
-
 void CBoneSceneNode::helper_updateAbsolutePositionOfAllChildren(ISceneNode *Node)
 {
 	Node->updateAbsolutePosition();
 
 	ISceneNodeList::const_iterator it = Node->getChildren().begin();
-	for (; it != Node->getChildren().end(); ++it)
-	{
-		helper_updateAbsolutePositionOfAllChildren( (*it) );
+	for (; it != Node->getChildren().end(); ++it) {
+		helper_updateAbsolutePositionOfAllChildren((*it));
 	}
 }
 
-
 void CBoneSceneNode::updateAbsolutePositionOfAllChildren()
 {
-	helper_updateAbsolutePositionOfAllChildren( this );
+	helper_updateAbsolutePositionOfAllChildren(this);
 }
-
 
 } // namespace scene
 } // namespace irr

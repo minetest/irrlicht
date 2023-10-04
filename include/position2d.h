@@ -26,5 +26,3 @@ typedef vector2d<s32> position2di;
 
 // ...and use a #define to catch the rest, for (e.g.) position2d<f64>
 #define position2d vector2d
-
-

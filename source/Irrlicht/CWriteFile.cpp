@@ -10,18 +10,15 @@ namespace irr
 namespace io
 {
 
-
-CWriteFile::CWriteFile(const io::path& fileName, bool append)
-: Filename(fileName), FileSize(0)
+CWriteFile::CWriteFile(const io::path &fileName, bool append) :
+		Filename(fileName), FileSize(0)
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("CWriteFile");
-	#endif
+#endif
 
 	openFile(append);
 }
-
-
 
 CWriteFile::~CWriteFile()
 {
@@ -29,26 +26,20 @@ CWriteFile::~CWriteFile()
 		fclose(File);
 }
 
-
-
 //! returns if file is open
 inline bool CWriteFile::isOpen() const
 {
 	return File != 0;
 }
 
-
-
 //! returns how much was read
-size_t CWriteFile::write(const void* buffer, size_t sizeToWrite)
+size_t CWriteFile::write(const void *buffer, size_t sizeToWrite)
 {
 	if (!isOpen())
 		return 0;
 
 	return fwrite(buffer, 1, sizeToWrite, File);
 }
-
-
 
 //! changes position in file, returns true if successful
 //! if relativeMovement==true, the pos is changed relative to current pos,
@@ -61,29 +52,23 @@ bool CWriteFile::seek(long finalPos, bool relativeMovement)
 	return fseek(File, finalPos, relativeMovement ? SEEK_CUR : SEEK_SET) == 0;
 }
 
-
-
 //! returns where in the file we are.
 long CWriteFile::getPos() const
 {
 	return ftell(File);
 }
 
-
-
 //! opens the file
 void CWriteFile::openFile(bool append)
 {
-	if (Filename.size() == 0)
-	{
+	if (Filename.size() == 0) {
 		File = 0;
 		return;
 	}
 
 	File = fopen(Filename.c_str(), append ? "ab" : "wb");
 
-	if (File)
-	{
+	if (File) {
 		// get FileSize
 
 		fseek(File, 0, SEEK_END);
@@ -92,10 +77,8 @@ void CWriteFile::openFile(bool append)
 	}
 }
 
-
-
 //! returns name of file
-const io::path& CWriteFile::getFileName() const
+const io::path &CWriteFile::getFileName() const
 {
 	return Filename;
 }
@@ -109,9 +92,9 @@ bool CWriteFile::flush()
 	return fflush(File) == 0; // 0 indicates success, otherwise EOF and errno is set
 }
 
-IWriteFile* CWriteFile::createWriteFile(const io::path& fileName, bool append)
+IWriteFile *CWriteFile::createWriteFile(const io::path &fileName, bool append)
 {
-	CWriteFile* file = new CWriteFile(fileName, append);
+	CWriteFile *file = new CWriteFile(fileName, append);
 	if (file->isOpen())
 		return file;
 
@@ -119,7 +102,5 @@ IWriteFile* CWriteFile::createWriteFile(const io::path& fileName, bool append)
 	return 0;
 }
 
-
 } // end namespace io
 } // end namespace irr
-

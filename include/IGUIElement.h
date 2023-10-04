@@ -26,29 +26,27 @@ namespace gui
 class IGUIElement : virtual public IReferenceCounted, public IEventReceiver
 {
 public:
-
 	//! Constructor
-	IGUIElement(EGUI_ELEMENT_TYPE type, IGUIEnvironment* environment, IGUIElement* parent,
-		s32 id, const core::rect<s32>& rectangle)
-		: Parent(0), RelativeRect(rectangle), AbsoluteRect(rectangle),
-		AbsoluteClippingRect(rectangle), DesiredRect(rectangle),
-		MaxSize(0,0), MinSize(1,1), IsVisible(true), IsEnabled(true),
-		IsSubElement(false), NoClip(false), ID(id), IsTabStop(false), TabOrder(-1), IsTabGroup(false),
-		AlignLeft(EGUIA_UPPERLEFT), AlignRight(EGUIA_UPPERLEFT), AlignTop(EGUIA_UPPERLEFT), AlignBottom(EGUIA_UPPERLEFT),
-		Environment(environment), Type(type)
+	IGUIElement(EGUI_ELEMENT_TYPE type, IGUIEnvironment *environment, IGUIElement *parent,
+			s32 id, const core::rect<s32> &rectangle) :
+			Parent(0),
+			RelativeRect(rectangle), AbsoluteRect(rectangle),
+			AbsoluteClippingRect(rectangle), DesiredRect(rectangle),
+			MaxSize(0, 0), MinSize(1, 1), IsVisible(true), IsEnabled(true),
+			IsSubElement(false), NoClip(false), ID(id), IsTabStop(false), TabOrder(-1), IsTabGroup(false),
+			AlignLeft(EGUIA_UPPERLEFT), AlignRight(EGUIA_UPPERLEFT), AlignTop(EGUIA_UPPERLEFT), AlignBottom(EGUIA_UPPERLEFT),
+			Environment(environment), Type(type)
 	{
-		#ifdef _DEBUG
+#ifdef _DEBUG
 		setDebugName("IGUIElement");
-		#endif
+#endif
 
 		// if we were given a parent to attach to
-		if (parent)
-		{
+		if (parent) {
 			parent->addChildToEnd(this);
 			recalculateAbsolutePosition(true);
 		}
 	}
-
 
 	//! Destructor
 	virtual ~IGUIElement()
@@ -59,9 +57,8 @@ public:
 		}
 	}
 
-
 	//! Returns parent of this element.
-	IGUIElement* getParent() const
+	IGUIElement *getParent() const
 	{
 		return Parent;
 	}
@@ -72,22 +69,20 @@ public:
 		return RelativeRect;
 	}
 
-
 	//! Sets the relative rectangle of this element.
 	/** \param r The absolute position to set */
-	void setRelativePosition(const core::rect<s32>& r)
+	void setRelativePosition(const core::rect<s32> &r)
 	{
-		if (Parent)
-		{
-			const core::rect<s32>& r2 = Parent->getAbsolutePosition();
+		if (Parent) {
+			const core::rect<s32> &r2 = Parent->getAbsolutePosition();
 
 			core::dimension2df d((f32)(r2.getSize().Width), (f32)(r2.getSize().Height));
 
-			if (AlignLeft   == EGUIA_SCALE)
+			if (AlignLeft == EGUIA_SCALE)
 				ScaleRect.UpperLeftCorner.X = (f32)r.UpperLeftCorner.X / d.Width;
-			if (AlignRight  == EGUIA_SCALE)
+			if (AlignRight == EGUIA_SCALE)
 				ScaleRect.LowerRightCorner.X = (f32)r.LowerRightCorner.X / d.Width;
-			if (AlignTop    == EGUIA_SCALE)
+			if (AlignTop == EGUIA_SCALE)
 				ScaleRect.UpperLeftCorner.Y = (f32)r.UpperLeftCorner.Y / d.Height;
 			if (AlignBottom == EGUIA_SCALE)
 				ScaleRect.LowerRightCorner.Y = (f32)r.LowerRightCorner.Y / d.Height;
@@ -99,38 +94,36 @@ public:
 
 	//! Sets the relative rectangle of this element, maintaining its current width and height
 	/** \param position The new relative position to set. Width and height will not be changed. */
-	void setRelativePosition(const core::position2di & position)
+	void setRelativePosition(const core::position2di &position)
 	{
 		const core::dimension2di mySize = RelativeRect.getSize();
 		const core::rect<s32> rectangle(position.X, position.Y,
-						position.X + mySize.Width, position.Y + mySize.Height);
+				position.X + mySize.Width, position.Y + mySize.Height);
 		setRelativePosition(rectangle);
 	}
-
 
 	//! Sets the relative rectangle of this element as a proportion of its parent's area.
 	/** \note This method used to be 'void setRelativePosition(const core::rect<f32>& r)'
 	\param r  The rectangle to set, interpreted as a proportion of the parent's area.
 	Meaningful values are in the range [0...1], unless you intend this element to spill
 	outside its parent. */
-	void setRelativePositionProportional(const core::rect<f32>& r)
+	void setRelativePositionProportional(const core::rect<f32> &r)
 	{
 		if (!Parent)
 			return;
 
-		const core::dimension2di& d = Parent->getAbsolutePosition().getSize();
+		const core::dimension2di &d = Parent->getAbsolutePosition().getSize();
 
 		DesiredRect = core::rect<s32>(
-					core::floor32((f32)d.Width * r.UpperLeftCorner.X),
-					core::floor32((f32)d.Height * r.UpperLeftCorner.Y),
-					core::floor32((f32)d.Width * r.LowerRightCorner.X),
-					core::floor32((f32)d.Height * r.LowerRightCorner.Y));
+				core::floor32((f32)d.Width * r.UpperLeftCorner.X),
+				core::floor32((f32)d.Height * r.UpperLeftCorner.Y),
+				core::floor32((f32)d.Width * r.LowerRightCorner.X),
+				core::floor32((f32)d.Height * r.LowerRightCorner.Y));
 
 		ScaleRect = r;
 
 		updateAbsolutePosition();
 	}
-
 
 	//! Gets the absolute rectangle of this element
 	core::rect<s32> getAbsolutePosition() const
@@ -138,13 +131,11 @@ public:
 		return AbsoluteRect;
 	}
 
-
 	//! Returns the visible area of the element.
 	core::rect<s32> getAbsoluteClippingRect() const
 	{
 		return AbsoluteClippingRect;
 	}
-
 
 	//! Sets whether the element will ignore its parent's clipping rectangle
 	/** \param noClip If true, the element will not be clipped by its parent's clipping rectangle. */
@@ -154,14 +145,12 @@ public:
 		updateAbsolutePosition();
 	}
 
-
 	//! Gets whether the element will ignore its parent's clipping rectangle
 	/** \return true if the element is not clipped by its parent's clipping rectangle. */
 	bool isNotClipped() const
 	{
 		return NoClip;
 	}
-
 
 	//! Sets the maximum size allowed for this element
 	/** If set to 0,0, there is no maximum size */
@@ -170,7 +159,6 @@ public:
 		MaxSize = size;
 		updateAbsolutePosition();
 	}
-
 
 	//! Sets the minimum size allowed for this element
 	void setMinSize(core::dimension2du size)
@@ -183,7 +171,6 @@ public:
 		updateAbsolutePosition();
 	}
 
-
 	//! The alignment defines how the borders of this element will be positioned when the parent element is resized.
 	void setAlignment(EGUI_ALIGNMENT left, EGUI_ALIGNMENT right, EGUI_ALIGNMENT top, EGUI_ALIGNMENT bottom)
 	{
@@ -192,17 +179,16 @@ public:
 		AlignTop = top;
 		AlignBottom = bottom;
 
-		if (Parent)
-		{
+		if (Parent) {
 			core::rect<s32> r(Parent->getAbsolutePosition());
 
 			core::dimension2df d((f32)r.getSize().Width, (f32)r.getSize().Height);
 
-			if (AlignLeft   == EGUIA_SCALE)
+			if (AlignLeft == EGUIA_SCALE)
 				ScaleRect.UpperLeftCorner.X = (f32)DesiredRect.UpperLeftCorner.X / d.Width;
-			if (AlignRight  == EGUIA_SCALE)
+			if (AlignRight == EGUIA_SCALE)
 				ScaleRect.LowerRightCorner.X = (f32)DesiredRect.LowerRightCorner.X / d.Width;
-			if (AlignTop    == EGUIA_SCALE)
+			if (AlignTop == EGUIA_SCALE)
 				ScaleRect.UpperLeftCorner.Y = (f32)DesiredRect.UpperLeftCorner.Y / d.Height;
 			if (AlignBottom == EGUIA_SCALE)
 				ScaleRect.LowerRightCorner.Y = (f32)DesiredRect.LowerRightCorner.Y / d.Height;
@@ -239,12 +225,10 @@ public:
 		recalculateAbsolutePosition(false);
 
 		// update all children
-		for (auto child : Children)
-		{
+		for (auto child : Children) {
 			child->updateAbsolutePosition();
 		}
 	}
-
 
 	//! Returns the topmost GUI element at the specific position.
 	/**
@@ -258,18 +242,16 @@ public:
 	\return The topmost GUI element at that point, or 0 if there are
 	no candidate elements at this point.
 	*/
-	virtual IGUIElement* getElementFromPoint(const core::position2d<s32>& point)
+	virtual IGUIElement *getElementFromPoint(const core::position2d<s32> &point)
 	{
-		IGUIElement* target = 0;
+		IGUIElement *target = 0;
 
-		if (isVisible())
-		{
+		if (isVisible()) {
 			// we have to search from back to front, because later children
 			// might be drawn over the top of earlier ones.
 			auto it = Children.rbegin();
 			auto ie = Children.rend();
-			while (it != ie)
-			{
+			while (it != ie) {
 				target = (*it)->getElementFromPoint(point);
 				if (target)
 					return target;
@@ -284,27 +266,24 @@ public:
 		return target;
 	}
 
-
 	//! Returns true if a point is within this element.
 	/** Elements with a shape other than a rectangle should override this method */
-	virtual bool isPointInside(const core::position2d<s32>& point) const
+	virtual bool isPointInside(const core::position2d<s32> &point) const
 	{
 		return AbsoluteClippingRect.isPointInside(point);
 	}
 
-
 	//! Adds a GUI element as new child of this element.
-	virtual void addChild(IGUIElement* child)
+	virtual void addChild(IGUIElement *child)
 	{
-		if ( child && child != this )
-		{
+		if (child && child != this) {
 			addChildToEnd(child);
 			child->updateAbsolutePosition();
 		}
 	}
 
 	//! Removes a child.
-	virtual void removeChild(IGUIElement* child)
+	virtual void removeChild(IGUIElement *child)
 	{
 		assert(child->Parent == this);
 		Children.erase(child->ParentPos);
@@ -313,7 +292,8 @@ public:
 	}
 
 	//! Removes all children.
-	virtual void removeAllChildren() {
+	virtual void removeAllChildren()
+	{
 		while (!Children.empty()) {
 			auto child = Children.back();
 			child->remove();
@@ -327,35 +307,29 @@ public:
 			Parent->removeChild(this);
 	}
 
-
 	//! Draws the element and its children.
 	virtual void draw()
 	{
-		if ( isVisible() )
-		{
+		if (isVisible()) {
 			for (auto child : Children)
 				child->draw();
 		}
 	}
 
-
 	//! animate the element and its children.
 	virtual void OnPostRender(u32 timeMs)
 	{
-		if ( isVisible() )
-		{
+		if (isVisible()) {
 			for (auto child : Children)
-				child->OnPostRender( timeMs );
+				child->OnPostRender(timeMs);
 		}
 	}
-
 
 	//! Moves this element.
 	virtual void move(core::position2d<s32> absoluteMovement)
 	{
 		setRelativePosition(DesiredRect + absoluteMovement);
 	}
-
 
 	//! Returns true if element is visible.
 	virtual bool isVisible() const
@@ -368,10 +342,10 @@ public:
 	false if this or any parent element is invisible. */
 	virtual bool isTrulyVisible() const
 	{
-		if(!IsVisible)
+		if (!IsVisible)
 			return false;
 
-		if(!Parent)
+		if (!Parent)
 			return true;
 
 		return Parent->isTrulyVisible();
@@ -383,13 +357,11 @@ public:
 		IsVisible = visible;
 	}
 
-
 	//! Returns true if this element was created as part of its parent control
 	virtual bool isSubElement() const
 	{
 		return IsSubElement;
 	}
-
 
 	//! Sets whether this control was created as part of its parent.
 	/** For example, it is true when a scrollbar is part of a listbox.
@@ -399,7 +371,6 @@ public:
 		IsSubElement = subElement;
 	}
 
-
 	//! If set to true, the focus will visit this element when using the tab key to cycle through elements.
 	/** If this element is a tab group (see isTabGroup/setTabGroup) then
 	ctrl+tab will be used instead. */
@@ -408,13 +379,11 @@ public:
 		IsTabStop = enable;
 	}
 
-
 	//! Returns true if this element can be focused by navigating with the tab key
 	bool isTabStop() const
 	{
 		return IsTabStop;
 	}
-
 
 	//! Sets the priority of focus when using the tab key to navigate between a group of elements.
 	/** See setTabGroup, isTabGroup and getTabGroup for information on tab groups.
@@ -422,36 +391,30 @@ public:
 	void setTabOrder(s32 index)
 	{
 		// negative = autonumber
-		if (index < 0)
-		{
+		if (index < 0) {
 			TabOrder = 0;
 			IGUIElement *el = getTabGroup();
 			while (IsTabGroup && el && el->Parent)
 				el = el->Parent;
 
-			IGUIElement *first=0, *closest=0;
-			if (el)
-			{
+			IGUIElement *first = 0, *closest = 0;
+			if (el) {
 				// find the highest element number
 				el->getNextElement(-1, true, IsTabGroup, first, closest, true, true);
-				if (first)
-				{
+				if (first) {
 					TabOrder = first->getTabOrder() + 1;
 				}
 			}
 
-		}
-		else
+		} else
 			TabOrder = index;
 	}
-
 
 	//! Returns the number in the tab order sequence
 	s32 getTabOrder() const
 	{
 		return TabOrder;
 	}
-
 
 	//! Sets whether this element is a container for a group of elements which can be navigated using the tab key.
 	/** For example, windows are tab groups.
@@ -461,25 +424,22 @@ public:
 		IsTabGroup = isGroup;
 	}
 
-
 	//! Returns true if this element is a tab group.
 	bool isTabGroup() const
 	{
 		return IsTabGroup;
 	}
 
-
 	//! Returns the container element which holds all elements in this element's tab group.
-	IGUIElement* getTabGroup()
+	IGUIElement *getTabGroup()
 	{
-		IGUIElement *ret=this;
+		IGUIElement *ret = this;
 
 		while (ret && !ret->isTabGroup())
 			ret = ret->getParent();
 
 		return ret;
 	}
-
 
 	//! Returns true if element is enabled
 	/** Currently elements do _not_ care about parent-states.
@@ -488,12 +448,11 @@ public:
 	*/
 	virtual bool isEnabled() const
 	{
-		if ( isSubElement() && IsEnabled && getParent() )
+		if (isSubElement() && IsEnabled && getParent())
 			return getParent()->isEnabled();
 
 		return IsEnabled;
 	}
-
 
 	//! Sets the enabled state of this element.
 	virtual void setEnabled(bool enabled)
@@ -501,34 +460,29 @@ public:
 		IsEnabled = enabled;
 	}
 
-
 	//! Sets the new caption of this element.
-	virtual void setText(const wchar_t* text)
+	virtual void setText(const wchar_t *text)
 	{
 		Text = text;
 	}
 
-
 	//! Returns caption of this element.
-	virtual const wchar_t* getText() const
+	virtual const wchar_t *getText() const
 	{
 		return Text.c_str();
 	}
 
-
 	//! Sets the new caption of this element.
-	virtual void setToolTipText(const wchar_t* text)
+	virtual void setToolTipText(const wchar_t *text)
 	{
 		ToolTipText = text;
 	}
 
-
 	//! Returns caption of this element.
-	virtual const core::stringw& getToolTipText() const
+	virtual const core::stringw &getToolTipText() const
 	{
 		return ToolTipText;
 	}
-
 
 	//! Returns id. Can be used to identify the element.
 	virtual s32 getID() const
@@ -536,24 +490,21 @@ public:
 		return ID;
 	}
 
-
 	//! Sets the id of this element
 	virtual void setID(s32 id)
 	{
 		ID = id;
 	}
 
-
 	//! Called if an event happened.
-	bool OnEvent(const SEvent& event) override
+	bool OnEvent(const SEvent &event) override
 	{
 		return Parent ? Parent->OnEvent(event) : false;
 	}
 
-
 	//! Brings a child to front
 	/** \return True if successful, false if not. */
-	virtual bool bringToFront(IGUIElement* child)
+	virtual bool bringToFront(IGUIElement *child)
 	{
 		if (child->Parent != this)
 			return false;
@@ -564,10 +515,9 @@ public:
 		return true;
 	}
 
-
 	//! Moves a child to the back, so it's siblings are drawn on top of it
 	/** \return True if successful, false if not. */
-	virtual bool sendToBack(IGUIElement* child)
+	virtual bool sendToBack(IGUIElement *child)
 	{
 		if (child->Parent != this)
 			return false;
@@ -579,11 +529,10 @@ public:
 	}
 
 	//! Returns list with children of this element
-	virtual const std::list<IGUIElement*>& getChildren() const
+	virtual const std::list<IGUIElement *> &getChildren() const
 	{
 		return Children;
 	}
-
 
 	//! Finds the first element with the given id.
 	/** \param id: Id to search for.
@@ -592,12 +541,11 @@ public:
 	should be searched too.
 	\return Returns the first element with the given id. If no element
 	with this id was found, 0 is returned. */
-	virtual IGUIElement* getElementFromId(s32 id, bool searchchildren=false) const
+	virtual IGUIElement *getElementFromId(s32 id, bool searchchildren = false) const
 	{
-		IGUIElement* e = 0;
+		IGUIElement *e = 0;
 
-		for (auto child : Children)
-		{
+		for (auto child : Children) {
 			if (child->getID() == id)
 				return child;
 
@@ -611,24 +559,20 @@ public:
 		return e;
 	}
 
-
 	//! returns true if the given element is a child of this one.
 	//! \param child: The child element to check
-	bool isMyChild(IGUIElement* child) const
+	bool isMyChild(IGUIElement *child) const
 	{
 		if (!child)
 			return false;
-		do
-		{
+		do {
 			if (child->Parent)
 				child = child->Parent;
 
 		} while (child->Parent && child != this);
 
-
 		return child == this;
 	}
-
 
 	//! searches elements to find the closest next element to tab to
 	/** \param startOrder: The TabOrder of the current element, -1 if none
@@ -640,74 +584,58 @@ public:
 	\param includeDisabled: includes disabled elements in the search (default=false)
 	\return true if successfully found an element, false to continue searching/fail */
 	bool getNextElement(s32 startOrder, bool reverse, bool group,
-		IGUIElement*& first, IGUIElement*& closest, bool includeInvisible=false,
-		bool includeDisabled=false) const
+			IGUIElement *&first, IGUIElement *&closest, bool includeInvisible = false,
+			bool includeDisabled = false) const
 	{
 		// we'll stop searching if we find this number
-		s32 wanted = startOrder + ( reverse ? -1 : 1 );
-		if (wanted==-2)
+		s32 wanted = startOrder + (reverse ? -1 : 1);
+		if (wanted == -2)
 			wanted = 1073741824; // maximum s32
 
 		auto it = Children.begin();
 
 		s32 closestOrder, currentOrder;
 
-		while(it != Children.end())
-		{
+		while (it != Children.end()) {
 			// ignore invisible elements and their children
-			if ( ( (*it)->isVisible() || includeInvisible ) &&
-				(group == true || (*it)->isTabGroup() == false) )
-			{
+			if (((*it)->isVisible() || includeInvisible) &&
+					(group == true || (*it)->isTabGroup() == false)) {
 				// ignore disabled, but children are checked (disabled is currently per element ignoring parent states)
-				if ( (*it)->isEnabled() || includeDisabled )
-				{
+				if ((*it)->isEnabled() || includeDisabled) {
 					// only check tab stops and those with the same group status
-					if ((*it)->isTabStop() && ((*it)->isTabGroup() == group))
-					{
+					if ((*it)->isTabStop() && ((*it)->isTabGroup() == group)) {
 						currentOrder = (*it)->getTabOrder();
 
 						// is this what we're looking for?
-						if (currentOrder == wanted)
-						{
+						if (currentOrder == wanted) {
 							closest = *it;
 							return true;
 						}
 
 						// is it closer than the current closest?
-						if (closest)
-						{
+						if (closest) {
 							closestOrder = closest->getTabOrder();
-							if ( ( reverse && currentOrder > closestOrder && currentOrder < startOrder)
-								||(!reverse && currentOrder < closestOrder && currentOrder > startOrder))
-							{
+							if ((reverse && currentOrder > closestOrder && currentOrder < startOrder) || (!reverse && currentOrder < closestOrder && currentOrder > startOrder)) {
 								closest = *it;
 							}
-						}
-						else
-						if ( (reverse && currentOrder < startOrder) || (!reverse && currentOrder > startOrder) )
-						{
+						} else if ((reverse && currentOrder < startOrder) || (!reverse && currentOrder > startOrder)) {
 							closest = *it;
 						}
 
 						// is it before the current first?
-						if (first)
-						{
+						if (first) {
 							closestOrder = first->getTabOrder();
 
-							if ( (reverse && closestOrder < currentOrder) || (!reverse && closestOrder > currentOrder) )
-							{
+							if ((reverse && closestOrder < currentOrder) || (!reverse && closestOrder > currentOrder)) {
 								first = *it;
 							}
-						}
-						else
-						{
+						} else {
 							first = *it;
 						}
 					}
 				}
 				// search within children
-				if ((*it)->getNextElement(startOrder, reverse, group, first, closest, includeInvisible, includeDisabled))
-				{
+				if ((*it)->getNextElement(startOrder, reverse, group, first, closest, includeInvisible, includeDisabled)) {
 					return true;
 				}
 			}
@@ -715,7 +643,6 @@ public:
 		}
 		return false;
 	}
-
 
 	//! Returns the type of the gui element.
 	/** This is needed for the .NET wrapper but will be used
@@ -741,37 +668,33 @@ public:
 		return type == Type;
 	}
 
-
 	//! Returns the type name of the gui element.
 	/** This is needed serializing elements. */
-	virtual const c8* getTypeName() const
+	virtual const c8 *getTypeName() const
 	{
 		return GUIElementTypeNames[Type];
 	}
 
 	//! Returns the name of the element.
 	/** \return Name as character string. */
-	virtual const c8* getName() const
+	virtual const c8 *getName() const
 	{
 		return Name.c_str();
 	}
 
-
 	//! Sets the name of the element.
 	/** \param name New name of the gui element. */
-	virtual void setName(const c8* name)
+	virtual void setName(const c8 *name)
 	{
 		Name = name;
 	}
 
-
 	//! Sets the name of the element.
 	/** \param name New name of the gui element. */
-	virtual void setName(const core::stringc& name)
+	virtual void setName(const core::stringc &name)
 	{
 		Name = name;
 	}
-
 
 	//! Returns whether the element takes input from the IME
 	virtual bool acceptsIME()
@@ -779,14 +702,12 @@ public:
 		return false;
 	}
 
-
 protected:
 	// not virtual because needed in constructor
-	void addChildToEnd(IGUIElement* child)
+	void addChildToEnd(IGUIElement *child)
 	{
-		if (child)
-		{
-			child->grab(); // prevent destruction when removed
+		if (child) {
+			child->grab();	 // prevent destruction when removed
 			child->remove(); // remove from old parent
 			child->LastParentRect = getAbsolutePosition();
 			child->Parent = this;
@@ -795,8 +716,9 @@ protected:
 	}
 
 #ifndef NDEBUG
-	template<typename Iterator>
-	static size_t _fastSetChecksum(Iterator begin, Iterator end) {
+	template <typename Iterator>
+	static size_t _fastSetChecksum(Iterator begin, Iterator end)
+	{
 		std::hash<typename Iterator::value_type> hasher;
 		size_t checksum = 0;
 		for (Iterator it = begin; it != end; ++it) {
@@ -809,13 +731,12 @@ protected:
 
 	// Reorder children [from, to) to the order given by `neworder`
 	void reorderChildren(
-		std::list<IGUIElement*>::iterator from,
-		std::list<IGUIElement*>::iterator to,
-		const std::vector<IGUIElement*> &neworder)
+			std::list<IGUIElement *>::iterator from,
+			std::list<IGUIElement *>::iterator to,
+			const std::vector<IGUIElement *> &neworder)
 	{
 		assert(_fastSetChecksum(from, to) == _fastSetChecksum(neworder.begin(), neworder.end()));
-		for (auto e : neworder)
-		{
+		for (auto e : neworder) {
 			*from = e;
 			e->ParentPos = from;
 			++from;
@@ -823,26 +744,22 @@ protected:
 		assert(from == to);
 	}
 
-
 	// not virtual because needed in constructor
 	void recalculateAbsolutePosition(bool recursive)
 	{
-		core::rect<s32> parentAbsolute(0,0,0,0);
+		core::rect<s32> parentAbsolute(0, 0, 0, 0);
 		core::rect<s32> parentAbsoluteClip;
-		f32 fw=0.f, fh=0.f;
+		f32 fw = 0.f, fh = 0.f;
 
-		if (Parent)
-		{
+		if (Parent) {
 			parentAbsolute = Parent->AbsoluteRect;
 
-			if (NoClip)
-			{
-				IGUIElement* p=this;
+			if (NoClip) {
+				IGUIElement *p = this;
 				while (p->Parent)
 					p = p->Parent;
 				parentAbsoluteClip = p->AbsoluteClippingRect;
-			}
-			else
+			} else
 				parentAbsoluteClip = Parent->AbsoluteClippingRect;
 		}
 
@@ -855,64 +772,60 @@ protected:
 		if (AlignTop == EGUIA_SCALE || AlignBottom == EGUIA_SCALE)
 			fh = (f32)parentAbsolute.getHeight();
 
-		switch (AlignLeft)
-		{
-			case EGUIA_UPPERLEFT:
-				break;
-			case EGUIA_LOWERRIGHT:
-				DesiredRect.UpperLeftCorner.X += diffx;
-				break;
-			case EGUIA_CENTER:
-				DesiredRect.UpperLeftCorner.X += diffx/2;
-				break;
-			case EGUIA_SCALE:
-				DesiredRect.UpperLeftCorner.X = core::round32(ScaleRect.UpperLeftCorner.X * fw);
-				break;
+		switch (AlignLeft) {
+		case EGUIA_UPPERLEFT:
+			break;
+		case EGUIA_LOWERRIGHT:
+			DesiredRect.UpperLeftCorner.X += diffx;
+			break;
+		case EGUIA_CENTER:
+			DesiredRect.UpperLeftCorner.X += diffx / 2;
+			break;
+		case EGUIA_SCALE:
+			DesiredRect.UpperLeftCorner.X = core::round32(ScaleRect.UpperLeftCorner.X * fw);
+			break;
 		}
 
-		switch (AlignRight)
-		{
-			case EGUIA_UPPERLEFT:
-				break;
-			case EGUIA_LOWERRIGHT:
-				DesiredRect.LowerRightCorner.X += diffx;
-				break;
-			case EGUIA_CENTER:
-				DesiredRect.LowerRightCorner.X += diffx/2;
-				break;
-			case EGUIA_SCALE:
-				DesiredRect.LowerRightCorner.X = core::round32(ScaleRect.LowerRightCorner.X * fw);
-				break;
+		switch (AlignRight) {
+		case EGUIA_UPPERLEFT:
+			break;
+		case EGUIA_LOWERRIGHT:
+			DesiredRect.LowerRightCorner.X += diffx;
+			break;
+		case EGUIA_CENTER:
+			DesiredRect.LowerRightCorner.X += diffx / 2;
+			break;
+		case EGUIA_SCALE:
+			DesiredRect.LowerRightCorner.X = core::round32(ScaleRect.LowerRightCorner.X * fw);
+			break;
 		}
 
-		switch (AlignTop)
-		{
-			case EGUIA_UPPERLEFT:
-				break;
-			case EGUIA_LOWERRIGHT:
-				DesiredRect.UpperLeftCorner.Y += diffy;
-				break;
-			case EGUIA_CENTER:
-				DesiredRect.UpperLeftCorner.Y += diffy/2;
-				break;
-			case EGUIA_SCALE:
-				DesiredRect.UpperLeftCorner.Y = core::round32(ScaleRect.UpperLeftCorner.Y * fh);
-				break;
+		switch (AlignTop) {
+		case EGUIA_UPPERLEFT:
+			break;
+		case EGUIA_LOWERRIGHT:
+			DesiredRect.UpperLeftCorner.Y += diffy;
+			break;
+		case EGUIA_CENTER:
+			DesiredRect.UpperLeftCorner.Y += diffy / 2;
+			break;
+		case EGUIA_SCALE:
+			DesiredRect.UpperLeftCorner.Y = core::round32(ScaleRect.UpperLeftCorner.Y * fh);
+			break;
 		}
 
-		switch (AlignBottom)
-		{
-			case EGUIA_UPPERLEFT:
-				break;
-			case EGUIA_LOWERRIGHT:
-				DesiredRect.LowerRightCorner.Y += diffy;
-				break;
-			case EGUIA_CENTER:
-				DesiredRect.LowerRightCorner.Y += diffy/2;
-				break;
-			case EGUIA_SCALE:
-				DesiredRect.LowerRightCorner.Y = core::round32(ScaleRect.LowerRightCorner.Y * fh);
-				break;
+		switch (AlignBottom) {
+		case EGUIA_UPPERLEFT:
+			break;
+		case EGUIA_LOWERRIGHT:
+			DesiredRect.LowerRightCorner.Y += diffy;
+			break;
+		case EGUIA_CENTER:
+			DesiredRect.LowerRightCorner.Y += diffy / 2;
+			break;
+		case EGUIA_SCALE:
+			DesiredRect.LowerRightCorner.Y = core::round32(ScaleRect.LowerRightCorner.Y * fh);
+			break;
 		}
 
 		RelativeRect = DesiredRect;
@@ -942,26 +855,23 @@ protected:
 
 		LastParentRect = parentAbsolute;
 
-		if ( recursive )
-		{
+		if (recursive) {
 			// update all children
-			for (auto child : Children)
-			{
+			for (auto child : Children) {
 				child->recalculateAbsolutePosition(recursive);
 			}
 		}
 	}
 
 protected:
-
 	//! List of all children of this element
-	std::list<IGUIElement*> Children;
+	std::list<IGUIElement *> Children;
 
 	//! Pointer to the parent
-	IGUIElement* Parent;
+	IGUIElement *Parent;
 
 	//! Our position in the parent list. Only valid when Parent != nullptr
-	std::list<IGUIElement*>::iterator ParentPos;
+	std::list<IGUIElement *>::iterator ParentPos;
 
 	//! relative rect of element
 	core::rect<s32> RelativeRect;
@@ -1022,15 +932,13 @@ protected:
 	EGUI_ALIGNMENT AlignLeft, AlignRight, AlignTop, AlignBottom;
 
 	//! GUI Environment
-	IGUIEnvironment* Environment;
+	IGUIEnvironment *Environment;
 
 	//! type of element
 	EGUI_ELEMENT_TYPE Type;
 };
 
-
 } // end namespace gui
 } // end namespace irr
 
 #endif
-

@@ -20,8 +20,7 @@ namespace io
 class CBoolAttribute : public IAttribute
 {
 public:
-
-	CBoolAttribute(const char* name, bool value)
+	CBoolAttribute(const char *name, bool value)
 	{
 		Name = name;
 		setBool(value);
@@ -62,7 +61,7 @@ public:
 		return EAT_BOOL;
 	}
 
-	const wchar_t* getTypeString() const override
+	const wchar_t *getTypeString() const override
 	{
 		return L"bool";
 	}
@@ -74,8 +73,7 @@ public:
 class CIntAttribute : public IAttribute
 {
 public:
-
-	CIntAttribute(const char* name, s32 value)
+	CIntAttribute(const char *name, s32 value)
 	{
 		Name = name;
 		setInt(value);
@@ -106,7 +104,7 @@ public:
 		return EAT_INT;
 	}
 
-	const wchar_t* getTypeString() const override
+	const wchar_t *getTypeString() const override
 	{
 		return L"int";
 	}
@@ -118,8 +116,7 @@ public:
 class CFloatAttribute : public IAttribute
 {
 public:
-
-	CFloatAttribute(const char* name, f32 value)
+	CFloatAttribute(const char *name, f32 value)
 	{
 		Name = name;
 		setFloat(value);
@@ -150,7 +147,7 @@ public:
 		return EAT_FLOAT;
 	}
 
-	const wchar_t* getTypeString() const override
+	const wchar_t *getTypeString() const override
 	{
 		return L"float";
 	}

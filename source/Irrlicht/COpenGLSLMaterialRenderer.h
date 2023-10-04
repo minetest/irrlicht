@@ -28,34 +28,33 @@ class IShaderConstantSetCallBack;
 class COpenGLSLMaterialRenderer : public IMaterialRenderer, public IMaterialRendererServices
 {
 public:
-
 	//! Constructor
 	COpenGLSLMaterialRenderer(
-		COpenGLDriver* driver,
-		s32& outMaterialTypeNr,
-		const c8* vertexShaderProgram = 0,
-		const c8* vertexShaderEntryPointName = 0,
-		E_VERTEX_SHADER_TYPE vsCompileTarget = video::EVST_VS_1_1,
-		const c8* pixelShaderProgram = 0,
-		const c8* pixelShaderEntryPointName = 0,
-		E_PIXEL_SHADER_TYPE psCompileTarget = video::EPST_PS_1_1,
-		const c8* geometryShaderProgram = 0,
-		const c8* geometryShaderEntryPointName = "main",
-		E_GEOMETRY_SHADER_TYPE gsCompileTarget = EGST_GS_4_0,
-		scene::E_PRIMITIVE_TYPE inType = scene::EPT_TRIANGLES,
-		scene::E_PRIMITIVE_TYPE outType = scene::EPT_TRIANGLE_STRIP,
-		u32 verticesOut = 0,
-		IShaderConstantSetCallBack* callback = 0,
-		E_MATERIAL_TYPE baseMaterial = EMT_SOLID,
-		s32 userData = 0);
+			COpenGLDriver *driver,
+			s32 &outMaterialTypeNr,
+			const c8 *vertexShaderProgram = 0,
+			const c8 *vertexShaderEntryPointName = 0,
+			E_VERTEX_SHADER_TYPE vsCompileTarget = video::EVST_VS_1_1,
+			const c8 *pixelShaderProgram = 0,
+			const c8 *pixelShaderEntryPointName = 0,
+			E_PIXEL_SHADER_TYPE psCompileTarget = video::EPST_PS_1_1,
+			const c8 *geometryShaderProgram = 0,
+			const c8 *geometryShaderEntryPointName = "main",
+			E_GEOMETRY_SHADER_TYPE gsCompileTarget = EGST_GS_4_0,
+			scene::E_PRIMITIVE_TYPE inType = scene::EPT_TRIANGLES,
+			scene::E_PRIMITIVE_TYPE outType = scene::EPT_TRIANGLE_STRIP,
+			u32 verticesOut = 0,
+			IShaderConstantSetCallBack *callback = 0,
+			E_MATERIAL_TYPE baseMaterial = EMT_SOLID,
+			s32 userData = 0);
 
 	//! Destructor
 	virtual ~COpenGLSLMaterialRenderer();
 
-	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) override;
+	virtual void OnSetMaterial(const SMaterial &material, const SMaterial &lastMaterial,
+			bool resetAllRenderstates, IMaterialRendererServices *services) override;
 
-	bool OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype) override;
+	bool OnRender(IMaterialRendererServices *service, E_VERTEX_TYPE vtxtype) override;
 
 	void OnUnsetMaterial() override;
 
@@ -63,48 +62,47 @@ public:
 	bool isTransparent() const override;
 
 	//! Access the callback provided by the users when creating shader materials
-	IShaderConstantSetCallBack* getShaderConstantSetCallBack() const override
+	IShaderConstantSetCallBack *getShaderConstantSetCallBack() const override
 	{
 		return CallBack;
 	}
 
 	// implementations for the render services
-	void setBasicRenderStates(const SMaterial& material, const SMaterial& lastMaterial, bool resetAllRenderstates) override;
-	s32 getVertexShaderConstantID(const c8* name) override;
-	s32 getPixelShaderConstantID(const c8* name) override;
-	void setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount=1) override;
-	void setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount=1) override;
-	bool setVertexShaderConstant(s32 index, const f32* floats, int count) override;
-	bool setVertexShaderConstant(s32 index, const s32* ints, int count) override;
-	bool setVertexShaderConstant(s32 index, const u32* ints, int count) override;
-	bool setPixelShaderConstant(s32 index, const f32* floats, int count) override;
-	bool setPixelShaderConstant(s32 index, const s32* ints, int count) override;
-	bool setPixelShaderConstant(s32 index, const u32* ints, int count) override;
-	IVideoDriver* getVideoDriver() override;
+	void setBasicRenderStates(const SMaterial &material, const SMaterial &lastMaterial, bool resetAllRenderstates) override;
+	s32 getVertexShaderConstantID(const c8 *name) override;
+	s32 getPixelShaderConstantID(const c8 *name) override;
+	void setVertexShaderConstant(const f32 *data, s32 startRegister, s32 constantAmount = 1) override;
+	void setPixelShaderConstant(const f32 *data, s32 startRegister, s32 constantAmount = 1) override;
+	bool setVertexShaderConstant(s32 index, const f32 *floats, int count) override;
+	bool setVertexShaderConstant(s32 index, const s32 *ints, int count) override;
+	bool setVertexShaderConstant(s32 index, const u32 *ints, int count) override;
+	bool setPixelShaderConstant(s32 index, const f32 *floats, int count) override;
+	bool setPixelShaderConstant(s32 index, const s32 *ints, int count) override;
+	bool setPixelShaderConstant(s32 index, const u32 *ints, int count) override;
+	IVideoDriver *getVideoDriver() override;
 
 protected:
-
 	//! constructor only for use by derived classes who want to
 	//! create a fall back material for example.
-	COpenGLSLMaterialRenderer(COpenGLDriver* driver,
-					IShaderConstantSetCallBack* callback,
-					E_MATERIAL_TYPE baseMaterial,
-					s32 userData=0);
+	COpenGLSLMaterialRenderer(COpenGLDriver *driver,
+			IShaderConstantSetCallBack *callback,
+			E_MATERIAL_TYPE baseMaterial,
+			s32 userData = 0);
 
-	void init(s32& outMaterialTypeNr,
-		const c8* vertexShaderProgram,
-		const c8* pixelShaderProgram,
-		const c8* geometryShaderProgram,
-		scene::E_PRIMITIVE_TYPE inType=scene::EPT_TRIANGLES,
-		scene::E_PRIMITIVE_TYPE outType=scene::EPT_TRIANGLE_STRIP,
-		u32 verticesOut=0);
+	void init(s32 &outMaterialTypeNr,
+			const c8 *vertexShaderProgram,
+			const c8 *pixelShaderProgram,
+			const c8 *geometryShaderProgram,
+			scene::E_PRIMITIVE_TYPE inType = scene::EPT_TRIANGLES,
+			scene::E_PRIMITIVE_TYPE outType = scene::EPT_TRIANGLE_STRIP,
+			u32 verticesOut = 0);
 
 	bool createProgram();
-	bool createShader(GLenum shaderType, const char* shader);
+	bool createShader(GLenum shaderType, const char *shader);
 	bool linkProgram();
 
-	COpenGLDriver* Driver;
-	IShaderConstantSetCallBack* CallBack;
+	COpenGLDriver *Driver;
+	IShaderConstantSetCallBack *CallBack;
 
 	bool Alpha;
 	bool Blending;
@@ -122,7 +120,6 @@ protected:
 	core::array<SUniformInfo> UniformInfo;
 	s32 UserData;
 };
-
 
 } // end namespace video
 } // end namespace irr

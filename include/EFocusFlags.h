@@ -35,4 +35,3 @@ enum EFOCUS_FLAG
 } // namespace irr
 
 #endif
-

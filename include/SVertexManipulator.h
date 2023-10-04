@@ -14,33 +14,34 @@ namespace irr
 namespace scene
 {
 
-	class IMesh;
-	class IMeshBuffer;
-	struct SMesh;
+class IMesh;
+class IMeshBuffer;
+struct SMesh;
 
-	//! Interface for vertex manipulators.
-	/** You should derive your manipulator from this class if it shall be called for every vertex, getting as parameter just the vertex.
-	*/
-	struct IVertexManipulator
-	{
-	};
+//! Interface for vertex manipulators.
+/** You should derive your manipulator from this class if it shall be called for every vertex, getting as parameter just the vertex.
+ */
+struct IVertexManipulator
+{
+};
 
-	//! Vertex manipulator which scales the position of the vertex
-	class SVertexPositionScaleManipulator : public IVertexManipulator
+//! Vertex manipulator which scales the position of the vertex
+class SVertexPositionScaleManipulator : public IVertexManipulator
+{
+public:
+	SVertexPositionScaleManipulator(const core::vector3df &factor) :
+			Factor(factor) {}
+	template <typename VType>
+	void operator()(VType &vertex) const
 	{
-	public:
-		SVertexPositionScaleManipulator(const core::vector3df& factor) : Factor(factor) {}
-		template <typename VType>
-		void operator()(VType& vertex) const
-		{
-			vertex.Pos *= Factor;
-		}
-	private:
-		core::vector3df Factor;
-	};
+		vertex.Pos *= Factor;
+	}
+
+private:
+	core::vector3df Factor;
+};
 
 } // end namespace scene
 } // end namespace irr
-
 
 #endif

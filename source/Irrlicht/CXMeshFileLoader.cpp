@@ -2,7 +2,6 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-
 #include "CXMeshFileLoader.h"
 #include "os.h"
 
@@ -15,9 +14,13 @@
 #ifdef _DEBUG
 #define _XREADER_DEBUG
 #endif
-//#define BETTER_MESHBUFFER_SPLITTING_FOR_X
+// #define BETTER_MESHBUFFER_SPLITTING_FOR_X
 
-#define SET_ERR_AND_RETURN() do { ErrorState = true; return false; } while (0)
+#define SET_ERR_AND_RETURN() \
+	do {                     \
+		ErrorState = true;   \
+		return false;        \
+	} while (0)
 
 namespace irr
 {
@@ -25,29 +28,27 @@ namespace scene
 {
 
 //! Constructor
-CXMeshFileLoader::CXMeshFileLoader(scene::ISceneManager* smgr)
-: AnimatedMesh(0), Buffer(0), P(0), End(0), BinaryNumCount(0), Line(0), ErrorState(false),
-	CurFrame(0), MajorVersion(0), MinorVersion(0), BinaryFormat(false), FloatSize(0)
+CXMeshFileLoader::CXMeshFileLoader(scene::ISceneManager *smgr) :
+		AnimatedMesh(0), Buffer(0), P(0), End(0), BinaryNumCount(0), Line(0), ErrorState(false),
+		CurFrame(0), MajorVersion(0), MinorVersion(0), BinaryFormat(false), FloatSize(0)
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("CXMeshFileLoader");
-	#endif
+#endif
 }
-
 
 //! returns true if the file maybe is able to be loaded by this class
 //! based on the file extension (e.g. ".bsp")
-bool CXMeshFileLoader::isALoadableFileExtension(const io::path& filename) const
+bool CXMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
 {
-	return core::hasFileExtension ( filename, "x" );
+	return core::hasFileExtension(filename, "x");
 }
-
 
 //! creates/loads an animated mesh from the file.
 //! \return Pointer to the created mesh. Returns 0 if loading failed.
 //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
 //! See IReferenceCounted::drop() for more information.
-IAnimatedMesh* CXMeshFileLoader::createMesh(io::IReadFile* file)
+IAnimatedMesh *CXMeshFileLoader::createMesh(io::IReadFile *file)
 {
 	if (!file)
 		return 0;
@@ -58,12 +59,9 @@ IAnimatedMesh* CXMeshFileLoader::createMesh(io::IReadFile* file)
 
 	AnimatedMesh = new CSkinnedMesh();
 
-	if (load(file))
-	{
+	if (load(file)) {
 		AnimatedMesh->finalize();
-	}
-	else
-	{
+	} else {
 		AnimatedMesh->drop();
 		AnimatedMesh = 0;
 	}
@@ -76,29 +74,28 @@ IAnimatedMesh* CXMeshFileLoader::createMesh(io::IReadFile* file)
 	tmpString += "ms";
 	os::Printer::log(tmpString.c_str());
 #endif
-	//Clear up
+	// Clear up
 
-	MajorVersion=0;
-	MinorVersion=0;
-	BinaryFormat=0;
-	BinaryNumCount=0;
-	FloatSize=0;
-	P=0;
-	End=0;
-	CurFrame=0;
+	MajorVersion = 0;
+	MinorVersion = 0;
+	BinaryFormat = 0;
+	BinaryNumCount = 0;
+	FloatSize = 0;
+	P = 0;
+	End = 0;
+	CurFrame = 0;
 
-	delete [] Buffer;
+	delete[] Buffer;
 	Buffer = 0;
 
-	for (u32 i=0; i<Meshes.size(); ++i)
+	for (u32 i = 0; i < Meshes.size(); ++i)
 		delete Meshes[i];
 	Meshes.clear();
 
 	return AnimatedMesh;
 }
 
-
-bool CXMeshFileLoader::load(io::IReadFile* file)
+bool CXMeshFileLoader::load(io::IReadFile *file)
 {
 	if (!readFileIntoMemory(file))
 		return false;
@@ -106,16 +103,14 @@ bool CXMeshFileLoader::load(io::IReadFile* file)
 	if (!parseFile())
 		return false;
 
-	for (u32 n=0; n<Meshes.size(); ++n)
-	{
-		SXMesh *mesh=Meshes[n];
+	for (u32 n = 0; n < Meshes.size(); ++n) {
+		SXMesh *mesh = Meshes[n];
 
 		// default material if nothing loaded
-		if (!mesh->Materials.size())
-		{
+		if (!mesh->Materials.size()) {
 			mesh->Materials.push_back(video::SMaterial());
 			mesh->Materials[0].DiffuseColor.set(0xff777777);
-			mesh->Materials[0].Shininess=0.f;
+			mesh->Materials[0].Shininess = 0.f;
 			mesh->Materials[0].SpecularColor.set(0xff777777);
 			mesh->Materials[0].EmissiveColor.set(0xff000000);
 		}
@@ -126,133 +121,109 @@ bool CXMeshFileLoader::load(io::IReadFile* file)
 #ifndef BETTER_MESHBUFFER_SPLITTING_FOR_X
 		const u32 bufferOffset = AnimatedMesh->getMeshBufferCount();
 #endif
-		for (i=0; i<mesh->Materials.size(); ++i)
-		{
-			mesh->Buffers.push_back( AnimatedMesh->addMeshBuffer() );
+		for (i = 0; i < mesh->Materials.size(); ++i) {
+			mesh->Buffers.push_back(AnimatedMesh->addMeshBuffer());
 			mesh->Buffers.getLast()->Material = mesh->Materials[i];
 
-			if (!mesh->HasSkinning)
-			{
-				//Set up rigid animation
-				if (mesh->AttachedJointID!=-1)
-				{
-					AnimatedMesh->getAllJoints()[mesh->AttachedJointID]->AttachedMeshes.push_back( AnimatedMesh->getMeshBuffers().size()-1 );
+			if (!mesh->HasSkinning) {
+				// Set up rigid animation
+				if (mesh->AttachedJointID != -1) {
+					AnimatedMesh->getAllJoints()[mesh->AttachedJointID]->AttachedMeshes.push_back(AnimatedMesh->getMeshBuffers().size() - 1);
 				}
 			}
 		}
 
-		if (!mesh->FaceMaterialIndices.size())
-		{
+		if (!mesh->FaceMaterialIndices.size()) {
 			mesh->FaceMaterialIndices.set_used(mesh->Indices.size() / 3);
-			for (i=0; i<mesh->FaceMaterialIndices.size(); ++i)
-				mesh->FaceMaterialIndices[i]=0;
+			for (i = 0; i < mesh->FaceMaterialIndices.size(); ++i)
+				mesh->FaceMaterialIndices[i] = 0;
 		}
 
-		if (!mesh->HasVertexColors)
-		{
-			for (u32 j=0;j<mesh->FaceMaterialIndices.size();++j)
-			{
-				for (u32 id=j*3+0;id<=j*3+2;++id)
-				{
-					mesh->Vertices[ mesh->Indices[id] ].Color = mesh->Buffers[mesh->FaceMaterialIndices[j]]->Material.DiffuseColor;
+		if (!mesh->HasVertexColors) {
+			for (u32 j = 0; j < mesh->FaceMaterialIndices.size(); ++j) {
+				for (u32 id = j * 3 + 0; id <= j * 3 + 2; ++id) {
+					mesh->Vertices[mesh->Indices[id]].Color = mesh->Buffers[mesh->FaceMaterialIndices[j]]->Material.DiffuseColor;
 				}
 			}
 		}
 
-		#ifdef BETTER_MESHBUFFER_SPLITTING_FOR_X
+#ifdef BETTER_MESHBUFFER_SPLITTING_FOR_X
 		{
-			//the same vertex can be used in many different meshbuffers, but it's slow to work out
+			// the same vertex can be used in many different meshbuffers, but it's slow to work out
 
-			core::array< core::array< u32 > > verticesLinkIndex;
+			core::array<core::array<u32>> verticesLinkIndex;
 			verticesLinkIndex.reallocate(mesh->Vertices.size());
-			core::array< core::array< u16 > > verticesLinkBuffer;
+			core::array<core::array<u16>> verticesLinkBuffer;
 			verticesLinkBuffer.reallocate(mesh->Vertices.size());
 
-			for (i=0;i<mesh->Vertices.size();++i)
-			{
-				verticesLinkIndex.push_back( core::array< u32 >() );
-				verticesLinkBuffer.push_back( core::array< u16 >() );
+			for (i = 0; i < mesh->Vertices.size(); ++i) {
+				verticesLinkIndex.push_back(core::array<u32>());
+				verticesLinkBuffer.push_back(core::array<u16>());
 			}
 
-			for (i=0;i<mesh->FaceMaterialIndices.size();++i)
-			{
-				for (u32 id=i*3+0;id<=i*3+2;++id)
-				{
-					core::array< u16 > &Array=verticesLinkBuffer[ mesh->Indices[id] ];
-					bool found=false;
+			for (i = 0; i < mesh->FaceMaterialIndices.size(); ++i) {
+				for (u32 id = i * 3 + 0; id <= i * 3 + 2; ++id) {
+					core::array<u16> &Array = verticesLinkBuffer[mesh->Indices[id]];
+					bool found = false;
 
-					for (u32 j=0; j < Array.size(); ++j)
-					{
-						if (Array[j]==mesh->FaceMaterialIndices[i])
-						{
-							found=true;
+					for (u32 j = 0; j < Array.size(); ++j) {
+						if (Array[j] == mesh->FaceMaterialIndices[i]) {
+							found = true;
 							break;
 						}
 					}
 
 					if (!found)
-						Array.push_back( mesh->FaceMaterialIndices[i] );
+						Array.push_back(mesh->FaceMaterialIndices[i]);
 				}
 			}
 
-			for (i=0;i<verticesLinkBuffer.size();++i)
-			{
+			for (i = 0; i < verticesLinkBuffer.size(); ++i) {
 				if (!verticesLinkBuffer[i].size())
 					verticesLinkBuffer[i].push_back(0);
 			}
 
-			for (i=0;i<mesh->Vertices.size();++i)
-			{
-				core::array< u16 > &Array = verticesLinkBuffer[i];
+			for (i = 0; i < mesh->Vertices.size(); ++i) {
+				core::array<u16> &Array = verticesLinkBuffer[i];
 				verticesLinkIndex[i].reallocate(Array.size());
-				for (u32 j=0; j < Array.size(); ++j)
-				{
-					scene::SSkinMeshBuffer *buffer = mesh->Buffers[ Array[j] ];
-					verticesLinkIndex[i].push_back( buffer->Vertices_Standard.size() );
-					buffer->Vertices_Standard.push_back( mesh->Vertices[i] );
+				for (u32 j = 0; j < Array.size(); ++j) {
+					scene::SSkinMeshBuffer *buffer = mesh->Buffers[Array[j]];
+					verticesLinkIndex[i].push_back(buffer->Vertices_Standard.size());
+					buffer->Vertices_Standard.push_back(mesh->Vertices[i]);
 				}
 			}
 
-			for (i=0;i<mesh->FaceMaterialIndices.size();++i)
-			{
-				scene::SSkinMeshBuffer *buffer=mesh->Buffers[ mesh->FaceMaterialIndices[i] ];
+			for (i = 0; i < mesh->FaceMaterialIndices.size(); ++i) {
+				scene::SSkinMeshBuffer *buffer = mesh->Buffers[mesh->FaceMaterialIndices[i]];
 
-				for (u32 id=i*3+0;id<=i*3+2;++id)
-				{
-					core::array< u16 > &Array=verticesLinkBuffer[ mesh->Indices[id] ];
+				for (u32 id = i * 3 + 0; id <= i * 3 + 2; ++id) {
+					core::array<u16> &Array = verticesLinkBuffer[mesh->Indices[id]];
 
-					for (u32 j=0;j< Array.size() ;++j)
-					{
-						if ( Array[j]== mesh->FaceMaterialIndices[i] )
-							buffer->Indices.push_back( verticesLinkIndex[ mesh->Indices[id] ][j] );
+					for (u32 j = 0; j < Array.size(); ++j) {
+						if (Array[j] == mesh->FaceMaterialIndices[i])
+							buffer->Indices.push_back(verticesLinkIndex[mesh->Indices[id]][j]);
 					}
 				}
 			}
 
-			for (u32 j=0;j<mesh->WeightJoint.size();++j)
-			{
-				ISkinnedMesh::SJoint* joint = AnimatedMesh->getAllJoints()[mesh->WeightJoint[j]];
-				ISkinnedMesh::SWeight& weight = joint->Weights[mesh->WeightNum[j]];
+			for (u32 j = 0; j < mesh->WeightJoint.size(); ++j) {
+				ISkinnedMesh::SJoint *joint = AnimatedMesh->getAllJoints()[mesh->WeightJoint[j]];
+				ISkinnedMesh::SWeight &weight = joint->Weights[mesh->WeightNum[j]];
 
 				u32 id = weight.vertex_id;
 
-				if (id>=verticesLinkIndex.size())
-				{
+				if (id >= verticesLinkIndex.size()) {
 					os::Printer::log("X loader: Weight id out of range", ELL_WARNING);
-					id=0;
-					weight.strength=0.f;
+					id = 0;
+					weight.strength = 0.f;
 				}
 
-				if (verticesLinkBuffer[id].size()==1)
-				{
-					weight.vertex_id=verticesLinkIndex[id][0];
-					weight.buffer_id=verticesLinkBuffer[id][0];
-				}
-				else if (verticesLinkBuffer[id].size() != 0)
-				{
-					for (u32 k=1; k < verticesLinkBuffer[id].size(); ++k)
-					{
-						ISkinnedMesh::SWeight* WeightClone = AnimatedMesh->addWeight(joint);
+				if (verticesLinkBuffer[id].size() == 1) {
+					weight.vertex_id = verticesLinkIndex[id][0];
+					weight.buffer_id = verticesLinkBuffer[id][0];
+				} else if (verticesLinkBuffer[id].size() != 0) {
+					for (u32 k = 1; k < verticesLinkBuffer[id].size(); ++k) {
+						ISkinnedMesh::SWeight *WeightClone = AnimatedMesh->addWeight(joint);
 						WeightClone->strength = weight.strength;
 						WeightClone->vertex_id = verticesLinkIndex[id][k];
 						WeightClone->buffer_id = verticesLinkBuffer[id][k];
@@ -260,150 +231,127 @@ bool CXMeshFileLoader::load(io::IReadFile* file)
 				}
 			}
 		}
-		#else
+#else
 		{
-			core::array< u32 > verticesLinkIndex;
-			core::array< s16 > verticesLinkBuffer;
+			core::array<u32> verticesLinkIndex;
+			core::array<s16> verticesLinkBuffer;
 			verticesLinkBuffer.set_used(mesh->Vertices.size());
 
 			// init with 0
-			for (i=0;i<mesh->Vertices.size();++i)
-			{
+			for (i = 0; i < mesh->Vertices.size(); ++i) {
 				// watch out for vertices which are not part of the mesh
 				// they will keep the -1 and can lead to out-of-bounds access
-				verticesLinkBuffer[i]=-1;
+				verticesLinkBuffer[i] = -1;
 			}
 
 			bool warned = false;
 			// store meshbuffer number per vertex
-			for (i=0;i<mesh->FaceMaterialIndices.size();++i)
-			{
-				for (u32 id=i*3+0;id<=i*3+2;++id)
-				{
-					if ((verticesLinkBuffer[mesh->Indices[id]] != -1) && (verticesLinkBuffer[mesh->Indices[id]] != (s16)mesh->FaceMaterialIndices[i]))
-					{
-						if (!warned)
-						{
+			for (i = 0; i < mesh->FaceMaterialIndices.size(); ++i) {
+				for (u32 id = i * 3 + 0; id <= i * 3 + 2; ++id) {
+					if ((verticesLinkBuffer[mesh->Indices[id]] != -1) && (verticesLinkBuffer[mesh->Indices[id]] != (s16)mesh->FaceMaterialIndices[i])) {
+						if (!warned) {
 							os::Printer::log("X loader", "Duplicated vertex, animation might be corrupted.", ELL_WARNING);
-							warned=true;
+							warned = true;
 						}
 						const u32 tmp = mesh->Vertices.size();
-						mesh->Vertices.push_back(mesh->Vertices[ mesh->Indices[id] ]);
+						mesh->Vertices.push_back(mesh->Vertices[mesh->Indices[id]]);
 						mesh->Indices[id] = tmp;
 						verticesLinkBuffer.set_used(mesh->Vertices.size());
 					}
-					verticesLinkBuffer[ mesh->Indices[id] ] = mesh->FaceMaterialIndices[i];
+					verticesLinkBuffer[mesh->Indices[id]] = mesh->FaceMaterialIndices[i];
 				}
 			}
 
-			if (mesh->FaceMaterialIndices.size() != 0)
-			{
+			if (mesh->FaceMaterialIndices.size() != 0) {
 				// store vertices in buffers and remember relation in verticesLinkIndex
-				u32* vCountArray = new u32[mesh->Buffers.size()];
-				memset(vCountArray, 0, mesh->Buffers.size()*sizeof(u32));
+				u32 *vCountArray = new u32[mesh->Buffers.size()];
+				memset(vCountArray, 0, mesh->Buffers.size() * sizeof(u32));
 				// count vertices in each buffer and reallocate
-				for (i=0; i<mesh->Vertices.size(); ++i)
-				{
+				for (i = 0; i < mesh->Vertices.size(); ++i) {
 					if (verticesLinkBuffer[i] != -1)
 						++vCountArray[verticesLinkBuffer[i]];
 				}
-				if (mesh->TCoords2.size())
-				{
-					for (i=0; i!=mesh->Buffers.size(); ++i)
-					{
+				if (mesh->TCoords2.size()) {
+					for (i = 0; i != mesh->Buffers.size(); ++i) {
 						mesh->Buffers[i]->Vertices_2TCoords.reallocate(vCountArray[i]);
-						mesh->Buffers[i]->VertexType=video::EVT_2TCOORDS;
+						mesh->Buffers[i]->VertexType = video::EVT_2TCOORDS;
 					}
-				}
-				else
-				{
-					for (i=0; i!=mesh->Buffers.size(); ++i)
+				} else {
+					for (i = 0; i != mesh->Buffers.size(); ++i)
 						mesh->Buffers[i]->Vertices_Standard.reallocate(vCountArray[i]);
 				}
 
 				verticesLinkIndex.set_used(mesh->Vertices.size());
 				// actually store vertices
-				for (i=0; i<mesh->Vertices.size(); ++i)
-				{
+				for (i = 0; i < mesh->Vertices.size(); ++i) {
 					// if a vertex is missing for some reason, just skip it
-					if (verticesLinkBuffer[i]==-1)
+					if (verticesLinkBuffer[i] == -1)
 						continue;
-					scene::SSkinMeshBuffer *buffer = mesh->Buffers[ verticesLinkBuffer[i] ];
+					scene::SSkinMeshBuffer *buffer = mesh->Buffers[verticesLinkBuffer[i]];
 
-					if (mesh->TCoords2.size())
-					{
+					if (mesh->TCoords2.size()) {
 						verticesLinkIndex[i] = buffer->Vertices_2TCoords.size();
-						buffer->Vertices_2TCoords.push_back( mesh->Vertices[i] );
+						buffer->Vertices_2TCoords.push_back(mesh->Vertices[i]);
 						// We have a problem with correct tcoord2 handling here
 						// crash fixed for now by checking the values
-						buffer->Vertices_2TCoords.getLast().TCoords2=(i<mesh->TCoords2.size())?mesh->TCoords2[i]:mesh->Vertices[i].TCoords;
-					}
-					else
-					{
+						buffer->Vertices_2TCoords.getLast().TCoords2 = (i < mesh->TCoords2.size()) ? mesh->TCoords2[i] : mesh->Vertices[i].TCoords;
+					} else {
 						verticesLinkIndex[i] = buffer->Vertices_Standard.size();
-						buffer->Vertices_Standard.push_back( mesh->Vertices[i] );
+						buffer->Vertices_Standard.push_back(mesh->Vertices[i]);
 					}
 				}
 
 				// count indices per buffer and reallocate
-				memset(vCountArray, 0, mesh->Buffers.size()*sizeof(u32));
-				for (i=0; i<mesh->FaceMaterialIndices.size(); ++i)
-					++vCountArray[ mesh->FaceMaterialIndices[i] ];
-				for (i=0; i!=mesh->Buffers.size(); ++i)
+				memset(vCountArray, 0, mesh->Buffers.size() * sizeof(u32));
+				for (i = 0; i < mesh->FaceMaterialIndices.size(); ++i)
+					++vCountArray[mesh->FaceMaterialIndices[i]];
+				for (i = 0; i != mesh->Buffers.size(); ++i)
 					mesh->Buffers[i]->Indices.reallocate(vCountArray[i]);
-				delete [] vCountArray;
+				delete[] vCountArray;
 				// create indices per buffer
-				for (i=0; i<mesh->FaceMaterialIndices.size(); ++i)
-				{
-					scene::SSkinMeshBuffer *buffer = mesh->Buffers[ mesh->FaceMaterialIndices[i] ];
-					for (u32 id=i*3+0; id!=i*3+3; ++id)
-					{
-						buffer->Indices.push_back( verticesLinkIndex[ mesh->Indices[id] ] );
+				for (i = 0; i < mesh->FaceMaterialIndices.size(); ++i) {
+					scene::SSkinMeshBuffer *buffer = mesh->Buffers[mesh->FaceMaterialIndices[i]];
+					for (u32 id = i * 3 + 0; id != i * 3 + 3; ++id) {
+						buffer->Indices.push_back(verticesLinkIndex[mesh->Indices[id]]);
 					}
 				}
 			}
 
-			for (u32 j=0; j<mesh->WeightJoint.size(); ++j)
-			{
-				ISkinnedMesh::SWeight& weight = (AnimatedMesh->getAllJoints()[mesh->WeightJoint[j]]->Weights[mesh->WeightNum[j]]);
+			for (u32 j = 0; j < mesh->WeightJoint.size(); ++j) {
+				ISkinnedMesh::SWeight &weight = (AnimatedMesh->getAllJoints()[mesh->WeightJoint[j]]->Weights[mesh->WeightNum[j]]);
 
 				u32 id = weight.vertex_id;
 
-				if (id>=verticesLinkIndex.size())
-				{
+				if (id >= verticesLinkIndex.size()) {
 					os::Printer::log("X loader: Weight id out of range", ELL_WARNING);
-					id=0;
-					weight.strength=0.f;
+					id = 0;
+					weight.strength = 0.f;
 				}
 
-				weight.vertex_id=verticesLinkIndex[id];
-				weight.buffer_id=verticesLinkBuffer[id] + bufferOffset;
+				weight.vertex_id = verticesLinkIndex[id];
+				weight.buffer_id = verticesLinkBuffer[id] + bufferOffset;
 			}
 		}
-		#endif
-
+#endif
 	}
 
 	return true;
 }
 
-
 //! Reads file into memory
-bool CXMeshFileLoader::readFileIntoMemory(io::IReadFile* file)
+bool CXMeshFileLoader::readFileIntoMemory(io::IReadFile *file)
 {
 	const long size = file->getSize();
-	if (size < 12)
-	{
+	if (size < 12) {
 		os::Printer::log("X File is too small.", ELL_WARNING);
 		return false;
 	}
 
-	Buffer = new c8[size+1];
+	Buffer = new c8[size + 1];
 	Buffer[size] = 0x0; // null-terminate
 
 	//! read all into memory
-	if (file->read(Buffer, size) != static_cast<size_t>(size))
-	{
+	if (file->read(Buffer, size) != static_cast<size_t>(size)) {
 		os::Printer::log("Could not read from x file.", ELL_WARNING);
 		return false;
 	}
@@ -412,8 +360,7 @@ bool CXMeshFileLoader::readFileIntoMemory(io::IReadFile* file)
 	End = Buffer + size;
 
 	//! check header "xof "
-	if (strncmp(Buffer, "xof ", 4)!=0)
-	{
+	if (strncmp(Buffer, "xof ", 4) != 0) {
 		os::Printer::log("Not an x file, wrong header.", ELL_WARNING);
 		return false;
 	}
@@ -430,24 +377,22 @@ bool CXMeshFileLoader::readFileIntoMemory(io::IReadFile* file)
 	MinorVersion = core::strtoul10(tmp);
 
 	//! read format
-	if (strncmp(&Buffer[8], "txt ", 4) ==0)
+	if (strncmp(&Buffer[8], "txt ", 4) == 0)
 		BinaryFormat = false;
-	else if (strncmp(&Buffer[8], "bin ", 4) ==0)
+	else if (strncmp(&Buffer[8], "bin ", 4) == 0)
 		BinaryFormat = true;
-	else
-	{
+	else {
 		os::Printer::log("Only uncompressed x files currently supported.", ELL_WARNING);
 		return false;
 	}
-	BinaryNumCount=0;
+	BinaryNumCount = 0;
 
 	//! read float size
-	if (strncmp(&Buffer[12], "0032", 4) ==0)
+	if (strncmp(&Buffer[12], "0032", 4) == 0)
 		FloatSize = 4;
-	else if (strncmp(&Buffer[12], "0064", 4) ==0)
+	else if (strncmp(&Buffer[12], "0064", 4) == 0)
 		FloatSize = 8;
-	else
-	{
+	else {
 		os::Printer::log("Float size not supported.", ELL_WARNING);
 		return false;
 	}
@@ -459,18 +404,15 @@ bool CXMeshFileLoader::readFileIntoMemory(io::IReadFile* file)
 	return true;
 }
 
-
 //! Parses the file
 bool CXMeshFileLoader::parseFile()
 {
-	while(parseDataObject())
-	{
+	while (parseDataObject()) {
 		// loop
 	}
 
 	return !ErrorState;
 }
-
 
 //! Parses the next Data object in the file
 bool CXMeshFileLoader::parseDataObject()
@@ -480,49 +422,32 @@ bool CXMeshFileLoader::parseDataObject()
 	if (objectName.size() == 0)
 		return false;
 
-	// parse specific object
+		// parse specific object
 #ifdef _XREADER_DEBUG
 	os::Printer::log("debug DataObject", objectName.c_str(), ELL_DEBUG);
 #endif
 
 	if (objectName == "template")
 		return parseDataObjectTemplate();
-	else
-	if (objectName == "Frame")
-	{
-		return parseDataObjectFrame( 0 );
-	}
-	else
-	if (objectName == "Mesh")
-	{
+	else if (objectName == "Frame") {
+		return parseDataObjectFrame(0);
+	} else if (objectName == "Mesh") {
 		// some meshes have no frames at all
-		//CurFrame = AnimatedMesh->addJoint(0);
+		// CurFrame = AnimatedMesh->addJoint(0);
 
-		SXMesh *mesh=new SXMesh;
+		SXMesh *mesh = new SXMesh;
 
-		//mesh->Buffer=AnimatedMesh->addMeshBuffer();
+		// mesh->Buffer=AnimatedMesh->addMeshBuffer();
 		Meshes.push_back(mesh);
 
 		return parseDataObjectMesh(*mesh);
-	}
-	else
-	if (objectName == "AnimationSet")
-	{
+	} else if (objectName == "AnimationSet") {
 		return parseDataObjectAnimationSet();
-	}
-	else
-	if (objectName == "AnimTicksPerSecond")
-	{
+	} else if (objectName == "AnimTicksPerSecond") {
 		return parseDataObjectAnimationTicksPerSecond();
-	}
-	else
-	if (objectName == "Material")
-	{
+	} else if (objectName == "Material") {
 		return parseUnknownDataObject();
-	}
-	else
-	if (objectName == "}")
-	{
+	} else if (objectName == "}") {
 		os::Printer::log("} found in dataObject", ELL_WARNING);
 		return true;
 	}
@@ -531,7 +456,6 @@ bool CXMeshFileLoader::parseDataObject()
 
 	return parseUnknownDataObject();
 }
-
 
 bool CXMeshFileLoader::parseDataObjectTemplate()
 {
@@ -542,10 +466,9 @@ bool CXMeshFileLoader::parseDataObjectTemplate()
 	// parse a template data object. Currently not stored.
 	core::stringc name;
 
-	if (!readHeadOfDataObject(&name))
-	{
+	if (!readHeadOfDataObject(&name)) {
 		os::Printer::log("Left delimiter in template data object missing.",
-			name.c_str(), ELL_WARNING);
+				name.c_str(), ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
 	}
@@ -554,8 +477,7 @@ bool CXMeshFileLoader::parseDataObjectTemplate()
 	getNextToken();
 
 	// read and ignore data members
-	while(true)
-	{
+	while (true) {
 		core::stringc s = getNextToken();
 
 		if (s == "}")
@@ -567,7 +489,6 @@ bool CXMeshFileLoader::parseDataObjectTemplate()
 
 	return true;
 }
-
 
 bool CXMeshFileLoader::parseDataObjectFrame(CSkinnedMesh::SJoint *Parent)
 {
@@ -581,43 +502,36 @@ bool CXMeshFileLoader::parseDataObjectFrame(CSkinnedMesh::SJoint *Parent)
 	// Frame template instances as child objects when loading a Frame
 	// instance.
 
-	u32 JointID=0;
+	u32 JointID = 0;
 
 	core::stringc name;
 
-	if (!readHeadOfDataObject(&name))
-	{
+	if (!readHeadOfDataObject(&name)) {
 		os::Printer::log("No opening brace in Frame found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
 	}
 
-	CSkinnedMesh::SJoint *joint=0;
+	CSkinnedMesh::SJoint *joint = 0;
 
-	if (name.size())
-	{
-		for (u32 n=0; n < AnimatedMesh->getAllJoints().size(); ++n)
-		{
-			if (AnimatedMesh->getAllJoints()[n]->Name==name)
-			{
-				joint=AnimatedMesh->getAllJoints()[n];
-				JointID=n;
+	if (name.size()) {
+		for (u32 n = 0; n < AnimatedMesh->getAllJoints().size(); ++n) {
+			if (AnimatedMesh->getAllJoints()[n]->Name == name) {
+				joint = AnimatedMesh->getAllJoints()[n];
+				JointID = n;
 				break;
 			}
 		}
 	}
 
-	if (!joint)
-	{
+	if (!joint) {
 #ifdef _XREADER_DEBUG
 		os::Printer::log("creating joint ", name.c_str(), ELL_DEBUG);
 #endif
-		joint=AnimatedMesh->addJoint(Parent);
-		joint->Name=name;
-		JointID=AnimatedMesh->getAllJoints().size()-1;
-	}
-	else
-	{
+		joint = AnimatedMesh->addJoint(Parent);
+		joint->Name = name;
+		JointID = AnimatedMesh->getAllJoints().size() - 1;
+	} else {
 #ifdef _XREADER_DEBUG
 		os::Printer::log("using joint ", name.c_str(), ELL_DEBUG);
 #endif
@@ -628,61 +542,45 @@ bool CXMeshFileLoader::parseDataObjectFrame(CSkinnedMesh::SJoint *Parent)
 	// Now inside a frame.
 	// read tokens until closing brace is reached.
 
-	while(true)
-	{
+	while (true) {
 		core::stringc objectName = getNextToken();
 
 #ifdef _XREADER_DEBUG
 		os::Printer::log("debug DataObject in frame:", objectName.c_str(), ELL_DEBUG);
 #endif
 
-		if (objectName.size() == 0)
-		{
+		if (objectName.size() == 0) {
 			os::Printer::log("Unexpected ending found in Frame in x file.", ELL_WARNING);
 			os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 			SET_ERR_AND_RETURN();
-		}
-		else
-		if (objectName == "}")
-		{
+		} else if (objectName == "}") {
 			break; // frame finished
-		}
-		else
-		if (objectName == "Frame")
-		{
+		} else if (objectName == "Frame") {
 
 			if (!parseDataObjectFrame(joint))
 				return false;
-		}
-		else
-		if (objectName == "FrameTransformMatrix")
-		{
+		} else if (objectName == "FrameTransformMatrix") {
 			if (!parseDataObjectTransformationMatrix(joint->LocalMatrix))
 				return false;
 
-			//joint->LocalAnimatedMatrix
-			//joint->LocalAnimatedMatrix.makeInverse();
-			//joint->LocalMatrix=tmp*joint->LocalAnimatedMatrix;
-		}
-		else
-		if (objectName == "Mesh")
-		{
+			// joint->LocalAnimatedMatrix
+			// joint->LocalAnimatedMatrix.makeInverse();
+			// joint->LocalMatrix=tmp*joint->LocalAnimatedMatrix;
+		} else if (objectName == "Mesh") {
 			/*
 			frame.Meshes.push_back(SXMesh());
 			if (!parseDataObjectMesh(frame.Meshes.getLast()))
 				return false;
 			*/
-			SXMesh *mesh=new SXMesh;
+			SXMesh *mesh = new SXMesh;
 
-			mesh->AttachedJointID=JointID;
+			mesh->AttachedJointID = JointID;
 
 			Meshes.push_back(mesh);
 
 			if (!parseDataObjectMesh(*mesh))
 				return false;
-		}
-		else
-		{
+		} else {
 			os::Printer::log("Unknown data object in frame in x file", objectName.c_str(), ELL_WARNING);
 			if (!parseUnknownDataObject())
 				return false;
@@ -692,15 +590,13 @@ bool CXMeshFileLoader::parseDataObjectFrame(CSkinnedMesh::SJoint *Parent)
 	return true;
 }
 
-
 bool CXMeshFileLoader::parseDataObjectTransformationMatrix(core::matrix4 &mat)
 {
 #ifdef _XREADER_DEBUG
 	os::Printer::log("CXFileReader: Reading Transformation Matrix", ELL_DEBUG);
 #endif
 
-	if (!readHeadOfDataObject())
-	{
+	if (!readHeadOfDataObject()) {
 		os::Printer::log("No opening brace in Transformation Matrix found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -708,14 +604,12 @@ bool CXMeshFileLoader::parseDataObjectTransformationMatrix(core::matrix4 &mat)
 
 	readMatrix(mat);
 
-	if (!checkForOneFollowingSemicolons())
-	{
+	if (!checkForOneFollowingSemicolons()) {
 		os::Printer::log("No finishing semicolon in Transformation Matrix found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 	}
 
-	if (!checkForClosingBrace())
-	{
+	if (!checkForClosingBrace()) {
 		os::Printer::log("No closing brace in Transformation Matrix found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -724,13 +618,11 @@ bool CXMeshFileLoader::parseDataObjectTransformationMatrix(core::matrix4 &mat)
 	return true;
 }
 
-
 bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 {
 	core::stringc name;
 
-	if (!readHeadOfDataObject(&name))
-	{
+	if (!readHeadOfDataObject(&name)) {
 #ifdef _XREADER_DEBUG
 		os::Printer::log("CXFileReader: Reading mesh", ELL_DEBUG);
 #endif
@@ -748,15 +640,13 @@ bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 
 	// read vertices
 	mesh.Vertices.set_used(nVertices);
-	for (u32 n=0; n<nVertices; ++n)
-	{
+	for (u32 n = 0; n < nVertices; ++n) {
 		readVector3(mesh.Vertices[n].Pos);
-		mesh.Vertices[n].Color=0xFFFFFFFF;
-		mesh.Vertices[n].Normal=core::vector3df(0.0f);
+		mesh.Vertices[n].Color = 0xFFFFFFFF;
+		mesh.Vertices[n].Normal = core::vector3df(0.0f);
 	}
 
-	if (!checkForTwoFollowingSemicolons())
-	{
+	if (!checkForTwoFollowingSemicolons()) {
 		os::Printer::log("No finishing semicolon in Mesh Vertex Array found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 	}
@@ -770,14 +660,11 @@ bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 	core::array<u32> polygonfaces;
 	u32 currentIndex = 0;
 
-	for (u32 k=0; k<nFaces; ++k)
-	{
+	for (u32 k = 0; k < nFaces; ++k) {
 		const u32 fcnt = readInt();
 
-		if (fcnt != 3)
-		{
-			if (fcnt < 3)
-			{
+		if (fcnt != 3) {
+			if (fcnt < 3) {
 				os::Printer::log("Invalid face count (<3) found in Mesh x file reader.", ELL_WARNING);
 				os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 				SET_ERR_AND_RETURN();
@@ -785,24 +672,21 @@ bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 
 			// read face indices
 			polygonfaces.set_used(fcnt);
-			u32 triangles = (fcnt-2);
-			mesh.Indices.set_used(mesh.Indices.size() + ((triangles-1)*3));
+			u32 triangles = (fcnt - 2);
+			mesh.Indices.set_used(mesh.Indices.size() + ((triangles - 1) * 3));
 			mesh.IndexCountPerFace[k] = (u16)(triangles * 3);
 
-			for (u32 f=0; f<fcnt; ++f)
+			for (u32 f = 0; f < fcnt; ++f)
 				polygonfaces[f] = readInt();
 
-			for (u32 jk=0; jk<triangles; ++jk)
-			{
+			for (u32 jk = 0; jk < triangles; ++jk) {
 				mesh.Indices[currentIndex++] = polygonfaces[0];
-				mesh.Indices[currentIndex++] = polygonfaces[jk+1];
-				mesh.Indices[currentIndex++] = polygonfaces[jk+2];
+				mesh.Indices[currentIndex++] = polygonfaces[jk + 1];
+				mesh.Indices[currentIndex++] = polygonfaces[jk + 2];
 			}
 
 			// TODO: change face indices in material list
-		}
-		else
-		{
+		} else {
 			mesh.Indices[currentIndex++] = readInt();
 			mesh.Indices[currentIndex++] = readInt();
 			mesh.Indices[currentIndex++] = readInt();
@@ -810,36 +694,28 @@ bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 		}
 	}
 
-	for (u32 j = 0; j < mesh.Indices.size(); j++)
-	{
-		if (mesh.Indices[j] >= mesh.Vertices.size())
-		{
+	for (u32 j = 0; j < mesh.Indices.size(); j++) {
+		if (mesh.Indices[j] >= mesh.Vertices.size()) {
 			os::Printer::log("Out of range index found in Mesh x file reader.", ELL_WARNING);
 			SET_ERR_AND_RETURN();
 		}
 	}
 
-	if (!checkForTwoFollowingSemicolons())
-	{
+	if (!checkForTwoFollowingSemicolons()) {
 		os::Printer::log("No finishing semicolon in Mesh Face Array found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 	}
 
 	// here, other data objects may follow
 
-	while(true)
-	{
+	while (true) {
 		core::stringc objectName = getNextToken();
 
-		if (objectName.size() == 0)
-		{
+		if (objectName.size() == 0) {
 			os::Printer::log("Unexpected ending found in Mesh in x file.", ELL_WARNING);
 			os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 			SET_ERR_AND_RETURN();
-		}
-		else
-		if (objectName == "}")
-		{
+		} else if (objectName == "}") {
 			break; // mesh finished
 		}
 
@@ -847,42 +723,25 @@ bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 		os::Printer::log("debug DataObject in mesh", objectName.c_str(), ELL_DEBUG);
 #endif
 
-		if (objectName == "MeshNormals")
-		{
+		if (objectName == "MeshNormals") {
 			if (!parseDataObjectMeshNormals(mesh))
 				return false;
-		}
-		else
-		if (objectName == "MeshTextureCoords")
-		{
+		} else if (objectName == "MeshTextureCoords") {
 			if (!parseDataObjectMeshTextureCoords(mesh))
 				return false;
-		}
-		else
-		if (objectName == "MeshVertexColors")
-		{
+		} else if (objectName == "MeshVertexColors") {
 			if (!parseDataObjectMeshVertexColors(mesh))
 				return false;
-		}
-		else
-		if (objectName == "MeshMaterialList")
-		{
+		} else if (objectName == "MeshMaterialList") {
 			if (!parseDataObjectMeshMaterialList(mesh))
 				return false;
-		}
-		else
-		if (objectName == "VertexDuplicationIndices")
-		{
+		} else if (objectName == "VertexDuplicationIndices") {
 			// we'll ignore vertex duplication indices
 			// TODO: read them
 			if (!parseUnknownDataObject())
 				return false;
-		}
-		else
-		if (objectName == "DeclData")
-		{
-			if (!readHeadOfDataObject())
-			{
+		} else if (objectName == "DeclData") {
+			if (!readHeadOfDataObject()) {
 				os::Printer::log("No starting brace in DeclData found.", ELL_WARNING);
 				os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 				SET_ERR_AND_RETURN();
@@ -911,32 +770,27 @@ bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 			s16 tangenttype = -1;
 			s16 binormaltype = -1;
 
-			(void)tangentpos; // disable unused variable warnings
-			(void)binormalpos; // disable unused variable warnings
-			(void)tangenttype; // disable unused variable warnings
+			(void)tangentpos;	// disable unused variable warnings
+			(void)binormalpos;	// disable unused variable warnings
+			(void)tangenttype;	// disable unused variable warnings
 			(void)binormaltype; // disable unused variable warnings
 
-			for (j=0; j<dcnt; ++j)
-			{
+			for (j = 0; j < dcnt; ++j) {
 				const u32 type = readInt();
-				//const u32 tesselator = readInt();
+				// const u32 tesselator = readInt();
 				readInt();
 				const u32 semantics = readInt();
 				const u32 index = readInt();
-				switch (semantics)
-				{
+				switch (semantics) {
 				case 3:
 					normalpos = size;
 					normaltype = type;
 					break;
 				case 5:
-					if (index==0)
-					{
+					if (index == 0) {
 						uvpos = size;
 						uvtype = type;
-					}
-					else if (index==1)
-					{
+					} else if (index == 1) {
 						uv2pos = size;
 						uv2type = type;
 					}
@@ -952,8 +806,7 @@ bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 				default:
 					break;
 				}
-				switch (type)
-				{
+				switch (type) {
 				case 0:
 					size += 4;
 					break;
@@ -1002,91 +855,73 @@ bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 				}
 			}
 			const u32 datasize = readInt();
-			u32* data = new u32[datasize];
-			for (j=0; j<datasize; ++j)
-				data[j]=readInt();
+			u32 *data = new u32[datasize];
+			for (j = 0; j < datasize; ++j)
+				data[j] = readInt();
 
-			if (!checkForOneFollowingSemicolons())
-			{
+			if (!checkForOneFollowingSemicolons()) {
 				os::Printer::log("No finishing semicolon in DeclData found.", ELL_WARNING);
 				os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 			}
-			if (!checkForClosingBrace())
-			{
+			if (!checkForClosingBrace()) {
 				os::Printer::log("No closing brace in DeclData.", ELL_WARNING);
 				os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
-				delete [] data;
+				delete[] data;
 				SET_ERR_AND_RETURN();
 			}
-			u8* dataptr = (u8*) data;
+			u8 *dataptr = (u8 *)data;
 			if ((uv2pos != -1) && (uv2type == 1))
 				mesh.TCoords2.reallocate(mesh.Vertices.size());
-			for (j=0; j<mesh.Vertices.size(); ++j)
-			{
+			for (j = 0; j < mesh.Vertices.size(); ++j) {
 				if ((normalpos != -1) && (normaltype == 2))
-					mesh.Vertices[j].Normal.set(*((core::vector3df*)(dataptr+normalpos)));
+					mesh.Vertices[j].Normal.set(*((core::vector3df *)(dataptr + normalpos)));
 				if ((uvpos != -1) && (uvtype == 1))
-					mesh.Vertices[j].TCoords.set(*((core::vector2df*)(dataptr+uvpos)));
+					mesh.Vertices[j].TCoords.set(*((core::vector2df *)(dataptr + uvpos)));
 				if ((uv2pos != -1) && (uv2type == 1))
-					mesh.TCoords2.push_back(*((core::vector2df*)(dataptr+uv2pos)));
+					mesh.TCoords2.push_back(*((core::vector2df *)(dataptr + uv2pos)));
 				dataptr += size;
 			}
-			delete [] data;
-		}
-		else
-		if (objectName == "FVFData")
-		{
-			if (!readHeadOfDataObject())
-			{
+			delete[] data;
+		} else if (objectName == "FVFData") {
+			if (!readHeadOfDataObject()) {
 				os::Printer::log("No starting brace in FVFData found.", ELL_WARNING);
 				os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 				SET_ERR_AND_RETURN();
 			}
 			const u32 dataformat = readInt();
 			const u32 datasize = readInt();
-			u32* data = new u32[datasize];
-			for (u32 j=0; j<datasize; ++j)
-				data[j]=readInt();
-			if (dataformat&0x102) // 2nd uv set
+			u32 *data = new u32[datasize];
+			for (u32 j = 0; j < datasize; ++j)
+				data[j] = readInt();
+			if (dataformat & 0x102) // 2nd uv set
 			{
 				mesh.TCoords2.reallocate(mesh.Vertices.size());
-				u8* dataptr = (u8*) data;
-				const u32 size=((dataformat>>8)&0xf)*sizeof(core::vector2df);
-				for (u32 j=0; j<mesh.Vertices.size(); ++j)
-				{
-					mesh.TCoords2.push_back(*((core::vector2df*)(dataptr)));
+				u8 *dataptr = (u8 *)data;
+				const u32 size = ((dataformat >> 8) & 0xf) * sizeof(core::vector2df);
+				for (u32 j = 0; j < mesh.Vertices.size(); ++j) {
+					mesh.TCoords2.push_back(*((core::vector2df *)(dataptr)));
 					dataptr += size;
 				}
 			}
-			delete [] data;
-			if (!checkForOneFollowingSemicolons())
-			{
+			delete[] data;
+			if (!checkForOneFollowingSemicolons()) {
 				os::Printer::log("No finishing semicolon in FVFData found.", ELL_WARNING);
 				os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 			}
-			if (!checkForClosingBrace())
-			{
+			if (!checkForClosingBrace()) {
 				os::Printer::log("No closing brace in FVFData found in x file", ELL_WARNING);
 				os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 				SET_ERR_AND_RETURN();
 			}
-		}
-		else
-		if (objectName == "XSkinMeshHeader")
-		{
+		} else if (objectName == "XSkinMeshHeader") {
 			if (!parseDataObjectSkinMeshHeader(mesh))
 				return false;
-		}
-		else
-		if (objectName == "SkinWeights")
-		{
-			//mesh.SkinWeights.push_back(SXSkinWeight());
-			//if (!parseDataObjectSkinWeights(mesh.SkinWeights.getLast()))
+		} else if (objectName == "SkinWeights") {
+			// mesh.SkinWeights.push_back(SXSkinWeight());
+			// if (!parseDataObjectSkinWeights(mesh.SkinWeights.getLast()))
 			if (!parseDataObjectSkinWeights(mesh))
 				return false;
-		}
-		else
-		{
+		} else {
 			os::Printer::log("Unknown data object in mesh in x file", objectName.c_str(), ELL_WARNING);
 			if (!parseUnknownDataObject())
 				return false;
@@ -1096,15 +931,13 @@ bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 	return true;
 }
 
-
 bool CXMeshFileLoader::parseDataObjectSkinWeights(SXMesh &mesh)
 {
 #ifdef _XREADER_DEBUG
 	os::Printer::log("CXFileReader: Reading mesh skin weights", ELL_DEBUG);
 #endif
 
-	if (!readHeadOfDataObject())
-	{
+	if (!readHeadOfDataObject()) {
 		os::Printer::log("No opening brace in Skin Weights found in .x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1112,35 +945,31 @@ bool CXMeshFileLoader::parseDataObjectSkinWeights(SXMesh &mesh)
 
 	core::stringc TransformNodeName;
 
-	if (!getNextTokenAsString(TransformNodeName))
-	{
+	if (!getNextTokenAsString(TransformNodeName)) {
 		os::Printer::log("Unknown syntax while reading transform node name string in .x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
 	}
 
-	mesh.HasSkinning=true;
+	mesh.HasSkinning = true;
 
-	CSkinnedMesh::SJoint *joint=0;
+	CSkinnedMesh::SJoint *joint = 0;
 
 	u32 n;
-	for (n=0; n < AnimatedMesh->getAllJoints().size(); ++n)
-	{
-		if (AnimatedMesh->getAllJoints()[n]->Name==TransformNodeName)
-		{
-			joint=AnimatedMesh->getAllJoints()[n];
+	for (n = 0; n < AnimatedMesh->getAllJoints().size(); ++n) {
+		if (AnimatedMesh->getAllJoints()[n]->Name == TransformNodeName) {
+			joint = AnimatedMesh->getAllJoints()[n];
 			break;
 		}
 	}
 
-	if (!joint)
-	{
+	if (!joint) {
 #ifdef _XREADER_DEBUG
 		os::Printer::log("creating joint for skinning ", TransformNodeName.c_str(), ELL_DEBUG);
 #endif
 		n = AnimatedMesh->getAllJoints().size();
-		joint=AnimatedMesh->addJoint(0);
-		joint->Name=TransformNodeName;
+		joint = AnimatedMesh->addJoint(0);
+		joint->Name = TransformNodeName;
 	}
 
 	// read vertex weights
@@ -1150,25 +979,24 @@ bool CXMeshFileLoader::parseDataObjectSkinWeights(SXMesh &mesh)
 	u32 i;
 
 	const u32 jointStart = joint->Weights.size();
-	joint->Weights.reallocate(jointStart+nWeights);
+	joint->Weights.reallocate(jointStart + nWeights);
 
-	mesh.WeightJoint.reallocate( mesh.WeightJoint.size() + nWeights );
-	mesh.WeightNum.reallocate( mesh.WeightNum.size() + nWeights );
+	mesh.WeightJoint.reallocate(mesh.WeightJoint.size() + nWeights);
+	mesh.WeightNum.reallocate(mesh.WeightNum.size() + nWeights);
 
-	for (i=0; i<nWeights; ++i)
-	{
+	for (i = 0; i < nWeights; ++i) {
 		mesh.WeightJoint.push_back(n);
 		mesh.WeightNum.push_back(joint->Weights.size());
 
-		CSkinnedMesh::SWeight *weight=AnimatedMesh->addWeight(joint);
+		CSkinnedMesh::SWeight *weight = AnimatedMesh->addWeight(joint);
 
-		weight->buffer_id=0;
-		weight->vertex_id=readInt();
+		weight->buffer_id = 0;
+		weight->vertex_id = readInt();
 	}
 
 	// read vertex weights
 
-	for (i=jointStart; i<jointStart+nWeights; ++i)
+	for (i = jointStart; i < jointStart + nWeights; ++i)
 		joint->Weights[i].strength = readFloat();
 
 	// read matrix offset
@@ -1176,18 +1004,16 @@ bool CXMeshFileLoader::parseDataObjectSkinWeights(SXMesh &mesh)
 	// transforms the mesh vertices to the space of the bone
 	// When concatenated to the bone's transform, this provides the
 	// world space coordinates of the mesh as affected by the bone
-	core::matrix4& MatrixOffset = joint->GlobalInversedMatrix;
+	core::matrix4 &MatrixOffset = joint->GlobalInversedMatrix;
 
 	readMatrix(MatrixOffset);
 
-	if (!checkForOneFollowingSemicolons())
-	{
+	if (!checkForOneFollowingSemicolons()) {
 		os::Printer::log("No finishing semicolon in Skin Weights found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 	}
 
-	if (!checkForClosingBrace())
-	{
+	if (!checkForClosingBrace()) {
 		os::Printer::log("No closing brace in Skin Weights found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1196,15 +1022,13 @@ bool CXMeshFileLoader::parseDataObjectSkinWeights(SXMesh &mesh)
 	return true;
 }
 
-
-bool CXMeshFileLoader::parseDataObjectSkinMeshHeader(SXMesh& mesh)
+bool CXMeshFileLoader::parseDataObjectSkinMeshHeader(SXMesh &mesh)
 {
 #ifdef _XREADER_DEBUG
 	os::Printer::log("CXFileReader: Reading skin mesh header", ELL_DEBUG);
 #endif
 
-	if (!readHeadOfDataObject())
-	{
+	if (!readHeadOfDataObject()) {
 		os::Printer::log("No opening brace in Skin Mesh header found in .x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1217,8 +1041,7 @@ bool CXMeshFileLoader::parseDataObjectSkinMeshHeader(SXMesh& mesh)
 	if (!BinaryFormat)
 		getNextToken(); // skip semicolon
 
-	if (!checkForClosingBrace())
-	{
+	if (!checkForClosingBrace()) {
 		os::Printer::log("No closing brace in skin mesh header in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1227,15 +1050,13 @@ bool CXMeshFileLoader::parseDataObjectSkinMeshHeader(SXMesh& mesh)
 	return true;
 }
 
-
 bool CXMeshFileLoader::parseDataObjectMeshNormals(SXMesh &mesh)
 {
 #ifdef _XREADER_DEBUG
 	os::Printer::log("CXFileReader: reading mesh normals", ELL_DEBUG);
 #endif
 
-	if (!readHeadOfDataObject())
-	{
+	if (!readHeadOfDataObject()) {
 		os::Printer::log("No opening brace in Mesh Normals found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1247,11 +1068,10 @@ bool CXMeshFileLoader::parseDataObjectMeshNormals(SXMesh &mesh)
 	normals.set_used(nNormals);
 
 	// read normals
-	for (u32 i=0; i<nNormals; ++i)
+	for (u32 i = 0; i < nNormals; ++i)
 		readVector3(normals[i]);
 
-	if (!checkForTwoFollowingSemicolons())
-	{
+	if (!checkForTwoFollowingSemicolons()) {
 		os::Printer::log("No finishing semicolon in Mesh Normals Array found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 	}
@@ -1261,7 +1081,7 @@ bool CXMeshFileLoader::parseDataObjectMeshNormals(SXMesh &mesh)
 
 	// read face normal indices
 	const u32 nFNormals = readInt();
-	//if (nFNormals >= mesh.IndexCountPerFace.size())
+	// if (nFNormals >= mesh.IndexCountPerFace.size())
 	if (0) // this condition doesn't work for some reason
 	{
 		os::Printer::log("Too many face normals found in x file", ELL_WARNING);
@@ -1271,52 +1091,43 @@ bool CXMeshFileLoader::parseDataObjectMeshNormals(SXMesh &mesh)
 
 	u32 normalidx = 0;
 	core::array<u32> polygonfaces;
-	for (u32 k=0; k<nFNormals; ++k)
-	{
+	for (u32 k = 0; k < nFNormals; ++k) {
 		const u32 fcnt = readInt();
 		u32 triangles = fcnt - 2;
 		u32 indexcount = triangles * 3;
 
-		if (indexcount != mesh.IndexCountPerFace[k])
-		{
+		if (indexcount != mesh.IndexCountPerFace[k]) {
 			os::Printer::log("Not matching normal and face index count found in x file", ELL_WARNING);
 			os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 			SET_ERR_AND_RETURN();
 		}
 
-		if (indexcount == 3)
-		{
+		if (indexcount == 3) {
 			// default, only one triangle in this face
-			for (u32 h=0; h<3; ++h)
-			{
+			for (u32 h = 0; h < 3; ++h) {
 				const u32 normalnum = readInt();
 				mesh.Vertices[mesh.Indices[normalidx++]].Normal.set(normals[normalnum]);
 			}
-		}
-		else
-		{
+		} else {
 			polygonfaces.set_used(fcnt);
 			// multiple triangles in this face
-			for (u32 h=0; h<fcnt; ++h)
+			for (u32 h = 0; h < fcnt; ++h)
 				polygonfaces[h] = readInt();
 
-			for (u32 jk=0; jk<triangles; ++jk)
-			{
+			for (u32 jk = 0; jk < triangles; ++jk) {
 				mesh.Vertices[mesh.Indices[normalidx++]].Normal.set(normals[polygonfaces[0]]);
-				mesh.Vertices[mesh.Indices[normalidx++]].Normal.set(normals[polygonfaces[jk+1]]);
-				mesh.Vertices[mesh.Indices[normalidx++]].Normal.set(normals[polygonfaces[jk+2]]);
+				mesh.Vertices[mesh.Indices[normalidx++]].Normal.set(normals[polygonfaces[jk + 1]]);
+				mesh.Vertices[mesh.Indices[normalidx++]].Normal.set(normals[polygonfaces[jk + 2]]);
 			}
 		}
 	}
 
-	if (!checkForTwoFollowingSemicolons())
-	{
+	if (!checkForTwoFollowingSemicolons()) {
 		os::Printer::log("No finishing semicolon in Mesh Face Normals Array found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 	}
 
-	if (!checkForClosingBrace())
-	{
+	if (!checkForClosingBrace()) {
 		os::Printer::log("No closing brace in Mesh Normals found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1325,22 +1136,20 @@ bool CXMeshFileLoader::parseDataObjectMeshNormals(SXMesh &mesh)
 	return true;
 }
 
-
 bool CXMeshFileLoader::parseDataObjectMeshTextureCoords(SXMesh &mesh)
 {
 #ifdef _XREADER_DEBUG
 	os::Printer::log("CXFileReader: reading mesh texture coordinates", ELL_DEBUG);
 #endif
 
-	if (!readHeadOfDataObject())
-	{
+	if (!readHeadOfDataObject()) {
 		os::Printer::log("No opening brace in Mesh Texture Coordinates found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
 	}
 
 	const u32 nCoords = readInt();
-	//if (nCoords >= mesh.Vertices.size())
+	// if (nCoords >= mesh.Vertices.size())
 	if (0) // this condition doesn't work for some reason
 	{
 		os::Printer::log("Too many texture coords found in x file", ELL_WARNING);
@@ -1348,17 +1157,15 @@ bool CXMeshFileLoader::parseDataObjectMeshTextureCoords(SXMesh &mesh)
 		SET_ERR_AND_RETURN();
 	}
 
-	for (u32 i=0; i<nCoords; ++i)
+	for (u32 i = 0; i < nCoords; ++i)
 		readVector2(mesh.Vertices[i].TCoords);
 
-	if (!checkForTwoFollowingSemicolons())
-	{
+	if (!checkForTwoFollowingSemicolons()) {
 		os::Printer::log("No finishing semicolon in Mesh Texture Coordinates Array found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 	}
 
-	if (!checkForClosingBrace())
-	{
+	if (!checkForClosingBrace()) {
 		os::Printer::log("No closing brace in Mesh Texture Coordinates Array found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1367,27 +1174,23 @@ bool CXMeshFileLoader::parseDataObjectMeshTextureCoords(SXMesh &mesh)
 	return true;
 }
 
-
 bool CXMeshFileLoader::parseDataObjectMeshVertexColors(SXMesh &mesh)
 {
 #ifdef _XREADER_DEBUG
 	os::Printer::log("CXFileReader: reading mesh vertex colors", ELL_DEBUG);
 #endif
 
-	if (!readHeadOfDataObject())
-	{
+	if (!readHeadOfDataObject()) {
 		os::Printer::log("No opening brace for Mesh Vertex Colors found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
 	}
 
-	mesh.HasVertexColors=true;
+	mesh.HasVertexColors = true;
 	const u32 nColors = readInt();
-	for (u32 i=0; i<nColors; ++i)
-	{
-		const u32 Index=readInt();
-		if (Index>=mesh.Vertices.size())
-		{
+	for (u32 i = 0; i < nColors; ++i) {
+		const u32 Index = readInt();
+		if (Index >= mesh.Vertices.size()) {
 			os::Printer::log("index value in parseDataObjectMeshVertexColors out of bounds", ELL_WARNING);
 			os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 			SET_ERR_AND_RETURN();
@@ -1396,14 +1199,12 @@ bool CXMeshFileLoader::parseDataObjectMeshVertexColors(SXMesh &mesh)
 		checkForOneFollowingSemicolons();
 	}
 
-	if (!checkForOneFollowingSemicolons())
-	{
+	if (!checkForOneFollowingSemicolons()) {
 		os::Printer::log("No finishing semicolon in Mesh Vertex Colors Array found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 	}
 
-	if (!checkForClosingBrace())
-	{
+	if (!checkForClosingBrace()) {
 		os::Printer::log("No closing brace in Mesh Texture Coordinates Array found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		return false;
@@ -1412,15 +1213,13 @@ bool CXMeshFileLoader::parseDataObjectMeshVertexColors(SXMesh &mesh)
 	return true;
 }
 
-
 bool CXMeshFileLoader::parseDataObjectMeshMaterialList(SXMesh &mesh)
 {
 #ifdef _XREADER_DEBUG
 	os::Printer::log("CXFileReader: Reading mesh material list", ELL_DEBUG);
 #endif
 
-	if (!readHeadOfDataObject())
-	{
+	if (!readHeadOfDataObject()) {
 		os::Printer::log("No opening brace in Mesh Material List found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1436,25 +1235,23 @@ bool CXMeshFileLoader::parseDataObjectMeshMaterialList(SXMesh &mesh)
 	// There seems to be a compact representation of "all faces the same material"
 	// being represented as 1;1;0;; which means 1 material, 1 face with first material
 	// all the other faces have to obey then, so check is disabled
-	//if (nFaceIndices != mesh.IndexCountPerFace.size())
+	// if (nFaceIndices != mesh.IndexCountPerFace.size())
 	//	os::Printer::log("Index count per face not equal to face material index count in x file.", ELL_WARNING);
 
 	// read non triangulated face indices and create triangulated ones
-	mesh.FaceMaterialIndices.set_used( mesh.Indices.size() / 3);
+	mesh.FaceMaterialIndices.set_used(mesh.Indices.size() / 3);
 	u32 triangulatedindex = 0;
 	u32 ind = 0;
-	for (u32 tfi=0; tfi<mesh.IndexCountPerFace.size(); ++tfi)
-	{
-		if (tfi<nFaceIndices)
+	for (u32 tfi = 0; tfi < mesh.IndexCountPerFace.size(); ++tfi) {
+		if (tfi < nFaceIndices)
 			ind = readInt();
-		if (ind >= core::max_(nMaterials, 1U))
-		{
+		if (ind >= core::max_(nMaterials, 1U)) {
 			os::Printer::log("Out of range index found in x file", ELL_WARNING);
 			os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 			SET_ERR_AND_RETURN();
 		}
-		const u32 fc = mesh.IndexCountPerFace[tfi]/3;
-		for (u32 k=0; k<fc; ++k)
+		const u32 fc = mesh.IndexCountPerFace[tfi] / 3;
+		for (u32 k = 0; k < fc; ++k)
 			mesh.FaceMaterialIndices[triangulatedindex++] = ind;
 	}
 
@@ -1468,43 +1265,27 @@ bool CXMeshFileLoader::parseDataObjectMeshMaterialList(SXMesh &mesh)
 
 	// read following data objects
 
-	while(true)
-	{
+	while (true) {
 		core::stringc objectName = getNextToken();
 
-		if (objectName.size() == 0)
-		{
+		if (objectName.size() == 0) {
 			os::Printer::log("Unexpected ending found in Mesh Material list in .x file.", ELL_WARNING);
 			os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 			SET_ERR_AND_RETURN();
-		}
-		else
-		if (objectName == "}")
-		{
+		} else if (objectName == "}") {
 			break; // material list finished
-		}
-		else
-		if (objectName == "{")
-		{
+		} else if (objectName == "{") {
 			// template materials now available thanks to joeWright
 			objectName = getNextToken();
 			mesh.Materials.push_back(video::SMaterial());
 			getNextToken(); // skip }
-		}
-		else
-		if (objectName == "Material")
-		{
+		} else if (objectName == "Material") {
 			mesh.Materials.push_back(video::SMaterial());
 			if (!parseUnknownDataObject())
 				return false;
-		}
-		else
-		if (objectName == ";")
-		{
+		} else if (objectName == ";") {
 			// ignore
-		}
-		else
-		{
+		} else {
 			os::Printer::log("Unknown data object in material list in x file", objectName.c_str(), ELL_WARNING);
 			if (!parseUnknownDataObject())
 				return false;
@@ -1512,7 +1293,6 @@ bool CXMeshFileLoader::parseDataObjectMeshMaterialList(SXMesh &mesh)
 	}
 	return true;
 }
-
 
 bool CXMeshFileLoader::parseDataObjectAnimationSet()
 {
@@ -1522,37 +1302,26 @@ bool CXMeshFileLoader::parseDataObjectAnimationSet()
 
 	core::stringc AnimationName;
 
-	if (!readHeadOfDataObject(&AnimationName))
-	{
+	if (!readHeadOfDataObject(&AnimationName)) {
 		os::Printer::log("No opening brace in Animation Set found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
 	}
 	os::Printer::log("Reading animationset ", AnimationName, ELL_DEBUG);
 
-	while(true)
-	{
+	while (true) {
 		core::stringc objectName = getNextToken();
 
-		if (objectName.size() == 0)
-		{
+		if (objectName.size() == 0) {
 			os::Printer::log("Unexpected ending found in Animation set in x file.", ELL_WARNING);
 			os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 			SET_ERR_AND_RETURN();
-		}
-		else
-		if (objectName == "}")
-		{
+		} else if (objectName == "}") {
 			break; // animation set finished
-		}
-		else
-		if (objectName == "Animation")
-		{
+		} else if (objectName == "Animation") {
 			if (!parseDataObjectAnimation())
 				return false;
-		}
-		else
-		{
+		} else {
 			os::Printer::log("Unknown data object in animation set in x file", objectName.c_str(), ELL_WARNING);
 			if (!parseUnknownDataObject())
 				return false;
@@ -1567,8 +1336,7 @@ bool CXMeshFileLoader::parseDataObjectAnimationTicksPerSecond()
 	os::Printer::log("CXFileReader: reading AnimationTicksPerSecond", ELL_DEBUG);
 #endif
 
-	if (!readHeadOfDataObject())
-	{
+	if (!readHeadOfDataObject()) {
 		os::Printer::log("No opening brace in Animation found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1576,15 +1344,13 @@ bool CXMeshFileLoader::parseDataObjectAnimationTicksPerSecond()
 
 	const u32 ticks = readInt();
 
-	if (!checkForOneFollowingSemicolons())
-	{
+	if (!checkForOneFollowingSemicolons()) {
 		os::Printer::log("No closing semicolon in AnimationTicksPerSecond in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
 	}
 
-	if (!checkForClosingBrace())
-	{
+	if (!checkForClosingBrace()) {
 		os::Printer::log("No closing brace in AnimationTicksPerSecond in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1601,118 +1367,91 @@ bool CXMeshFileLoader::parseDataObjectAnimation()
 	os::Printer::log("CXFileReader: reading animation", ELL_DEBUG);
 #endif
 
-	if (!readHeadOfDataObject())
-	{
+	if (!readHeadOfDataObject()) {
 		os::Printer::log("No opening brace in Animation found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
 	}
 
-	//anim.closed = true;
-	//anim.linearPositionQuality = true;
+	// anim.closed = true;
+	// anim.linearPositionQuality = true;
 	CSkinnedMesh::SJoint animationDump;
 
 	core::stringc FrameName;
 
-	while(true)
-	{
+	while (true) {
 		core::stringc objectName = getNextToken();
 
-		if (objectName.size() == 0)
-		{
+		if (objectName.size() == 0) {
 			os::Printer::log("Unexpected ending found in Animation in x file.", ELL_WARNING);
 			os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 			SET_ERR_AND_RETURN();
-		}
-		else
-		if (objectName == "}")
-		{
+		} else if (objectName == "}") {
 			break; // animation finished
-		}
-		else
-		if (objectName == "AnimationKey")
-		{
+		} else if (objectName == "AnimationKey") {
 			if (!parseDataObjectAnimationKey(&animationDump))
 				return false;
-		}
-		else
-		if (objectName == "AnimationOptions")
-		{
-			//TODO: parse options.
+		} else if (objectName == "AnimationOptions") {
+			// TODO: parse options.
 			if (!parseUnknownDataObject())
 				return false;
-		}
-		else
-		if (objectName == "{")
-		{
+		} else if (objectName == "{") {
 			// read frame name
 			FrameName = getNextToken();
 
-			if (!checkForClosingBrace())
-			{
+			if (!checkForClosingBrace()) {
 				os::Printer::log("Unexpected ending found in Animation in x file.", ELL_WARNING);
 				os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 				SET_ERR_AND_RETURN();
 			}
-		}
-		else
-		{
+		} else {
 			os::Printer::log("Unknown data object in animation in x file", objectName.c_str(), ELL_WARNING);
 			if (!parseUnknownDataObject())
 				SET_ERR_AND_RETURN();
 		}
 	}
 
-	if (FrameName.size() != 0)
-	{
+	if (FrameName.size() != 0) {
 #ifdef _XREADER_DEBUG
 		os::Printer::log("frame name", FrameName.c_str(), ELL_DEBUG);
 #endif
-		CSkinnedMesh::SJoint *joint=0;
+		CSkinnedMesh::SJoint *joint = 0;
 
 		u32 n;
-		for (n=0; n < AnimatedMesh->getAllJoints().size(); ++n)
-		{
-			if (AnimatedMesh->getAllJoints()[n]->Name==FrameName)
-			{
-				joint=AnimatedMesh->getAllJoints()[n];
+		for (n = 0; n < AnimatedMesh->getAllJoints().size(); ++n) {
+			if (AnimatedMesh->getAllJoints()[n]->Name == FrameName) {
+				joint = AnimatedMesh->getAllJoints()[n];
 				break;
 			}
 		}
 
-		if (!joint)
-		{
+		if (!joint) {
 #ifdef _XREADER_DEBUG
 			os::Printer::log("creating joint for animation ", FrameName.c_str(), ELL_DEBUG);
 #endif
-			joint=AnimatedMesh->addJoint(0);
-			joint->Name=FrameName;
+			joint = AnimatedMesh->addJoint(0);
+			joint->Name = FrameName;
 		}
 
-		joint->PositionKeys.reallocate(joint->PositionKeys.size()+animationDump.PositionKeys.size());
-		for (n=0; n<animationDump.PositionKeys.size(); ++n)
-		{
+		joint->PositionKeys.reallocate(joint->PositionKeys.size() + animationDump.PositionKeys.size());
+		for (n = 0; n < animationDump.PositionKeys.size(); ++n) {
 			joint->PositionKeys.push_back(animationDump.PositionKeys[n]);
 		}
 
-		joint->ScaleKeys.reallocate(joint->ScaleKeys.size()+animationDump.ScaleKeys.size());
-		for (n=0; n<animationDump.ScaleKeys.size(); ++n)
-		{
+		joint->ScaleKeys.reallocate(joint->ScaleKeys.size() + animationDump.ScaleKeys.size());
+		for (n = 0; n < animationDump.ScaleKeys.size(); ++n) {
 			joint->ScaleKeys.push_back(animationDump.ScaleKeys[n]);
 		}
 
-		joint->RotationKeys.reallocate(joint->RotationKeys.size()+animationDump.RotationKeys.size());
-		for (n=0; n<animationDump.RotationKeys.size(); ++n)
-		{
+		joint->RotationKeys.reallocate(joint->RotationKeys.size() + animationDump.RotationKeys.size());
+		for (n = 0; n < animationDump.RotationKeys.size(); ++n) {
 			joint->RotationKeys.push_back(animationDump.RotationKeys[n]);
 		}
-	}
-	else
+	} else
 		os::Printer::log("joint name was never given", ELL_WARNING);
 
 	return true;
 }
-
 
 bool CXMeshFileLoader::parseDataObjectAnimationKey(ISkinnedMesh::SJoint *joint)
 {
@@ -1720,8 +1459,7 @@ bool CXMeshFileLoader::parseDataObjectAnimationKey(ISkinnedMesh::SJoint *joint)
 	os::Printer::log("CXFileReader: reading animation key", ELL_DEBUG);
 #endif
 
-	if (!readHeadOfDataObject())
-	{
+	if (!readHeadOfDataObject()) {
 		os::Printer::log("No opening brace in Animation Key found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1731,8 +1469,7 @@ bool CXMeshFileLoader::parseDataObjectAnimationKey(ISkinnedMesh::SJoint *joint)
 
 	const u32 keyType = readInt();
 
-	if (keyType > 4)
-	{
+	if (keyType > 4) {
 		os::Printer::log("Unknown key type found in Animation Key in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1746,140 +1483,124 @@ bool CXMeshFileLoader::parseDataObjectAnimationKey(ISkinnedMesh::SJoint *joint)
 	if (numberOfKeys == 0)
 		checkForOneFollowingSemicolons();
 
-	for (u32 i=0; i<numberOfKeys; ++i)
-	{
+	for (u32 i = 0; i < numberOfKeys; ++i) {
 		// read time
 		const f32 time = (f32)readInt();
 
 		// read keys
-		switch(keyType)
+		switch (keyType) {
+		case 0: // rotation
 		{
-		case 0: //rotation
-			{
-				//read quaternions
+			// read quaternions
 
-				// read count
-				if (readInt() != 4)
-				{
-					os::Printer::log("Expected 4 numbers in animation key in x file", ELL_WARNING);
-					os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
-					SET_ERR_AND_RETURN();
-				}
-
-				f32 W = -readFloat();
-				f32 X = -readFloat();
-				f32 Y = -readFloat();
-				f32 Z = -readFloat();
-
-				if (!checkForTwoFollowingSemicolons())
-				{
-					os::Printer::log("No finishing semicolon after quaternion animation key in x file", ELL_WARNING);
-					os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
-				}
-
-				ISkinnedMesh::SRotationKey *key=AnimatedMesh->addRotationKey(joint);
-				key->frame=time;
-				key->rotation.set(X,Y,Z,W);
-				key->rotation.normalize();
+			// read count
+			if (readInt() != 4) {
+				os::Printer::log("Expected 4 numbers in animation key in x file", ELL_WARNING);
+				os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
+				SET_ERR_AND_RETURN();
 			}
-			break;
-		case 1: //scale
-		case 2: //position
-			{
-				// read vectors
 
-				// read count
-				if (readInt() != 3)
-				{
-					os::Printer::log("Expected 3 numbers in animation key in x file", ELL_WARNING);
-					os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
-					SET_ERR_AND_RETURN();
-				}
+			f32 W = -readFloat();
+			f32 X = -readFloat();
+			f32 Y = -readFloat();
+			f32 Z = -readFloat();
 
-				core::vector3df vector;
-				readVector3(vector);
-
-				if (!checkForTwoFollowingSemicolons())
-				{
-					os::Printer::log("No finishing semicolon after vector animation key in x file", ELL_WARNING);
-					os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
-				}
-
-				if (keyType==2)
-				{
-					ISkinnedMesh::SPositionKey *key=AnimatedMesh->addPositionKey(joint);
-					key->frame=time;
-					key->position=vector;
-				}
-				else
-				{
-					ISkinnedMesh::SScaleKey *key=AnimatedMesh->addScaleKey(joint);
-					key->frame=time;
-					key->scale=vector;
-				}
+			if (!checkForTwoFollowingSemicolons()) {
+				os::Printer::log("No finishing semicolon after quaternion animation key in x file", ELL_WARNING);
+				os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 			}
-			break;
+
+			ISkinnedMesh::SRotationKey *key = AnimatedMesh->addRotationKey(joint);
+			key->frame = time;
+			key->rotation.set(X, Y, Z, W);
+			key->rotation.normalize();
+		} break;
+		case 1: // scale
+		case 2: // position
+		{
+			// read vectors
+
+			// read count
+			if (readInt() != 3) {
+				os::Printer::log("Expected 3 numbers in animation key in x file", ELL_WARNING);
+				os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
+				SET_ERR_AND_RETURN();
+			}
+
+			core::vector3df vector;
+			readVector3(vector);
+
+			if (!checkForTwoFollowingSemicolons()) {
+				os::Printer::log("No finishing semicolon after vector animation key in x file", ELL_WARNING);
+				os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
+			}
+
+			if (keyType == 2) {
+				ISkinnedMesh::SPositionKey *key = AnimatedMesh->addPositionKey(joint);
+				key->frame = time;
+				key->position = vector;
+			} else {
+				ISkinnedMesh::SScaleKey *key = AnimatedMesh->addScaleKey(joint);
+				key->frame = time;
+				key->scale = vector;
+			}
+		} break;
 		case 3:
-		case 4:
-			{
-				// read matrix
+		case 4: {
+			// read matrix
 
-				// read count
-				if (readInt() != 16)
-				{
-					os::Printer::log("Expected 16 numbers in animation key in x file", ELL_WARNING);
-					os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
-					SET_ERR_AND_RETURN();
-				}
-
-				// read matrix
-				core::matrix4 mat(core::matrix4::EM4CONST_NOTHING);
-				readMatrix(mat);
-
-				//mat=joint->LocalMatrix*mat;
-
-				if (!checkForOneFollowingSemicolons())
-				{
-					os::Printer::log("No finishing semicolon after matrix animation key in x file", ELL_WARNING);
-					os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
-				}
-
-				//core::vector3df rotation = mat.getRotationDegrees();
-
-				ISkinnedMesh::SRotationKey *keyR=AnimatedMesh->addRotationKey(joint);
-				keyR->frame=time;
-
-				// IRR_TEST_BROKEN_QUATERNION_USE: TODO - switched from mat to mat.getTransposed() for downward compatibility.
-				// Not tested so far if this was correct or wrong before quaternion fix!
-				keyR->rotation= core::quaternion(mat.getTransposed());
-
-				ISkinnedMesh::SPositionKey *keyP=AnimatedMesh->addPositionKey(joint);
-				keyP->frame=time;
-				keyP->position=mat.getTranslation();
-
-/*
-				core::vector3df scale=mat.getScale();
-
-				if (scale.X==0)
-					scale.X=1;
-				if (scale.Y==0)
-					scale.Y=1;
-				if (scale.Z==0)
-					scale.Z=1;
-				ISkinnedMesh::SScaleKey *keyS=AnimatedMesh->addScaleKey(joint);
-				keyS->frame=time;
-				keyS->scale=scale;
-*/
+			// read count
+			if (readInt() != 16) {
+				os::Printer::log("Expected 16 numbers in animation key in x file", ELL_WARNING);
+				os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
+				SET_ERR_AND_RETURN();
 			}
-			break;
+
+			// read matrix
+			core::matrix4 mat(core::matrix4::EM4CONST_NOTHING);
+			readMatrix(mat);
+
+			// mat=joint->LocalMatrix*mat;
+
+			if (!checkForOneFollowingSemicolons()) {
+				os::Printer::log("No finishing semicolon after matrix animation key in x file", ELL_WARNING);
+				os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
+			}
+
+			// core::vector3df rotation = mat.getRotationDegrees();
+
+			ISkinnedMesh::SRotationKey *keyR = AnimatedMesh->addRotationKey(joint);
+			keyR->frame = time;
+
+			// IRR_TEST_BROKEN_QUATERNION_USE: TODO - switched from mat to mat.getTransposed() for downward compatibility.
+			// Not tested so far if this was correct or wrong before quaternion fix!
+			keyR->rotation = core::quaternion(mat.getTransposed());
+
+			ISkinnedMesh::SPositionKey *keyP = AnimatedMesh->addPositionKey(joint);
+			keyP->frame = time;
+			keyP->position = mat.getTranslation();
+
+			/*
+							core::vector3df scale=mat.getScale();
+
+							if (scale.X==0)
+								scale.X=1;
+							if (scale.Y==0)
+								scale.Y=1;
+							if (scale.Z==0)
+								scale.Z=1;
+							ISkinnedMesh::SScaleKey *keyS=AnimatedMesh->addScaleKey(joint);
+							keyS->frame=time;
+							keyS->scale=scale;
+			*/
+		} break;
 		} // end switch
 	}
 
 	if (!checkForOneFollowingSemicolons())
 		--P;
 
-	if (!checkForClosingBrace())
-	{
+	if (!checkForClosingBrace()) {
 		os::Printer::log("No closing brace in animation key in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1888,29 +1609,25 @@ bool CXMeshFileLoader::parseDataObjectAnimationKey(ISkinnedMesh::SJoint *joint)
 	return true;
 }
 
-
-bool CXMeshFileLoader::parseDataObjectTextureFilename(core::stringc& texturename)
+bool CXMeshFileLoader::parseDataObjectTextureFilename(core::stringc &texturename)
 {
 #ifdef _XREADER_DEBUG
 	os::Printer::log("CXFileReader: reading texture filename", ELL_DEBUG);
 #endif
 
-	if (!readHeadOfDataObject())
-	{
+	if (!readHeadOfDataObject()) {
 		os::Printer::log("No opening brace in Texture filename found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
 	}
 
-	if (!getNextTokenAsString(texturename))
-	{
+	if (!getNextTokenAsString(texturename)) {
 		os::Printer::log("Unknown syntax while reading texture filename string in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
 	}
 
-	if (!checkForClosingBrace())
-	{
+	if (!checkForClosingBrace()) {
 		os::Printer::log("No closing brace in Texture filename found in x file", ELL_WARNING);
 		os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
 		SET_ERR_AND_RETURN();
@@ -1919,12 +1636,10 @@ bool CXMeshFileLoader::parseDataObjectTextureFilename(core::stringc& texturename
 	return true;
 }
 
-
 bool CXMeshFileLoader::parseUnknownDataObject()
 {
 	// find opening delimiter
-	while(true)
-	{
+	while (true) {
 		core::stringc t = getNextToken();
 
 		if (t.size() == 0)
@@ -1938,8 +1653,7 @@ bool CXMeshFileLoader::parseUnknownDataObject()
 
 	// parse until closing delimiter
 
-	while(counter)
-	{
+	while (counter) {
 		core::stringc t = getNextToken();
 
 		if (t.size() == 0)
@@ -1947,21 +1661,18 @@ bool CXMeshFileLoader::parseUnknownDataObject()
 
 		if (t == "{")
 			++counter;
-		else
-		if (t == "}")
+		else if (t == "}")
 			--counter;
 	}
 
 	return true;
 }
 
-
 //! checks for closing curly brace, returns false if not there
 bool CXMeshFileLoader::checkForClosingBrace()
 {
 	return (getNextToken() == "}");
 }
-
 
 //! checks for one following semicolon, returns false if not there
 bool CXMeshFileLoader::checkForOneFollowingSemicolons()
@@ -1971,13 +1682,11 @@ bool CXMeshFileLoader::checkForOneFollowingSemicolons()
 
 	if (getNextToken() == ";")
 		return true;
-	else
-	{
+	else {
 		--P;
 		return false;
 	}
 }
-
 
 //! checks for two following semicolons, returns false if they are not there
 bool CXMeshFileLoader::checkForTwoFollowingSemicolons()
@@ -1985,10 +1694,8 @@ bool CXMeshFileLoader::checkForTwoFollowingSemicolons()
 	if (BinaryFormat)
 		return true;
 
-	for (u32 k=0; k<2; ++k)
-	{
-		if (getNextToken() != ";")
-		{
+	for (u32 k = 0; k < 2; ++k) {
+		if (getNextToken() != ";") {
 			--P;
 			return false;
 		}
@@ -1997,15 +1704,13 @@ bool CXMeshFileLoader::checkForTwoFollowingSemicolons()
 	return true;
 }
 
-
 //! reads header of dataobject including the opening brace.
 //! returns false if error happened, and writes name of object
 //! if there is one
-bool CXMeshFileLoader::readHeadOfDataObject(core::stringc* outname)
+bool CXMeshFileLoader::readHeadOfDataObject(core::stringc *outname)
 {
 	core::stringc nameOrBrace = getNextToken();
-	if (nameOrBrace != "{")
-	{
+	if (nameOrBrace != "{") {
 		if (outname)
 			(*outname) = nameOrBrace;
 
@@ -2016,15 +1721,13 @@ bool CXMeshFileLoader::readHeadOfDataObject(core::stringc* outname)
 	return true;
 }
 
-
 //! returns next parseable token. Returns empty string if no token there
 core::stringc CXMeshFileLoader::getNextToken()
 {
 	core::stringc s;
 
 	// process binary-formatted file
-	if (BinaryFormat)
-	{
+	if (BinaryFormat) {
 		// in binary mode it will only return NAME and STRING token
 		// and (correctly) skip over other tokens.
 
@@ -2033,101 +1736,97 @@ core::stringc CXMeshFileLoader::getNextToken()
 
 		// standalone tokens
 		switch (tok) {
-			case 1:
-				// name token
-				len = readBinDWord();
-				s = core::stringc(P, len);
-				P += len;
-				return s;
-			case 2:
-				// string token
-				len = readBinDWord();
-				s = core::stringc(P, len);
-				P += (len + 2);
-				return s;
-			case 3:
-				// integer token
-				P += 4;
-				return "<integer>";
-			case 5:
-				// GUID token
-				P += 16;
-				return "<guid>";
-			case 6:
-				len = readBinDWord();
-				P += (len * 4);
-				return "<int_list>";
-			case 7:
-				len = readBinDWord();
-				P += (len * FloatSize);
-				return "<flt_list>";
-			case 0x0a:
-				return "{";
-			case 0x0b:
-				return "}";
-			case 0x0c:
-				return "(";
-			case 0x0d:
-				return ")";
-			case 0x0e:
-				return "[";
-			case 0x0f:
-				return "]";
-			case 0x10:
-				return "<";
-			case 0x11:
-				return ">";
-			case 0x12:
-				return ".";
-			case 0x13:
-				return ",";
-			case 0x14:
-				return ";";
-			case 0x1f:
-				return "template";
-			case 0x28:
-				return "WORD";
-			case 0x29:
-				return "DWORD";
-			case 0x2a:
-				return "FLOAT";
-			case 0x2b:
-				return "DOUBLE";
-			case 0x2c:
-				return "CHAR";
-			case 0x2d:
-				return "UCHAR";
-			case 0x2e:
-				return "SWORD";
-			case 0x2f:
-				return "SDWORD";
-			case 0x30:
-				return "void";
-			case 0x31:
-				return "string";
-			case 0x32:
-				return "unicode";
-			case 0x33:
-				return "cstring";
-			case 0x34:
-				return "array";
+		case 1:
+			// name token
+			len = readBinDWord();
+			s = core::stringc(P, len);
+			P += len;
+			return s;
+		case 2:
+			// string token
+			len = readBinDWord();
+			s = core::stringc(P, len);
+			P += (len + 2);
+			return s;
+		case 3:
+			// integer token
+			P += 4;
+			return "<integer>";
+		case 5:
+			// GUID token
+			P += 16;
+			return "<guid>";
+		case 6:
+			len = readBinDWord();
+			P += (len * 4);
+			return "<int_list>";
+		case 7:
+			len = readBinDWord();
+			P += (len * FloatSize);
+			return "<flt_list>";
+		case 0x0a:
+			return "{";
+		case 0x0b:
+			return "}";
+		case 0x0c:
+			return "(";
+		case 0x0d:
+			return ")";
+		case 0x0e:
+			return "[";
+		case 0x0f:
+			return "]";
+		case 0x10:
+			return "<";
+		case 0x11:
+			return ">";
+		case 0x12:
+			return ".";
+		case 0x13:
+			return ",";
+		case 0x14:
+			return ";";
+		case 0x1f:
+			return "template";
+		case 0x28:
+			return "WORD";
+		case 0x29:
+			return "DWORD";
+		case 0x2a:
+			return "FLOAT";
+		case 0x2b:
+			return "DOUBLE";
+		case 0x2c:
+			return "CHAR";
+		case 0x2d:
+			return "UCHAR";
+		case 0x2e:
+			return "SWORD";
+		case 0x2f:
+			return "SDWORD";
+		case 0x30:
+			return "void";
+		case 0x31:
+			return "string";
+		case 0x32:
+			return "unicode";
+		case 0x33:
+			return "cstring";
+		case 0x34:
+			return "array";
 		}
 	}
 	// process text-formatted file
-	else
-	{
+	else {
 		findNextNoneWhiteSpace();
 
 		if (P >= End)
 			return s;
 
-		while((P < End) && !core::isspace(P[0]))
-		{
+		while ((P < End) && !core::isspace(P[0])) {
 			// either keep token delimiters when already holding a token, or return if first valid char
-			if (P[0]==';' || P[0]=='}' || P[0]=='{' || P[0]==',')
-			{
-				if (!s.size())
-				{
+			if (P[0] == ';' || P[0] == '}' || P[0] == '{' || P[0] == ',') {
+				if (!s.size()) {
 					s.append(P[0]);
 					++P;
 				}
@@ -2140,7 +1839,6 @@ core::stringc CXMeshFileLoader::getNextToken()
 	return s;
 }
 
-
 //! places pointer to next begin of a token, which must be a number,
 // and ignores comments
 void CXMeshFileLoader::findNextNoneWhiteSpaceNumber()
@@ -2148,9 +1846,8 @@ void CXMeshFileLoader::findNextNoneWhiteSpaceNumber()
 	if (BinaryFormat)
 		return;
 
-	while((P < End) && (P[0] != '-') && (P[0] != '.') &&
-		!( core::isdigit(P[0])))
-	{
+	while ((P < End) && (P[0] != '-') && (P[0] != '.') &&
+			!(core::isdigit(P[0]))) {
 		// check if this is a comment
 		if ((P[0] == '/' && P[1] == '/') || P[0] == '#')
 			readUntilEndOfLine();
@@ -2159,18 +1856,15 @@ void CXMeshFileLoader::findNextNoneWhiteSpaceNumber()
 	}
 }
 
-
 // places pointer to next begin of a token, and ignores comments
 void CXMeshFileLoader::findNextNoneWhiteSpace()
 {
 	if (BinaryFormat)
 		return;
 
-	while(true)
-	{
-		while((P < End) && core::isspace(P[0]))
-		{
-			if (*P=='\n')
+	while (true) {
+		while ((P < End) && core::isspace(P[0])) {
+			if (*P == '\n')
 				++Line;
 			++P;
 		}
@@ -2180,20 +1874,18 @@ void CXMeshFileLoader::findNextNoneWhiteSpace()
 
 		// check if this is a comment
 		if ((P[0] == '/' && P[1] == '/') ||
-			P[0] == '#')
+				P[0] == '#')
 			readUntilEndOfLine();
 		else
 			break;
 	}
 }
 
-
 //! reads a x file style string
-bool CXMeshFileLoader::getNextTokenAsString(core::stringc& out)
+bool CXMeshFileLoader::getNextTokenAsString(core::stringc &out)
 {
-	if (BinaryFormat)
-	{
-		out=getNextToken();
+	if (BinaryFormat) {
+		out = getNextToken();
 		return true;
 	}
 	findNextNoneWhiteSpace();
@@ -2205,29 +1897,25 @@ bool CXMeshFileLoader::getNextTokenAsString(core::stringc& out)
 		return false;
 	++P;
 
-	while(P < End && P[0]!='"')
-	{
+	while (P < End && P[0] != '"') {
 		out.append(P[0]);
 		++P;
 	}
 
-	if ( P[1] != ';' || P[0] != '"')
+	if (P[1] != ';' || P[0] != '"')
 		return false;
-	P+=2;
+	P += 2;
 
 	return true;
 }
-
 
 void CXMeshFileLoader::readUntilEndOfLine()
 {
 	if (BinaryFormat)
 		return;
 
-	while(P < End)
-	{
-		if (P[0] == '\n' || P[0] == '\r')
-		{
+	while (P < End) {
+		if (P[0] == '\n' || P[0] == '\r') {
 			++P;
 			++Line;
 			return;
@@ -2237,10 +1925,9 @@ void CXMeshFileLoader::readUntilEndOfLine()
 	}
 }
 
-
 u16 CXMeshFileLoader::readBinWord()
 {
-	if (P>=End)
+	if (P >= End)
 		return 0;
 #ifdef __BIG_ENDIAN__
 	const u16 tmp = os::Byteswap::byteswap(*(u16 *)P);
@@ -2251,10 +1938,9 @@ u16 CXMeshFileLoader::readBinWord()
 	return tmp;
 }
 
-
 u32 CXMeshFileLoader::readBinDWord()
 {
-	if (P>=End)
+	if (P >= End)
 		return 0;
 #ifdef __BIG_ENDIAN__
 	const u32 tmp = os::Byteswap::byteswap(*(u32 *)P);
@@ -2265,13 +1951,10 @@ u32 CXMeshFileLoader::readBinDWord()
 	return tmp;
 }
 
-
 u32 CXMeshFileLoader::readInt()
 {
-	if (BinaryFormat)
-	{
-		if (!BinaryNumCount)
-		{
+	if (BinaryFormat) {
+		if (!BinaryNumCount) {
 			const u16 tmp = readBinWord(); // 0x06 or 0x03
 			if (tmp == 0x06)
 				BinaryNumCount = readBinDWord();
@@ -2280,21 +1963,16 @@ u32 CXMeshFileLoader::readInt()
 		}
 		--BinaryNumCount;
 		return readBinDWord();
-	}
-	else
-	{
+	} else {
 		findNextNoneWhiteSpaceNumber();
 		return core::strtoul10(P, &P);
 	}
 }
 
-
 f32 CXMeshFileLoader::readFloat()
 {
-	if (BinaryFormat)
-	{
-		if (!BinaryNumCount)
-		{
+	if (BinaryFormat) {
+		if (!BinaryNumCount) {
 			const u16 tmp = readBinWord(); // 0x07 or 0x42
 			if (tmp == 0x07)
 				BinaryNumCount = readBinDWord();
@@ -2302,22 +1980,19 @@ f32 CXMeshFileLoader::readFloat()
 				BinaryNumCount = 1; // single int
 		}
 		--BinaryNumCount;
-		if (FloatSize == 8)
-		{
+		if (FloatSize == 8) {
 #ifdef __BIG_ENDIAN__
-			//TODO: Check if data is properly converted here
+			// TODO: Check if data is properly converted here
 			f32 ctmp[2];
-			ctmp[1] = os::Byteswap::byteswap(*(f32*)P);
-			ctmp[0] = os::Byteswap::byteswap(*(f32*)P+4);
-			const f32 tmp = (f32)(*(f64*)(void*)ctmp);
+			ctmp[1] = os::Byteswap::byteswap(*(f32 *)P);
+			ctmp[0] = os::Byteswap::byteswap(*(f32 *)P + 4);
+			const f32 tmp = (f32)(*(f64 *)(void *)ctmp);
 #else
 			const f32 tmp = (f32)(*(f64 *)P);
 #endif
 			P += 8;
 			return tmp;
-		}
-		else
-		{
+		} else {
 #ifdef __BIG_ENDIAN__
 			const f32 tmp = os::Byteswap::byteswap(*(f32 *)P);
 #else
@@ -2333,18 +2008,16 @@ f32 CXMeshFileLoader::readFloat()
 	return ftmp;
 }
 
-
 // read 2-dimensional vector. Stops at semicolon after second value for text file format
-bool CXMeshFileLoader::readVector2(core::vector2df& vec)
+bool CXMeshFileLoader::readVector2(core::vector2df &vec)
 {
 	vec.X = readFloat();
 	vec.Y = readFloat();
 	return true;
 }
 
-
 // read 3-dimensional vector. Stops at semicolon after third value for text file format
-bool CXMeshFileLoader::readVector3(core::vector3df& vec)
+bool CXMeshFileLoader::readVector3(core::vector3df &vec)
 {
 	vec.X = readFloat();
 	vec.Y = readFloat();
@@ -2352,9 +2025,8 @@ bool CXMeshFileLoader::readVector3(core::vector3df& vec)
 	return true;
 }
 
-
 // read color without alpha value. Stops after second semicolon after blue value
-bool CXMeshFileLoader::readRGB(video::SColor& color)
+bool CXMeshFileLoader::readRGB(video::SColor &color)
 {
 	video::SColorf tmpColor;
 	tmpColor.r = readFloat();
@@ -2364,9 +2036,8 @@ bool CXMeshFileLoader::readRGB(video::SColor& color)
 	return checkForOneFollowingSemicolons();
 }
 
-
 // read color with alpha value. Stops after second semicolon after blue value
-bool CXMeshFileLoader::readRGBA(video::SColor& color)
+bool CXMeshFileLoader::readRGBA(video::SColor &color)
 {
 	video::SColorf tmpColor;
 	tmpColor.r = readFloat();
@@ -2377,15 +2048,13 @@ bool CXMeshFileLoader::readRGBA(video::SColor& color)
 	return checkForOneFollowingSemicolons();
 }
 
-
 // read matrix from list of floats
-bool CXMeshFileLoader::readMatrix(core::matrix4& mat)
+bool CXMeshFileLoader::readMatrix(core::matrix4 &mat)
 {
-	for (u32 i=0; i<16; ++i)
+	for (u32 i = 0; i < 16; ++i)
 		mat[i] = readFloat();
 	return checkForOneFollowingSemicolons();
 }
-
 
 } // end namespace scene
 } // end namespace irr
