@@ -78,10 +78,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "SunOS")
 	set(SOLARIS TRUE)
 endif()
 
-# EGL
-
-set(ENABLE_EGL OFF)
-
 # Device
 
 if(WIN32)
@@ -96,11 +92,8 @@ elseif(ANDROID)
 		message(FATAL_ERROR "SDL2 device is not (yet) supported on Android")
 	endif()
 	set(DEVICE "ANDROID")
-	# EGL is required for Android
-	set(ENABLE_EGL ON)
 elseif(EMSCRIPTEN)
-	add_definitions(-D_IRR_EMSCRIPTEN_PLATFORM_)
-	set(ENABLE_EGL ON)
+	add_definitions(-D_IRR_EMSCRIPTEN_PLATFORM_ -D_IRR_COMPILE_WITH_EGL_MANAGER_)
 	set(LINUX_PLATFORM TRUE)
 	set(DEVICE "SDL")
 elseif(SOLARIS)
@@ -189,7 +182,7 @@ endif()
 if(ENABLE_OPENGL)
 	add_definitions(-D_IRR_COMPILE_WITH_OPENGL_)
 	if(DEVICE STREQUAL "WINDOWS")
-		add_definitions(-D_IRR_OPENGL_USE_EXTPOINTER_)
+		add_definitions(-D_IRR_COMPILE_WITH_WGL_MANAGER_ -D_IRR_OPENGL_USE_EXTPOINTER_)
 	elseif(DEVICE STREQUAL "X11")
 		add_definitions(-D_IRR_COMPILE_WITH_GLX_MANAGER_ -D_IRR_OPENGL_USE_EXTPOINTER_)
 	elseif(DEVICE STREQUAL "OSX")
@@ -213,22 +206,18 @@ if(ENABLE_GLES1)
 	endif()
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES1_)
 	if(DEVICE MATCHES "^(WINDOWS|X11|ANDROID)$")
-		add_definitions(-D_IRR_OGLES1_USE_EXTPOINTER_)
+		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_ -D_IRR_OGLES1_USE_EXTPOINTER_)
 	endif()
-	# We need EGL for GLES1
-	set(ENABLE_EGL ON)
 endif()
 
 if(ENABLE_GLES2)
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES2_)
 	if(DEVICE MATCHES "^(WINDOWS|X11|ANDROID)$" OR EMSCRIPTEN)
-		add_definitions(-D_IRR_OGLES2_USE_EXTPOINTER_)
+		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_ -D_IRR_OGLES2_USE_EXTPOINTER_)
 	elseif(DEVICE STREQUAL "SDL")
 		set(USE_SDLGL ON)
 		set(USE_SDLGLES2 ON)
 	endif()
-	# We need EGL for GLES2
-	set(ENABLE_EGL ON)
 endif()
 
 if(ENABLE_WEBGL1)
@@ -256,7 +245,6 @@ elseif (ENABLE_GLES2)
 else()
 	message(STATUS "OpenGL ES 2: OFF")
 endif()
-message(STATUS "EGL: ${ENABLE_EGL}")
 message(STATUS "WebGL: ${ENABLE_WEBGL1}")
 
 # Required libs
@@ -368,20 +356,11 @@ add_library(IRROBJ OBJECT
 set(IRRDRVROBJ
 	CNullDriver.cpp
 	CGLXManager.cpp
+	CWGLManager.cpp
+	CEGLManager.cpp
 	CSDLManager.cpp
 	mt_opengl_loader.cpp
 )
-
-if(WIN32)
-	set(IRRDRVROBJ ${IRRDRVROBJ}
-		CIrrDeviceWin32.cpp
-	)
-	if(ENABLE_OPENGL)
-		set(IRRDRVROBJ ${IRRDRVROBJ}
-			CWGLManager.cpp
-		)
-	endif()
-endif()
 
 if(ENABLE_OPENGL)
 	set(IRRDRVROBJ
@@ -399,14 +378,6 @@ if(ENABLE_GLES1)
 		${IRRDRVROBJ}
 		COGLESDriver.cpp
 		COGLESExtensionHandler.cpp
-	)
-endif()
-
-
-if(ENABLE_EGL)
-	set(IRRDRVROBJ
-		${IRRDRVROBJ}
-		CEGLManager.cpp
 	)
 endif()
 
@@ -473,6 +444,7 @@ add_library(IRROTHEROBJ OBJECT
 	CIrrDeviceSDL.cpp
 	CIrrDeviceLinux.cpp
 	CIrrDeviceStub.cpp
+	CIrrDeviceWin32.cpp
 	CLogger.cpp
 	COSOperator.cpp
 	Irrlicht.cpp

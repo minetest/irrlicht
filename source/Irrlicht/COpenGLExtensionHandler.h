@@ -3391,7 +3391,7 @@ inline void COpenGLExtensionHandler::extGlGenerateTextureMipmap(GLuint texture, 
 inline void COpenGLExtensionHandler::extGlSwapInterval(int interval)
 {
 	// we have wglext, so try to use that
-#if defined(_IRR_WINDOWS_API_)
+#if defined(_IRR_WINDOWS_API_) && defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 #ifdef WGL_EXT_swap_control
 	if (pWglSwapIntervalEXT)
 		pWglSwapIntervalEXT(interval);

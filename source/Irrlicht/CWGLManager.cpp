@@ -4,6 +4,8 @@
 
 #include "CWGLManager.h"
 
+#ifdef _IRR_COMPILE_WITH_WGL_MANAGER_
+
 #include "os.h"
 
 #include <GL/gl.h>
@@ -505,3 +507,5 @@ bool CWGLManager::swapBuffers()
 
 }
 }
+
+#endif
