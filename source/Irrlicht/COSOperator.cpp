@@ -94,7 +94,7 @@ void COSOperator::copyToClipboard(const c8 *text) const
 	EmptyClipboard();
 
 	core::stringw tempbuffer;
-	core::multibyteToWString(tempbuffer, text);
+	core::utf8ToWString(tempbuffer, text);
 	const u32 size = (tempbuffer.size() + 1) * sizeof(wchar_t);
 
 	HGLOBAL clipbuffer;
@@ -164,7 +164,7 @@ const c8* COSOperator::getTextFromClipboard() const
 	HANDLE hData = GetClipboardData( CF_UNICODETEXT );
 	buffer = (wchar_t*) GlobalLock( hData );
 
-	core::wStringToMultibyte(ClipboardBuf, buffer);
+	core::wStringToUTF8(ClipboardBuf, buffer);
 
 	GlobalUnlock( hData );
 	CloseClipboard();

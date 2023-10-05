@@ -673,7 +673,7 @@ bool CIrrDeviceSDL::run()
 			{
 				irrevent.EventType = irr::EET_STRING_INPUT_EVENT;
 				irrevent.StringInput.Str = new core::stringw();
-				irr::core::multibyteToWString(*irrevent.StringInput.Str, SDL_event.text.text);
+				irr::core::utf8ToWString(*irrevent.StringInput.Str, SDL_event.text.text);
 				postEventFromUser(irrevent);
 				delete irrevent.StringInput.Str;
 				irrevent.StringInput.Str = NULL;
@@ -928,7 +928,7 @@ void CIrrDeviceSDL::sleep(u32 timeMs, bool pauseTimer)
 void CIrrDeviceSDL::setWindowCaption(const wchar_t* text)
 {
 	core::stringc textc;
-	core::wStringToMultibyte(textc, text);
+	core::wStringToUTF8(textc, text);
 	SDL_SetWindowTitle(Window, textc.c_str());
 }
 

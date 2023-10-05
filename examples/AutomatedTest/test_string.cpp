@@ -168,22 +168,31 @@ static void test_methods()
 
 static void test_conv()
 {
-	// assumes Unicode and UTF-8 locale
-	setlocale(LC_CTYPE, "");
+	// should be locale-independent
 
 	stringw out;
-	multibyteToWString(out, "†††");
+	utf8ToWString(out, "†††");
 	UASSERTEQ(out.size(), 3);
 	for (int i = 0; i < 3; i++)
 		UASSERTEQ(static_cast<u16>(out[i]), 0x2020);
+
 	stringc out2;
-	wStringToMultibyte(out2, L"†††");
+	wStringToUTF8(out2, L"†††");
 	UASSERTEQ(out2.size(), 9);
 	for (int i = 0; i < 3; i++) {
 		UASSERTEQ(static_cast<u8>(out2[3*i]), 0xe2);
 		UASSERTEQ(static_cast<u8>(out2[3*i+1]), 0x80);
 		UASSERTEQ(static_cast<u8>(out2[3*i+2]), 0xa0);
 	}
+
+	// assumes Unicode and UTF-8 locale
+	setlocale(LC_CTYPE, "");
+
+	stringw out3;
+	multibyteToWString(out3, "†††");
+	UASSERTEQ(out3.size(), 3);
+	for (int i = 0; i < 3; i++)
+		UASSERTEQ(static_cast<u16>(out3[i]), 0x2020);
 }
 
 void test_irr_string()
