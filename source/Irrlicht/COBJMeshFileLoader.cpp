@@ -68,7 +68,7 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 	if (!file)
 		return 0;
 	size_t filesize = file->getSize();
-	if (filesize == 0 || filesize == -1L)
+	if (filesize == 0 || filesize == (size_t)-1L)
 		return 0;
 
 	const io::path fullName = file->getFileName();

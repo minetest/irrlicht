@@ -309,12 +309,25 @@ IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
 	header.ImportantColors = os::Byteswap::byteswap(header.ImportantColors);
 #endif
 
-	s32 pitch = 0;
-
 	//! return if the header is false
 
-	if (header.Id != 0x4d42)
+	bool topDown = false;
+	if (header.Id == 0x4d42) // BM = Windows header
+	{
+		// Sizes are signed integer with Windows header (unsigned with OS/2)
+		// Not sure if negative Width has any meaning, but negative height is for upside-down
+		header.Width = core::abs_((s32)header.Width);
+		if ( (s32)header.Height < 0 )
+		{
+			topDown = true;
+			header.Height = core::abs_((s32)header.Height);
+		}
+	}
+	else
+	{
+		os::Printer::log("BMP files with OS/2 Headers not supported.", ELL_ERROR);
 		return 0;
+	}
 
 	if (header.Compression > 2) // we'll only handle RLE-Compression
 	{
@@ -354,7 +367,7 @@ IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
 
 	const s32 widthInBytes = core::ceil32(header.Width * (header.BPP / 8.0f));
 	const s32 lineSize = widthInBytes + ((4-(widthInBytes%4)))%4;
-	pitch = lineSize - widthInBytes;
+	const s32 pitch = lineSize - widthInBytes;
 
 	u8* bmpData = new u8[header.BitmapDataSize];
 	file->read(bmpData, header.BitmapDataSize);
@@ -434,6 +447,9 @@ IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
 cleanup:
 	delete [] paletteData;
 	delete [] bmpData;
+
+	if ( image && topDown )
+		image->flip(true, false);
 
 	return image;
 }
