@@ -11,7 +11,7 @@ namespace irr
 
 class CIrrDeviceLinux;
 
-//! The Operating system operator provides operation system specific methods and information.
+//! The OSOperator provides OS-specific methods and information.
 class COSOperator : public IOSOperator
 {
 public:
@@ -27,25 +27,31 @@ public:
 	COSOperator(const COSOperator &) = delete;
 	COSOperator &operator=(const COSOperator &) = delete;
 
-	//! returns the current operation system version as string.
+	//! Get the current OS version as string.
 	const core::stringc& getOperatingSystemVersion() const override;
 
-	//! copies text to the clipboard
+	//! Copies text to the clipboard
+	//! \param text: text in utf-8
 	void copyToClipboard(const c8 *text) const override;
 
-	//! copies text to the primary selection
+	//! Copies text to the primary selection
+	//! This is a no-op on some platforms.
+	//! \param text: text in utf-8
 	void copyToPrimarySelection(const c8 *text) const override;
 
-	//! gets text from the clipboard
+	//! Get text from the clipboard
+	//! \return Returns 0 if no string is in there, otherwise an utf-8 string.
 	const c8* getTextFromClipboard() const override;
 
-	//! gets text from the primary selection
+	//! Get text from the primary selection
+	//! This is a no-op on some platforms.
+	//! \return Returns 0 if no string is in there, otherwise an utf-8 string.
 	const c8* getTextFromPrimarySelection() const override;
 
-	//! gets the total and available system RAM in kB
-	//! \param Total: will contain the total system memory
-	//! \param Avail: will contain the available memory
-	//! \return Returns true if successful, false if not
+	//! Get the total and available system RAM
+	/** \param totalBytes: will contain the total system memory in Kilobytes (1024 B)
+	\param availableBytes: will contain the available memory in Kilobytes (1024 B)
+	\return True if successful, false if not */
 	bool getSystemMemory(u32* Total, u32* Avail) const override;
 
 private:

@@ -11,11 +11,11 @@
 namespace irr
 {
 
-//! The Operating system operator provides operation system specific methods and information.
+//! The OSOperator provides OS-specific methods and information.
 class IOSOperator : public virtual IReferenceCounted
 {
 public:
-	//! Get the current operation system version as string.
+	//! Get the current OS version as string.
 	virtual const core::stringc& getOperatingSystemVersion() const = 0;
 
 	//! Copies text to the clipboard
