@@ -144,7 +144,7 @@ endif()
 # OpenGL
 
 if(USE_SDL2)
-	option(ENABLE_OPENGL3 "Enable OpenGL 3+" TRUE)
+	option(ENABLE_OPENGL3 "Enable OpenGL 3+" FALSE)
 else()
 	set(ENABLE_OPENGL3 FALSE)
 endif()
