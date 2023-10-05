@@ -11,6 +11,8 @@
 #include <cstdio>
 #include <cstring>
 #include <cwchar>
+#include <codecvt>
+#include <locale>
 
 namespace irr
 {
@@ -35,8 +37,13 @@ outside the string class for explicit use.
 // forward declarations
 template <typename T>
 class string;
-static size_t multibyteToWString(string<wchar_t>& destination, const char* source, u32 sourceSize);
-static size_t wStringToMultibyte(string<c8>& destination, const wchar_t* source, u32 sourceSize);
+
+//! Typedef for character strings
+typedef string<c8> stringc;
+
+//! Typedef for wide character strings
+typedef string<wchar_t> stringw;
+
 
 //! Returns a character converted to lower case
 static inline u32 locale_lower ( u32 x )
@@ -859,8 +866,11 @@ public:
 		return ret.size()-oldSize;
 	}
 
-	friend size_t multibyteToWString(string<wchar_t>& destination, const char* source, u32 sourceSize);
-	friend size_t wStringToMultibyte(string<c8>& destination, const wchar_t* source, u32 sourceSize);
+	// This function should not be used and is only kept for "CGUIFileOpenDialog::pathToStringW".
+	friend size_t multibyteToWString(stringw& destination, const stringc &source);
+
+	friend size_t utf8ToWString(stringw &destination, const char *source);
+	friend size_t wStringToUTF8(stringc &destination, const wchar_t *source);
 
 private:
 
@@ -913,38 +923,18 @@ private:
 };
 
 
-//! Typedef for character strings
-typedef string<c8> stringc;
-
-//! Typedef for wide character strings
-typedef string<wchar_t> stringw;
-
 //! Convert multibyte string to wide-character string
 /** Wrapper around mbstowcs from standard library, but directly using Irrlicht string class.
 What the function does exactly depends on the LC_CTYPE of the current c locale.
 \param destination Wide-character string receiving the converted source
 \param source multibyte string
-\return The number of wide characters written to destination, not including the eventual terminating null character or -1 when conversion failed */
-static inline size_t multibyteToWString(string<wchar_t>& destination, const core::string<c8>& source)
-{
-	return multibyteToWString(destination, source.c_str(), (u32)source.size());
-}
+\return The number of wide characters written to destination, not including the eventual terminating null character or -1 when conversion failed
 
-//! Convert multibyte string to wide-character string
-/** Wrapper around mbstowcs from standard library, but directly writing to Irrlicht string class.
-What the function does exactly depends on the LC_CTYPE of the current c locale.
-\param destination Wide-character string receiving the converted source
-\param source multibyte string
-\return The number of wide characters written to destination, not including the eventual terminating null character  or -1 when conversion failed. */
-static inline size_t multibyteToWString(string<wchar_t>& destination, const char* source)
+This function should not be used and is only kept for "CGUIFileOpenDialog::pathToStringW". */
+inline size_t multibyteToWString(stringw& destination, const core::stringc& source)
 {
-	const u32 s = source ? (u32)strlen(source) : 0;
-	return multibyteToWString(destination, source, s);
-}
+	u32 sourceSize = source.size();
 
-//! Internally used by the other multibyteToWString functions
-static size_t multibyteToWString(string<wchar_t>& destination, const char* source, u32 sourceSize)
-{
 	if ( sourceSize )
 	{
 		destination.str.resize(sourceSize+1);
@@ -952,7 +942,7 @@ static size_t multibyteToWString(string<wchar_t>& destination, const char* sourc
 #pragma warning(push)
 #pragma warning(disable: 4996)	// 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead.
 #endif
-		const size_t written = mbstowcs(&destination[0], source, (size_t)sourceSize);
+		const size_t written = mbstowcs(&destination[0], source.c_str(), (size_t)sourceSize);
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
@@ -975,50 +965,29 @@ static size_t multibyteToWString(string<wchar_t>& destination, const char* sourc
 	}
 }
 
-//! Same as multibyteToWString, but the other way around
-static inline size_t wStringToMultibyte(string<c8>& destination, const core::string<wchar_t>& source)
+
+inline size_t utf8ToWString(stringw &destination, const char *source)
 {
-	return wStringToMultibyte(destination, source.c_str(), (u32)source.size());
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+	destination = conv.from_bytes(source);
+	return destination.size();
 }
 
-//! Same as multibyteToWString, but the other way around
-static inline size_t wStringToMultibyte(string<c8>& destination, const wchar_t* source)
+inline size_t utf8ToWString(stringw &destination, const stringc &source)
 {
-	const u32 s = source ? (u32)wcslen(source) : 0;
-	return wStringToMultibyte(destination, source, s);
+	return utf8ToWString(destination, source.c_str());
 }
 
-//! Same as multibyteToWString, but the other way around
-static size_t wStringToMultibyte(string<c8>& destination, const wchar_t* source, u32 sourceSize)
+inline size_t wStringToUTF8(stringc &destination, const wchar_t *source)
 {
-	if ( sourceSize )
-	{
-		destination.str.resize(sizeof(wchar_t)*sourceSize+1);
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4996)	// 'wcstombs': This function or variable may be unsafe. Consider using wcstombs_s instead.
-#endif
-		const size_t written = wcstombs(&destination[0], source, destination.size());
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
-		if ( written != (size_t)-1 )
-		{
-			destination.str.resize(written);
-		}
-		else
-		{
-			// Likely character which got converted until the invalid character was encountered are in destination now.
-			// And it seems even 0-terminated, but I found no documentation anywhere that this (the 0-termination) is guaranteed :-(
-			destination.clear();
-		}
-		return written;
-	}
-	else
-	{
-		destination.clear();
-		return 0;
-	}
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+	destination = conv.to_bytes(source);
+	return destination.size();
+}
+
+inline size_t wStringToUTF8(stringc &destination, const stringw &source)
+{
+	return wStringToUTF8(destination, source.c_str());
 }
 
 

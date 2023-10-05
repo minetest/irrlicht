@@ -50,6 +50,8 @@ elseif(MSVC)
 	if(CMAKE_SIZEOF_VOID_P EQUAL 4)
 		add_compile_options(/arch:SSE)
 	endif()
+
+	add_compile_options(/D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 endif()
 
 # Sanity-check version

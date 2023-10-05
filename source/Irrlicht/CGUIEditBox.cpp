@@ -299,7 +299,7 @@ bool CGUIEditBox::processKey(const SEvent& event)
 				const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
 
 				core::stringc s;
-				wStringToMultibyte(s, Text.subString(realmbgn, realmend - realmbgn));
+				wStringToUTF8(s, Text.subString(realmbgn, realmend - realmbgn));
 				Operator->copyToClipboard(s.c_str());
 			}
 			break;
@@ -312,7 +312,7 @@ bool CGUIEditBox::processKey(const SEvent& event)
 
 				// copy
 				core::stringc sc;
-				wStringToMultibyte(sc, Text.subString(realmbgn, realmend - realmbgn));
+				wStringToUTF8(sc, Text.subString(realmbgn, realmend - realmbgn));
 				Operator->copyToClipboard(sc.c_str());
 
 				if (isEnabled())
@@ -345,7 +345,7 @@ bool CGUIEditBox::processKey(const SEvent& event)
 				if (p)
 				{
 					irr::core::stringw widep;
-					core::multibyteToWString(widep, p);
+					core::utf8ToWString(widep, p);
 
 					if (MarkBegin == MarkEnd)
 					{
@@ -1157,7 +1157,7 @@ bool CGUIEditBox::processMouse(const SEvent& event)
 			const c8 *inserted_text_utf8 = Operator->getTextFromPrimarySelection();
 			if (!inserted_text_utf8)
 				return inserted_text;
-			core::multibyteToWString(inserted_text, inserted_text_utf8);
+			core::utf8ToWString(inserted_text, inserted_text_utf8);
 			return inserted_text;
 		}());
 
@@ -1659,7 +1659,7 @@ void CGUIEditBox::setTextMarkers(s32 begin, s32 end)
 			const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
 
 			core::stringc s;
-			wStringToMultibyte(s, Text.subString(realmbgn, realmend - realmbgn));
+			wStringToUTF8(s, Text.subString(realmbgn, realmend - realmbgn));
 			Operator->copyToPrimarySelection(s.c_str());
 		}
 
