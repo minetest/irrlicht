@@ -46,25 +46,21 @@ namespace video
 
 	struct VertexType {
 		int VertexSize;
-		int AttributeCount;
-		VertexAttribute Attributes[];
-
-		VertexType(const VertexType &) = delete;
-		VertexType &operator= (const VertexType &) = delete;
+		std::initializer_list<VertexAttribute> Attributes;  // Extends lifetime when used properly!
 	};
 
 	static const VertexAttribute *begin(const VertexType &type)
 	{
-		return type.Attributes;
+		return type.Attributes.begin();
 	}
 
 	static const VertexAttribute *end(const VertexType &type)
 	{
-		return type.Attributes + type.AttributeCount;
+		return type.Attributes.end();
 	}
 
 	static constexpr VertexType vtStandard = {
-		sizeof(S3DVertex), 4, {
+		sizeof(S3DVertex), {
 			{EVA_POSITION, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex, Pos)},
 			{EVA_NORMAL, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex, Normal)},
 			{EVA_COLOR, 4, GL_UNSIGNED_BYTE, VertexAttribute::Mode::Normalized, offsetof(S3DVertex, Color)},
@@ -76,7 +72,7 @@ namespace video
 #pragma GCC diagnostic ignored "-Winvalid-offsetof"
 
 	static constexpr VertexType vt2TCoords = {
-		sizeof(S3DVertex2TCoords), 5, {
+		sizeof(S3DVertex2TCoords), {
 			{EVA_POSITION, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex2TCoords, Pos)},
 			{EVA_NORMAL, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex2TCoords, Normal)},
 			{EVA_COLOR, 4, GL_UNSIGNED_BYTE, VertexAttribute::Mode::Normalized, offsetof(S3DVertex2TCoords, Color)},
@@ -86,7 +82,7 @@ namespace video
 	};
 
 	static constexpr VertexType vtTangents = {
-		sizeof(S3DVertexTangents), 6, {
+		sizeof(S3DVertexTangents), {
 			{EVA_POSITION, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertexTangents, Pos)},
 			{EVA_NORMAL, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertexTangents, Normal)},
 			{EVA_COLOR, 4, GL_UNSIGNED_BYTE, VertexAttribute::Mode::Normalized, offsetof(S3DVertexTangents, Color)},
@@ -109,7 +105,7 @@ namespace video
 	}
 
 	static constexpr VertexType vt2DImage = {
-		sizeof(S3DVertex), 3, {
+		sizeof(S3DVertex), {
 			{EVA_POSITION, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex, Pos)},
 			{EVA_COLOR, 4, GL_UNSIGNED_BYTE, VertexAttribute::Mode::Normalized, offsetof(S3DVertex, Color)},
 			{EVA_TCOORD0, 2, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex, TCoords)},
@@ -117,7 +113,7 @@ namespace video
 	};
 
 	static constexpr VertexType vtPrimitive = {
-		sizeof(S3DVertex), 2, {
+		sizeof(S3DVertex), {
 			{EVA_POSITION, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex, Pos)},
 			{EVA_COLOR, 4, GL_UNSIGNED_BYTE, VertexAttribute::Mode::Normalized, offsetof(S3DVertex, Color)},
 		},
