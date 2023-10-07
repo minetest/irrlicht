@@ -39,7 +39,7 @@ namespace video
 		Extensions.emplace(std::move(name));
 	}
 
-	bool COpenGL3ExtensionHandler::queryExtension(const std::string &name) const{
+	bool COpenGL3ExtensionHandler::queryExtension(const std::string &name) const noexcept {
 		return Extensions.find(name) != Extensions.end();
 	}
 
