@@ -14,7 +14,7 @@ namespace video {
 	}
 
 	OpenGLVersion COpenGLES2Driver::getVersionFromOpenGL() const {
-		auto version_string = reinterpret_cast<const char *>(glGetString(GL_VERSION));
+		auto version_string = reinterpret_cast<const char *>(GL.GetString(GL_VERSION));
 		int major, minor;
 		if (sscanf(version_string, "OpenGL ES %d.%d", &major, &minor) != 2) {
 			os::Printer::log("Failed to parse OpenGL ES version string", version_string, ELL_ERROR);
@@ -123,9 +123,9 @@ namespace video {
 			MaxIndices = GetInteger(GL_MAX_ELEMENTS_INDICES);
 		MaxTextureSize = GetInteger(GL_MAX_TEXTURE_SIZE);
 		if (TextureLODBiasSupported)
-			glGetFloatv(GL_MAX_TEXTURE_LOD_BIAS, &MaxTextureLODBias);
-		glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, DimAliasedLine); // NOTE: this is not in the OpenGL ES 2.0 spec...
-		glGetFloatv(GL_ALIASED_POINT_SIZE_RANGE, DimAliasedPoint);
+			GL.GetFloatv(GL_MAX_TEXTURE_LOD_BIAS, &MaxTextureLODBias);
+		GL.GetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, DimAliasedLine); // NOTE: this is not in the OpenGL ES 2.0 spec...
+		GL.GetFloatv(GL_ALIASED_POINT_SIZE_RANGE, DimAliasedPoint);
 	}
 
 	IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
