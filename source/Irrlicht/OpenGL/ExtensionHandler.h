@@ -79,13 +79,13 @@ namespace video
 
 		static GLint GetInteger(GLenum key) {
 			GLint val = 0;
-			glGetIntegerv(key, &val);
+			GL.GetIntegerv(key, &val);
 			return val;
 		};
 
 		inline void irrGlActiveTexture(GLenum texture)
 		{
-			glActiveTexture(texture);
+			GL.ActiveTexture(texture);
 		}
 
 		inline void irrGlCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border,
@@ -102,37 +102,37 @@ namespace video
 
 		inline void irrGlUseProgram(GLuint prog)
 		{
-			glUseProgram(prog);
+			GL.UseProgram(prog);
 		}
 
 		inline void irrGlBindFramebuffer(GLenum target, GLuint framebuffer)
 		{
-			glBindFramebuffer(target, framebuffer);
+			GL.BindFramebuffer(target, framebuffer);
 		}
 
 		inline void irrGlDeleteFramebuffers(GLsizei n, const GLuint *framebuffers)
 		{
-			glDeleteFramebuffers(n, framebuffers);
+			GL.DeleteFramebuffers(n, framebuffers);
 		}
 
 		inline void irrGlGenFramebuffers(GLsizei n, GLuint *framebuffers)
 		{
-			glGenFramebuffers(n, framebuffers);
+			GL.GenFramebuffers(n, framebuffers);
 		}
 
 		inline GLenum irrGlCheckFramebufferStatus(GLenum target)
 		{
-			return glCheckFramebufferStatus(target);
+			return GL.CheckFramebufferStatus(target);
 		}
 
 		inline void irrGlFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
 		{
-			glFramebufferTexture2D(target, attachment, textarget, texture, level);
+			GL.FramebufferTexture2D(target, attachment, textarget, texture, level);
 		}
 
 		inline void irrGlGenerateMipmap(GLenum target)
 		{
-			glGenerateMipmap(target);
+			GL.GenerateMipmap(target);
 		}
 
 		inline void irrGlDrawBuffer(GLenum mode)
@@ -147,12 +147,12 @@ namespace video
 
 		inline void irrGlBlendFuncSeparate(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha)
 		{
-			glBlendFuncSeparate(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
+			GL.BlendFuncSeparate(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
 		}
 
 		inline void irrGlBlendEquation(GLenum mode)
 		{
-			glBlendEquation(mode);
+			GL.BlendEquation(mode);
 		}
 
 		bool AnisotropicFilterSupported = false;

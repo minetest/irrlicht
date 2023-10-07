@@ -15,9 +15,9 @@ namespace video {
 
 	OpenGLVersion COpenGL3Driver::getVersionFromOpenGL() const {
 		GLint major, minor, profile;
-		glGetIntegerv(GL_MAJOR_VERSION, &major);
-		glGetIntegerv(GL_MINOR_VERSION, &minor);
-		glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profile);
+		GL.GetIntegerv(GL_MAJOR_VERSION, &major);
+		GL.GetIntegerv(GL_MINOR_VERSION, &minor);
+		GL.GetIntegerv(GL_CONTEXT_PROFILE_MASK, &profile);
 		// The spec is clear a context can’t be both core and compatibility at the same time.
 		// However, the returned value is a mask. Ask Khronos why. -- numzero
 		if (profile & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT)
@@ -66,8 +66,8 @@ namespace video {
 			MaxAnisotropy = GetInteger(GL.MAX_TEXTURE_MAX_ANISOTROPY);
 		MaxIndices = GetInteger(GL_MAX_ELEMENTS_INDICES);
 		MaxTextureSize = GetInteger(GL_MAX_TEXTURE_SIZE);
-		glGetFloatv(GL_MAX_TEXTURE_LOD_BIAS, &MaxTextureLODBias);
-		glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, DimAliasedLine);
+		GL.GetFloatv(GL_MAX_TEXTURE_LOD_BIAS, &MaxTextureLODBias);
+		GL.GetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, DimAliasedLine);
 		DimAliasedPoint[0] = 1.0f;
 		DimAliasedPoint[1] = 1.0f;
 	}
