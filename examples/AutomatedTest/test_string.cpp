@@ -168,7 +168,7 @@ static void test_methods()
 
 static void test_conv()
 {
-	// should be locale-independent
+	// locale-independent
 
 	stringw out;
 	utf8ToWString(out, "†††");
@@ -185,8 +185,8 @@ static void test_conv()
 		UASSERTEQ(static_cast<u8>(out2[3*i+2]), 0xa0);
 	}
 
-	// assumes Unicode and UTF-8 locale
-	setlocale(LC_CTYPE, "");
+	// locale-dependent
+	setlocale(LC_CTYPE, "C.UTF-8");
 
 	stringw out3;
 	multibyteToWString(out3, "†††");
