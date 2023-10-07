@@ -186,7 +186,8 @@ static void test_conv()
 	}
 
 	// locale-dependent
-	setlocale(LC_CTYPE, "C.UTF-8");
+	if (!setlocale(LC_CTYPE, "C.UTF-8"))
+		setlocale(LC_CTYPE, "UTF-8"); // macOS
 
 	stringw out3;
 	multibyteToWString(out3, "†††");
