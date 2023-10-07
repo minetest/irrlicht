@@ -11,9 +11,9 @@
 #include "EDriverFeatures.h"
 #include "irrTypes.h"
 #include "os.h"
-#include <mt_opengl.h>
 
 #include "Common.h"
+#include <mt_opengl.h> // must be after Common.h
 
 #include "COGLESCoreExtensionHandler.h"
 
