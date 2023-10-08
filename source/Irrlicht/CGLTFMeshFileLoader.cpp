@@ -2,8 +2,10 @@
 #include "CMeshBuffer.h"
 #include "coreutil.h"
 #include "IAnimatedMesh.h"
+#include "ILogger.h"
 #include "IReadFile.h"
 #include "irrTypes.h"
+#include "os.h"
 #include "path.h"
 #include "S3DVertex.h"
 #include "SAnimatedMesh.h"
@@ -342,7 +344,12 @@ bool CGLTFMeshFileLoader::tryParseGLTF(io::IReadFile* file,
 	auto buf = std::make_unique<char[]>(file->getSize());
 	file->read(buf.get(), file->getSize());
 
+        if (warn != "") {
+                os::Printer::log(warn.c_str(), ELL_WARNING);
+        }
+
 	if (err != "") {
+                os::Printer::log(err.c_str(), ELL_ERROR);
 		return false;
 	}
 
