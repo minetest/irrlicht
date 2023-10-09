@@ -71,7 +71,6 @@ endif()
 # Platform-independent configuration (hard-coded currently)
 add_definitions(
 	-DIRR_ENABLE_BUILTIN_FONT
-	-D_IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
 )
 
 # Platform-specific configuration
