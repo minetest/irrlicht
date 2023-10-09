@@ -3,8 +3,6 @@
 
 #include "CKeyEventWrapper.h"
 
-#ifdef _IRR_COMPILE_WITH_ANDROID_DEVICE_
-
 #include "os.h"
 
 namespace irr
@@ -58,6 +56,3 @@ int CKeyEventWrapper::getUnicodeChar(int metaState)
 
 } // namespace jni
 } // namespace irr
-
-
-#endif // _IRR_COMPILE_WITH_ANDROID_DEVICE_

@@ -4,9 +4,6 @@
 
 #pragma once
 
-#ifdef  _IRR_COMPILE_ANDROID_ASSET_READER_
-
-
 #include "IReadFile.h"
 
 struct AAssetManager;
@@ -66,4 +63,3 @@ namespace io
 } // end namespace io
 } // end namespace irr
 
-#endif //   _IRR_COMPILE_ANDROID_ASSET_READER_
