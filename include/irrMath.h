@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_MATH_H_INCLUDED__
-#define __IRR_MATH_H_INCLUDED__
+#pragma once
 
 #include "irrTypes.h"
 #include <math.h>
@@ -479,4 +478,3 @@ namespace core
 using irr::core::IR;
 using irr::core::FR;
 
-#endif

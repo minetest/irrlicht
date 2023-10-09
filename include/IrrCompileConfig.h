@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_COMPILE_CONFIG_H_INCLUDED__
-#define __IRR_COMPILE_CONFIG_H_INCLUDED__
+#pragma once
 
 //! Identifies the IrrlichtMt fork customized for the Minetest engine
 #define IRRLICHT_VERSION_MT_REVISION 12
@@ -29,5 +28,3 @@
 #ifndef IRRLICHT_API
 #define IRRLICHT_API
 #endif
-
-#endif // __IRR_COMPILE_CONFIG_H_INCLUDED__

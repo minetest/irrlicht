@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_CORE_UTIL_H_INCLUDED__
-#define __IRR_CORE_UTIL_H_INCLUDED__
+#pragma once
 
 #include "irrString.h"
 #include "path.h"
@@ -202,4 +201,3 @@ inline bool isupper(s32 c) { return c >= 'A' && c <= 'Z'; }
 } // end namespace core
 } // end namespace irr
 
-#endif

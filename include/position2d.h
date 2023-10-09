@@ -5,8 +5,7 @@
 //! As of Irrlicht 1.6, position2d is a synonym for vector2d.
 /** You should consider position2d to be deprecated, and use vector2d by preference. */
 
-#ifndef __IRR_POSITION_H_INCLUDED__
-#define __IRR_POSITION_H_INCLUDED__
+#pragma once
 
 #include "vector2d.h"
 
@@ -28,5 +27,4 @@ typedef vector2d<s32> position2di;
 // ...and use a #define to catch the rest, for (e.g.) position2d<f64>
 #define position2d vector2d
 
-#endif // __IRR_POSITION_H_INCLUDED__
 

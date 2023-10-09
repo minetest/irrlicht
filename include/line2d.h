@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_LINE_2D_H_INCLUDED__
-#define __IRR_LINE_2D_H_INCLUDED__
+#pragma once
 
 #include "irrTypes.h"
 #include "vector2d.h"
@@ -355,5 +354,4 @@ class line2d
 } // end namespace core
 } // end namespace irr
 
-#endif
 
