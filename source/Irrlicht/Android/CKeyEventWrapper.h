@@ -3,8 +3,6 @@
 
 #pragma once
 
-#ifdef _IRR_COMPILE_WITH_ANDROID_DEVICE_
-
 #include <jni.h>
 
 struct android_app;
@@ -35,5 +33,3 @@ private:
 
 } // namespace jni
 } // namespace irr
-
-#endif // _IRR_COMPILE_WITH_ANDROID_DEVICE_

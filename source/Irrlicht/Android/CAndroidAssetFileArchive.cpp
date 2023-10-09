@@ -3,7 +3,6 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
 
-#ifdef   _IRR_COMPILE_ANDROID_ASSET_READER_
 
 #include "CAndroidAssetReader.h"
 
@@ -106,4 +105,3 @@ void CAndroidAssetFileArchive::addDirectoryToFileList(const io::path &dirname_)
 } // end namespace io
 } // end namespace irr
 
-#endif //  _IRR_COMPILE_ANDROID_ASSET_READER_

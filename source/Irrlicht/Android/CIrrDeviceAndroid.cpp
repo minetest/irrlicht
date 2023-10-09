@@ -5,8 +5,6 @@
 
 #include "CIrrDeviceAndroid.h"
 
-#ifdef _IRR_COMPILE_WITH_ANDROID_DEVICE_
-
 #include "os.h"
 #include "CFileSystem.h"
 #include "CAndroidAssetReader.h"
@@ -858,5 +856,3 @@ bool CIrrDeviceAndroid::isGyroscopeAvailable()
 }
 
 } // end namespace irr
-
-#endif
