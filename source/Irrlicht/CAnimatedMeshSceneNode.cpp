@@ -7,9 +7,7 @@
 #include "ISceneManager.h"
 #include "S3DVertex.h"
 #include "os.h"
-#ifdef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
 #include "CSkinnedMesh.h"
-#endif
 #include "IDummyTransformationSceneNode.h"
 #include "IBoneSceneNode.h"
 #include "IMaterialRenderer.h"
@@ -187,10 +185,6 @@ IMesh * CAnimatedMeshSceneNode::getMeshForCurrentFrame()
 	}
 	else
 	{
-#ifndef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-		return 0;
-#else
-
 		// As multiple scene nodes may be sharing the same skinned mesh, we have to
 		// re-animate it every frame to ensure that this node gets the mesh that it needs.
 
@@ -223,7 +217,6 @@ IMesh * CAnimatedMeshSceneNode::getMeshForCurrentFrame()
 		}
 
 		return skinnedMesh;
-#endif
 	}
 }
 
@@ -466,11 +459,6 @@ u32 CAnimatedMeshSceneNode::getMaterialCount() const
 //! the corresponding joint, if the mesh in this scene node is a skinned mesh.
 IBoneSceneNode* CAnimatedMeshSceneNode::getJointNode(const c8* jointName)
 {
-#ifndef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-	os::Printer::log("Compiled without _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_", ELL_WARNING);
-	return 0;
-#else
-
 	if (!Mesh || Mesh->getMeshType() != EAMT_SKINNED)
 	{
 		os::Printer::log("No mesh, or mesh not of skinned mesh type", ELL_WARNING);
@@ -496,7 +484,6 @@ IBoneSceneNode* CAnimatedMeshSceneNode::getJointNode(const c8* jointName)
 	}
 
 	return JointChildSceneNodes[number];
-#endif
 }
 
 
@@ -505,11 +492,6 @@ IBoneSceneNode* CAnimatedMeshSceneNode::getJointNode(const c8* jointName)
 //! the corresponding joint, if the mesh in this scene node is a skinned mesh.
 IBoneSceneNode* CAnimatedMeshSceneNode::getJointNode(u32 jointID)
 {
-#ifndef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-	os::Printer::log("Compiled without _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_", ELL_WARNING);
-	return 0;
-#else
-
 	if (!Mesh || Mesh->getMeshType() != EAMT_SKINNED)
 	{
 		os::Printer::log("No mesh, or mesh not of skinned mesh type", ELL_WARNING);
@@ -525,23 +507,17 @@ IBoneSceneNode* CAnimatedMeshSceneNode::getJointNode(u32 jointID)
 	}
 
 	return JointChildSceneNodes[jointID];
-#endif
 }
 
 //! Gets joint count.
 u32 CAnimatedMeshSceneNode::getJointCount() const
 {
-#ifndef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-	return 0;
-#else
-
 	if (!Mesh || Mesh->getMeshType() != EAMT_SKINNED)
 		return 0;
 
 	ISkinnedMesh *skinnedMesh=(ISkinnedMesh*)Mesh;
 
 	return skinnedMesh->getJointCount();
-#endif
 }
 
 
@@ -702,9 +678,6 @@ void CAnimatedMeshSceneNode::setRenderFromIdentity(bool enable)
 //! updates the joint positions of this mesh
 void CAnimatedMeshSceneNode::animateJoints(bool CalculateAbsolutePositions)
 {
-#ifndef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-	return;
-#else
 	if (Mesh && Mesh->getMeshType() == EAMT_SKINNED )
 	{
 		checkJoints();
@@ -776,17 +749,12 @@ void CAnimatedMeshSceneNode::animateJoints(bool CalculateAbsolutePositions)
 			}
 		}
 	}
-#endif
 }
 
 /*!
 */
 void CAnimatedMeshSceneNode::checkJoints()
 {
-#ifndef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-	return;
-#else
-
 	if (!Mesh || Mesh->getMeshType() != EAMT_SKINNED)
 		return;
 
@@ -803,7 +771,6 @@ void CAnimatedMeshSceneNode::checkJoints()
 		JointsUsed=true;
 		JointMode=EJUOR_READ;
 	}
-#endif
 }
 
 /*!
