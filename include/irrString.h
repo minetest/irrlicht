@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine" and the "irrXML" project.
 // For conditions of distribution and use, see copyright notice in irrlicht.h and irrXML.h
 
-#ifndef __IRR_STRING_H_INCLUDED__
-#define __IRR_STRING_H_INCLUDED__
+#pragma once
 
 #include "irrTypes.h"
 #include <string>
@@ -994,5 +993,4 @@ inline size_t wStringToUTF8(stringc &destination, const stringw &source)
 } // end namespace core
 } // end namespace irr
 
-#endif
 

@@ -2,9 +2,7 @@
 // This file is part of the "Irrlicht Engine" and the "irrXML" project.
 // For conditions of distribution and use, see copyright notice in irrlicht.h and irrXML.h
 
-#ifndef __IRR_ARRAY_H_INCLUDED__
-#define __IRR_ARRAY_H_INCLUDED__
-
+#pragma once
 #include <algorithm>
 #include <iterator>
 #include <vector>
@@ -438,5 +436,4 @@ private:
 } // end namespace core
 } // end namespace irr
 
-#endif
 

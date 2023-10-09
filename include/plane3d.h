@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_PLANE_3D_H_INCLUDED__
-#define __IRR_PLANE_3D_H_INCLUDED__
+#pragma once
 
 #include "irrMath.h"
 #include "vector3d.h"
@@ -241,5 +240,4 @@ typedef plane3d<s32> plane3di;
 } // end namespace core
 } // end namespace irr
 
-#endif
 

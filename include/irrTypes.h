@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_TYPES_H_INCLUDED__
-#define __IRR_TYPES_H_INCLUDED__
+#pragma once
 
 #include <stdint.h>
 
@@ -120,4 +119,3 @@ code like 'code', but some generate warnings so we use this macro here */
 		((irr::u32)(irr::u8)(c0) | ((irr::u32)(irr::u8)(c1) << 8) | \
 		((irr::u32)(irr::u8)(c2) << 16) | ((irr::u32)(irr::u8)(c3) << 24 ))
 
-#endif // __IRR_TYPES_H_INCLUDED__

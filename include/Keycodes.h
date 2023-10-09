@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_KEY_CODES_H_INCLUDED__
-#define __IRR_KEY_CODES_H_INCLUDED__
+#pragma once
 
 namespace irr
 {
@@ -90,7 +89,7 @@ namespace irr
 		KEY_KEY_X            = 0x58,  // X key
 		KEY_KEY_Y            = 0x59,  // Y key
 		KEY_KEY_Z            = 0x5A,  // Z key
-		KEY_LWIN             = 0x5B,  // Left Windows key (Microsoft® Natural® keyboard)
+		KEY_LWIN             = 0x5B,  // Left Windows key (Microsoftï¿½ Naturalï¿½ keyboard)
 		KEY_RWIN             = 0x5C,  // Right Windows key (Natural keyboard)
 		KEY_APPS             = 0x5D,  // Applications key (Natural keyboard)
 		KEY_SLEEP            = 0x5F,  // Computer Sleep key
@@ -185,5 +184,4 @@ namespace irr
 
 } // end namespace irr
 
-#endif
 

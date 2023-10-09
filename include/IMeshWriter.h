@@ -2,9 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_I_MESH_WRITER_H_INCLUDED__
-#define __IRR_I_MESH_WRITER_H_INCLUDED__
-
+#pragma once
 #include "IReferenceCounted.h"
 #include "EMeshWriterEnums.h"
 
@@ -54,5 +52,4 @@ namespace scene
 } // end namespace
 } // end namespace
 
-#endif
 
