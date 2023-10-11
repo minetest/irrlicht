@@ -46,20 +46,20 @@ namespace video
 
 	struct VertexType {
 		int VertexSize;
-		std::initializer_list<VertexAttribute> Attributes;  // Extends lifetime when used properly!
+		std::vector<VertexAttribute> Attributes;
 	};
 
 	static const VertexAttribute *begin(const VertexType &type)
 	{
-		return type.Attributes.begin();
+		return type.Attributes.data();
 	}
 
 	static const VertexAttribute *end(const VertexType &type)
 	{
-		return type.Attributes.end();
+		return type.Attributes.data() + type.Attributes.size();
 	}
 
-	static constexpr VertexType vtStandard = {
+	static const VertexType vtStandard = {
 		sizeof(S3DVertex), {
 			{EVA_POSITION, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex, Pos)},
 			{EVA_NORMAL, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex, Normal)},
@@ -71,7 +71,7 @@ namespace video
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Winvalid-offsetof"
 
-	static constexpr VertexType vt2TCoords = {
+	static const VertexType vt2TCoords = {
 		sizeof(S3DVertex2TCoords), {
 			{EVA_POSITION, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex2TCoords, Pos)},
 			{EVA_NORMAL, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex2TCoords, Normal)},
@@ -81,7 +81,7 @@ namespace video
 		},
 	};
 
-	static constexpr VertexType vtTangents = {
+	static const VertexType vtTangents = {
 		sizeof(S3DVertexTangents), {
 			{EVA_POSITION, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertexTangents, Pos)},
 			{EVA_NORMAL, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertexTangents, Normal)},
@@ -104,7 +104,7 @@ namespace video
 		}
 	}
 
-	static constexpr VertexType vt2DImage = {
+	static const VertexType vt2DImage = {
 		sizeof(S3DVertex), {
 			{EVA_POSITION, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex, Pos)},
 			{EVA_COLOR, 4, GL_UNSIGNED_BYTE, VertexAttribute::Mode::Normalized, offsetof(S3DVertex, Color)},
@@ -112,7 +112,7 @@ namespace video
 		},
 	};
 
-	static constexpr VertexType vtPrimitive = {
+	static const VertexType vtPrimitive = {
 		sizeof(S3DVertex), {
 			{EVA_POSITION, 3, GL_FLOAT, VertexAttribute::Mode::Regular, offsetof(S3DVertex, Pos)},
 			{EVA_COLOR, 4, GL_UNSIGNED_BYTE, VertexAttribute::Mode::Normalized, offsetof(S3DVertex, Color)},
