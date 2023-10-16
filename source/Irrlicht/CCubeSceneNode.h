@@ -6,7 +6,7 @@
 #define IRR_C_CUBE_SCENE_NODE_H_INCLUDED
 
 #include "IMeshSceneNode.h"
-#include "SMesh.h"
+#include "IMesh.h"
 #include "IGeometryCreator.h"
 
 namespace irr

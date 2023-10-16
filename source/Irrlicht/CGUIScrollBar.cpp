@@ -7,11 +7,7 @@
 
 #include "IGUISkin.h"
 #include "IGUIEnvironment.h"
-#include "IVideoDriver.h"
 #include "CGUIButton.h"
-#include "IGUIFont.h"
-#include "IGUIFontBitmap.h"
-#include "os.h"
 
 namespace irr
 {

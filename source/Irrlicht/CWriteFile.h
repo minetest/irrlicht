@@ -7,7 +7,6 @@
 
 #include <stdio.h>
 #include "IWriteFile.h"
-#include "irrString.h"
 
 namespace irr
 {

@@ -29,8 +29,7 @@
 
 
 #include "IMeshLoader.h"
-#include "SMesh.h"
-#include "SMeshBufferLightMap.h"
+#include "CMeshBuffer.h"
 #include "IFileSystem.h"
 #include "IVideoDriver.h"
 #include "irrString.h"

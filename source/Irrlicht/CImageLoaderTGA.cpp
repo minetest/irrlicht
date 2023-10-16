@@ -10,7 +10,6 @@
 #include "os.h"
 #include "CColorConverter.h"
 #include "CImage.h"
-#include "irrString.h"
 
 
 namespace irr
@@ -33,10 +32,10 @@ u8 *CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const STGAHeader& 
 	// This was written and sent in by Jon Pry, thank you very much!
 	// I only changed the formatting a little bit.
 
-	s32 bytesPerPixel = header.PixelDepth/8;
-	s32 imageSize =  header.ImageHeight * header.ImageWidth * bytesPerPixel;
+	const u32 bytesPerPixel = header.PixelDepth/8;
+	const u32 imageSize =  header.ImageHeight * header.ImageWidth * bytesPerPixel;
 	u8* data = new u8[imageSize];
-	s32 currentByte = 0;
+	u32 currentByte = 0;
 
 	while(currentByte < imageSize)
 	{
@@ -47,8 +46,17 @@ u8 *CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const STGAHeader& 
 		{
 			chunkheader++; // Add 1 To The Value To Get Total Number Of Raw Pixels
 
-			file->read(&data[currentByte], bytesPerPixel * chunkheader);
-			currentByte += bytesPerPixel * chunkheader;
+			const u32 bytesToRead = bytesPerPixel * chunkheader;
+			if ( currentByte+bytesToRead < imageSize )
+			{
+				file->read(&data[currentByte], bytesToRead);
+				currentByte += bytesToRead;
+			}
+			else
+			{
+				os::Printer::log("Compressed TGA file RAW chunk tries writing beyond buffer", file->getFileName(), ELL_WARNING);
+				break;
+			}
 		}
 		else
 		{
@@ -57,15 +65,27 @@ u8 *CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const STGAHeader& 
 			// If It's An RLE Header
 			chunkheader -= 127; // Subtract 127 To Get Rid Of The ID Bit
 
-			s32 dataOffset = currentByte;
-			file->read(&data[dataOffset], bytesPerPixel);
-
-			currentByte += bytesPerPixel;
-
-			for(s32 counter = 1; counter < chunkheader; counter++)
+			u32 dataOffset = currentByte;
+			if ( dataOffset+bytesPerPixel < imageSize )
 			{
-				for(s32 elementCounter=0; elementCounter < bytesPerPixel; elementCounter++)
-					data[currentByte + elementCounter] = data[dataOffset + elementCounter];
+				file->read(&data[dataOffset], bytesPerPixel);
+				currentByte += bytesPerPixel;
+			}
+			else
+			{
+				os::Printer::log("Compressed TGA file RLE headertries writing beyond buffer", file->getFileName(), ELL_WARNING);
+				break;
+			}
+
+			for(u32 counter = 1; counter < chunkheader; counter++)
+			{
+				if ( currentByte + bytesPerPixel <= imageSize )
+				{
+					for(u32 elementCounter=0; elementCounter < bytesPerPixel; elementCounter++)
+					{
+						data[currentByte + elementCounter] = data[dataOffset + elementCounter];
+					}
+				}
 
 				currentByte += bytesPerPixel;
 			}
@@ -118,8 +138,17 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 
 	if (header.ColorMapType)
 	{
-		// create 32 bit palette
-		palette = new u32[ header.ColorMapLength];
+		// Create 32 bit palette
+		const irr::u16 paletteSize = core::max_((u16)256, header.ColorMapLength);	// ColorMapLength can lie, but so far we only use palette for 8-bit, so ensure it has 256 entries
+		palette = new u32[paletteSize];
+
+		if( paletteSize > header.ColorMapLength )
+		{
+			// To catch images using palette colors with invalid indices
+			const irr::u32 errorCol = irr::video::SColor(255,255, 0, 205).color; // bright magenta
+			for ( irr::u16 i = header.ColorMapLength; i< paletteSize; ++i )
+				palette[i] = errorCol;
+		}
 
 		// read color map
 		u8 * colorMap = new u8[header.ColorMapEntrySize/8 * header.ColorMapLength];
@@ -150,7 +179,7 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 			header.ImageType == 3 // Uncompressed, black and white images
 		)
 	{
-		const s32 imageSize = header.ImageHeight * header.ImageWidth * header.PixelDepth/8;
+		const s32 imageSize = header.ImageHeight * header.ImageWidth * (header.PixelDepth/8);
 		data = new u8[imageSize];
 	  	file->read(data, imageSize);
 	}
@@ -185,14 +214,28 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 			}
 			else
 			{
-				image = new CImage(ECF_A1R5G5B5,
-					core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
-				if (image)
-					CColorConverter::convert8BitTo16Bit((u8*)data,
-						(s16*)image->getData(),
-						header.ImageWidth,header.ImageHeight,
-						(s32*) palette, 0,
-						(header.ImageDescriptor&0x20)==0);
+				switch ( header.ColorMapEntrySize )
+				{
+					case 16:
+						image = new CImage(ECF_A1R5G5B5, core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
+						if ( image )
+							CColorConverter::convert8BitTo16Bit((u8*)data,
+							(s16*)image->getData(),
+							header.ImageWidth,header.ImageHeight,
+							(s32*) palette, 0,
+							(header.ImageDescriptor&0x20)==0);
+						break;
+					// Note: 24 bit with palette would need a 24 bit palette, too lazy doing that now (textures will prefer 32-bit later anyway)
+					default:
+						image = new CImage(ECF_A8R8G8B8, core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
+						if ( image )
+							CColorConverter::convert8BitTo32Bit((u8*)data,
+							(u8*)image->getData(),
+							header.ImageWidth,header.ImageHeight,
+							(u8*) palette, 0,
+							(header.ImageDescriptor&0x20)==0);
+						break;
+				}
 			}
 		}
 		break;

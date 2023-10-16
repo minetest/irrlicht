@@ -70,13 +70,12 @@ Version 1.0 - 29 July 2004
 
 #include "CLMTSMeshFileLoader.h"
 #include "CMeshTextureLoader.h"
-#include "SMeshBufferLightMap.h"
+#include "CMeshBuffer.h"
 #include "SAnimatedMesh.h"
-#include "SMeshBuffer.h"
+#include "SceneParameters.h"
 #include "irrString.h"
 #include "IReadFile.h"
 #include "IAttributes.h"
-#include "ISceneManager.h"
 #include "os.h"
 
 namespace irr

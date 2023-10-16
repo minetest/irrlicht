@@ -7,7 +7,7 @@
 
 #include "CMD3MeshFileLoader.h"
 #include "CAnimatedMeshMD3.h"
-#include "irrString.h"
+#include "IVideoDriver.h"
 
 namespace irr
 {

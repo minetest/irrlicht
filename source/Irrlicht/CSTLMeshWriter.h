@@ -6,7 +6,7 @@
 #define IRR_STL_MESH_WRITER_H_INCLUDED
 
 #include "IMeshWriter.h"
-#include "S3DVertex.h"
+#include "vector3d.h"
 #include "irrString.h"
 
 namespace irr

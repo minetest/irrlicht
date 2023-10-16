@@ -130,7 +130,6 @@ DUMMY -		This 404 bytes of data should be set to 0. This makes the Header exactl
 #include "CColorConverter.h"
 #include "CImage.h"
 #include "os.h"
-#include "irrString.h"
 
 
 namespace irr

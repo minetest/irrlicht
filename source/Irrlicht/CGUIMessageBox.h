@@ -11,7 +11,6 @@
 #include "CGUIWindow.h"
 #include "IGUIStaticText.h"
 #include "IGUIImage.h"
-#include "irrArray.h"
 
 namespace irr
 {

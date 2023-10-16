@@ -9,7 +9,6 @@
 #include "CImageLoaderPSD.h"
 #include "IWriteFile.h"
 #include "os.h" // for logging
-#include "irrString.h"
 
 namespace irr
 {

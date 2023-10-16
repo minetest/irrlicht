@@ -4,9 +4,8 @@
 #ifndef IRR_I_GUI_IMAGE_LIST_H_INCLUDED
 #define IRR_I_GUI_IMAGE_LIST_H_INCLUDED
 
-#include "IGUIElement.h"
 #include "rect.h"
-#include "irrTypes.h"
+#include "IReferenceCounted.h"
 
 namespace irr
 {

@@ -3,6 +3,7 @@
 // Written by Michael Zeilfelder
 
 #include "CProfiler.h"
+#include "IrrCompileConfig.h"
 #include "CTimer.h"
 
 namespace irr

@@ -8,9 +8,7 @@
 #include "CQ3LevelMesh.h"
 #include "ISceneManager.h"
 #include "os.h"
-#include "SMeshBufferLightMap.h"
 #include "irrString.h"
-#include "ILightSceneNode.h"
 #include "IQ3Shader.h"
 #include "IFileList.h"
 

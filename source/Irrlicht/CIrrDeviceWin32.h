@@ -9,8 +9,6 @@
 #ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
 
 #include "CIrrDeviceStub.h"
-#include "IrrlichtDevice.h"
-#include "IImagePresenter.h"
 
 #define WIN32_LEAN_AND_MEAN
 #if !defined(_IRR_XBOX_PLATFORM_)
@@ -71,7 +69,7 @@ namespace irr
 		virtual video::IVideoModeList* getVideoModeList() IRR_OVERRIDE;
 
 		//! Notifies the device, that it has been resized
-		/** Must be publis as it is called from free function (event handler) */
+		/** Must be public as it is called from free function (event handler) */
 		void OnResized();
 
 		//! Sets if the window should be resizable in windowed mode.

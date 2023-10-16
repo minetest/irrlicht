@@ -11,6 +11,8 @@ Changes in ogl-es (not yet released - will be merged with trunk at some point)
 --------------------------
 Changes in 1.9 (not yet released)
 
+- TGA loader no longer reduces 24&32 bit TGA's with palettes to 16 bit. Thanks @erlehmann for report: https://irrlicht.sourceforge.io/forum/viewtopic.php?t=52925
+- Fix compile error with OS X 10.10 SDK, bug #463. Thanks @Ryan Schmidt for report and patch.
 - Optimize quaternion::rotationFromTo. Thanks @Robert Eisele for patch and proof (https://raw.org/proof/quaternion-from-two-vectors)
 - Shader material example shows now how to pass material values.
   In 1.8 we could still use gl_FrontMaterial, but that is no longer supported in shaders
@@ -408,6 +410,29 @@ Changes in 1.9 (not yet released)
 
 --------------------------
 Changes in 1.8.6
+- CXMeshFileLoader: fix buffer overreads with text format. Thanks @sfan5 for report and patch.
+  Patch (commit 6f4f7c4 to Minetest): https://github.com/minetest/irrlicht/commit/6f4f7c4d75c9d563e98d3936ed8bc6e248dc14a8
+- Fix CB3DMeshFileLoader::readString. Prevent adding a character beyond file-end. Thanks @sfan5 for report and patch.
+  Original patch (commit 103ab16 to Minetest): https://github.com/minetest/irrlicht/commit/103ab16679a42cb1bfa4cc4e6316195ec2d139b6
+- CB3DMeshFileLoader: add some bounds checks. Thanks @sfan5 for report and patch.
+  Original patch (commit 64688f4 to Minetest): https://github.com/minetest/irrlicht/commit/64688f449099246ec27eb013f58d72a0abb1c6e6
+- TGA loader: Fix number overflow causing crashes. Thanks @sfan5 for fuzzing test.
+- TGA loader: Fix several buffer overflows. Thanks @erlehmann for report and @sfan5 for fuzzing test: https://github.com/minetest/irrlicht/issues/236
+- COBJMeshFilerLoder: prevent buffer overruns from loading files passing negative indices. Thanks @sfan5 fore report and patch.
+  Patch (commit 827710f to Minetest): https://github.com/minetest/irrlicht/commit/827710f74a615f53b2a1b0c539c58c2b6124f883
+- COBJMeshFilerLoder: fix buffer overruns when loading empty face lines. Thanks @sfan5 fore report and patch.
+  Patch (commit 80e1609 to Minetest): https://github.com/minetest/irrlicht/commit/80e160935d3c2677344b0968c2690f63083a98dd (partially applied)
+- CObjMeshFileLoader: Backport fixes from trunk to avoid unnecessary memory allocations (speedup)
+- CObjMeshFileLoader: Backport fixes from trunk to avoid some buffer overruns
+- CImageLoaderBMP: Fix handling 4 bit RLE encoding. Thanks @sfan5 finding first bug and reporting (had some more)
+- CImageLoaderBMP: add bound checks to RLE decompression. Thanks @sfan5 for report and patch
+  Patch (commit 4506d23 to Minetest): https://github.com/minetest/irrlicht/commit/4506d23dc3fa48332b5ca6c05633aebdbac673be
+- CImageLoaderBMP: check bitmap data against required size. Thanks @sfan5 for report and patch 
+  Report: https://irrlicht.sourceforge.io/forum/viewtopic.php?p=307195
+  Patch (commit 028cb8d to Minetest): https://github.com/minetest/irrlicht/commit/028cb8dbed8266264a5804108191f56e238db1bc
+- Fix OSX 10.9X build problem related to NSApplication setDelegate calls getting casted to wrong class (Bug #462 and also fixing older Bug #297)
+  Thanks @Ryan Schmidt for bug report and patch.
+- Backport: Fix compiling for Apple silicon (Bugs #452 and #461). Thanks @Ryan Schmidt for bug report and updated patch.
 - Fix compiling on OSX with case-sensitive filesystems: IrrFramework-Info.plist now always starting with upper-case. 
   Thanks @Ryan Schmidt for bug report and patch.
 - Fix: The build-in libpng now uses same zlib headers as rest of Irrlicht. 

@@ -6,8 +6,8 @@
 #define IRR_C_SOFTWARE_DRIVER_H_INCLUDED
 
 #include "ITriangleRenderer.h"
+#include "IImagePresenter.h"
 #include "CNullDriver.h"
-#include "SViewFrustum.h"
 #include "CImage.h"
 
 namespace irr

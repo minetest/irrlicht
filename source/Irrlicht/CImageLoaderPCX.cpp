@@ -11,7 +11,6 @@
 #include "CColorConverter.h"
 #include "CImage.h"
 #include "os.h"
-#include "irrString.h"
 
 
 namespace irr

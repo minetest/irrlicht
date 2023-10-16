@@ -8,9 +8,7 @@
 #include "IrrCompileConfig.h"
 #ifdef __IRR_COMPILE_WITH_WAD_ARCHIVE_LOADER_
 
-#include "IReferenceCounted.h"
 #include "IReadFile.h"
-#include "irrArray.h"
 #include "irrString.h"
 #include "IFileSystem.h"
 #include "CFileList.h"

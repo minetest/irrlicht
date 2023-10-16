@@ -5,8 +5,6 @@
 #ifndef IRR_I_SCENE_NODE_ANIMATOR_H_INCLUDED
 #define IRR_I_SCENE_NODE_ANIMATOR_H_INCLUDED
 
-#include "IReferenceCounted.h"
-#include "vector3d.h"
 #include "ESceneNodeAnimatorTypes.h"
 #include "IAttributeExchangingObject.h"
 #include "IAttributes.h"

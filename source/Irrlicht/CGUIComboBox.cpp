@@ -6,13 +6,11 @@
 #ifdef _IRR_COMPILE_WITH_GUI_
 
 #include "IGUIEnvironment.h"
-#include "IVideoDriver.h"
 #include "IGUISkin.h"
 #include "IGUIEnvironment.h"
 #include "IGUIFont.h"
 #include "IGUIButton.h"
 #include "CGUIListBox.h"
-#include "os.h"
 
 namespace irr
 {

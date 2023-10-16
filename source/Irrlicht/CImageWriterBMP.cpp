@@ -9,7 +9,6 @@
 #include "CImageLoaderBMP.h"
 #include "IWriteFile.h"
 #include "CColorConverter.h"
-#include "irrString.h"
 #include "os.h"
 
 namespace irr

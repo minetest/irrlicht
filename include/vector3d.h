@@ -235,7 +235,10 @@ namespace core
 		}
 
 		//! Rotates the vector by a specified number of degrees around the Y axis and the specified center.
-		/** \param degrees Number of degrees to rotate around the Y axis.
+		/** CAREFUL: For historical reasons rotateXZBy uses a right-handed rotation
+		(maybe to make it more similar to the 2D vector rotations which are counterclockwise).
+		To have this work the same way as rest of Irrlicht (nodes, matrices, other rotateBy functions) pass -1*degrees in here.
+		\param degrees Number of degrees to rotate around the Y axis.
 		\param center The center of the rotation. */
 		void rotateXZBy(f64 degrees, const vector3d<T>& center=vector3d<T>())
 		{

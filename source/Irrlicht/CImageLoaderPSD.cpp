@@ -9,7 +9,6 @@
 #include "IReadFile.h"
 #include "os.h"
 #include "CImage.h"
-#include "irrString.h"
 
 
 namespace irr

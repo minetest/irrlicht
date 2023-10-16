@@ -3,7 +3,6 @@
 // under the zlib license, reproduced below.
 
 #include "irrTypes.h"
-#include "irrString.h"
 
 namespace irr
 {

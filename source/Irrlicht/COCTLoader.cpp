@@ -17,8 +17,9 @@
 #include "IVideoDriver.h"
 #include "IFileSystem.h"
 #include "os.h"
+#include "SMesh.h"
 #include "SAnimatedMesh.h"
-#include "SMeshBufferLightMap.h"
+#include "CMeshBuffer.h"
 #include "irrString.h"
 #include "ISceneManager.h"
 

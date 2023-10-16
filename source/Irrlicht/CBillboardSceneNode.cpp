@@ -8,7 +8,6 @@
 #include "IVideoDriver.h"
 #include "ISceneManager.h"
 #include "ICameraSceneNode.h"
-#include "os.h"
 
 namespace irr
 {

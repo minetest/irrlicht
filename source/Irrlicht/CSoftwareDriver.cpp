@@ -11,6 +11,7 @@
 #include "CBlit.h"
 #include "os.h"
 #include "S3DVertex.h"
+#include "SViewFrustum.h"
 
 namespace irr
 {

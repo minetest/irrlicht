@@ -8,10 +8,6 @@
 #define IRR_C_SKINNED_MESH_H_INCLUDED
 
 #include "ISkinnedMesh.h"
-#include "SMeshBuffer.h"
-#include "S3DVertex.h"
-#include "irrString.h"
-#include "matrix4.h"
 #include "quaternion.h"
 
 namespace irr
@@ -21,6 +17,7 @@ namespace scene
 
 	class IAnimatedMeshSceneNode;
 	class IBoneSceneNode;
+	class ISceneManager;
 
 	class CSkinnedMesh: public ISkinnedMesh
 	{

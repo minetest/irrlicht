@@ -6,11 +6,8 @@
 #include "CBufferRenderNode.h"
 #include "IVideoDriver.h"
 #include "ISceneManager.h"
-#include "S3DVertex.h"
-#include "ICameraSceneNode.h"
 #include "IMeshCache.h"
 #include "IAnimatedMesh.h"
-#include "IMaterialRenderer.h"
 #include "IFileSystem.h"
 #ifdef _IRR_COMPILE_WITH_SHADOW_VOLUME_SCENENODE_
 #include "CShadowVolumeSceneNode.h"

@@ -11,7 +11,6 @@
 #include "CColorConverter.h"
 #include "CImage.h"
 #include "os.h"
-#include "irrString.h"
 
 namespace irr
 {
@@ -48,19 +47,35 @@ bool CImageLoaderBMP::isALoadableFileFormat(io::IReadFile* file) const
 }
 
 
+// UB-safe overflow check
+static inline bool doesOverflow(const void *base, size_t numElements, const void *end)
+{
+	// TODO: uintptr_t (as in original patch from sfan5) would be nicer than size_t, use once we allow c++11
+	size_t baseI = reinterpret_cast<size_t>(base);
+	size_t endI = reinterpret_cast<size_t>(end);
+	return baseI > endI || numElements >= (endI - baseI);
+}
+
+// check whether &p[0] to &p[_off - 1] can be accessed
+#define EXIT_P_OVERFLOW(_off) if (doesOverflow(p, _off, pEnd)) goto exit
+// same for d
+#define EXIT_D_OVERFLOW(_off) if (doesOverflow(d, _off, destEnd)) goto exit
+
 void CImageLoaderBMP::decompress8BitRLE(u8*& bmpData, s32 size, s32 width, s32 height, s32 pitch) const
 {
 	u8* p = bmpData;
+	const u8* pEnd = bmpData + size;
 	u8* newBmp = new u8[(width+pitch)*height];
 	u8* d = newBmp;
-	u8* destEnd = newBmp + (width+pitch)*height;
+	const u8* destEnd = newBmp + (width+pitch)*height;
 	s32 line = 0;
 
-	while (bmpData - p < size && d < destEnd)
+	while (p < pEnd && d < destEnd)
 	{
 		if (*p == 0)
 		{
 			++p;
+			EXIT_P_OVERFLOW(1);
 
 			switch(*p)
 			{
@@ -70,37 +85,43 @@ void CImageLoaderBMP::decompress8BitRLE(u8*& bmpData, s32 size, s32 width, s32 h
 				d = newBmp + (line*(width+pitch));
 				break;
 			case 1: // end of bmp
-				delete [] bmpData;
-				bmpData = newBmp;
-				return;
+				goto exit;
 			case 2:
-				++p; d +=(u8)*p;  // delta
-				++p; d += ((u8)*p)*(width+pitch);
+				++p;
+				EXIT_P_OVERFLOW(2);
+				d += (u8)*p; // delta
+				++p;
+				d += ((u8)*p)*(width+pitch);
 				++p;
 				break;
 			default:
 				{
 					// absolute mode
-					s32 count = (u8)*p; ++p;
-					s32 readAdditional = ((2-(count%2))%2);
-					s32 i;
+					const s32 count = (u8)*p;
+					++p;
 
-					for (i=0; i<count; ++i)
+					EXIT_P_OVERFLOW(count);
+					EXIT_D_OVERFLOW(count);
+					for (s32 i=0; i<count; ++i)
 					{
 						*d = *p;
 						++p;
 						++d;
 					}
 
-					for (i=0; i<readAdditional; ++i)
+					const s32 readAdditional = ((2-(count%2))%2);
+					EXIT_P_OVERFLOW(readAdditional);
+					for (s32 i=0; i<readAdditional; ++i)
 						++p;
 				}
 			}
 		}
 		else
 		{
-			s32 count = (u8)*p; ++p;
+			const s32 count = (u8)*p; ++p;
+			EXIT_P_OVERFLOW(1);
 			u8 color = *p; ++p;
+			EXIT_D_OVERFLOW(count);
 			for (s32 i=0; i<count; ++i)
 			{
 				*d = color;
@@ -109,63 +130,97 @@ void CImageLoaderBMP::decompress8BitRLE(u8*& bmpData, s32 size, s32 width, s32 h
 		}
 	}
 
+exit:
 	delete [] bmpData;
 	bmpData = newBmp;
 }
 
 
+// how many new bytes will be touched given the current state of decompress4BitRLE
+static inline u32 shiftedCount(s32 count, s32 shift)
+{
+	IRR_DEBUG_BREAK_IF(count <= 0)
+
+	u32 ret = 0;
+	if ( shift == 0 )	// using up half of an old byte
+	{
+		--count;
+	}
+	ret += (count / 2) + (count % 2);
+	return ret;
+}
+
+// Ensure current row/line are inside width/height
+// Didn't find any documentation how BMP's are supposed to handle this
+// I think in general "good" bmp's are supposed to not go over line-ends
+#define KEEP_ROW_LINE_INSIDE \
+	if ( row >= width ) \
+	{ \
+		line += row/width; \
+		row %= width; \
+	} \
+	if ( line >= height ) \
+	{ \
+		line = 0; /* bug anyway, this way more visible maybe */ \
+	}
+
+
 void CImageLoaderBMP::decompress4BitRLE(u8*& bmpData, s32 size, s32 width, s32 height, s32 pitch) const
 {
-	s32 lineWidth = (width+1)/2+pitch;
+	const s32 lineWidth = (width+1)/2+pitch;
 	u8* p = bmpData;
+	const u8* pEnd = bmpData + size;
 	u8* newBmp = new u8[lineWidth*height];
-	u8* d = newBmp;
-	u8* destEnd = newBmp + lineWidth*height;
+	memset(newBmp, 0, lineWidth*height);	// Extra cost, but otherwise we have to code pixel skipping stuff
+	const u8* destEnd = newBmp + lineWidth*height;
 	s32 line = 0;
-	s32 shift = 4;
+	s32 row = 0;
 
-	while (bmpData - p < size && d < destEnd)
+	while (p < pEnd)
 	{
 		if (*p == 0)
 		{
 			++p;
+			EXIT_P_OVERFLOW(1);
 
 			switch(*p)
 			{
 			case 0: // end of line
 				++p;
 				++line;
-				d = newBmp + (line*lineWidth);
-				shift = 4;
+				row = 0;
 				break;
 			case 1: // end of bmp
-				delete [] bmpData;
-				bmpData = newBmp;
-				return;
-			case 2:
+				goto exit;
+			case 2: // delta
 				{
 					++p;
+					EXIT_P_OVERFLOW(2);
 					s32 x = (u8)*p; ++p;
 					s32 y = (u8)*p; ++p;
-					d += x/2 + y*lineWidth;
-					shift = x%2==0 ? 4 : 0;
+					row += x;
+					line += y;
 				}
 				break;
 			default:
 				{
 					// absolute mode
-					s32 count = (u8)*p; ++p;
-					s32 readAdditional = ((2-((count)%2))%2);
+					const u32 count = (u8)*p; ++p;
 					s32 readShift = 4;
-					s32 i;
 
-					for (i=0; i<count; ++i)
+					KEEP_ROW_LINE_INSIDE;
+					s32 shift = row%2 == 0 ? 4 : 0;
+					u8* d = newBmp + (lineWidth*line + row/2);
+
+					EXIT_P_OVERFLOW(shiftedCount(count, readShift));
+					EXIT_D_OVERFLOW(shiftedCount(count, shift));
+					for (u32 i=0; i<count; ++i)
 					{
 						s32 color = (((u8)*p) >> readShift) & 0x0f;
 						readShift -= 4;
 						if (readShift < 0)
 						{
-							++*p;
+							++p;
 							readShift = 4;
 						}
 
@@ -178,26 +233,37 @@ void CImageLoaderBMP::decompress4BitRLE(u8*& bmpData, s32 size, s32 width, s32 h
 							shift = 4;
 							++d;
 						}
-
 					}
+					row += count;
 
-					for (i=0; i<readAdditional; ++i)
+					// pixels always come in 2-byte packages with unused half-bytes filled with zeroes
+					const u32 modCount = (count%4);
+					const u32 readAdditional = modCount == 1 ? 2 : (modCount==0?0:1); // jump 2,1,1,0 for count 1,2,3,4
+					EXIT_P_OVERFLOW(readAdditional);
+					for (u32 i=0; i<readAdditional; ++i)
 						++p;
 				}
 			}
 		}
-		else
+		else // encoded mode
 		{
-			s32 count = (u8)*p; ++p;
-			s32 color1 = (u8)*p; color1 = color1 & 0x0f;
-			s32 color2 = (u8)*p; color2 = (color2 >> 4) & 0x0f;
+			const s32 count = (u8)*p;	// pixels to draw
+			++p;
+			EXIT_P_OVERFLOW(1);
+			s32 color1 = (u8)*p; color1 = color1 & 0x0f;		// lo bit (2nd,4th,... pixel)
+			s32 color2 = (u8)*p; color2 = (color2 >> 4) & 0x0f;	// hi bits (1st,3rd,... pixel)
 			++p;
 
+			KEEP_ROW_LINE_INSIDE;
+			s32 shift = row%2 == 0 ? 4 : 0;
+			u8* d = newBmp + (lineWidth*line + row/2);
+
+			EXIT_D_OVERFLOW(shiftedCount(count, shift));
 			for (s32 i=0; i<count; ++i)
 			{
 				u8 mask = 0x0f << shift;
-				u8 toSet = (shift==0 ? color1 : color2) << shift;
-				*d = (*d & (~mask)) | (toSet & mask);
+				u8 toSet = ((i%2==0) ? color2 : color1) << shift;
+				*d = (*d & (~mask)) | toSet;
 
 				shift -= 4;
 				if (shift < 0)
@@ -206,14 +272,18 @@ void CImageLoaderBMP::decompress4BitRLE(u8*& bmpData, s32 size, s32 width, s32 h
 					++d;
 				}
 			}
+			row += count;
 		}
 	}
 
+exit:
 	delete [] bmpData;
 	bmpData = newBmp;
 }
 
-
+#undef EXIT_P_OVERFLOW
+#undef EXIT_D_OVERFLOW
+#undef KEEP_ROW_LINE_INSIDE
 
 //! creates a surface from the file
 IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
@@ -239,12 +309,25 @@ IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
 	header.ImportantColors = os::Byteswap::byteswap(header.ImportantColors);
 #endif
 
-	s32 pitch = 0;
-
 	//! return if the header is false
 
-	if (header.Id != 0x4d42)
+	bool topDown = false;
+	if (header.Id == 0x4d42) // BM = Windows header
+	{
+		// Sizes are signed integer with Windows header (unsigned with OS/2)
+		// Not sure if negative Width has any meaning, but negative height is for upside-down
+		header.Width = core::abs_((s32)header.Width);
+		if ( (s32)header.Height < 0 )
+		{
+			topDown = true;
+			header.Height = core::abs_((s32)header.Height);
+		}
+	}
+	else
+	{
+		os::Printer::log("BMP files with OS/2 Headers not supported.", ELL_ERROR);
 		return 0;
+	}
 
 	if (header.Compression > 2) // we'll only handle RLE-Compression
 	{
@@ -282,14 +365,9 @@ IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
 
 	file->seek(header.BitmapDataOffset);
 
-	f32 t = (header.Width) * (header.BPP / 8.0f);
-	s32 widthInBytes = (s32)t;
-	t -= widthInBytes;
-	if (t!=0.0f)
-		++widthInBytes;
-
-	s32 lineData = widthInBytes + ((4-(widthInBytes%4)))%4;
-	pitch = lineData - widthInBytes;
+	const s32 widthInBytes = core::ceil32(header.Width * (header.BPP / 8.0f));
+	const s32 lineSize = widthInBytes + ((4-(widthInBytes%4)))%4;
+	const s32 pitch = lineSize - widthInBytes;
 
 	u8* bmpData = new u8[header.BitmapDataSize];
 	file->read(bmpData, header.BitmapDataSize);
@@ -297,12 +375,23 @@ IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
 	// decompress data if needed
 	switch(header.Compression)
 	{
-	case 1: // 8 bit rle
+	case 1: // 8 bit RLE
 		decompress8BitRLE(bmpData, header.BitmapDataSize, header.Width, header.Height, pitch);
+		header.BitmapDataSize = (header.Width + pitch) * header.Height;
 		break;
-	case 2: // 4 bit rle
+	case 2: // 4 bit RLE
 		decompress4BitRLE(bmpData, header.BitmapDataSize, header.Width, header.Height, pitch);
+		header.BitmapDataSize = ((header.Width+1)/2 + pitch) * header.Height;
 		break;
+	}
+
+	if (header.BitmapDataSize < lineSize * header.Height)
+	{
+		os::Printer::log("Bitmap data is cut off.", ELL_ERROR);
+
+		delete [] paletteData;
+		delete [] bmpData;
+		return 0;
 	}
 
 	// create surface
@@ -358,6 +447,9 @@ IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
 cleanup:
 	delete [] paletteData;
 	delete [] bmpData;
+
+	if ( image && topDown )
+		image->flip(true, false);
 
 	return image;
 }

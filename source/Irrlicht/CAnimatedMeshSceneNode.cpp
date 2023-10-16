@@ -5,8 +5,8 @@
 #include "CAnimatedMeshSceneNode.h"
 #include "IVideoDriver.h"
 #include "ISceneManager.h"
-#include "S3DVertex.h"
 #include "os.h"
+#include "IFileSystem.h"
 #ifdef _IRR_COMPILE_WITH_SHADOW_VOLUME_SCENENODE_
 #include "CShadowVolumeSceneNode.h"
 #else
@@ -14,9 +14,7 @@
 #endif // _IRR_COMPILE_WITH_SHADOW_VOLUME_SCENENODE_
 #include "IAnimatedMeshMD3.h"
 #include "CSkinnedMesh.h"
-#include "IDummyTransformationSceneNode.h"
 #include "IBoneSceneNode.h"
-#include "IMaterialRenderer.h"
 #include "IMesh.h"
 #include "IMeshCache.h"
 #include "IAnimatedMesh.h"

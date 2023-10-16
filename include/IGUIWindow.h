@@ -6,7 +6,6 @@
 #define IRR_I_GUI_WINDOW_H_INCLUDED
 
 #include "IGUIElement.h"
-#include "EMessageBoxFlags.h"
 
 namespace irr
 {

@@ -11,6 +11,7 @@
 #include "IImageLoader.h"
 #include "IImageWriter.h"
 #include "IMaterialRenderer.h"
+#include "IMeshSceneNode.h"
 #include "IAnimatedMeshSceneNode.h"
 #include "CMeshManipulator.h"
 #include "CColorConverter.h"

@@ -10,7 +10,6 @@
 
 #include "IParticleSphereEmitter.h"
 #include "irrArray.h"
-#include "aabbox3d.h"
 
 namespace irr
 {

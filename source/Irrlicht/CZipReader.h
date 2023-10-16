@@ -11,7 +11,6 @@
 
 #include "IReadFile.h"
 #include "irrArray.h"
-#include "irrString.h"
 #include "IFileSystem.h"
 #include "CFileList.h"
 

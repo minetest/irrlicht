@@ -7,7 +7,6 @@
 
 #include "IReferenceCounted.h"
 #include "irrArray.h"
-#include "irrString.h"
 #include "path.h"
 #include "vector3d.h"
 #include "dimension2d.h"

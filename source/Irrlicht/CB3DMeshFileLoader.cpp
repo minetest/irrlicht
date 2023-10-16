@@ -13,7 +13,7 @@
 #include "CMeshTextureLoader.h"
 
 #include "IVideoDriver.h"
-#include "IFileSystem.h"
+#include "IAttributes.h"
 #include "os.h"
 
 #ifdef _DEBUG
@@ -255,7 +255,7 @@ bool CB3DMeshFileLoader::readChunkMESH(CSkinnedMesh::SJoint *inJoint)
 	os::Printer::log(logStr.c_str(), ELL_DEBUG);
 #endif
 
-	s32 brushID;
+	s32 brushID=-1;
 	B3DFile->read(&brushID, sizeof(brushID));
 #ifdef __BIG_ENDIAN__
 	brushID = os::Byteswap::byteswap(brushID);
@@ -283,10 +283,14 @@ bool CB3DMeshFileLoader::readChunkMESH(CSkinnedMesh::SJoint *inJoint)
 		{
 			scene::SSkinMeshBuffer *meshBuffer = AnimatedMesh->addMeshBuffer();
 
-			if (brushID!=-1)
+			if ( brushID >= 0 && (u32)brushID < Materials.size() )
 			{
 				loadTextures(Materials[brushID]);
 				meshBuffer->Material=Materials[brushID].Material;
+			}
+			else if (brushID != -1)	// -1 is OK
+			{
+				os::Printer::log("Illegal brush ID found", B3DFile->getFileName(), ELL_WARNING);
 			}
 
 			if(readChunkTRIS(meshBuffer,AnimatedMesh->getMeshBuffers().size()-1, VerticesStart)==false)
@@ -364,7 +368,8 @@ bool CB3DMeshFileLoader::readChunkVRTS(CSkinnedMesh::SJoint *inJoint)
 	tex_coord_set_size = os::Byteswap::byteswap(tex_coord_set_size);
 #endif
 
-	if (tex_coord_sets >= max_tex_coords || tex_coord_set_size >= 4) // Something is wrong
+	if (tex_coord_sets < 0 || tex_coord_set_size < 0 ||
+		tex_coord_sets >= max_tex_coords || tex_coord_set_size >= 4) // Something is wrong
 	{
 		os::Printer::log("tex_coord_sets or tex_coord_set_size too big", B3DFile->getFileName(), ELL_ERROR);
 		return false;
@@ -460,7 +465,7 @@ bool CB3DMeshFileLoader::readChunkTRIS(scene::SSkinMeshBuffer *meshBuffer, u32 m
 
 	bool showVertexWarning=false;
 
-	s32 triangle_brush_id; // Note: Irrlicht can't have different brushes for each triangle (using a workaround)
+	s32 triangle_brush_id=-1; // Note: Irrlicht can't have different brushes for each triangle (using a workaround)
 	B3DFile->read(&triangle_brush_id, sizeof(triangle_brush_id));
 #ifdef __BIG_ENDIAN__
 	triangle_brush_id = os::Byteswap::byteswap(triangle_brush_id);
@@ -468,14 +473,20 @@ bool CB3DMeshFileLoader::readChunkTRIS(scene::SSkinMeshBuffer *meshBuffer, u32 m
 
 	SB3dMaterial *B3dMaterial;
 
-	if (triangle_brush_id != -1)
+	if (triangle_brush_id >= 0 && (u32)triangle_brush_id < Materials.size())
 	{
 		loadTextures(Materials[triangle_brush_id]);
 		B3dMaterial = &Materials[triangle_brush_id];
 		meshBuffer->Material = B3dMaterial->Material;
 	}
 	else
+	{
 		B3dMaterial = 0;
+		if (triangle_brush_id < -1) // -1 is OK
+		{
+			os::Printer::log("Illegal material index for triangle brush found", B3DFile->getFileName(), ELL_WARNING);
+		}
+	}
 
 	const s32 memoryNeeded = B3dStack.getLast().length / sizeof(s32);
 	meshBuffer->Indices.reallocate(memoryNeeded + meshBuffer->Indices.size() + 1);
@@ -594,7 +605,11 @@ bool CB3DMeshFileLoader::readChunkBONE(CSkinnedMesh::SJoint *inJoint)
 #endif
 			globalVertexID += VerticesStart;
 
-			if (AnimatedVertices_VertexID[globalVertexID]==-1)
+			if (globalVertexID >= AnimatedVertices_VertexID.size())
+			{
+				os::Printer::log("Illegal vertex index found", B3DFile->getFileName(), ELL_WARNING);
+			}
+			else if (AnimatedVertices_VertexID[globalVertexID]==-1)
 			{
 				os::Printer::log("B3dMeshLoader: Weight has bad vertex id (no link to meshbuffer index found)");
 			}
@@ -1081,10 +1096,9 @@ void CB3DMeshFileLoader::loadTextures(SB3dMaterial& material) const
 void CB3DMeshFileLoader::readString(core::stringc& newstring)
 {
 	newstring="";
-	while (B3DFile->getPos() <= B3DFile->getSize())
+	c8 character=0;
+	while (B3DFile->read(&character, sizeof(character)) > 0) // until eof
 	{
-		c8 character;
-		B3DFile->read(&character, sizeof(character));
 		if (character==0)
 			return;
 		newstring.append(character);

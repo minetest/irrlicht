@@ -3,11 +3,10 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
 #include "CFileList.h"
-#include "IrrCompileConfig.h"
 #include "irrArray.h"
 #include "coreutil.h"
 
-#include "os.h"
+#include "os.h"	// debug logging
 
 namespace irr
 {

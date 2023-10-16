@@ -10,7 +10,6 @@
 #include "rect.h"
 #include "SColor.h"
 #include "irrAllocator.h"
-#include <string.h>
 
 namespace irr
 {

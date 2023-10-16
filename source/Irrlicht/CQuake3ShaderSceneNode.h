@@ -8,8 +8,7 @@
 #include "IMeshSceneNode.h"
 #include "IQ3Shader.h"
 #include "IFileSystem.h"
-#include "SMeshBuffer.h"
-#include "SMeshBufferLightMap.h"
+#include "CMeshBuffer.h"
 #include "SMesh.h"
 #include "ISceneManager.h"
 

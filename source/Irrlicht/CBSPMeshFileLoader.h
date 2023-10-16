@@ -7,7 +7,6 @@
 
 #include "IMeshLoader.h"
 #include "IFileSystem.h"
-#include "IVideoDriver.h"
 #include "ISceneManager.h"
 #include "IQ3Shader.h"
 

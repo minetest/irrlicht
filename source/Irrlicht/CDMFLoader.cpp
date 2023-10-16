@@ -25,10 +25,11 @@
 #include "CMeshTextureLoader.h"
 #include "ISceneManager.h"
 #include "IAttributes.h"
+#include "IVideoDriver.h"
 #include "SAnimatedMesh.h"
 #include "SSkinMeshBuffer.h"
+#include "SMesh.h"
 #include "irrString.h"
-#include "irrMath.h"
 #include "dmfsupport.h"
 
 namespace irr

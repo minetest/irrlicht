@@ -6,8 +6,6 @@
 #define IRR_C_LOGGER_H_INCLUDED
 
 #include "ILogger.h"
-#include "os.h"
-#include "irrString.h"
 #include "IEventReceiver.h"
 
 namespace irr

@@ -6,7 +6,7 @@
 #define IRR_C_BILLBOARD_SCENE_NODE_H_INCLUDED
 
 #include "IBillboardSceneNode.h"
-#include "SMeshBuffer.h"
+#include "CMeshBuffer.h"
 
 namespace irr
 {

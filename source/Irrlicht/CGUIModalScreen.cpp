@@ -7,7 +7,6 @@
 
 #include "IGUIEnvironment.h"
 #include "os.h"
-#include "IVideoDriver.h"
 #include "IGUISkin.h"
 
 namespace irr

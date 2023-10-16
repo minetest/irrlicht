@@ -14,7 +14,6 @@
 
 #ifdef _IRR_COMPILE_WITH_OPENGL_
 
-#include "IGPUProgrammingServices.h"
 #include "IShaderConstantSetCallBack.h"
 #include "IMaterialRendererServices.h"
 #include "IVideoDriver.h"
@@ -22,7 +21,6 @@
 
 #include "COpenGLDriver.h"
 #include "COpenGLCacheHandler.h"
-#include "COpenGLMaterialRenderer.h"
 
 #include "COpenGLCoreFeature.h"
 

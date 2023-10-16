@@ -6,9 +6,6 @@
 
 #ifdef _IRR_COMPILE_WITH_XML_
 
-#include "irrString.h"
-#include "irrArray.h"
-#include "fast_atof.h"
 #include "CXMLReaderImpl.h"
 
 namespace irr

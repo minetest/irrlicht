@@ -10,7 +10,6 @@
 #include "IMeshManipulator.h"
 #include "IVideoDriver.h"
 #include "SMesh.h"
-#include "SMeshBuffer.h"
 #include "SAnimatedMesh.h"
 #include "IReadFile.h"
 #include "IAttributes.h"
@@ -68,13 +67,26 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 {
 	if (!file)
 		return 0;
+	size_t filesize = file->getSize();
+	if (filesize == 0 || filesize == (size_t)-1L)
+		return 0;
+
+	const io::path fullName = file->getFileName();
+	const io::path relPath = FileSystem->getFileDir(fullName)+"/";
+
+	c8* buf = new c8[filesize+1]; // plus null-terminator (some string functions used in parsing)
+	filesize = file->read((void*)buf, filesize);
+	if ( filesize == 0 )
+	{
+		delete[] buf;
+		return 0;
+	}
+	buf[filesize] = 0;
 
 	if ( getMeshTextureLoader() )
 		getMeshTextureLoader()->setMeshFile(file);
 
-	const long filesize = file->getSize();
-	if (!filesize)
-		return 0;
+	const c8* const bufEnd = buf+filesize;
 
 	const u32 WORD_BUFFER_LENGTH = 512;
 
@@ -85,14 +97,6 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 	SObjMtl * currMtl = new SObjMtl(getIndexTypeHint());
 	Materials.push_back(currMtl);
 	u32 smoothingGroup=0;
-
-	const io::path fullName = file->getFileName();
-	const io::path relPath = FileSystem->getFileDir(fullName)+"/";
-
-	c8* buf = new c8[filesize];
-	memset(buf, 0, filesize);
-	file->read((void*)buf, filesize);
-	const c8* const bufEnd = buf+filesize;
 
 	// Process obj information
 	const c8* bufPtr = buf;
@@ -246,19 +250,20 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 				u32 wlength = copyWord(vertexWord, linePtr, WORD_BUFFER_LENGTH, endPtr);
 				// this function will also convert obj's 1-based index to c++'s 0-based index
 				retrieveVertexIndices(vertexWord, Idx, vertexWord+wlength+1, vertexBuffer.size(), textureCoordBuffer.size(), normalsBuffer.size());
-				if ( -1 != Idx[0] && Idx[0] < (irr::s32)vertexBuffer.size() )
+				if ( Idx[0] >= 0 && Idx[0] < (irr::s32)vertexBuffer.size() )
 					v.Pos = vertexBuffer[Idx[0]];
 				else
 				{
 					os::Printer::log("Invalid vertex index in this line", wordBuffer.c_str(), ELL_ERROR);
 					delete [] buf;
+					cleanUp();
 					return 0;
 				}
-				if ( -1 != Idx[1] && Idx[1] < (irr::s32)textureCoordBuffer.size() )
+				if ( Idx[1] >= 0 && Idx[1] < (irr::s32)textureCoordBuffer.size() )
 					v.TCoords = textureCoordBuffer[Idx[1]];
 				else
 					v.TCoords.set(0.0f,0.0f);
-				if ( -1 != Idx[2] && Idx[2] < (irr::s32)normalsBuffer.size() )
+				if ( Idx[2] >= 0 && Idx[2] < (irr::s32)normalsBuffer.size() )
 					v.Normal = normalsBuffer[Idx[2]];
 				else
 				{
@@ -286,22 +291,29 @@ IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile* file)
 			}
 
 			// triangulate the face
-			const int c = faceCorners[0];
-			for ( u32 i = 1; i < faceCorners.size() - 1; ++i )
+			if ( faceCorners.size() >= 3)
 			{
-				// Add a triangle
-				const int a = faceCorners[i + 1];
-				const int b = faceCorners[i];
-				if (a != b && a != c && b != c)	// ignore degenerated faces. We can get them when we merge vertices above in the VertMap.
+				const int c = faceCorners[0];
+				for ( u32 i = 1; i < faceCorners.size() - 1; ++i )
 				{
-					mbIndexBuffer.push_back(a);
-					mbIndexBuffer.push_back(b);
-					mbIndexBuffer.push_back(c);
+					// Add a triangle
+					const int a = faceCorners[i + 1];
+					const int b = faceCorners[i];
+					if (a != b && a != c && b != c)	// ignore degenerated faces. We can get them when we merge vertices above in the VertMap.
+					{
+						mbIndexBuffer.push_back(a);
+						mbIndexBuffer.push_back(b);
+						mbIndexBuffer.push_back(c);
+					}
+					else
+					{
+						++degeneratedFaces;
+					}
 				}
-				else
-				{
-					++degeneratedFaces;
-				}
+			}
+			else
+			{
+				os::Printer::log("Too few vertices in this line", wordBuffer.c_str());
 			}
 		}
 		break;

@@ -116,7 +116,7 @@ namespace scene
 		/** \return The aspect ratio of the camera. */
 		virtual f32 getAspectRatio() const =0;
 
-		//! Gets the field of view of the camera.
+		//! Gets the vertical field of view of the camera.
 		/** \return The field of view of the camera in radians. */
 		virtual f32 getFOV() const =0;
 
@@ -135,7 +135,7 @@ namespace scene
 		\param aspect: New aspect ratio. */
 		virtual void setAspectRatio(f32 aspect) =0;
 
-		//! Sets the field of view (Default: PI / 2.5f)
+		//! Sets the vertical field of view (Default: PI / 2.5f)
 		/** Also changes projection matrix and resets IsOrthogonal flag.
 		\param fovy: New field of view in radians. */
 		virtual void setFOV(f32 fovy) =0;

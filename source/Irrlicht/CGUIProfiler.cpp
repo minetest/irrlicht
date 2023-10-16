@@ -8,7 +8,7 @@
 #include "IGUITable.h"
 #include "IGUIScrollBar.h"
 #include "IGUIEnvironment.h"
-#include "CProfiler.h"
+#include "IProfiler.h"
 
 namespace irr
 {

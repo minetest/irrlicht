@@ -2,13 +2,12 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-// TODO: replace printf's by logging messages
-
 #include "IrrCompileConfig.h"
 
 #ifdef _IRR_COMPILE_WITH_B3D_WRITER_
 
 #include "CB3DMeshWriter.h"
+#include "SB3DStructs.h"
 #include "os.h"
 #include "ISkinnedMesh.h"
 #include "IMeshBuffer.h"

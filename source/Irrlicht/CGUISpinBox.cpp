@@ -4,12 +4,11 @@
 #include "CGUISpinBox.h"
 #ifdef _IRR_COMPILE_WITH_GUI_
 
-#include "CGUIEditBox.h"
-#include "CGUIButton.h"
+#include "IGUIEditBox.h"
+#include "IGUIButton.h"
 #include "IGUIEnvironment.h"
 #include "IEventReceiver.h"
 #include "fast_atof.h"
-#include <wchar.h>
 
 
 namespace irr
@@ -131,7 +130,7 @@ void CGUISpinBox::setRange(f32 min, f32 max)
 	RangeMin = min;
 	RangeMax = max;
 
-	// we have to round the range - otherwise we can get into an infinte setValue/verifyValueRange cycle.
+	// we have to round the range - otherwise we can get into an infinite setValue/verifyValueRange cycle.
 	wchar_t str[100];
 	swprintf_irr(str, 99, FormatString.c_str(), RangeMin);
 	RangeMin = core::fast_atof(core::stringc(str).c_str());

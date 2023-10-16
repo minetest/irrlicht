@@ -7,6 +7,8 @@
 
 #include "CMD2MeshFileLoader.h"
 #include "CAnimatedMeshMD2.h"
+#include "coreutil.h"
+#include "IReadFile.h"
 #include "os.h"
 
 namespace irr

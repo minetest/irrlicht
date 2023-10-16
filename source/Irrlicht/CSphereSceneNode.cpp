@@ -7,8 +7,6 @@
 #include "CSphereSceneNode.h"
 #include "IVideoDriver.h"
 #include "ISceneManager.h"
-#include "S3DVertex.h"
-#include "os.h"
 #ifdef _IRR_COMPILE_WITH_SHADOW_VOLUME_SCENENODE_
 #include "CShadowVolumeSceneNode.h"
 #else

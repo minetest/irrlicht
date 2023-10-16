@@ -45,8 +45,6 @@
 
 #include "IMeshLoader.h"
 #include "IReadFile.h"
-#include "SMesh.h"
-#include "irrString.h"
 
 namespace irr
 {

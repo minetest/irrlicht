@@ -12,8 +12,7 @@
 #include "IGUIEnvironment.h"
 #include "IVideoDriver.h"
 #include "IGUIFont.h"
-#include "CGUIScrollBar.h"
-#include "os.h"
+#include "IGUIScrollBar.h"
 
 #define ARROW_PAD 15
 

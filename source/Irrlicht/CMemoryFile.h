@@ -7,7 +7,6 @@
 
 #include "IMemoryReadFile.h"
 #include "IWriteFile.h"
-#include "irrString.h"
 
 namespace irr
 {

@@ -53,7 +53,7 @@ namespace irr
 		//! Stops the game timer.
 		/** The timer is reference counted, which means everything which calls
 		stopTimer() will also have to call startTimer(), otherwise the timer may not start/stop
-		corretly again. */
+		correctly again. */
 		virtual void stop() IRR_OVERRIDE
 		{
 			os::Timer::stopTimer();
@@ -62,7 +62,7 @@ namespace irr
 		//! Starts the game timer.
 		/** The timer is reference counted, which means everything which calls
 		stopTimer() will also have to call startTimer(), otherwise the timer may not start/stop
-		corretly again. */
+		correctly again. */
 		virtual void start() IRR_OVERRIDE
 		{
 			os::Timer::startTimer();

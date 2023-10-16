@@ -19,11 +19,8 @@
 #include "SViewFrustum.h"
 #include "irrMath.h"
 #include "os.h"
-#include "IGUIFont.h"
 #include "IFileSystem.h"
 #include "IReadFile.h"
-#include "ITextSceneNode.h"
-#include "IAnimatedMesh.h"
 #include "SMesh.h"
 #include "CDynamicMeshBuffer.h"
 

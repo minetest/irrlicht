@@ -10,12 +10,8 @@
 #include "IFileSystem.h"
 #include "IVideoDriver.h"
 #include "irrString.h"
-#include "SMesh.h"
-#include "SMeshBuffer.h"
-#include "SMeshBufferLightMap.h"
-#include "IMeshManipulator.h"
-#include "matrix4.h"
 #include "quaternion.h"
+#include "CMeshBuffer.h"
 #include "CSkinnedMesh.h"
 
 namespace irr

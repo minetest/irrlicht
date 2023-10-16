@@ -12,7 +12,6 @@
 #include "IXMLWriter.h"
 #include "ISceneUserDataSerializer.h"
 #include "IGUIEnvironment.h"
-#include "IMaterialRenderer.h"
 #include "IReadFile.h"
 #include "IWriteFile.h"
 #include "ISceneLoader.h"

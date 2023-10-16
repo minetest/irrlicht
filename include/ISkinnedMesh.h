@@ -6,9 +6,10 @@
 #define IRR_I_SKINNED_MESH_H_INCLUDED
 
 #include "irrArray.h"
-#include "IBoneSceneNode.h"
 #include "IAnimatedMesh.h"
 #include "SSkinMeshBuffer.h"
+#include "quaternion.h"
+#include "irrString.h"
 
 namespace irr
 {

@@ -6,7 +6,6 @@
 #define IRR_I_SCENE_NODE_ANIMATOR_CAMERA_FPS_H_INCLUDED
 
 #include "ISceneNodeAnimator.h"
-#include "IEventReceiver.h"
 #include "irrArray.h"
 
 namespace irr

@@ -33,10 +33,7 @@
 #include "IMeshLoader.h"
 #include "IReadFile.h"
 #include "IFileSystem.h"
-#include "SMesh.h"
-#include "IVideoDriver.h"
 #include "ISceneManager.h"
-#include "SAnimatedMesh.h"
 
 namespace irr
 {
