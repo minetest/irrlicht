@@ -32,10 +32,10 @@ u8 *CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const STGAHeader& 
 	// This was written and sent in by Jon Pry, thank you very much!
 	// I only changed the formatting a little bit.
 
-	s32 bytesPerPixel = header.PixelDepth/8;
-	s32 imageSize =  header.ImageHeight * header.ImageWidth * bytesPerPixel;
+	const u32 bytesPerPixel = header.PixelDepth/8;
+	const u32 imageSize =  header.ImageHeight * header.ImageWidth * bytesPerPixel;
 	u8* data = new u8[imageSize];
-	s32 currentByte = 0;
+	u32 currentByte = 0;
 
 	while(currentByte < imageSize)
 	{
@@ -46,8 +46,17 @@ u8 *CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const STGAHeader& 
 		{
 			chunkheader++; // Add 1 To The Value To Get Total Number Of Raw Pixels
 
-			file->read(&data[currentByte], bytesPerPixel * chunkheader);
-			currentByte += bytesPerPixel * chunkheader;
+			const u32 bytesToRead = bytesPerPixel * chunkheader;
+			if ( currentByte+bytesToRead < imageSize )
+			{
+				file->read(&data[currentByte], bytesToRead);
+				currentByte += bytesToRead;
+			}
+			else
+			{
+				os::Printer::log("Compressed TGA file RAW chunk tries writing beyond buffer", file->getFileName(), ELL_WARNING);
+				break;
+			}
 		}
 		else
 		{
@@ -56,16 +65,23 @@ u8 *CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const STGAHeader& 
 			// If It's An RLE Header
 			chunkheader -= 127; // Subtract 127 To Get Rid Of The ID Bit
 
-			s32 dataOffset = currentByte;
-			file->read(&data[dataOffset], bytesPerPixel);
+			u32 dataOffset = currentByte;
+			if ( dataOffset+bytesPerPixel < imageSize )
+			{
+				file->read(&data[dataOffset], bytesPerPixel);
+				currentByte += bytesPerPixel;
+			}
+			else
+			{
+				os::Printer::log("Compressed TGA file RLE headertries writing beyond buffer", file->getFileName(), ELL_WARNING);
+				break;
+			}
 
-			currentByte += bytesPerPixel;
-
-			for(s32 counter = 1; counter < chunkheader; counter++)
+			for(u32 counter = 1; counter < chunkheader; counter++)
 			{
 				if ( currentByte + bytesPerPixel <= imageSize )
 				{
-					for(s32 elementCounter=0; elementCounter < bytesPerPixel; elementCounter++)
+					for(u32 elementCounter=0; elementCounter < bytesPerPixel; elementCounter++)
 					{
 						data[currentByte + elementCounter] = data[dataOffset + elementCounter];
 					}
