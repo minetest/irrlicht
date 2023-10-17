@@ -211,8 +211,7 @@ public:
 	only mode or read from in write only mode.
 	Support for this feature depends on the driver, so don't rely on the
 	texture being write-protected when locking with read-only, etc.
-	\param mipmapLevel NOTE: Currently broken, sorry, we try if we can repair it for 1.9 release.
-	Number of the mipmapLevel to lock. 0 is main texture.
+	\param mipmapLevel Number of the mipmapLevel to lock. 0 is main texture.
 	Non-existing levels will silently fail and return 0.
 	\param layer It determines which cubemap face or texture array layer should be locked.
 	\param lockFlags See E_TEXTURE_LOCK_FLAGS documentation.

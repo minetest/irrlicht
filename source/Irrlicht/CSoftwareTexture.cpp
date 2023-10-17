@@ -78,7 +78,10 @@ CSoftwareTexture::~CSoftwareTexture()
 //! lock function
 void* CSoftwareTexture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel, u32 layer, E_TEXTURE_LOCK_FLAGS lockFlags)
 {
-	return Image->getData();
+	if ( mipmapLevel == 0 )
+		return Image->getData();
+	else
+		return Image->getMipMapsData(mipmapLevel);
 }
 
 
