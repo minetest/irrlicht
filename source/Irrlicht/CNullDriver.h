@@ -747,6 +747,8 @@ namespace video
 			return (f32) getAverage ( p[(y * pitch) + x] );
 		}
 
+		// Check if z-writing should be enabled
+		// Note: If ZBuffer is disabled completely with ECFN_DISABLED it will still do nothing
 		inline bool getWriteZBuffer(const SMaterial& material) const
 		{
 			switch ( material.ZWriteEnable )

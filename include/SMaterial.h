@@ -473,7 +473,7 @@ namespace video
 
 		//! Is the zbuffer writable or is it read-only. Default: EZW_AUTO.
 		/** If this parameter is not EZW_OFF, you probably also want to set ZBuffer 
-		to values other than ECFN_DISABLED */
+		to values other than ECFN_DISABLED (which disables the zbuffer completely) */
 		E_ZWRITE ZWriteEnable:3;
 
 		//! Is backface culling enabled? Default: true
