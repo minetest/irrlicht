@@ -201,6 +201,11 @@ f32 CCameraSceneNode::getFOV() const
 	return Fovy;
 }
 
+core::vector2df CCameraSceneNode::getLensShift() const
+{
+	return LensShift;
+}
+
 
 void CCameraSceneNode::setNearValue(f32 f)
 {
@@ -231,10 +236,15 @@ void CCameraSceneNode::setFOV(f32 f)
 	recalculateProjectionMatrix();
 }
 
+void CCameraSceneNode::setLensShift(const core::vector2df& shift)
+{
+	LensShift = shift;
+	recalculateProjectionMatrix();
+}
 
 void CCameraSceneNode::recalculateProjectionMatrix()
 {
-	ViewArea.getTransform ( video::ETS_PROJECTION ).buildProjectionMatrixPerspectiveFovLH(Fovy, Aspect, ZNear, ZFar, HasD3DStyleProjectionMatrix);
+	ViewArea.getTransform ( video::ETS_PROJECTION ).buildProjectionMatrixPerspectiveFovLH(Fovy, Aspect, ZNear, ZFar, HasD3DStyleProjectionMatrix, LensShift.X, LensShift.Y);
 	IsOrthogonal = false;
 }
 
@@ -330,6 +340,7 @@ void CCameraSceneNode::serializeAttributes(io::IAttributes* out, io::SAttributeR
 	out->addFloat("Aspect", Aspect);
 	out->addFloat("ZNear", ZNear);
 	out->addFloat("ZFar", ZFar);
+	out->addVector2d("LensShift", LensShift);
 	out->addBool("Binding", TargetAndRotationAreBound);
 	out->addBool("ReceiveInput", InputReceiverEnabled);
 }
@@ -339,15 +350,15 @@ void CCameraSceneNode::deserializeAttributes(io::IAttributes* in, io::SAttribute
 {
 	ICameraSceneNode::deserializeAttributes(in, options);
 
-	Target = in->getAttributeAsVector3d("Target");
-	UpVector = in->getAttributeAsVector3d("UpVector");
-	Fovy = in->getAttributeAsFloat("Fovy");
-	Aspect = in->getAttributeAsFloat("Aspect");
-	ZNear = in->getAttributeAsFloat("ZNear");
-	ZFar = in->getAttributeAsFloat("ZFar");
-	TargetAndRotationAreBound = in->getAttributeAsBool("Binding");
-	if ( in->findAttribute("ReceiveInput") )
-		InputReceiverEnabled = in->getAttributeAsBool("ReceiveInput");
+	Target = in->getAttributeAsVector3d("Target", Target);
+	UpVector = in->getAttributeAsVector3d("UpVector", UpVector);
+	Fovy = in->getAttributeAsFloat("Fovy", Fovy);
+	Aspect = in->getAttributeAsFloat("Aspect", Aspect);
+	ZNear = in->getAttributeAsFloat("ZNear", ZNear);
+	ZFar = in->getAttributeAsFloat("ZFar", ZFar);
+	LensShift = in->getAttributeAsVector2d("LensShift", LensShift);
+	TargetAndRotationAreBound = in->getAttributeAsBool("Binding", TargetAndRotationAreBound);
+	InputReceiverEnabled = in->getAttributeAsBool("ReceiveInput", InputReceiverEnabled);
 
 	recalculateProjectionMatrix();
 	recalculateViewArea();

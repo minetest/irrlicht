@@ -95,6 +95,9 @@ namespace scene
 		//! \return Field of view of the camera
 		virtual f32 getFOV() const IRR_OVERRIDE;
 
+		//! Get the horizontal and vertical lens/projection plane shift
+		virtual core::vector2df getLensShift() const IRR_OVERRIDE;
+
 		//! Sets the value of the near clipping plane. (default: 1.0f)
 		virtual void setNearValue(f32 zn) IRR_OVERRIDE;
 
@@ -106,6 +109,9 @@ namespace scene
 
 		//! Sets the field of view (Default: PI / 3.5f)
 		virtual void setFOV(f32 fovy) IRR_OVERRIDE;
+
+		//! Set the horizontal and vertical lens/projection plane shift
+		virtual void setLensShift(const core::vector2df& shift) IRR_OVERRIDE;
 
 		//! PreRender event
 		virtual void OnRegisterSceneNode() IRR_OVERRIDE;
@@ -162,6 +168,7 @@ namespace scene
 		f32 Aspect;	// Aspect ratio.
 		f32 ZNear;	// value of the near view-plane.
 		f32 ZFar;	// Z-value of the far view-plane.
+		core::vector2df LensShift;	// For rendering off-center
 
 		SViewFrustum ViewArea;
 		core::matrix4 Affector;

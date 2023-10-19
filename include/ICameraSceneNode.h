@@ -120,6 +120,13 @@ namespace scene
 		/** \return The field of view of the camera in radians. */
 		virtual f32 getFOV() const =0;
 
+		//! Get the horizontal and vertical lens/projection plane shift
+		/** \return Project plane offset */
+		virtual core::vector2df getLensShift() const
+		{
+			return core::vector2df(0.f, 0.f);	
+		}
+
 		//! Sets the value of the near clipping plane. (default: 1.0f)
 		/** Also changes projection matrix and resets IsOrthogonal flag.
 		\param zn: New z near value. */
@@ -139,6 +146,16 @@ namespace scene
 		/** Also changes projection matrix and resets IsOrthogonal flag.
 		\param fovy: New field of view in radians. */
 		virtual void setFOV(f32 fovy) =0;
+
+		//! Set the horizontal and vertical lens/projection plane shift
+		/** Like rendering a larger field of view and then cropping
+		it off-center. Allows for things like 2-point perspective.
+		\param shift: Offset by which the projection plane is moved.
+		If you move by 1 or -1 it will move the center by half a screen.
+		Positive X go to the left and positive Y go down.
+		By default it will be 0,0 */
+		virtual void setLensShift(const core::vector2df& shift)
+		{}
 
 		//! Get the view frustum.
 		/** \return The current view frustum. */
