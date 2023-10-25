@@ -149,7 +149,7 @@ void CGUIEnvironment::loadBuiltInFont()
 	CGUIFont* font = new CGUIFont(this, DefaultFontName );
 	if (!font->load(file))
 	{
-		os::Printer::log("Error: Could not load built-in Font. Did you compile without the BMP loader?", ELL_ERROR);
+		os::Printer::log("Error: Could not load built-in Font.", ELL_ERROR);
 		font->drop();
 		file->drop();
 		return;
