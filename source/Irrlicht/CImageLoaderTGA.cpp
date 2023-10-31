@@ -46,7 +46,7 @@ u8 *CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const STGAHeader& 
 			chunkheader++; // Add 1 To The Value To Get Total Number Of Raw Pixels
 
 			const u32 bytesToRead = bytesPerPixel * chunkheader;
-			if ( currentByte+bytesToRead < imageSize )
+			if ( currentByte+bytesToRead <= imageSize )
 			{
 				file->read(&data[currentByte], bytesToRead);
 				currentByte += bytesToRead;
