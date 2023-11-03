@@ -186,7 +186,7 @@ jobs:
           -
             use: TRUE
             label: '(with SDL)'
-            pkgs: SDL2
+            pkgs: sdl2
 
     steps:
       - uses: actions/checkout@v3
