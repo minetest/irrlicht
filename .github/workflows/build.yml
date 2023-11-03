@@ -21,7 +21,7 @@ jobs:
 
       - name: Build
         run: |
-          cmake .
+          cmake . -DUSE_SDL2=OFF
           make VERBOSE=1 -j2
 
       - name: Test
@@ -52,7 +52,7 @@ jobs:
 
       - name: Build
         run: |
-          cmake . -DBUILD_EXAMPLES=1 -DENABLE_OPENGL=OFF -DENABLE_GLES2=ON
+          cmake . -DBUILD_EXAMPLES=1 -DUSE_SDL2=OFF -DENABLE_OPENGL=OFF -DENABLE_GLES2=ON
           make -j2
 
       - name: Test (headless)
