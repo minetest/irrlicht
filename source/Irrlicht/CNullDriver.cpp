@@ -2164,9 +2164,6 @@ io::IAttributes* CNullDriver::createAttributesFromMaterial(const video::SMateria
 	attr->addFloat("PolygonOffsetDepthBias", material.PolygonOffsetDepthBias);
 	attr->addFloat("PolygonOffsetSlopeScale", material.PolygonOffsetSlopeScale);
 
-	if ( material.UserData )
-		material.UserData->serializeAttributes(attr, options);
-
 	// TODO: Would be nice to have a flag that only serializes rest of texture data when a texture pointer exists.
 	prefix = "BilinearFilter";
 	for (i=0; i<MATERIAL_MAX_TEXTURES; ++i)
@@ -2251,9 +2248,6 @@ void CNullDriver::fillMaterialStructureFromAttributes(video::SMaterial& outMater
 	outMaterial.PolygonOffsetDirection = (video::E_POLYGON_OFFSET)attr->getAttributeAsEnumeration("PolygonOffsetDirection", video::PolygonOffsetDirectionNames, outMaterial.PolygonOffsetDirection);
 	outMaterial.PolygonOffsetDepthBias = attr->getAttributeAsFloat("PolygonOffsetDepthBias", outMaterial.PolygonOffsetDepthBias);
 	outMaterial.PolygonOffsetSlopeScale = attr->getAttributeAsFloat("PolygonOffsetSlopeScale", outMaterial.PolygonOffsetSlopeScale);
-
-	if ( outMaterial.UserData )
-		outMaterial.UserData->deserializeAttributes(attr);
 
 	prefix = "BilinearFilter";
 	if (attr->existsAttribute(prefix.c_str())) // legacy

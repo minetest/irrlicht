@@ -29,12 +29,6 @@ namespace io
 				return getType() == other.getType();
 			}
 			
-			//! Writes data attributes
-			virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const {}
-
-			//! Reads data attributes
-			virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0) {}
-
 			//! Used internally by Irrlicht to check if data has changed
 			bool operator!=(const IUserData& other) const
 			{
