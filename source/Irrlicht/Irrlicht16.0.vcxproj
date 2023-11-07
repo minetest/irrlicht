@@ -606,6 +606,7 @@
     <ClInclude Include="..\..\include\IRenderTarget.h" />
     <ClInclude Include="..\..\include\IrrCompileConfig.h" />
     <ClInclude Include="..\..\include\irrlicht.h" />
+    <ClInclude Include="..\..\include\IUserData.h" />
     <ClInclude Include="..\..\include\leakHunter.h" />
     <ClInclude Include="..\..\include\IrrlichtDevice.h" />
     <ClInclude Include="..\..\include\irrTypes.h" />

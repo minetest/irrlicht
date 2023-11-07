@@ -154,6 +154,7 @@
 #include "ITexture.h"
 #include "ITimer.h"
 #include "ITriangleSelector.h"
+#include "IUserData.h"
 #include "IVertexBuffer.h"
 #include "IVideoDriver.h"
 #include "IVideoModeList.h"

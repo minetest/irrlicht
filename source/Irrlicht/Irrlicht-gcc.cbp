@@ -421,6 +421,7 @@
 		<Unit filename="../../include/EReadFileType.h" />
 		<Unit filename="../../include/ESceneNodeAnimatorTypes.h" />
 		<Unit filename="../../include/ESceneNodeTypes.h" />
+		<Unit filename="../../include/ESceneNodeUpdateAbs.h" />
 		<Unit filename="../../include/EShaderTypes.h" />
 		<Unit filename="../../include/ETerrainElements.h" />
 		<Unit filename="../../include/IAnimatedMesh.h" />
@@ -1014,6 +1015,7 @@
 		<Unit filename="IDepthBuffer.h" />
 		<Unit filename="IImagePresenter.h" />
 		<Unit filename="ITriangleRenderer.h" />
+		<Unit filename="IUserData.h" />
 		<Unit filename="IZBuffer.h" />
 		<Unit filename="Irrlicht.cpp" />
 		<Unit filename="Octree.h" />

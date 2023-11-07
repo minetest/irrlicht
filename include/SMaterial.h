@@ -11,6 +11,7 @@
 #include "EMaterialTypes.h"
 #include "EMaterialFlags.h"
 #include "SMaterialLayer.h"
+#include "IUserData.h"
 
 namespace irr
 {
@@ -313,7 +314,8 @@ namespace video
 			PolygonOffsetFactor(0), PolygonOffsetDirection(EPO_FRONT),
 			Wireframe(false), PointCloud(false), GouraudShading(true),
 			Lighting(true), ZWriteEnable(EZW_AUTO), BackfaceCulling(true), FrontfaceCulling(false),
-			FogEnable(false), NormalizeNormals(false), UseMipMaps(true)
+			FogEnable(false), NormalizeNormals(false), UseMipMaps(true),
+			UserData(0)
 		{ }
 
 		//! Texture layer array.
@@ -492,6 +494,11 @@ namespace video
 		//! Shall mipmaps be used if available
 		/** Sometimes, disabling mipmap usage can be useful. Default: true */
 		bool UseMipMaps:1;
+
+		//! Allow users to add their own material data
+		//! User is resonsible for the memory of this pointer
+		//! You should override IUserData::compare for user custom data, so SMaterial knows when it changes
+		io::IUserData* UserData;
 
 		//! Gets the texture transformation matrix for level i
 		/** \param i The desired level. Must not be larger than MATERIAL_MAX_TEXTURES
@@ -713,7 +720,8 @@ namespace video
 				PolygonOffsetSlopeScale != b.PolygonOffsetSlopeScale ||
 				PolygonOffsetFactor != b.PolygonOffsetFactor ||
 				PolygonOffsetDirection != b.PolygonOffsetDirection ||
-				UseMipMaps != b.UseMipMaps
+				UseMipMaps != b.UseMipMaps ||
+				UserData != b.UserData || (UserData && b.UserData && *UserData != *b.UserData)
 				;
 			for (u32 i=0; (i<MATERIAL_MAX_TEXTURES_USED) && !different; ++i)
 			{
