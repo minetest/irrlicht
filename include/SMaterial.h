@@ -496,7 +496,7 @@ namespace video
 		bool UseMipMaps:1;
 
 		//! Allow users to add their own material data
-		//! User is resonsible for the memory of this pointer
+		//! User is responsible for the memory of this pointer
 		//! You should override IUserData::compare for user custom data, so SMaterial knows when it changes
 		io::IUserData* UserData;
 
@@ -721,7 +721,8 @@ namespace video
 				PolygonOffsetFactor != b.PolygonOffsetFactor ||
 				PolygonOffsetDirection != b.PolygonOffsetDirection ||
 				UseMipMaps != b.UseMipMaps ||
-				UserData != b.UserData || (UserData && b.UserData && *UserData != *b.UserData)
+				(UserData && !b.UserData) || (!UserData && b.UserData) || // can still equal with different pointers
+				(UserData && b.UserData && *UserData != *b.UserData)
 				;
 			for (u32 i=0; (i<MATERIAL_MAX_TEXTURES_USED) && !different; ++i)
 			{
