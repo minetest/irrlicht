@@ -87,6 +87,12 @@ bool CImageWriterPNG::writeImage(io::IWriteFile* file, IImage* image,u32 param) 
 		return false;
 	}
 
+	// Set compression level 
+	// Sadly Irrlicht used param=0 as default and an u32 type
+	// So to avoid breaking downward compatibility we keep 0 as default (which is -1 in zlib) and subtract 1 from param to everything into zlib range
+	if (param <= 10)	// Z_BEST_COMPRESSION is 9 - values above have so far no meaning
+		png_set_compression_level(png_ptr, (int)param-1);
+
 	// Allocate the png info struct
 	png_infop info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr)

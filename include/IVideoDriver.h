@@ -1208,8 +1208,10 @@ namespace video
 		for writing the image.
 		\param image Image to write.
 		\param filename Name of the file to write.
-		\param param Control parameter for the backend (e.g. compression
-		level).
+		\param param Control parameter for the backend. Meaning depends on format:
+		0 is always some default
+		For jpg it's otherwise the quality level in range 1-100 (0=default is 75)
+		For png it's the compression level in range 1-10 (0=default is converted to Z_DEFAULT_COMPRESSION)
 		\return True on successful write. */
 		virtual bool writeImageToFile(IImage* image, const io::path& filename, u32 param = 0) = 0;
 
@@ -1219,8 +1221,10 @@ namespace video
 		\param image Image to write.
 		\param file  An already open io::IWriteFile object. The name
 		will be used to determine the appropriate image writer to use.
-		\param param Control parameter for the backend (e.g. compression
-		level).
+		\param param Control parameter for the backend. Meaning depends on format:
+		0 is always some default
+		For jpg it's otherwise the quality level in range 1-100 (0=default is 75)
+		For png it's the compression level in range 1-10 (0=default is converted to Z_DEFAULT_COMPRESSION)
 		\return True on successful write. */
 		virtual bool writeImageToFile(IImage* image, io::IWriteFile* file, u32 param =0) =0;
 
