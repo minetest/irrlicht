@@ -124,11 +124,12 @@ namespace scene
 		ETNS_PLANE_ORIGIN,
 
 		//! Distance from node center to camera plane
+		//! With orthographic cameras there's a high chance you might prefer this one
 		ETNS_PLANE_CENTER,
 
 		//! Default sorting Irrlicht uses currently
 		//! This may change in the future
-		ETNS_DEFAULT = ETNS_PLANE_CENTER
+		ETNS_DEFAULT = ETNS_CENTER
 	};
 
 	class IAnimatedMesh;
