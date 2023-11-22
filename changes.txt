@@ -1,6 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Add options for transparency node sorting algorithm
 - CImageWriterPNG now also supports the writeImageToFile param to allow setting compressing level. 0 stays default, 1-10 for range increasing compression level.
 - Add io::IUserData which can be set in SMaterial to make it easer passing additional material values to shaders
 - Add lens shift support for the camera and the perspective projection functions

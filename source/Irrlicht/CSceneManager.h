@@ -445,6 +445,16 @@ namespace scene
 		//! Returns current render pass.
 		virtual E_SCENE_NODE_RENDER_PASS getSceneNodeRenderPass() const IRR_OVERRIDE;
 
+		//! Get current node sorting algorithm used for transparent nodes
+		virtual E_TRANSPARENT_NODE_SORTING getTransparentNodeSorting() const IRR_OVERRIDE
+		{
+			return TransparentNodeSorting;
+		}
+
+		//! Set the node sorting algorithm used for transparent nodes
+		virtual void setTransparentNodeSorting(E_TRANSPARENT_NODE_SORTING sorting) IRR_OVERRIDE;
+
+
 		//! Creates a new scene manager.
 		virtual ISceneManager* createNewSceneManager(bool cloneContent) IRR_OVERRIDE;
 
@@ -567,37 +577,13 @@ namespace scene
 			void* TextureValue;
 		};
 
-		/*
-			const core::aabbox3d<f32> box = Node->getTransformedBoundingBox();
-			Distance = core::min_(camera.getDistanceFromSQ(box.MinEdge), camera.getDistanceFromSQ(box.MaxEdge));
-		*/
-		static inline f32 estimatedSphereDistance(const ISceneNode* node, const core::vector3df& camera)
-		{
-			const core::aabbox3d<f32>& box = node->getBoundingBox();
-			const f32* m = node->getAbsoluteTransformation().pointer();
-
-			f32 p[4];
-			p[0] = camera.X - (box.MinEdge.X * m[0] + box.MinEdge.Y * m[4] + box.MinEdge.Z * m[8] + m[12]);
-			p[1] = camera.Y - (box.MinEdge.X * m[1] + box.MinEdge.Y * m[5] + box.MinEdge.Z * m[9] + m[13]);
-			p[2] = camera.Z - (box.MinEdge.X * m[2] + box.MinEdge.Y * m[6] + box.MinEdge.Z * m[10] + m[14]);
-			f32 l0 = (p[0] * p[0]) + (p[1] * p[1]) + (p[2] * p[2]);
-
-			p[0] = camera.X - (box.MaxEdge.X * m[0] + box.MaxEdge.Y * m[4] + box.MaxEdge.Z * m[8] + m[12]);
-			p[1] = camera.Y - (box.MaxEdge.X * m[1] + box.MaxEdge.Y * m[5] + box.MaxEdge.Z * m[9] + m[13]);
-			p[2] = camera.Z - (box.MaxEdge.X * m[2] + box.MaxEdge.Y * m[6] + box.MaxEdge.Z * m[10] + m[14]);
-			f32 l1 = (p[0] * p[0]) + (p[1] * p[1]) + (p[2] * p[2]);
-			return core::min_(l0, l1);
-		}
-
-		//! sort on distance (center) to camera
+		//! Sort on distance to camera
+		//! Larger distances drawn first
 		struct TransparentNodeEntry
 		{
-			TransparentNodeEntry(ISceneNode* n, const core::vector3df& camera)
-				: Node(n)
-			{
-				//Distance = Node->getAbsoluteTransformation().getTranslation().getDistanceFromSQ(camera);
-				Distance = estimatedSphereDistance(n, camera);
-			}
+			TransparentNodeEntry(ISceneNode* n, const f32 distance)
+				: Node(n), Distance(distance)
+			{}
 
 			bool operator < (const TransparentNodeEntry& other) const
 			{
@@ -681,6 +667,12 @@ namespace scene
 		IMeshCache* MeshCache;
 
 		E_SCENE_NODE_RENDER_PASS CurrentRenderPass;
+
+		//! Algorithm used to sort transparent nodes
+		E_TRANSPARENT_NODE_SORTING TransparentNodeSorting;
+		//! Pointer to the actual algorithm to get the distance
+		// (Could be we have to pass more parameters for better results, like view normal)
+		f32 (*funcTransparentNodeDistance)(const ISceneNode* node, const core::vector3df& camera);
 
 		//! An optional callbacks manager to allow the user app finer control
 		//! over the scene lighting and rendering.

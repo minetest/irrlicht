@@ -97,7 +97,32 @@ namespace scene
 
 		//! Drawn after transparent effect nodes. For custom gui's. Unsorted (in order nodes registered themselves). 
 		ESNRP_GUI = 128
+	};
 
+	//! Enumeration for sorting transparent nodes
+	/** Sorting used for nodes with ESNRP_TRANSPARENT or ESNRP_AUTOMATIC+transparency.
+	Also used for ESNRP_TRANSPARENT_EFFECT nodes (in an independent array)
+	Transparent nodes are always drawn back to front based on distance to camera.
+	This enum controls which points are used for the distance. */
+	enum E_TRANSPARENT_NODE_SORTING
+	{
+		//! Don't sort, but  draw in the order in which nodes registered themselves for rendering
+		//! By default this is the order in which nodes are in the scenegraph
+		//! Which can be used to do some custom sorting via scene-graph (mainly useful if you only have to that once)
+		ETNS_NONE,
+
+		//! Distance from node origin to camera
+		ETNS_ORIGIN,
+
+		//! Distance from node center to camera
+		ETNS_CENTER,
+
+		//! Distance from the nearest of the 2 transformed bounding-box extend corners to camera
+		ETNS_BBOX_EXTENTS,
+
+		//! Default sorting Irrlicht uses currently
+		//! This may change in the future
+		ETNS_DEFAULT = ETNS_CENTER
 	};
 
 	class IAnimatedMesh;
@@ -1675,6 +1700,12 @@ namespace scene
 
 		//! Set current render pass.
 		virtual void setCurrentRenderPass(E_SCENE_NODE_RENDER_PASS nextPass) =0;
+
+		//! Get current node sorting algorithm used for transparent nodes
+		virtual E_TRANSPARENT_NODE_SORTING getTransparentNodeSorting() const = 0;
+
+		//! Set the node sorting algorithm used for transparent nodes
+		virtual void setTransparentNodeSorting(E_TRANSPARENT_NODE_SORTING sorting) = 0;
 
 		//! Get an instance of a geometry creator.
 		/** The geometry creator provides some helper methods to create various types of
