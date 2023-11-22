@@ -672,6 +672,11 @@ namespace scene
 		//! Algorithm used to sort transparent nodes
 		E_TRANSPARENT_NODE_SORTING TransparentNodeSorting;
 		//! Pointer to the actual algorithm to get the distance
+		// NOTE: If we ever allow users to add sorting functions in the public interface 
+		//       then maybe we should not make the distance function a callback
+		//       but sorting the full array at once. That could give more flexibility,
+		//       like easier sorting based on several parameters.
+		//       I thought about that approach too late and not going back to it for now.
 		f32 (*funcTransparentNodeDistance)(const ISceneNode* node, const core::vector3df& cameraPos, const core::vector3df& cameraViewNormalized);
 
 		//! An optional callbacks manager to allow the user app finer control
