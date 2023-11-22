@@ -654,7 +654,8 @@ namespace scene
 
 		//! current active camera
 		ICameraSceneNode* ActiveCamera;
-		core::vector3df camWorldPos; // Position of camera for transparent nodes.
+		core::vector3df CamWorldPos;	// Position of camera for transparent nodes.
+		core::vector3df CamWorldViewNormalized; // Normalized view direction of camera for transparent nodes.
 
 		video::SColor ShadowColor;
 		video::SColorf AmbientLight;
@@ -671,8 +672,7 @@ namespace scene
 		//! Algorithm used to sort transparent nodes
 		E_TRANSPARENT_NODE_SORTING TransparentNodeSorting;
 		//! Pointer to the actual algorithm to get the distance
-		// (Could be we have to pass more parameters for better results, like view normal)
-		f32 (*funcTransparentNodeDistance)(const ISceneNode* node, const core::vector3df& camera);
+		f32 (*funcTransparentNodeDistance)(const ISceneNode* node, const core::vector3df& cameraPos, const core::vector3df& cameraViewNormalized);
 
 		//! An optional callbacks manager to allow the user app finer control
 		//! over the scene lighting and rendering.

@@ -111,18 +111,24 @@ namespace scene
 		//! Which can be used to do some custom sorting via scene-graph (mainly useful if you only have to that once)
 		ETNS_NONE,
 
-		//! Distance from node origin to camera
+		//! Distance from node origin to camera position
 		ETNS_ORIGIN,
 
-		//! Distance from node center to camera
+		//! Distance from node center to camera position
 		ETNS_CENTER,
 
 		//! Distance from the nearest of the 2 transformed bounding-box extend corners to camera
 		ETNS_BBOX_EXTENTS,
 
+		//! Distance from node origin to camera plane
+		ETNS_PLANE_ORIGIN,
+
+		//! Distance from node center to camera plane
+		ETNS_PLANE_CENTER,
+
 		//! Default sorting Irrlicht uses currently
 		//! This may change in the future
-		ETNS_DEFAULT = ETNS_CENTER
+		ETNS_DEFAULT = ETNS_PLANE_CENTER
 	};
 
 	class IAnimatedMesh;

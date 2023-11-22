@@ -1364,14 +1364,14 @@ u32 CSceneManager::registerNodeForRendering(ISceneNode* node, E_SCENE_NODE_RENDE
 	case ESNRP_TRANSPARENT:
 		if (!isCulled(node))
 		{
-			TransparentNodeList.push_back(TransparentNodeEntry(node, funcTransparentNodeDistance(node, camWorldPos)));
+			TransparentNodeList.push_back(TransparentNodeEntry(node, funcTransparentNodeDistance(node, CamWorldPos, CamWorldViewNormalized)));
 			taken = 1;
 		}
 		break;
 	case ESNRP_TRANSPARENT_EFFECT:
 		if (!isCulled(node))
 		{
-			TransparentEffectNodeList.push_back(TransparentNodeEntry(node, funcTransparentNodeDistance(node, camWorldPos)));
+			TransparentEffectNodeList.push_back(TransparentNodeEntry(node, funcTransparentNodeDistance(node, CamWorldPos, CamWorldViewNormalized)));
 			taken = 1;
 		}
 		break;
@@ -1386,7 +1386,7 @@ u32 CSceneManager::registerNodeForRendering(ISceneNode* node, E_SCENE_NODE_RENDE
 				if (Driver->needsTransparentRenderPass(node->getMaterial(i)))
 				{
 					// register as transparent node
-					TransparentNodeEntry e(node, funcTransparentNodeDistance(node, camWorldPos));
+					TransparentNodeEntry e(node, funcTransparentNodeDistance(node, CamWorldPos, CamWorldViewNormalized));
 					TransparentNodeList.push_back(e);
 					taken = 1;
 					break;
@@ -1486,11 +1486,17 @@ void CSceneManager::drawAll()
 		consistent Camera is needed for culling
 	*/
 	IRR_PROFILE(getProfiler().start(EPID_SM_RENDER_CAMERAS));
-	camWorldPos.set(0,0,0);
 	if (ActiveCamera)
 	{
 		ActiveCamera->render();
-		camWorldPos = ActiveCamera->getAbsolutePosition();
+		CamWorldPos = ActiveCamera->getAbsolutePosition();
+		CamWorldViewNormalized = ActiveCamera->getTarget() - ActiveCamera->getAbsolutePosition();
+		CamWorldViewNormalized.normalize();
+	}
+	else
+	{
+		CamWorldPos.set(0,0,0);
+		CamWorldViewNormalized.set(0,0,1);
 	}
 	IRR_PROFILE(getProfiler().stop(EPID_SM_RENDER_CAMERAS));
 
@@ -2196,44 +2202,59 @@ E_SCENE_NODE_RENDER_PASS CSceneManager::getSceneNodeRenderPass() const
 }
 
 // Not sorting this later
-static f32 transparentSortingNone(const ISceneNode* node, const core::vector3df& camera)
+static f32 transparentSortingNone(const ISceneNode*, const core::vector3df&, const core::vector3df&)
 {
 	return 0.f;
 }
 
-// Distance from node origin to camera
-static f32 transparentSortingByOrigin(const ISceneNode* node, const core::vector3df& camera)
+// Distance from node origin to camera pos
+static f32 transparentSortingByOrigin(const ISceneNode* node, const core::vector3df& cameraPos, const core::vector3df&)
 {
-	return node->getAbsolutePosition().getDistanceFromSQ(camera);
+	return node->getAbsolutePosition().getDistanceFromSQ(cameraPos);
 }
 
-// Distance from node center to camera
-static f32 transparentSortingByCenter(const ISceneNode* node, const core::vector3df& camera)
+// Distance from node center to camera pos
+static f32 transparentSortingByCenter(const ISceneNode* node, const core::vector3df& cameraPos, const core::vector3df&)
 {
 	core::vector3df center = node->getBoundingBox().getCenter();
 	const core::matrix4& absMat = node->getAbsoluteTransformation();
 	absMat.rotateVect(center);
-	return (absMat.getTranslation()+center).getDistanceFromSQ(camera);
+	return (absMat.getTranslation()+center).getDistanceFromSQ(cameraPos);
+}
+
+// Distance from node origin to camera plane
+static f32 transparentSortingByPlaneOrigin(const ISceneNode* node, const core::vector3df& cameraPos, const core::vector3df& cameraViewN)
+{
+	return cameraViewN.dotProduct(node->getAbsolutePosition()-cameraPos);
+}
+
+// Distance from node center to camera plane
+static f32 transparentSortingByPlaneCenter(const ISceneNode* node, const core::vector3df& cameraPos, const core::vector3df& cameraViewN)
+{
+	core::vector3df center = node->getBoundingBox().getCenter();
+	const core::matrix4& absMat = node->getAbsoluteTransformation();
+	absMat.rotateVect(center);
+	return cameraViewN.dotProduct(absMat.getTranslation()+center-cameraPos);
 }
 
 /*
 const core::aabbox3d<f32> box = Node->getTransformedBoundingBox();
 Distance = core::min_(camera.getDistanceFromSQ(box.MinEdge), camera.getDistanceFromSQ(box.MaxEdge));
 */
-static f32 transparentSortingBBoxExtents(const ISceneNode* node, const core::vector3df& camera)
+static f32 transparentSortingBBoxExtents(const ISceneNode* node, const core::vector3df& cameraPos, const core::vector3df&)
 {
 	const core::aabbox3d<f32>& box = node->getBoundingBox();
 	const f32* m = node->getAbsoluteTransformation().pointer();
 
 	f32 p[4];
-	p[0] = camera.X - (box.MinEdge.X * m[0] + box.MinEdge.Y * m[4] + box.MinEdge.Z * m[8] + m[12]);
-	p[1] = camera.Y - (box.MinEdge.X * m[1] + box.MinEdge.Y * m[5] + box.MinEdge.Z * m[9] + m[13]);
-	p[2] = camera.Z - (box.MinEdge.X * m[2] + box.MinEdge.Y * m[6] + box.MinEdge.Z * m[10] + m[14]);
+	p[0] = cameraPos.X - (box.MinEdge.X * m[0] + box.MinEdge.Y * m[4] + box.MinEdge.Z * m[8] + m[12]);
+	p[1] = cameraPos.Y - (box.MinEdge.X * m[1] + box.MinEdge.Y * m[5] + box.MinEdge.Z * m[9] + m[13]);
+	p[2] = cameraPos.Z - (box.MinEdge.X * m[2] + box.MinEdge.Y * m[6] + box.MinEdge.Z * m[10] + m[14]);
 	f32 l0 = (p[0] * p[0]) + (p[1] * p[1]) + (p[2] * p[2]);
 
-	p[0] = camera.X - (box.MaxEdge.X * m[0] + box.MaxEdge.Y * m[4] + box.MaxEdge.Z * m[8] + m[12]);
-	p[1] = camera.Y - (box.MaxEdge.X * m[1] + box.MaxEdge.Y * m[5] + box.MaxEdge.Z * m[9] + m[13]);
-	p[2] = camera.Z - (box.MaxEdge.X * m[2] + box.MaxEdge.Y * m[6] + box.MaxEdge.Z * m[10] + m[14]);
+	p[0] = cameraPos.X - (box.MaxEdge.X * m[0] + box.MaxEdge.Y * m[4] + box.MaxEdge.Z * m[8] + m[12]);
+	p[1] = cameraPos.Y - (box.MaxEdge.X * m[1] + box.MaxEdge.Y * m[5] + box.MaxEdge.Z * m[9] + m[13]);
+	p[2] = cameraPos.Z - (box.MaxEdge.X * m[2] + box.MaxEdge.Y * m[6] + box.MaxEdge.Z * m[10] + m[14]);
 	f32 l1 = (p[0] * p[0]) + (p[1] * p[1]) + (p[2] * p[2]);
 	return core::min_(l0, l1);
 }
@@ -2244,16 +2265,22 @@ void CSceneManager::setTransparentNodeSorting(E_TRANSPARENT_NODE_SORTING sorting
 	switch ( TransparentNodeSorting )
 	{
 		case ETNS_NONE:	
-			funcTransparentNodeDistance = transparentSortingNone; 
+			funcTransparentNodeDistance = transparentSortingNone;
 			break;
 		case ETNS_ORIGIN: 
-			funcTransparentNodeDistance = transparentSortingByOrigin; 
+			funcTransparentNodeDistance = transparentSortingByOrigin;
 			break;
 		case ETNS_CENTER: 
-			funcTransparentNodeDistance = transparentSortingByCenter; 
+			funcTransparentNodeDistance = transparentSortingByCenter;
 			break;
 		case ETNS_BBOX_EXTENTS: 
-			funcTransparentNodeDistance = transparentSortingBBoxExtents; 
+			funcTransparentNodeDistance = transparentSortingBBoxExtents;
+			break;
+		case ETNS_PLANE_ORIGIN:
+			funcTransparentNodeDistance = transparentSortingByPlaneOrigin;
+			break;
+		case ETNS_PLANE_CENTER:
+			funcTransparentNodeDistance = transparentSortingByPlaneCenter;
 			break;
 		default:
 			break;
