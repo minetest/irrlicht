@@ -106,7 +106,7 @@ bool CIrrDeviceAndroid::run()
 	s32 Events = 0;
 	android_poll_source* Source = 0;
 
-	while ((id = ALooper_pollAll(((Focused && !Paused) || !Initialized) ? 0 : -1, 0, &Events, (void**)&Source)) >= 0)
+	while ((id = ALooper_pollAll(0, 0, &Events, (void**)&Source)) >= 0)
 	{
 		if(Source)
 			Source->process(Android, Source);
