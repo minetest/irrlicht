@@ -3,9 +3,13 @@
 #include "IAnimatedMesh.h"
 #include "IReadFile.h"
 #include "path.h"
-#include "json/json.hpp"
+#include  <iostream>
 #include "os.h"
+#include "string.h"
+#include "json/json.hpp"
+#include <array>
 using json = nlohmann::json;
+using namespace nlohmann::literals;
 
 namespace irr
 {
@@ -38,6 +42,10 @@ bool CB3DJSONMeshFileLoader::isALoadableFileExtension(
   return core::hasFileExtension(fileName, "json");
 }
 
+void parseModel(json model) {
+
+}
+
 IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
 
   // Less than zero? What is this file a black hole?
@@ -57,22 +65,29 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   // std::string err {};
   // std::string warn {};
 
-  // Try changing the type from auto to see why it's auto.
-  auto buffer = std::make_unique<char[]>(file->getSize());
+  // auto buffer = std::make_unique<char[]>(file->getSize());
+  char* buffer = new char[file->getSize()];
 
   // Now we read that dang JSON.
-  file->read(buffer.get(), file->getSize());
+  file->read(buffer, file->getSize());
 
-  const json data = json::parse("{\"hi\": 1}");
+  char* clone = strdup(buffer);
 
-  const auto test = data["hi"];
-  printf("is this a number? ");
-  println(boolToString(test.is_number()));
-  println(test.dump().c_str());
+  // Dereference then borrow it.
+  json data = json::parse(&*clone);
+
+  if (!data.contains("format") || !data["format"].is_string() || data["format"] != "BB3DJSON") {
+    os::Printer::log("No format in B3D JSON!", ELL_WARNING);
+    return nullptr;
+  }
+  if (!data.contains("version") || !data["version"].is_number_integer() || data["version"] != 1) {
+    os::Printer::log("Wrong version in B3D JSON!", ELL_WARNING);
+    return nullptr;
+  }
+
+  parseModel(data);
 
 
-
-  //! I'm sure this isn't a horrible idea!
   return nullptr;
 }
 
