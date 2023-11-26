@@ -152,9 +152,7 @@ bool parseNode(json data, SMeshBuffer* meshBuffer) {
   if (grabQuaternionf(data, "rotation", rotation)) {
     return true;
   }
-
-
-
+  
   return false;
 }
 
