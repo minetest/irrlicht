@@ -42,8 +42,9 @@ bool CB3DJSONMeshFileLoader::isALoadableFileExtension(
   return core::hasFileExtension(fileName, "json");
 }
 
-void parseModel(json model) {
+IAnimatedMesh* parseModel(json model) {
 
+  return nullptr;
 }
 
 IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
@@ -54,16 +55,12 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
     return nullptr;
   }
 
-  println("I am loading your cool file, yay");
+  // println("I am loading your cool file, yay");
 
-  printf("the file is called: ");
-  println(file->getFileName().c_str());
+  // printf("the file is called: ");
+  // println(file->getFileName().c_str());
 
   // So here we turn this mangled disaster into a C string.
-
-  // These two hold error message pointers, basically.
-  // std::string err {};
-  // std::string warn {};
 
   // auto buffer = std::make_unique<char[]>(file->getSize());
   char* buffer = new char[file->getSize()];
@@ -76,19 +73,21 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   // Dereference then borrow it.
   json data = json::parse(&*clone);
 
+  // Now check some real basic elements of the JSON file.
   if (!data.contains("format") || !data["format"].is_string() || data["format"] != "BB3DJSON") {
-    os::Printer::log("No format in B3D JSON!", ELL_WARNING);
+    os::Printer::log("No format in B3D JSON! Expected: BB3DJSON", ELL_WARNING);
     return nullptr;
   }
   if (!data.contains("version") || !data["version"].is_number_integer() || data["version"] != 1) {
-    os::Printer::log("Wrong version in B3D JSON!", ELL_WARNING);
+    os::Printer::log("Wrong version in B3D JSON! Expected: 1", ELL_WARNING);
     return nullptr;
   }
 
-  parseModel(data);
+  // Now we can start doing things with it.
+  IAnimatedMesh* finalizedModel = parseModel(data);
 
 
-  return nullptr;
+  return finalizedModel;
 }
 
 } // namespace scene
