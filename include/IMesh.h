@@ -53,6 +53,9 @@ namespace scene
 		//! Halflife MDL model file
 		EAMT_MDL_HALFLIFE,
 
+    //! Blitz3D JSON model file
+    EAMT_B3D_JSON,
+
 		//! generic skinned mesh
 		EAMT_SKINNED,
 
