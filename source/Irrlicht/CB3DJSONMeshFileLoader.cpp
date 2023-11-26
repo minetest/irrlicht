@@ -48,18 +48,22 @@ bool CB3DJSONMeshFileLoader::isALoadableFileExtension(
   return core::hasFileExtension(fileName, "json");
 }
 
+const char* buildVec3fError(std::string key) {
+  return std::string("Error, ").append(key).append(" in NODE must be an array of 3 numbers!").c_str();
+}
+
 /**
  * Returns true if failure occurs.
 */
 bool grabVec3f(json data, std::string key, irr::core::vector3df& refVec) {
-
   if (data.contains(key) && data[key].is_array() && data[key].size() == 3) {
     auto jsonVec3 = data[key];
     int i = 0;
     for (auto reference = jsonVec3.begin(); reference != jsonVec3.end(); ++reference) {
       auto value = *reference;
-      if (!value.is_number_integer()) {
-        os::Printer::log("Error, position in NODE must be an array of 3 integers!", ELL_WARNING);
+      // Can take integer OR float.
+      if (!value.is_number()) {
+        os::Printer::log(buildVec3fError(key), ELL_WARNING);
         return true;
       }
       switch (i){
@@ -76,11 +80,9 @@ bool grabVec3f(json data, std::string key, irr::core::vector3df& refVec) {
       i++;
     }
   } else {
-    const auto stringWarning = std::string("Error, ").append(key).append(" in NODE must be an array of 3 integers!");
-    os::Printer::log(stringWarning.c_str(), ELL_WARNING);
+    os::Printer::log(buildVec3fError(key), ELL_WARNING);
     return true;  
   }
-
   return false;
 }
 
