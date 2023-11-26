@@ -2,7 +2,6 @@
 #include "IMeshLoader.h"
 #include "IReadFile.h"
 #include "path.h"
-#include "json.hpp"
 
 namespace irr
 {
@@ -14,15 +13,11 @@ class CB3DJSONMeshFileLoader : public IMeshLoader
 {
 public:
 
-CB3DJSONMeshFileLoader::CB3DJSONMeshFileLoader()
-{
-}
+  CB3DJSONMeshFileLoader();
 
-bool CB3DJSONMeshFileLoader::isALoadableFileExtension(
-  const io::path& fileName) const
-{
-  return core::hasFileExtension(fileName, "b3djson");
-}
+  bool isALoadableFileExtension(const io::path& fileName) const override;
+
+  IAnimatedMesh* createMesh(io::IReadFile* file) override;
 
 };// class CB3DJSONMeshFileLoader
 } // namespace scene
