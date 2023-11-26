@@ -11,6 +11,12 @@ namespace irr
 namespace scene
 {
 
+//! Remember to remove this function. It's very dumb.
+void println(const char* data) {
+  printf(data, "\n");
+}
+
+
 // Class methods.
 CB3DJSONMeshFileLoader::CB3DJSONMeshFileLoader()
 {
@@ -25,6 +31,15 @@ bool CB3DJSONMeshFileLoader::isALoadableFileExtension(
 }
 
 IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
+  println("I am loading your cool file, yay");
+
+  printf("the file is called: ");
+  println(file->getFileName().c_str());
+
+  // Less than zero? What is this file a black hole?
+  if (file->getSize() <= 0) {
+    return nullptr;
+  }
   //! I'm sure this isn't a horrible idea!
   return nullptr;
 }
