@@ -44,6 +44,7 @@ bool CB3DJSONMeshFileLoader::isALoadableFileExtension(
 
 IAnimatedMesh* parseModel(json model) {
 
+
   return nullptr;
 }
 
@@ -55,12 +56,8 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
     return nullptr;
   }
 
-  // println("I am loading your cool file, yay");
-
-  // printf("the file is called: ");
-  // println(file->getFileName().c_str());
-
   // So here we turn this mangled disaster into a C string.
+  // Please consider this the equivalent of duct taping a chainsaw onto a car to cut your lawn.
 
   // auto buffer = std::make_unique<char[]>(file->getSize());
   char* buffer = new char[file->getSize()];
