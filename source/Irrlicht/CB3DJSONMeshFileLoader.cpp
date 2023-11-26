@@ -42,7 +42,7 @@ bool CB3DJSONMeshFileLoader::isALoadableFileExtension(
   return core::hasFileExtension(fileName, "json");
 }
 
-IAnimatedMesh* parseModel(json model) {
+IAnimatedMesh* parseModel(json data) {
 
 
   return nullptr;
@@ -65,6 +65,7 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   // Now we read that dang JSON.
   file->read(buffer, file->getSize());
 
+  // We have to clone this or it segfaults. I have no idea why.
   char* clone = strdup(buffer);
 
   // Dereference then borrow it.
