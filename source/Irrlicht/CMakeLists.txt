@@ -331,7 +331,7 @@ set(IRRMESHLOADER
 	CB3DMeshFileLoader.cpp
 	COBJMeshFileLoader.cpp
 	CXMeshFileLoader.cpp
-  CB3DMeshFileLoader.cpp
+  CB3DJSONMeshFileLoader.cpp
 )
 
 add_library(IRRMESHOBJ OBJECT
@@ -340,11 +340,6 @@ add_library(IRRMESHOBJ OBJECT
 	CMeshSceneNode.cpp
 	CAnimatedMeshSceneNode.cpp
 	${IRRMESHLOADER}
-)
-
-target_link_libraries(IRRMESHOBJ
-  PRIVATE
-    json
 )
 
 add_library(IRROBJ OBJECT

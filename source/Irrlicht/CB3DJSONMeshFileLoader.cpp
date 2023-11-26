@@ -2,7 +2,7 @@
 #include "IMeshLoader.h"
 #include "IReadFile.h"
 #include "path.h"
-#include "json.hpp"
+#include "json/json.hpp"
 
 namespace irr
 {
