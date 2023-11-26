@@ -27,7 +27,8 @@ bool CB3DJSONMeshFileLoader::isALoadableFileExtension(
   const io::path& fileName) const
 {
   //* we could do multiple accepted extensions, like b3dj jb3d, j3d, etc. Talk with core devs about this.
-  return core::hasFileExtension(fileName, "b3djson");
+  //? For now, just JSON because it has vscode linting.
+  return core::hasFileExtension(fileName, "json");
 }
 
 IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
