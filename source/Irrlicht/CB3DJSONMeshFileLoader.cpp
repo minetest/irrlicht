@@ -48,6 +48,9 @@ bool CB3DJSONMeshFileLoader::isALoadableFileExtension(
   return core::hasFileExtension(fileName, "json");
 }
 
+/**
+ * Simple error builder for Vec3.
+*/
 const char* buildVec3fError(std::string key) {
   return std::string("Error, ").append(key).append(" in NODE must be an array of 3 numbers!").c_str();
 }
@@ -86,6 +89,51 @@ bool grabVec3f(json data, std::string key, irr::core::vector3df& refVec) {
   return false;
 }
 
+/**
+ * Simple error builder for Quaternion.
+*/
+const char* buildQuatError(std::string key) {
+  return std::string("Error, ").append(key).append(" in NODE must be an array of 4 numbers!").c_str();
+}
+
+/**
+ * Returns true if failure occurs.
+*/
+bool grabQuaternionf(json data, std::string key, irr::core::quaternion& refQuat) {
+  if (data.contains(key) && data[key].is_array() && data[key].size() == 4) {
+    auto jsonQuat = data[key];
+    int i = 0;
+    for (auto reference = jsonQuat.begin(); reference != jsonQuat.end(); ++reference) {
+      auto value = *reference;
+      // Can take integer OR float.
+      if (!value.is_number()) {
+        os::Printer::log(buildQuatError(key), ELL_WARNING);
+        return true;
+      }
+      switch (i){
+        case 0:
+          refQuat.X = value;
+          break;
+        case 1:
+          refQuat.Y = value;
+          break;
+        case 2:
+          refQuat.Z = value;
+          break;
+        case 3:
+          refQuat.W = value;
+          break;
+      }
+      i++;
+    }
+  } else {
+    os::Printer::log(buildQuatError(key), ELL_WARNING);
+    return true;  
+  }
+  return false;
+}
+
+
 // Returns if errored.
 bool parseNode(json data, SMeshBuffer* meshBuffer) {
 
@@ -101,7 +149,9 @@ bool parseNode(json data, SMeshBuffer* meshBuffer) {
     return true;
   }
 
-
+  if (grabQuaternionf(data, "rotation", rotation)) {
+    return true;
+  }
 
 
 
