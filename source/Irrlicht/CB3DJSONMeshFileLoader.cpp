@@ -20,7 +20,6 @@ public:
 
   IAnimatedMesh* createMesh(io::IReadFile* file) override;
 
-// Hello world
 
 };// class CB3DJSONMeshFileLoader
 } // namespace scene
