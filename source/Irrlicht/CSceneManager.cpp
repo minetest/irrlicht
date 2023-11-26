@@ -76,6 +76,7 @@ CSceneManager::CSceneManager(video::IVideoDriver* driver,
 	MeshLoaderList.push_back(new CXMeshFileLoader(this));
 	MeshLoaderList.push_back(new COBJMeshFileLoader(this));
 	MeshLoaderList.push_back(new CB3DMeshFileLoader(this));
+  MeshLoaderList.push_back(new CB3DJSONMeshFileLoader());
 }
 
 
