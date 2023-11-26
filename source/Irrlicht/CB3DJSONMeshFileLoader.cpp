@@ -50,45 +50,37 @@ bool CB3DJSONMeshFileLoader::isALoadableFileExtension(
 
 // Returns if errored.
 bool parseNode(json data, SMeshBuffer* meshBuffer) {
+
   auto position = irr::core::vector3df{0,0,0};
   auto scale = irr::core::vector3df{1,1,1};
   auto rotation = irr::core::quaternion{0,0,0,1};
 
-  if (data.contains("position") && data["position"].is_array()) {
-
-    auto positionJSON = data["position"].array();
-
-    if (!positionJSON.size() == 3) {
-      os::Printer::log("Error, position in NODE must be an array of 3 integers!", ELL_WARNING);
-      return true;  
-    }
-
-    println("found a position data!");
-
+  if (data.contains("position") && data["position"].is_array() && data["position"].size() == 3) {
+    auto positionJSON = data["position"];
     int i = 0;
-    for (auto p = positionJSON.begin(); p != positionJSON.end(); ++p) {
-      
-      auto dereffed = *p;
-
-      if (!dereffed.is_number_integer()) {
+    for (auto reference = positionJSON.begin(); reference != positionJSON.end(); ++reference) {
+      auto value = *reference;
+      if (!value.is_number_integer()) {
         os::Printer::log("Error, position in NODE must be an array of 3 integers!", ELL_WARNING);
         return true;
       }
-
       switch (i){
         case 0:
-          position.X = dereffed;
+          position.X = value;
+          println(std::string("x is: ").append(std::to_string(position.X)).c_str());
           break;
         case 1:
-          position.Y = dereffed;
+          position.Y = value;
           break;
         case 2:
-          position.Z = dereffed;
+          position.Z = value;
           break;
       }
-
       i++;
     }
+  } else {
+    os::Printer::log("Error, position in NODE must be an array of 3 integers!", ELL_WARNING);
+    return true;  
   }
   return false;
 }
@@ -108,6 +100,7 @@ IAnimatedMesh* parseModel(json data) {
   if (data.contains("NODE") && data["NODE"].is_object()) {
     println("Yep, that's a node!");
 
+    // If it fails, give up basically.
     if (parseNode(data["NODE"], meshBuffer)) {
       return nullptr;
     }
@@ -139,7 +132,7 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   char* output = buffer.get();
 
   // Irrlicht doesn't null terminate the raw output. So we must doe it ourself.
-  buffer[file->getSize()] = '\0';
+  output[file->getSize()] = '\0';
 
   // We have to catch a JSON parse error or else the game will segfault.
   json data;
