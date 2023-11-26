@@ -91,7 +91,13 @@ bool parseNode(json data, SMeshBuffer* meshBuffer) {
   auto scale = irr::core::vector3df{1,1,1};
   auto rotation = irr::core::quaternion{0,0,0,1};
 
-  //!FIXME: These should really be functions.
+  if (grabVec3f(data, "position", position)) {
+    return true;
+  }
+
+  if (grabVec3f(data, "scale", scale)) {
+    return true;
+  }
 
 
 
