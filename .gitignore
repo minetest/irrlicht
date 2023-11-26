@@ -22,3 +22,6 @@ scripts/glext.h
 
 # vscode cmake plugin
 build/*
+CTestTestfile.cmake
+source/Irrlicht/CTestTestfile.cmake
+test/CTestTestfile.cmake
