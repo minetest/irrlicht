@@ -5,6 +5,7 @@
 #include "path.h"
 #include "json/json.hpp"
 #include "os.h"
+using json = nlohmann::json;
 
 namespace irr
 {
@@ -16,6 +17,10 @@ namespace scene
 void println(const char* data) {
   printf(data);
   printf("\n");
+}
+const char * const boolToString(bool b)
+{
+  return b ? "true" : "false";
 }
 
 
@@ -40,7 +45,7 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
     os::Printer::log("B3D JSON severe error! File size is 0!", ELL_WARNING);
     return nullptr;
   }
-  
+
   println("I am loading your cool file, yay");
 
   printf("the file is called: ");
@@ -49,11 +54,22 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   // So here we turn this mangled disaster into a C string.
 
   // These two hold error message pointers, basically.
-  std::string err {};
-  std::string warn {};
+  // std::string err {};
+  // std::string warn {};
 
   // Try changing the type from auto to see why it's auto.
-  auto buf = std::make_unique<char[]>(file->getSize());
+  auto buffer = std::make_unique<char[]>(file->getSize());
+
+  // Now we read that dang JSON.
+  file->read(buffer.get(), file->getSize());
+
+  const json data = json::parse("{\"hi\": 1}");
+
+  const auto test = data["hi"];
+  printf("is this a number? ");
+  println(boolToString(test.is_number()));
+  println(test.dump().c_str());
+
 
 
   //! I'm sure this isn't a horrible idea!
