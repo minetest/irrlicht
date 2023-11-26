@@ -1,6 +1,13 @@
 #include "CB3DJSONMeshFileLoader.h"
 #include "coreutil.h"
 #include "IAnimatedMesh.h"
+#include "S3DVertex.h"
+#include "SAnimatedMesh.h"
+#include "SColor.h"
+#include "CMeshBuffer.h"
+#include "SMesh.h"
+#include "vector3d.h"
+#include "quaternion.h"
 #include "IReadFile.h"
 #include "path.h"
 #include  <iostream>
@@ -42,10 +49,75 @@ bool CB3DJSONMeshFileLoader::isALoadableFileExtension(
   return core::hasFileExtension(fileName, "json");
 }
 
+// Returns if errored.
+bool parseNode(json data, SMeshBuffer* meshBuffer) {
+  auto position = irr::core::vector3df{0,0,0};
+  auto scale = irr::core::vector3df{1,1,1};
+  auto rotation = irr::core::quaternion{0,0,0,1};
+
+  if (data.contains("position") && data["position"].is_array()) {
+
+    auto positionJSON = data["position"].array();
+
+    if (!positionJSON.size() == 3) {
+      os::Printer::log("Error, position in NODE must be an array of 3 integers!", ELL_WARNING);
+      return true;  
+    }
+
+    println("found a position data!");
+
+    int i = 0;
+    for (auto p = positionJSON.begin(); p != positionJSON.end(); ++p) {
+      
+      auto dereffed = *p;
+
+      if (!dereffed.is_number_integer()) {
+        os::Printer::log("Error, position in NODE must be an array of 3 integers!", ELL_WARNING);
+        return true;
+      }
+
+      switch (i){
+        case 0:
+          position.X = dereffed;
+          break;
+        case 1:
+          position.Y = dereffed;
+          break;
+        case 2:
+          position.Z = dereffed;
+          break;
+      }
+
+      i++;
+    }
+  }
+  return false;
+}
+
 IAnimatedMesh* parseModel(json data) {
 
+  //! Remember: This is basically a linked tree.
 
-  return nullptr;
+  SMesh* baseMesh(new SMesh {});
+
+  SMeshBuffer* meshBuffer(new SMeshBuffer {});
+
+  // And now we begin the recursion!
+
+  std::cout << data["NODE"] << "\n";
+
+  if (data.contains("NODE") && data["NODE"].is_object()) {
+    println("Yep, that's a node!");
+
+    if (parseNode(data["NODE"], meshBuffer)) {
+      return nullptr;
+    }
+  }
+
+  SAnimatedMesh* animatedMesh(new SAnimatedMesh {});
+	animatedMesh->addMesh(baseMesh);
+
+  return animatedMesh;
 }
 
 IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
@@ -85,7 +157,7 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   IAnimatedMesh* finalizedModel = parseModel(data);
 
 
-  return finalizedModel;
+  return nullptr;
 }
 
 } // namespace scene
