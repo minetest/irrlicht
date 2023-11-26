@@ -18,6 +18,7 @@
 #include "CXMeshFileLoader.h"
 #include "COBJMeshFileLoader.h"
 #include "CB3DMeshFileLoader.h"
+#include "CB3DJSONMeshFileLoader.h"
 #include "CBillboardSceneNode.h"
 #include "CAnimatedMeshSceneNode.h"
 #include "CCameraSceneNode.h"
