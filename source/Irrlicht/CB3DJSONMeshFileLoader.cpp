@@ -4,6 +4,7 @@
 #include "IReadFile.h"
 #include "path.h"
 #include "json/json.hpp"
+#include "os.h"
 
 namespace irr
 {
@@ -13,7 +14,8 @@ namespace scene
 
 //! Remember to remove this function. It's very dumb.
 void println(const char* data) {
-  printf(data, "\n");
+  printf(data);
+  printf("\n");
 }
 
 
@@ -32,15 +34,28 @@ bool CB3DJSONMeshFileLoader::isALoadableFileExtension(
 }
 
 IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
+
+  // Less than zero? What is this file a black hole?
+  if (file->getSize() <= 0) {
+    os::Printer::log("B3D JSON severe error! File size is 0!", ELL_WARNING);
+    return nullptr;
+  }
+  
   println("I am loading your cool file, yay");
 
   printf("the file is called: ");
   println(file->getFileName().c_str());
 
-  // Less than zero? What is this file a black hole?
-  if (file->getSize() <= 0) {
-    return nullptr;
-  }
+  // So here we turn this mangled disaster into a C string.
+
+  // These two hold error message pointers, basically.
+  std::string err {};
+  std::string warn {};
+
+  // Try changing the type from auto to see why it's auto.
+  auto buf = std::make_unique<char[]>(file->getSize());
+
+
   //! I'm sure this isn't a horrible idea!
   return nullptr;
 }
