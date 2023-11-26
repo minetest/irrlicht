@@ -12,11 +12,10 @@
 #include "path.h"
 #include  <iostream>
 #include "os.h"
-#include "string.h"
+#include <string>
 #include "json/json.hpp"
 #include <array>
 using json = nlohmann::json;
-using namespace nlohmann::literals;
 
 namespace irr
 {
@@ -122,6 +121,7 @@ IAnimatedMesh* parseModel(json data) {
 
 IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
 
+
   // Less than zero? What is this file a black hole?
   if (file->getSize() <= 0) {
     os::Printer::log("B3D JSON severe error! File size is 0!", ELL_WARNING);
@@ -130,18 +130,28 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
 
   // So here we turn this mangled disaster into a C string.
   // Please consider this the equivalent of duct taping a chainsaw onto a car to cut your lawn.
-
-  // auto buffer = std::make_unique<char[]>(file->getSize());
-  char* buffer = new char[file->getSize()];
+  // char* buffer = new char[file->getSize()];
+  auto buffer = std::make_unique<char[]>(file->getSize());
 
   // Now we read that dang JSON.
-  file->read(buffer, file->getSize());
+  file->read(buffer.get(), file->getSize());
 
-  // We have to clone this or it segfaults. I have no idea why.
-  char* clone = strdup(buffer);
+  char* output = buffer.get();
 
-  // Dereference then borrow it.
-  json data = json::parse(&*clone);
+  // Irrlicht doesn't null terminate the raw output. So we must doe it ourself.
+  buffer[file->getSize()] = '\0';
+
+  json data;
+
+  try {
+    data = json::parse(output);
+  } catch (const json::parse_error& e) {
+    std::cout << "message: " << e.what() << '\n'
+          << "exception id: " << e.id << '\n'
+          << "byte position of error: " << e.byte << std::endl;
+    os::Printer::log("JSON: Failed to parse!", ELL_WARNING);
+    return nullptr;
+  }
 
   // Now check some real basic elements of the JSON file.
   if (!data.contains("format") || !data["format"].is_string() || data["format"] != "BB3DJSON") {
