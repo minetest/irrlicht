@@ -48,17 +48,15 @@ bool CB3DJSONMeshFileLoader::isALoadableFileExtension(
   return core::hasFileExtension(fileName, "json");
 }
 
-// Returns if errored.
-bool parseNode(json data, SMeshBuffer* meshBuffer) {
+/**
+ * Returns true if failure occurs.
+*/
+bool grabVec3f(json data, std::string key, irr::core::vector3df& refVec) {
 
-  auto position = irr::core::vector3df{0,0,0};
-  auto scale = irr::core::vector3df{1,1,1};
-  auto rotation = irr::core::quaternion{0,0,0,1};
-
-  if (data.contains("position") && data["position"].is_array() && data["position"].size() == 3) {
-    auto positionJSON = data["position"];
+  if (data.contains(key) && data[key].is_array() && data[key].size() == 3) {
+    auto jsonVec3 = data[key];
     int i = 0;
-    for (auto reference = positionJSON.begin(); reference != positionJSON.end(); ++reference) {
+    for (auto reference = jsonVec3.begin(); reference != jsonVec3.end(); ++reference) {
       auto value = *reference;
       if (!value.is_number_integer()) {
         os::Printer::log("Error, position in NODE must be an array of 3 integers!", ELL_WARNING);
@@ -66,22 +64,39 @@ bool parseNode(json data, SMeshBuffer* meshBuffer) {
       }
       switch (i){
         case 0:
-          position.X = value;
-          println(std::string("x is: ").append(std::to_string(position.X)).c_str());
+          refVec.X = value;
           break;
         case 1:
-          position.Y = value;
+          refVec.Y = value;
           break;
         case 2:
-          position.Z = value;
+          refVec.Z = value;
           break;
       }
       i++;
     }
   } else {
-    os::Printer::log("Error, position in NODE must be an array of 3 integers!", ELL_WARNING);
+    const auto stringWarning = std::string("Error, ").append(key).append(" in NODE must be an array of 3 integers!");
+    os::Printer::log(stringWarning.c_str(), ELL_WARNING);
     return true;  
   }
+
+  return false;
+}
+
+// Returns if errored.
+bool parseNode(json data, SMeshBuffer* meshBuffer) {
+
+  auto position = irr::core::vector3df{0,0,0};
+  auto scale = irr::core::vector3df{1,1,1};
+  auto rotation = irr::core::quaternion{0,0,0,1};
+
+  //!FIXME: These should really be functions.
+
+
+
+
+
   return false;
 }
 
