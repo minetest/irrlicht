@@ -141,6 +141,7 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   // Irrlicht doesn't null terminate the raw output. So we must doe it ourself.
   buffer[file->getSize()] = '\0';
 
+  // We have to catch a JSON parse error or else the game will segfault.
   json data;
 
   try {
@@ -167,7 +168,7 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   IAnimatedMesh* finalizedModel = parseModel(data);
 
 
-  return nullptr;
+  return finalizedModel;
 }
 
 } // namespace scene
