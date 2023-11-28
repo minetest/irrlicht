@@ -222,8 +222,10 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
   if (JSONDataContainer.contains("TEXS") && JSONDataContainer["TEXS"].is_array()) {
     // We're referencing static memory.
     texs = JSONDataContainer["TEXS"];
-  } {
+    println("hello");
+  } else {
     // Since it's optional, it succeeds if it's not there.
+    println("goodbye");
     return {true, ""};
   }
 
@@ -249,22 +251,27 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
     if (t.contains("name") && t["name"].is_string()) {
 
       // Strings are implicitly converted.
-      std::string thing = t["name"];
+      std::string textureName = t["name"];
 
-      println(thing.c_str());
+      B3DTexture.TextureName = textureName.c_str();
+
+      // Convert Windows '\' to Posix '/'.
+      B3DTexture.TextureName.replace('\\','/');
+
+      println(B3DTexture.TextureName.c_str());
     }
 
     // This part is a bit complex, for ease of use for the plugin dev/modders advantage.
 
-    if (t.contains("pos") && t["pos"].is_array()) {
-      irr::core::vector2df pos {0,0};
-      auto posSuccess = grabVec2f(t, "pos", pos);
-      if (!std::get<0>(posSuccess)) {
-        return {false, "TEXS: " + std::get<1>(posSuccess)};
-      }
-    } else {
-      return {false, "Malformed \"pos\" in TEXS block. Must be an array with 2 numbers."};
-    }
+    // if (t.contains("pos") && t["pos"].is_array()) {
+    //   irr::core::vector2df pos {0,0};
+    //   auto posSuccess = grabVec2f(t, "pos", pos);
+    //   if (!std::get<0>(posSuccess)) {
+    //     return {false, "TEXS: " + std::get<1>(posSuccess)};
+    //   }
+    // } else {
+    //   return {false, "Malformed \"pos\" in TEXS block. Must be an array with 2 numbers."};
+    // }
 
     index++;
   }
@@ -293,7 +300,9 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::load() {
   }
 
   // Success, failure reason
+  println("reading");
   std::tuple<bool, std::string> texturesSuccess = this->readChunkTEXS();
+  println("done reading");
 
   
 
