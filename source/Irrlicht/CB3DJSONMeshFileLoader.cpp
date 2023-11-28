@@ -217,6 +217,7 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   output[file->getSize()] = '\0';
 
   // We have to catch a JSON parse error or else the game will segfault.
+  json data;
   try {
     data = json::parse(output);
   } catch (const json::parse_error& e) {
