@@ -320,7 +320,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::load() {
  * Automatically cleans and returns the nullptr so it can be inlined or chained.
 */
 CSkinnedMesh* CB3DJSONMeshFileLoader::cleanUp(std::string failure) {
-  os::Printer::log(failure.c_str(), ELL_ERROR);
+  os::Printer::log(failure.c_str(), ELL_WARNING);
   if (AnimatedMesh != nullptr) {
     AnimatedMesh->drop();
     AnimatedMesh = 0;
