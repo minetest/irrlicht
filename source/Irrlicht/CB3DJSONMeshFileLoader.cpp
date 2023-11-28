@@ -191,13 +191,16 @@ void CB3DJSONMeshFileLoader::cleanUp(std::string failure) {
   AnimatedMesh = 0;
 }
 
-IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
+bool CB3DJSONMeshFileLoader::parseJSONFile() {
 
+}
+
+IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
 
   // Less than zero? What is this file a black hole?
   if (file->getSize() <= 0) {
     this->cleanUp("B3D JSON severe error! File size is 0!");
-    return nullptr;
+    return AnimatedMesh;
   }
 
   // So here we turn this mangled disaster into a C string.
@@ -214,7 +217,6 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   output[file->getSize()] = '\0';
 
   // We have to catch a JSON parse error or else the game will segfault.
-  json data;
   try {
     data = json::parse(output);
   } catch (const json::parse_error& e) {
@@ -236,10 +238,10 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   }
 
   // Now we can start doing a full parse of the data in the model JSON.
-  IAnimatedMesh* finalizedModel = parseModel(data);
+  const bool placeholder = parseModel(data);
 
-
-  return finalizedModel;
+  println("We got to the end.");
+  return nullptr;
 }
 
 } // namespace scene
