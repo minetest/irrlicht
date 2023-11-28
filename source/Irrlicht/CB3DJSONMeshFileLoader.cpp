@@ -207,9 +207,9 @@ CSkinnedMesh* CB3DJSONMeshFileLoader::cleanUp(std::string failure) {
 }
 
 /**
- * Returns success.
+ * Returns (success, failure reason).
 */
-bool CB3DJSONMeshFileLoader::parseJSONFile(io::IReadFile* file) {
+std::tuple<bool, std::string> CB3DJSONMeshFileLoader::parseJSONFile(io::IReadFile* file) {
   // So here we turn this mangled disaster into a C string.
   // Please consider this the equivalent of duct taping a chainsaw onto a car to cut your lawn.
   auto buffer = std::make_unique<char[]>(file->getSize());
@@ -227,15 +227,15 @@ bool CB3DJSONMeshFileLoader::parseJSONFile(io::IReadFile* file) {
   try {
     JSONDataContainer = json::parse(output);
   } catch (const json::parse_error& e) {
-    std::cout << "message: " << e.what() << '\n'
-          << "exception id: " << e.id << '\n'
-          << "byte position of error: " << e.byte << std::endl;
+    std::string failureReason = "message: " + std::string(e.what()) + '\n' +
+          "exception id: " + std::to_string(e.id) + '\n' +
+          "byte position of error: " + std::to_string(e.byte) + '\n';
     os::Printer::log("JSON: Failed to parse!", ELL_WARNING);
-    return false;
+    return {false, failureReason};
   }
 
   // I'm not sure if buffer and output gets dropped here.
-  return true;
+  return {true, nullptr};
 }
 
 IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
@@ -246,8 +246,12 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   }
 
   // Try to read this file.
-  if (!this->parseJSONFile(file)) {
-    return(this->cleanUp("B3D JSON severe error! File size is 0!"));
+  const std::tuple<bool, std::string> parseResult = this->parseJSONFile(file);
+
+  // If it failed to parse, we give up.
+  if (!std::get<0>(parseResult)) {
+    // Print the reason, and return a nullptr.
+    return(this->cleanUp(std::get<1>(parseResult)));
   }
 
   //? Now JSONDataContainer exists on this object.

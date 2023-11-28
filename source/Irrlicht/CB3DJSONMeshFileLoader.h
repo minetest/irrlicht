@@ -6,6 +6,7 @@
 #include "IReadFile.h"
 #include "path.h"
 #include "json/json.hpp"
+#include <tuple>
 
 using json = nlohmann::json;
 
@@ -31,7 +32,7 @@ private:
 
   // Methods.
   CSkinnedMesh* cleanUp(std::string);
-  bool parseJSONFile(io::IReadFile* file);
+  std::tuple<bool, std::string> parseJSONFile(io::IReadFile* file);
   std::tuple<bool, std::string> load();
 
 public:
