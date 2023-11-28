@@ -633,6 +633,9 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::parseJSONFile(io::IReadFil
 }
 
 IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
+  
+  // Create the initial model.
+  AnimatedMesh = new scene::CSkinnedMesh();
 
   // Less than zero? What is this file a black hole?
   if (file->getSize() <= 0) {
