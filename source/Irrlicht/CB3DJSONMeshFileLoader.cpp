@@ -169,8 +169,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::load() {
     return {false, "No format in B3D JSON! Expected: BB3D"};
   }
   if (!JSONDataContainer.contains("version") || !JSONDataContainer["version"].is_number_integer() || JSONDataContainer["version"] != 1) {
-    os::Printer::log("Wrong version in B3D JSON! Expected: 1", ELL_WARNING);
-    return false;
+    return {false, "Wrong version in B3D JSON! Expected: 1"};
   }
 
   //! Remember: This is basically a linked tree.
