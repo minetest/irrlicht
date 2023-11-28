@@ -257,8 +257,12 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
 
       // Convert Windows '\' to Posix '/'.
       B3DTexture.TextureName.replace('\\','/');
-
       println(B3DTexture.TextureName.c_str());
+    } else {
+      if (t.contains("name") && !t["name"].is_string()) {
+        return {false, "\"name\" in TEXS block index (" + std::to_string(index) +") is not a string."};
+      }
+      return {false, "Missing \"name\" in TEXS block index (" + std::to_string(index) +")."};
     }
 
     // This part is a bit complex, for ease of use for the plugin dev/modders advantage.
@@ -270,7 +274,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
     //     return {false, "TEXS: " + std::get<1>(posSuccess)};
     //   }
     // } else {
-    //   return {false, "Malformed \"pos\" in TEXS block. Must be an array with 2 numbers."};
+    //   return {false, "Malformed \"pos\" in TEXS block index (" + std::to_string(index) + "). Must be an array with 2 numbers."};
     // }
 
     index++;
@@ -300,9 +304,11 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::load() {
   }
 
   // Success, failure reason
-  println("reading");
   std::tuple<bool, std::string> texturesSuccess = this->readChunkTEXS();
-  println("done reading");
+
+  if (!std::get<0>(texturesSuccess)) {
+    return {false, std::get<1>(texturesSuccess)};
+  }
 
   
 
@@ -314,7 +320,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::load() {
  * Automatically cleans and returns the nullptr so it can be inlined or chained.
 */
 CSkinnedMesh* CB3DJSONMeshFileLoader::cleanUp(std::string failure) {
-  os::Printer::log(failure.c_str(), ELL_WARNING);
+  os::Printer::log(failure.c_str(), ELL_ERROR);
   if (AnimatedMesh != nullptr) {
     AnimatedMesh->drop();
     AnimatedMesh = 0;
@@ -347,7 +353,6 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::parseJSONFile(io::IReadFil
     std::string failureReason = "message: " + std::string(e.what()) + '\n' +
           "exception id: " + std::to_string(e.id) + '\n' +
           "byte position of error: " + std::to_string(e.byte) + '\n';
-    os::Printer::log("JSON: Failed to parse!", ELL_WARNING);
     return {false, failureReason};
   }
 
