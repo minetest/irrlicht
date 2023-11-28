@@ -51,10 +51,79 @@ bool CB3DJSONMeshFileLoader::isALoadableFileExtension(
 }
 
 /**
+ * Simple error builder for Vec2, Vec3, and Quaternion.
+*/
+std::string buildVectorError(std::string key, int index, int width) {
+
+  if (index == -1) {
+    return std::string("Error, " + key + " is missing!");
+  }
+
+  std::string component;
+  switch (index) {
+    case 0:
+      component = "X";
+      break;
+    case 1:
+      component = "Y";
+      break;
+    case 2:
+      component = "Z";
+      break;
+    case 3:
+      component = "W";
+      break;
+  }
+  return std::string("Error, " + component + " in " + key + "is not a number! " + key + " must be an array of " + std::to_string(width) + " numbers!");
+}
+
+bool grabVec2f(json data, std::string key, irr::core::vector2df& refVec) {
+
+  // todo: make a CurrentElement thing in the class header so that we can print nice debug info.
+
+  if (data.contains(key) && data[key].is_array() && data[key].size() == 2) {
+    auto jsonVec2 = data[key];
+    int i = 0;
+    for (auto reference = jsonVec2.begin(); reference != jsonVec2.end(); ++reference) {
+      auto value = *reference;
+      // Can take integer OR float.
+      if (!value.is_number()) {
+        os::Printer::log(buildVec2fError(key, i).c_str(), ELL_WARNING);
+        return true;
+      }
+      switch (i){
+        case 0:
+          refVec.X = value;
+          break;
+        case 1:
+          refVec.Y = value;
+          break;
+      }
+      i++;
+    }
+  } else {
+    os::Printer::log(buildVec3fError(key, -1), ELL_WARNING);
+    return true;  
+  }
+  return false;
+}
+
+/**
  * Simple error builder for Vec3.
 */
-const char* buildVec3fError(std::string key) {
-  return std::string("Error, ").append(key).append(" in NODE must be an array of 3 numbers!").c_str();
+const char* buildVec3fError(std::string key, int index) {
+  std::string component;
+  switch (index) {
+    case 0:
+      component = "X";
+      break;
+    case 1:
+      component = "Y";
+      break;
+    case 2:
+      component = "Z"
+  }
+  return std::string("Error, " + component + " must be an array of 2 numbers!");
 }
 
 /**
@@ -184,7 +253,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
     for (auto reference = textureArray.begin(); reference != textureArray.end(); ++reference) {
 
       // t stands for texture. :D Come back next week for more knowledge.
-      json t = *reference;
+      auto t = *reference;
                   
       // This is a very strange way to do this but I won't complain.
       Textures.push_back(SB3dTexture());
@@ -192,8 +261,12 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
 
       // This part should probably be it's own function.
       //todo: look into making this it's own function.
-      
 
+      if (t.contains("pos") && t["pos"].is_array()) {
+        
+      } else {
+        return {false, "Malformed pos in TEXS block. Must be an array with 2 numbers."};
+      }
     }
   } else {
     // it is malformed.
