@@ -191,18 +191,10 @@ void CB3DJSONMeshFileLoader::cleanUp(std::string failure) {
   AnimatedMesh = 0;
 }
 
-bool CB3DJSONMeshFileLoader::parseJSONFile() {
-
-}
-
-IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
-
-  // Less than zero? What is this file a black hole?
-  if (file->getSize() <= 0) {
-    this->cleanUp("B3D JSON severe error! File size is 0!");
-    return AnimatedMesh;
-  }
-
+/**
+ * Returns success.
+*/
+bool CB3DJSONMeshFileLoader::parseJSONFile(io::IReadFile* file) {
   // So here we turn this mangled disaster into a C string.
   // Please consider this the equivalent of duct taping a chainsaw onto a car to cut your lawn.
   auto buffer = std::make_unique<char[]>(file->getSize());
@@ -217,16 +209,30 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   output[file->getSize()] = '\0';
 
   // We have to catch a JSON parse error or else the game will segfault.
-  json data;
   try {
-    data = json::parse(output);
+    JSONDataContainer = json::parse(output);
   } catch (const json::parse_error& e) {
     std::cout << "message: " << e.what() << '\n'
           << "exception id: " << e.id << '\n'
           << "byte position of error: " << e.byte << std::endl;
     os::Printer::log("JSON: Failed to parse!", ELL_WARNING);
-    return nullptr;
+    return false;
   }
+  return true;
+}
+
+IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
+
+  // Less than zero? What is this file a black hole?
+  if (file->getSize() <= 0) {
+    this->cleanUp("B3D JSON severe error! File size is 0!");
+    return AnimatedMesh;
+  }
+
+  if (!this->parseJSONFile(file)) {
+
+  }
+
 
   // Now check some real basic elements of the JSON file.
   if (!data.contains("format") || !data["format"].is_string() || data["format"] != "BB3D") {
