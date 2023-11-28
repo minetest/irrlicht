@@ -219,7 +219,7 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   }
 
   // Now check some real basic elements of the JSON file.
-  if (!data.contains("format") || !data["format"].is_string() || data["format"] != "BB3DJSON") {
+  if (!data.contains("format") || !data["format"].is_string() || data["format"] != "BB3D") {
     os::Printer::log("No format in B3D JSON! Expected: BB3DJSON", ELL_WARNING);
     return nullptr;
   }
@@ -228,7 +228,7 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
     return nullptr;
   }
 
-  // Now we can start doing things with it.
+  // Now we can start doing a full parse of the data in the model JSON.
   IAnimatedMesh* finalizedModel = parseModel(data);
 
 
