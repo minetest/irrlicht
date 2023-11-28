@@ -107,7 +107,7 @@ std::tuple<bool, std::string> grabVec2f(json data, std::string key, irr::core::v
   } else {
     return {false, buildVectorError(key, -1, 2)};  
   }
-  return {true, nullptr};
+  return {true, ""};
 }
 
 /**
@@ -142,7 +142,7 @@ std::tuple<bool, std::string> grabVec3f(json data, std::string key, irr::core::v
   } else {
     return {false, buildVectorError(key, -1, 3)};
   }
-  return {true, nullptr};
+  return {true, ""};
 }
 
 /**
@@ -177,7 +177,7 @@ std::tuple<bool, std::string> grabQuaternionf(json data, std::string key, irr::c
   } else {
     return {false, buildVectorError(key, -1, 4)};
   }
-  return {true, nullptr};
+  return {true, ""};
 }
 
 
@@ -203,7 +203,7 @@ std::tuple<bool, std::string> parseNode(json data, SMeshBuffer* meshBuffer) {
     return {false, std::get<1>(rotationResult)};
   }
   
-  return {true, nullptr};
+  return {true, ""};
 }
 
 /**
@@ -219,7 +219,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
     texs = JSONDataContainer["TEXS"];
   } {
     // Since it's optional, it succeeds if it's not there.
-    return {true, nullptr};
+    return {true, ""};
   }
 
   if (texs.contains("textures") && texs["textures"].is_array()) {
@@ -238,10 +238,15 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
       // This part should probably be it's own function.
       //todo: look into making this it's own function.
 
+      if (t.contains("name") && t["name"].is_string()) {
+        auto thing = t["name"];
+        
+      }
+
       if (t.contains("pos") && t["pos"].is_array()) {
 
         irr::core::vector2df pos {0,0};
-        
+
 
         auto posSuccess = grabVec2f(t, "pos", pos);
         if (!std::get<0>(posSuccess)) {
@@ -261,7 +266,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
   }
 
   // Everything succeeds, yay!
-  return {true, nullptr};
+  return {true, ""};
 }
 
 
@@ -284,7 +289,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::load() {
   
 
   // return animatedMesh;
-  return {true, nullptr};
+  return {true, ""};
 }
 
 /**
@@ -292,8 +297,10 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::load() {
 */
 CSkinnedMesh* CB3DJSONMeshFileLoader::cleanUp(std::string failure) {
   os::Printer::log(failure.c_str(), ELL_WARNING);
-  AnimatedMesh->drop();
-  AnimatedMesh = 0;
+  if (AnimatedMesh != nullptr) {
+    AnimatedMesh->drop();
+    AnimatedMesh = 0;
+  }
   return AnimatedMesh;
 }
 
@@ -327,7 +334,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::parseJSONFile(io::IReadFil
   }
 
   // I'm not sure if buffer and output gets dropped here.
-  return {true, nullptr};
+  return {true, ""};
 }
 
 IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
