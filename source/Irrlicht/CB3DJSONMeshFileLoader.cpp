@@ -185,6 +185,9 @@ bool load(json data) {
   return true;
 }
 
+/**
+ * Automatically cleans and returns the nullptr so it can be inlined or chained.
+*/
 CSkinnedMesh* CB3DJSONMeshFileLoader::cleanUp(std::string failure) {
   os::Printer::log(failure.c_str(), ELL_WARNING);
   AnimatedMesh->drop();
@@ -236,6 +239,8 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
     return(this->cleanUp("B3D JSON severe error! File size is 0!"));
   }
 
+  //? Now JSONDataContainer exists on this object.
+  //? So we can commence loading it.
 
   // Now check some real basic elements of the JSON file.
   if (!data.contains("format") || !data["format"].is_string() || data["format"] != "BB3D") {
