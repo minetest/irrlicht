@@ -257,10 +257,11 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
       B3DTexture.TextureName.replace('\\','/');
 
     } else {
-      
+
       if (t.contains("name") && !t["name"].is_string()) {
         return {false, "\"name\" in TEXS block index (" + std::to_string(index) +") is not a string."};
       }
+      
       return {false, "Missing \"name\" in TEXS block index (" + std::to_string(index) +")."};
     }
 
