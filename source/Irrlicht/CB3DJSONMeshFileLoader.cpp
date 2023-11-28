@@ -255,8 +255,9 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
 
       // Convert Windows '\' to Posix '/'.
       B3DTexture.TextureName.replace('\\','/');
-      println(B3DTexture.TextureName.c_str());
+
     } else {
+      
       if (t.contains("name") && !t["name"].is_string()) {
         return {false, "\"name\" in TEXS block index (" + std::to_string(index) +") is not a string."};
       }
