@@ -60,6 +60,9 @@ const char* buildVec3fError(std::string key) {
  * Returns true if failure occurs.
 */
 bool grabVec3f(json data, std::string key, irr::core::vector3df& refVec) {
+
+  // todo: make a CurrentElement thing in the class header so that we can print nice debug info.
+
   if (data.contains(key) && data[key].is_array() && data[key].size() == 3) {
     auto jsonVec3 = data[key];
     int i = 0;
@@ -170,27 +173,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::load() {
     return {false, "Wrong version in B3D JSON! Expected: 1"};
   }
 
-  //! Remember: This is basically a linked tree.
-
-  // SMesh* baseMesh(new SMesh {});
-
-  // SMeshBuffer* meshBuffer(new SMeshBuffer {});
-
-  // And now we begin the recursion!
-
-  // std::cout << data["NODE"] << "\n";
-
-  // if (data.contains("NODE") && data["NODE"].is_object()) {
-  //   println("Yep, that's a node!");
-
-  //   // If it fails, give up basically.
-  //   if (parseNode(data["NODE"], meshBuffer)) {
-  //     return nullptr;
-  //   }
-  // }
-
-  // SAnimatedMesh* animatedMesh(new SAnimatedMesh {});
-	// animatedMesh->addMesh(baseMesh);
+  
 
   // return animatedMesh;
   return {true, nullptr};
@@ -276,3 +259,31 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
 
 } // namespace scene
 } // namespace irr
+
+/*
+
+? This is old reference material. Remember to remove this before PR is made.
+
+//! Remember: This is basically a linked tree.
+
+// SMesh* baseMesh(new SMesh {});
+
+// SMeshBuffer* meshBuffer(new SMeshBuffer {});
+
+// And now we begin the recursion!
+
+// std::cout << data["NODE"] << "\n";
+
+// if (data.contains("NODE") && data["NODE"].is_object()) {
+//   println("Yep, that's a node!");
+
+//   // If it fails, give up basically.
+//   if (parseNode(data["NODE"], meshBuffer)) {
+//     return nullptr;
+//   }
+// }
+
+// SAnimatedMesh* animatedMesh(new SAnimatedMesh {});
+// animatedMesh->addMesh(baseMesh);
+
+*/
