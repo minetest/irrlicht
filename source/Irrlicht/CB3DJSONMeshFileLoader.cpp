@@ -222,7 +222,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkBRUS() {
 
   // We're checking the root of the JSON structure here. So we can just peak directly into the root.
   if (JSONDataContainer.contains("BRUS") && JSONDataContainer["BRUS"].is_array()) {
-    
+
     brus = JSONDataContainer["BRUS"];
 
   } else {
@@ -238,6 +238,68 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkBRUS() {
 
   int index = 0;
   for (auto reference = brus.begin(); reference != brus.end(); ++reference) {
+
+    // b stands for brush.
+    json b = *reference;
+
+    if (!b.is_object()) {
+      return {false, "BRUS: Element " + std::to_string(index) + " is not an object."};
+    }
+
+    // This is still quite strange. Maybe just make this a reference because it would be pointing to the same memory address.
+    Materials.push_back(SB3dMaterial());
+    SB3dMaterial& B3DMaterial = Materials.getLast();
+
+    //* Red.
+    if (b.contains("red") && b["red"].is_number()) {
+      B3DMaterial.red = b["red"];
+    } else {
+
+      if (!b.contains("red")) {
+        return {false, "BRUS: Element (" + std::to_string(index) + ") is missing \"red\"."};
+      }
+
+      return {false, "BRUS: Element (" + std::to_string(index) + ") \"red\" is not a number."};
+    }
+
+    //* Green.
+    if (b.contains("green") && b["green"].is_number()) {
+      B3DMaterial.green = b["green"];
+    } else {
+
+      if (!b.contains("green")) {
+        return {false, "BRUS: Element (" + std::to_string(index) + ") is missing \"green\"."};
+      }
+
+      return {false, "BRUS: Element (" + std::to_string(index) + ") \"green\" is not a number."};
+    }
+
+    //* Blue.
+    if (b.contains("blue") && b["blue"].is_number()) {
+      B3DMaterial.blue = b["blue"];
+    } else {
+
+      if (!b.contains("blue")) {
+        return {false, "BRUS: Element (" + std::to_string(index) + ") is missing \"blue\"."};
+      }
+
+      return {false, "BRUS: Element (" + std::to_string(index) + ") \"blue\" is not a number."};
+    }
+
+    //* Alpha.
+    if (b.contains("alpha") && b["alpha"].is_number()) {
+      B3DMaterial.alpha = b["alpha"];
+    } else {
+
+      if (!b.contains("alpha")) {
+        return {false, "BRUS: Element (" + std::to_string(index) + ") is missing \"alpha\"."};
+      }
+
+      return {false, "BRUS: Element (" + std::to_string(index) + ") \"alpha\" is not a number."};
+    }
+
+
+
 
 
     index++;

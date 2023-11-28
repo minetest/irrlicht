@@ -23,6 +23,7 @@ private:
   // Fields.
   CSkinnedMesh*	AnimatedMesh;
   core::array<SB3dTexture> Textures;
+  core::array<SB3dMaterial> Materials;
   /*
   Quick note about JSON.
   This is static memory, it's a static memory address so I do not think
