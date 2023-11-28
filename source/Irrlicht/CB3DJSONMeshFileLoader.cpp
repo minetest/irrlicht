@@ -181,12 +181,16 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
 
     json textureArray = texs["textures"];
 
-    // t stands for texture. :D Come back next week for more knowledge.
-    for (auto t = textureArray.begin(); t != textureArray.end(); ++t) {
-      
+    for (auto reference = textureArray.begin(); reference != textureArray.end(); ++reference) {
+
+      // t stands for texture. :D Come back next week for more knowledge.
+      json t = *reference;
+                  
       // This is a very strange way to do this but I won't complain.
       Textures.push_back(SB3dTexture());
       SB3dTexture& B3DTexture = Textures.getLast();
+
+      // This should probably be it's own function.
 
 
 
