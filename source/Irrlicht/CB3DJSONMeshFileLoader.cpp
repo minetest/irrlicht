@@ -243,6 +243,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkBRUS() {
     json b = *reference;
 
     if (!b.is_object()) {
+
       return {false, "BRUS: Element " + std::to_string(index) + " is not an object."};
     }
 
@@ -255,7 +256,9 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkBRUS() {
 
     //* Red.
     if (b.contains("red") && b["red"].is_number()) {
+
       B3DMaterial.red = b["red"];
+
     } else {
 
       if (!b.contains("red")) {
@@ -279,7 +282,9 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkBRUS() {
 
     //* Blue.
     if (b.contains("blue") && b["blue"].is_number()) {
+
       B3DMaterial.blue = b["blue"];
+
     } else {
 
       if (!b.contains("blue")) {
@@ -303,7 +308,9 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkBRUS() {
 
     //* Blend.
     if (b.contains("blend") && b["blend"].is_number_integer()) {
+
       B3DMaterial.blend = b["blend"];
+
     } else {
 
       if (!b.contains("blend")) {
@@ -315,7 +322,9 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkBRUS() {
 
     //* FX.
     if (b.contains("fx") && b["fx"].is_number_integer()) {
+
       B3DMaterial.fx = b["fx"];
+
     } else {
 
       if (!b.contains("fx")) {
@@ -324,8 +333,6 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkBRUS() {
 
       return {false, "BRUS: Element (" + std::to_string(index) + ") \"fx\" is not an integer."};
     }
-
-
 
     index++;
   }
