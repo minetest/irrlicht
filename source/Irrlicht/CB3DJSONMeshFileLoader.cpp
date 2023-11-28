@@ -260,9 +260,12 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   if (!std::get<0>(loadResult)) {
     // Print the reason, and return a nullptr.
     return(this->cleanUp(std::get<1>(loadResult)));
+  } else {
+    //todo: We finalize the model here.
   }
 
   println("We got to the end.");
+  //todo: We return the object's AnimatedMesh.
   return nullptr;
 }
 
