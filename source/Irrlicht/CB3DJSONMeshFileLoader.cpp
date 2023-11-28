@@ -246,6 +246,8 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
     // This part should probably be it's own function.
     //todo: look into making this it's own function.
 
+    // This part is a bit complex, for ease of use for the plugin dev/modders advantage.
+
     //* Name.
     if (t.contains("name") && t["name"].is_string()) {
 
@@ -294,18 +296,38 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
       return {false, "Missing \"blend\" in TEXS block index(" + std::to_string(index)+")."};
     }
 
+    //* Position.
+    if (t.contains("pos") && t["pos"].is_array()) {
 
-    // This part is a bit complex, for ease of use for the plugin dev/modders advantage.
+      irr::core::vector2df pos {0,0};
 
-    // if (t.contains("pos") && t["pos"].is_array()) {
-    //   irr::core::vector2df pos {0,0};
-    //   auto posSuccess = grabVec2f(t, "pos", pos);
-    //   if (!std::get<0>(posSuccess)) {
-    //     return {false, "TEXS: " + std::get<1>(posSuccess)};
-    //   }
-    // } else {
-    //   return {false, "Malformed \"pos\" in TEXS block index (" + std::to_string(index) + "). Must be an array with 2 numbers."};
-    // }
+      auto posSuccess = grabVec2f(t, "pos", pos);
+
+      // Something went horribly wrong.
+      if (!std::get<0>(posSuccess)) {
+
+        return {false, "TEXS: " + std::get<1>(posSuccess)};
+      }
+
+      // Success.
+      B3DTexture.Xpos = pos.X;
+      B3DTexture.Ypos = pos.Y;
+
+    } else {
+
+      if (t.contains("pos") && !t["pos"].is_array()) {
+        return {false, "\"pos\" in TEXS block index(" + std::to_string(index)+") is not an array."};
+      }
+
+      if (!t.contains("pos") ) {
+        return {false, "\"pos\" in TEXS block index(" + std::to_string(index)+") is missing."};
+      }
+
+      return {false, "Malformed \"pos\" in TEXS block index (" + std::to_string(index) + "). Must be an array with 2 numbers."};
+    }
+
+
+
 
     index++;
   }
