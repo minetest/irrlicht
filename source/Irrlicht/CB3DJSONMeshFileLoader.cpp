@@ -262,6 +262,8 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
 
 /*
 
+! deprecated
+
 ? This is old reference material. Remember to remove this before PR is made.
 
 //! Remember: This is basically a linked tree.
