@@ -5,6 +5,9 @@
 #include "CSkinnedMesh.h"
 #include "IReadFile.h"
 #include "path.h"
+#include "json/json.hpp"
+
+using json = nlohmann::json;
 
 namespace irr
 {
