@@ -239,9 +239,19 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
       //todo: look into making this it's own function.
 
       if (t.contains("pos") && t["pos"].is_array()) {
+
+        irr::core::vector2df pos {0,0};
         
+
+        auto posSuccess = grabVec2f(t, "pos", pos);
+        if (!std::get<0>(posSuccess)) {
+          return {false, "TEXS: " + std::get<1>(posSuccess)};
+        }
+
+
+
       } else {
-        return {false, "Malformed pos in TEXS block. Must be an array with 2 numbers."};
+        return {false, "Malformed \"pos\" in TEXS block. Must be an array with 2 numbers."};
       }
     }
   } else {
