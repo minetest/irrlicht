@@ -211,9 +211,37 @@ std::tuple<bool, std::string> parseNode(json data, SMeshBuffer* meshBuffer) {
 
 /**
  * Returns (success, failure reason).
+ * [optional]
 */
 std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkBRUS() {
 
+  //? Can skip number of BRUS because JSON. :D
+  //? note: BRUS is an array of objects.
+
+  json brus;
+
+  // We're checking the root of the JSON structure here. So we can just peak directly into the root.
+  if (JSONDataContainer.contains("BRUS") && JSONDataContainer["BRUS"].is_array()) {
+    
+    brus = JSONDataContainer["BRUS"];
+
+  } else {
+
+    // We also want to warn developers if they're using {} instead of [].
+    if (JSONDataContainer.contains("BRUS") && !JSONDataContainer["BRUS"].is_array()) {
+      return {false, "BRUS is not an array."};
+    }
+
+    // Since it's optional, it succeeds if it's not there.
+    return {true, ""};
+  }
+
+  int index = 0;
+  for (auto reference = brus.begin(); reference != brus.end(); ++reference) {
+
+
+    index++;
+  }
   
   return {true, ""};
 }
