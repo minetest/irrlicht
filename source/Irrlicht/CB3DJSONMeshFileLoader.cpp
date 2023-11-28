@@ -343,6 +343,8 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
       B3DTexture.Xscale = scale.X;
       B3DTexture.Yscale = scale.Y;
 
+      // println(std::to_string(B3DTexture.Xscale) + " " + std::to_string(B3DTexture.Yscale));
+
     } else {
 
       if (t.contains("scale") && !t["scale"].is_array()) {
@@ -356,6 +358,18 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
       return {false, "Malformed \"scale\" in TEXS block index (" + std::to_string(index) + "). Must be an array with 2 numbers."};
     }
 
+    //* Angle.
+    if (t.contains("angle") && t["angle"].is_number()) {
+
+      B3DTexture.Angle = t["angle"];
+
+    } else {
+      if (t.contains("angle")) {
+        return {false, "\"angle\" in TEXS block index (" + std::to_string(index) + ") is not a number."};
+      }
+
+      return {false, "\"angle\" in TEXS block index (" + std::to_string(index) + ") is missing."};
+    }
 
 
     index++;
