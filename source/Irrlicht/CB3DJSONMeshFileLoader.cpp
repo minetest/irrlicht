@@ -224,7 +224,6 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
     texs = JSONDataContainer["TEXS"];
   } else {
     // Since it's optional, it succeeds if it's not there.
-    println("goodbye");
     return {true, ""};
   }
 
