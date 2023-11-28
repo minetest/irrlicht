@@ -246,6 +246,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
     // This part should probably be it's own function.
     //todo: look into making this it's own function.
 
+    //* Name.
     if (t.contains("name") && t["name"].is_string()) {
 
       // Strings are implicitly converted.
@@ -261,9 +262,38 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
       if (t.contains("name") && !t["name"].is_string()) {
         return {false, "\"name\" in TEXS block index (" + std::to_string(index) +") is not a string."};
       }
-      
+
       return {false, "Missing \"name\" in TEXS block index (" + std::to_string(index) +")."};
     }
+
+    //* Flags.
+    if (t.contains("flags") && t["flags"].is_number_integer()) {
+
+      B3DTexture.Flags = t["flags"];
+
+    } else {
+
+      if (t.contains("flags") && !t["flags"].is_number_integer()) {
+        return {false, "\"flags\" in TEXS block index(" + std::to_string(index)+") is not an integer."};
+      }
+
+      return {false, "Missing \"flags\" in TEXS block index(" + std::to_string(index)+")."};
+    }
+
+    //* Blend.
+    if (t.contains("blend") && t["blend"].is_number_integer()) {
+
+      B3DTexture.Blend = t["blend"];
+
+    } else {
+
+      if (t.contains("blend") && !t["blend"].is_number_integer()) {
+        return {false, "\"blend\" in TEXS block index(" + std::to_string(index)+") is not an integer."};
+      }
+            
+      return {false, "Missing \"blend\" in TEXS block index(" + std::to_string(index)+")."};
+    }
+
 
     // This part is a bit complex, for ease of use for the plugin dev/modders advantage.
 
