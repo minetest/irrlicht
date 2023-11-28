@@ -334,6 +334,16 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkBRUS() {
       return {false, "BRUS: Element (" + std::to_string(index) + ") \"fx\" is not an integer."};
     }
 
+    //* Textures Array.
+    if (b.contains("textures") && b["textures"].is_array()) {
+
+
+    } else {
+      if (!b.contains("textures")) {
+        return {false, "BRUS: Element (" + std::to_string(index) + ") is missing \"textures\"."};
+      }
+      return {false, "BRUS: Element (" + std::to_string(index) + ") is not an array."};
+    }
     index++;
   }
   
