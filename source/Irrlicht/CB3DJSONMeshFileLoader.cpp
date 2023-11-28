@@ -211,7 +211,15 @@ std::tuple<bool, std::string> parseNode(json data, SMeshBuffer* meshBuffer) {
 
 /**
  * Returns (success, failure reason).
- * This is an optional component of B3D.
+*/
+std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkBRUS() {
+
+  
+  return {true, ""};
+}
+
+/**
+ * Returns (success, failure reason).
 */
 std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
 
@@ -364,6 +372,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
       B3DTexture.Angle = t["angle"];
 
     } else {
+
       if (t.contains("angle")) {
         return {false, "\"angle\" in TEXS block index (" + std::to_string(index) + ") is not a number."};
       }
@@ -398,12 +407,21 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::load() {
     return {false, "Wrong version in B3D JSON! Expected: 1"};
   }
 
-  // Success, failure reason
+  // Grab TEXS (textures).
   std::tuple<bool, std::string> texturesSuccess = this->readChunkTEXS();
 
   if (!std::get<0>(texturesSuccess)) {
     return {false, std::get<1>(texturesSuccess)};
   }
+
+  // Grab BRUS (brushes). Defines where materials go.
+  std::tuple<bool, std::string> brushesSuccess = this->readChunkBRUS();
+
+  if (!std::get<0>(brushesSuccess)) {
+    return {false, std::get<1>(brushesSuccess)};
+  }
+
+
 
   
 

@@ -37,6 +37,7 @@ private:
   std::tuple<bool, std::string> parseJSONFile(io::IReadFile* file);
   std::tuple<bool, std::string> load();
   std::tuple<bool, std::string> readChunkTEXS();
+  std::tuple<bool, std::string> readChunkBRUS();
 
 public:
 
