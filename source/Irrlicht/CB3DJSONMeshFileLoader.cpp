@@ -298,7 +298,29 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkBRUS() {
       return {false, "BRUS: Element (" + std::to_string(index) + ") \"alpha\" is not a number."};
     }
 
+    //* Blend.
+    if (b.contains("blend") && b["blend"].is_number_integer()) {
+      B3DMaterial.blend = b["blend"];
+    } else {
 
+      if (!b.contains("blend")) {
+        return {false, "BRUS: Element (" + std::to_string(index) + ") is missing \"blend\"."};
+      }
+
+      return {false, "BRUS: Element (" + std::to_string(index) + ") \"blend\" is not an integer."};
+    }
+
+    //* FX.
+    if (b.contains("fx") && b["fx"].is_number_integer()) {
+      B3DMaterial.fx = b["fx"];
+    } else {
+
+      if (!b.contains("fx")) {
+        return {false, "BRUS: Element (" + std::to_string(index) + ") is missing \"fx\"."};
+      }
+
+      return {false, "BRUS: Element (" + std::to_string(index) + ") \"fx\" is not an integer."};
+    }
 
 
 
