@@ -222,7 +222,6 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
   if (JSONDataContainer.contains("TEXS") && JSONDataContainer["TEXS"].is_array()) {
     // We're referencing static memory.
     texs = JSONDataContainer["TEXS"];
-    println("hello");
   } else {
     // Since it's optional, it succeeds if it's not there.
     println("goodbye");
