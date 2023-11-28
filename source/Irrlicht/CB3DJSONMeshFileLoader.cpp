@@ -79,7 +79,7 @@ std::string buildVectorError(std::string key, int index, int width) {
 
 
 /**
- * Returns success.
+ * Returns (success, failure reason).
 */
 std::tuple<bool, std::string> grabVec2f(json data, std::string key, irr::core::vector2df& refVec) {
 
@@ -111,7 +111,7 @@ std::tuple<bool, std::string> grabVec2f(json data, std::string key, irr::core::v
 }
 
 /**
- * Returns success.
+ * Returns (success, failure reason).
 */
 std::tuple<bool, std::string> grabVec3f(json data, std::string key, irr::core::vector3df& refVec) {
 
@@ -146,7 +146,7 @@ std::tuple<bool, std::string> grabVec3f(json data, std::string key, irr::core::v
 }
 
 /**
- * Returns success.
+ * Returns (success, failure reason).
 */
 std::tuple<bool, std::string> grabQuaternionf(json data, std::string key, irr::core::quaternion& refQuat) {
   if (data.contains(key) && data[key].is_array() && data[key].size() == 4) {
@@ -181,26 +181,29 @@ std::tuple<bool, std::string> grabQuaternionf(json data, std::string key, irr::c
 }
 
 
-// Returns success.
-bool parseNode(json data, SMeshBuffer* meshBuffer) {
+// Returns (success, failure reason).
+std::tuple<bool, std::string> parseNode(json data, SMeshBuffer* meshBuffer) {
 
   auto position = irr::core::vector3df{0,0,0};
   auto scale = irr::core::vector3df{1,1,1};
   auto rotation = irr::core::quaternion{0,0,0,1};
 
-  if (grabVec3f(data, "position", position)) {
-    return false;
+  auto positionResult = grabVec3f(data, "position", position);
+  if (!std::get<0>(positionResult)) {
+    return {false, std::get<1>(positionResult)};
   }
 
-  if (grabVec3f(data, "scale", scale)) {
-    return false;
+  auto scaleResult = grabVec3f(data, "scale", scale);
+  if (!std::get<0>(scaleResult)) {
+    return {false, std::get<1>(scaleResult)};
   }
 
-  if (grabQuaternionf(data, "rotation", rotation)) {
-    return false;
+  auto rotationResult = grabQuaternionf(data, "rotation", rotation);
+  if (!std::get<0>(rotationResult)) {
+    return {false, std::get<1>(rotationResult)};
   }
   
-  return true;
+  return {true, nullptr};
 }
 
 /**
