@@ -185,10 +185,11 @@ bool load(json data) {
   return true;
 }
 
-void CB3DJSONMeshFileLoader::cleanUp(std::string failure) {
+CSkinnedMesh* CB3DJSONMeshFileLoader::cleanUp(std::string failure) {
   os::Printer::log(failure.c_str(), ELL_WARNING);
   AnimatedMesh->drop();
   AnimatedMesh = 0;
+  return AnimatedMesh;
 }
 
 /**
@@ -218,6 +219,8 @@ bool CB3DJSONMeshFileLoader::parseJSONFile(io::IReadFile* file) {
     os::Printer::log("JSON: Failed to parse!", ELL_WARNING);
     return false;
   }
+
+  // I'm not sure if buffer and output gets dropped here.
   return true;
 }
 

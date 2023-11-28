@@ -27,7 +27,7 @@ private:
   json JSONDataContainer;
 
   // Methods.
-  void cleanUp(std::string);
+  CSkinnedMesh* cleanUp(std::string);
   bool parseJSONFile(io::IReadFile* file);
 
 public:
