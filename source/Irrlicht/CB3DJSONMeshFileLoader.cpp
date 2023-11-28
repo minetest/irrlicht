@@ -15,6 +15,7 @@
 #include <string>
 #include "json/json.hpp"
 #include <array>
+#include <tuple>
 using json = nlohmann::json;
 
 namespace irr
@@ -156,8 +157,21 @@ bool parseNode(json data, SMeshBuffer* meshBuffer) {
   return false;
 }
 
-// Returns success.
-bool load(json data) {
+/**
+ * Returns (success, failure reason).
+*/
+std::tuple<bool, std::string> CB3DJSONMeshFileLoader::load() {
+
+  
+
+  // Now check some real basic elements of the JSON file.
+  if (!JSONDataContainer.contains("format") || !JSONDataContainer["format"].is_string() || JSONDataContainer["format"] != "BB3D") {
+    return {false, "No format in B3D JSON! Expected: BB3D"};
+  }
+  if (!JSONDataContainer.contains("version") || !JSONDataContainer["version"].is_number_integer() || JSONDataContainer["version"] != 1) {
+    os::Printer::log("Wrong version in B3D JSON! Expected: 1", ELL_WARNING);
+    return false;
+  }
 
   //! Remember: This is basically a linked tree.
 
@@ -242,18 +256,14 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   //? Now JSONDataContainer exists on this object.
   //? So we can commence loading it.
 
-  // Now check some real basic elements of the JSON file.
-  if (!data.contains("format") || !data["format"].is_string() || data["format"] != "BB3D") {
-    os::Printer::log("No format in B3D JSON! Expected: BB3DJSON", ELL_WARNING);
-    return nullptr;
-  }
-  if (!data.contains("version") || !data["version"].is_number_integer() || data["version"] != 1) {
-    os::Printer::log("Wrong version in B3D JSON! Expected: 1", ELL_WARNING);
-    return nullptr;
-  }
+  // Now we can start doing a full parse of the data in the model JSON and build it as an irrlicht model.
+  const std::tuple<bool, std::string> loadResult = load();
 
-  // Now we can start doing a full parse of the data in the model JSON.
-  const bool placeholder = parseModel(data);
+  // If it failed to load, we give up.
+  if (!std::get<0>(loadResult)) {
+    // Print the reason, and return a nullptr.
+    return(this->cleanUp(std::get<1>(loadResult)));
+  }
 
   println("We got to the end.");
   return nullptr;

@@ -29,6 +29,7 @@ private:
   // Methods.
   CSkinnedMesh* cleanUp(std::string);
   bool parseJSONFile(io::IReadFile* file);
+  std::tuple<bool, std::string> load();
 
 public:
 
