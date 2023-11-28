@@ -337,13 +337,33 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkBRUS() {
     //* Textures Array.
     if (b.contains("textures") && b["textures"].is_array()) {
 
+      json internalArray = b["textures"];
 
+      int internalIndex = 0;
+      for (auto internalReference = internalArray.begin(); internalReference != internalArray.end(); ++internalReference) {
+
+        json texName = *internalReference;
+
+        if (!texName.is_string()) {
+          return {false, "BRUS: Element (" + std::to_string(index) + ") texture element (" + std::to_string(internalIndex) + ") is not a string."};
+        }
+
+        std::string finalizedName = texName;
+
+        println("this is what we got: " + finalizedName);
+
+        internalIndex++;
+      }
+      
     } else {
+
       if (!b.contains("textures")) {
         return {false, "BRUS: Element (" + std::to_string(index) + ") is missing \"textures\"."};
       }
+
       return {false, "BRUS: Element (" + std::to_string(index) + ") is not an array."};
     }
+
     index++;
   }
   
