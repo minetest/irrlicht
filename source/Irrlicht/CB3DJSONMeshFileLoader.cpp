@@ -230,7 +230,8 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
   }
 
   if (!this->parseJSONFile(file)) {
-
+    this->cleanUp("B3D JSON severe error! File size is 0!");
+    return AnimatedMesh;
   }
 
 
