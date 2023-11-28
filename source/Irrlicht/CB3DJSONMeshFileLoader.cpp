@@ -135,7 +135,7 @@ bool grabQuaternionf(json data, std::string key, irr::core::quaternion& refQuat)
 }
 
 
-// Returns if errored.
+// Returns success.
 bool parseNode(json data, SMeshBuffer* meshBuffer) {
 
   auto position = irr::core::vector3df{0,0,0};
@@ -143,18 +143,18 @@ bool parseNode(json data, SMeshBuffer* meshBuffer) {
   auto rotation = irr::core::quaternion{0,0,0,1};
 
   if (grabVec3f(data, "position", position)) {
-    return true;
+    return false;
   }
 
   if (grabVec3f(data, "scale", scale)) {
-    return true;
+    return false;
   }
 
   if (grabQuaternionf(data, "rotation", rotation)) {
-    return true;
+    return false;
   }
   
-  return false;
+  return true;
 }
 
 /**
