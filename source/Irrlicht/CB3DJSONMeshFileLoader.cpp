@@ -162,8 +162,6 @@ bool parseNode(json data, SMeshBuffer* meshBuffer) {
 */
 std::tuple<bool, std::string> CB3DJSONMeshFileLoader::load() {
 
-  
-
   // Now check some real basic elements of the JSON file.
   if (!JSONDataContainer.contains("format") || !JSONDataContainer["format"].is_string() || JSONDataContainer["format"] != "BB3D") {
     return {false, "No format in B3D JSON! Expected: BB3D"};
@@ -195,7 +193,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::load() {
 	// animatedMesh->addMesh(baseMesh);
 
   // return animatedMesh;
-  return true;
+  return {true, nullptr};
 }
 
 /**
