@@ -250,6 +250,9 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkBRUS() {
     Materials.push_back(SB3dMaterial());
     SB3dMaterial& B3DMaterial = Materials.getLast();
 
+    // This part should probably be it's own function.
+    //todo: look into making this it's own function.
+
     //* Red.
     if (b.contains("red") && b["red"].is_number()) {
       B3DMaterial.red = b["red"];
