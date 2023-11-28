@@ -220,6 +220,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkBRUS() {
 
 /**
  * Returns (success, failure reason).
+ * [optional]
 */
 std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
 
@@ -231,6 +232,12 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
     // We're referencing static memory.
     texs = JSONDataContainer["TEXS"];
   } else {
+
+    // We also want to warn developers if they're using {} instead of [].
+    if (JSONDataContainer.contains("TEXS") && !JSONDataContainer["TEXS"].is_array()) {
+      return {false, "TEXS is not an array."};
+    }
+
     // Since it's optional, it succeeds if it's not there.
     return {true, ""};
   }
