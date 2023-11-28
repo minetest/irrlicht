@@ -77,7 +77,11 @@ std::string buildVectorError(std::string key, int index, int width) {
   return std::string("Error, " + component + " in " + key + "is not a number! " + key + " must be an array of " + std::to_string(width) + " numbers!");
 }
 
-bool grabVec2f(json data, std::string key, irr::core::vector2df& refVec) {
+
+/**
+ * Returns success.
+*/
+std::tuple<bool, std::string> grabVec2f(json data, std::string key, irr::core::vector2df& refVec) {
 
   // todo: make a CurrentElement thing in the class header so that we can print nice debug info.
 
@@ -88,8 +92,7 @@ bool grabVec2f(json data, std::string key, irr::core::vector2df& refVec) {
       auto value = *reference;
       // Can take integer OR float.
       if (!value.is_number()) {
-        os::Printer::log(buildVec2fError(key, i).c_str(), ELL_WARNING);
-        return true;
+        return {false, buildVectorError(key, i, 2)};
       }
       switch (i){
         case 0:
@@ -102,34 +105,15 @@ bool grabVec2f(json data, std::string key, irr::core::vector2df& refVec) {
       i++;
     }
   } else {
-    os::Printer::log(buildVec3fError(key, -1), ELL_WARNING);
-    return true;  
+    return {false, buildVectorError(key, -1, 2)};  
   }
-  return false;
+  return {true, nullptr};
 }
 
 /**
- * Simple error builder for Vec3.
+ * Returns success.
 */
-const char* buildVec3fError(std::string key, int index) {
-  std::string component;
-  switch (index) {
-    case 0:
-      component = "X";
-      break;
-    case 1:
-      component = "Y";
-      break;
-    case 2:
-      component = "Z"
-  }
-  return std::string("Error, " + component + " must be an array of 2 numbers!");
-}
-
-/**
- * Returns true if failure occurs.
-*/
-bool grabVec3f(json data, std::string key, irr::core::vector3df& refVec) {
+std::tuple<bool, std::string> grabVec3f(json data, std::string key, irr::core::vector3df& refVec) {
 
   // todo: make a CurrentElement thing in the class header so that we can print nice debug info.
 
@@ -140,8 +124,7 @@ bool grabVec3f(json data, std::string key, irr::core::vector3df& refVec) {
       auto value = *reference;
       // Can take integer OR float.
       if (!value.is_number()) {
-        os::Printer::log(buildVec3fError(key), ELL_WARNING);
-        return true;
+        return {false, buildVectorError(key, i, 3)};
       }
       switch (i){
         case 0:
@@ -157,23 +140,15 @@ bool grabVec3f(json data, std::string key, irr::core::vector3df& refVec) {
       i++;
     }
   } else {
-    os::Printer::log(buildVec3fError(key), ELL_WARNING);
-    return true;  
+    return {false, buildVectorError(key, -1, 3)};
   }
-  return false;
+  return {true, nullptr};
 }
 
 /**
- * Simple error builder for Quaternion.
+ * Returns success.
 */
-const char* buildQuatError(std::string key) {
-  return std::string("Error, ").append(key).append(" in NODE must be an array of 4 numbers!").c_str();
-}
-
-/**
- * Returns true if failure occurs.
-*/
-bool grabQuaternionf(json data, std::string key, irr::core::quaternion& refQuat) {
+std::tuple<bool, std::string> grabQuaternionf(json data, std::string key, irr::core::quaternion& refQuat) {
   if (data.contains(key) && data[key].is_array() && data[key].size() == 4) {
     auto jsonQuat = data[key];
     int i = 0;
@@ -181,8 +156,7 @@ bool grabQuaternionf(json data, std::string key, irr::core::quaternion& refQuat)
       auto value = *reference;
       // Can take integer OR float.
       if (!value.is_number()) {
-        os::Printer::log(buildQuatError(key), ELL_WARNING);
-        return true;
+        return {false, buildVectorError(key, i, 4)};
       }
       switch (i){
         case 0:
@@ -201,10 +175,9 @@ bool grabQuaternionf(json data, std::string key, irr::core::quaternion& refQuat)
       i++;
     }
   } else {
-    os::Printer::log(buildQuatError(key), ELL_WARNING);
-    return true;  
+    return {false, buildVectorError(key, -1, 4)};
   }
-  return false;
+  return {true, nullptr};
 }
 
 
