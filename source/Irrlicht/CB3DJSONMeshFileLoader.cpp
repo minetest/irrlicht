@@ -190,14 +190,19 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
       Textures.push_back(SB3dTexture());
       SB3dTexture& B3DTexture = Textures.getLast();
 
-      // This should probably be it's own function.
-
-
-
-
+      // This part should probably be it's own function.
+      //todo: look into making this it's own function.
+      
 
     }
+  } else {
+    // it is malformed.
+    //todo: return 
+    return {false, "Malformed TEXS block. \"textures\" is not an array."} ;
   }
+
+  // Everything succeeds, yay!
+  return {true, nullptr};
 }
 
 
