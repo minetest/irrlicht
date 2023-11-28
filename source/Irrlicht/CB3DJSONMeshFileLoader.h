@@ -4,6 +4,7 @@
 #include "IMeshLoader.h"
 #include "CSkinnedMesh.h"
 #include "IReadFile.h"
+#include "SB3DStructs.h"
 #include "path.h"
 #include "json/json.hpp"
 #include <tuple>
@@ -21,6 +22,7 @@ class CB3DJSONMeshFileLoader : public IMeshLoader
 private:
   // Fields.
   CSkinnedMesh*	AnimatedMesh;
+  core::array<SB3dTexture> Textures;
   /*
   Quick note about JSON.
   This is static memory, it's a static memory address so I do not think
@@ -34,6 +36,7 @@ private:
   CSkinnedMesh* cleanUp(std::string);
   std::tuple<bool, std::string> parseJSONFile(io::IReadFile* file);
   std::tuple<bool, std::string> load();
+  std::tuple<bool, std::string> readChunkTEXS();
 
 public:
 

@@ -1,6 +1,7 @@
 #include "CB3DJSONMeshFileLoader.h"
 #include "coreutil.h"
 #include "IAnimatedMesh.h"
+#include "SB3DStructs.h"
 #include "S3DVertex.h"
 #include "SAnimatedMesh.h"
 #include "SColor.h"
@@ -162,6 +163,42 @@ bool parseNode(json data, SMeshBuffer* meshBuffer) {
 
 /**
  * Returns (success, failure reason).
+ * This is an optional component of B3D.
+*/
+std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
+
+  // We're checking the root of the JSON structure here. So we can just peak directly into the root.
+  json texs;
+  if (JSONDataContainer.contains("TEXS")) {
+    // We're referencing static memory.
+    texs = JSONDataContainer["TEXS"];
+  } {
+    // Since it's optional, it succeeds if it's not there.
+    return {true, nullptr};
+  }
+
+  if (texs.contains("textures") && texs["textures"].is_array()) {
+
+    json textureArray = texs["textures"];
+
+    // t stands for texture. :D Come back next week for more knowledge.
+    for (auto t = textureArray.begin(); t != textureArray.end(); ++t) {
+      
+      // This is a very strange way to do this but I won't complain.
+      Textures.push_back(SB3dTexture());
+      SB3dTexture& B3DTexture = Textures.getLast();
+
+
+
+
+
+    }
+  }
+}
+
+
+/**
+ * Returns (success, failure reason).
 */
 std::tuple<bool, std::string> CB3DJSONMeshFileLoader::load() {
 
@@ -172,6 +209,9 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::load() {
   if (!JSONDataContainer.contains("version") || !JSONDataContainer["version"].is_number_integer() || JSONDataContainer["version"] != 1) {
     return {false, "Wrong version in B3D JSON! Expected: 1"};
   }
+
+  // Success, failure reason
+  std::tuple<bool, std::string> texturesSuccess = this->readChunkTEXS();
 
   
 
