@@ -225,6 +225,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::parseJSONFile(io::IReadFil
 
   // We have to catch a JSON parse error or else the game will segfault.
   try {
+    //! This is pointing to static memory. It will only be valid during the loading of this model.
     JSONDataContainer = json::parse(output);
   } catch (const json::parse_error& e) {
     std::string failureReason = "message: " + std::string(e.what()) + '\n' +
