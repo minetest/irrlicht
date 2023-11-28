@@ -593,6 +593,7 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::load() {
 */
 CSkinnedMesh* CB3DJSONMeshFileLoader::cleanUp(std::string failure) {
   os::Printer::log(failure.c_str(), ELL_WARNING);
+  //! This causes a segmentation fault.
   if (AnimatedMesh != nullptr) {
     AnimatedMesh->drop();
     AnimatedMesh = 0;
