@@ -212,9 +212,11 @@ std::tuple<bool, std::string> parseNode(json data, SMeshBuffer* meshBuffer) {
 */
 std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
 
+  //? note: TEXS is an array of objects.
+
   // We're checking the root of the JSON structure here. So we can just peak directly into the root.
   json texs;
-  if (JSONDataContainer.contains("TEXS")) {
+  if (JSONDataContainer.contains("TEXS") && JSONDataContainer["TEXS"].is_array()) {
     // We're referencing static memory.
     texs = JSONDataContainer["TEXS"];
   } {
@@ -222,48 +224,52 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
     return {true, ""};
   }
 
-  if (texs.contains("textures") && texs["textures"].is_array()) {
+  int index = 0;
+  for (auto reference = texs.begin(); reference != texs.end(); ++reference) {
 
-    json textureArray = texs["textures"];
-
-    for (auto reference = textureArray.begin(); reference != textureArray.end(); ++reference) {
-
-      // t stands for texture. :D Come back next week for more knowledge.
-      auto t = *reference;
-                  
-      // This is a very strange way to do this but I won't complain.
-      Textures.push_back(SB3dTexture());
-      SB3dTexture& B3DTexture = Textures.getLast();
-
-      // This part should probably be it's own function.
-      //todo: look into making this it's own function.
-
-      if (t.contains("name") && t["name"].is_string()) {
-        auto thing = t["name"];
-        
-      }
-
-      if (t.contains("pos") && t["pos"].is_array()) {
-
-        irr::core::vector2df pos {0,0};
-
-
-        auto posSuccess = grabVec2f(t, "pos", pos);
-        if (!std::get<0>(posSuccess)) {
-          return {false, "TEXS: " + std::get<1>(posSuccess)};
-        }
-
-
-
-      } else {
-        return {false, "Malformed \"pos\" in TEXS block. Must be an array with 2 numbers."};
-      }
+    // t stands for texture.
+    json t = *reference;
+    
+    if (!t.is_object()) {
+      return {false, "TEXS: Element " + std::to_string(index) + " is not an object."};
     }
-  } else {
-    // it is malformed.
-    //todo: return 
-    return {false, "Malformed TEXS block. \"textures\" is not an array."} ;
+    
+    // This is a very strange way to do this but I won't complain.
+    // Create the texture object inside of the Mesh.
+    Textures.push_back(SB3dTexture());
+    SB3dTexture& B3DTexture = Textures.getLast();
+
+    
+    // This part should probably be it's own function.
+    //todo: look into making this it's own function.
+
+    if (t.contains("name") && t["name"].is_string()) {
+
+      // Strings are implicitly converted.
+      std::string thing = t["name"];
+
+      println(thing.c_str());
+    }
+
+    // This part is a bit complex, for ease of use for the plugin dev/modders advantage.
+
+    if (t.contains("pos") && t["pos"].is_array()) {
+      irr::core::vector2df pos {0,0};
+      auto posSuccess = grabVec2f(t, "pos", pos);
+      if (!std::get<0>(posSuccess)) {
+        return {false, "TEXS: " + std::get<1>(posSuccess)};
+      }
+    } else {
+      return {false, "Malformed \"pos\" in TEXS block. Must be an array with 2 numbers."};
+    }
+
+    index++;
   }
+  // } else {
+  //   // it is malformed.
+  //   //todo: return 
+  //   return {false, "Malformed TEXS block. \"textures\" is not an array."} ;
+  // }
 
   // Everything succeeds, yay!
   return {true, ""};
