@@ -16,6 +16,7 @@ class CB3DJSONMeshFileLoader : public IMeshLoader
 {
 private:
   CSkinnedMesh*	AnimatedMesh;
+  void cleanUp(std::string);
 
 public:
 

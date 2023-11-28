@@ -156,31 +156,39 @@ bool parseNode(json data, SMeshBuffer* meshBuffer) {
   return false;
 }
 
-IAnimatedMesh* parseModel(json data) {
+// Returns success.
+bool load(json data) {
 
   //! Remember: This is basically a linked tree.
 
-  SMesh* baseMesh(new SMesh {});
+  // SMesh* baseMesh(new SMesh {});
 
-  SMeshBuffer* meshBuffer(new SMeshBuffer {});
+  // SMeshBuffer* meshBuffer(new SMeshBuffer {});
 
   // And now we begin the recursion!
 
-  std::cout << data["NODE"] << "\n";
+  // std::cout << data["NODE"] << "\n";
 
-  if (data.contains("NODE") && data["NODE"].is_object()) {
-    println("Yep, that's a node!");
+  // if (data.contains("NODE") && data["NODE"].is_object()) {
+  //   println("Yep, that's a node!");
 
-    // If it fails, give up basically.
-    if (parseNode(data["NODE"], meshBuffer)) {
-      return nullptr;
-    }
-  }
+  //   // If it fails, give up basically.
+  //   if (parseNode(data["NODE"], meshBuffer)) {
+  //     return nullptr;
+  //   }
+  // }
 
-  SAnimatedMesh* animatedMesh(new SAnimatedMesh {});
-	animatedMesh->addMesh(baseMesh);
+  // SAnimatedMesh* animatedMesh(new SAnimatedMesh {});
+	// animatedMesh->addMesh(baseMesh);
 
-  return animatedMesh;
+  // return animatedMesh;
+  return true;
+}
+
+void CB3DJSONMeshFileLoader::cleanUp(std::string failure) {
+  os::Printer::log(failure.c_str(), ELL_WARNING);
+  AnimatedMesh->drop();
+  AnimatedMesh = 0;
 }
 
 IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
@@ -188,18 +196,18 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
 
   // Less than zero? What is this file a black hole?
   if (file->getSize() <= 0) {
-    os::Printer::log("B3D JSON severe error! File size is 0!", ELL_WARNING);
+    this->cleanUp("B3D JSON severe error! File size is 0!");
     return nullptr;
   }
 
   // So here we turn this mangled disaster into a C string.
   // Please consider this the equivalent of duct taping a chainsaw onto a car to cut your lawn.
-  // char* buffer = new char[file->getSize()];
   auto buffer = std::make_unique<char[]>(file->getSize());
 
   // Now we read that dang JSON.
   file->read(buffer.get(), file->getSize());
 
+  // This is the same pointer as buffer, but it's easier to read as "output".
   char* output = buffer.get();
 
   // Irrlicht doesn't null terminate the raw output. So we must doe it ourself.
@@ -207,7 +215,6 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
 
   // We have to catch a JSON parse error or else the game will segfault.
   json data;
-
   try {
     data = json::parse(output);
   } catch (const json::parse_error& e) {
