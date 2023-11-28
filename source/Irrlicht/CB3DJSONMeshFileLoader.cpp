@@ -326,6 +326,35 @@ std::tuple<bool, std::string> CB3DJSONMeshFileLoader::readChunkTEXS() {
       return {false, "Malformed \"pos\" in TEXS block index (" + std::to_string(index) + "). Must be an array with 2 numbers."};
     }
 
+    //* Scale.
+    if (t.contains("scale") && t["scale"].is_array()) {
+
+      irr::core::vector2df scale {0,0};
+
+      auto scaleSuccess = grabVec2f(t, "scale", scale);
+
+      // Something went horribly wrong.
+      if (!std::get<0>(scaleSuccess)) {
+
+        return {false, "TEXS: " + std::get<1>(scaleSuccess)};
+      }
+
+      // Success.
+      B3DTexture.Xscale = scale.X;
+      B3DTexture.Yscale = scale.Y;
+
+    } else {
+
+      if (t.contains("scale") && !t["scale"].is_array()) {
+        return {false, "\"scale\" in TEXS block index(" + std::to_string(index)+") is not an array."};
+      }
+
+      if (!t.contains("scale") ) {
+        return {false, "\"scale\" in TEXS block index(" + std::to_string(index)+") is missing."};
+      }
+
+      return {false, "Malformed \"scale\" in TEXS block index (" + std::to_string(index) + "). Must be an array with 2 numbers."};
+    }
 
 
 
