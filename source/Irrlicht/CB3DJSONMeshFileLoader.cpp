@@ -30,6 +30,9 @@ void println(const char* data) {
   printf(data);
   printf("\n");
 }
+void println(std::string data) {
+  printf((data + "\n").c_str());
+}
 const char * const boolToString(bool b)
 {
   return b ? "true" : "false";
