@@ -228,14 +228,12 @@ IAnimatedMesh* CB3DJSONMeshFileLoader::createMesh(io::IReadFile* file) {
 
   // Less than zero? What is this file a black hole?
   if (file->getSize() <= 0) {
-    this->cleanUp("B3D JSON severe error! File size is 0!");
-    return AnimatedMesh;
+    return(this->cleanUp("B3D JSON severe error! File size is 0!"));
   }
 
   // Try to read this file.
   if (!this->parseJSONFile(file)) {
-    this->cleanUp("B3D JSON severe error! File size is 0!");
-    return AnimatedMesh;
+    return(this->cleanUp("B3D JSON severe error! File size is 0!"));
   }
 
 
