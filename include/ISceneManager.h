@@ -212,13 +212,6 @@ namespace scene
 		 *      files .mtl are also supported. This importer for
 		 *      Irrlicht can load them directly. </TD>
 		 *  </TR>
-		 *  <TR>
-		 *    <TD>Milkshape (.ms3d)</TD>
-		 *    <TD>.MS3D files contain models and sometimes skeletal
-		 *      animations from the Milkshape 3D modeling and animation
-		 *      software. Like the other skeletal mesh loaders, joints
-		 *      are exposed via the ISkinnedMesh animated mesh type.</TD>
-		 *  </TR>
 		 *  </TABLE>
 		 *
 		 *  To load and display a mesh quickly, just do this:
