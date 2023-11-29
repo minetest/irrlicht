@@ -24,9 +24,6 @@ namespace scene
 		//! Maya .obj static model
 		EAMT_OBJ,
 
-		//! 3D Studio .3ds file
-		EAMT_3DS,
-
 		//! My3D Mesh, the file format by Zhuck Dimitry
 		EAMT_MY3D,
 
