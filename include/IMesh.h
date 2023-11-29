@@ -24,9 +24,6 @@ namespace scene
 		//! Maya .obj static model
 		EAMT_OBJ,
 
-		//! Cartography Shop .csm file. This loader was created by Saurav Mohapatra.
-		EAMT_CSM,
-
 		//! .oct file for Paul Nette's FSRad or from Murphy McCauley's Blender .oct exporter.
 		/** The oct file format contains 3D geometry and lightmaps and
 		can be loaded directly by Irrlicht */
