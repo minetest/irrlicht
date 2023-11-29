@@ -271,16 +271,6 @@ namespace scene
 		 *          will solve the problem.</TD>
 		 *    </TR>
 		 *    <TR>
-		 *      <TD>Quake 3 levels (.bsp)</TD>
-		 *      <TD>Quake 3 is a popular game by IDSoftware, and .pk3
-		 *        files contain .bsp files and textures/lightmaps
-		 *        describing huge prelighted levels. Irrlicht can read
-		 *        .pk3 and .bsp files directly and thus render Quake 3
-		 *        levels directly. Written by Nikolaus Gebhardt
-		 *        enhanced by Dean P. Macri with the curved surfaces
-		 *        feature. </TD>
-		 *    </TR>
-		 *    <TR>
 		 *      <TD>Stanford Triangle (.ply)</TD>
 		 *      <TD>Invented by Stanford University and known as the native
 		 *        format of the infamous "Stanford Bunny" model, this is a

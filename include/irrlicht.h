@@ -220,9 +220,9 @@
  *	// add .pk3 archive to the file system
  *	device->getFileSystem()->addZipFileArchive("quake3map.pk3");
  *
- *	// load .bsp file and show it using an octree
+ *	// load .b3d file and show it using an octree
  *	scenemgr->addOctreeSceneNode(
- *		scenemgr->getMesh("quake3map.bsp"));
+ *		scenemgr->getMesh("quake3map.b3d"));
  * \endcode
  *
  * As you can see, the engine uses namespaces. Everything in the engine is
