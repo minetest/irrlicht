@@ -18,12 +18,8 @@ namespace scene
 	name clashes with external mesh writers.*/
 	enum EMESH_WRITER_TYPE
 	{
-		//! Irrlicht native mesh writer, for static .irrmesh files.
-		EMWT_IRR_MESH     = MAKE_IRR_ID('i','r','r','m'),
-
-
 		//! B3D mesh writer, for static .b3d files
-		EMWT_B3D          = MAKE_IRR_ID('b', '3', 'd', 0)
+		// EMWT_B3D          = MAKE_IRR_ID('b', '3', 'd', 0)
 	};
 
 
