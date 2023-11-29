@@ -15,7 +15,7 @@
 #include "os.h"
 
 #include "CSkinnedMesh.h"
-// #include "CGLTFMeshFileLoader.h"
+#include "CGLTFMeshFileLoader.h"
 #include "CBillboardSceneNode.h"
 #include "CAnimatedMeshSceneNode.h"
 #include "CCameraSceneNode.h"
@@ -70,7 +70,7 @@ CSceneManager::CSceneManager(video::IVideoDriver* driver,
 	// TODO: now that we have multiple scene managers, these should be
 	// shallow copies from the previous manager if there is one.
 
-	// MeshLoaderList.push_back(new CB3DMeshFileLoader(this));
+	MeshLoaderList.push_back(new CGLTFMeshFileLoader());
 }
 
 

@@ -13,6 +13,8 @@
 #include "SMesh.h"
 #include "vector3d.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 #define TINYGLTF_IMPLEMENTATION
 #include "tinygltf/tiny_gltf.h"
 
@@ -48,7 +50,6 @@ static bool dummyImageLoader(tinygltf::Image *a,
 };
 
 namespace irr {
-
 namespace scene {
 
 CGLTFMeshFileLoader::BufferOffset::BufferOffset(
