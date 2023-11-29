@@ -14,7 +14,7 @@
 #include "vector3d.h"
 
 #define TINYGLTF_IMPLEMENTATION
-#include <tiny_gltf.h>
+#include "tinygltf/tiny_gltf.h"
 
 #include <cstddef>
 #include <cstring>

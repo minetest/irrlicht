@@ -11,7 +11,7 @@
 #include "vector2d.h"
 #include "vector3d.h"
 
-#include <tiny_gltf.h>
+#include "tinygltf/tiny_gltf.h"
 
 #include <cstddef>
 #include <vector>
