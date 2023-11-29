@@ -155,14 +155,6 @@ namespace scene
 		 *      ISkinnedMesh will be returned by this importer.</TD>
 		 *  </TR>
 		 *  <TR>
-		 *    <TD>Cartography shop 4 (.csm)</TD>
-		 *    <TD>Cartography Shop is a modeling program for creating
-		 *      architecture and calculating lighting. Irrlicht can
-		 *      directly import .csm files thanks to the IrrCSM library
-		 *      created by Saurav Mohapatra which is now integrated
-		 *      directly in Irrlicht.
-		 *  </TR>
-		 *  <TR>
 		 *    <TD>DirectX (.x)</TD>
 		 *    <TD>Platform independent importer (so not D3D-only) for
 		 *      .x files. Most 3D packages can export these natively
