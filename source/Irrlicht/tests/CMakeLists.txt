@@ -1,5 +1,6 @@
 add_executable(tests
 	testCGLTFMeshFileLoader.cpp
+	"${PROJECT_SOURCE_DIR}/source/Irrlicht/CReadFile.cpp"
 )
 
 set_target_properties(tests PROPERTIES
@@ -11,6 +12,12 @@ set_target_properties(tests PROPERTIES
 target_compile_options(tests
 	PRIVATE
 		"$<$<CXX_COMPILER_ID:GNU>:-Wall>"
+)
+
+target_include_directories(tests
+	PRIVATE
+		# For CReadFile
+		"${PROJECT_SOURCE_DIR}/source/Irrlicht"
 )
 
 target_link_libraries(tests

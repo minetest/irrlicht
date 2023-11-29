@@ -1,3 +1,5 @@
+#include "CReadFile.h"
+
 #define CATCH_CONFIG_MAIN
 #include <catch.hpp>
 #include <irrlicht.h>
@@ -21,7 +23,8 @@ public:
 		, m_mesh { nullptr }
 	{
 		auto* smgr = m_device->getSceneManager();
-		m_mesh = smgr->getMesh(filepath, "");
+		irr::io::CReadFile f = irr::io::CReadFile(filepath);
+		m_mesh = smgr->getMesh(&f);
 	}
 
 	~ScopedMesh()
