@@ -21,6 +21,9 @@ namespace scene
 		//! Unknown animated mesh type.
 		EAMT_UNKNOWN = 0,
 
+    //! Graphics Language Transmission Format 2.0 (.gltf) mesh
+		EAMT_GLTF2,
+
 		//! generic skinned mesh
 		EAMT_SKINNED,
 
