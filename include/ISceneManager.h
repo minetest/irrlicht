@@ -219,17 +219,6 @@ namespace scene
 		 *      software. Like the other skeletal mesh loaders, joints
 		 *      are exposed via the ISkinnedMesh animated mesh type.</TD>
 		 *  </TR>
-		 *  <TR>
-		 *    <TR>
-		 *      <TD>OCT (.oct)</TD>
-		 *      <TD>The oct file format contains 3D geometry and
-		 *        lightmaps and can be loaded directly by Irrlicht. OCT
-		 *        files<br> can be created by FSRad, Paul Nette's
-		 *        radiosity processor or exported from Blender using
-		 *        OCTTools which can be found in the exporters/OCTTools
-		 *        directory of the SDK. Thanks to Murphy McCauley for
-		 *        creating all this.</TD>
-		 *    </TR>
 		 *    <TR>
 		 *      <TD>OGRE Meshes (.mesh)</TD>
 		 *      <TD>Ogre .mesh files contain 3D data for the OGRE 3D
