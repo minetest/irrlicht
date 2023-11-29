@@ -21,9 +21,6 @@ namespace scene
 		//! Irrlicht native mesh writer, for static .irrmesh files.
 		EMWT_IRR_MESH     = MAKE_IRR_ID('i','r','r','m'),
 
-		//! COLLADA mesh writer for .dae and .xml files
-		EMWT_COLLADA      = MAKE_IRR_ID('c','o','l','l'),
-
 
 		//! OBJ mesh writer for .obj files
 		EMWT_OBJ          = MAKE_IRR_ID('o','b','j',0),
