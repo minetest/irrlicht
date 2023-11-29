@@ -220,15 +220,6 @@ namespace scene
 		 *      are exposed via the ISkinnedMesh animated mesh type.</TD>
 		 *  </TR>
 		 *  <TR>
-		 *  <TD>My3D (.my3d)</TD>
-		 *      <TD>.my3D is a flexible 3D file format. The My3DTools
-		 *        contains plug-ins to export .my3D files from several
-		 *        3D packages. With this built-in importer, Irrlicht
-		 *        can read and display those files directly. This
-		 *        loader was written by Zhuck Dimitry who also created
-		 *        the whole My3DTools package.
-		 *        </TD>
-		 *    </TR>
 		 *    <TR>
 		 *      <TD>OCT (.oct)</TD>
 		 *      <TD>The oct file format contains 3D geometry and
