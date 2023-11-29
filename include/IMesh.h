@@ -24,9 +24,6 @@ namespace scene
 		//! Maya .obj static model
 		EAMT_OBJ,
 
-		//! Halflife MDL model file
-		EAMT_MDL_HALFLIFE,
-
 		//! generic skinned mesh
 		EAMT_SKINNED,
 
