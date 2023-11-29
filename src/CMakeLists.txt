@@ -601,7 +601,7 @@ if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND BUILD_TESTING)
 endif()
 
 # Installation of library
-install(TARGETS IrrlichtMt tinygltf
+install(TARGETS IrrlichtMt
 	EXPORT IrrlichtMt-export
 	DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 )
