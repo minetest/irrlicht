@@ -281,19 +281,6 @@ namespace scene
 		 *        feature. </TD>
 		 *    </TR>
 		 *    <TR>
-		 *      <TD>Quake 2 models (.md2)</TD>
-		 *      <TD>Quake 2 models are characters with morph target
-		 *        animation. Irrlicht can read, display and animate
-		 *        them directly with this importer. </TD>
-		 *    </TR>
-		 *    <TR>
-		 *      <TD>Quake 3 models (.md3)</TD>
-		 *      <TD>Quake 3 models are characters with morph target
-		 *        animation, they contain mount points for weapons and body
-		 *        parts and are typically made of several sections which are
-		 *        manually joined together.</TD>
-		 *    </TR>
-		 *    <TR>
 		 *      <TD>Stanford Triangle (.ply)</TD>
 		 *      <TD>Invented by Stanford University and known as the native
 		 *        format of the infamous "Stanford Bunny" model, this is a

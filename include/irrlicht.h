@@ -183,9 +183,9 @@
  *
  *	device->setWindowCaption(L"Hello World!");
  *
- *	// load and show quake2 .md2 model
+ *	// load and show b3d model
  *	scene::ISceneNode* node = scenemgr->addAnimatedMeshSceneNode(
- *		scenemgr->getMesh("quake2model.md2"));
+ *		scenemgr->getMesh("quake2model.b3d"));
  *
  *	// if everything worked, add a texture and disable lighting
  *	if (node)

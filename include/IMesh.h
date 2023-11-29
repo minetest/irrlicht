@@ -82,9 +82,7 @@ namespace scene
 		virtual void setDirty(E_BUFFER_TYPE buffer=EBT_VERTEX_AND_INDEX) = 0;
 
 		//! Returns the type of the meshes.
-		/** This is useful for making a safe downcast. For example,
-		if getMeshType() returns EAMT_MD2 it's safe to cast the
-		IMesh to IAnimatedMeshMD2.
+		/** This is useful for making a safe downcast.
 		Note: It's no longer just about animated meshes, that name has just historical reasons.
 		\returns Type of the mesh  */
 		virtual E_ANIMATED_MESH_TYPE getMeshType() const
