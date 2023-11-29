@@ -163,26 +163,6 @@ namespace scene
 		 *      directly in Irrlicht.
 		 *  </TR>
 		 *  <TR>
-		 *    <TD>Delgine DeleD (.dmf)</TD>
-		 *    <TD>DeleD (delgine.com) is a 3D editor and level-editor
-		 *        combined into one and is specifically designed for 3D
-		 *        game-development. With this loader, it is possible to
-		 *        directly load all geometry is as well as textures and
-		 *        lightmaps from .dmf files. To set texture and
-		 *        material paths, see scene::DMF_USE_MATERIALS_DIRS.
-		 *        It is also possible to flip the alpha texture by setting
-		 *        scene::DMF_FLIP_ALPHA_TEXTURES to true and to set the
-		 *        material transparent reference value by setting
-		 *        scene::DMF_ALPHA_CHANNEL_REF to a float between 0 and
-		 *        1. The loader is based on Salvatore Russo's .dmf
-		 *        loader, I just changed some parts of it. Thanks to
-		 *        Salvatore for his work and for allowing me to use his
-		 *        code in Irrlicht and put it under Irrlicht's license.
-		 *        For newer and more enhanced versions of the loader,
-		 *        take a look at delgine.com.
-		 *    </TD>
-		 *  </TR>
-		 *  <TR>
 		 *    <TD>DirectX (.x)</TD>
 		 *    <TD>Platform independent importer (so not D3D-only) for
 		 *      .x files. Most 3D packages can export these natively
@@ -461,7 +441,7 @@ namespace scene
 
 		//! Get interface to the parameters set in this scene.
 		/** String parameters can be used by plugins and mesh loaders.
-		See	COLLADA_CREATE_SCENE_INSTANCES and DMF_USE_MATERIALS_DIRS */
+		See	COLLADA_CREATE_SCENE_INSTANCES */
 		virtual io::IAttributes* getParameters() = 0;
 
 		//! Get current render pass.
