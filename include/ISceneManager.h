@@ -159,13 +159,6 @@ namespace scene
 		 *      the joints via the ISkinnedMesh interface. Currently,
 		 *      Irrlicht only supports uncompressed .x files.</TD>
 		 *  </TR>
-		 *  <TR>
-		 *    <TD>Maya (.obj)</TD>
-		 *    <TD>Most 3D software can create .obj files which contain
-		 *      static geometry without material data. The material
-		 *      files .mtl are also supported. This importer for
-		 *      Irrlicht can load them directly. </TD>
-		 *  </TR>
 		 *  </TABLE>
 		 *
 		 *  To load and display a mesh quickly, just do this:

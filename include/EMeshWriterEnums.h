@@ -22,9 +22,6 @@ namespace scene
 		EMWT_IRR_MESH     = MAKE_IRR_ID('i','r','r','m'),
 
 
-		//! OBJ mesh writer for .obj files
-		EMWT_OBJ          = MAKE_IRR_ID('o','b','j',0),
-
 		//! B3D mesh writer, for static .b3d files
 		EMWT_B3D          = MAKE_IRR_ID('b', '3', 'd', 0)
 	};

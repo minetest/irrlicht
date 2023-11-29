@@ -31,23 +31,6 @@ namespace scene
 	**/
 	const c8* const ALLOW_ZWRITE_ON_TRANSPARENT = "Allow_ZWrite_On_Transparent";
 
-	//! Flag to avoid loading group structures in .obj files
-	/** Use it like this:
-	\code
-	SceneManager->getParameters()->setAttribute(scene::OBJ_LOADER_IGNORE_GROUPS, true);
-	\endcode
-	**/
-	const c8* const OBJ_LOADER_IGNORE_GROUPS = "OBJ_IgnoreGroups";
-
-
-	//! Flag to avoid loading material .mtl file for .obj files
-	/** Use it like this:
-	\code
-	SceneManager->getParameters()->setAttribute(scene::OBJ_LOADER_IGNORE_MATERIAL_FILES, true);
-	\endcode
-	**/
-	const c8* const OBJ_LOADER_IGNORE_MATERIAL_FILES = "OBJ_IgnoreMaterialFiles";
-
 } // end namespace scene
 } // end namespace irr
 

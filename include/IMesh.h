@@ -21,9 +21,6 @@ namespace scene
 		//! Unknown animated mesh type.
 		EAMT_UNKNOWN = 0,
 
-		//! Maya .obj static model
-		EAMT_OBJ,
-
 		//! generic skinned mesh
 		EAMT_SKINNED,
 
