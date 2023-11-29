@@ -36,7 +36,7 @@ CXMeshFileLoader::CXMeshFileLoader(scene::ISceneManager* smgr)
 
 
 //! returns true if the file maybe is able to be loaded by this class
-//! based on the file extension (e.g. ".bsp")
+//! based on the file extension (e.g. ".b3d")
 bool CXMeshFileLoader::isALoadableFileExtension(const io::path& filename) const
 {
 	return core::hasFileExtension ( filename, "x" );
