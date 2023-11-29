@@ -220,17 +220,6 @@ namespace scene
 		 *      are exposed via the ISkinnedMesh animated mesh type.</TD>
 		 *  </TR>
 		 *    <TR>
-		 *      <TD>OGRE Meshes (.mesh)</TD>
-		 *      <TD>Ogre .mesh files contain 3D data for the OGRE 3D
-		 *        engine. Irrlicht can read and display them directly
-		 *        with this importer. To define materials for the mesh,
-		 *        copy a .material file named like the corresponding
-		 *        .mesh file where the .mesh file is. (For example
-		 *        ogrehead.material for ogrehead.mesh). Thanks to
-		 *        Christian Stehno who wrote and contributed this
-		 *        loader.</TD>
-		 *    </TR>
-		 *    <TR>
 		 *      <TD>Stereolithography (.stl)</TD>
 		 *      <TD>The STL format is used for rapid prototyping and
 		 *        computer-aided manufacturing, thus has no support for
