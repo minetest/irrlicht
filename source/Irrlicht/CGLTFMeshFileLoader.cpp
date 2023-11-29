@@ -36,18 +36,6 @@
  * of the vertex indices.
  */
 
-// A helper function to disable tinygltf embedded image loading
-static bool dummyImageLoader(tinygltf::Image *a,
-		const int b, std::string *c,
-		std::string *d,
-		int e,
-		int f,
-		const unsigned char * g,
-		int h,
-		void *userPointer)
-{
-	return false;
-};
 
 namespace irr {
 namespace scene {
@@ -336,7 +324,7 @@ bool CGLTFMeshFileLoader::tryParseGLTF(io::IReadFile* file,
 	tinygltf::TinyGLTF loader {};
 
 	// Stop embedded textures from making model fail to load
-	loader.SetImageLoader(dummyImageLoader, nullptr);
+	loader.SetImageLoader(nullptr, nullptr);
 
 	std::string err {};
 	std::string warn {};
