@@ -140,12 +140,6 @@ namespace scene
 		 *    <TD>Description</TD>
 		 *  </TR>
 		 *  <TR>
-		 *    <TD>3D World Studio (.smf)</TD>
-		 *    <TD>Loader for Leadwerks SMF mesh files, a simple mesh format
-		 *    containing static geometry for games. The proprietary .STF texture format
-		 *    is not supported yet. This loader was originally written by Joseph Ellis. </TD>
-		 *  </TR>
-		 *  <TR>
 		 *    <TD>Bliz Basic B3D (.b3d)</TD>
 		 *    <TD>Loader for blitz basic files, developed by Mark
 		 *      Sibly. This is the ideal animated mesh format for game
