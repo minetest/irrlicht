@@ -45,7 +45,7 @@ namespace scene
 		frame number is getFrameCount() - 1;
 		\param detailLevel: Level of detail. 0 is the lowest, 255 the
 		highest level of detail. Most meshes will ignore the detail level.
-		\param startFrameLoop: Because some animated meshes (.MD2) are
+		\param startFrameLoop: Because some animated meshes (.MD2 [which no longer exists in irrlicht]) are
 		blended between 2 static frames, and maybe animated in a loop,
 		the startFrameLoop and the endFrameLoop have to be defined, to
 		prevent the animation to be blended between frames which are
