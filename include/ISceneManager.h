@@ -148,17 +148,6 @@ namespace scene
 		 *      As this format supports skeletal animations, an
 		 *      ISkinnedMesh will be returned by this importer.</TD>
 		 *  </TR>
-		 *  <TR>
-		 *    <TD>DirectX (.x)</TD>
-		 *    <TD>Platform independent importer (so not D3D-only) for
-		 *      .x files. Most 3D packages can export these natively
-		 *      and there are several tools for them available, e.g.
-		 *      the Maya exporter included in the DX SDK.
-		 *      .x files can include skeletal animations and Irrlicht
-		 *      is able to play and display them, users can manipulate
-		 *      the joints via the ISkinnedMesh interface. Currently,
-		 *      Irrlicht only supports uncompressed .x files.</TD>
-		 *  </TR>
 		 *  </TABLE>
 		 *
 		 *  To load and display a mesh quickly, just do this:
