@@ -328,7 +328,7 @@ set(link_libs
 # Source files
 
 set(IRRMESHLOADER
-	# CB3DMeshFileLoader.cpp
+	# GLTFMeshFileLoader.cpp
 )
 
 add_library(IRRMESHOBJ OBJECT

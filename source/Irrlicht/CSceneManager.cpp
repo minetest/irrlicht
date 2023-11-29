@@ -15,7 +15,7 @@
 #include "os.h"
 
 #include "CSkinnedMesh.h"
-// #include "CB3DMeshFileLoader.h"
+// #include "CGLTFMeshFileLoader.h"
 #include "CBillboardSceneNode.h"
 #include "CAnimatedMeshSceneNode.h"
 #include "CCameraSceneNode.h"
