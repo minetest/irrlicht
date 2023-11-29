@@ -15,9 +15,7 @@
 #include "os.h"
 
 #include "CSkinnedMesh.h"
-#include "CXMeshFileLoader.h"
-#include "COBJMeshFileLoader.h"
-#include "CB3DMeshFileLoader.h"
+// #include "CB3DMeshFileLoader.h"
 #include "CBillboardSceneNode.h"
 #include "CAnimatedMeshSceneNode.h"
 #include "CCameraSceneNode.h"
@@ -72,9 +70,7 @@ CSceneManager::CSceneManager(video::IVideoDriver* driver,
 	// TODO: now that we have multiple scene managers, these should be
 	// shallow copies from the previous manager if there is one.
 
-	MeshLoaderList.push_back(new CXMeshFileLoader(this));
-	MeshLoaderList.push_back(new COBJMeshFileLoader(this));
-	MeshLoaderList.push_back(new CB3DMeshFileLoader(this));
+	// MeshLoaderList.push_back(new CB3DMeshFileLoader(this));
 }
 
 
