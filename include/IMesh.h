@@ -24,12 +24,6 @@ namespace scene
 		//! Maya .obj static model
 		EAMT_OBJ,
 
-		//! My3D Mesh, the file format by Zhuck Dimitry
-		EAMT_MY3D,
-
-		//! Pulsar LMTools .lmts file. This Irrlicht loader was written by Jonas Petersen
-		EAMT_LMTS,
-
 		//! Cartography Shop .csm file. This loader was created by Saurav Mohapatra.
 		EAMT_CSM,
 
