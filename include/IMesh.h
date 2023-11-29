@@ -21,12 +21,6 @@ namespace scene
 		//! Unknown animated mesh type.
 		EAMT_UNKNOWN = 0,
 
-		//! Quake 2 MD2 model file
-		EAMT_MD2,
-
-		//! Quake 3 MD3 model file
-		EAMT_MD3,
-
 		//! Maya .obj static model
 		EAMT_OBJ,
 
