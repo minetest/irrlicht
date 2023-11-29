@@ -140,12 +140,6 @@ namespace scene
 		 *    <TD>Description</TD>
 		 *  </TR>
 		 *  <TR>
-		 *    <TD>3D Studio (.3ds)</TD>
-		 *    <TD>Loader for 3D-Studio files which lots of 3D packages
-		 *      are able to export. Only static meshes are currently
-		 *      supported by this importer.</TD>
-		 *  </TR>
-		 *  <TR>
 		 *    <TD>3D World Studio (.smf)</TD>
 		 *    <TD>Loader for Leadwerks SMF mesh files, a simple mesh format
 		 *    containing static geometry for games. The proprietary .STF texture format
