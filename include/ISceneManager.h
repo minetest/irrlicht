@@ -219,12 +219,6 @@ namespace scene
 		 *      software. Like the other skeletal mesh loaders, joints
 		 *      are exposed via the ISkinnedMesh animated mesh type.</TD>
 		 *  </TR>
-		 *    <TR>
-		 *      <TD>Stereolithography (.stl)</TD>
-		 *      <TD>The STL format is used for rapid prototyping and
-		 *        computer-aided manufacturing, thus has no support for
-		 *        materials.</TD>
-		 *    </TR>
 		 *  </TABLE>
 		 *
 		 *  To load and display a mesh quickly, just do this:
