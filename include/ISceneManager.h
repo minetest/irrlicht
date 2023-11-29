@@ -194,11 +194,6 @@ namespace scene
 		 *      Irrlicht only supports uncompressed .x files.</TD>
 		 *  </TR>
 		 *  <TR>
-		 *    <TD>Half-Life model (.mdl)</TD>
-		 *    <TD>This loader opens Half-life 1 models, it was contributed
-		 *        by Fabio Concas and adapted by Thomas Alten.</TD>
-		 *  </TR>
-		 *  <TR>
 		 *    <TD>Maya (.obj)</TD>
 		 *    <TD>Most 3D software can create .obj files which contain
 		 *      static geometry without material data. The material
