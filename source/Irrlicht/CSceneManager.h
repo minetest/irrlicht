@@ -168,9 +168,6 @@ namespace scene
 		//! Returns type of the scene node
 		ESCENE_NODE_TYPE getType() const override { return ESNT_SCENE_MANAGER; }
 
-		//! Returns a mesh writer implementation if available
-		IMeshWriter* createMeshWriter(EMESH_WRITER_TYPE type) override;
-
 		//! Get a skinned mesh, which is not available as header-only code
 		ISkinnedMesh* createSkinnedMesh() override;
 
