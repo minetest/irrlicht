@@ -139,21 +139,12 @@ namespace scene
 		 *    <TD>Format</TD>
 		 *    <TD>Description</TD>
 		 *  </TR>
-		 *  <TR>
-		 *    <TD>Bliz Basic B3D (.b3d)</TD>
-		 *    <TD>Loader for blitz basic files, developed by Mark
-		 *      Sibly. This is the ideal animated mesh format for game
-		 *      characters as it is both rigidly defined and widely
-		 *      supported by modeling and animation software.
-		 *      As this format supports skeletal animations, an
-		 *      ISkinnedMesh will be returned by this importer.</TD>
-		 *  </TR>
 		 *  </TABLE>
 		 *
 		 *  To load and display a mesh quickly, just do this:
 		 *  \code
 		 *  SceneManager->addAnimatedMeshSceneNode(
-		 *		SceneManager->getMesh("yourmesh.3ds"));
+		 *		SceneManager->getMesh("yourmesh.gltf"));
 		 * \endcode
 		 * If you would like to implement and add your own file format loader to Irrlicht,
 		 * see addExternalMeshLoader().
