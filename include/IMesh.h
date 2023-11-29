@@ -24,11 +24,6 @@ namespace scene
 		//! Maya .obj static model
 		EAMT_OBJ,
 
-		//! .oct file for Paul Nette's FSRad or from Murphy McCauley's Blender .oct exporter.
-		/** The oct file format contains 3D geometry and lightmaps and
-		can be loaded directly by Irrlicht */
-		EAMT_OCT,
-
 		//! Halflife MDL model file
 		EAMT_MDL_HALFLIFE,
 
