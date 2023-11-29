@@ -231,16 +231,6 @@ namespace scene
 		 *        loader.</TD>
 		 *    </TR>
 		 *    <TR>
-		 *      <TD>Stanford Triangle (.ply)</TD>
-		 *      <TD>Invented by Stanford University and known as the native
-		 *        format of the infamous "Stanford Bunny" model, this is a
-		 *        popular static mesh format used by 3D scanning hardware
-		 *        and software. This loader supports extremely large models
-		 *        in both ASCII and binary format, but only has rudimentary
-		 *        material support in the form of vertex colors and texture
-		 *        coordinates.</TD>
-		 *    </TR>
-		 *    <TR>
 		 *      <TD>Stereolithography (.stl)</TD>
 		 *      <TD>The STL format is used for rapid prototyping and
 		 *        computer-aided manufacturing, thus has no support for
