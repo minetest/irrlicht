@@ -199,13 +199,6 @@ namespace scene
 		 *        by Fabio Concas and adapted by Thomas Alten.</TD>
 		 *  </TR>
 		 *  <TR>
-		 *    <TD>LightWave (.lwo)</TD>
-		 *    <TD>Native to NewTek's LightWave 3D, the LWO format is well
-		 *      known and supported by many exporters. This loader will
-		 *      import LWO2 models including lightmaps, bumpmaps and
-		 *      reflection textures.</TD>
-		 *  </TR>
-		 *  <TR>
 		 *    <TD>Maya (.obj)</TD>
 		 *    <TD>Most 3D software can create .obj files which contain
 		 *      static geometry without material data. The material
