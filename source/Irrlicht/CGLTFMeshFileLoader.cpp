@@ -224,10 +224,11 @@ void CGLTFMeshFileLoader::MeshExtractor::copyPositions(
 
 	const auto& buffer = getBuffer(accessorIdx);
 	const auto count = getElemCount(accessorIdx);
+	const auto byteStride = getByteStride(accessorIdx);
 
 	for (std::size_t i = 0; i < count; i++) {
 		const auto v = readVec3DF(BufferOffset(buffer,
-			3 * sizeof(float) * i), getScale());
+			(byteStride * i)), getScale());
 		vertices[i].Pos = v;
 	}
 }
@@ -273,6 +274,14 @@ std::size_t CGLTFMeshFileLoader::MeshExtractor::getElemCount(
 		const std::size_t accessorIdx) const
 {
 	return m_model.accessors[accessorIdx].count;
+}
+
+std::size_t CGLTFMeshFileLoader::MeshExtractor::getByteStride(
+		const std::size_t accessorIdx) const
+{
+	const auto& accessor = m_model.accessors[accessorIdx];
+	const auto& view = m_model.bufferViews[accessor.bufferView];
+	return accessor.ByteStride(view);
 }
 
 CGLTFMeshFileLoader::BufferOffset CGLTFMeshFileLoader::MeshExtractor::getBuffer(

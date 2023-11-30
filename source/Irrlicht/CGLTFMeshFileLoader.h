@@ -104,6 +104,8 @@ private:
 
 		std::size_t getElemCount(const std::size_t accessorIdx) const;
 
+		std::size_t getByteStride(const std::size_t accessorIdx) const;
+
 		BufferOffset getBuffer(const std::size_t accessorIdx) const;
 
 		std::size_t getIndicesAccessorIdx(const std::size_t meshIdx,

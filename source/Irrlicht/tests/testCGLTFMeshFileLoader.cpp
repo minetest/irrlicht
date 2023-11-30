@@ -1,8 +1,12 @@
 #include "CReadFile.h"
 
+#include <irrlicht.h>
+
+// Catch needs to be included after Irrlicht so that it sees operator<<
+// declarations.
 #define CATCH_CONFIG_MAIN
 #include <catch.hpp>
-#include <irrlicht.h>
+
 #include <iostream>
 
 using namespace std;
@@ -49,7 +53,11 @@ TEST_CASE("load empty gltf file") {
 }
 
 TEST_CASE("minimal triangle") {
-	ScopedMesh sm("source/Irrlicht/tests/assets/minimal_triangle.gltf");
+	auto path = GENERATE(
+		"source/Irrlicht/tests/assets/minimal_triangle.gltf",
+		"source/Irrlicht/tests/assets/triangle_with_vertex_stride.gltf");
+	INFO(path);
+	ScopedMesh sm(path);
 	REQUIRE(sm.getMesh() != nullptr);
 	REQUIRE(sm.getMesh()->getMeshBufferCount() == 1);
 
