@@ -85,7 +85,7 @@ private:
 		 */
 		static core::vector3df readVec3DF(
 				const BufferOffset& readFrom,
-				const float scale = 1.0f);
+				const float scale);
 
 		void copyPositions(const std::size_t accessorIdx,
 				std::vector<vertex_t>& vertices) const;
@@ -98,13 +98,15 @@ private:
 
 		/* Get the scale factor from the glTF mesh information.
 		 *
-		 * Returns 1.0f if no scale factor is present.
+		 * Returns vec3(1.0, 1.0, 1.0) if no scale factor is present.
 		 */
 		float getScale() const;
 
 		std::size_t getElemCount(const std::size_t accessorIdx) const;
 
 		std::size_t getByteStride(const std::size_t accessorIdx) const;
+
+		bool isAccessorNormalized(const std::size_t accessorIdx) const;
 
 		BufferOffset getBuffer(const std::size_t accessorIdx) const;
 

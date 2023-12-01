@@ -7,7 +7,6 @@
 #include "irrMath.h"
 
 #include <functional>
-#include <ostream>
 
 namespace irr
 {
