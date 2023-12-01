@@ -93,6 +93,7 @@ IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 
 	SAnimatedMesh* animatedMesh(new SAnimatedMesh {});
 	animatedMesh->addMesh(baseMesh);
+	baseMesh->drop();
 
 	return animatedMesh;
 }
@@ -116,6 +117,7 @@ void CGLTFMeshFileLoader::loadPrimitives(
 			meshbuf->append(vertices.data(), vertices.size(),
 				indices.data(), indices.size());
 			mesh->addMeshBuffer(meshbuf);
+			meshbuf->drop();
 		}
 	}
 }
