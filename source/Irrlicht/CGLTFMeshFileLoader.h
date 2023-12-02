@@ -85,7 +85,7 @@ private:
 		 */
 		static core::vector3df readVec3DF(
 				const BufferOffset& readFrom,
-				const float scale);
+				const core::vector3df scale);
 
 		void copyPositions(const std::size_t accessorIdx,
 				std::vector<vertex_t>& vertices) const;
@@ -100,7 +100,7 @@ private:
 		 *
 		 * Returns vec3(1.0, 1.0, 1.0) if no scale factor is present.
 		 */
-		float getScale() const;
+		core::vector3df getScale() const;
 
 		std::size_t getElemCount(const std::size_t accessorIdx) const;
 

@@ -238,12 +238,12 @@ core::vector2df CGLTFMeshFileLoader::MeshExtractor::readVec2DF(
 */
 core::vector3df CGLTFMeshFileLoader::MeshExtractor::readVec3DF(
 		const BufferOffset& readFrom,
-		const float scale = 1.0f)
+		const core::vector3df scale = {1.0f,1.0f,1.0f})
 {
 	return core::vector3df(
-		scale * readPrimitive<float>(readFrom),
-		scale * readPrimitive<float>(BufferOffset(readFrom, sizeof(float))),
-		-scale * readPrimitive<float>(BufferOffset(readFrom, 2 *
+		scale.X * readPrimitive<float>(readFrom),
+		scale.Y * readPrimitive<float>(BufferOffset(readFrom, sizeof(float))),
+		-scale.Z * readPrimitive<float>(BufferOffset(readFrom, 2 *
 		sizeof(float))));
 }
 
@@ -311,13 +311,15 @@ void CGLTFMeshFileLoader::MeshExtractor::copyTCoords(
  * Required: NO
  * @returns: core::vector2df
 */
-float CGLTFMeshFileLoader::MeshExtractor::getScale() const
+core::vector3df CGLTFMeshFileLoader::MeshExtractor::getScale() const
 {
-	if (m_model.nodes[0].scale.size() > 0) {
-		return static_cast<float>(m_model.nodes[0].scale[0]);
+	core::vector3df buffer{1.0f,1.0f,1.0f};
+	if (m_model.nodes[0].scale.size() == 3) {
+		buffer.X = static_cast<float>(m_model.nodes[0].scale[0]);
+		buffer.Y = static_cast<float>(m_model.nodes[0].scale[1]);
+		buffer.Z = static_cast<float>(m_model.nodes[0].scale[2]);
 	}
-
-	return 1.0f;
+	return buffer;
 }
 
 /**

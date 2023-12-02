@@ -143,6 +143,27 @@ TEST_CASE("invalid JSON returns nullptr") {
 	CHECK(sm.getMesh() == nullptr);
 }
 
+TEST_CASE("blender cube scaled") {
+	ScopedMesh sm("source/Irrlicht/tests/assets/blender_cube_scaled.gltf");
+	REQUIRE(sm.getMesh() != nullptr);
+	REQUIRE(sm.getMesh()->getMeshBufferCount() == 1);
+	
+	SECTION("Scaling is correct") {
+		REQUIRE(sm.getMesh()->getMeshBuffer(0)->getVertexCount() == 24);
+		const auto* vertices = reinterpret_cast<irr::video::S3DVertex*>(
+			sm.getMesh()->getMeshBuffer(0)->getVertices());
+
+		CHECK(vertices[0].Pos == irr::core::vector3df{-150.0f, -1.0f, -21.5f});
+		CHECK(vertices[3].Pos == irr::core::vector3df{-150.0f, 1.0f, -21.5f});
+		CHECK(vertices[6].Pos == irr::core::vector3df{-150.0f, -1.0f, 21.5f});
+		CHECK(vertices[9].Pos == irr::core::vector3df{-150.0f, 1.0f, 21.5f});
+		CHECK(vertices[12].Pos == irr::core::vector3df{150.0f, -1.0f, -21.5f});
+		CHECK(vertices[15].Pos == irr::core::vector3df{150.0f, 1.0f, -21.5f});
+		CHECK(vertices[18].Pos == irr::core::vector3df{150.0f, -1.0f, 21.5f});
+		CHECK(vertices[21].Pos == irr::core::vector3df{150.0f, 1.0f, 21.5f});
+	}
+}
+
 TEST_CASE("snow man") {
 	ScopedMesh sm("source/Irrlicht/tests/assets/snow_man.gltf");
 	REQUIRE(sm.getMesh() != nullptr);
