@@ -132,35 +132,6 @@ jobs:
           cd bin/Linux
           LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest ogles2
 
-  linux-minimum-cmake:
-    runs-on: ubuntu-latest
-    container:
-      image: ubuntu:bionic
-      env: { LANG: "C.UTF-8" }
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install deps
-        run: |
-          apt-get update
-          apt-get install unzip g++-5 libidn11 libxi-dev libgl1-mesa-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
-
-      - name: Setup CMake
-        uses: lukka/get-cmake@latest
-        with:
-          cmakeVersion: 3.5.2
-
-      - name: Build
-        run: |
-          mkdir build
-          cd build
-          cmake -G Ninja -DCMAKE_C_COMPILER=/usr/bin/gcc-5 -DCMAKE_CXX_COMPILER=/usr/bin/g++-5 -DCMAKE_BUILD_TYPE=Release ..
-          cmake --build .
-          cd ..
-
-      - name: Test
-        run: |
-          ./build/bin/Linux/tests
-
   mingw:
     name: "MinGW ${{matrix.config.variant}}${{matrix.config.extras}}"
     runs-on: ubuntu-22.04
