@@ -147,6 +147,11 @@ CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
 	// create keymap
 	createKeyMap();
 
+	// initialize X11 thread safety
+	// libX11 1.8+ has this on by default
+	// without it, multi-threaded GL drivers may crash
+	XInitThreads();
+
 	// create window
 	if (CreationParams.DriverType != video::EDT_NULL)
 	{
