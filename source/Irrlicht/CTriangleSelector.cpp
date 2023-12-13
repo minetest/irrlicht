@@ -337,26 +337,26 @@ void CTriangleSelector::getTriangles(core::triangle3df* triangles,
 	update();
 
 	core::matrix4 mat(core::matrix4::EM4CONST_NOTHING);
-	core::aabbox3df tBox(box);
-
-	if (SceneNode && useNodeTransform)
-	{
-		if ( SceneNode->getAbsoluteTransformation().getInverse(mat) )
-			mat.transformBoxEx(tBox);
-		else
-		{
-			// TODO: else is not yet handled optimally. 
-			// If a node has an axis scaled to 0 we return all triangles without any check
-			return getTriangles(triangles, arraySize, outTriangleCount,
-					transform, useNodeTransform, outTriangleInfo );
-		}
-	}
 	if (transform)
 		mat = *transform;
 	else
 		mat.makeIdentity();
 	if (SceneNode && useNodeTransform)
 		mat *= SceneNode->getAbsoluteTransformation();
+
+	core::aabbox3df tBox(box);
+	core::matrix4 invMat(core::matrix4::EM4CONST_NOTHING);
+	if ( mat.getInverse(invMat) )
+	{
+		invMat.transformBoxEx(tBox);
+	}
+	else
+	{
+		// TODO: else is not yet handled optimally. 
+		// If a node has an axis scaled to 0 we return all triangles without any check
+		return getTriangles(triangles, arraySize, outTriangleCount,
+			transform, useNodeTransform, outTriangleInfo );
+	}
 
 	outTriangleCount = 0;
 
