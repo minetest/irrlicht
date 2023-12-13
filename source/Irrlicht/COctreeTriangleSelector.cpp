@@ -182,8 +182,8 @@ void COctreeTriangleSelector::getTriangles(core::triangle3df* triangles,
 		triRange.RangeSize = trianglesWritten;
 		triRange.Selector = this;
 		triRange.SceneNode = SceneNode;
-		triRange.MeshBuffer = MeshBuffer;
-		triRange.MaterialIndex = MaterialIndex;
+		triRange.MeshBuffer = SingleBufferRange.MeshBuffer;
+		triRange.MaterialIndex = SingleBufferRange.MaterialIndex;
 		outTriangleInfo->push_back(triRange);
 	}
 
@@ -274,8 +274,8 @@ void COctreeTriangleSelector::getTriangles(core::triangle3df* triangles, s32 arr
 		triRange.RangeSize = trianglesWritten;
 		triRange.Selector = this;
 		triRange.SceneNode = SceneNode;
-		triRange.MeshBuffer = MeshBuffer;
-		triRange.MaterialIndex = MaterialIndex;
+		triRange.MeshBuffer = SingleBufferRange.MeshBuffer;
+		triRange.MaterialIndex = SingleBufferRange.MaterialIndex;
 		outTriangleInfo->push_back(triRange);
 	}
 

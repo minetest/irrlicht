@@ -91,14 +91,34 @@ protected:
 	//! since the last time it was updated.
 	virtual void update(void) const;
 
-	irr::core::array<SCollisionTriangleRange> BufferRanges;
+	struct SBufferTriangleRange
+	{
+		SBufferTriangleRange() 
+			: RangeStart(0), RangeSize(0), MeshBuffer(0), MaterialIndex(0)
+		{}
+
+		//! First index in Triangles array
+		irr::u32 RangeStart;
+
+		//! Number of elements in Triangles array
+		irr::u32 RangeSize;
+
+		//! Meshbuffer from which the triangles are from
+		//! Is 0 when we use a single range for all buffers
+		const IMeshBuffer* MeshBuffer;
+
+		//! Index of selected material in the SceneNode. 
+		//! Only valid when MeshBuffer is also set, otherwise 0
+		irr::u32 MaterialIndex;
+	};
+
+	SBufferTriangleRange SingleBufferRange;	// When avoiding extra heap allocations
+	irr::core::array<SBufferTriangleRange> BufferRanges;
 
 	ISceneNode* SceneNode;
 	mutable core::array<core::triangle3df> Triangles; // (mutable for CTriangleBBSelector)
 	mutable core::aabbox3df BoundingBox; // Allows for trivial rejection
 
-	const IMeshBuffer* MeshBuffer;	// non-zero when the selector is for a single meshbuffer
-	irr::u32 MaterialIndex;		// Only set when MeshBuffer is non-zero
 	IAnimatedMeshSceneNode* AnimatedNode;
 	mutable u32 LastMeshFrame;
 };
