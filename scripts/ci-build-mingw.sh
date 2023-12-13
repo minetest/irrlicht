@@ -1,7 +1,7 @@
 #!/bin/bash -e
+topdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 [[ -z "$CC" || -z "$CXX" ]] && exit 255
-
 variant=win32
 [[ "$(basename "$CXX")" == "x86_64-"* ]] && variant=win64
 with_sdl=0
@@ -14,21 +14,24 @@ libpng_version=1.6.39
 sdl2_version=2.28.1
 zlib_version=1.2.13
 
+download () {
+	local url=$1
+	local filename=${url##*/}
+	local foldername=${filename%%[.-]*}
+
+	[ -d "./$foldername" ] && return 0
+    [ -e "$filename" ] || wget "$url" -O "$filename"
+	sha256sum -w -c <(grep -F "$filename" "$topdir/sha256sums.txt")
+	unzip -o "$filename" -d "$foldername"
+}
+
 mkdir -p libs
 pushd libs
 libs=$PWD
-[ -e libjpeg.zip ] || \
-	wget "http://minetest.kitsunemimi.pw/libjpeg-$libjpeg_version-$variant.zip" -O libjpeg.zip
-[ -e libpng.zip ] || \
-	wget "http://minetest.kitsunemimi.pw/libpng-$libpng_version-$variant.zip" -O libpng.zip
-[[ $with_sdl -eq 0 || -e sdl2.zip ]] || \
-	wget "http://minetest.kitsunemimi.pw/sdl2-$sdl2_version-$variant.zip" -O sdl2.zip
-[ -e zlib.zip ] || \
-	wget "http://minetest.kitsunemimi.pw/zlib-$zlib_version-$variant.zip" -O zlib.zip
-[ -d libjpeg ] || unzip -o libjpeg.zip -d libjpeg
-[ -d libpng ] || unzip -o libpng.zip -d libpng
-[[ $with_sdl -eq 0 || -d sdl2 ]] || unzip -o sdl2.zip -d sdl2
-[ -d zlib ] || unzip -o zlib.zip -d zlib
+download "http://minetest.kitsunemimi.pw/libjpeg-$libjpeg_version-$variant.zip"
+download "http://minetest.kitsunemimi.pw/libpng-$libpng_version-$variant.zip"
+[ $with_sdl -eq 1 ] && download "http://minetest.kitsunemimi.pw/sdl2-$sdl2_version-$variant.zip"
+download "http://minetest.kitsunemimi.pw/zlib-$zlib_version-$variant.zip"
 popd
 
 tmp=(
