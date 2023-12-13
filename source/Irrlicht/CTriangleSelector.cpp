@@ -272,11 +272,17 @@ void CTriangleSelector::getTriangles(core::triangle3df* triangles,
 	if (cnt > (u32)arraySize)
 		cnt = (u32)arraySize;
 
-	core::matrix4 mat;
+	core::matrix4 mat(core::matrix4::EM4CONST_NOTHING);
 	if (transform)
+	{
 		mat = *transform;
-	if (SceneNode&&useNodeTransform)
-		mat *= SceneNode->getAbsoluteTransformation();
+		if (SceneNode && useNodeTransform)
+			mat *= SceneNode->getAbsoluteTransformation();
+	}
+	else if (SceneNode && useNodeTransform)
+		mat = SceneNode->getAbsoluteTransformation();
+	else
+		mat.makeIdentity();
 
 	for (u32 i=0; i<cnt; ++i)
 	{
@@ -338,11 +344,15 @@ void CTriangleSelector::getTriangles(core::triangle3df* triangles,
 
 	core::matrix4 mat(core::matrix4::EM4CONST_NOTHING);
 	if (transform)
+	{
 		mat = *transform;
+		if (SceneNode && useNodeTransform)
+			mat *= SceneNode->getAbsoluteTransformation();
+	}
+	else if (SceneNode && useNodeTransform)
+		mat = SceneNode->getAbsoluteTransformation();
 	else
 		mat.makeIdentity();
-	if (SceneNode && useNodeTransform)
-		mat *= SceneNode->getAbsoluteTransformation();
 
 	core::aabbox3df tBox(box);
 	core::matrix4 invMat(core::matrix4::EM4CONST_NOTHING);
