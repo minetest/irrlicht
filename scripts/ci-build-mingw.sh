@@ -9,10 +9,10 @@ with_sdl=0
 #with_gl3=0
 #[[ "$extras" == *"-gl3"* ]] && with_gl3=1
 
-libjpeg_version=2.1.5.1
-libpng_version=1.6.39
-sdl2_version=2.28.1
-zlib_version=1.2.13
+libjpeg_version=3.0.1
+libpng_version=1.6.40
+sdl2_version=2.28.5
+zlib_version=1.3
 
 download () {
 	local url=$1

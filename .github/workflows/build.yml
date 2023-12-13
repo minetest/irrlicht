@@ -143,7 +143,7 @@ jobs:
 
   mingw:
     name: "MinGW ${{matrix.config.variant}}${{matrix.config.extras}}"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
