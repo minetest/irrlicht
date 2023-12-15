@@ -19,6 +19,7 @@ The following libraries are required to be installed:
 Aside from standard search options (`ZLIB_INCLUDE_DIR`, `ZLIB_LIBRARY`, ...) the following options are available:
 * `BUILD_SHARED_LIBS` (default: `ON`) - Build IrrlichtMt as a shared library
 * `BUILD_EXAMPLES` (default: `OFF`) - Build example applications
+* `BUILD_TESTING` (default: `ON`) - Build Catch2 tests (only in top-level project)
 * `ENABLE_OPENGL` - Enable OpenGL driver
 * `ENABLE_OPENGL3` (default: `OFF`) - Enable OpenGL 3+ driver
 * `ENABLE_GLES1` - Enable OpenGL ES driver, legacy
@@ -48,6 +49,19 @@ Run the following script in PowerShell:
 	cd irrlicht
 	cmake -B build -G "Visual Studio 17 2022" -A "Win64" -DCMAKE_TOOLCHAIN_FILE=[vcpkg-root]/scripts/buildsystems/vcpkg.cmake -DBUILD_SHARED_LIBS=OFF
 	cmake --build build --config Release
+
+Test
+----
+
+To run the Catch2 tests, the project must first be built with `BUILD_TESTING` enabled.
+
+The tests can be run with ctest:
+
+        cd build
+        ctest
+
+Run the tests directly for more detailed output:
+        build/bin/<sysname>/tests
 	
 Platforms
 ---------

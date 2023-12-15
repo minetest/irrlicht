@@ -1,5 +1,11 @@
 @PACKAGE_INIT@
 
+include(CMakeFindDependencyMacro)
+
+find_package(tinygltf 2.6 REQUIRED
+	PATHS "${CMAKE_CURRENT_LIST_DIR}"
+)
+
 if(NOT TARGET IrrlichtMt::IrrlichtMt)
 	include("${CMAKE_CURRENT_LIST_DIR}/IrrlichtMtTargets.cmake")
 endif()

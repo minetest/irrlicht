@@ -2384,4 +2384,3 @@ irr::core::dimension2di CIrrDeviceLinux::CCursorControl::getSupportedIconSize() 
 } // end namespace
 
 #endif // _IRR_COMPILE_WITH_X11_DEVICE_
-

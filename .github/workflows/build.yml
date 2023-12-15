@@ -22,7 +22,11 @@ jobs:
       - name: Build
         run: |
           cmake .
-          make VERBOSE=1 -j2
+          make VERBOSE=1
+    
+      - name: Test
+        run: |
+          ./bin/Linux/tests
 
       - name: Test
         run: |

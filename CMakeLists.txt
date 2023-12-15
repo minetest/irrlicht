@@ -9,9 +9,11 @@ endif()
 
 set(IRRLICHTMT_REVISION 13)
 
+# workaround: cmake<3.9 requires C language for internal checks
+# https://gitlab.kitware.com/cmake/cmake/-/merge_requests/487
 project(Irrlicht
 	VERSION 1.9.0.${IRRLICHTMT_REVISION}
-	LANGUAGES CXX
+	LANGUAGES C CXX
 )
 
 message(STATUS "*** Building IrrlichtMt ${PROJECT_VERSION} ***")
@@ -40,8 +42,15 @@ if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type: Debug or Release" FORCE)
 endif()
 
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+	include(CTest)
+endif()
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 enable_testing()
+
+add_subdirectory(source/lib/catch2)
+add_subdirectory(source/lib/tinygltf)
 add_subdirectory(source/Irrlicht)
 add_subdirectory(test)
 
