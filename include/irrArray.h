@@ -241,7 +241,7 @@ public:
 	/** \return Size of elements in the array which are actually occupied. */
 	u32 size() const
 	{
-		return m_data.size();
+		return static_cast<u32>(m_data.size());
 	}
 
 
@@ -317,7 +317,7 @@ public:
 		// *it = first element in [first, last) that is >= element, or last if not found.
 		if (*it < element || element < *it)
 			return -1;
-		return it - m_data.begin();
+		return static_cast<u32>(it - m_data.begin());
 	}
 
 
@@ -335,8 +335,8 @@ public:
 		auto iters = std::equal_range(m_data.begin(), m_data.end(), element);
 		if (iters.first == iters.second)
 			return -1;
-		last = (iters.second - m_data.begin()) - 1;
-		return iters.first - m_data.begin();
+		last = static_cast<s32>((iters.second - m_data.begin()) - 1);
+		return static_cast<s32>(iters.first - m_data.begin());
 	}
 
 
@@ -351,7 +351,7 @@ public:
 		auto it = std::find(m_data.begin(), m_data.end(), element);
 		if (it == m_data.end())
 			return -1;
-		return it - m_data.begin();
+		return static_cast<u32>(it - m_data.begin());
 	}
 
 
