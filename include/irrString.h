@@ -266,7 +266,7 @@ public:
 	the trailing NUL. */
 	u32 size() const
 	{
-		return str.size();
+		return static_cast<u32>(str.size());
 	}
 
 	//! Informs if the string is empty or not.
@@ -834,7 +834,7 @@ public:
 		if (!delimiter)
 			return 0;
 
-		const u32 oldSize=ret.size();
+		const u32 oldSize=static_cast<u32>(ret.size());
 
 		u32 tokenStartIdx = 0;
 		for (u32 i=0; i<size()+1; ++i)
@@ -862,7 +862,7 @@ public:
 		else if (!ignoreEmptyTokens)
 			ret.push_back(string<T>());
 
-		return ret.size()-oldSize;
+		return static_cast<u32>(ret.size()-oldSize);
 	}
 
 	// This function should not be used and is only kept for "CGUIFileOpenDialog::pathToStringW".
@@ -888,10 +888,10 @@ private:
 		return len;
 	}
 	static inline u32 calclen(const char* p) {
-		return strlen(p);
+		return static_cast<u32>(strlen(p));
 	}
 	static inline u32 calclen(const wchar_t* p) {
-		return wcslen(p);
+		return static_cast<u32>(wcslen(p));
 	}
 
 	//! strcmp wrapper
