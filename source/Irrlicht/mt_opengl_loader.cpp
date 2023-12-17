@@ -759,12 +759,15 @@ void OpenGLProcedures::LoadAllProcedures(irr::video::IContextManager *cmgr)
 	if (!TexPageCommitment) TexPageCommitment = (PFNGLTEXPAGECOMMITMENTPROC_MT)cmgr->getProcAddress("glTexPageCommitmentARB");
 
 	// OpenGL 3 way to enumerate extensions
-	int ext_count = 0;
+	GLint ext_count = 0;
 	GetIntegerv(NUM_EXTENSIONS, &ext_count);
 	extensions.reserve(ext_count);
-	for (int k = 0; k < ext_count; k++)
-		extensions.emplace((char *)GetStringi(EXTENSIONS, k));
-	if (ext_count)
+	for (GLint k = 0; k < ext_count; k++) {
+		auto tmp = GetStringi(EXTENSIONS, k);
+		if (tmp)
+			extensions.emplace((char*)tmp);
+	}
+	if (!extensions.empty())
 		return;
 
 	// OpenGL 2 / ES 2 way to enumerate extensions
