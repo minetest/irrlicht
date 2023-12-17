@@ -355,7 +355,7 @@ f:write[[
 #include <KHR/khrplatform.h>
 
 #ifndef APIENTRY
-	#define APIENTRY
+	#define APIENTRY KHRONOS_APIENTRY
 #endif
 #ifndef APIENTRYP
 	#define APIENTRYP APIENTRY *
