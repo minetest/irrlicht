@@ -46,9 +46,7 @@ if [ $with_sdl -eq 1 ]; then
 		-DCMAKE_PREFIX_PATH=$libs/sdl2/lib/cmake
 	)
 else
-	tmp+=(
-		-DUSE_SDL2=OFF
-	)
+	tmp+=(-DUSE_SDL2=OFF)
 fi
 #[ $with_gl3 -eq 1 ] && tmp+=(-DENABLE_OPENGL=OFF -DENABLE_OPENGL3=ON)
 
