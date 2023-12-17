@@ -780,9 +780,9 @@ public:
 	// Call this once after creating the context.
 	void LoadAllProcedures(irr::video::IContextManager *cmgr);
 	// Check if an extension is supported.
-	inline bool IsExtensionPresent(const std::string &ext)
+	inline bool IsExtensionPresent(const std::string &ext) const
 	{
-		return extensions.find(ext) != extensions.end();
+		return extensions.count(ext) > 0;
 	}
 
 	PFNGLCULLFACEPROC_MT CullFace = NULL;
@@ -3191,5 +3191,5 @@ public:
 	static constexpr const GLenum NONE = 0;
 };
 
-//Global GL procedures object.
+// Global GL procedures object.
 IRRLICHT_API extern OpenGLProcedures GL;

@@ -387,9 +387,9 @@ public:
 	// Call this once after creating the context.
 	void LoadAllProcedures(irr::video::IContextManager *cmgr);
 	// Check if an extension is supported.
-	inline bool IsExtensionPresent(const std::string &ext)
+	inline bool IsExtensionPresent(const std::string &ext) const
 	{
-		return extensions.find(ext) != extensions.end();
+		return extensions.count(ext) > 0;
 	}
 
 ]];
@@ -403,7 +403,7 @@ f:write[[
 	static constexpr const GLenum NONE = 0;
 ]];
 f:write( "};\n" );
-f:write( "\n//Global GL procedures object.\n" );
+f:write( "\n// Global GL procedures object.\n" );
 f:write( "IRRLICHT_API extern OpenGLProcedures GL;\n" );
 f:close();
 
@@ -427,12 +427,15 @@ f:write( loader:Concat() );
 f:write[[
 
 	// OpenGL 3 way to enumerate extensions
-	int ext_count = 0;
+	GLint ext_count = 0;
 	GetIntegerv(NUM_EXTENSIONS, &ext_count);
 	extensions.reserve(ext_count);
-	for (int k = 0; k < ext_count; k++)
-		extensions.emplace((char *)GetStringi(EXTENSIONS, k));
-	if (ext_count)
+	for (GLint k = 0; k < ext_count; k++) {
+		auto tmp = GetStringi(EXTENSIONS, k);
+		if (tmp)
+			extensions.emplace((char*)tmp);
+	}
+	if (!extensions.empty())
 		return;
 
 	// OpenGL 2 / ES 2 way to enumerate extensions
