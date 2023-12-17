@@ -43,10 +43,14 @@ tmp=(
 	-DZLIB_LIBRARY=$libs/zlib/lib/libz.dll.a \
 	-DZLIB_INCLUDE_DIR=$libs/zlib/include
 )
-[ $with_sdl -eq 1 ] && tmp+=(
-	-DUSE_SDL2=ON
-	-DCMAKE_PREFIX_PATH=$libs/sdl2/lib/cmake
-)
+if [ $with_sdl -eq 1 ]; then
+	tmp+=(
+		-DUSE_SDL2=ON
+		-DCMAKE_PREFIX_PATH=$libs/sdl2/lib/cmake
+	)
+else
+	tmp+=(-DUSE_SDL2=OFF)
+fi
 #[ $with_gl3 -eq 1 ] && tmp+=(-DENABLE_OPENGL=OFF -DENABLE_OPENGL3=ON)
 
 cmake . "${tmp[@]}"

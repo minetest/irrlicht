@@ -1,5 +1,9 @@
+if(NOT ANDROID AND NOT APPLE)
+	set(DEFAULT_SDL2 ON)
+endif()
+
 option(BUILD_SHARED_LIBS "Build shared library" TRUE)
-option(USE_SDL2 "Use the SDL2 backend" FALSE)
+option(USE_SDL2 "Use the SDL2 backend" ${DEFAULT_SDL2})
 
 # Compiler flags
 
