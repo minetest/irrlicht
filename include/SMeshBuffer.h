@@ -4,4 +4,3 @@
 
 // replaced by template
 #include "CMeshBuffer.h"
-

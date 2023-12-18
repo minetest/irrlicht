@@ -14,18 +14,15 @@ jclass CKeyEventWrapper::Class_KeyEvent = 0;
 jmethodID CKeyEventWrapper::Method_constructor = 0;
 jmethodID CKeyEventWrapper::Method_getUnicodeChar = 0;
 
-CKeyEventWrapper::CKeyEventWrapper(JNIEnv* jniEnv, int action, int code)
-	: JniEnv(jniEnv), JniKeyEvent(0)
+CKeyEventWrapper::CKeyEventWrapper(JNIEnv *jniEnv, int action, int code) :
+		JniEnv(jniEnv), JniKeyEvent(0)
 {
-	if ( JniEnv )
-	{
-		if  (!Class_KeyEvent )
-		{
+	if (JniEnv) {
+		if (!Class_KeyEvent) {
 			// Find java classes & functions on first call
 			os::Printer::log("CKeyEventWrapper first initialize", ELL_DEBUG);
 			jclass localClass = JniEnv->FindClass("android/view/KeyEvent");
-			if (localClass)
-			{
+			if (localClass) {
 				Class_KeyEvent = reinterpret_cast<jclass>(JniEnv->NewGlobalRef(localClass));
 			}
 
@@ -33,12 +30,9 @@ CKeyEventWrapper::CKeyEventWrapper(JNIEnv* jniEnv, int action, int code)
 			Method_getUnicodeChar = JniEnv->GetMethodID(Class_KeyEvent, "getUnicodeChar", "(I)I");
 		}
 
-		if ( Class_KeyEvent && Method_constructor )
-		{
+		if (Class_KeyEvent && Method_constructor) {
 			JniKeyEvent = JniEnv->NewObject(Class_KeyEvent, Method_constructor, action, code);
-		}
-		else
-		{
+		} else {
 			os::Printer::log("CKeyEventWrapper didn't find JNI classes/methods", ELL_WARNING);
 		}
 	}

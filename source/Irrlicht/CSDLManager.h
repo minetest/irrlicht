@@ -10,39 +10,39 @@
 
 namespace irr
 {
-	class CIrrDeviceSDL;
+class CIrrDeviceSDL;
 
 namespace video
 {
 
-	// Manager for SDL with OpenGL
-	class CSDLManager : public IContextManager
-	{
-	public:
-		CSDLManager(CIrrDeviceSDL* device);
+// Manager for SDL with OpenGL
+class CSDLManager : public IContextManager
+{
+public:
+	CSDLManager(CIrrDeviceSDL *device);
 
-		virtual ~CSDLManager() {}
+	virtual ~CSDLManager() {}
 
-		bool initialize(const SIrrlichtCreationParameters& params, const SExposedVideoData& data) override;
+	bool initialize(const SIrrlichtCreationParameters &params, const SExposedVideoData &data) override;
 
-		void terminate() override {};
-		bool generateSurface() override { return true; };
-		void destroySurface() override {};
-		bool generateContext() override { return true; };
-		void destroyContext() override {};
+	void terminate() override{};
+	bool generateSurface() override { return true; };
+	void destroySurface() override{};
+	bool generateContext() override { return true; };
+	void destroyContext() override{};
 
-		const SExposedVideoData& getContext() const override;
+	const SExposedVideoData &getContext() const override;
 
-		bool activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero=false) override;
+	bool activateContext(const SExposedVideoData &videoData, bool restorePrimaryOnZero = false) override;
 
-		void* getProcAddress(const std::string &procName) override;
+	void *getProcAddress(const std::string &procName) override;
 
-		bool swapBuffers() override;
+	bool swapBuffers() override;
 
-	private:
-		SExposedVideoData Data;
-		CIrrDeviceSDL *SDLDevice;
-	};
+private:
+	SExposedVideoData Data;
+	CIrrDeviceSDL *SDLDevice;
+};
 }
 }
 

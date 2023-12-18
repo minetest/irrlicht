@@ -7,8 +7,7 @@
 
 // Default alignment
 #if defined(_MSC_VER)
-#	pragma pack( pop, packing )
+#pragma pack(pop, packing)
 #endif
 
 #undef PACK_STRUCT
-

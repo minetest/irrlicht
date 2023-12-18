@@ -11,8 +11,8 @@ namespace irr
 {
 namespace video
 {
-	class IMaterialRendererServices;
-	class SMaterial;
+class IMaterialRendererServices;
+class SMaterial;
 
 //! Interface making it possible to set constants for gpu programs every frame.
 /** Implement this interface in an own class and pass a pointer to it to one of
@@ -21,7 +21,6 @@ OnSetConstants method will be called every frame now. */
 class IShaderConstantSetCallBack : public virtual IReferenceCounted
 {
 public:
-
 	//! Called to let the callBack know the used material (optional method)
 	/**
 	 \code
@@ -41,7 +40,7 @@ public:
 	}
 	\endcode
 	*/
-	virtual void OnSetMaterial(const SMaterial& material) { }
+	virtual void OnSetMaterial(const SMaterial &material) {}
 
 	//! Called by the engine when the vertex and/or pixel shader constants for an material renderer should be set.
 	/**
@@ -74,12 +73,10 @@ public:
 	\param services: Pointer to an interface providing methods to set the constants for the shader.
 	\param userData: Userdata int which can be specified when creating the shader.
 	*/
-	virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData) = 0;
+	virtual void OnSetConstants(IMaterialRendererServices *services, s32 userData) = 0;
 };
-
 
 } // end namespace video
 } // end namespace irr
 
 #endif
-

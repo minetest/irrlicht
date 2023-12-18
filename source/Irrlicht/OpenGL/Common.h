@@ -14,37 +14,39 @@ namespace irr
 namespace video
 {
 
-	// Forward declarations.
+// Forward declarations.
 
-	class COpenGLCoreFeature;
+class COpenGLCoreFeature;
 
-	template <class TOpenGLDriver>
-	class COpenGLCoreTexture;
+template <class TOpenGLDriver>
+class COpenGLCoreTexture;
 
-	template <class TOpenGLDriver, class TOpenGLTexture>
-	class COpenGLCoreRenderTarget;
+template <class TOpenGLDriver, class TOpenGLTexture>
+class COpenGLCoreRenderTarget;
 
-	template <class TOpenGLDriver, class TOpenGLTexture>
-	class COpenGLCoreCacheHandler;
+template <class TOpenGLDriver, class TOpenGLTexture>
+class COpenGLCoreCacheHandler;
 
-	class COpenGL3DriverBase;
-	typedef COpenGLCoreTexture<COpenGL3DriverBase> COpenGL3Texture;
-	typedef COpenGLCoreRenderTarget<COpenGL3DriverBase, COpenGL3Texture> COpenGL3RenderTarget;
-	typedef COpenGLCoreCacheHandler<COpenGL3DriverBase, COpenGL3Texture> COpenGL3CacheHandler;
+class COpenGL3DriverBase;
+typedef COpenGLCoreTexture<COpenGL3DriverBase> COpenGL3Texture;
+typedef COpenGLCoreRenderTarget<COpenGL3DriverBase, COpenGL3Texture> COpenGL3RenderTarget;
+typedef COpenGLCoreCacheHandler<COpenGL3DriverBase, COpenGL3Texture> COpenGL3CacheHandler;
 
-	enum class OpenGLSpec: u8 {
-		Core,
-		Compat,
-		ES,
-		// WebGL, // TODO
-	};
+enum class OpenGLSpec : u8
+{
+	Core,
+	Compat,
+	ES,
+	// WebGL, // TODO
+};
 
-	struct OpenGLVersion {
-		OpenGLSpec Spec;
-		u8 Major;
-		u8 Minor;
-		u8 Release;
-	};
+struct OpenGLVersion
+{
+	OpenGLSpec Spec;
+	u8 Major;
+	u8 Minor;
+	u8 Release;
+};
 
 }
 }

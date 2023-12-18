@@ -16,26 +16,25 @@ namespace gui
 {
 
 //! constructor
-CGUIButton::CGUIButton(IGUIEnvironment* environment, IGUIElement* parent,
-			s32 id, core::rect<s32> rectangle, bool noclip)
-: IGUIButton(environment, parent, id, rectangle),
-	SpriteBank(0), OverrideFont(0),
-	OverrideColorEnabled(false), OverrideColor(video::SColor(101,255,255,255)),
-	ClickTime(0), HoverTime(0), FocusTime(0),
-	ClickShiftState(false), ClickControlState(false),
-	IsPushButton(false), Pressed(false),
-	UseAlphaChannel(false), DrawBorder(true), ScaleImage(false)
+CGUIButton::CGUIButton(IGUIEnvironment *environment, IGUIElement *parent,
+		s32 id, core::rect<s32> rectangle, bool noclip) :
+		IGUIButton(environment, parent, id, rectangle),
+		SpriteBank(0), OverrideFont(0),
+		OverrideColorEnabled(false), OverrideColor(video::SColor(101, 255, 255, 255)),
+		ClickTime(0), HoverTime(0), FocusTime(0),
+		ClickShiftState(false), ClickControlState(false),
+		IsPushButton(false), Pressed(false),
+		UseAlphaChannel(false), DrawBorder(true), ScaleImage(false)
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("CGUIButton");
-	#endif
+#endif
 	setNotClipped(noclip);
 
 	// This element can be tabbed.
 	setTabStop(true);
 	setTabOrder(-1);
 }
-
 
 //! destructor
 CGUIButton::~CGUIButton()
@@ -47,13 +46,11 @@ CGUIButton::~CGUIButton()
 		SpriteBank->drop();
 }
 
-
 //! Sets if the images should be scaled to fit the button
 void CGUIButton::setScaleImage(bool scaleImage)
 {
 	ScaleImage = scaleImage;
 }
-
 
 //! Returns whether the button scale the used images
 bool CGUIButton::isScalingImage() const
@@ -61,15 +58,13 @@ bool CGUIButton::isScalingImage() const
 	return ScaleImage;
 }
 
-
 //! Sets if the button should use the skin to draw its border
 void CGUIButton::setDrawBorder(bool border)
 {
 	DrawBorder = border;
 }
 
-
-void CGUIButton::setSpriteBank(IGUISpriteBank* sprites)
+void CGUIButton::setSpriteBank(IGUISpriteBank *sprites)
 {
 	if (sprites)
 		sprites->grab();
@@ -80,12 +75,11 @@ void CGUIButton::setSpriteBank(IGUISpriteBank* sprites)
 	SpriteBank = sprites;
 }
 
-
 void CGUIButton::setSprite(EGUI_BUTTON_STATE state, s32 index, video::SColor color, bool loop, bool scale)
 {
-	ButtonSprites[(u32)state].Index	= index;
-	ButtonSprites[(u32)state].Color	= color;
-	ButtonSprites[(u32)state].Loop	= loop;
+	ButtonSprites[(u32)state].Index = index;
+	ButtonSprites[(u32)state].Color = color;
+	ButtonSprites[(u32)state].Loop = loop;
 	ButtonSprites[(u32)state].Scale = scale;
 }
 
@@ -114,17 +108,15 @@ bool CGUIButton::getSpriteScale(EGUI_BUTTON_STATE state) const
 }
 
 //! called if an event happened.
-bool CGUIButton::OnEvent(const SEvent& event)
+bool CGUIButton::OnEvent(const SEvent &event)
 {
 	if (!isEnabled())
 		return IGUIElement::OnEvent(event);
 
-	switch(event.EventType)
-	{
+	switch (event.EventType) {
 	case EET_KEY_INPUT_EVENT:
 		if (event.KeyInput.PressedDown &&
-			(event.KeyInput.Key == KEY_RETURN || event.KeyInput.Key == KEY_SPACE))
-		{
+				(event.KeyInput.Key == KEY_RETURN || event.KeyInput.Key == KEY_SPACE)) {
 			if (!IsPushButton)
 				setPressed(true);
 			else
@@ -132,21 +124,16 @@ bool CGUIButton::OnEvent(const SEvent& event)
 
 			return true;
 		}
-		if (Pressed && !IsPushButton && event.KeyInput.PressedDown && event.KeyInput.Key == KEY_ESCAPE)
-		{
+		if (Pressed && !IsPushButton && event.KeyInput.PressedDown && event.KeyInput.Key == KEY_ESCAPE) {
 			setPressed(false);
 			return true;
-		}
-		else
-		if (!event.KeyInput.PressedDown && Pressed &&
-			(event.KeyInput.Key == KEY_RETURN || event.KeyInput.Key == KEY_SPACE))
-		{
+		} else if (!event.KeyInput.PressedDown && Pressed &&
+				   (event.KeyInput.Key == KEY_RETURN || event.KeyInput.Key == KEY_SPACE)) {
 
 			if (!IsPushButton)
 				setPressed(false);
 
-			if (Parent)
-			{
+			if (Parent) {
 				ClickShiftState = event.KeyInput.Shift;
 				ClickControlState = event.KeyInput.Control;
 
@@ -161,39 +148,28 @@ bool CGUIButton::OnEvent(const SEvent& event)
 		}
 		break;
 	case EET_GUI_EVENT:
-		if (event.GUIEvent.Caller == this)
-		{
-			if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUS_LOST)
-			{
+		if (event.GUIEvent.Caller == this) {
+			if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUS_LOST) {
 				if (!IsPushButton)
 					setPressed(false);
 				FocusTime = os::Timer::getTime();
-			}
-			else if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUSED)
-			{
+			} else if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUSED) {
 				FocusTime = os::Timer::getTime();
-			}
-			else if (event.GUIEvent.EventType == EGET_ELEMENT_HOVERED || event.GUIEvent.EventType == EGET_ELEMENT_LEFT)
-			{
+			} else if (event.GUIEvent.EventType == EGET_ELEMENT_HOVERED || event.GUIEvent.EventType == EGET_ELEMENT_LEFT) {
 				HoverTime = os::Timer::getTime();
 			}
 		}
 		break;
 	case EET_MOUSE_INPUT_EVENT:
-		if (event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN)
-		{
+		if (event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN) {
 			if (!IsPushButton)
 				setPressed(true);
 
 			return true;
-		}
-		else
-		if (event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP)
-		{
+		} else if (event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP) {
 			bool wasPressed = Pressed;
 
-			if ( !AbsoluteClippingRect.isPointInside( core::position2d<s32>(event.MouseInput.X, event.MouseInput.Y ) ) )
-			{
+			if (!AbsoluteClippingRect.isPointInside(core::position2d<s32>(event.MouseInput.X, event.MouseInput.Y))) {
 				if (!IsPushButton)
 					setPressed(false);
 				return true;
@@ -201,14 +177,12 @@ bool CGUIButton::OnEvent(const SEvent& event)
 
 			if (!IsPushButton)
 				setPressed(false);
-			else
-			{
+			else {
 				setPressed(!Pressed);
 			}
 
 			if ((!IsPushButton && wasPressed && Parent) ||
-				(IsPushButton && wasPressed != Pressed))
-			{
+					(IsPushButton && wasPressed != Pressed)) {
 				ClickShiftState = event.MouseInput.Shift;
 				ClickControlState = event.MouseInput.Control;
 
@@ -230,70 +204,58 @@ bool CGUIButton::OnEvent(const SEvent& event)
 	return Parent ? Parent->OnEvent(event) : false;
 }
 
-
 //! draws the element and its children
 void CGUIButton::draw()
 {
 	if (!IsVisible)
 		return;
 
-	IGUISkin* skin = Environment->getSkin();
-	video::IVideoDriver* driver = Environment->getVideoDriver();
+	IGUISkin *skin = Environment->getSkin();
+	video::IVideoDriver *driver = Environment->getVideoDriver();
 
-	if (DrawBorder)
-	{
-		if (!Pressed)
-		{
+	if (DrawBorder) {
+		if (!Pressed) {
 			skin->draw3DButtonPaneStandard(this, AbsoluteRect, &AbsoluteClippingRect);
-		}
-		else
-		{
+		} else {
 			skin->draw3DButtonPanePressed(this, AbsoluteRect, &AbsoluteClippingRect);
 		}
 	}
 
-
 	const core::position2di buttonCenter(AbsoluteRect.getCenter());
 
 	EGUI_BUTTON_IMAGE_STATE imageState = getImageState(Pressed);
-	if ( ButtonImages[(u32)imageState].Texture )
-	{
+	if (ButtonImages[(u32)imageState].Texture) {
 		core::position2d<s32> pos(buttonCenter);
 		core::rect<s32> sourceRect(ButtonImages[(u32)imageState].SourceRect);
-		if ( sourceRect.getWidth() == 0 && sourceRect.getHeight() == 0 )
-			sourceRect = core::rect<s32>(core::position2di(0,0), ButtonImages[(u32)imageState].Texture->getOriginalSize());
+		if (sourceRect.getWidth() == 0 && sourceRect.getHeight() == 0)
+			sourceRect = core::rect<s32>(core::position2di(0, 0), ButtonImages[(u32)imageState].Texture->getOriginalSize());
 
 		pos.X -= sourceRect.getWidth() / 2;
 		pos.Y -= sourceRect.getHeight() / 2;
 
-		if ( Pressed )
-		{
+		if (Pressed) {
 			// Create a pressed-down effect by moving the image when it looks identical to the unpressed state image
 			EGUI_BUTTON_IMAGE_STATE unpressedState = getImageState(false);
-			if ( unpressedState == imageState || ButtonImages[(u32)imageState] == ButtonImages[(u32)unpressedState] )
-			{
+			if (unpressedState == imageState || ButtonImages[(u32)imageState] == ButtonImages[(u32)unpressedState]) {
 				pos.X += skin->getSize(EGDS_BUTTON_PRESSED_IMAGE_OFFSET_X);
 				pos.Y += skin->getSize(EGDS_BUTTON_PRESSED_IMAGE_OFFSET_Y);
 			}
 		}
 
 		driver->draw2DImage(ButtonImages[(u32)imageState].Texture,
-				ScaleImage? AbsoluteRect : core::rect<s32>(pos, sourceRect.getSize()),
+				ScaleImage ? AbsoluteRect : core::rect<s32>(pos, sourceRect.getSize()),
 				sourceRect, &AbsoluteClippingRect,
 				0, UseAlphaChannel);
 	}
 
-	if (SpriteBank)
-	{
+	if (SpriteBank) {
 		core::position2di pos(buttonCenter);
-		if ( Pressed )
-		{
+		if (Pressed) {
 			pos.X += skin->getSize(EGDS_BUTTON_PRESSED_SPRITE_OFFSET_X);
 			pos.Y += skin->getSize(EGDS_BUTTON_PRESSED_SPRITE_OFFSET_Y);
 		}
 
-		if (isEnabled())
-		{
+		if (isEnabled()) {
 			// pressed / unpressed animation
 			EGUI_BUTTON_STATE state = Pressed ? EGBS_BUTTON_DOWN : EGBS_BUTTON_UP;
 			drawSprite(state, ClickTime, pos);
@@ -305,52 +267,44 @@ void CGUIButton::draw()
 			// mouse over / off animation
 			state = Environment->getHovered() == this ? EGBS_BUTTON_MOUSE_OVER : EGBS_BUTTON_MOUSE_OFF;
 			drawSprite(state, HoverTime, pos);
-		}
-		else
-		{
+		} else {
 			// draw disabled
 			drawSprite(EGBS_BUTTON_DISABLED, 0, pos);
 		}
 	}
 
-	if (Text.size())
-	{
-		IGUIFont* font = getActiveFont();
+	if (Text.size()) {
+		IGUIFont *font = getActiveFont();
 
 		core::rect<s32> rect = AbsoluteRect;
-		if (Pressed)
-		{
+		if (Pressed) {
 			rect.UpperLeftCorner.X += skin->getSize(EGDS_BUTTON_PRESSED_TEXT_OFFSET_X);
 			rect.UpperLeftCorner.Y += skin->getSize(EGDS_BUTTON_PRESSED_TEXT_OFFSET_Y);
 		}
 
 		if (font)
 			font->draw(Text.c_str(), rect,
-				getActiveColor(),
-				true, true, &AbsoluteClippingRect);
+					getActiveColor(),
+					true, true, &AbsoluteClippingRect);
 	}
 
 	IGUIElement::draw();
 }
 
-void CGUIButton::drawSprite(EGUI_BUTTON_STATE state, u32 startTime, const core::position2di& center)
+void CGUIButton::drawSprite(EGUI_BUTTON_STATE state, u32 startTime, const core::position2di &center)
 {
 	u32 stateIdx = (u32)state;
 
-	if (ButtonSprites[stateIdx].Index != -1)
-	{
-		if ( ButtonSprites[stateIdx].Scale )
-		{
-			const video::SColor colors[] = {ButtonSprites[stateIdx].Color,ButtonSprites[stateIdx].Color,ButtonSprites[stateIdx].Color,ButtonSprites[stateIdx].Color};
+	if (ButtonSprites[stateIdx].Index != -1) {
+		if (ButtonSprites[stateIdx].Scale) {
+			const video::SColor colors[] = {ButtonSprites[stateIdx].Color, ButtonSprites[stateIdx].Color, ButtonSprites[stateIdx].Color, ButtonSprites[stateIdx].Color};
 			SpriteBank->draw2DSprite(ButtonSprites[stateIdx].Index, AbsoluteRect,
 					&AbsoluteClippingRect, colors,
-					os::Timer::getTime()-startTime, ButtonSprites[stateIdx].Loop);
-		}
-		else
-		{
+					os::Timer::getTime() - startTime, ButtonSprites[stateIdx].Loop);
+		} else {
 			SpriteBank->draw2DSprite(ButtonSprites[stateIdx].Index, center,
-				&AbsoluteClippingRect, ButtonSprites[stateIdx].Color, startTime, os::Timer::getTime(),
-				ButtonSprites[stateIdx].Loop, true);
+					&AbsoluteClippingRect, ButtonSprites[stateIdx].Color, startTime, os::Timer::getTime(),
+					ButtonSprites[stateIdx].Loop, true);
 		}
 	}
 }
@@ -360,27 +314,24 @@ EGUI_BUTTON_IMAGE_STATE CGUIButton::getImageState(bool pressed) const
 	// figure state we should have
 	EGUI_BUTTON_IMAGE_STATE state = EGBIS_IMAGE_DISABLED;
 	bool focused = Environment->hasFocus(this);
-	bool mouseOver = static_cast<const IGUIElement*>(Environment->getHovered()) == this;	// (static cast for Borland)
-	if (isEnabled())
-	{
-		if ( pressed )
-		{
-			if ( focused && mouseOver )
+	bool mouseOver = static_cast<const IGUIElement *>(Environment->getHovered()) == this; // (static cast for Borland)
+	if (isEnabled()) {
+		if (pressed) {
+			if (focused && mouseOver)
 				state = EGBIS_IMAGE_DOWN_FOCUSED_MOUSEOVER;
-			else if ( focused )
+			else if (focused)
 				state = EGBIS_IMAGE_DOWN_FOCUSED;
-			else if ( mouseOver )
+			else if (mouseOver)
 				state = EGBIS_IMAGE_DOWN_MOUSEOVER;
 			else
 				state = EGBIS_IMAGE_DOWN;
-		}
-		else // !pressed
+		} else // !pressed
 		{
-			if ( focused && mouseOver )
+			if (focused && mouseOver)
 				state = EGBIS_IMAGE_UP_FOCUSED_MOUSEOVER;
-			else if ( focused )
+			else if (focused)
 				state = EGBIS_IMAGE_UP_FOCUSED;
-			else if ( mouseOver )
+			else if (mouseOver)
 				state = EGBIS_IMAGE_UP_MOUSEOVER;
 			else
 				state = EGBIS_IMAGE_UP;
@@ -388,33 +339,31 @@ EGUI_BUTTON_IMAGE_STATE CGUIButton::getImageState(bool pressed) const
 	}
 
 	// find a compatible state that has images
-	while ( state != EGBIS_IMAGE_UP && !ButtonImages[(u32)state].Texture )
-	{
-		switch ( state )
-		{
-			case EGBIS_IMAGE_UP_FOCUSED:
-				state = EGBIS_IMAGE_UP_MOUSEOVER;
-				break;
-			case EGBIS_IMAGE_UP_FOCUSED_MOUSEOVER:
-				state = EGBIS_IMAGE_UP_FOCUSED;
-				break;
-			case EGBIS_IMAGE_DOWN_MOUSEOVER:
+	while (state != EGBIS_IMAGE_UP && !ButtonImages[(u32)state].Texture) {
+		switch (state) {
+		case EGBIS_IMAGE_UP_FOCUSED:
+			state = EGBIS_IMAGE_UP_MOUSEOVER;
+			break;
+		case EGBIS_IMAGE_UP_FOCUSED_MOUSEOVER:
+			state = EGBIS_IMAGE_UP_FOCUSED;
+			break;
+		case EGBIS_IMAGE_DOWN_MOUSEOVER:
+			state = EGBIS_IMAGE_DOWN;
+			break;
+		case EGBIS_IMAGE_DOWN_FOCUSED:
+			state = EGBIS_IMAGE_DOWN_MOUSEOVER;
+			break;
+		case EGBIS_IMAGE_DOWN_FOCUSED_MOUSEOVER:
+			state = EGBIS_IMAGE_DOWN_FOCUSED;
+			break;
+		case EGBIS_IMAGE_DISABLED:
+			if (pressed)
 				state = EGBIS_IMAGE_DOWN;
-				break;
-			case EGBIS_IMAGE_DOWN_FOCUSED:
-				state = EGBIS_IMAGE_DOWN_MOUSEOVER;
-				break;
-			case EGBIS_IMAGE_DOWN_FOCUSED_MOUSEOVER:
-				state = EGBIS_IMAGE_DOWN_FOCUSED;
-				break;
-			case EGBIS_IMAGE_DISABLED:
-				if ( pressed )
-					state = EGBIS_IMAGE_DOWN;
-				else
-					state = EGBIS_IMAGE_UP;
-				break;
-			default:
+			else
 				state = EGBIS_IMAGE_UP;
+			break;
+		default:
+			state = EGBIS_IMAGE_UP;
 		}
 	}
 
@@ -422,7 +371,7 @@ EGUI_BUTTON_IMAGE_STATE CGUIButton::getImageState(bool pressed) const
 }
 
 //! sets another skin independent font. if this is set to zero, the button uses the font of the skin.
-void CGUIButton::setOverrideFont(IGUIFont* font)
+void CGUIButton::setOverrideFont(IGUIFont *font)
 {
 	if (OverrideFont == font)
 		return;
@@ -437,17 +386,17 @@ void CGUIButton::setOverrideFont(IGUIFont* font)
 }
 
 //! Gets the override font (if any)
-IGUIFont * CGUIButton::getOverrideFont() const
+IGUIFont *CGUIButton::getOverrideFont() const
 {
 	return OverrideFont;
 }
 
 //! Get the font which is used right now for drawing
-IGUIFont* CGUIButton::getActiveFont() const
+IGUIFont *CGUIButton::getActiveFont() const
 {
-	if ( OverrideFont )
+	if (OverrideFont)
 		return OverrideFont;
-	IGUISkin* skin = Environment->getSkin();
+	IGUISkin *skin = Environment->getSkin();
 	if (skin)
 		return skin->getFont(EGDF_BUTTON);
 	return 0;
@@ -467,9 +416,9 @@ video::SColor CGUIButton::getOverrideColor() const
 
 irr::video::SColor CGUIButton::getActiveColor() const
 {
-	if ( OverrideColorEnabled )
+	if (OverrideColorEnabled)
 		return OverrideColor;
-	IGUISkin* skin = Environment->getSkin();
+	IGUISkin *skin = Environment->getSkin();
 	if (skin)
 		return OverrideColorEnabled ? OverrideColor : skin->getColor(isEnabled() ? EGDC_BUTTON_TEXT : EGDC_GRAY_TEXT);
 	return OverrideColor;
@@ -485,16 +434,16 @@ bool CGUIButton::isOverrideColorEnabled() const
 	return OverrideColorEnabled;
 }
 
-void CGUIButton::setImage(EGUI_BUTTON_IMAGE_STATE state, video::ITexture* image, const core::rect<s32>& sourceRect)
+void CGUIButton::setImage(EGUI_BUTTON_IMAGE_STATE state, video::ITexture *image, const core::rect<s32> &sourceRect)
 {
-	if ( state >= EGBIS_COUNT )
+	if (state >= EGBIS_COUNT)
 		return;
 
-	if ( image )
+	if (image)
 		image->grab();
 
 	u32 stateIdx = (u32)state;
-	if ( ButtonImages[stateIdx].Texture )
+	if (ButtonImages[stateIdx].Texture)
 		ButtonImages[stateIdx].Texture->drop();
 
 	ButtonImages[stateIdx].Texture = image;
@@ -509,24 +458,20 @@ void CGUIButton::setIsPushButton(bool isPushButton)
 	IsPushButton = isPushButton;
 }
 
-
 //! Returns if the button is currently pressed
 bool CGUIButton::isPressed() const
 {
 	return Pressed;
 }
 
-
 //! Sets the pressed state of the button if this is a pushbutton
 void CGUIButton::setPressed(bool pressed)
 {
-	if (Pressed != pressed)
-	{
+	if (Pressed != pressed) {
 		ClickTime = os::Timer::getTime();
 		Pressed = pressed;
 	}
 }
-
 
 //! Returns whether the button is a push button
 bool CGUIButton::isPushButton() const
@@ -534,13 +479,11 @@ bool CGUIButton::isPushButton() const
 	return IsPushButton;
 }
 
-
 //! Sets if the alpha channel should be used for drawing images on the button (default is false)
 void CGUIButton::setUseAlphaChannel(bool useAlphaChannel)
 {
 	UseAlphaChannel = useAlphaChannel;
 }
-
 
 //! Returns if the alpha channel should be used for drawing images on the button
 bool CGUIButton::isAlphaChannelUsed() const
@@ -548,12 +491,10 @@ bool CGUIButton::isAlphaChannelUsed() const
 	return UseAlphaChannel;
 }
 
-
 bool CGUIButton::isDrawingBorder() const
 {
 	return DrawBorder;
 }
-
 
 } // end namespace gui
 } // end namespace irr

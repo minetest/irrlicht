@@ -23,20 +23,17 @@ joint scene nodes when playing skeletal animations.
 class IDummyTransformationSceneNode : public ISceneNode
 {
 public:
-
 	//! Constructor
-	IDummyTransformationSceneNode(ISceneNode* parent, ISceneManager* mgr, s32 id)
-		: ISceneNode(parent, mgr, id) {}
+	IDummyTransformationSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id) :
+			ISceneNode(parent, mgr, id) {}
 
 	//! Returns a reference to the current relative transformation matrix.
 	/** This is the matrix, this scene node uses instead of scale, translation
 	and rotation. */
-	virtual core::matrix4& getRelativeTransformationMatrix() = 0;
+	virtual core::matrix4 &getRelativeTransformationMatrix() = 0;
 };
 
 } // end namespace scene
 } // end namespace irr
 
-
 #endif
-

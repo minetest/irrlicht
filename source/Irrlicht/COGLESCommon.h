@@ -13,7 +13,7 @@
 #include <khronos-api/GLES/gl.h>
 #include <EGL/eglplatform.h>
 typedef char GLchar;
-#else	// or only when defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_) ?
+#else // or only when defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_) ?
 #include <GLES/gl.h>
 #include <GLES/glext.h>
 #include <EGL/eglplatform.h>
@@ -95,23 +95,23 @@ namespace irr
 namespace video
 {
 
-	// Forward declarations.
+// Forward declarations.
 
-	class COpenGLCoreFeature;
+class COpenGLCoreFeature;
 
-	template <class TOpenGLDriver>
-	class COpenGLCoreTexture;
+template <class TOpenGLDriver>
+class COpenGLCoreTexture;
 
-	template <class TOpenGLDriver, class TOpenGLTexture>
-	class COpenGLCoreRenderTarget;
+template <class TOpenGLDriver, class TOpenGLTexture>
+class COpenGLCoreRenderTarget;
 
-	template <class TOpenGLDriver, class TOpenGLTexture>
-	class COpenGLCoreCacheHandler;
+template <class TOpenGLDriver, class TOpenGLTexture>
+class COpenGLCoreCacheHandler;
 
-	class COGLES1Driver;
-	typedef COpenGLCoreTexture<COGLES1Driver> COGLES1Texture;
-	typedef COpenGLCoreRenderTarget<COGLES1Driver, COGLES1Texture> COGLES1RenderTarget;
-	typedef COpenGLCoreCacheHandler<COGLES1Driver, COGLES1Texture> COGLES1CacheHandler;
+class COGLES1Driver;
+typedef COpenGLCoreTexture<COGLES1Driver> COGLES1Texture;
+typedef COpenGLCoreRenderTarget<COGLES1Driver, COGLES1Texture> COGLES1RenderTarget;
+typedef COpenGLCoreCacheHandler<COGLES1Driver, COGLES1Texture> COGLES1CacheHandler;
 
 }
 }

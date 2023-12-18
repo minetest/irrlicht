@@ -34,8 +34,7 @@ static const bool sdl_supports_primary_selection = [] {
 #if SDL_VERSION_ATLEAST(2, 25, 0)
 	SDL_version linked_version;
 	SDL_GetVersion(&linked_version);
-	return (linked_version.major == 2 && linked_version.minor >= 25)
-			|| linked_version.major > 2;
+	return (linked_version.major == 2 && linked_version.minor >= 25) || linked_version.major > 2;
 #else
 	return false;
 #endif
@@ -47,20 +46,20 @@ namespace irr
 
 #if defined(_IRR_COMPILE_WITH_X11_DEVICE_)
 // constructor  linux
-	COSOperator::COSOperator(const core::stringc& osVersion, CIrrDeviceLinux* device)
-: OperatingSystem(osVersion), IrrDeviceLinux(device)
+COSOperator::COSOperator(const core::stringc &osVersion, CIrrDeviceLinux *device) :
+		OperatingSystem(osVersion), IrrDeviceLinux(device)
 {
 }
 #endif
 
 // constructor
-COSOperator::COSOperator(const core::stringc& osVersion) : OperatingSystem(osVersion)
+COSOperator::COSOperator(const core::stringc &osVersion) :
+		OperatingSystem(osVersion)
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("COSOperator");
-	#endif
+#endif
 }
-
 
 COSOperator::~COSOperator()
 {
@@ -70,18 +69,16 @@ COSOperator::~COSOperator()
 #endif
 }
 
-
 //! returns the current operating system version as string.
-const core::stringc& COSOperator::getOperatingSystemVersion() const
+const core::stringc &COSOperator::getOperatingSystemVersion() const
 {
 	return OperatingSystem;
 }
 
-
 //! copies text to the clipboard
 void COSOperator::copyToClipboard(const c8 *text) const
 {
-	if (strlen(text)==0)
+	if (strlen(text) == 0)
 		return;
 
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
@@ -98,7 +95,7 @@ void COSOperator::copyToClipboard(const c8 *text) const
 	const u32 size = (tempbuffer.size() + 1) * sizeof(wchar_t);
 
 	HGLOBAL clipbuffer;
-	void * buffer;
+	void *buffer;
 
 	clipbuffer = GlobalAlloc(GMEM_MOVEABLE, size);
 	buffer = GlobalLock(clipbuffer);
@@ -110,28 +107,26 @@ void COSOperator::copyToClipboard(const c8 *text) const
 	CloseClipboard();
 
 #elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
-    NSString *str = nil;
-    NSPasteboard *board = nil;
+	NSString *str = nil;
+	NSPasteboard *board = nil;
 
-    if ((text != NULL) && (strlen(text) > 0))
-    {
-        str = [NSString stringWithCString:text encoding:NSUTF8StringEncoding];
-        board = [NSPasteboard generalPasteboard];
-        [board declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:NSApp];
-        [board setString:str forType:NSStringPboardType];
-    }
+	if ((text != NULL) && (strlen(text) > 0)) {
+		str = [NSString stringWithCString:text encoding:NSUTF8StringEncoding];
+		board = [NSPasteboard generalPasteboard];
+		[board declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:NSApp];
+		[board setString:str forType:NSStringPboardType];
+	}
 
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
-    if ( IrrDeviceLinux )
-        IrrDeviceLinux->copyToClipboard(text);
+	if (IrrDeviceLinux)
+		IrrDeviceLinux->copyToClipboard(text);
 #endif
 }
-
 
 //! copies text to the primary selection
 void COSOperator::copyToPrimarySelection(const c8 *text) const
 {
-	if (strlen(text)==0)
+	if (strlen(text) == 0)
 		return;
 
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
@@ -141,14 +136,13 @@ void COSOperator::copyToPrimarySelection(const c8 *text) const
 #endif
 
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
-    if ( IrrDeviceLinux )
-        IrrDeviceLinux->copyToPrimarySelection(text);
+	if (IrrDeviceLinux)
+		IrrDeviceLinux->copyToPrimarySelection(text);
 #endif
 }
 
-
 //! gets text from the clipboard
-const c8* COSOperator::getTextFromClipboard() const
+const c8 *COSOperator::getTextFromClipboard() const
 {
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
 	SDL_free(ClipboardSelectionText);
@@ -159,35 +153,35 @@ const c8* COSOperator::getTextFromClipboard() const
 	if (!OpenClipboard(NULL))
 		return 0;
 
-	wchar_t * buffer = 0;
+	wchar_t *buffer = 0;
 
-	HANDLE hData = GetClipboardData( CF_UNICODETEXT );
-	buffer = (wchar_t*) GlobalLock( hData );
+	HANDLE hData = GetClipboardData(CF_UNICODETEXT);
+	buffer = (wchar_t *)GlobalLock(hData);
 
 	core::wStringToUTF8(ClipboardBuf, buffer);
 
-	GlobalUnlock( hData );
+	GlobalUnlock(hData);
 	CloseClipboard();
 
 	return ClipboardBuf.c_str();
 
 #elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
-    NSString* str = nil;
-    NSPasteboard* board = nil;
-    char* result = 0;
+	NSString *str = nil;
+	NSPasteboard *board = nil;
+	char *result = 0;
 
-    board = [NSPasteboard generalPasteboard];
-    str = [board stringForType:NSStringPboardType];
+	board = [NSPasteboard generalPasteboard];
+	str = [board stringForType:NSStringPboardType];
 
-    if (str != nil)
-        result = (char*)[str cStringUsingEncoding:NSUTF8StringEncoding];
+	if (str != nil)
+		result = (char *)[str cStringUsingEncoding:NSUTF8StringEncoding];
 
-    return (result);
+	return (result);
 
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
-    if ( IrrDeviceLinux )
-        return IrrDeviceLinux->getTextFromClipboard();
-    return 0;
+	if (IrrDeviceLinux)
+		return IrrDeviceLinux->getTextFromClipboard();
+	return 0;
 
 #else
 
@@ -195,9 +189,8 @@ const c8* COSOperator::getTextFromClipboard() const
 #endif
 }
 
-
 //! gets text from the primary selection
-const c8* COSOperator::getTextFromPrimarySelection() const
+const c8 *COSOperator::getTextFromPrimarySelection() const
 {
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
 #if SDL_VERSION_ATLEAST(2, 25, 0)
@@ -210,7 +203,7 @@ const c8* COSOperator::getTextFromPrimarySelection() const
 	return 0;
 
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
-	if ( IrrDeviceLinux )
+	if (IrrDeviceLinux)
 		return IrrDeviceLinux->getTextFromPrimarySelection();
 	return 0;
 
@@ -220,35 +213,34 @@ const c8* COSOperator::getTextFromPrimarySelection() const
 #endif
 }
 
-
-bool COSOperator::getSystemMemory(u32* Total, u32* Avail) const
+bool COSOperator::getSystemMemory(u32 *Total, u32 *Avail) const
 {
 #if defined(_IRR_WINDOWS_API_)
 
 	MEMORYSTATUSEX MemoryStatusEx;
- 	MemoryStatusEx.dwLength = sizeof(MEMORYSTATUSEX);
+	MemoryStatusEx.dwLength = sizeof(MEMORYSTATUSEX);
 
 	// cannot fail
 	GlobalMemoryStatusEx(&MemoryStatusEx);
 
 	if (Total)
-		*Total = (u32)(MemoryStatusEx.ullTotalPhys>>10);
+		*Total = (u32)(MemoryStatusEx.ullTotalPhys >> 10);
 	if (Avail)
-		*Avail = (u32)(MemoryStatusEx.ullAvailPhys>>10);
+		*Avail = (u32)(MemoryStatusEx.ullAvailPhys >> 10);
 	return true;
 
 #elif defined(_IRR_POSIX_API_) && defined(_SC_PHYS_PAGES) && defined(_SC_AVPHYS_PAGES)
-        long ps = sysconf(_SC_PAGESIZE);
-        long pp = sysconf(_SC_PHYS_PAGES);
-        long ap = sysconf(_SC_AVPHYS_PAGES);
+	long ps = sysconf(_SC_PAGESIZE);
+	long pp = sysconf(_SC_PHYS_PAGES);
+	long ap = sysconf(_SC_AVPHYS_PAGES);
 
 	if (ps == -1 || (Total && pp == -1) || (Avail && ap == -1))
 		return false;
 
 	if (Total)
-		*Total = (u32)((pp>>10)*ps);
+		*Total = (u32)((pp >> 10) * ps);
 	if (Avail)
-		*Avail = (u32)((ap>>10)*ps);
+		*Avail = (u32)((ap >> 10) * ps);
 	return true;
 #elif defined(_IRR_OSX_PLATFORM_)
 	int mib[2];
@@ -262,9 +254,9 @@ bool COSOperator::getSystemMemory(u32* Total, u32* Avail) const
 	sysctl(mib, 2, &physical_memory, &length, NULL, 0);
 
 	if (Total)
-		*Total = (u32)(physical_memory>>10);
+		*Total = (u32)(physical_memory >> 10);
 	if (Avail)
-		*Avail = (u32)(physical_memory>>10); // we don't know better
+		*Avail = (u32)(physical_memory >> 10); // we don't know better
 	return true;
 #else
 	// TODO: implement for others
@@ -272,6 +264,4 @@ bool COSOperator::getSystemMemory(u32* Total, u32* Avail) const
 #endif
 }
 
-
 } // end namespace
-

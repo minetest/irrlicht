@@ -17,22 +17,19 @@
 namespace irr
 {
 //! constructor
-CIrrDeviceStub::CIrrDeviceStub(const SIrrlichtCreationParameters& params)
-: IrrlichtDevice(), VideoDriver(0), GUIEnvironment(0), SceneManager(0),
-	Timer(0), CursorControl(0), UserReceiver(params.EventReceiver),
-	Logger(0), Operator(0), FileSystem(0),
-	InputReceivingSceneManager(0), ContextManager(0),
-	CreationParams(params), Close(false)
+CIrrDeviceStub::CIrrDeviceStub(const SIrrlichtCreationParameters &params) :
+		IrrlichtDevice(), VideoDriver(0), GUIEnvironment(0), SceneManager(0),
+		Timer(0), CursorControl(0), UserReceiver(params.EventReceiver),
+		Logger(0), Operator(0), FileSystem(0),
+		InputReceivingSceneManager(0), ContextManager(0),
+		CreationParams(params), Close(false)
 {
 	Timer = new CTimer();
-	if (os::Printer::Logger)
-	{
+	if (os::Printer::Logger) {
 		os::Printer::Logger->grab();
-		Logger = (CLogger*)os::Printer::Logger;
+		Logger = (CLogger *)os::Printer::Logger;
 		Logger->setReceiver(UserReceiver);
-	}
-	else
-	{
+	} else {
 		Logger = new CLogger(UserReceiver);
 		os::Printer::Logger = Logger;
 	}
@@ -49,7 +46,6 @@ CIrrDeviceStub::CIrrDeviceStub(const SIrrlichtCreationParameters& params)
 	checkVersion(params.SDK_version_do_not_use);
 }
 
-
 CIrrDeviceStub::~CIrrDeviceStub()
 {
 	if (GUIEnvironment)
@@ -64,7 +60,7 @@ CIrrDeviceStub::~CIrrDeviceStub()
 	if (ContextManager)
 		ContextManager->drop();
 
-	if ( FileSystem )
+	if (FileSystem)
 		FileSystem->drop();
 
 	if (InputReceivingSceneManager)
@@ -85,7 +81,6 @@ CIrrDeviceStub::~CIrrDeviceStub()
 		os::Printer::Logger = 0;
 }
 
-
 void CIrrDeviceStub::createGUIAndScene()
 {
 	// create gui environment
@@ -97,44 +92,36 @@ void CIrrDeviceStub::createGUIAndScene()
 	setEventReceiver(UserReceiver);
 }
 
-
 //! returns the video driver
-video::IVideoDriver* CIrrDeviceStub::getVideoDriver()
+video::IVideoDriver *CIrrDeviceStub::getVideoDriver()
 {
 	return VideoDriver;
 }
 
-
 //! return file system
-io::IFileSystem* CIrrDeviceStub::getFileSystem()
+io::IFileSystem *CIrrDeviceStub::getFileSystem()
 {
 	return FileSystem;
 }
 
-
-
 //! returns the gui environment
-gui::IGUIEnvironment* CIrrDeviceStub::getGUIEnvironment()
+gui::IGUIEnvironment *CIrrDeviceStub::getGUIEnvironment()
 {
 	return GUIEnvironment;
 }
 
-
-
 //! returns the scene manager
-scene::ISceneManager* CIrrDeviceStub::getSceneManager()
+scene::ISceneManager *CIrrDeviceStub::getSceneManager()
 {
 	return SceneManager;
 }
 
-
 //! \return Returns a pointer to the ITimer object. With it the
 //! current Time can be received.
-ITimer* CIrrDeviceStub::getTimer()
+ITimer *CIrrDeviceStub::getTimer()
 {
 	return Timer;
 }
-
 
 //! Sets the window icon.
 bool CIrrDeviceStub::setWindowIcon(const video::IImage *img)
@@ -142,31 +129,28 @@ bool CIrrDeviceStub::setWindowIcon(const video::IImage *img)
 	return false;
 }
 
-
 //! Returns the version of the engine.
-const char* CIrrDeviceStub::getVersion() const
+const char *CIrrDeviceStub::getVersion() const
 {
 	return IRRLICHT_SDK_VERSION;
 }
 
 //! \return Returns a pointer to the mouse cursor control interface.
-gui::ICursorControl* CIrrDeviceStub::getCursorControl()
+gui::ICursorControl *CIrrDeviceStub::getCursorControl()
 {
 	return CursorControl;
 }
 
-
 //! return the context manager
-video::IContextManager* CIrrDeviceStub::getContextManager()
+video::IContextManager *CIrrDeviceStub::getContextManager()
 {
 	return ContextManager;
 }
 
 //! checks version of sdk and prints warning if there might be a problem
-bool CIrrDeviceStub::checkVersion(const char* version)
+bool CIrrDeviceStub::checkVersion(const char *version)
 {
-	if (strcmp(getVersion(), version))
-	{
+	if (strcmp(getVersion(), version)) {
 		core::stringc w;
 		w = "Warning: The library version of the Irrlicht Engine (";
 		w += getVersion();
@@ -181,25 +165,16 @@ bool CIrrDeviceStub::checkVersion(const char* version)
 	return true;
 }
 
-
 //! Compares to the last call of this function to return double and triple clicks.
-u32 CIrrDeviceStub::checkSuccessiveClicks(s32 mouseX, s32 mouseY, EMOUSE_INPUT_EVENT inputEvent )
+u32 CIrrDeviceStub::checkSuccessiveClicks(s32 mouseX, s32 mouseY, EMOUSE_INPUT_EVENT inputEvent)
 {
 	const s32 MAX_MOUSEMOVE = 3;
 
 	irr::u32 clickTime = getTimer()->getRealTime();
 
-	if ( (clickTime-MouseMultiClicks.LastClickTime) < MouseMultiClicks.DoubleClickTime
-		&& core::abs_(MouseMultiClicks.LastClick.X - mouseX ) <= MAX_MOUSEMOVE
-		&& core::abs_(MouseMultiClicks.LastClick.Y - mouseY ) <= MAX_MOUSEMOVE
-		&& MouseMultiClicks.CountSuccessiveClicks < 3
-		&& MouseMultiClicks.LastMouseInputEvent == inputEvent
-	   )
-	{
+	if ((clickTime - MouseMultiClicks.LastClickTime) < MouseMultiClicks.DoubleClickTime && core::abs_(MouseMultiClicks.LastClick.X - mouseX) <= MAX_MOUSEMOVE && core::abs_(MouseMultiClicks.LastClick.Y - mouseY) <= MAX_MOUSEMOVE && MouseMultiClicks.CountSuccessiveClicks < 3 && MouseMultiClicks.LastMouseInputEvent == inputEvent) {
 		++MouseMultiClicks.CountSuccessiveClicks;
-	}
-	else
-	{
+	} else {
 		MouseMultiClicks.CountSuccessiveClicks = 1;
 	}
 
@@ -211,9 +186,8 @@ u32 CIrrDeviceStub::checkSuccessiveClicks(s32 mouseX, s32 mouseY, EMOUSE_INPUT_E
 	return MouseMultiClicks.CountSuccessiveClicks;
 }
 
-
 //! send the event to the right receiver
-bool CIrrDeviceStub::postEventFromUser(const SEvent& event)
+bool CIrrDeviceStub::postEventFromUser(const SEvent &event)
 {
 	bool absorbed = false;
 
@@ -223,7 +197,7 @@ bool CIrrDeviceStub::postEventFromUser(const SEvent& event)
 	if (!absorbed && GUIEnvironment)
 		absorbed = GUIEnvironment->postEventFromUser(event);
 
-	scene::ISceneManager* inputReceiver = InputReceivingSceneManager;
+	scene::ISceneManager *inputReceiver = InputReceivingSceneManager;
 	if (!inputReceiver)
 		inputReceiver = SceneManager;
 
@@ -233,9 +207,8 @@ bool CIrrDeviceStub::postEventFromUser(const SEvent& event)
 	return absorbed;
 }
 
-
 //! Sets a new event receiver to receive events
-void CIrrDeviceStub::setEventReceiver(IEventReceiver* receiver)
+void CIrrDeviceStub::setEventReceiver(IEventReceiver *receiver)
 {
 	UserReceiver = receiver;
 	Logger->setReceiver(receiver);
@@ -243,30 +216,26 @@ void CIrrDeviceStub::setEventReceiver(IEventReceiver* receiver)
 		GUIEnvironment->setUserEventReceiver(receiver);
 }
 
-
 //! Returns poinhter to the current event receiver. Returns 0 if there is none.
-IEventReceiver* CIrrDeviceStub::getEventReceiver()
+IEventReceiver *CIrrDeviceStub::getEventReceiver()
 {
 	return UserReceiver;
 }
 
-
 //! \return Returns a pointer to the logger.
-ILogger* CIrrDeviceStub::getLogger()
+ILogger *CIrrDeviceStub::getLogger()
 {
 	return Logger;
 }
 
-
 //! Returns the operation system opertator object.
-IOSOperator* CIrrDeviceStub::getOSOperator()
+IOSOperator *CIrrDeviceStub::getOSOperator()
 {
 	return Operator;
 }
 
-
 //! Sets the input receiving scene manager.
-void CIrrDeviceStub::setInputReceivingSceneManager(scene::ISceneManager* sceneManager)
+void CIrrDeviceStub::setInputReceivingSceneManager(scene::ISceneManager *sceneManager)
 {
 	if (sceneManager)
 		sceneManager->grab();
@@ -276,20 +245,17 @@ void CIrrDeviceStub::setInputReceivingSceneManager(scene::ISceneManager* sceneMa
 	InputReceivingSceneManager = sceneManager;
 }
 
-
 //! Checks if the window is maximized.
 bool CIrrDeviceStub::isWindowMaximized() const
 {
 	return false;
 }
 
-
 //! Checks if the window is running in fullscreen mode
 bool CIrrDeviceStub::isFullscreen() const
 {
 	return CreationParams.Fullscreen;
 }
-
 
 //! returns color format
 video::ECOLOR_FORMAT CIrrDeviceStub::getColorFormat() const
@@ -298,7 +264,7 @@ video::ECOLOR_FORMAT CIrrDeviceStub::getColorFormat() const
 }
 
 //! No-op in this implementation
-bool CIrrDeviceStub::activateJoysticks(core::array<SJoystickInfo> & joystickInfo)
+bool CIrrDeviceStub::activateJoysticks(core::array<SJoystickInfo> &joystickInfo)
 {
 	return false;
 }
@@ -306,77 +272,77 @@ bool CIrrDeviceStub::activateJoysticks(core::array<SJoystickInfo> & joystickInfo
 //! No-op in this implementation
 bool CIrrDeviceStub::activateAccelerometer(float updateInterval)
 {
-    return false;
+	return false;
 }
 
 //! No-op in this implementation
 bool CIrrDeviceStub::deactivateAccelerometer()
 {
-    return false;
+	return false;
 }
 
 //! No-op in this implementation
 bool CIrrDeviceStub::isAccelerometerActive()
 {
-    return false;
+	return false;
 }
 
 //! No-op in this implementation
 bool CIrrDeviceStub::isAccelerometerAvailable()
 {
-    return false;
+	return false;
 }
 
 //! No-op in this implementation
 bool CIrrDeviceStub::activateGyroscope(float updateInterval)
 {
-    return false;
+	return false;
 }
 
 //! No-op in this implementation
 bool CIrrDeviceStub::deactivateGyroscope()
 {
-    return false;
+	return false;
 }
 
 //! No-op in this implementation
 bool CIrrDeviceStub::isGyroscopeActive()
 {
-    return false;
+	return false;
 }
 
 //! No-op in this implementation
 bool CIrrDeviceStub::isGyroscopeAvailable()
 {
-    return false;
+	return false;
 }
 
 //! No-op in this implementation
 bool CIrrDeviceStub::activateDeviceMotion(float updateInterval)
 {
-    return false;
+	return false;
 }
 
 //! No-op in this implementation
 bool CIrrDeviceStub::deactivateDeviceMotion()
 {
-    return false;
+	return false;
 }
 
 //! No-op in this implementation
 bool CIrrDeviceStub::isDeviceMotionActive()
 {
-    return false;
+	return false;
 }
 
 //! No-op in this implementation
 bool CIrrDeviceStub::isDeviceMotionAvailable()
 {
-    return false;
+	return false;
 }
 
 //! Set the maximal elapsed time between 2 clicks to generate doubleclicks for the mouse. It also affects tripleclick behavior.
-void CIrrDeviceStub::setDoubleClickTime( u32 timeMs )
+void CIrrDeviceStub::setDoubleClickTime(u32 timeMs)
 {
 	MouseMultiClicks.DoubleClickTime = timeMs;
 }
@@ -407,6 +373,4 @@ bool CIrrDeviceStub::acceptsIME()
 	return elem && elem->acceptsIME();
 }
 
-
 } // end namespace irr
-

@@ -20,9 +20,9 @@ namespace irr
 namespace video
 {
 
-COGLES2Renderer2D::COGLES2Renderer2D(const c8* vertexShaderProgram, const c8* pixelShaderProgram, COGLES2Driver* driver, bool withTexture) :
-	COGLES2MaterialRenderer(driver, 0, EMT_SOLID),
-	WithTexture(withTexture)
+COGLES2Renderer2D::COGLES2Renderer2D(const c8 *vertexShaderProgram, const c8 *pixelShaderProgram, COGLES2Driver *driver, bool withTexture) :
+		COGLES2MaterialRenderer(driver, 0, EMT_SOLID),
+		WithTexture(withTexture)
 {
 #ifdef _DEBUG
 	setDebugName("COGLES2Renderer2D");
@@ -32,15 +32,14 @@ COGLES2Renderer2D::COGLES2Renderer2D(const c8* vertexShaderProgram, const c8* pi
 
 	init(Temp, vertexShaderProgram, pixelShaderProgram, false);
 
-	COGLES2CacheHandler* cacheHandler = Driver->getCacheHandler();
+	COGLES2CacheHandler *cacheHandler = Driver->getCacheHandler();
 
 	cacheHandler->setProgram(Program);
 
 	// These states don't change later.
 
 	ThicknessID = getPixelShaderConstantID("uThickness");
-	if ( WithTexture )
-	{
+	if (WithTexture) {
 		TextureUsageID = getPixelShaderConstantID("uTextureUsage");
 		s32 TextureUnitID = getPixelShaderConstantID("uTextureUnit");
 
@@ -58,10 +57,10 @@ COGLES2Renderer2D::~COGLES2Renderer2D()
 {
 }
 
-void COGLES2Renderer2D::OnSetMaterial(const video::SMaterial& material,
-				const video::SMaterial& lastMaterial,
-				bool resetAllRenderstates,
-				video::IMaterialRendererServices* services)
+void COGLES2Renderer2D::OnSetMaterial(const video::SMaterial &material,
+		const video::SMaterial &lastMaterial,
+		bool resetAllRenderstates,
+		video::IMaterialRendererServices *services)
 {
 	Driver->getCacheHandler()->setProgram(Program);
 	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
@@ -69,14 +68,13 @@ void COGLES2Renderer2D::OnSetMaterial(const video::SMaterial& material,
 	f32 Thickness = (material.Thickness > 0.f) ? material.Thickness : 1.f;
 	setPixelShaderConstant(ThicknessID, &Thickness, 1);
 
-	if ( WithTexture )
-	{
+	if (WithTexture) {
 		s32 TextureUsage = material.TextureLayers[0].Texture ? 1 : 0;
 		setPixelShaderConstant(TextureUsageID, &TextureUsage, 1);
 	}
 }
 
-bool COGLES2Renderer2D::OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype)
+bool COGLES2Renderer2D::OnRender(IMaterialRendererServices *service, E_VERTEX_TYPE vtxtype)
 {
 	return true;
 }

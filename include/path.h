@@ -13,13 +13,13 @@ namespace io
 
 //! Type used for all file system related strings.
 /** This type will transparently handle different file system encodings.
-    NOTE: For historical reasons the tool-functions using io::path are all in coreutil.h
+	NOTE: For historical reasons the tool-functions using io::path are all in coreutil.h
 */
 typedef core::string<fschar_t> path;
 
 //! Used in places where we identify objects by a filename, but don't actually work with the real filename
 /** Irrlicht is internally not case-sensitive when it comes to names.
-    Also this class is a first step towards support for correctly serializing renamed objects.
+	Also this class is a first step towards support for correctly serializing renamed objects.
 */
 struct SNamedPath
 {
@@ -27,32 +27,33 @@ struct SNamedPath
 	SNamedPath() {}
 
 	//! Constructor
-	SNamedPath(const path& p) : Path(p), InternalName( PathToName(p) )
+	SNamedPath(const path &p) :
+			Path(p), InternalName(PathToName(p))
 	{
 	}
 
 	//! Is smaller comparator
-	bool operator <(const SNamedPath& other) const
+	bool operator<(const SNamedPath &other) const
 	{
 		return InternalName < other.InternalName;
 	}
 
 	//! Set the path.
-	void setPath(const path& p)
+	void setPath(const path &p)
 	{
 		Path = p;
 		InternalName = PathToName(p);
 	}
 
 	//! Get the path.
-	const path& getPath() const
+	const path &getPath() const
 	{
 		return Path;
 	};
 
 	//! Get the name which is used to identify the file.
 	//! This string is similar to the names and filenames used before Irrlicht 1.7
-	const path& getInternalName() const
+	const path &getInternalName() const
 	{
 		return InternalName;
 	}
@@ -70,10 +71,10 @@ struct SNamedPath
 
 protected:
 	// convert the given path string to a name string.
-	path PathToName(const path& p) const
+	path PathToName(const path &p) const
 	{
 		path name(p);
-		name.replace( '\\', '/' );
+		name.replace('\\', '/');
 		name.make_lower();
 		return name;
 	}
@@ -85,4 +86,3 @@ private:
 
 } // io
 } // irr
-

@@ -11,19 +11,17 @@ namespace irr
 {
 namespace video
 {
-	class ITexture;
-	class IVideoDriver;
+class ITexture;
+class IVideoDriver;
 }
 namespace io
 {
-
 
 //! Implementation of the IAttributes interface
 class CAttributes : public IAttributes
 {
 public:
-
-	CAttributes(video::IVideoDriver* driver=0);
+	CAttributes(video::IVideoDriver *driver = 0);
 	~CAttributes();
 
 	//! Returns amount of attributes in this collection of attributes.
@@ -31,11 +29,11 @@ public:
 
 	//! Returns attribute name by index.
 	//! \param index: Index value, must be between 0 and getAttributeCount()-1.
-	const c8* getAttributeName(s32 index) const override;
+	const c8 *getAttributeName(s32 index) const override;
 
 	//! Returns the type of an attribute
 	//! \param attributeName: Name for the attribute
-	E_ATTRIBUTE_TYPE getAttributeType(const c8* attributeName) const override;
+	E_ATTRIBUTE_TYPE getAttributeType(const c8 *attributeName) const override;
 
 	//! Returns attribute type by index.
 	//! \param index: Index value, must be between 0 and getAttributeCount()-1.
@@ -44,21 +42,20 @@ public:
 	//! Returns the type string of the attribute
 	//! \param attributeName: String for the attribute type
 	//! \param defaultNotFound Value returned when attributeName was not found
-	const wchar_t* getAttributeTypeString(const c8* attributeName, const wchar_t* defaultNotFound = L"unknown") const override;
+	const wchar_t *getAttributeTypeString(const c8 *attributeName, const wchar_t *defaultNotFound = L"unknown") const override;
 
 	//! Returns the type string of the attribute by index.
 	//! \param index: Index value, must be between 0 and getAttributeCount()-1.
-	const wchar_t* getAttributeTypeString(s32 index, const wchar_t* defaultNotFound = L"unknown") const override;
+	const wchar_t *getAttributeTypeString(s32 index, const wchar_t *defaultNotFound = L"unknown") const override;
 
 	//! Returns if an attribute with a name exists
-	bool existsAttribute(const c8* attributeName) const override;
+	bool existsAttribute(const c8 *attributeName) const override;
 
 	//! Returns attribute index from name, -1 if not found
-	s32 findAttribute(const c8* attributeName) const override;
+	s32 findAttribute(const c8 *attributeName) const override;
 
 	//! Removes all attributes
 	void clear() override;
-
 
 	/*
 
@@ -67,16 +64,16 @@ public:
 	*/
 
 	//! Adds an attribute as integer
-	void addInt(const c8* attributeName, s32 value) override;
+	void addInt(const c8 *attributeName, s32 value) override;
 
 	//! Sets an attribute as integer value
-	void setAttribute(const c8* attributeName, s32 value) override;
+	void setAttribute(const c8 *attributeName, s32 value) override;
 
 	//! Gets an attribute as integer value
 	//! \param attributeName: Name of the attribute to get.
 	//! \param defaultNotFound Value returned when attributeName was not found
 	//! \return Returns value of the attribute previously set by setAttribute()
-	s32 getAttributeAsInt(const c8* attributeName, irr::s32 defaultNotFound=0) const override;
+	s32 getAttributeAsInt(const c8 *attributeName, irr::s32 defaultNotFound = 0) const override;
 
 	//! Gets an attribute as integer value
 	//! \param index: Index value, must be between 0 and getAttributeCount()-1.
@@ -92,16 +89,16 @@ public:
 	*/
 
 	//! Adds an attribute as float
-	void addFloat(const c8* attributeName, f32 value) override;
+	void addFloat(const c8 *attributeName, f32 value) override;
 
 	//! Sets a attribute as float value
-	void setAttribute(const c8* attributeName, f32 value) override;
+	void setAttribute(const c8 *attributeName, f32 value) override;
 
 	//! Gets an attribute as float value
 	//! \param attributeName: Name of the attribute to get.
 	//! \param defaultNotFound Value returned when attributeName was not found
 	//! \return Returns value of the attribute previously set by setAttribute()
-	f32 getAttributeAsFloat(const c8* attributeName, irr::f32 defaultNotFound=0.f) const override;
+	f32 getAttributeAsFloat(const c8 *attributeName, irr::f32 defaultNotFound = 0.f) const override;
 
 	//! Gets an attribute as float value
 	//! \param index: Index value, must be between 0 and getAttributeCount()-1.
@@ -110,22 +107,21 @@ public:
 	//! Sets an attribute as float value
 	void setAttribute(s32 index, f32 value) override;
 
-
 	/*
 		Bool Attribute
 	*/
 
 	//! Adds an attribute as bool
-	void addBool(const c8* attributeName, bool value) override;
+	void addBool(const c8 *attributeName, bool value) override;
 
 	//! Sets an attribute as boolean value
-	void setAttribute(const c8* attributeName, bool value) override;
+	void setAttribute(const c8 *attributeName, bool value) override;
 
 	//! Gets an attribute as boolean value
 	//! \param attributeName: Name of the attribute to get.
 	//! \param defaultNotFound Value returned when attributeName was not found
 	//! \return Returns value of the attribute previously set by setAttribute()
-	bool getAttributeAsBool(const c8* attributeName, bool defaultNotFound=false) const override;
+	bool getAttributeAsBool(const c8 *attributeName, bool defaultNotFound = false) const override;
 
 	//! Gets an attribute as boolean value
 	//! \param index: Index value, must be between 0 and getAttributeCount()-1.
@@ -135,14 +131,12 @@ public:
 	void setAttribute(s32 index, bool value) override;
 
 protected:
+	core::array<IAttribute *> Attributes;
 
-	core::array<IAttribute*> Attributes;
+	IAttribute *getAttributeP(const c8 *attributeName) const;
 
-	IAttribute* getAttributeP(const c8* attributeName) const;
-
-	video::IVideoDriver* Driver;
+	video::IVideoDriver *Driver;
 };
 
 } // end namespace io
 } // end namespace irr
-

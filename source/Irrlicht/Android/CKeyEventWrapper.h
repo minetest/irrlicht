@@ -18,7 +18,7 @@ namespace jni
 class CKeyEventWrapper
 {
 public:
-	CKeyEventWrapper(JNIEnv* jniEnv, int action, int code);
+	CKeyEventWrapper(JNIEnv *jniEnv, int action, int code);
 	~CKeyEventWrapper();
 
 	int getUnicodeChar(int metaState);
@@ -27,8 +27,8 @@ private:
 	static jclass Class_KeyEvent;
 	static jmethodID Method_getUnicodeChar;
 	static jmethodID Method_constructor;
-	JNIEnv* JniEnv;
-	jobject JniKeyEvent;	// this object in java
+	JNIEnv *JniEnv;
+	jobject JniKeyEvent; // this object in java
 };
 
 } // namespace jni

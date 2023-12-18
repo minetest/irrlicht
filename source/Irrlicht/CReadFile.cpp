@@ -9,17 +9,15 @@ namespace irr
 namespace io
 {
 
-
-CReadFile::CReadFile(const io::path& fileName)
-: File(0), FileSize(0), Filename(fileName)
+CReadFile::CReadFile(const io::path &fileName) :
+		File(0), FileSize(0), Filename(fileName)
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("CReadFile");
-	#endif
+#endif
 
 	openFile();
 }
-
 
 CReadFile::~CReadFile()
 {
@@ -27,16 +25,14 @@ CReadFile::~CReadFile()
 		fclose(File);
 }
 
-
 //! returns how much was read
-size_t CReadFile::read(void* buffer, size_t sizeToRead)
+size_t CReadFile::read(void *buffer, size_t sizeToRead)
 {
 	if (!isOpen())
 		return 0;
 
 	return fread(buffer, 1, sizeToRead, File);
 }
-
 
 //! changes position in file, returns true if successful
 //! if relativeMovement==true, the pos is changed relative to current pos,
@@ -49,13 +45,11 @@ bool CReadFile::seek(long finalPos, bool relativeMovement)
 	return fseek(File, finalPos, relativeMovement ? SEEK_CUR : SEEK_SET) == 0;
 }
 
-
 //! returns size of file
 long CReadFile::getSize() const
 {
 	return FileSize;
 }
-
 
 //! returns where in the file we are.
 long CReadFile::getPos() const
@@ -63,20 +57,17 @@ long CReadFile::getPos() const
 	return ftell(File);
 }
 
-
 //! opens the file
 void CReadFile::openFile()
 {
-	if (Filename.size() == 0) // bugfix posted by rt
-	{
+	if (Filename.size() == 0) { // bugfix posted by rt
 		File = 0;
 		return;
 	}
 
 	File = fopen(Filename.c_str(), "rb");
 
-	if (File)
-	{
+	if (File) {
 		// get FileSize
 
 		fseek(File, 0, SEEK_END);
@@ -85,17 +76,15 @@ void CReadFile::openFile()
 	}
 }
 
-
 //! returns name of file
-const io::path& CReadFile::getFileName() const
+const io::path &CReadFile::getFileName() const
 {
 	return Filename;
 }
 
-
-IReadFile* CReadFile::createReadFile(const io::path& fileName)
+IReadFile *CReadFile::createReadFile(const io::path &fileName)
 {
-	CReadFile* file = new CReadFile(fileName);
+	CReadFile *file = new CReadFile(fileName);
 	if (file->isOpen())
 		return file;
 
@@ -103,7 +92,5 @@ IReadFile* CReadFile::createReadFile(const io::path& fileName)
 	return 0;
 }
 
-
 } // end namespace io
 } // end namespace irr
-

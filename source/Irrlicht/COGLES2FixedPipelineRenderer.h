@@ -19,8 +19,8 @@ class COGLES2MaterialBaseCB : public IShaderConstantSetCallBack
 public:
 	COGLES2MaterialBaseCB();
 
-	virtual void OnSetMaterial(const SMaterial& material);
-	virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData);
+	virtual void OnSetMaterial(const SMaterial &material);
+	virtual void OnSetConstants(IMaterialRendererServices *services, s32 userData);
 
 protected:
 	bool FirstUpdateBase;
@@ -68,8 +68,8 @@ class COGLES2MaterialSolidCB : public COGLES2MaterialBaseCB
 public:
 	COGLES2MaterialSolidCB();
 
-	virtual void OnSetMaterial(const SMaterial& material);
-	virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData);
+	virtual void OnSetMaterial(const SMaterial &material);
+	virtual void OnSetConstants(IMaterialRendererServices *services, s32 userData);
 
 protected:
 	bool FirstUpdate;
@@ -89,8 +89,8 @@ class COGLES2MaterialOneTextureBlendCB : public COGLES2MaterialBaseCB
 public:
 	COGLES2MaterialOneTextureBlendCB();
 
-	virtual void OnSetMaterial(const SMaterial& material);
-	virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData);
+	virtual void OnSetMaterial(const SMaterial &material);
+	virtual void OnSetConstants(IMaterialRendererServices *services, s32 userData);
 
 protected:
 	bool FirstUpdate;

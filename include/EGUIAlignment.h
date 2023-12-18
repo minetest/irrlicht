@@ -14,7 +14,7 @@ namespace gui
 enum EGUI_ALIGNMENT
 {
 	//! Aligned to parent's top or left side (default)
-	EGUIA_UPPERLEFT=0,
+	EGUIA_UPPERLEFT = 0,
 	//! Aligned to parent's bottom or right side
 	EGUIA_LOWERRIGHT,
 	//! Aligned to the center of parent
@@ -24,14 +24,13 @@ enum EGUI_ALIGNMENT
 };
 
 //! Names for alignments
-const c8* const GUIAlignmentNames[] =
-{
-	"upperLeft",
-	"lowerRight",
-	"center",
-	"scale",
-	0
-};
+const c8 *const GUIAlignmentNames[] =
+		{
+				"upperLeft",
+				"lowerRight",
+				"center",
+				"scale",
+				0};
 
 } // namespace gui
 } // namespace irr

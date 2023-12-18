@@ -13,13 +13,12 @@ namespace irr
 {
 namespace io
 {
-	class IWriteFile;
+class IWriteFile;
 } // end namespace io
 
 namespace video
 {
-	class IImage;
-
+class IImage;
 
 //! Interface for writing software image data.
 class IImageWriter : public IReferenceCounted
@@ -28,7 +27,7 @@ public:
 	//! Check if this writer can write a file with the given extension
 	/** \param filename Name of the file to check.
 	\return True if file extension specifies a writable type. */
-	virtual bool isAWriteableFileExtension(const io::path& filename) const = 0;
+	virtual bool isAWriteableFileExtension(const io::path &filename) const = 0;
 
 	//! Write image to file
 	/** \param file File handle to write to.
@@ -42,4 +41,3 @@ public:
 } // namespace irr
 
 #endif // _I_IMAGE_WRITER_H_INCLUDED__
-

@@ -5,22 +5,26 @@
 #pragma once
 #include "OpenGL/Driver.h"
 
-namespace irr {
-namespace video {
+namespace irr
+{
+namespace video
+{
 
-	/// OpenGL ES 2+ driver
-	///
-	/// For OpenGL ES 2.0 and higher.
-	class COpenGLES2Driver : public COpenGL3DriverBase {
-		friend IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
-	public:
-		using COpenGL3DriverBase::COpenGL3DriverBase;
-		E_DRIVER_TYPE getDriverType() const override;
+/// OpenGL ES 2+ driver
+///
+/// For OpenGL ES 2.0 and higher.
+class COpenGLES2Driver : public COpenGL3DriverBase
+{
+	friend IVideoDriver *createOGLES2Driver(const SIrrlichtCreationParameters &params, io::IFileSystem *io, IContextManager *contextManager);
 
-	protected:
-		OpenGLVersion getVersionFromOpenGL() const override;
-		void initFeatures() override;
-	};
+public:
+	using COpenGL3DriverBase::COpenGL3DriverBase;
+	E_DRIVER_TYPE getDriverType() const override;
+
+protected:
+	OpenGLVersion getVersionFromOpenGL() const override;
+	void initFeatures() override;
+};
 
 }
 }

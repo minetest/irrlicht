@@ -33,12 +33,10 @@ enum ELOG_LEVEL
 	ELL_NONE
 };
 
-
 //! Interface for logging messages, warnings and errors
 class ILogger : public virtual IReferenceCounted
 {
 public:
-
 	//! Destructor
 	virtual ~ILogger() {}
 
@@ -61,7 +59,7 @@ public:
 	is just an informational text, set it to ELL_INFORMATION. Texts are
 	filtered with these levels. If you want to be a text displayed,
 	independent on what level filter is set, use ELL_NONE. */
-	virtual void log(const c8* text, ELOG_LEVEL ll=ELL_INFORMATION) = 0;
+	virtual void log(const c8 *text, ELOG_LEVEL ll = ELL_INFORMATION) = 0;
 
 	//! Prints out a text into the log
 	/** \param text: Text to print out.
@@ -72,8 +70,8 @@ public:
 	is just an informational text, set it to ELL_INFORMATION. Texts are
 	filtered with these levels. If you want to be a text displayed,
 	independent on what level filter is set, use ELL_NONE. */
-	virtual void log(const c8* text, const c8* hint, ELOG_LEVEL ll=ELL_INFORMATION) = 0;
-	virtual void log(const c8* text, const wchar_t* hint, ELOG_LEVEL ll=ELL_INFORMATION) = 0;
+	virtual void log(const c8 *text, const c8 *hint, ELOG_LEVEL ll = ELL_INFORMATION) = 0;
+	virtual void log(const c8 *text, const wchar_t *hint, ELOG_LEVEL ll = ELL_INFORMATION) = 0;
 
 	//! Prints out a text into the log
 	/** \param text: Text to print out.
@@ -84,7 +82,7 @@ public:
 	is just an informational text, set it to ELL_INFORMATION. Texts are
 	filtered with these levels. If you want to be a text displayed,
 	independent on what level filter is set, use ELL_NONE. */
-	virtual void log(const wchar_t* text, const wchar_t* hint, ELOG_LEVEL ll=ELL_INFORMATION) = 0;
+	virtual void log(const wchar_t *text, const wchar_t *hint, ELOG_LEVEL ll = ELL_INFORMATION) = 0;
 
 	//! Prints out a text into the log
 	/** \param text: Text to print out.
@@ -93,10 +91,9 @@ public:
 	is just an informational text, set it to ELL_INFORMATION. Texts are
 	filtered with these levels. If you want to be a text displayed,
 	independent on what level filter is set, use ELL_NONE. */
-	virtual void log(const wchar_t* text, ELOG_LEVEL ll=ELL_INFORMATION) = 0;
+	virtual void log(const wchar_t *text, ELOG_LEVEL ll = ELL_INFORMATION) = 0;
 };
 
 } // end namespace
 
 #endif
-
