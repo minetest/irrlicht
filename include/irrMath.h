@@ -9,6 +9,7 @@
 #include <float.h>
 #include <stdlib.h> // for abs() etc.
 #include <limits.h> // For INT_MAX / UINT_MAX
+#include <type_traits>
 
 namespace irr
 {
@@ -17,9 +18,6 @@ namespace core
 
 	//! Rounding error constant often used when comparing f32 values.
 
-	const s32 ROUNDING_ERROR_S32 = 0;
-
-	const s64 ROUNDING_ERROR_S64 = 0;
 	const f32 ROUNDING_ERROR_f32 = 0.000001f;
 	const f64 ROUNDING_ERROR_f64 = 0.00000001;
 
@@ -170,30 +168,6 @@ namespace core
 		return ROUNDING_ERROR_f64;
 	}
 
-	template <>
-	inline s32 roundingError()
-	{
-		return ROUNDING_ERROR_S32;
-	}
-
-	template <>
-	inline u32 roundingError()
-	{
-		return ROUNDING_ERROR_S32;
-	}
-
-	template <>
-	inline s64 roundingError()
-	{
-		return ROUNDING_ERROR_S64;
-	}
-
-	template <>
-	inline u64 roundingError()
-	{
-		return ROUNDING_ERROR_S64;
-	}
-
 	template <class T>
 	inline T relativeErrorFactor()
 	{
@@ -212,13 +186,19 @@ namespace core
 		return 8;
 	}
 
-	//! returns if a equals b, taking possible rounding errors into account
-	template <class T>
-	inline bool equals(const T a, const T b, const T tolerance = roundingError<T>())
+	//! returns if a equals b, for types without rounding errors
+	template <class T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
+	inline bool equals(const T a, const T b)
 	{
-		return (a + tolerance >= b) && (a - tolerance <= b);
+		return a == b;
 	}
 
+	//! returns if a equals b, taking possible rounding errors into account
+	template <class T, std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+	inline bool equals(const T a, const T b, const T tolerance = roundingError<T>())
+	{
+		return abs(a - b) <= tolerance;
+	}
 
 	//! returns if a equals b, taking relative error in form of factor
 	//! this particular function does not involve any division.
