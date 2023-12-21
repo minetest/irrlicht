@@ -114,11 +114,9 @@ namespace core
 		// functions
 
 		//! returns if this vector equals the other one, taking floating point rounding errors into account
-		bool equals(const vector3d<T>& other, const T tolerance = (T)ROUNDING_ERROR_f32 ) const
+		bool equals(const vector3d<T>& other) const
 		{
-			return core::equals(X, other.X, tolerance) &&
-				core::equals(Y, other.Y, tolerance) &&
-				core::equals(Z, other.Z, tolerance);
+			return core::equals(X, other.X) && core::equals(Y, other.Y) && core::equals(Z, other.Z);
 		}
 
 		vector3d<T>& set(const T nx, const T ny, const T nz) {X=nx; Y=ny; Z=nz; return *this;}
