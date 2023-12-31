@@ -748,16 +748,17 @@ IMesh* CGeometryCreator::createCylinderMesh(f32 radius, f32 length,
 {
 	SMeshBuffer* buffer = new SMeshBuffer();
 
+	if ( tessellation < 2 )
+		tessellation = 2;
+
 	const f32 recTessellation = core::reciprocal((f32)tessellation);
-	const f32 recTessellationHalf = recTessellation * 0.5f;
 	const f32 angleStep = (core::PI * 2.f ) * recTessellation;
-	const f32 angleStepHalf = angleStep*0.5f;
 
 	u32 i;
 	video::S3DVertex v;
 	v.Color = color;
-	buffer->Vertices.reallocate(tessellation*4+4+(closeTop?2:1));
-	buffer->Indices.reallocate((tessellation*2+1)*(closeTop?12:9));
+	buffer->Vertices.reallocate(tessellation*2+2+(closeTop?2:1));
+	buffer->Indices.reallocate(tessellation*(closeTop?12:9));
 	f32 tcx = 0.f;
 	for ( i = 0; i <= tessellation; ++i )
 	{
@@ -785,35 +786,10 @@ IMesh* CGeometryCreator::createCylinderMesh(f32 radius, f32 length,
 		v.Normal.normalize();
 		v.TCoords.Y=1.f;
 		buffer->Vertices.push_back(v);
-
-		v.Pos.X = radius * cosf(angle + angleStepHalf);
-		v.Pos.Y = 0.f;
-		v.Pos.Z = radius * sinf(angle + angleStepHalf);
-		switch (normalType)
-		{
-			case 0: v.Normal = v.Pos; break;
-			case 1: v.Normal = v.Pos; break;
-		}
-		v.Normal.normalize();
-		v.TCoords.X=tcx+recTessellationHalf;
-		v.TCoords.Y=0.f;
-		buffer->Vertices.push_back(v);
-
-		v.Pos.X += oblique;
-		v.Pos.Y = length;
-		switch (normalType)
-		{
-			case 0: v.Normal = v.Pos; break;
-			case 1: v.Normal = core::vector3df(v.Pos.X-oblique, 0, v.Pos.Z); break;
-		}
-		v.Normal.normalize();
-		v.TCoords.Y=1.f;
-		buffer->Vertices.push_back(v);
 		tcx += recTessellation;
 	}
 
-	// indices for the main hull part
-	const u32 nonWrappedSize = tessellation* 4;
+	const u32 nonWrappedSize = tessellation*2;
 	for (i=0; i != nonWrappedSize; i += 2)
 	{
 		buffer->Indices.push_back(i + 2);
@@ -824,15 +800,6 @@ IMesh* CGeometryCreator::createCylinderMesh(f32 radius, f32 length,
 		buffer->Indices.push_back(i + 1);
 		buffer->Indices.push_back(i + 3);
 	}
-
-	// two closing quads between end and start
-	buffer->Indices.push_back(0);
-	buffer->Indices.push_back(i + 0);
-	buffer->Indices.push_back(i + 1);
-
-	buffer->Indices.push_back(0);
-	buffer->Indices.push_back(i + 1);
-	buffer->Indices.push_back(1);
 
 	// close down
 	v.Pos.X = 0.f;
@@ -853,10 +820,6 @@ IMesh* CGeometryCreator::createCylinderMesh(f32 radius, f32 length,
 		buffer->Indices.push_back(i + 0);
 		buffer->Indices.push_back(i + 2);
 	}
-
-	buffer->Indices.push_back(index);
-	buffer->Indices.push_back(i + 0);
-	buffer->Indices.push_back(0);
 
 	if (closeTop)
 	{
@@ -879,10 +842,6 @@ IMesh* CGeometryCreator::createCylinderMesh(f32 radius, f32 length,
 			buffer->Indices.push_back(index);
 			buffer->Indices.push_back(i + 3);
 		}
-
-		buffer->Indices.push_back(i + 1);
-		buffer->Indices.push_back(index);
-		buffer->Indices.push_back(1);
 	}
 
 	buffer->recalculateBoundingBox();
@@ -903,10 +862,6 @@ IMesh* CGeometryCreator::createConeMesh(f32 radius, f32 length, u32 tessellation
 {
 	SMeshBuffer* buffer = new SMeshBuffer();
 
-	// TODO: For backward compatibility tessellation is per semi-circle
-	//       We probably need another parameter to allow odd numbered tesselation without breaking existing code :-(
-	if ( tessellation > 0 )
-		tessellation = 2*tessellation;
 	if ( tessellation < 2 )
 		tessellation = 2;
 

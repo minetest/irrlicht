@@ -1,6 +1,9 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- createCylinderMesh and createConeMesh in GeometryCreator tessellation numbers now for full instead of semi-circle.
+  Double your tessellation numbers to get same results as in 1.8
+  Sorry had to break as old solution didn't allow for odd numbers. Also was documented otherwise, so was a bug.
 - Change in UV's for top/bottom center vertex in CGeometryCreator::createCylinderMesh
 - Add some default UV's in CGeometryCreator::createConeMesh
 - Bugfix: CTriangleSelector::getTriangles with bounding-box parameter no longer ignores an additionally passed matrix transformation in the box check

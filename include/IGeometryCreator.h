@@ -135,8 +135,8 @@ public:
 
 	//! Create an arrow mesh, composed of a cylinder and a cone.
 	/**
-	\param tessellationCylinder Number of quads composing half the cylinder.
-	\param tessellationCone Number of triangles composing half the cone's roof.
+	\param tessellationCylinder Number of quads composing the cylinder.
+	\param tessellationCone Number of triangles composing the cone's roof.
 	\param height Total height of the arrow
 	\param cylinderHeight Total height of the cylinder, should be lesser
 	than total height
@@ -147,8 +147,8 @@ public:
 	\param colorCone color of the cone
 	\return Generated mesh.
 	*/
-	virtual IMesh* createArrowMesh(const u32 tessellationCylinder = 4,
-			const u32 tessellationCone = 8, const f32 height = 1.f,
+	virtual IMesh* createArrowMesh(const u32 tessellationCylinder = 16,
+			const u32 tessellationCone = 16, const f32 height = 1.f,
 			const f32 cylinderHeight = 0.6f, const f32 widthCylinder = 0.05f,
 			const f32 widthCone = 0.3f, const video::SColor colorCylinder = 0xFFFFFFFF,
 			const video::SColor colorCone = 0xFFFFFFFF) const =0;
@@ -168,7 +168,7 @@ public:
 	/**
 	\param radius Radius of the cylinder.
 	\param length Length of the cylinder.
-	\param tessellation Number of quads around half the circumference of the cylinder.
+	\param tessellation Number of quads around the circumference of the cylinder.
 	\param color The color of the cylinder.
 	\param closeTop If true, close the ends of the cylinder, otherwise leave them open.
 	\param oblique X-offset (shear) of top compared to bottom. 
@@ -191,7 +191,7 @@ public:
 	/**
 	\param radius Radius of the cone.
 	\param length Length of the cone.
-	\param tessellation Number of triangles around half the circumference of the cone.
+	\param tessellation Number of triangles around the circumference of the cone.
 	\param colorTop The color of the top of the cone.
 	\param colorBottom The color of the bottom of the cone.
 	\param oblique (to be documented)
