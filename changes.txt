@@ -1,6 +1,8 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Change in UV's for top/bottom center vertex in CGeometryCreator::createCylinderMesh
+- Add some default UV's in CGeometryCreator::createConeMesh
 - Bugfix: CTriangleSelector::getTriangles with bounding-box parameter no longer ignores an additionally passed matrix transformation in the box check
 - Fix: CGUITabControl now catching EMIE_LMOUSE_PRESSED_DOWN
 - Add options for transparency node sorting algorithm.

@@ -841,7 +841,7 @@ IMesh* CGeometryCreator::createCylinderMesh(f32 radius, f32 length,
 	v.Normal.X = 0.f;
 	v.Normal.Y = -1.f;
 	v.Normal.Z = 0.f;
-	v.TCoords.X = 1.f;
+	v.TCoords.X = 0.5f;
 	v.TCoords.Y = 1.f;
 	buffer->Vertices.push_back(v);
 
@@ -867,7 +867,7 @@ IMesh* CGeometryCreator::createCylinderMesh(f32 radius, f32 length,
 		v.Normal.X = 0.f;
 		v.Normal.Y = 1.f;
 		v.Normal.Z = 0.f;
-		v.TCoords.X = 0.f;
+		v.TCoords.X = 0.5f;
 		v.TCoords.Y = 0.f;
 		buffer->Vertices.push_back(v);
 
@@ -903,32 +903,34 @@ IMesh* CGeometryCreator::createConeMesh(f32 radius, f32 length, u32 tessellation
 {
 	SMeshBuffer* buffer = new SMeshBuffer();
 
+	// TODO: For backward compatibility tessellation is per semi-circle
+	//       We probably need another parameter to allow odd numbered tesselation without breaking existing code :-(
+	if ( tessellation > 0 )
+		tessellation = 2*tessellation;
+	if ( tessellation < 2 )
+		tessellation = 2;
+
 	const f32 angleStep = (core::PI * 2.f ) / tessellation;
-	const f32 angleStepHalf = angleStep*0.5f;
 
 	video::S3DVertex v;
-	u32 i;
+	v.Pos.Y = 0.f;
 
 	v.Color = colorTop;
-	for ( i = 0; i != tessellation; ++i )
+	for (u32 i = 0; i != tessellation; ++i )
 	{
-		f32 angle = angleStep * f32(i);
+		const f32 angle = angleStep * f32(i);
+		const f32 cosAngle = cosf(angle);
+		const f32 sinAngle = sinf(angle);
 
-		v.Pos.X = radius * cosf(angle);
-		v.Pos.Y = 0.f;
-		v.Pos.Z = radius * sinf(angle);
-		v.Normal = v.Pos;
-		v.Normal.normalize();
-		buffer->Vertices.push_back(v);
-
-		angle += angleStepHalf;
-		v.Pos.X = radius * cosf(angle);
-		v.Pos.Y = 0.f;
-		v.Pos.Z = radius * sinf(angle);
+		v.TCoords.X = (1.f+cosAngle)*0.5f;
+		v.TCoords.Y = (1.f+sinAngle)*0.5f;
+		v.Pos.X = radius * cosAngle;
+		v.Pos.Z = radius * sinAngle;
 		v.Normal = v.Pos;
 		v.Normal.normalize();
 		buffer->Vertices.push_back(v);
 	}
+
 	const u32 nonWrappedSize = buffer->Vertices.size() - 1;
 
 	// close top
@@ -938,18 +940,20 @@ IMesh* CGeometryCreator::createConeMesh(f32 radius, f32 length, u32 tessellation
 	v.Normal.X = 0.f;
 	v.Normal.Y = 1.f;
 	v.Normal.Z = 0.f;
+	v.TCoords.X = 0.5f;
+	v.TCoords.Y = 0.5f;
 	buffer->Vertices.push_back(v);
 
 	u32 index = buffer->Vertices.size() - 1;
 
-	for ( i = 0; i != nonWrappedSize; i += 1 )
+	for (u32 i = 0; i != nonWrappedSize; ++i)
 	{
 		buffer->Indices.push_back(i + 0);
 		buffer->Indices.push_back(index);
 		buffer->Indices.push_back(i + 1);
 	}
 
-	buffer->Indices.push_back(i + 0);
+	buffer->Indices.push_back(nonWrappedSize);
 	buffer->Indices.push_back(index);
 	buffer->Indices.push_back(0);
 
@@ -961,11 +965,13 @@ IMesh* CGeometryCreator::createConeMesh(f32 radius, f32 length, u32 tessellation
 	v.Normal.X = 0.f;
 	v.Normal.Y = -1.f;
 	v.Normal.Z = 0.f;
+	v.TCoords.X = 0.5f;
+	v.TCoords.Y = 0.5f;
 	buffer->Vertices.push_back(v);
 
 	index = buffer->Vertices.size() - 1;
 
-	for ( i = 0; i != nonWrappedSize; i += 1 )
+	for (u32 i = 0; i != nonWrappedSize; i += 1 )
 	{
 		buffer->Indices.push_back(index);
 		buffer->Indices.push_back(i + 0);
@@ -973,7 +979,7 @@ IMesh* CGeometryCreator::createConeMesh(f32 radius, f32 length, u32 tessellation
 	}
 
 	buffer->Indices.push_back(index);
-	buffer->Indices.push_back(i + 0);
+	buffer->Indices.push_back(nonWrappedSize);
 	buffer->Indices.push_back(0);
 
 	buffer->recalculateBoundingBox();
