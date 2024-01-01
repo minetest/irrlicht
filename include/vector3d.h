@@ -243,8 +243,8 @@ namespace core
 		void rotateXZBy(f64 degrees, const vector3d<T>& center=vector3d<T>())
 		{
 			degrees *= DEGTORAD64;
-			f64 cs = cos(degrees);
-			f64 sn = sin(degrees);
+			const f64 cs = cos(degrees);
+			const f64 sn = sin(degrees);
 			X -= center.X;
 			Z -= center.Z;
 			set((T)(X*cs - Z*sn), Y, (T)(X*sn + Z*cs));
@@ -258,8 +258,8 @@ namespace core
 		void rotateXYBy(f64 degrees, const vector3d<T>& center=vector3d<T>())
 		{
 			degrees *= DEGTORAD64;
-			f64 cs = cos(degrees);
-			f64 sn = sin(degrees);
+			const f64 cs = cos(degrees);
+			const f64 sn = sin(degrees);
 			X -= center.X;
 			Y -= center.Y;
 			set((T)(X*cs - Y*sn), (T)(X*sn + Y*cs), Z);
@@ -273,8 +273,8 @@ namespace core
 		void rotateYZBy(f64 degrees, const vector3d<T>& center=vector3d<T>())
 		{
 			degrees *= DEGTORAD64;
-			f64 cs = cos(degrees);
-			f64 sn = sin(degrees);
+			const f64 cs = cos(degrees);
+			const f64 sn = sin(degrees);
 			Z -= center.Z;
 			Y -= center.Y;
 			set(X, (T)(Y*cs - Z*sn), (T)(Y*sn + Z*cs));

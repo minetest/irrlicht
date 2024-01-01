@@ -915,7 +915,7 @@ class map
 	//! Returns a Constiterator
 	ConstIterator getConstIterator() const
 	{
-		Iterator it(getRoot());
+		const Iterator it(getRoot());
 		return it;
 	}
 

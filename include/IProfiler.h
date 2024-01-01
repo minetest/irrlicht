@@ -280,7 +280,7 @@ protected:
 
 void IProfiler::start(s32 id)
 {
-	s32 idx = ProfileDatas.binary_search(SProfileData(id));
+	const s32 idx = ProfileDatas.binary_search(SProfileData(id));
 	if ( idx >= 0 && Timer )
 	{
 		++ProfileDatas[idx].StartStopCounter;
@@ -352,7 +352,7 @@ void IProfiler::add(s32 id, const core::stringw &name, const core::stringw &grou
 	}
 
 	SProfileData data(id);
-	s32 idx = ProfileDatas.binary_search(data);
+	const s32 idx = ProfileDatas.binary_search(data);
 	if ( idx < 0 )
 	{
 		data.reset();
@@ -422,7 +422,7 @@ bool IProfiler::findGroupIndex(u32 & result, const core::stringw &name) const
 
 void IProfiler::resetDataById(s32 id)
 {
-	s32 idx = ProfileDatas.binary_search(SProfileData(id));
+	const s32 idx = ProfileDatas.binary_search(SProfileData(id));
     if ( idx >= 0 )
     {
 		resetDataByIndex((u32)idx);

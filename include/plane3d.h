@@ -107,8 +107,8 @@ class plane3d
 		f32 getKnownIntersectionWithLine(const vector3d<T>& linePoint1,
 			const vector3d<T>& linePoint2) const
 		{
-			vector3d<T> vect = linePoint2 - linePoint1;
-			T t2 = (f32)Normal.dotProduct(vect);
+			const vector3d<T> vect = linePoint2 - linePoint1;
+			const T t2 = (f32)Normal.dotProduct(vect);
 			return (f32)-((Normal.dotProduct(linePoint1) + D) / t2);
 		}
 

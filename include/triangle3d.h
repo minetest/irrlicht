@@ -88,10 +88,10 @@ namespace core
 		\return True if the point is inside the triangle, otherwise false. */
 		bool isPointInside(const vector3d<T>& p) const
 		{
-			vector3d<f64> af64((f64)pointA.X, (f64)pointA.Y, (f64)pointA.Z);
-			vector3d<f64> bf64((f64)pointB.X, (f64)pointB.Y, (f64)pointB.Z);
-			vector3d<f64> cf64((f64)pointC.X, (f64)pointC.Y, (f64)pointC.Z);
-			vector3d<f64> pf64((f64)p.X, (f64)p.Y, (f64)p.Z);
+			const vector3d<f64> af64((f64)pointA.X, (f64)pointA.Y, (f64)pointA.Z);
+			const vector3d<f64> bf64((f64)pointB.X, (f64)pointB.Y, (f64)pointB.Z);
+			const vector3d<f64> cf64((f64)pointC.X, (f64)pointC.Y, (f64)pointC.Z);
+			const vector3d<f64> pf64((f64)p.X, (f64)p.Y, (f64)p.Z);
 			return (isOnSameSide(pf64, af64, bf64, cf64) &&
 				isOnSameSide(pf64, bf64, af64, cf64) &&
 				isOnSameSide(pf64, cf64, af64, bf64));
@@ -174,7 +174,7 @@ namespace core
 			const vector3d<f64> lineVectf64(lineVect.X, lineVect.Y, lineVect.Z);
 			vector3d<f64> outIntersectionf64;
 
-			core::triangle3d<irr::f64> trianglef64(vector3d<f64>((f64)pointA.X, (f64)pointA.Y, (f64)pointA.Z)
+			const core::triangle3d<irr::f64> trianglef64(vector3d<f64>((f64)pointA.X, (f64)pointA.Y, (f64)pointA.Z)
 										,vector3d<f64>((f64)pointB.X, (f64)pointB.Y, (f64)pointB.Z)
 										, vector3d<f64>((f64)pointC.X, (f64)pointC.Y, (f64)pointC.Z));
 			const vector3d<irr::f64> normalf64 = trianglef64.getNormal().normalize();
@@ -183,8 +183,8 @@ namespace core
 			if ( core::iszero ( t2 = normalf64.dotProduct(lineVectf64) ) )
 				return false;
 
-			f64 d = trianglef64.pointA.dotProduct(normalf64);
-			f64 t = -(normalf64.dotProduct(linePointf64) - d) / t2;
+			const f64 d = trianglef64.pointA.dotProduct(normalf64);
+			const f64 t = -(normalf64.dotProduct(linePointf64) - d) / t2;
 			outIntersectionf64 = linePointf64 + (lineVectf64 * t);
 
 			outIntersection.X = (T)outIntersectionf64.X;
@@ -246,14 +246,14 @@ namespace core
 			const vector3d<f64>& a, const vector3d<f64>& b) const
 		{
 			vector3d<f64> bminusa = b - a;
-			vector3d<f64> cp1 = bminusa.crossProduct(p1 - a);
-			vector3d<f64> cp2 = bminusa.crossProduct(p2 - a);
+			const vector3d<f64> cp1 = bminusa.crossProduct(p1 - a);
+			const vector3d<f64> cp2 = bminusa.crossProduct(p2 - a);
 			f64 res = cp1.dotProduct(cp2);
 			if ( res < 0 )
 			{
 				// This catches some floating point troubles.
 				// Unfortunately slightly expensive and we don't really know the best epsilon for iszero.
-				vector3d<f64> cp1n = bminusa.normalize().crossProduct((p1 - a).normalize());
+				const vector3d<f64> cp1n = bminusa.normalize().crossProduct((p1 - a).normalize());
 				if (core::iszero(cp1n.X, (f64)ROUNDING_ERROR_f32)
 					&& core::iszero(cp1n.Y, (f64)ROUNDING_ERROR_f32)
 					&& core::iszero(cp1n.Z, (f64)ROUNDING_ERROR_f32) )

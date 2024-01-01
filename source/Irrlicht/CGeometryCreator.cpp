@@ -239,10 +239,8 @@ IMesh* CGeometryCreator::createHillPlaneMesh(
 	vtx.Color.set(255,255,255,255);
 
 	// create vertices from left-front to right-back
-	u32 x;
-
 	f32 sx=0.f, tsx=0.f;
-	for (x=0; x<tileCount.Width; ++x)
+	for (u32 x=0; x<tileCount.Width; ++x)
 	{
 		f32 sy=0.f, tsy=0.f;
 		for (u32 y=0; y<tileCount.Height; ++y)
@@ -265,7 +263,7 @@ IMesh* CGeometryCreator::createHillPlaneMesh(
 
 	// create indices
 
-	for (x=0; x<tileCount.Width-1; ++x)
+	for (u32 x=0; x<tileCount.Width-1; ++x)
 	{
 		for (u32 y=0; y<tileCount.Height-1; ++y)
 		{
@@ -499,13 +497,13 @@ IMesh* CGeometryCreator::createTerrainMesh(video::IImage* texture,
 
 			if (buffer->Vertices.size())
 			{
-				c8 textureName[64];
 				// create texture for this block
 				video::IImage* img = driver->createImage(texture->getColorFormat(), core::dimension2d<u32>(core::floor32(blockSize.Width*thRel.X), core::floor32(blockSize.Height*thRel.Y)));
 				texture->copyTo(img, core::position2di(0,0), core::recti(
 					core::position2d<s32>(core::floor32(processed.X*thRel.X), core::floor32(processed.Y*thRel.Y)),
 					core::dimension2d<u32>(core::floor32(blockSize.Width*thRel.X), core::floor32(blockSize.Height*thRel.Y))), 0);
 
+				c8 textureName[64];
 				sprintf(textureName, "terrain%u_%u", tm, mesh->getMeshBufferCount());
 
 				buffer->Material.setTexture(0, driver->addTexture(textureName, img));
@@ -665,7 +663,6 @@ IMesh* CGeometryCreator::createSphereMesh(f32 radius, u32 polyCountX, u32 polyCo
 	const f64 AngleY = core::PI / polyCountY;
 
 	u32 i=0;
-	f64 axz;
 
 	// we don't start at 0.
 
@@ -676,7 +673,7 @@ IMesh* CGeometryCreator::createSphereMesh(f32 radius, u32 polyCountX, u32 polyCo
 	{
 		ay += AngleY;
 		const f64 sinay = sin(ay);
-		axz = 0;
+		f64 axz = 0;
 
 		// calculate the necessary vertices without the doubled one
 		for (u32 xz = 0;xz < polyCountX; ++xz)
@@ -754,13 +751,12 @@ IMesh* CGeometryCreator::createCylinderMesh(f32 radius, f32 length,
 	const f32 recTessellation = core::reciprocal((f32)tessellation);
 	const f32 angleStep = (core::PI * 2.f ) * recTessellation;
 
-	u32 i;
 	video::S3DVertex v;
 	v.Color = color;
 	buffer->Vertices.reallocate(tessellation*2+2+(closeTop?2:1));
 	buffer->Indices.reallocate(tessellation*(closeTop?12:9));
 	f32 tcx = 0.f;
-	for ( i = 0; i <= tessellation; ++i )
+	for (u32 i = 0; i <= tessellation; ++i )
 	{
 		const f32 angle = angleStep * i;
 		v.Pos.X = radius * cosf(angle);
@@ -790,7 +786,7 @@ IMesh* CGeometryCreator::createCylinderMesh(f32 radius, f32 length,
 	}
 
 	const u32 nonWrappedSize = tessellation*2;
-	for (i=0; i != nonWrappedSize; i += 2)
+	for (u32 i=0; i != nonWrappedSize; i += 2)
 	{
 		buffer->Indices.push_back(i + 2);
 		buffer->Indices.push_back(i + 0);
@@ -814,7 +810,7 @@ IMesh* CGeometryCreator::createCylinderMesh(f32 radius, f32 length,
 
 	u32 index = buffer->Vertices.size() - 1;
 
-	for ( i = 0; i != nonWrappedSize; i += 2 )
+	for (u32 i = 0; i != nonWrappedSize; i += 2 )
 	{
 		buffer->Indices.push_back(index);
 		buffer->Indices.push_back(i + 0);
@@ -836,7 +832,7 @@ IMesh* CGeometryCreator::createCylinderMesh(f32 radius, f32 length,
 
 		index = buffer->Vertices.size() - 1;
 
-		for ( i = 0; i != nonWrappedSize; i += 2 )
+		for (u32 i = 0; i != nonWrappedSize; i += 2 )
 		{
 			buffer->Indices.push_back(i + 1);
 			buffer->Indices.push_back(index);
@@ -988,8 +984,8 @@ irr::scene::IMesh* CGeometryCreator::createTorusMesh(irr::f32 majorRadius, irr::
 		core::swap(angleStart, angleEnd);
 	const f32 radStart = angleStart * core::DEGTORAD;
 	const f32 radEnd = angleEnd * core::DEGTORAD;
-	const f32 radMajor = radEnd-radStart;
-	const f32 radStepMajor = radMajor / majorSegments;
+	const f32 radMajorLen = radEnd-radStart;
+	const f32 radStepMajor = radMajorLen / majorSegments;
 	const f32 TWO_PI = 2.f*core::PI;
 	const f32 radStepMinor = TWO_PI / minorSegments;
 

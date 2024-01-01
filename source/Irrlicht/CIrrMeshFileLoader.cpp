@@ -197,7 +197,6 @@ IMeshBuffer* CIrrMeshFileLoader::readMeshBuffer(io::IXMLReader* reader)
 				if (vertexTypeName1 == vertexType)
 				{
 					buffer = new CDynamicMeshBuffer(irr::video::EVT_STANDARD, itype);
-
 				}
 				else
 				if (vertexTypeName2 == vertexType)
@@ -209,8 +208,11 @@ IMeshBuffer* CIrrMeshFileLoader::readMeshBuffer(io::IXMLReader* reader)
 				{
 					buffer = new CDynamicMeshBuffer(irr::video::EVT_TANGENTS, itype);
 				}
-				buffer->getVertexBuffer().reallocate(vertexCount);
-				buffer->Material = material;
+				if ( buffer )
+				{
+					buffer->getVertexBuffer().reallocate(vertexCount);
+					buffer->Material = material;
+				}
 			}
 			else
 			if (indicesSectionName == nodeName)

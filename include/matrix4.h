@@ -710,7 +710,7 @@ namespace core
 		}
 		return *this;
 #else
-		CMatrix4<T> temp ( *this );
+		const CMatrix4<T> temp ( *this );
 		return setbyproduct_nocheck( temp, other );
 #endif
 	}
@@ -1186,7 +1186,7 @@ namespace core
 	template <class T>
 	inline void CMatrix4<T>::rotateVect( vector3df& vect ) const
 	{
-		vector3d<T> tmp(static_cast<T>(vect.X), static_cast<T>(vect.Y), static_cast<T>(vect.Z));
+		const vector3d<T> tmp(static_cast<T>(vect.X), static_cast<T>(vect.Y), static_cast<T>(vect.Z));
 		vect.X = static_cast<f32>(tmp.X*M[0] + tmp.Y*M[4] + tmp.Z*M[8]);
 		vect.Y = static_cast<f32>(tmp.X*M[1] + tmp.Y*M[5] + tmp.Z*M[9]);
 		vect.Z = static_cast<f32>(tmp.X*M[2] + tmp.Y*M[6] + tmp.Z*M[10]);
@@ -1213,7 +1213,7 @@ namespace core
 	template <class T>
 	inline void CMatrix4<T>::inverseRotateVect( vector3df& vect ) const
 	{
-		vector3d<T> tmp(static_cast<T>(vect.X), static_cast<T>(vect.Y), static_cast<T>(vect.Z));
+		const vector3d<T> tmp(static_cast<T>(vect.X), static_cast<T>(vect.Y), static_cast<T>(vect.Z));
 		vect.X = static_cast<f32>(tmp.X*M[0] + tmp.Y*M[1] + tmp.Z*M[2]);
 		vect.Y = static_cast<f32>(tmp.X*M[4] + tmp.Y*M[5] + tmp.Z*M[6]);
 		vect.Z = static_cast<f32>(tmp.X*M[8] + tmp.Y*M[9] + tmp.Z*M[10]);
@@ -1278,7 +1278,7 @@ namespace core
 		transformVect(member, plane.getMemberPoint());
 
 		// Transform the normal by the transposed inverse of the matrix
-		CMatrix4<T> transposedInverse(*this, EM4CONST_INVERSE_TRANSPOSED);
+		const CMatrix4<T> transposedInverse(*this, EM4CONST_INVERSE_TRANSPOSED);
 		vector3df normal = plane.Normal;
 		transposedInverse.rotateVect(normal);
 		plane.setPlane(member, normal.normalize());
@@ -2002,7 +2002,7 @@ namespace core
 		t.normalize();
 
 		// axis multiplication by sin
-		core::vector3df vs(t.crossProduct(f));
+		const core::vector3df vs(t.crossProduct(f));
 
 		// axis of rotation
 		core::vector3df v(vs);

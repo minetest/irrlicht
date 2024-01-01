@@ -195,7 +195,7 @@ namespace core
 			\return Interpolated dimension. */
 			dimension2d<T> getInterpolated(const dimension2d<T>& other, f32 d) const
 			{
-				f32 inv = (1.0f - d);
+				const f32 inv = (1.0f - d);
 				return dimension2d<T>( (T)(other.Width*inv + Width*d), (T)(other.Height*inv + Height*d));
 			}
 
