@@ -177,6 +177,10 @@ namespace irr
 		/** \return True if window is fullscreen. */
 		virtual bool isFullscreen() const = 0;
 
+		//! Checks if the application is truly paused.
+		//! Currently, this can only happen on Android.
+		virtual bool isAppPaused() const { return false; };
+
 		//! Get the current color format of the window
 		/** \return Color format of the window. */
 		virtual video::ECOLOR_FORMAT getColorFormat() const = 0;

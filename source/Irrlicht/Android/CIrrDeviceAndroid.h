@@ -36,6 +36,8 @@ namespace irr
 
 		virtual bool isWindowMinimized() const;
 
+		virtual bool isAppPaused() const;
+
 		virtual void closeDevice();
 
 		virtual void setResizable(bool resize = false);
