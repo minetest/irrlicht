@@ -36,7 +36,7 @@ namespace irr
 
 		virtual bool isWindowMinimized() const;
 
-		virtual bool isAppPaused() const;
+		virtual bool isWindowVisible() const;
 
 		virtual void closeDevice();
 

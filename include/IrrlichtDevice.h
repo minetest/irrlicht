@@ -177,9 +177,9 @@ namespace irr
 		/** \return True if window is fullscreen. */
 		virtual bool isFullscreen() const = 0;
 
-		//! Checks if the application is truly paused.
-		//! Currently, this can only happen on Android.
-		virtual bool isAppPaused() const { return false; };
+		//! Checks if the window could possibly be visible.
+		//! Currently, this only returns false when the app is paused on Android.
+		virtual bool isWindowVisible() const { return true; };
 
 		//! Get the current color format of the window
 		/** \return Color format of the window. */
