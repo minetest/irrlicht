@@ -193,6 +193,11 @@ bool CIrrDeviceAndroid::isWindowMinimized() const
 	return !Focused;
 }
 
+bool CIrrDeviceAndroid::isWindowVisible() const
+{
+	return !Paused;
+}
+
 void CIrrDeviceAndroid::closeDevice()
 {
 	ANativeActivity_finish(Android->activity);
