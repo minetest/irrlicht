@@ -10,7 +10,7 @@ jobs:
   linux-gl:
     runs-on: ubuntu-latest
     container:
-      image: ubuntu:bionic
+      image: ubuntu:jammy
       env: { LANG: "C.UTF-8" }
     steps:
       - uses: actions/checkout@v3
@@ -41,7 +41,7 @@ jobs:
   linux-gles:
     runs-on: ubuntu-latest
     container:
-      image: ubuntu:bionic
+      image: ubuntu:jammy
       env: { LANG: "C.UTF-8" }
     steps:
       - uses: actions/checkout@v3
