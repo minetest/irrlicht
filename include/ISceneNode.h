@@ -15,6 +15,7 @@
 #include "matrix4.h"
 #include "IAttributes.h"
 #include <list>
+#include <optional>
 
 namespace irr
 {
@@ -276,30 +277,29 @@ namespace scene
 				child->grab();
 				child->remove(); // remove from old parent
 				Children.push_back(child);
+				child->Iterator = Children.end();
+				(*child->Iterator)--;
 				child->Parent = this;
 			}
 		}
 
 
 		//! Removes a child from this scene node.
-		/** If found in the children list, the child pointer is also
-		dropped and might be deleted if no other grab exists.
+		/**
 		\param child A pointer to the child which shall be removed.
 		\return True if the child was removed, and false if not,
-		e.g. because it couldn't be found in the children list. */
+		e.g. because it belongs to a different parent or no parent. */
 		virtual bool removeChild(ISceneNode* child)
 		{
-			ISceneNodeList::iterator it = Children.begin();
-			for (; it != Children.end(); ++it)
-				if ((*it) == child)
-				{
-					(*it)->Parent = 0;
-					(*it)->drop();
-					Children.erase(it);
-					return true;
-				}
+			if (child->Parent != this)
+				return false;
 
-			return false;
+			auto it = child->Iterator.value();
+			child->Iterator = std::nullopt;
+			child->Parent = nullptr;
+			child->drop();
+			Children.erase(it);
+			return true;
 		}
 
 
@@ -309,13 +309,11 @@ namespace scene
 		*/
 		virtual void removeAll()
 		{
-			ISceneNodeList::iterator it = Children.begin();
-			for (; it != Children.end(); ++it)
-			{
-				(*it)->Parent = 0;
-				(*it)->drop();
+			for (auto &child : Children) {
+				child->Parent = nullptr;
+				child->Iterator = std::nullopt;
+				child->drop();
 			}
-
 			Children.clear();
 		}
 
@@ -508,10 +506,8 @@ namespace scene
 			grab();
 			remove();
 
-			Parent = newParent;
-
-			if (Parent)
-				Parent->addChild(this);
+			if (newParent)
+				newParent->addChild(this);
 
 			drop();
 		}
@@ -620,6 +616,8 @@ namespace scene
 
 		//! Pointer to the parent
 		ISceneNode* Parent;
+
+		std::optional<ISceneNodeList::iterator> Iterator;
 
 		//! List of all children of this node
 		std::list<ISceneNode*> Children;
