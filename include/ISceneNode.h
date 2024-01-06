@@ -277,8 +277,9 @@ namespace scene
 				child->grab();
 				child->remove(); // remove from old parent
 				Children.push_back(child);
-				child->Iterator = Children.end();
-				(*child->Iterator)--;
+				// Note: This iterator is not invalidated until we erase it.
+				child->ThisIterator = Children.end();
+				--(*child->ThisIterator);
 				child->Parent = this;
 			}
 		}
@@ -294,8 +295,9 @@ namespace scene
 			if (child->Parent != this)
 				return false;
 
-			auto it = child->Iterator.value();
-			child->Iterator = std::nullopt;
+			// The iterator must be set since the parent is not null.
+			auto it = *child->ThisIterator;
+			child->ThisIterator = std::nullopt;
 			child->Parent = nullptr;
 			child->drop();
 			Children.erase(it);
@@ -311,7 +313,7 @@ namespace scene
 		{
 			for (auto &child : Children) {
 				child->Parent = nullptr;
-				child->Iterator = std::nullopt;
+				child->ThisIterator = std::nullopt;
 				child->drop();
 			}
 			Children.clear();
@@ -617,10 +619,11 @@ namespace scene
 		//! Pointer to the parent
 		ISceneNode* Parent;
 
-		std::optional<ISceneNodeList::iterator> Iterator;
-
 		//! List of all children of this node
 		std::list<ISceneNode*> Children;
+
+		//! Iterator pointing to this node in the parent's child list.
+		std::optional<ISceneNodeList::iterator> ThisIterator;
 
 		//! Pointer to the scene manager
 		ISceneManager* SceneManager;
