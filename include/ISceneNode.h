@@ -296,6 +296,7 @@ namespace scene
 				return false;
 
 			// The iterator must be set since the parent is not null.
+			_IRR_DEBUG_BREAK_IF(!child->ThisIterator.has_value());
 			auto it = *child->ThisIterator;
 			child->ThisIterator = std::nullopt;
 			child->Parent = nullptr;
