@@ -8,16 +8,13 @@ on:
 jobs:
 
   linux-gl:
-    runs-on: ubuntu-latest
-    container:
-      image: ubuntu:focal
-      env: { LANG: "C.UTF-8" }
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Install deps
         run: |
-          apt-get update
-          apt-get install g++ cmake libxi-dev libgl1-mesa-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
+          sudo apt-get update
+          sudo apt-get install g++ cmake libxi-dev libgl1-mesa-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
 
       - name: Build
         run: |
@@ -33,22 +30,19 @@ jobs:
           make DESTDIR=$PWD/_install install
           tar -c -I "gzip -9" -f irrlicht-linux.tar.gz -C ./_install/usr/local .
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v2
         with:
           name: irrlicht-linux
           path: ./irrlicht-linux.tar.gz
 
   linux-gles:
-    runs-on: ubuntu-latest
-    container:
-      image: ubuntu:focal
-      env: { LANG: "C.UTF-8" }
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Install deps
         run: |
-          apt-get update
-          apt-get install g++ cmake libxi-dev libgles2-mesa-dev libpng-dev libjpeg-dev zlib1g-dev xvfb -qyy
+          sudo apt-get update
+          sudo apt-get install g++ cmake libxi-dev libgles2-mesa-dev libpng-dev libjpeg-dev zlib1g-dev xvfb -qyy
 
       - name: Build
         run: |
@@ -66,10 +60,7 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest ogles2
 
   linux-sdl:
-    runs-on: ubuntu-latest
-    container:
-      image: ubuntu:focal
-      env: { LANG: "C.UTF-8" }
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Install deps
@@ -88,10 +79,7 @@ jobs:
           ./AutomatedTest null
 
   linux-sdl-gl3:
-    runs-on: ubuntu-latest
-    container:
-      image: ubuntu:focal
-      env: { LANG: "C.UTF-8" }
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Install deps
@@ -115,10 +103,7 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest opengl3
 
   linux-sdl-gles2:
-    runs-on: ubuntu-latest
-    container:
-      image: ubuntu:focal
-      env: { LANG: "C.UTF-8" }
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Install deps
@@ -167,7 +152,7 @@ jobs:
           CXX: ${{matrix.config.arch}}-w64-mingw32-g++
           extras: ${{matrix.config.extras}}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v2
         with:
           name: irrlicht-${{matrix.config.variant}}${{matrix.config.extras}}
           path: ./irrlicht-${{matrix.config.variant}}${{matrix.config.extras}}.zip
