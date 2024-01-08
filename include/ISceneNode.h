@@ -276,10 +276,8 @@ namespace scene
 
 				child->grab();
 				child->remove(); // remove from old parent
-				Children.push_back(child);
 				// Note: This iterator is not invalidated until we erase it.
-				child->ThisIterator = Children.end();
-				--(*child->ThisIterator);
+				child->ThisIterator = Children.insert(Children.end(), child);
 				child->Parent = this;
 			}
 		}
@@ -617,14 +615,14 @@ namespace scene
 		//! Relative scale of the scene node.
 		core::vector3df RelativeScale;
 
-		//! Pointer to the parent
-		ISceneNode* Parent;
-
 		//! List of all children of this node
 		std::list<ISceneNode*> Children;
 
 		//! Iterator pointing to this node in the parent's child list.
 		std::optional<ISceneNodeList::iterator> ThisIterator;
+
+		//! Pointer to the parent
+		ISceneNode* Parent;
 
 		//! Pointer to the scene manager
 		ISceneManager* SceneManager;
