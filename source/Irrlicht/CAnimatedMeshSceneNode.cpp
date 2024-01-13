@@ -51,6 +51,8 @@ CAnimatedMeshSceneNode::~CAnimatedMeshSceneNode()
 {
 	if (LoopCallBack)
 		LoopCallBack->drop();
+	if (Mesh)
+		Mesh->drop();
 }
 
 
