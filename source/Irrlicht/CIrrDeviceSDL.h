@@ -318,6 +318,8 @@ namespace irr
 
 		core::array<SKeyMap> KeyMap;
 		SDL_SysWMinfo Info;
+
+		s32 CurrentTouchCount;
 	};
 
 } // end namespace irr
