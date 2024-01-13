@@ -229,7 +229,7 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	Window((SDL_Window*)param.WindowId), SDL_Flags(0),
 	MouseX(0), MouseY(0), MouseXRel(0), MouseYRel(0), MouseButtonStates(0),
 	Width(param.WindowSize.Width), Height(param.WindowSize.Height),
-	Resizable(param.WindowResizable == 1 ? true : false)
+	Resizable(param.WindowResizable == 1 ? true : false), CurrentTouchCount(0)
 {
 	#ifdef _DEBUG
 	setDebugName("CIrrDeviceSDL");
@@ -253,6 +253,11 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 			os::Printer::log("SDL initialized", ELL_INFORMATION);
 		}
 	}
+
+	// Minetest has its own code to synthesize mouse events from touch events,
+	// so we prevent SDL from doing it.
+	SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "0");
+	SDL_SetHint(SDL_HINT_MOUSE_TOUCH_EVENTS, "0");
 
 	// create keymap
 	createKeyMap();
@@ -741,6 +746,45 @@ bool CIrrDeviceSDL::run()
 			irrevent.EventType = irr::EET_USER_EVENT;
 			irrevent.UserEvent.UserData1 = reinterpret_cast<uintptr_t>(SDL_event.user.data1);
 			irrevent.UserEvent.UserData2 = reinterpret_cast<uintptr_t>(SDL_event.user.data2);
+
+			postEventFromUser(irrevent);
+			break;
+
+		case SDL_FINGERDOWN:
+			irrevent.EventType = EET_TOUCH_INPUT_EVENT;
+			irrevent.TouchInput.Event = ETIE_PRESSED_DOWN;
+			irrevent.TouchInput.ID = SDL_event.tfinger.fingerId;
+			irrevent.TouchInput.X = SDL_event.tfinger.x * Width;
+			irrevent.TouchInput.Y = SDL_event.tfinger.y * Height;
+			CurrentTouchCount++;
+			irrevent.TouchInput.touchedCount = CurrentTouchCount;
+
+			postEventFromUser(irrevent);
+			break;
+
+		case SDL_FINGERMOTION:
+			irrevent.EventType = EET_TOUCH_INPUT_EVENT;
+			irrevent.TouchInput.Event = ETIE_MOVED;
+			irrevent.TouchInput.ID = SDL_event.tfinger.fingerId;
+			irrevent.TouchInput.X = SDL_event.tfinger.x * Width;
+			irrevent.TouchInput.Y = SDL_event.tfinger.y * Height;
+			irrevent.TouchInput.touchedCount = CurrentTouchCount;
+
+			postEventFromUser(irrevent);
+			break;
+
+		case SDL_FINGERUP:
+			irrevent.EventType = EET_TOUCH_INPUT_EVENT;
+			irrevent.TouchInput.Event = ETIE_LEFT_UP;
+			irrevent.TouchInput.ID = SDL_event.tfinger.fingerId;
+			irrevent.TouchInput.X = SDL_event.tfinger.x * Width;
+			irrevent.TouchInput.Y = SDL_event.tfinger.y * Height;
+			// To match Android behavior, still count the pointer that was
+			// just released.
+			irrevent.TouchInput.touchedCount = CurrentTouchCount;
+			if (CurrentTouchCount > 0) {
+				CurrentTouchCount--;
+			}
 
 			postEventFromUser(irrevent);
 			break;
