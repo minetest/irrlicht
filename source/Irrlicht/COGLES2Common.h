@@ -18,16 +18,12 @@
 #include <GLES2/gl2ext.h>
 #include <EGL/eglplatform.h>
 #else
-#if defined(_IRR_OGLES2_USE_EXTPOINTER_)
-	#define GL_GLEXT_PROTOTYPES 1
-	#define GLX_GLXEXT_PROTOTYPES 1
-#endif
+#define GL_GLEXT_PROTOTYPES 1
+#define GLX_GLXEXT_PROTOTYPES 1
 #include <GLES2/gl2.h>
 #include <EGL/eglplatform.h>
 typedef char GLchar;
-#if defined(_IRR_OGLES2_USE_EXTPOINTER_)
 #include <GLES2/gl2ext.h>
-#endif
 #endif
 
 #ifndef GL_BGRA
