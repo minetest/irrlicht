@@ -83,66 +83,40 @@ namespace video
 
 		inline void irrGlBindFramebuffer(GLenum target, GLuint framebuffer)
 		{
-#ifdef _IRR_OGLES1_USE_EXTPOINTER_
 			if (pGlBindFramebufferOES)
 				pGlBindFramebufferOES(target, framebuffer);
-#elif defined(GL_OES_framebuffer_object)
-			glBindFramebufferOES(target, framebuffer);
-#endif
 		}
 
 		inline void irrGlDeleteFramebuffers(GLsizei n, const GLuint *framebuffers)
 		{
-#ifdef _IRR_OGLES1_USE_EXTPOINTER_
 			if (pGlDeleteFramebuffersOES)
 				pGlDeleteFramebuffersOES(n, framebuffers);
-#elif defined(GL_OES_framebuffer_object)
-			glDeleteFramebuffersOES(n, framebuffers);
-#endif
 		}
 
 		inline void irrGlGenFramebuffers(GLsizei n, GLuint *framebuffers)
 		{
-#ifdef _IRR_OGLES1_USE_EXTPOINTER_
 			if (pGlGenFramebuffersOES)
 				pGlGenFramebuffersOES(n, framebuffers);
-#elif defined(GL_OES_framebuffer_object)
-			glGenFramebuffersOES(n, framebuffers);
-#endif
 		}
 
 		inline GLenum irrGlCheckFramebufferStatus(GLenum target)
 		{
-#ifdef _IRR_OGLES1_USE_EXTPOINTER_
 			if (pGlCheckFramebufferStatusOES)
 				return pGlCheckFramebufferStatusOES(target);
 			else
 				return 0;
-#elif defined(GL_OES_framebuffer_object)
-			return glCheckFramebufferStatusOES(target);
-#else
-			return 0;
-#endif
 		}
 
 		inline void irrGlFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
 		{
-#ifdef _IRR_OGLES1_USE_EXTPOINTER_
 			if (pGlFramebufferTexture2DOES)
 				pGlFramebufferTexture2DOES(target, attachment, textarget, texture, level);
-#elif defined(GL_OES_framebuffer_object)
-			glFramebufferTexture2DOES(target, attachment, textarget, texture, level);
-#endif
 		}
 
 		inline void irrGlGenerateMipmap(GLenum target)
 		{
-#ifdef _IRR_OGLES1_USE_EXTPOINTER_
 			if (pGlGenerateMipmapOES)
 				pGlGenerateMipmapOES(target);
-#elif defined(GL_OES_framebuffer_object)
-			glGenerateMipmapOES(target);
-#endif
 		}
 
 		inline void irrGlActiveStencilFace(GLenum face)
@@ -159,22 +133,14 @@ namespace video
 
 		inline void irrGlBlendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
 		{
-#ifdef _IRR_OGLES1_USE_EXTPOINTER_
 			if (pGlBlendFuncSeparateOES)
 				pGlBlendFuncSeparateOES(srcRGB, dstRGB, srcAlpha, dstAlpha);
-#elif defined(GL_OES_blend_func_separate)
-			glBlendFuncSeparateOES(srcRGB, dstRGB, srcAlpha, dstAlpha);
-#endif
 		}
 
 		inline void irrGlBlendEquation(GLenum mode)
 		{
-#ifdef _IRR_OGLES1_USE_EXTPOINTER_
 			if (pGlBlendEquationOES)
 				pGlBlendEquationOES(mode);
-#elif defined(GL_OES_blend_subtract)
-			glBlendEquationOES(mode);
-#endif
 		}
 
 		inline void irrGlEnableIndexed(GLenum target, GLuint index)
@@ -210,7 +176,6 @@ namespace video
 		u8 MaxUserClipPlanes;
 		u8 MaxLights;
 
-#if defined(_IRR_OGLES1_USE_EXTPOINTER_)
 		PFNGLBLENDEQUATIONOESPROC pGlBlendEquationOES;
 		PFNGLBLENDFUNCSEPARATEOESPROC pGlBlendFuncSeparateOES;
 		PFNGLBINDFRAMEBUFFEROESPROC pGlBindFramebufferOES;
@@ -219,7 +184,6 @@ namespace video
 		PFNGLCHECKFRAMEBUFFERSTATUSOESPROC pGlCheckFramebufferStatusOES;
 		PFNGLFRAMEBUFFERTEXTURE2DOESPROC pGlFramebufferTexture2DOES;
 		PFNGLGENERATEMIPMAPOESPROC pGlGenerateMipmapOES;
-#endif
 	};
 
 }
