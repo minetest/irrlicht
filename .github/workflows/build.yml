@@ -177,6 +177,20 @@ jobs:
         run: |
           ./bin/OSX/AutomatedTest null
 
+  macos-sdl:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install deps
+        run: |
+          brew update
+          brew install cmake libpng jpeg sdl2
+
+      - name: Build
+        run: |
+          cmake . -DCMAKE_FIND_FRAMEWORK=LAST -DBUILD_EXAMPLES=1 -DUSE_SDL2=1
+          make -j3
+
   msvc:
     name: VS 2019 ${{ matrix.config.arch }} ${{ matrix.sdl.label }}
     runs-on: windows-2019
