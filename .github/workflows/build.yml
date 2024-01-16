@@ -8,16 +8,13 @@ on:
 jobs:
 
   linux-gl:
-    runs-on: ubuntu-latest
-    container:
-      image: ubuntu:bionic
-      env: { LANG: "C.UTF-8" }
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Install deps
         run: |
-          apt-get update
-          apt-get install g++ cmake libxi-dev libgl1-mesa-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
+          sudo apt-get update
+          sudo apt-get install g++ cmake libxi-dev libgl1-mesa-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
 
       - name: Build
         run: |
@@ -39,16 +36,14 @@ jobs:
           path: ./irrlicht-linux.tar.gz
 
   linux-gles:
-    runs-on: ubuntu-latest
-    container:
-      image: ubuntu:bionic
-      env: { LANG: "C.UTF-8" }
+    # Xvfb test is broken on 20.04 for unknown reasons (not our bug)
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Install deps
         run: |
-          apt-get update
-          apt-get install g++ cmake libxi-dev libgles2-mesa-dev libpng-dev libjpeg-dev zlib1g-dev xvfb -qyy
+          sudo apt-get update
+          sudo apt-get install g++ cmake libxi-dev libgles2-mesa-dev libpng-dev libjpeg-dev zlib1g-dev xvfb -qyy
 
       - name: Build
         run: |
@@ -66,16 +61,13 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest ogles2
 
   linux-sdl:
-    runs-on: ubuntu-latest
-    container:
-      image: ubuntu:jammy
-      env: { LANG: "C.UTF-8" }
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Install deps
         run: |
-          apt-get update
-          apt-get install g++ cmake libsdl2-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
+          sudo apt-get update
+          sudo apt-get install g++ cmake libsdl2-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
 
       - name: Build
         run: |
@@ -88,16 +80,14 @@ jobs:
           ./AutomatedTest null
 
   linux-sdl-gl3:
-    runs-on: ubuntu-latest
-    container:
-      image: ubuntu:jammy
-      env: { LANG: "C.UTF-8" }
+    # Xvfb test is broken on 20.04 for unknown reasons (not our bug)
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Install deps
         run: |
-          apt-get update
-          apt-get install g++ cmake libsdl2-dev libpng-dev libjpeg-dev zlib1g-dev xvfb -qyy
+          sudo apt-get update
+          sudo apt-get install g++ cmake libsdl2-dev libpng-dev libjpeg-dev zlib1g-dev xvfb -qyy
 
       - name: Build
         run: |
@@ -115,16 +105,13 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE=true xvfb-run ./AutomatedTest opengl3
 
   linux-sdl-gles2:
-    runs-on: ubuntu-latest
-    container:
-      image: ubuntu:jammy
-      env: { LANG: "C.UTF-8" }
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Install deps
         run: |
-          apt-get update
-          apt-get install g++ cmake libsdl2-dev libpng-dev libjpeg-dev zlib1g-dev xvfb -qyy
+          sudo apt-get update
+          sudo apt-get install g++ cmake libsdl2-dev libpng-dev libjpeg-dev zlib1g-dev xvfb -qyy
 
       - name: Build
         run: |
