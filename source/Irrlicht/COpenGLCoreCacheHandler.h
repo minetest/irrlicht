@@ -7,6 +7,8 @@
 #include "SMaterial.h"
 #include "ITexture.h"
 
+#include "mt_opengl.h"
+
 namespace irr
 {
 namespace video
@@ -87,19 +89,19 @@ class COpenGLCoreCacheHandler
 
 							if (curTextureType != prevTextureType)
 							{
-								glBindTexture(prevTextureType, 0);
+								GL.BindTexture(prevTextureType, 0);
 
 #if ( defined(IRR_COMPILE_GL_COMMON) || defined(IRR_COMPILE_GLES_COMMON) )
-								glDisable(prevTextureType);
-								glEnable(curTextureType);
+								GL.Disable(prevTextureType);
+								GL.Enable(curTextureType);
 #endif
 							}
 #if ( defined(IRR_COMPILE_GL_COMMON) || defined(IRR_COMPILE_GLES_COMMON) )
 							else if (!prevTexture)
-								glEnable(curTextureType);
+								GL.Enable(curTextureType);
 #endif
 
-							glBindTexture(curTextureType, static_cast<const TOpenGLTexture*>(texture)->getOpenGLTextureName());
+							GL.BindTexture(curTextureType, static_cast<const TOpenGLTexture*>(texture)->getOpenGLTextureName());
 						}
 						else
 						{
@@ -115,10 +117,10 @@ class COpenGLCoreCacheHandler
 					{
 						const GLenum prevTextureType = prevTexture->getOpenGLTextureType();
 
-						glBindTexture(prevTextureType, 0);
+						GL.BindTexture(prevTextureType, 0);
 
 #if ( defined(IRR_COMPILE_GL_COMMON) || defined(IRR_COMPILE_GLES_COMMON) )
-						glDisable(prevTextureType);
+						GL.Disable(prevTextureType);
 #endif
 					}
 
@@ -222,28 +224,28 @@ public:
 			ColorMask[i] = ECP_ALL;
 		}
 
-		glBlendFunc(GL_ONE, GL_ZERO);
-		glDisable(GL_BLEND);
+		GL.BlendFunc(GL_ONE, GL_ZERO);
+		GL.Disable(GL_BLEND);
 
-		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		GL.ColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
-		glCullFace(CullFaceMode);
-		glDisable(GL_CULL_FACE);
+		GL.CullFace(CullFaceMode);
+		GL.Disable(GL_CULL_FACE);
 
-		glDepthFunc(DepthFunc);
-		glDepthMask(GL_TRUE);
-		glDisable(GL_DEPTH_TEST);
+		GL.DepthFunc(DepthFunc);
+		GL.DepthMask(GL_TRUE);
+		GL.Disable(GL_DEPTH_TEST);
 
 		Driver->irrGlActiveTexture(ActiveTexture);
 
 #if ( defined(IRR_COMPILE_GL_COMMON) || defined(IRR_COMPILE_GLES_COMMON) )
-		glDisable(GL_TEXTURE_2D);
+		GL.Disable(GL_TEXTURE_2D);
 #endif
 
 		const core::dimension2d<u32> ScreenSize = Driver->getScreenSize();
 		ViewportWidth = ScreenSize.Width;
 		ViewportHeight = ScreenSize.Height;
-		glViewport(ViewportX, ViewportY, ViewportWidth, ViewportHeight);
+		GL.Viewport(ViewportX, ViewportY, ViewportWidth, ViewportHeight);
 	}
 
 	virtual ~COpenGLCoreCacheHandler()
@@ -300,7 +302,7 @@ public:
 			BlendSourceAlpha[0] != source || BlendDestinationAlpha[0] != destination ||
 			BlendFuncInvalid)
 		{
-			glBlendFunc(source, destination);
+			GL.BlendFunc(source, destination);
 
 			for (GLuint i = 0; i < FrameBufferCount; ++i)
 			{
@@ -383,9 +385,9 @@ public:
 		if (Blend[0] != enable || BlendInvalid)
 		{
 			if (enable)
-				glEnable(GL_BLEND);
+				GL.Enable(GL_BLEND);
 			else
-				glDisable(GL_BLEND);
+				GL.Disable(GL_BLEND);
 
 			for (GLuint i = 0; i < FrameBufferCount; ++i)
 				Blend[i] = enable;
@@ -419,7 +421,7 @@ public:
 	{
 		if (ColorMask[0] != mask || ColorMaskInvalid)
 		{
-			glColorMask((mask & ECP_RED) ? GL_TRUE : GL_FALSE, (mask & ECP_GREEN) ? GL_TRUE : GL_FALSE, (mask & ECP_BLUE) ? GL_TRUE : GL_FALSE, (mask & ECP_ALPHA) ? GL_TRUE : GL_FALSE);
+			GL.ColorMask((mask & ECP_RED) ? GL_TRUE : GL_FALSE, (mask & ECP_GREEN) ? GL_TRUE : GL_FALSE, (mask & ECP_BLUE) ? GL_TRUE : GL_FALSE, (mask & ECP_ALPHA) ? GL_TRUE : GL_FALSE);
 
 			for (GLuint i = 0; i < FrameBufferCount; ++i)
 				ColorMask[i] = mask;
@@ -445,7 +447,7 @@ public:
 	{
 		if (CullFaceMode != mode)
 		{
-			glCullFace(mode);
+			GL.CullFace(mode);
 			CullFaceMode = mode;
 		}
 	}
@@ -455,9 +457,9 @@ public:
 		if (CullFace != enable)
 		{
 			if (enable)
-				glEnable(GL_CULL_FACE);
+				GL.Enable(GL_CULL_FACE);
 			else
-				glDisable(GL_CULL_FACE);
+				GL.Disable(GL_CULL_FACE);
 
 			CullFace = enable;
 		}
@@ -469,7 +471,7 @@ public:
 	{
 		if (DepthFunc != mode)
 		{
-			glDepthFunc(mode);
+			GL.DepthFunc(mode);
 			DepthFunc = mode;
 		}
 	}
@@ -484,9 +486,9 @@ public:
 		if (DepthMask != enable)
 		{
 			if (enable)
-				glDepthMask(GL_TRUE);
+				GL.DepthMask(GL_TRUE);
 			else
-				glDepthMask(GL_FALSE);
+				GL.DepthMask(GL_FALSE);
 
 			DepthMask = enable;
 		}
@@ -502,9 +504,9 @@ public:
 		if (DepthTest != enable)
 		{
 			if (enable)
-				glEnable(GL_DEPTH_TEST);
+				GL.Enable(GL_DEPTH_TEST);
 			else
-				glDisable(GL_DEPTH_TEST);
+				GL.Disable(GL_DEPTH_TEST);
 
 			DepthTest = enable;
 		}
@@ -572,7 +574,7 @@ public:
 	{
 		if (ViewportX != viewportX || ViewportY != viewportY || ViewportWidth != viewportWidth || ViewportHeight != viewportHeight)
 		{
-			glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
+			GL.Viewport(viewportX, viewportY, viewportWidth, viewportHeight);
 			ViewportX = viewportX;
 			ViewportY = viewportY;
 			ViewportWidth = viewportWidth;

@@ -200,7 +200,6 @@ if(ENABLE_OPENGL3)
 	if (NOT USE_SDL2)
 		message(FATAL_ERROR "OpenGL 3 driver requires SDL2")
 	endif()
-	set(OPENGL_DIRECT_LINK TRUE) # TODO
 	set(USE_SDLGL ON)
 	set(USE_SDLGL3 ON)
 endif()
