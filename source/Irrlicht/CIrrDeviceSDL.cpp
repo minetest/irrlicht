@@ -265,8 +265,10 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	// create window
 	if (CreationParams.DriverType != video::EDT_NULL)
 	{
-		// create the window, only if we do not use the null device
-		createWindow();
+		if (!createWindow()) {
+			Close = true;
+			return;
+		}
 	}
 
 
