@@ -9,51 +9,30 @@
 #if defined(_IRR_WINDOWS_API_)
 	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		#define GL_GLEXT_LEGACY 1
-	#endif
 	#include <GL/gl.h>
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		#include <GL/glext.h>
-	#endif
 	#include <GL/wglext.h>
 #elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		#define GL_GLEXT_LEGACY 1
-	#endif
 	#include <OpenGL/gl.h>
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		#error glext.h missing on OSX
-	#endif
 #elif defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && !defined(_IRR_COMPILE_WITH_X11_DEVICE_)
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		#define GL_GLEXT_LEGACY 1
-	#else
-		#define GL_GLEXT_PROTOTYPES 1
-	#endif
 	#include <SDL_video.h>
 	#include <SDL_opengl.h>
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		#ifdef __APPLE__
 		#include <SDL_opengl_glext.h>
 		#else
 		#include <GL/glext.h>
 		#endif
-	#endif
 #else
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		#define GL_GLEXT_LEGACY 1
 		#define GLX_GLXEXT_LEGACY 1
-	#else
-		#define GL_GLEXT_PROTOTYPES 1
-		#define GLX_GLXEXT_PROTOTYPES 1
-	#endif
 	#include <GL/gl.h>
 	#include <GL/glx.h>
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 	#include <GL/glext.h>
 	#include <GL/glxext.h>
-	#endif
 #endif
 
 #ifndef GL_ARB_shader_objects

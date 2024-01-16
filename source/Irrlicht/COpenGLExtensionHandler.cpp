@@ -23,7 +23,6 @@ COpenGLExtensionHandler::COpenGLExtensionHandler() :
 		MaxTextureSize(1), MaxGeometryVerticesOut(0),
 		MaxTextureLODBias(0.f), Version(0), ShaderLanguageVersion(0),
 		OcclusionQuerySupport(false), IsAtiRadeonX(false)
-#ifdef _IRR_OPENGL_USE_EXTPOINTER_
 	,pGlActiveTexture(0)
 	,pGlActiveTextureARB(0), pGlClientActiveTextureARB(0),
 	pGlGenProgramsARB(0), pGlGenProgramsNV(0),
@@ -105,7 +104,6 @@ COpenGLExtensionHandler::COpenGLExtensionHandler() :
 #if defined(GLX_MESA_swap_control)
 	,pGlxSwapIntervalMESA(0)
 #endif
-#endif // _IRR_OPENGL_USE_EXTPOINTER_
 {
 	for (u32 i=0; i<IRR_OpenGL_Feature_Count; ++i)
 		FeatureAvailable[i]=false;
@@ -179,7 +177,6 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 		IsAtiRadeonX = (strncmp(renderer, "ATI RADEON X", 12) == 0) || (strncmp(renderer, "ATI MOBILITY RADEON X", 21) == 0);
 	}
 
-#ifdef _IRR_OPENGL_USE_EXTPOINTER_
 #ifdef _IRR_WINDOWS_API_
 	#define IRR_OGL_LOAD_EXTENSION(x) wglGetProcAddress(reinterpret_cast<const char*>(x))
 #elif defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && !defined(_IRR_COMPILE_WITH_X11_DEVICE_)
@@ -412,7 +409,6 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 	#if defined(GLX_MESA_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
 		pGlxSwapIntervalMESA = (PFNGLXSWAPINTERVALMESAPROC)IRR_OGL_LOAD_EXTENSION("glXSwapIntervalMESA");
 	#endif
-#endif // use extension pointer
 
 	GLint num=0;
 	// set some properties
@@ -533,14 +529,12 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 	}
 #endif
 
-#ifdef _IRR_OPENGL_USE_EXTPOINTER_
 	if (!pGlActiveTextureARB || !pGlClientActiveTextureARB)
 	{
 		Feature.MaxTextureUnits = 1;
 		os::Printer::log("Failed to load OpenGL's multitexture extension, proceeding without.", ELL_WARNING);
 	}
 	else
-#endif
 	Feature.MaxTextureUnits = core::min_(Feature.MaxTextureUnits, static_cast<u8>(MATERIAL_MAX_TEXTURES));
 
 #ifdef GL_ARB_occlusion_query
