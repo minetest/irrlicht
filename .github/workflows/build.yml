@@ -36,7 +36,7 @@ jobs:
           path: ./irrlicht-linux.tar.gz
 
   linux-gles:
-    # 20.04 is broken in CI for unknown reasons (not our bug)
+    # Xvfb test is broken on 20.04 for unknown reasons (not our bug)
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
@@ -80,7 +80,7 @@ jobs:
           ./AutomatedTest null
 
   linux-sdl-gl3:
-    # 20.04 is broken in CI for unknown reasons (not our bug)
+    # Xvfb test is broken on 20.04 for unknown reasons (not our bug)
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
