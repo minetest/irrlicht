@@ -186,13 +186,12 @@ if(ENABLE_OPENGL)
 	add_definitions(-D_IRR_COMPILE_WITH_OPENGL_)
 	set(OPENGL_DIRECT_LINK TRUE) # not yet possible to remove this
 	if(DEVICE STREQUAL "WINDOWS")
-		add_definitions(-D_IRR_COMPILE_WITH_WGL_MANAGER_ -D_IRR_OPENGL_USE_EXTPOINTER_)
+		add_definitions(-D_IRR_COMPILE_WITH_WGL_MANAGER_)
 	elseif(DEVICE STREQUAL "X11")
-		add_definitions(-D_IRR_COMPILE_WITH_GLX_MANAGER_ -D_IRR_OPENGL_USE_EXTPOINTER_)
+		add_definitions(-D_IRR_COMPILE_WITH_GLX_MANAGER_)
 	elseif(DEVICE STREQUAL "OSX")
 		add_definitions(-D_IRR_COMPILE_WITH_NSOGL_MANAGER_)
-	elseif(DEVICE STREQUAL "SDL")
-		add_definitions(-D_IRR_OPENGL_USE_EXTPOINTER_)
+		# FIXME broken due to missing glext.h now!
 	endif()
 endif()
 

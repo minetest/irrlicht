@@ -8,19 +8,12 @@
 
 #include "os.h"
 
-#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-	#define GL_GLEXT_LEGACY 1
-	#define GLX_GLXEXT_LEGACY 1
-#else
-	#define GL_GLEXT_PROTOTYPES 1
-	#define GLX_GLXEXT_PROTOTYPES 1
-#endif
+#define GL_GLEXT_LEGACY 1
+#define GLX_GLXEXT_LEGACY 1
 #include <GL/gl.h>
 #include <GL/glx.h>
-#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 #include <GL/glext.h>
 #include <GL/glxext.h>
-#endif
 
 namespace irr
 {
@@ -45,11 +38,7 @@ CGLXManager::CGLXManager(const SIrrlichtCreationParameters& params, const SExpos
 #if defined(GLX_VERSION_1_3)
 		typedef GLXFBConfig * ( * PFNGLXCHOOSEFBCONFIGPROC) (Display *dpy, int screen, const int *attrib_list, int *nelements);
 
-#ifdef _IRR_OPENGL_USE_EXTPOINTER_
 		PFNGLXCHOOSEFBCONFIGPROC glxChooseFBConfig = (PFNGLXCHOOSEFBCONFIGPROC)glXGetProcAddress(reinterpret_cast<const GLubyte*>("glXChooseFBConfig"));
-#else
-		PFNGLXCHOOSEFBCONFIGPROC glxChooseFBConfig=glXChooseFBConfig;
-#endif
 		if (major==1 && minor>2 && glxChooseFBConfig)
 		{
 os::Printer::log("GLX >= 1.3", ELL_DEBUG);
@@ -196,14 +185,10 @@ os::Printer::log("GLX >= 1.3", ELL_DEBUG);
 			{
 				glxFBConfig=configList[0];
 				XFree(configList);
-#ifdef _IRR_OPENGL_USE_EXTPOINTER_
 				typedef XVisualInfo * ( * PFNGLXGETVISUALFROMFBCONFIGPROC) (Display *dpy, GLXFBConfig config);
 				PFNGLXGETVISUALFROMFBCONFIGPROC glxGetVisualFromFBConfig= (PFNGLXGETVISUALFROMFBCONFIGPROC)glXGetProcAddress(reinterpret_cast<const GLubyte*>("glXGetVisualFromFBConfig"));
 				if (glxGetVisualFromFBConfig)
 					VisualInfo = glxGetVisualFromFBConfig(display,(GLXFBConfig)glxFBConfig);
-#else
-					VisualInfo = glXGetVisualFromFBConfig(display,(GLXFBConfig)glxFBConfig);
-#endif
 			}
 		}
 		else
@@ -328,11 +313,7 @@ bool CGLXManager::generateContext()
 		{
 #if defined(GLX_ARB_create_context)
 
-#ifdef _IRR_OPENGL_USE_EXTPOINTER_
 		PFNGLXCREATECONTEXTATTRIBSARBPROC glxCreateContextAttribsARB=(PFNGLXCREATECONTEXTATTRIBSARBPROC)glXGetProcAddress(reinterpret_cast<const GLubyte*>("glXCreateContextAttribsARB"));
-#else
-		PFNGLXCREATECONTEXTATTRIBSARBPROC glxCreateContextAttribsARB=glXCreateContextAttribsARB;
-#endif
 
 			if (glxCreateContextAttribsARB)
 			{
