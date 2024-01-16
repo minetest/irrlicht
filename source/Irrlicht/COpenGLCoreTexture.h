@@ -12,10 +12,7 @@
 #include "CImage.h"
 #include "CColorConverter.h"
 
-// Check if GL version we compile with should have the glGenerateMipmap function.
-#if defined(GL_VERSION_3_0) || defined(GL_ES_VERSION_2_0)
-	#define IRR_OPENGL_HAS_glGenerateMipmap
-#endif
+#include "mt_opengl.h"
 
 namespace irr
 {
@@ -90,32 +87,23 @@ public:
 			tmpImages = &Images;
 		}
 
-		glGenTextures(1, &TextureName);
+		GL.GenTextures(1, &TextureName);
 
 		const COpenGLCoreTexture* prevTexture = Driver->getCacheHandler()->getTextureCache().get(0);
 		Driver->getCacheHandler()->getTextureCache().set(0, this);
 
-		glTexParameteri(TextureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(TextureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		GL.TexParameteri(TextureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		GL.TexParameteri(TextureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 #ifdef GL_GENERATE_MIPMAP_HINT
 		if (HasMipMaps)
 		{
 			if (Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_SPEED))
-				glHint(GL_GENERATE_MIPMAP_HINT, GL_FASTEST);
+				GL.Hint(GL_GENERATE_MIPMAP_HINT, GL_FASTEST);
 			else if (Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_QUALITY))
-				glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+				GL.Hint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
 			else
-				glHint(GL_GENERATE_MIPMAP_HINT, GL_DONT_CARE);
-		}
-#endif
-
-#if !defined(IRR_OPENGL_HAS_glGenerateMipmap) && defined(GL_GENERATE_MIPMAP)
-		if (HasMipMaps)
-		{
-			LegacyAutoGenerateMipMaps = Driver->getTextureCreationFlag(ETCF_AUTO_GENERATE_MIP_MAPS)  &&
-										Driver->queryFeature(EVDF_MIP_MAP_AUTO_UPDATE);
-			glTexParameteri(TextureType, GL_GENERATE_MIPMAP, LegacyAutoGenerateMipMaps ? GL_TRUE : GL_FALSE);
+				GL.Hint(GL_GENERATE_MIPMAP_HINT, GL_DONT_CARE);
 		}
 #endif
 
@@ -174,19 +162,19 @@ public:
 			os::Printer::log("COpenGLCoreTexture: Color format is not supported", ColorFormatNames[ColorFormat < ECF_UNKNOWN?ColorFormat:ECF_UNKNOWN], ELL_ERROR);
 		}
 
-		glGenTextures(1, &TextureName);
+		GL.GenTextures(1, &TextureName);
 
 		const COpenGLCoreTexture* prevTexture = Driver->getCacheHandler()->getTextureCache().get(0);
 		Driver->getCacheHandler()->getTextureCache().set(0, this);
 
 
-		glTexParameteri(TextureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(TextureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(TextureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(TextureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		GL.TexParameteri(TextureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		GL.TexParameteri(TextureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		GL.TexParameteri(TextureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		GL.TexParameteri(TextureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 #if defined(GL_VERSION_1_2)
-		glTexParameteri(TextureType, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		GL.TexParameteri(TextureType, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 #endif
 
 		StatesCache.WrapU = ETC_CLAMP_TO_EDGE;
@@ -196,15 +184,15 @@ public:
 		switch (Type)
 		{
 		case ETT_2D:
-			glTexImage2D(GL_TEXTURE_2D, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
+			GL.TexImage2D(GL_TEXTURE_2D, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
 			break;
 		case ETT_CUBEMAP:
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
+			GL.TexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
+			GL.TexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
+			GL.TexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
+			GL.TexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
+			GL.TexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
+			GL.TexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, InternalFormat, Size.Width, Size.Height, 0, PixelFormat, PixelType, 0);
 			break;
 		}
 
@@ -220,7 +208,7 @@ public:
 	virtual ~COpenGLCoreTexture()
 	{
 		if (TextureName)
-			glDeleteTextures(1, &TextureName);
+			GL.DeleteTextures(1, &TextureName);
 
 		if (LockImage)
 			LockImage->drop();
@@ -278,7 +266,7 @@ public:
 					tmpTextureType = GL_TEXTURE_CUBE_MAP_POSITIVE_X + layer;
 				}
 
-				glGetTexImage(tmpTextureType, MipLevelStored, PixelFormat, PixelType, tmpImage->getData());
+				GL.GetTexImage(tmpTextureType, MipLevelStored, PixelFormat, PixelType, tmpImage->getData());
 				Driver->testGLError(__LINE__);
 
 				if (IsRenderTarget && lockFlags == ETLF_FLIP_Y_UP_RTT)
@@ -321,12 +309,12 @@ public:
 
 				Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tmpTexture->getOpenGLTextureName(), 0);
 
-				glClear(GL_COLOR_BUFFER_BIT);
+				GL.Clear(GL_COLOR_BUFFER_BIT);
 
 				Driver->draw2DImage(this, layer, true);
 
 				IImage* tmpImage = Driver->createImage(ECF_A8R8G8B8, Size);
-				glReadPixels(0, 0, Size.Width, Size.Height, GL_RGBA, GL_UNSIGNED_BYTE, tmpImage->getData());
+				GL.ReadPixels(0, 0, Size.Width, Size.Height, GL_RGBA, GL_UNSIGNED_BYTE, tmpImage->getData());
 
 				Driver->getCacheHandler()->setFBO(prevFBO);
 				Driver->getCacheHandler()->setViewport(prevViewportX, prevViewportY, prevViewportWidth, prevViewportHeight);
@@ -428,9 +416,7 @@ public:
 		}
 		else
 		{
-#ifdef IRR_OPENGL_HAS_glGenerateMipmap
 			Driver->irrGlGenerateMipmap(TextureType);
-#endif
 		}
 
 		Driver->getCacheHandler()->getTextureCache().set(0, prevTexture);
@@ -595,9 +581,9 @@ protected:
 			case GL_TEXTURE_2D:
 			case GL_TEXTURE_CUBE_MAP:
 				if (initTexture)
-					glTexImage2D(tmpTextureType, level, InternalFormat, width, height, 0, PixelFormat, PixelType, tmpData);
+					GL.TexImage2D(tmpTextureType, level, InternalFormat, width, height, 0, PixelFormat, PixelType, tmpData);
 				else
-					glTexSubImage2D(tmpTextureType, level, 0, 0, width, height, PixelFormat, PixelType, tmpData);
+					GL.TexSubImage2D(tmpTextureType, level, 0, 0, width, height, PixelFormat, PixelType, tmpData);
 				Driver->testGLError(__LINE__);
 				break;
 			default:
