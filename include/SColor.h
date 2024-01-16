@@ -37,50 +37,6 @@ namespace video
 		//! Warning: This tends to be BGRA in memory (it's ARGB on file, but with usual big-endian memory it's flipped)
 		ECF_A8R8G8B8,
 
-		/** Compressed image formats. **/
-
-		//! DXT1 color format.
-		ECF_DXT1,
-
-		//! DXT2 color format.
-		ECF_DXT2,
-
-		//! DXT3 color format.
-		ECF_DXT3,
-
-		//! DXT4 color format.
-		ECF_DXT4,
-
-		//! DXT5 color format.
-		ECF_DXT5,
-
-		//! PVRTC RGB 2bpp.
-		ECF_PVRTC_RGB2,
-
-		//! PVRTC ARGB 2bpp.
-		ECF_PVRTC_ARGB2,
-
-		//! PVRTC RGB 4bpp.
-		ECF_PVRTC_RGB4,
-
-		//! PVRTC ARGB 4bpp.
-		ECF_PVRTC_ARGB4,
-
-		//! PVRTC2 ARGB 2bpp.
-		ECF_PVRTC2_ARGB2,
-
-		//! PVRTC2 ARGB 4bpp.
-		ECF_PVRTC2_ARGB4,
-
-		//! ETC1 RGB.
-		ECF_ETC1,
-
-		//! ETC2 RGB.
-		ECF_ETC2_RGB,
-
-		//! ETC2 ARGB.
-		ECF_ETC2_ARGB,
-
 		/** The following formats may only be used for render target textures. */
 
 		/** Floating point formats. */
@@ -139,20 +95,6 @@ namespace video
 		"R5G6B5",
 		"R8G8B8",
 		"A8R8G8B8",
-		"DXT1",
-		"DXT2",
-		"DXT3",
-		"DXT4",
-		"DXT5",
-		"PVRTC_RGB2",
-		"PVRTC_ARGB2",
-		"PVRTC_RGB4",
-		"PVRTC_ARGB4",
-		"PVRTC2_ARGB2",
-		"PVRTC2_ARGB4",
-		"ETC1",
-		"ETC2_RGB",
-		"ETC2_ARGB",
 		"R16F",
 		"G16R16F",
 		"A16B16G16R16F",

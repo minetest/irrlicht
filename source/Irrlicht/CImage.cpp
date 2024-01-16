@@ -75,10 +75,6 @@ void CImage::setPixel(u32 x, u32 y, const SColor &color, bool blend)
 			*dest = blend ? PixelBlend32 ( *dest, color.color ) : color.color;
 		} break;
 
-		IRR_CASE_IIMAGE_COMPRESSED_FORMAT
-			os::Printer::log("IImage::setPixel method doesn't work with compressed images.", ELL_WARNING);
-			return;
-
 		case ECF_UNKNOWN:
 			os::Printer::log("IImage::setPixel unknown format.", ELL_WARNING);
 			return;
@@ -108,10 +104,6 @@ SColor CImage::getPixel(u32 x, u32 y) const
 			u8* p = Data+(y*3)*Size.Width + (x*3);
 			return SColor(255,p[0],p[1],p[2]);
 		}
-
-	IRR_CASE_IIMAGE_COMPRESSED_FORMAT
-		os::Printer::log("IImage::getPixel method doesn't work with compressed images.", ELL_WARNING);
-		break;
 
 	case ECF_UNKNOWN:
 		os::Printer::log("IImage::getPixel unknown format.", ELL_WARNING);

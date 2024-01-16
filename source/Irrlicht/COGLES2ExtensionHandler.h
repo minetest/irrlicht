@@ -64,16 +64,6 @@ namespace video
 			case EVDF_MRT_BLEND_FUNC:
 			case EVDF_OCCLUSION_QUERY:
 				return false;
-			case EVDF_TEXTURE_COMPRESSED_DXT:
-				return false; // NV Tegra need improvements here
-			case EVDF_TEXTURE_COMPRESSED_PVRTC:
-				return FeatureAvailable[IRR_GL_IMG_texture_compression_pvrtc];
-			case EVDF_TEXTURE_COMPRESSED_PVRTC2:
-				return FeatureAvailable[IRR_GL_IMG_texture_compression_pvrtc2];
-			case EVDF_TEXTURE_COMPRESSED_ETC1:
-				return FeatureAvailable[IRR_GL_OES_compressed_ETC1_RGB8_texture];
-			case EVDF_TEXTURE_COMPRESSED_ETC2:
-				return false;
 			case EVDF_STENCIL_BUFFER:
 				return StencilBuffer;
 			default:
