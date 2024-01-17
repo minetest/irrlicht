@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-set(IRRLICHTMT_REVISION 13)
+set(IRRLICHTMT_REVISION 14)
 
 project(Irrlicht
 	VERSION 1.9.0.${IRRLICHTMT_REVISION}
