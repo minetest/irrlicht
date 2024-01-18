@@ -86,9 +86,10 @@ namespace irr
 		const ASensor* Accelerometer;
 		const ASensor* Gyroscope;
 
-		bool Focused;
 		bool Initialized;
+		bool Stopped;
 		bool Paused;
+		bool Focused;
 
 		JNIEnv* JNIEnvAttachedToVM;
 
