@@ -180,7 +180,8 @@ namespace irr
 		//! Checks if the window could possibly be visible.
 		//! Currently, this only returns false when the activity is stopped on
 		//! Android. Note that for Android activities, "stopped" means something
-		//! different than "paused". Read the Android lifecycle documentation.
+		//! different than you might expect (and also something different than
+		//! "paused"). Read the Android lifecycle documentation.
 		virtual bool isWindowVisible() const { return true; };
 
 		//! Get the current color format of the window
