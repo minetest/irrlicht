@@ -31,7 +31,8 @@ namespace irr
 {
 
 CIrrDeviceAndroid::CIrrDeviceAndroid(const SIrrlichtCreationParameters& param)
-	: CIrrDeviceStub(param), Accelerometer(0), Gyroscope(0), Focused(false), Initialized(false), Paused(true), JNIEnvAttachedToVM(0)
+	: CIrrDeviceStub(param), Accelerometer(0), Gyroscope(0), Initialized(false),
+	  Stopped(true), Paused(true), Focused(false), JNIEnvAttachedToVM(0)
 {
 #ifdef _DEBUG
 	setDebugName("CIrrDeviceAndroid");
@@ -64,7 +65,7 @@ CIrrDeviceAndroid::CIrrDeviceAndroid(const SIrrlichtCreationParameters& param)
 		s32 Events = 0;
 		android_poll_source* Source = 0;
 
-		while ((ALooper_pollAll(((Focused && !Paused) || !Initialized) ? 0 : -1, 0, &Events, (void**)&Source)) >= 0)
+		while ((ALooper_pollAll((!Initialized || isWindowActive()) ? 0 : -1, 0, &Events, (void**)&Source)) >= 0)
 		{
 			if(Source)
 				Source->process(Android, Source);
@@ -180,7 +181,7 @@ void CIrrDeviceAndroid::setWindowCaption(const wchar_t* text)
 
 bool CIrrDeviceAndroid::isWindowActive() const
 {
-	return (Focused && !Paused);
+	return (Focused && !Paused && !Stopped);
 }
 
 bool CIrrDeviceAndroid::isWindowFocused() const
@@ -195,7 +196,7 @@ bool CIrrDeviceAndroid::isWindowMinimized() const
 
 bool CIrrDeviceAndroid::isWindowVisible() const
 {
-	return !Paused;
+	return !Stopped;
 }
 
 void CIrrDeviceAndroid::closeDevice()
@@ -265,6 +266,7 @@ void CIrrDeviceAndroid::handleAndroidCommand(android_app* app, int32_t cmd)
 		break;
 		case APP_CMD_START:
 			os::Printer::log("Android command APP_CMD_START", ELL_DEBUG);
+			device->Stopped = false;
 		break;
 		case APP_CMD_INIT_WINDOW:
 			os::Printer::log("Android command APP_CMD_INIT_WINDOW", ELL_DEBUG);
@@ -322,6 +324,7 @@ void CIrrDeviceAndroid::handleAndroidCommand(android_app* app, int32_t cmd)
 			break;
 		case APP_CMD_STOP:
 			os::Printer::log("Android command APP_CMD_STOP", ELL_DEBUG);
+			device->Stopped = true;
 			break;
 		case APP_CMD_RESUME:
 			os::Printer::log("Android command APP_CMD_RESUME", ELL_DEBUG);
