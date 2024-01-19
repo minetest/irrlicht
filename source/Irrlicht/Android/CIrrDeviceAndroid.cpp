@@ -65,7 +65,7 @@ CIrrDeviceAndroid::CIrrDeviceAndroid(const SIrrlichtCreationParameters& param)
 		s32 Events = 0;
 		android_poll_source* Source = 0;
 
-		while ((ALooper_pollAll(((Focused && !Paused && !Stopped) || !Initialized) ? 0 : -1, 0, &Events, (void**)&Source)) >= 0)
+		while ((ALooper_pollAll((!Initialized || isWindowActive()) ? 0 : -1, 0, &Events, (void**)&Source)) >= 0)
 		{
 			if(Source)
 				Source->process(Android, Source);
