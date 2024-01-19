@@ -11,7 +11,7 @@
 #include "vector2d.h"
 #include "vector3d.h"
 
-#include <tiny_gltf.h>
+#include <tiniergltf.hpp>
 
 #include <cstddef>
 #include <vector>
@@ -52,9 +52,9 @@ private:
 	public:
 		using vertex_t = video::S3DVertex;
 
-		MeshExtractor(const tinygltf::Model& model) noexcept;
+		MeshExtractor(const tiniergltf::GlTF& model) noexcept;
 
-		MeshExtractor(const tinygltf::Model&& model) noexcept;
+		MeshExtractor(const tiniergltf::GlTF&& model) noexcept;
 
 		/* Gets indices for the given mesh/primitive.
 		 *
@@ -71,7 +71,7 @@ private:
 		std::size_t getPrimitiveCount(const std::size_t meshIdx) const;
 
 	private:
-		tinygltf::Model m_model;
+		tiniergltf::GlTF m_model;
 
 		template <typename T>
 		static T readPrimitive(const BufferOffset& readFrom);
@@ -110,31 +110,26 @@ private:
 
 		BufferOffset getBuffer(const std::size_t accessorIdx) const;
 
-		std::size_t getIndicesAccessorIdx(const std::size_t meshIdx,
+		std::optional<std::size_t> getIndicesAccessorIdx(const std::size_t meshIdx,
 				const std::size_t primitiveIdx) const;
 
 		std::size_t getPositionAccessorIdx(const std::size_t meshIdx,
 				const std::size_t primitiveIdx) const;
 
 		/* Get the accessor id of the normals of a primitive.
-		 *
-		 * -1 is returned if none are present.
 		 */
-		std::size_t getNormalAccessorIdx(const std::size_t meshIdx,
+		std::optional<std::size_t> getNormalAccessorIdx(const std::size_t meshIdx,
 				const std::size_t primitiveIdx) const;
 
 		/* Get the accessor id for the tcoords of a primitive.
-		 *
-		 * -1 is returned if none are present.
 		 */
-		std::size_t getTCoordAccessorIdx(const std::size_t meshIdx,
+		std::optional<std::size_t> getTCoordAccessorIdx(const std::size_t meshIdx,
 				const std::size_t primitiveIdx) const;
 	};
 
 	void loadPrimitives(const MeshExtractor& parser, SMesh* mesh);
 
-	static bool tryParseGLTF(io::IReadFile* file,
-			tinygltf::Model& model);
+	std::optional<tiniergltf::GlTF> tryParseGLTF(io::IReadFile* file);
 };
 
 } // namespace scene

@@ -24,14 +24,18 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_definitions(-D_DEBUG)
 endif()
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
 	set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 	set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
+<<<<<<< HEAD:src/CMakeLists.txt
 	add_compile_options(-Wall -pipe -fno-exceptions)
+=======
+	add_compile_options(-Wall -pipe -fno-rtti)
+>>>>>>> 1320fc97a (Move from tinygltf to tiniergltf (#13)):source/Irrlicht/CMakeLists.txt
 
 	# Enable SSE for floating point math on 32-bit x86 by default
 	# reasoning see minetest issue #11810 and https://gcc.gnu.org/wiki/FloatingPointMath
@@ -327,22 +331,11 @@ endif()
 
 # Only for the glTF loader and dependents; we can't link targets
 # to object libraries on cmake<3.12 so usage requirements don't
-# propogate to all dependents.
-get_property(tinygltf_INCLUDE_DIRS
-	TARGET tinygltf::tinygltf
+# propagate to all dependents.
+get_property(tiniergltf_INCLUDE_DIRS
+	TARGET tiniergltf
 	PROPERTY INTERFACE_INCLUDE_DIRECTORIES
 )
-get_property(tinygltf_COMPILE_DEFS
-	TARGET tinygltf::tinygltf
-	PROPERTY INTERFACE_COMPILE_DEFINITIONS
-)
-if(CMAKE_VERSION VERSION_LESS 3.12)
-	foreach(TINYGLTF_DEF ${tinygltf_COMPILE_DEFS})
-		add_definitions("-D${TINYGLTF_DEF}")
-	endforeach(TINYGLTF_DEF)
-else()
-	add_compile_definitions(${tinygltf_COMPILE_DEFS})
-endif()
 
 set(link_includes
 	"${PROJECT_SOURCE_DIR}/include"
@@ -351,7 +344,7 @@ set(link_includes
 	"${ZLIB_INCLUDE_DIR}"
 	"${JPEG_INCLUDE_DIR}"
 	"${PNG_INCLUDE_DIR}"
-	"${tinygltf_INCLUDE_DIRS}"
+	"${tiniergltf_INCLUDE_DIRS}"
 	"$<$<BOOL:${USE_SDL2}>:${SDL2_INCLUDE_DIRS}>"
 
 	${OPENGL_INCLUDE_DIR}

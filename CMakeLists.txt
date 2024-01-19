@@ -42,9 +42,15 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 enable_testing()
 
-add_subdirectory(src)
-add_subdirectory(src/lib/catch2)
-add_subdirectory(src/lib/tinygltf)
+add_subdirectory(source/lib/catch2)
+include(FetchContent)
+FetchContent_Declare(
+	tiniergltf
+	GIT_REPOSITORY https://github.com/appgurueu/tiniergltf.git
+	GIT_TAG 05572e691ecf8bc3fce2da76251e73779b3577e6
+)
+FetchContent_MakeAvailable(tiniergltf)
+add_subdirectory(source/Irrlicht)
 add_subdirectory(test)
 
 option(BUILD_EXAMPLES "Build example applications" FALSE)

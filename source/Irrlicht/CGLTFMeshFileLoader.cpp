@@ -12,15 +12,14 @@
 #include "SColor.h"
 #include "SMesh.h"
 #include "vector3d.h"
-
-#define TINYGLTF_IMPLEMENTATION
-#include <tiny_gltf.h>
-
 #include <cstddef>
 #include <cstring>
 #include <memory>
+#include <optional>
+#include <stdexcept>
 #include <string>
 #include <utility>
+#include <variant>
 #include <vector>
 
 /* Notes on the coordinate system.
@@ -81,13 +80,23 @@ bool CGLTFMeshFileLoader::isALoadableFileExtension(
 */
 IAnimatedMesh* CGLTFMeshFileLoader::createMesh(io::IReadFile* file)
 {
-	tinygltf::Model model {};
-
-	if (file->getSize() <= 0 || !tryParseGLTF(file, model)) {
+	if (file->getSize() <= 0) {
+		return nullptr;
+	}
+	std::optional<tiniergltf::GlTF> model = tryParseGLTF(file);
+	if (!model.has_value()) {
 		return nullptr;
 	}
 
-	MeshExtractor parser(std::move(model));
+	if (!(model->buffers.has_value()
+			&& model->bufferViews.has_value()
+			&& model->accessors.has_value()
+			&& model->meshes.has_value()
+			&& model->nodes.has_value())) {
+		return nullptr;
+	}
+
+	MeshExtractor parser(std::move(model.value()));
 	SMesh* baseMesh(new SMesh {});
 	loadPrimitives(parser, baseMesh);
 
@@ -123,13 +132,13 @@ void CGLTFMeshFileLoader::loadPrimitives(
 }
 
 CGLTFMeshFileLoader::MeshExtractor::MeshExtractor(
-		const tinygltf::Model& model) noexcept
+		const tiniergltf::GlTF& model) noexcept
 	: m_model(model)
 {
 }
 
 CGLTFMeshFileLoader::MeshExtractor::MeshExtractor(
-		const tinygltf::Model&& model) noexcept
+		const tiniergltf::GlTF&& model) noexcept
 	: m_model(model)
 {
 }
@@ -141,11 +150,14 @@ std::vector<u16> CGLTFMeshFileLoader::MeshExtractor::getIndices(
 		const std::size_t meshIdx,
 		const std::size_t primitiveIdx) const
 {
+	// FIXME this need not exist. What do we do if it doesn't?
 	const auto accessorIdx = getIndicesAccessorIdx(meshIdx, primitiveIdx);
-	const auto& buf = getBuffer(accessorIdx);
+	
+	const auto& buf = getBuffer(accessorIdx.value());
 
+	// FIXME check accessor type (which could also be u8 or u32).
 	std::vector<u16> indices{};
-	const auto count = getElemCount(accessorIdx);
+	const auto count = getElemCount(accessorIdx.value());
 	for (std::size_t i = 0; i < count; ++i) {
 		std::size_t elemIdx = count - i - 1;
 		indices.push_back(readPrimitive<u16>(
@@ -170,14 +182,14 @@ std::vector<video::S3DVertex> CGLTFMeshFileLoader::MeshExtractor::getVertices(
 
 	const auto normalAccessorIdx = getNormalAccessorIdx(
 			meshIdx, primitiveIdx);
-	if (normalAccessorIdx != static_cast<std::size_t>(-1)) {
-		copyNormals(normalAccessorIdx, vertices);
+	if (normalAccessorIdx.has_value()) {
+		copyNormals(normalAccessorIdx.value(), vertices);
 	}
 
 	const auto tCoordAccessorIdx = getTCoordAccessorIdx(
 			meshIdx, primitiveIdx);
-	if (tCoordAccessorIdx != static_cast<std::size_t>(-1)) {
-		copyTCoords(tCoordAccessorIdx, vertices);
+	if (tCoordAccessorIdx.has_value()) {
+		copyTCoords(tCoordAccessorIdx.value(), vertices);
 	}
 
 	return vertices;
@@ -188,7 +200,7 @@ std::vector<video::S3DVertex> CGLTFMeshFileLoader::MeshExtractor::getVertices(
 */
 std::size_t CGLTFMeshFileLoader::MeshExtractor::getMeshCount() const
 {
-	return m_model.meshes.size();
+	return m_model.meshes->size();
 }
 
 /**
@@ -197,7 +209,7 @@ std::size_t CGLTFMeshFileLoader::MeshExtractor::getMeshCount() const
 std::size_t CGLTFMeshFileLoader::MeshExtractor::getPrimitiveCount(
 		const std::size_t meshIdx) const
 {
-	return m_model.meshes[meshIdx].primitives.size();
+	return m_model.meshes->at(meshIdx).primitives.size();
 }
 
 /**
@@ -314,10 +326,15 @@ void CGLTFMeshFileLoader::MeshExtractor::copyTCoords(
 core::vector3df CGLTFMeshFileLoader::MeshExtractor::getScale() const
 {
 	core::vector3df buffer{1.0f,1.0f,1.0f};
-	if (m_model.nodes[0].scale.size() == 3) {
-		buffer.X = static_cast<float>(m_model.nodes[0].scale[0]);
-		buffer.Y = static_cast<float>(m_model.nodes[0].scale[1]);
-		buffer.Z = static_cast<float>(m_model.nodes[0].scale[2]);
+	// FIXME this just checks the first node
+	const auto &node = m_model.nodes->at(0);
+	// FIXME this does not take the matrix into account
+	// (fix: properly map glTF -> Irrlicht node hierarchy)
+	if (std::holds_alternative<tiniergltf::Node::TRS>(node.transform)) {
+		const auto &trs = std::get<tiniergltf::Node::TRS>(node.transform);
+		buffer.X = static_cast<float>(trs.scale[0]);
+		buffer.Y = static_cast<float>(trs.scale[1]);
+		buffer.Z = static_cast<float>(trs.scale[2]);
 	}
 	return buffer;
 }
@@ -331,7 +348,7 @@ core::vector3df CGLTFMeshFileLoader::MeshExtractor::getScale() const
 std::size_t CGLTFMeshFileLoader::MeshExtractor::getElemCount(
 		const std::size_t accessorIdx) const
 {
-	return m_model.accessors[accessorIdx].count;
+	return m_model.accessors->at(accessorIdx).count;
 }
 
 /**
@@ -344,9 +361,10 @@ std::size_t CGLTFMeshFileLoader::MeshExtractor::getElemCount(
 std::size_t CGLTFMeshFileLoader::MeshExtractor::getByteStride(
 		const std::size_t accessorIdx) const
 {
-	const auto& accessor = m_model.accessors[accessorIdx];
-	const auto& view = m_model.bufferViews[accessor.bufferView];
-	return accessor.ByteStride(view);
+	const auto& accessor = m_model.accessors->at(accessorIdx);
+	// FIXME this does not work with sparse / zero-initialized accessors
+	const auto& view = m_model.bufferViews->at(accessor.bufferView.value());
+	return view.byteStride.value_or(accessor.elementSize());
 }
 
 /**
@@ -359,7 +377,7 @@ std::size_t CGLTFMeshFileLoader::MeshExtractor::getByteStride(
 bool CGLTFMeshFileLoader::MeshExtractor::isAccessorNormalized(
 	const std::size_t accessorIdx) const
 {
-	const auto& accessor = m_model.accessors[accessorIdx];
+	const auto& accessor = m_model.accessors->at(accessorIdx);
 	return accessor.normalized;
 }
 
@@ -370,9 +388,10 @@ bool CGLTFMeshFileLoader::MeshExtractor::isAccessorNormalized(
 CGLTFMeshFileLoader::BufferOffset CGLTFMeshFileLoader::MeshExtractor::getBuffer(
 		const std::size_t accessorIdx) const
 {
-	const auto& accessor = m_model.accessors[accessorIdx];
-	const auto& view = m_model.bufferViews[accessor.bufferView];
-	const auto& buffer = m_model.buffers[view.buffer];
+	const auto& accessor = m_model.accessors->at(accessorIdx);
+	// FIXME this does not work with sparse / zero-initialized accessors
+	const auto& view = m_model.bufferViews->at(accessor.bufferView.value());
+	const auto& buffer = m_model.buffers->at(view.buffer);
 
 	return BufferOffset(buffer.data, view.byteOffset);
 }
@@ -385,11 +404,11 @@ CGLTFMeshFileLoader::BufferOffset CGLTFMeshFileLoader::MeshExtractor::getBuffer(
  * Type: Integer
  * Required: NO
 */
-std::size_t CGLTFMeshFileLoader::MeshExtractor::getIndicesAccessorIdx(
+std::optional<std::size_t> CGLTFMeshFileLoader::MeshExtractor::getIndicesAccessorIdx(
 		const std::size_t meshIdx,
 		const std::size_t primitiveIdx) const
 {
-	return m_model.meshes[meshIdx].primitives[primitiveIdx].indices;
+	return m_model.meshes->at(meshIdx).primitives[primitiveIdx].indices;
 }
 
 /**
@@ -397,13 +416,15 @@ std::size_t CGLTFMeshFileLoader::MeshExtractor::getIndicesAccessorIdx(
  * Documentation: https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#meshes-overview
  * Type: VEC3 (Float)
  * ! Required: YES (Appears so, needs another pair of eyes to research.)
+ * Second pair of eyes says: "When positions are not specified, client implementations SHOULD skip primitive’s rendering"
 */
 std::size_t CGLTFMeshFileLoader::MeshExtractor::getPositionAccessorIdx(
 		const std::size_t meshIdx,
 		const std::size_t primitiveIdx) const
 {
-	return m_model.meshes[meshIdx].primitives[primitiveIdx]
-		.attributes.find("POSITION")->second;
+	// FIXME position-less primitives should be skipped.
+	return m_model.meshes->at(meshIdx).primitives[primitiveIdx]
+		.attributes.position.value();
 }
 
 /**
@@ -412,70 +433,53 @@ std::size_t CGLTFMeshFileLoader::MeshExtractor::getPositionAccessorIdx(
  * Type: VEC3 (Float)
  * ! Required: NO (Appears to not be, needs another pair of eyes to research.)
 */
-std::size_t CGLTFMeshFileLoader::MeshExtractor::getNormalAccessorIdx(
+std::optional<std::size_t> CGLTFMeshFileLoader::MeshExtractor::getNormalAccessorIdx(
 		const std::size_t meshIdx,
 		const std::size_t primitiveIdx) const
 {
-	const auto& attributes = m_model.meshes[meshIdx]
-		.primitives[primitiveIdx].attributes;
-	const auto result = attributes.find("NORMAL");
-
-	if (result == attributes.end()) {
-		return -1;
-	} else {
-		return result->second;
-	}
+	return m_model.meshes->at(meshIdx).primitives[primitiveIdx].attributes.normal;
 }
 
 /**
- * The index of the accessor that contains the NORMALs.
+ * The index of the accessor that contains the TEXCOORDs.
  * Documentation: https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#meshes-overview
  * Type: VEC3 (Float)
  * ! Required: YES (Appears so, needs another pair of eyes to research.)
 */
-std::size_t CGLTFMeshFileLoader::MeshExtractor::getTCoordAccessorIdx(
+std::optional<std::size_t> CGLTFMeshFileLoader::MeshExtractor::getTCoordAccessorIdx(
 		const std::size_t meshIdx,
 		const std::size_t primitiveIdx) const
 {
-	const auto& attributes = m_model.meshes[meshIdx]
-		.primitives[primitiveIdx].attributes;
-	const auto result = attributes.find("TEXCOORD_0");
-
-	if (result == attributes.end()) {
-		return -1;
-	} else {
-		return result->second;
-	}
+	const auto& texcoords = m_model.meshes->at(meshIdx).primitives[primitiveIdx].attributes.texcoord;
+	if (!texcoords.has_value())
+		return std::nullopt;
+	return texcoords->at(0);
 }
 
 /**
- * This is where the actual model's GLTF file is loaded and parsed by tinygltf.
+ * This is where the actual model's GLTF file is loaded and parsed by tiniergltf.
 */
-bool CGLTFMeshFileLoader::tryParseGLTF(io::IReadFile* file,
-		tinygltf::Model& model)
+std::optional<tiniergltf::GlTF> CGLTFMeshFileLoader::tryParseGLTF(io::IReadFile* file)
 {
-	tinygltf::TinyGLTF loader {};
-
-	// Stop embedded textures from making model fail to load
-	loader.SetImageLoader(nullptr, nullptr);
-
-	std::string err {};
-	std::string warn {};
-
-	auto buf = std::make_unique<char[]>(file->getSize());
-	file->read(buf.get(), file->getSize());
-
-        if (warn != "") {
-                os::Printer::log(warn.c_str(), ELL_WARNING);
-        }
-
-	if (err != "") {
-                os::Printer::log(err.c_str(), ELL_ERROR);
-		return false;
+	auto size = file->getSize();
+	auto buf = std::make_unique<char[]>(size + 1);
+	file->read(buf.get(), size);
+	// We probably don't need this, but add it just to be sure.
+	buf[size] = '\0';
+	Json::CharReaderBuilder builder;
+    const std::unique_ptr<Json::CharReader> reader(builder.newCharReader());
+	Json::Value json;
+	JSONCPP_STRING err;
+    if (!reader->parse(buf.get(), buf.get() + size, &json, &err)) {
+      return std::nullopt;
+    }
+	try {
+		return tiniergltf::GlTF(json);
+	}  catch (const std::runtime_error &e) {
+		return std::nullopt;
+	} catch (const std::out_of_range &e) {
+		return std::nullopt;
 	}
-
-	return loader.LoadASCIIFromString(&model, &err, &warn, buf.get(),
-		file->getSize(), "", 1);
 }
 
 } // namespace scene
