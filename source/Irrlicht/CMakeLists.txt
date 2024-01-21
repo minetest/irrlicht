@@ -297,42 +297,10 @@ elseif(NOT USE_SDL2)
 	endif()
 endif()
 
-set(link_includes
-	"${PROJECT_SOURCE_DIR}/include"
-	"${CMAKE_CURRENT_SOURCE_DIR}"
-
-	"${ZLIB_INCLUDE_DIR}"
-	"${JPEG_INCLUDE_DIR}"
-	"${PNG_INCLUDE_DIR}"
-	"$<$<BOOL:${USE_SDL2}>:${SDL2_INCLUDE_DIRS}>"
-
-	${OPENGL_INCLUDE_DIR}
-	${OPENGLES2_INCLUDE_DIR}
-	${EGL_INCLUDE_DIR}
-
-	"$<$<PLATFORM_ID:Android>:${ANDROID_NDK}/sources/android/native_app_glue>"
-	"$<$<BOOL:${USE_X11}>:${X11_INCLUDE_DIR}>"
-)
-
-set(link_libs
-	"${ZLIB_LIBRARY}"
-	"${JPEG_LIBRARY}"
-	"${PNG_LIBRARY}"
-	"$<$<BOOL:${USE_SDL2}>:${SDL2_LIBRARIES}>"
-
-	"$<$<BOOL:${OPENGL_DIRECT_LINK}>:${OPENGL_LIBRARIES}>"
-	"$<$<BOOL:${OPENGLES_DIRECT_LINK}>:${OPENGLES_LIBRARY}>"
-	"$<$<BOOL:${OPENGLES2_DIRECT_LINK}>:${OPENGLES2_LIBRARIES}>"
-	${EGL_LIBRARY}
-
-	"$<$<PLATFORM_ID:Android>:-landroid -llog>"
-	${COCOA_LIB}
-	${IOKIT_LIB}
-	"$<$<PLATFORM_ID:Windows>:gdi32>"
-	"$<$<PLATFORM_ID:Windows>:winmm>"
-	"$<$<BOOL:${USE_X11}>:${X11_X11_LIB}>"
-	"$<$<BOOL:${USE_X11}>:${X11_Xi_LIB}>"
-)
+# These includes are needed across the whole project, so they
+# are included globally so we do not have to include them for
+# each new OBJECT library target.
+include_directories("${PROJECT_SOURCE_DIR}/include")
 
 # Source files
 
@@ -406,6 +374,23 @@ add_library(IRRVIDEOOBJ OBJECT
 	${IRRIMAGEOBJ}
 )
 
+target_link_libraries(IRRVIDEOOBJ
+	PUBLIC
+		# TODO Create imported targets if they do not already exist,
+		# and only link the correct one for the enabled backend.
+		"$<$<BOOL:${OPENGL_DIRECT_LINK}>:${OPENGL_LIBRARIES}>"
+		"$<$<BOOL:${OPENGLES_DIRECT_LINK}>:${OPENGLES_LIBRARY}>"
+		"$<$<BOOL:${OPENGLES2_DIRECT_LINK}>:${OPENGLES2_LIBRARIES}>"
+		"${EGL_LIBRARY}"
+		JPEG::JPEG
+	PRIVATE
+		PNG::PNG
+)
+
+if(USE_X11)
+	target_include_directories(IRRVIDEOOBJ PUBLIC "${X11_INCLUDE_DIR}")
+endif()
+
 if(USE_SDLGL)
 	target_sources(IRRVIDEOOBJ PRIVATE
 		OpenGL/Driver.cpp
@@ -448,6 +433,11 @@ add_library(IRRIOOBJ OBJECT
 	CAttributes.cpp
 )
 
+target_link_libraries(IRRIOOBJ
+	PRIVATE
+		ZLIB::ZLIB
+)
+
 add_library(IRROTHEROBJ OBJECT
 	CIrrDeviceSDL.cpp
 	CIrrDeviceLinux.cpp
@@ -458,6 +448,24 @@ add_library(IRROTHEROBJ OBJECT
 	Irrlicht.cpp
 	os.cpp
 )
+
+if(USE_SDL2)
+	target_link_libraries(IRROTHEROBJ
+		PUBLIC
+			SDL2::SDL2
+	)
+endif()
+
+if(USE_X11)
+	target_include_directories(IRROTHEROBJ PUBLIC "${X11_INCLUDE_DIR}")
+	target_link_libraries(IRROTHEROBJ
+		PUBLIC
+			# TODO Create imported targets if they do not already
+			# exist.
+			"${X11_X11_LIB}"
+			"${X11_Xi_LIB}"
+	)
+endif()
 
 if(ENABLE_OPENGL3)
 	target_compile_definitions(IRROTHEROBJ PRIVATE ENABLE_OPENGL3)
@@ -529,11 +537,27 @@ target_include_directories(IrrlichtMt
 		"$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/>"
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
 		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/irrlichtmt>"
-	PRIVATE
-		${link_includes}
 )
 
-target_link_libraries(IrrlichtMt PRIVATE ${link_libs})
+target_link_libraries(IrrlichtMt
+	PRIVATE
+		# FIXME this will not propogate dependencies to IrrlichtMt
+		# dependants, but I do not want to clutter the export with
+		# object libraries, either.
+		<$BUILD_INTERFACE:IRROBJ>
+		<$BUILD_INTERFACE:IRROTHEROBJ>
+		<$BUILD_INTERFACE:IRRVIDEOOBJ>
+
+		# TODO These need to be linked to the appropriate object
+		# library targets. I have an MSVC build on another computer
+		# I can test the Windows ones with. I do not yet know how to
+		# test the Android and OS X ones.
+		"$<$<PLATFORM_ID:Android>:-landroid -llog>"
+		${COCOA_LIB}
+		${IOKIT_LIB}
+		"$<$<PLATFORM_ID:Windows>:gdi32>"
+		"$<$<PLATFORM_ID:Windows>:winmm>"
+)
 
 if(WIN32)
 	target_compile_definitions(IrrlichtMt INTERFACE _IRR_WINDOWS_API_) # used in _IRR_DEBUG_BREAK_IF definition in a public header
