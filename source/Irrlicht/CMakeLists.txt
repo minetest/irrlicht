@@ -314,26 +314,6 @@ set(link_includes
 	"$<$<BOOL:${USE_X11}>:${X11_INCLUDE_DIR}>"
 )
 
-set(link_libs
-	"${ZLIB_LIBRARY}"
-	"${JPEG_LIBRARY}"
-	"${PNG_LIBRARY}"
-	"$<$<BOOL:${USE_SDL2}>:${SDL2_LIBRARIES}>"
-
-	"$<$<BOOL:${OPENGL_DIRECT_LINK}>:${OPENGL_LIBRARIES}>"
-	"$<$<BOOL:${OPENGLES_DIRECT_LINK}>:${OPENGLES_LIBRARY}>"
-	"$<$<BOOL:${OPENGLES2_DIRECT_LINK}>:${OPENGLES2_LIBRARIES}>"
-	${EGL_LIBRARY}
-
-	"$<$<PLATFORM_ID:Android>:-landroid -llog>"
-	${COCOA_LIB}
-	${IOKIT_LIB}
-	"$<$<PLATFORM_ID:Windows>:gdi32>"
-	"$<$<PLATFORM_ID:Windows>:winmm>"
-	"$<$<BOOL:${USE_X11}>:${X11_X11_LIB}>"
-	"$<$<BOOL:${USE_X11}>:${X11_Xi_LIB}>"
-)
-
 # Source files
 
 set(IRRMESHLOADER
@@ -533,7 +513,25 @@ target_include_directories(IrrlichtMt
 		${link_includes}
 )
 
-target_link_libraries(IrrlichtMt PRIVATE ${link_libs})
+target_link_libraries(IrrlichtMt PRIVATE
+	"${ZLIB_LIBRARY}"
+	"${JPEG_LIBRARY}"
+	"${PNG_LIBRARY}"
+	"$<$<BOOL:${USE_SDL2}>:${SDL2_LIBRARIES}>"
+
+	"$<$<BOOL:${OPENGL_DIRECT_LINK}>:${OPENGL_LIBRARIES}>"
+	"$<$<BOOL:${OPENGLES_DIRECT_LINK}>:${OPENGLES_LIBRARY}>"
+	"$<$<BOOL:${OPENGLES2_DIRECT_LINK}>:${OPENGLES2_LIBRARIES}>"
+	${EGL_LIBRARY}
+
+	"$<$<PLATFORM_ID:Android>:-landroid -llog>"
+	${COCOA_LIB}
+	${IOKIT_LIB}
+	"$<$<PLATFORM_ID:Windows>:gdi32>"
+	"$<$<PLATFORM_ID:Windows>:winmm>"
+	"$<$<BOOL:${USE_X11}>:${X11_X11_LIB}>"
+	"$<$<BOOL:${USE_X11}>:${X11_Xi_LIB}>"
+)
 
 if(WIN32)
 	target_compile_definitions(IrrlichtMt INTERFACE _IRR_WINDOWS_API_) # used in _IRR_DEBUG_BREAK_IF definition in a public header
