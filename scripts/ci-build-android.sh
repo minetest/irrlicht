@@ -1,10 +1,10 @@
 #!/bin/bash -e
 
 # NOTE: this code is mostly copied from minetest_android_deps
-# (https://github.com/minetest/minetest_android_deps)
+# <https://github.com/minetest/minetest_android_deps>
 
-png_ver=1.6.37
-jpeg_ver=2.1.4
+png_ver=1.6.40
+jpeg_ver=3.0.1
 
 download () {
 	get_tar_archive libpng "https://download.sourceforge.net/libpng/libpng-${png_ver}.tar.gz"
@@ -85,7 +85,6 @@ _setup_toolchain () {
 
 	CMAKE_FLAGS=(
 		"-DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake"
-		"-DANDROID_USE_LEGACY_TOOLCHAIN_FILE=OFF"
 		"-DANDROID_ABI=$TARGET_ABI" "-DANDROID_NATIVE_API_LEVEL=$API"
 		"-DCMAKE_BUILD_TYPE=Release"
 	)
@@ -97,7 +96,7 @@ _setup_toolchain () {
 }
 
 _run_build () {
-	abi=$1
+	local abi=$1
 	irrdir=$PWD
 
 	mkdir -p $RUNNER_TEMP/src
