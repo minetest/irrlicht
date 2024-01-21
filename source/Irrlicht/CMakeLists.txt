@@ -514,9 +514,9 @@ target_include_directories(IrrlichtMt
 )
 
 target_link_libraries(IrrlichtMt PRIVATE
-	"${ZLIB_LIBRARY}"
-	"${JPEG_LIBRARY}"
-	"${PNG_LIBRARY}"
+	${ZLIB_LIBRARY}
+	${JPEG_LIBRARY}
+	${PNG_LIBRARY}
 	"$<$<BOOL:${USE_SDL2}>:${SDL2_LIBRARIES}>"
 
 	"$<$<BOOL:${OPENGL_DIRECT_LINK}>:${OPENGL_LIBRARIES}>"
