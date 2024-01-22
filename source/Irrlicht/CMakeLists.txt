@@ -513,6 +513,7 @@ target_include_directories(IrrlichtMt
 		${link_includes}
 )
 
+# this needs to be here and not in a variable (like link_includes) due to issues with the generator expressions
 target_link_libraries(IrrlichtMt PRIVATE
 	${ZLIB_LIBRARY}
 	${JPEG_LIBRARY}
