@@ -513,7 +513,8 @@ target_include_directories(IrrlichtMt
 		${link_includes}
 )
 
-# this needs to be here and not in a variable (like link_includes) due to issues with the generator expressions
+# this needs to be here and not in a variable (like link_includes) due to issues
+# with the generator expressions on at least CMake 3.22, but not 3.28 or later
 target_link_libraries(IrrlichtMt PRIVATE
 	${ZLIB_LIBRARY}
 	${JPEG_LIBRARY}
