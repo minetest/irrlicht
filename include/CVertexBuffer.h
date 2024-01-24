@@ -15,6 +15,7 @@ namespace scene
 
 	class CVertexBuffer : public IVertexBuffer
 	{
+	public:
 		class IVertexList
 		{
 		public:
@@ -92,7 +93,6 @@ namespace scene
 			virtual video::E_VERTEX_TYPE getType() const IRR_OVERRIDE {return T::getType();}
 		};
 
-	public:
 		IVertexList *Vertices;
 
 		CVertexBuffer(video::E_VERTEX_TYPE vertexType) : Vertices(0),

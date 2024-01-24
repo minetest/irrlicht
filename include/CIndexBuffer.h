@@ -14,6 +14,8 @@ namespace scene
 
 	class CIndexBuffer : public IIndexBuffer
 	{
+	public:
+
 		// Virtual function wrapper around irr::core::array
 		class IIndexList
 		{
@@ -88,7 +90,6 @@ namespace scene
 			}
 		};
 
-	public:
 		IIndexList *Indices;
 
 		CIndexBuffer(video::E_INDEX_TYPE IndexType) :Indices(0), MappingHint(EHM_NEVER), ChangedID(1)
