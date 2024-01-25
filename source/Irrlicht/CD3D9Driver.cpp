@@ -1465,8 +1465,6 @@ void CD3D9Driver::draw2DImage(const video::ITexture* texture,
 	tcoords.LowerRightCorner.X = (f32)sourceRect.LowerRightCorner.X / (f32)ss.Width;
 	tcoords.LowerRightCorner.Y = (f32)sourceRect.LowerRightCorner.Y / (f32)ss.Height;
 
-	const core::dimension2d<u32>& renderTargetSize = getCurrentRenderTargetSize();
-
 	const video::SColor temp[4] =
 	{
 		0xFFFFFFFF,
