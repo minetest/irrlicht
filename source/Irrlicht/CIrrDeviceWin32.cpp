@@ -435,8 +435,9 @@ irr::core::stringc SJoystickWin32Control::findJoystickName(int index, const JOYC
     RegCloseKey(hKey);
 
     return result;
-#endif
+#else
 	return "";
+#endif
 }
 
 bool SJoystickWin32Control::activateJoysticks(core::array<SJoystickInfo> & joystickInfo)

@@ -297,7 +297,8 @@ bool CWGLManager::initialize(const SIrrlichtCreationParameters& params, const SE
 	// now get new window
 	CurrentContext.OpenGLWin32.HWnd=videodata.OpenGLWin32.HWnd;
 	// get hdc
-	if (!(CurrentContext.OpenGLWin32.HDc=GetDC((HWND)videodata.OpenGLWin32.HWnd)))
+	CurrentContext.OpenGLWin32.HDc=GetDC((HWND)videodata.OpenGLWin32.HWnd);
+	if (!CurrentContext.OpenGLWin32.HDc)
 	{
 		os::Printer::log("Cannot create a GL device context.", ELL_ERROR);
 		return false;
