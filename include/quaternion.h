@@ -130,7 +130,10 @@ class quaternion
 		*/
 		void getMatrixCenter( matrix4 &dest, const core::vector3df &center, const core::vector3df &translation ) const;
 
-		//! Creates a matrix from this quaternion
+		//! Faster method to create a transposed matrix, you should normalize the quaternion before!
+		inline void getMatrixFast_transposed(matrix4 &dest) const;
+
+		//! Creates a transposed matrix from this quaternion
 		inline void getMatrix_transposed( matrix4 &dest ) const;
 
 		//! Inverts this quaternion
@@ -392,32 +395,11 @@ inline void quaternion::getMatrix(matrix4 &dest,
 
 	quaternion q( *this);
 	q.normalize();
-	f32 X = q.X;
-	f32 Y = q.Y;
-	f32 Z = q.Z;
-	f32 W = q.W;
-
-	dest[0] = 1.0f - 2.0f*Y*Y - 2.0f*Z*Z;
-	dest[1] = 2.0f*X*Y + 2.0f*Z*W;
-	dest[2] = 2.0f*X*Z - 2.0f*Y*W;
-	dest[3] = 0.0f;
-
-	dest[4] = 2.0f*X*Y - 2.0f*Z*W;
-	dest[5] = 1.0f - 2.0f*X*X - 2.0f*Z*Z;
-	dest[6] = 2.0f*Z*Y + 2.0f*X*W;
-	dest[7] = 0.0f;
-
-	dest[8] = 2.0f*X*Z + 2.0f*Y*W;
-	dest[9] = 2.0f*Z*Y - 2.0f*X*W;
-	dest[10] = 1.0f - 2.0f*X*X - 2.0f*Y*Y;
-	dest[11] = 0.0f;
+	q.getMatrixFast(dest);
 
 	dest[12] = center.X;
 	dest[13] = center.Y;
 	dest[14] = center.Z;
-	dest[15] = 1.f;
-
-	dest.setDefinitelyIdentityMatrix ( false );
 }
 
 
@@ -439,39 +421,14 @@ inline void quaternion::getMatrixCenter(matrix4 &dest,
 {
 	quaternion q(*this);
 	q.normalize();
-	f32 X = q.X;
-	f32 Y = q.Y;
-	f32 Z = q.Z;
-	f32 W = q.W;
-
-	dest[0] = 1.0f - 2.0f*Y*Y - 2.0f*Z*Z;
-	dest[1] = 2.0f*X*Y + 2.0f*Z*W;
-	dest[2] = 2.0f*X*Z - 2.0f*Y*W;
-	dest[3] = 0.0f;
-
-	dest[4] = 2.0f*X*Y - 2.0f*Z*W;
-	dest[5] = 1.0f - 2.0f*X*X - 2.0f*Z*Z;
-	dest[6] = 2.0f*Z*Y + 2.0f*X*W;
-	dest[7] = 0.0f;
-
-	dest[8] = 2.0f*X*Z + 2.0f*Y*W;
-	dest[9] = 2.0f*Z*Y - 2.0f*X*W;
-	dest[10] = 1.0f - 2.0f*X*X - 2.0f*Y*Y;
-	dest[11] = 0.0f;
+	q.getMatrixFast(dest);
 
 	dest.setRotationCenter ( center, translation );
 }
 
-// Creates a matrix from this quaternion
-inline void quaternion::getMatrix_transposed(matrix4 &dest) const
+//! Faster method to create a transposed matrix, you should normalize the quaternion before!
+inline void quaternion::getMatrixFast_transposed(matrix4 &dest) const
 {
-	quaternion q(*this);
-	q.normalize();
-	f32 X = q.X;
-	f32 Y = q.Y;
-	f32 Z = q.Z;
-	f32 W = q.W;
-
 	dest[0] = 1.0f - 2.0f*Y*Y - 2.0f*Z*Z;
 	dest[4] = 2.0f*X*Y + 2.0f*Z*W;
 	dest[8] = 2.0f*X*Z - 2.0f*Y*W;
@@ -493,6 +450,14 @@ inline void quaternion::getMatrix_transposed(matrix4 &dest) const
 	dest[15] = 1.f;
 
 	dest.setDefinitelyIdentityMatrix(false);
+}
+
+// Creates a matrix from this quaternion
+inline void quaternion::getMatrix_transposed(matrix4 &dest) const
+{
+	quaternion q(*this);
+	q.normalize();
+	q.getMatrixFast_transposed(dest);
 }
 
 
