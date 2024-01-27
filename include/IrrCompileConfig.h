@@ -497,7 +497,11 @@ B3D, MS3D or X meshes */
 #undef _IRR_COMPILE_WITH_LMTS_LOADER_
 #endif
 //! Define _IRR_COMPILE_WITH_MY3D_LOADER_ if you want to load MY3D files
-#define _IRR_COMPILE_WITH_MY3D_LOADER_
+//! Note: As My3DTools can't be found on the web anymore and there hasn't been 
+//! any update about it since around 2005 the loader is deprecated with 
+//! Irrlicht 1.9 and will be removed in Irrlicht 1.10 unless there are any
+//! news about the tool.
+//#define _IRR_COMPILE_WITH_MY3D_LOADER_
 #ifdef NO_IRR_COMPILE_WITH_MY3D_LOADER_
 #undef _IRR_COMPILE_WITH_MY3D_LOADER_
 #endif
