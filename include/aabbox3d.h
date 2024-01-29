@@ -180,14 +180,13 @@ class aabbox3d
 		void getSideCenters(vector3d<T> *corners) const
 		{
 			const core::vector3d<T> middle = getCenter();
-			const core::vector3d<T> diag = middle - MaxEdge;
 
-			corners[0].set(middle.X + diag.X, middle.Y, middle.Z);
-			corners[1].set(middle.X - diag.X, middle.Y, middle.Z);
-			corners[2].set(middle.X, middle.Y + diag.Y, middle.Z);
-			corners[3].set(middle.X, middle.Y - diag.Y, middle.Z);
-			corners[4].set(middle.X, middle.Y, middle.Z + diag.Z);
-			corners[5].set(middle.X, middle.Y, middle.Z - diag.Z);
+			corners[0].set(MinEdge.X, middle.Y, middle.Z);
+			corners[1].set(MaxEdge.X, middle.Y, middle.Z);
+			corners[2].set(middle.X, MinEdge.Y, middle.Z);
+			corners[3].set(middle.X, MaxEdge.Y, middle.Z);
+			corners[4].set(middle.X, middle.Y, MinEdge.Z);
+			corners[5].set(middle.X, middle.Y, MaxEdge.Z);
 		}
 
 
