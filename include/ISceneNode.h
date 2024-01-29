@@ -190,17 +190,17 @@ namespace scene
 			return box;
 		}
 
-		//! Get a the 8 corners of the original bounding box transformed and
-		//! animated by the absolute transformation.
+		//! Get a the 8 corners of the original bounding box transformed by the
+		//! absolute transformation.
 		/** Note: The result is _not_ identical to getTransformedBoundingBox().getEdges(),
-		but getting an aabbox3d of these edges would then be identical.
-		\param edges Receives an array with the transformed edges */
-		virtual void getTransformedBoundingBoxEdges(core::array< core::vector3d<f32> >& edges) const
+		but getting an aabbox3d of these corners would then be identical.
+		\param corners Receives an array with the transformed corners */
+		virtual void getTransformedBoundingBoxEdges(core::array< core::vector3d<f32> >& corners) const
 		{
-			edges.set_used(8);
-			getBoundingBox().getEdges( edges.pointer() );
+			corners.set_used(8);
+			getBoundingBox().getEdges( corners.pointer() );
 			for ( u32 i=0; i<8; ++i )
-				AbsoluteTransformation.transformVect( edges[i] );
+				AbsoluteTransformation.transformVect( corners[i] );
 		}
 
 		//! Get the absolute transformation of the node. Is recalculated every OnAnimate()-call.
