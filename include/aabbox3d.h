@@ -175,6 +175,22 @@ class aabbox3d
 			corners[7].set(middle.X - diag.X, middle.Y - diag.Y, middle.Z - diag.Z);
 		}
 
+		//! Stores all 6 centers of the box side faces into an array
+		/** \param sideCenters: Pointer to array of 6 corners. */
+		void getSideCenters(vector3d<T> *corners) const
+		{
+			const core::vector3d<T> middle = getCenter();
+			const core::vector3d<T> diag = middle - MaxEdge;
+
+			corners[0].set(middle.X + diag.X, middle.Y, middle.Z);
+			corners[1].set(middle.X - diag.X, middle.Y, middle.Z);
+			corners[2].set(middle.X, middle.Y + diag.Y, middle.Z);
+			corners[3].set(middle.X, middle.Y - diag.Y, middle.Z);
+			corners[4].set(middle.X, middle.Y, middle.Z + diag.Z);
+			corners[5].set(middle.X, middle.Y, middle.Z - diag.Z);
+		}
+
+
 		//! Repairs the box.
 		/** Necessary if for example MinEdge and MaxEdge are swapped. */
 		void repair()
