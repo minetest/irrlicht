@@ -697,7 +697,8 @@ ISceneNode* CSceneManager::getSceneNodeFromName(const char* name, ISceneNode* st
 	if (start == 0)
 		start = getRootSceneNode();
 
-	if (!strcmp(start->getName(),name))
+	auto startName = start->getName();
+	if (startName.has_value() && startName == name)
 		return start;
 
 	ISceneNode* node = 0;

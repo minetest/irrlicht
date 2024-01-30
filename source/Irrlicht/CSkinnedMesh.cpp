@@ -3,6 +3,7 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
 #include "CSkinnedMesh.h"
+#include <optional>
 #include "CBoneSceneNode.h"
 #include "IAnimatedMeshSceneNode.h"
 #include "os.h"
@@ -624,18 +625,18 @@ u32 CSkinnedMesh::getJointCount() const
 	return AllJoints.size();
 }
 
-
 //! Gets the name of a joint.
-const c8* CSkinnedMesh::getJointName(u32 number) const
-{
-	if (number >= AllJoints.size())
-		return 0;
-	return AllJoints[number]->Name.c_str();
+const std::optional<std::string> &CSkinnedMesh::getJointName(u32 number) const {
+	if (number >= getJointCount()) {
+		static const std::optional<std::string> nullopt;
+		return nullopt;
+	}
+	return AllJoints[number]->Name;
 }
 
 
 //! Gets a joint number from its name
-s32 CSkinnedMesh::getJointNumber(const c8* name) const
+std::optional<u32> CSkinnedMesh::getJointNumber(const std::string &name) const
 {
 	for (u32 i=0; i<AllJoints.size(); ++i)
 	{
@@ -643,7 +644,7 @@ s32 CSkinnedMesh::getJointNumber(const c8* name) const
 			return i;
 	}
 
-	return -1;
+	return std::nullopt;
 }
 
 
@@ -1396,7 +1397,7 @@ void CSkinnedMesh::addJoints(core::array<IBoneSceneNode*> &jointChildSceneNodes,
 	//Create new joints
 	for (u32 i=0; i<AllJoints.size(); ++i)
 	{
-		jointChildSceneNodes.push_back(new CBoneSceneNode(0, smgr, 0, i, AllJoints[i]->Name.c_str()));
+		jointChildSceneNodes.push_back(new CBoneSceneNode(0, smgr, 0, i, AllJoints[i]->Name));
 	}
 
 	//Match up parents

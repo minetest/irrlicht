@@ -12,6 +12,8 @@
 #include "IFileSystem.h"
 #include "os.h"
 
+#include <algorithm>
+
 #ifdef _DEBUG
 #define _B3D_READER_DEBUG
 #endif
@@ -149,7 +151,7 @@ bool CB3DMeshFileLoader::load()
 bool CB3DMeshFileLoader::readChunkNODE(CSkinnedMesh::SJoint *inJoint)
 {
 	CSkinnedMesh::SJoint *joint = AnimatedMesh->addJoint(inJoint);
-	readString(joint->Name);
+	joint->Name = readString();
 
 #ifdef _B3D_READER_DEBUG
 	core::stringc logStr;
@@ -818,8 +820,8 @@ bool CB3DMeshFileLoader::readChunkTEXS()
 		Textures.push_back(SB3dTexture());
 		SB3dTexture& B3dTexture = Textures.getLast();
 
-		readString(B3dTexture.TextureName);
-		B3dTexture.TextureName.replace('\\','/');
+		B3dTexture.TextureName = readString();
+		std::replace(B3dTexture.TextureName.begin(), B3dTexture.TextureName.end(), '\\', '/');
 #ifdef _B3D_READER_DEBUG
 		os::Printer::log("read Texture", B3dTexture.TextureName.c_str(), ELL_DEBUG);
 #endif
@@ -872,10 +874,9 @@ bool CB3DMeshFileLoader::readChunkBRUS()
 	{
 		// This is what blitz basic calls a brush, like a Irrlicht Material
 
-		core::stringc name;
-		readString(name);
+		auto name = readString();
 #ifdef _B3D_READER_DEBUG
-		os::Printer::log("read Material", name, ELL_DEBUG);
+		os::Printer::log("read Material", name.c_str(), ELL_DEBUG);
 #endif
 		Materials.push_back(SB3dMaterial());
 		SB3dMaterial& B3dMaterial=Materials.getLast();
@@ -1031,18 +1032,19 @@ bool CB3DMeshFileLoader::readChunkBRUS()
 }
 
 
-void CB3DMeshFileLoader::readString(core::stringc& newstring)
+std::string CB3DMeshFileLoader::readString()
 {
-	newstring="";
+	std::string newstring = "";
 	while (true)
 	{
 		c8 character;
 		if (B3DFile->read(&character, sizeof(character)) == 0)
-			return; // eof
+			break; // eof
 		if (character==0)
-			return;
-		newstring.append(character);
+			break;
+		newstring.push_back(character);
 	}
+	return newstring;
 }
 
 

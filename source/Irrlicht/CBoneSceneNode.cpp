@@ -4,6 +4,8 @@
 
 #include "CBoneSceneNode.h"
 
+#include <optional>
+
 namespace irr
 {
 namespace scene
@@ -11,7 +13,7 @@ namespace scene
 
 //! constructor
 CBoneSceneNode::CBoneSceneNode(ISceneNode* parent, ISceneManager* mgr, s32 id,
-	u32 boneIndex, const c8* boneName)
+	u32 boneIndex, const std::optional<std::string> &boneName)
 : IBoneSceneNode(parent, mgr, id), BoneIndex(boneIndex),
 	AnimationMode(EBAM_AUTOMATIC), SkinningSpace(EBSS_LOCAL)
 {

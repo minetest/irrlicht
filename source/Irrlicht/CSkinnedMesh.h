@@ -8,9 +8,6 @@
 
 #include "ISkinnedMesh.h"
 #include "SMeshBuffer.h"
-#include "S3DVertex.h"
-#include "irrString.h"
-#include "matrix4.h"
 #include "quaternion.h"
 
 namespace irr
@@ -84,10 +81,10 @@ namespace scene
 		u32 getJointCount() const override;
 
 		//! Gets the name of a joint.
-		const c8* getJointName(u32 number) const override;
+		const std::optional<std::string> &getJointName(u32 number) const override;
 
 		//! Gets a joint number from its name
-		s32 getJointNumber(const c8* name) const override;
+		std::optional<u32> getJointNumber(const std::string &name) const override;
 
 		//! uses animation from another mesh
 		bool useAnimationFrom(const ISkinnedMesh *mesh) override;
