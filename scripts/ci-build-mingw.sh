@@ -12,7 +12,7 @@ with_sdl=0
 libjpeg_version=3.0.1
 libpng_version=1.6.40
 sdl2_version=2.28.5
-zlib_version=1.3
+zlib_version=1.3.1
 
 download () {
 	local url=$1
@@ -25,13 +25,14 @@ download () {
 	unzip -o "$filename" -d "$foldername"
 }
 
+libs=$PWD/libs
 mkdir -p libs
 pushd libs
-libs=$PWD
-download "http://minetest.kitsunemimi.pw/libjpeg-$libjpeg_version-$variant.zip"
-download "http://minetest.kitsunemimi.pw/libpng-$libpng_version-$variant.zip"
-[ $with_sdl -eq 1 ] && download "http://minetest.kitsunemimi.pw/sdl2-$sdl2_version-$variant.zip"
-download "http://minetest.kitsunemimi.pw/zlib-$zlib_version-$variant.zip"
+libhost="http://minetest.kitsunemimi.pw"
+download "$libhost/llvm/libjpeg-$libjpeg_version-$variant.zip"
+download "$libhost/llvm/libpng-$libpng_version-$variant.zip"
+[ $with_sdl -eq 1 ] && download "$libhost/llvm/sdl2-$sdl2_version-$variant.zip"
+download "$libhost/llvm/zlib-$zlib_version-$variant.zip"
 popd
 
 tmp=(

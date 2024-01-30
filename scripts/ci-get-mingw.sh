@@ -1,12 +1,9 @@
 #!/bin/bash
 set -e
 topdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-[ -z "$1" ] && exit 255
 
-ver=13.2.0
-os=ubuntu22.04
-name="mingw-w64-${1}_${ver}_${os}.tar.xz"
-wget "http://minetest.kitsunemimi.pw/$name" -O "$name"
+name=llvm-mingw-20231128-ucrt-ubuntu-20.04-x86_64.tar.xz
+wget "https://github.com/mstorsjo/llvm-mingw/releases/download/20231128/$name" -O "$name"
 sha256sum -w -c <(grep -F "$name" "$topdir/sha256sums.txt")
-sudo tar -xaf "$name" -C /usr
+sudo tar -xaf "$name" -C /usr --strip-components=1
 rm -f "$name"

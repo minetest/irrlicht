@@ -144,14 +144,14 @@ jobs:
       - name: Install compiler
         run: |
           sudo apt-get update && sudo apt-get install cmake -qyy
-          ./scripts/ci-get-mingw.sh ${{matrix.config.arch}}
+          ./scripts/ci-get-mingw.sh
 
       - name: Build
         run: |
           ./scripts/ci-build-mingw.sh package
         env:
-          CC: ${{matrix.config.arch}}-w64-mingw32-gcc
-          CXX: ${{matrix.config.arch}}-w64-mingw32-g++
+          CC: ${{matrix.config.arch}}-w64-mingw32-clang
+          CXX: ${{matrix.config.arch}}-w64-mingw32-clang++
           extras: ${{matrix.config.extras}}
 
       - uses: actions/upload-artifact@v3
