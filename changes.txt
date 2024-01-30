@@ -1,6 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- line3d::getClosestPoint can now chose between using line or line segment
 - MY3D loader deprecated and disabled by default as MY3D tools can't be found on the web anymore. Also could always be used as external loader.
 - createCylinderMesh, createArrowMesh and createConeMesh in GeometryCreator tessellation numbers now for full instead of semi-circle.
   Double your tessellation numbers to get same results as in 1.8

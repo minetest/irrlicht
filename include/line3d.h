@@ -85,19 +85,26 @@ class line3d
 
 		//! Get the closest point on this line to a point
 		/** \param point The point to compare to.
+		\param checkOnlySegments: Default (true) is to return a point on the line-segment (between begin and end) of the line.
+		When set to false the function will check for the closest point on the the line even when outside the segment.
 		\return The nearest point which is part of the line. */
-		vector3d<T> getClosestPoint(const vector3d<T>& point) const
+		vector3d<T> getClosestPoint(const vector3d<T>& point, bool checkOnlySegments=true) const
 		{
 			vector3d<T> c = point - start;
 			vector3d<T> v = end - start;
 			T d = (T)v.getLength();
+			if ( d == 0 ) // line is just a single point
+				return start;
 			v /= d;
 			T t = v.dotProduct(c);
 
-			if (t < (T)0.0)
-				return start;
-			if (t > d)
-				return end;
+			if ( checkOnlySegments )
+			{
+				if (t < (T)0.0)
+					return start;
+				if (t > d)
+					return end;
+			}
 
 			v *= t;
 			return start + v;
