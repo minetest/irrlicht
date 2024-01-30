@@ -3,7 +3,8 @@
 include(CMakeFindDependencyMacro)
 
 if(NOT TARGET IrrlichtMt::IrrlichtMt)
-	if(@USE_SDL2@)
+	# private dependency only explicitly needed with static libs
+	if(@USE_SDL2@ AND NOT @BUILD_SHARED_LIBS@)
 		find_dependency(SDL2)
 	endif()
 	include("${CMAKE_CURRENT_LIST_DIR}/IrrlichtMtTargets.cmake")
