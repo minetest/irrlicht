@@ -594,16 +594,11 @@ bool CXMeshFileLoader::parseDataObjectFrame(CSkinnedMesh::SJoint *Parent)
 
 	CSkinnedMesh::SJoint *joint=0;
 
-	if (name.size())
-	{
-		for (u32 n=0; n < AnimatedMesh->getAllJoints().size(); ++n)
-		{
-			if (AnimatedMesh->getAllJoints()[n]->Name==name)
-			{
-				joint=AnimatedMesh->getAllJoints()[n];
-				JointID=n;
-				break;
-			}
+	if (name.size()) {
+		auto n = AnimatedMesh->getJointNumber(name.c_str());
+		if (n.has_value()) {
+			JointID = *n;
+			joint = AnimatedMesh->getAllJoints()[JointID];
 		}
 	}
 
@@ -613,7 +608,7 @@ bool CXMeshFileLoader::parseDataObjectFrame(CSkinnedMesh::SJoint *Parent)
 		os::Printer::log("creating joint ", name.c_str(), ELL_DEBUG);
 #endif
 		joint=AnimatedMesh->addJoint(Parent);
-		joint->Name=name;
+		joint->Name=name.c_str();
 		JointID=AnimatedMesh->getAllJoints().size()-1;
 	}
 	else
@@ -1121,17 +1116,8 @@ bool CXMeshFileLoader::parseDataObjectSkinWeights(SXMesh &mesh)
 
 	mesh.HasSkinning=true;
 
-	CSkinnedMesh::SJoint *joint=0;
-
-	u32 n;
-	for (n=0; n < AnimatedMesh->getAllJoints().size(); ++n)
-	{
-		if (AnimatedMesh->getAllJoints()[n]->Name==TransformNodeName)
-		{
-			joint=AnimatedMesh->getAllJoints()[n];
-			break;
-		}
-	}
+	auto n = AnimatedMesh->getJointNumber(TransformNodeName.c_str());
+	CSkinnedMesh::SJoint *joint = n.has_value() ? AnimatedMesh->getAllJoints()[*n] : nullptr;
 
 	if (!joint)
 	{
@@ -1140,7 +1126,7 @@ bool CXMeshFileLoader::parseDataObjectSkinWeights(SXMesh &mesh)
 #endif
 		n = AnimatedMesh->getAllJoints().size();
 		joint=AnimatedMesh->addJoint(0);
-		joint->Name=TransformNodeName;
+		joint->Name=TransformNodeName.c_str();
 	}
 
 	// read vertex weights
@@ -1157,7 +1143,7 @@ bool CXMeshFileLoader::parseDataObjectSkinWeights(SXMesh &mesh)
 
 	for (i=0; i<nWeights; ++i)
 	{
-		mesh.WeightJoint.push_back(n);
+		mesh.WeightJoint.push_back(*n);
 		mesh.WeightNum.push_back(joint->Weights.size());
 
 		CSkinnedMesh::SWeight *weight=AnimatedMesh->addWeight(joint);
@@ -1668,41 +1654,33 @@ bool CXMeshFileLoader::parseDataObjectAnimation()
 #ifdef _XREADER_DEBUG
 		os::Printer::log("frame name", FrameName.c_str(), ELL_DEBUG);
 #endif
-		CSkinnedMesh::SJoint *joint=0;
+		auto n = AnimatedMesh->getJointNumber(FrameName.c_str());
 
-		u32 n;
-		for (n=0; n < AnimatedMesh->getAllJoints().size(); ++n)
-		{
-			if (AnimatedMesh->getAllJoints()[n]->Name==FrameName)
-			{
-				joint=AnimatedMesh->getAllJoints()[n];
-				break;
-			}
-		}
-
-		if (!joint)
-		{
+		CSkinnedMesh::SJoint *joint;
+		if (n.has_value()) {
+			joint = AnimatedMesh->getAllJoints()[*n];
+		} else {
 #ifdef _XREADER_DEBUG
 			os::Printer::log("creating joint for animation ", FrameName.c_str(), ELL_DEBUG);
 #endif
 			joint=AnimatedMesh->addJoint(0);
-			joint->Name=FrameName;
+			joint->Name=FrameName.c_str();
 		}
 
 		joint->PositionKeys.reallocate(joint->PositionKeys.size()+animationDump.PositionKeys.size());
-		for (n=0; n<animationDump.PositionKeys.size(); ++n)
+		for (u32 n=0; n<animationDump.PositionKeys.size(); ++n)
 		{
 			joint->PositionKeys.push_back(animationDump.PositionKeys[n]);
 		}
 
 		joint->ScaleKeys.reallocate(joint->ScaleKeys.size()+animationDump.ScaleKeys.size());
-		for (n=0; n<animationDump.ScaleKeys.size(); ++n)
+		for (u32 n=0; n<animationDump.ScaleKeys.size(); ++n)
 		{
 			joint->ScaleKeys.push_back(animationDump.ScaleKeys[n]);
 		}
 
 		joint->RotationKeys.reallocate(joint->RotationKeys.size()+animationDump.RotationKeys.size());
-		for (n=0; n<animationDump.RotationKeys.size(); ++n)
+		for (u32 n=0; n<animationDump.RotationKeys.size(); ++n)
 		{
 			joint->RotationKeys.push_back(animationDump.RotationKeys[n]);
 		}

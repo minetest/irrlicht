@@ -14,6 +14,7 @@
 #include "aabbox3d.h"
 #include "matrix4.h"
 #include "IAttributes.h"
+
 #include <list>
 #include <optional>
 
@@ -117,23 +118,14 @@ namespace scene
 
 		//! Returns the name of the node.
 		/** \return Name as character string. */
-		virtual const c8* getName() const
+		virtual const std::optional<std::string> &getName() const
 		{
-			return Name.c_str();
+			return Name;
 		}
-
 
 		//! Sets the name of the node.
 		/** \param name New name of the scene node. */
-		virtual void setName(const c8* name)
-		{
-			Name = name;
-		}
-
-
-		//! Sets the name of the node.
-		/** \param name New name of the scene node. */
-		virtual void setName(const core::stringc& name)
+		virtual void setName(const std::optional<std::string> &name)
 		{
 			Name = name;
 		}
@@ -601,7 +593,7 @@ namespace scene
 		}
 
 		//! Name of the scene node.
-		core::stringc Name;
+		std::optional<std::string> Name;
 
 		//! Absolute transformation of the node.
 		core::matrix4 AbsoluteTransformation;
