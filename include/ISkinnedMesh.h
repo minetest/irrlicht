@@ -47,7 +47,7 @@ namespace scene
 
 		//! Gets a joint number from its name
 		/** \param name: Name of the joint.
-		\return Number of the joint or -1 if not found. */
+		\return Number of the joint or std::nullopt if not found. */
 		virtual std::optional<u32> getJointNumber(const std::string &name) const = 0;
 
 		//! Use animation from another mesh
