@@ -303,6 +303,8 @@ namespace irr
 
 		bool Resizable;
 
+		core::rect<s32> *lastElemPos;
+
 		struct SKeyMap
 		{
 			SKeyMap() {}
