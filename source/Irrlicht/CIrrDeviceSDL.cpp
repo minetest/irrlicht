@@ -219,14 +219,14 @@ void CIrrDeviceSDL::resetReceiveTextInputEvents() {
 	gui::IGUIElement *elem = GUIEnvironment->getFocus();
 	if (elem && elem->acceptsIME())
 	{
-		SDL_StartTextInput();
 		core::rect<s32> pos = elem->getAbsolutePosition();
 		SDL_Rect rect;
 		rect.x = pos.UpperLeftCorner.X;
 		rect.y = pos.UpperLeftCorner.Y;
-		rect.w = pos.LowerRightCorner.X - rect.x;
-		rect.h = pos.LowerRightCorner.Y - rect.y;
+		rect.w = pos.getWidth();
+		rect.h = pos.getHeight();
 		SDL_SetTextInputRect(&rect);
+		SDL_StartTextInput();
 	}
 	else
 	{
