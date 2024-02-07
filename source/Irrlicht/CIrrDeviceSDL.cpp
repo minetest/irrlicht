@@ -219,29 +219,22 @@ void CIrrDeviceSDL::resetReceiveTextInputEvents() {
 	gui::IGUIElement *elem = GUIEnvironment->getFocus();
 	if (elem && elem->acceptsIME())
 	{
-		core::rect<s32> *pos = new core::rect<s32>(elem->getAbsolutePosition());
-		if (lastElemPos == NULL || *lastElemPos != *pos)
+		core::rect<s32> pos = elem->getAbsolutePosition();
+		if (!lastElemPos || *lastElemPos != pos)
 		{
-			if (lastElemPos != NULL)
-				delete lastElemPos;
 			lastElemPos = pos;
 			SDL_Rect rect;
-			rect.x = pos->UpperLeftCorner.X;
-			rect.y = pos->UpperLeftCorner.Y;
-			rect.w = pos->getWidth();
-			rect.h = pos->getHeight();
+			rect.x = pos.UpperLeftCorner.X;
+			rect.y = pos.UpperLeftCorner.Y;
+			rect.w = pos.getWidth();
+			rect.h = pos.getHeight();
 			SDL_SetTextInputRect(&rect);
 			SDL_StartTextInput();
-		}
-		else
-		{
-			delete pos;
 		}
 	}
 	else
 	{
-		delete lastElemPos;
-		lastElemPos = NULL;
+		lastElemPos.reset();
 		SDL_StopTextInput();
 	}
 }
@@ -322,8 +315,6 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 		createGUIAndScene();
 		VideoDriver->OnResize(core::dimension2d<u32>(Width, Height));
 	}
-
-	lastElemPos = NULL;
 }
 
 
@@ -337,9 +328,6 @@ CIrrDeviceSDL::~CIrrDeviceSDL()
 		for (u32 i=0; i<numJoysticks; ++i)
 			SDL_JoystickClose(Joysticks[i]);
 #endif
-		if (lastElemPos != NULL) {
-			delete lastElemPos;
-		}
 		if (Window)
 		{
 			SDL_GL_MakeCurrent(Window, NULL);
