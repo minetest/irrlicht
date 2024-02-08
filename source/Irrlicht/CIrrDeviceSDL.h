@@ -24,7 +24,6 @@
 #include <SDL_syswm.h>
 
 #include <memory>
-#include <optional>
 
 namespace irr
 {
@@ -304,7 +303,7 @@ namespace irr
 
 		bool Resizable;
 
-		std::optional<core::rect<s32>> lastElemPos;
+		core::rect<s32> lastElemPos;
 
 		struct SKeyMap
 		{

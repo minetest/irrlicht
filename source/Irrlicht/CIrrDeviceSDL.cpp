@@ -224,7 +224,7 @@ void CIrrDeviceSDL::resetReceiveTextInputEvents() {
 		// sent as text input events instead of the result) when
 		// SDL_StartTextInput() is called on the same input box.
 		core::rect<s32> pos = elem->getAbsolutePosition();
-		if (!lastElemPos || *lastElemPos != pos)
+		if (!SDL_IsTextInputActive() || lastElemPos != pos)
 		{
 			lastElemPos = pos;
 			SDL_Rect rect;
@@ -238,7 +238,6 @@ void CIrrDeviceSDL::resetReceiveTextInputEvents() {
 	}
 	else
 	{
-		lastElemPos.reset();
 		SDL_StopTextInput();
 	}
 }
