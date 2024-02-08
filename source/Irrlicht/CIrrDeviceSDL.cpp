@@ -219,6 +219,10 @@ void CIrrDeviceSDL::resetReceiveTextInputEvents() {
 	gui::IGUIElement *elem = GUIEnvironment->getFocus();
 	if (elem && elem->acceptsIME())
 	{
+		// IBus seems to have an issue where dead keys and compose keys do not
+		// work (specifically, the individual characters in the sequence are
+		// sent as text input events instead of the result) when
+		// SDL_StartTextInput() is called on the same input box.
 		core::rect<s32> pos = elem->getAbsolutePosition();
 		if (!lastElemPos || *lastElemPos != pos)
 		{
