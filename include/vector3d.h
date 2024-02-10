@@ -68,57 +68,51 @@ namespace core
 			return *(&X+index);
 		}
 
-		//! sort in order X, Y, Z. Equality with rounding tolerance.
+		//! sort in order X, Y, Z.
 		bool operator<=(const vector3d<T>&other) const
 		{
-			return (X<other.X || core::equals(X, other.X)) ||
-					(core::equals(X, other.X) && (Y<other.Y || core::equals(Y, other.Y))) ||
-					(core::equals(X, other.X) && core::equals(Y, other.Y) && (Z<other.Z || core::equals(Z, other.Z)));
+			return !(*this > other);
 		}
 
-		//! sort in order X, Y, Z. Equality with rounding tolerance.
+		//! sort in order X, Y, Z.
 		bool operator>=(const vector3d<T>&other) const
 		{
-			return (X>other.X || core::equals(X, other.X)) ||
-					(core::equals(X, other.X) && (Y>other.Y || core::equals(Y, other.Y))) ||
-					(core::equals(X, other.X) && core::equals(Y, other.Y) && (Z>other.Z || core::equals(Z, other.Z)));
+			return !(*this < other);
 		}
 
-		//! sort in order X, Y, Z. Difference must be above rounding tolerance.
+		//! sort in order X, Y, Z.
 		bool operator<(const vector3d<T>&other) const
 		{
-			return (X<other.X && !core::equals(X, other.X)) ||
-					(core::equals(X, other.X) && Y<other.Y && !core::equals(Y, other.Y)) ||
-					(core::equals(X, other.X) && core::equals(Y, other.Y) && Z<other.Z && !core::equals(Z, other.Z));
+			return X < other.X || (X == other.X && Y < other.Y) ||
+					(X == other.X && Y == other.Y && Z < other.Z);
 		}
 
-		//! sort in order X, Y, Z. Difference must be above rounding tolerance.
+		//! sort in order X, Y, Z.
 		bool operator>(const vector3d<T>&other) const
 		{
-			return (X>other.X && !core::equals(X, other.X)) ||
-					(core::equals(X, other.X) && Y>other.Y && !core::equals(Y, other.Y)) ||
-					(core::equals(X, other.X) && core::equals(Y, other.Y) && Z>other.Z && !core::equals(Z, other.Z));
+			return X > other.X || (X == other.X && Y > other.Y) ||
+					(X == other.X && Y == other.Y && Z > other.Z);
 		}
 
-		//! use weak float compare
 		bool operator==(const vector3d<T>& other) const
 		{
-			return this->equals(other);
+			return X == other.X && Y == other.Y && Z == other.Z;
 		}
 
 		bool operator!=(const vector3d<T>& other) const
 		{
-			return !this->equals(other);
+			return !(*this == other);
 		}
 
 		// functions
 
-		//! returns if this vector equals the other one, taking floating point rounding errors into account
-		bool equals(const vector3d<T>& other, const T tolerance = (T)ROUNDING_ERROR_f32 ) const
+		//! Checks if this vector equals the other one.
+		/** Takes floating point rounding errors into account.
+		\param other Vector to compare with.
+		\return True if the two vector are (almost) equal, else false. */
+		bool equals(const vector3d<T>& other) const
 		{
-			return core::equals(X, other.X, tolerance) &&
-				core::equals(Y, other.Y, tolerance) &&
-				core::equals(Z, other.Z, tolerance);
+			return core::equals(X, other.X) && core::equals(Y, other.Y) && core::equals(Z, other.Z);
 		}
 
 		vector3d<T>& set(const T nx, const T ny, const T nz) {X=nx; Y=ny; Z=nz; return *this;}

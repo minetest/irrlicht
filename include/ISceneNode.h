@@ -14,7 +14,9 @@
 #include "aabbox3d.h"
 #include "matrix4.h"
 #include "IAttributes.h"
+
 #include <list>
+#include <optional>
 
 namespace irr
 {
@@ -116,23 +118,14 @@ namespace scene
 
 		//! Returns the name of the node.
 		/** \return Name as character string. */
-		virtual const c8* getName() const
+		virtual const std::optional<std::string> &getName() const
 		{
-			return Name.c_str();
+			return Name;
 		}
-
 
 		//! Sets the name of the node.
 		/** \param name New name of the scene node. */
-		virtual void setName(const c8* name)
-		{
-			Name = name;
-		}
-
-
-		//! Sets the name of the node.
-		/** \param name New name of the scene node. */
-		virtual void setName(const core::stringc& name)
+		virtual void setName(const std::optional<std::string> &name)
 		{
 			Name = name;
 		}
@@ -275,31 +268,31 @@ namespace scene
 
 				child->grab();
 				child->remove(); // remove from old parent
-				Children.push_back(child);
+				// Note: This iterator is not invalidated until we erase it.
+				child->ThisIterator = Children.insert(Children.end(), child);
 				child->Parent = this;
 			}
 		}
 
 
 		//! Removes a child from this scene node.
-		/** If found in the children list, the child pointer is also
-		dropped and might be deleted if no other grab exists.
+		/**
 		\param child A pointer to the child which shall be removed.
 		\return True if the child was removed, and false if not,
-		e.g. because it couldn't be found in the children list. */
+		e.g. because it belongs to a different parent or no parent. */
 		virtual bool removeChild(ISceneNode* child)
 		{
-			ISceneNodeList::iterator it = Children.begin();
-			for (; it != Children.end(); ++it)
-				if ((*it) == child)
-				{
-					(*it)->Parent = 0;
-					(*it)->drop();
-					Children.erase(it);
-					return true;
-				}
+			if (child->Parent != this)
+				return false;
 
-			return false;
+			// The iterator must be set since the parent is not null.
+			_IRR_DEBUG_BREAK_IF(!child->ThisIterator.has_value());
+			auto it = *child->ThisIterator;
+			child->ThisIterator = std::nullopt;
+			child->Parent = nullptr;
+			child->drop();
+			Children.erase(it);
+			return true;
 		}
 
 
@@ -309,13 +302,11 @@ namespace scene
 		*/
 		virtual void removeAll()
 		{
-			ISceneNodeList::iterator it = Children.begin();
-			for (; it != Children.end(); ++it)
-			{
-				(*it)->Parent = 0;
-				(*it)->drop();
+			for (auto &child : Children) {
+				child->Parent = nullptr;
+				child->ThisIterator = std::nullopt;
+				child->drop();
 			}
-
 			Children.clear();
 		}
 
@@ -508,10 +499,8 @@ namespace scene
 			grab();
 			remove();
 
-			Parent = newParent;
-
-			if (Parent)
-				Parent->addChild(this);
+			if (newParent)
+				newParent->addChild(this);
 
 			drop();
 		}
@@ -604,7 +593,7 @@ namespace scene
 		}
 
 		//! Name of the scene node.
-		core::stringc Name;
+		std::optional<std::string> Name;
 
 		//! Absolute transformation of the node.
 		core::matrix4 AbsoluteTransformation;
@@ -618,11 +607,14 @@ namespace scene
 		//! Relative scale of the scene node.
 		core::vector3df RelativeScale;
 
-		//! Pointer to the parent
-		ISceneNode* Parent;
-
 		//! List of all children of this node
 		std::list<ISceneNode*> Children;
+
+		//! Iterator pointing to this node in the parent's child list.
+		std::optional<ISceneNodeList::iterator> ThisIterator;
+
+		//! Pointer to the parent
+		ISceneNode* Parent;
 
 		//! Pointer to the scene manager
 		ISceneManager* SceneManager;

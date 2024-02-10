@@ -362,28 +362,6 @@ public:
 			return 24;
 		case ECF_A8R8G8B8:
 			return 32;
-		case ECF_DXT1:
-			return 16;
-		case ECF_DXT2:
-		case ECF_DXT3:
-		case ECF_DXT4:
-		case ECF_DXT5:
-			return 32;
-		case ECF_PVRTC_RGB2:
-			return 12;
-		case ECF_PVRTC_ARGB2:
-		case ECF_PVRTC2_ARGB2:
-			return 16;
-		case ECF_PVRTC_RGB4:
-			return 24;
-		case ECF_PVRTC_ARGB4:
-		case ECF_PVRTC2_ARGB4:
-			return 32;
-		case ECF_ETC1:
-		case ECF_ETC2_RGB:
-			return 24;
-		case ECF_ETC2_ARGB:
-			return 32;
 		case ECF_D16:
 			return 16;
 		case ECF_D32:
@@ -418,74 +396,17 @@ public:
 	//! calculate image data size in bytes for selected format, width and height.
 	static u32 getDataSizeFromFormat(ECOLOR_FORMAT format, u32 width, u32 height)
 	{
-		u32 imageSize = 0;
-
-		switch (format)
-		{
-		case ECF_DXT1:
-			imageSize = ((width + 3) / 4) * ((height + 3) / 4) * 8;
-			break;
-		case ECF_DXT2:
-		case ECF_DXT3:
-		case ECF_DXT4:
-		case ECF_DXT5:
-			imageSize = ((width + 3) / 4) * ((height + 3) / 4) * 16;
-			break;
-		case ECF_PVRTC_RGB2:
-		case ECF_PVRTC_ARGB2:
-			imageSize = (core::max_<u32>(width, 16) * core::max_<u32>(height, 8) * 2 + 7) / 8;
-			break;
-		case ECF_PVRTC_RGB4:
-		case ECF_PVRTC_ARGB4:
-			imageSize = (core::max_<u32>(width, 8) * core::max_<u32>(height, 8) * 4 + 7) / 8;
-			break;
-		case ECF_PVRTC2_ARGB2:
-			imageSize = core::ceil32(width / 8.0f) * core::ceil32(height / 4.0f) * 8;
-			break;
-		case ECF_PVRTC2_ARGB4:
-		case ECF_ETC1:
-		case ECF_ETC2_RGB:
-			imageSize = core::ceil32(width / 4.0f) * core::ceil32(height / 4.0f) * 8;
-			break;
-		case ECF_ETC2_ARGB:
-			imageSize = core::ceil32(width / 4.0f) * core::ceil32(height / 4.0f) * 16;
-			break;
-		default: // uncompressed formats
-			imageSize = getBitsPerPixelFromFormat(format) / 8 * width;
-			imageSize *= height;
-			break;
-		}
+		// non-compressed formats
+		u32 imageSize = getBitsPerPixelFromFormat(format) / 8 * width;
+		imageSize *= height;
 
 		return imageSize;
 	}
 
-// Define to check for all compressed image formats cases in a switch
-#define IRR_CASE_IIMAGE_COMPRESSED_FORMAT\
-	case ECF_DXT1:\
-	case ECF_DXT2:\
-	case ECF_DXT3:\
-	case ECF_DXT4:\
-	case ECF_DXT5:\
-	case ECF_PVRTC_RGB2:\
-	case ECF_PVRTC_ARGB2:\
-	case ECF_PVRTC2_ARGB2:\
-	case ECF_PVRTC_RGB4:\
-	case ECF_PVRTC_ARGB4:\
-	case ECF_PVRTC2_ARGB4:\
-	case ECF_ETC1:\
-	case ECF_ETC2_RGB:\
-	case ECF_ETC2_ARGB:
-
 	//! check if this is compressed color format
 	static bool isCompressedFormat(const ECOLOR_FORMAT format)
 	{
-		switch(format)
-		{
-			IRR_CASE_IIMAGE_COMPRESSED_FORMAT
-				return true;
-			default:
-				return false;
-		}
+		return false;
 	}
 
 	//! check if the color format is only viable for depth/stencil textures
@@ -522,22 +443,6 @@ public:
 		}
 		return false;
 	}
-
-#if defined(PATCH_SUPERTUX_8_0_1_with_1_9_0)
-	static bool isRenderTargetOnlyFormat(const ECOLOR_FORMAT format)
-	{
-		switch (format)
-		{
-		case ECF_A1R5G5B5:
-		case ECF_R5G6B5:
-		case ECF_R8G8B8:
-		case ECF_A8R8G8B8:
-			return false;
-		default:
-			return true;
-		}
-	}
-#endif
 
 protected:
 	ECOLOR_FORMAT Format;

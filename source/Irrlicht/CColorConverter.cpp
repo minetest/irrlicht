@@ -757,9 +757,6 @@ void CColorConverter::convert_viaFormat(const void* sP, ECOLOR_FORMAT sF, s32 sN
 				case ECF_R8G8B8:
 					convert_A1R5G5B5toR8G8B8(sP, sN, dP);
 				break;
-				IRR_CASE_IIMAGE_COMPRESSED_FORMAT
-					os::Printer::log("CColorConverter::convert_viaFormat method doesn't support compressed images.", ELL_WARNING);
-				break;
 
 				default:
 					break;
@@ -779,9 +776,6 @@ void CColorConverter::convert_viaFormat(const void* sP, ECOLOR_FORMAT sF, s32 sN
 				break;
 				case ECF_R8G8B8:
 					convert_R5G6B5toR8G8B8(sP, sN, dP);
-				break;
-				IRR_CASE_IIMAGE_COMPRESSED_FORMAT
-					os::Printer::log("CColorConverter::convert_viaFormat method doesn't support compressed images.", ELL_WARNING);
 				break;
 
 				default:
@@ -803,9 +797,6 @@ void CColorConverter::convert_viaFormat(const void* sP, ECOLOR_FORMAT sF, s32 sN
 				case ECF_R8G8B8:
 					convert_A8R8G8B8toR8G8B8(sP, sN, dP);
 				break;
-				IRR_CASE_IIMAGE_COMPRESSED_FORMAT
-					os::Printer::log("CColorConverter::convert_viaFormat method doesn't support compressed images.", ELL_WARNING);
-				break;
 
 				default:
 					break;
@@ -826,17 +817,11 @@ void CColorConverter::convert_viaFormat(const void* sP, ECOLOR_FORMAT sF, s32 sN
 				case ECF_R8G8B8:
 					convert_R8G8B8toR8G8B8(sP, sN, dP);
 				break;
-				IRR_CASE_IIMAGE_COMPRESSED_FORMAT
-					os::Printer::log("CColorConverter::convert_viaFormat method doesn't support compressed images.", ELL_WARNING);
-				break;
 
 				default:
 					break;
 			}
 		break;
-		IRR_CASE_IIMAGE_COMPRESSED_FORMAT
-			os::Printer::log("CColorConverter::convert_viaFormat method doesn't support compressed images.", ELL_WARNING);
-			break;
 
 		default:
 			break;

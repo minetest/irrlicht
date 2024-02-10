@@ -561,6 +561,10 @@ protected:
 
 		u32 width = Size.Width >> level;
 		u32 height = Size.Height >> level;
+		if (width < 1)
+			width = 1;
+		if (height < 1)
+			height = 1;
 
 		GLenum tmpTextureType = TextureType;
 

@@ -10,6 +10,8 @@
 #include "IAnimatedMesh.h"
 #include "SSkinMeshBuffer.h"
 
+#include <optional>
+
 namespace irr
 {
 namespace scene
@@ -41,12 +43,12 @@ namespace scene
 		/** \param number: Zero based index of joint. The last joint
 		has the number getJointCount()-1;
 		\return Name of joint and null if an error happened. */
-		virtual const c8* getJointName(u32 number) const = 0;
+		virtual const std::optional<std::string> &getJointName(u32 number) const = 0;
 
 		//! Gets a joint number from its name
 		/** \param name: Name of the joint.
-		\return Number of the joint or -1 if not found. */
-		virtual s32 getJointNumber(const c8* name) const = 0;
+		\return Number of the joint or std::nullopt if not found. */
+		virtual std::optional<u32> getJointNumber(const std::string &name) const = 0;
 
 		//! Use animation from another mesh
 		/** The animation is linked (not copied) based on joint names
@@ -136,7 +138,7 @@ namespace scene
 			}
 
 			//! The name of this joint
-			core::stringc Name;
+			std::optional<std::string> Name;
 
 			//! Local matrix of this joint
 			core::matrix4 LocalMatrix;

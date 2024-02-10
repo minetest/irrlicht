@@ -159,10 +159,11 @@ const c8* COSOperator::getTextFromClipboard() const
 	if (!OpenClipboard(NULL))
 		return 0;
 
-	wchar_t * buffer = 0;
-
 	HANDLE hData = GetClipboardData( CF_UNICODETEXT );
-	buffer = (wchar_t*) GlobalLock( hData );
+	if (hData == NULL) // Probably not in Unicode text format
+		return 0;
+
+	wchar_t * buffer = (wchar_t*) GlobalLock( hData );
 
 	core::wStringToUTF8(ClipboardBuf, buffer);
 

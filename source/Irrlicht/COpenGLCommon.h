@@ -23,7 +23,7 @@
 	#endif
 	#include <OpenGL/gl.h>
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		#include <GL/glext.h>
+		#error glext.h missing on OSX
 	#endif
 #elif defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && !defined(_IRR_COMPILE_WITH_X11_DEVICE_)
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
@@ -34,8 +34,11 @@
 	#include <SDL_video.h>
 	#include <SDL_opengl.h>
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		// The SDL2 header doesn't cut it for extensions
+		#ifdef __APPLE__
+		#include <SDL_opengl_glext.h>
+		#else
 		#include <GL/glext.h>
+		#endif
 	#endif
 #else
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)

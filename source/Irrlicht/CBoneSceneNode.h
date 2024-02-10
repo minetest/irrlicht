@@ -8,6 +8,8 @@
 
 #include "IBoneSceneNode.h"
 
+#include <optional>
+
 namespace irr
 {
 namespace scene
@@ -19,7 +21,8 @@ namespace scene
 
 		//! constructor
 		CBoneSceneNode(ISceneNode* parent, ISceneManager* mgr,
-			s32 id=-1, u32 boneIndex=0, const c8* boneName=0);
+			s32 id=-1, u32 boneIndex=0,
+			const std::optional<std::string> &boneName = std::nullopt);
 
 		//! Returns the index of the bone
 		u32 getBoneIndex() const override;

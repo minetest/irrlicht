@@ -218,9 +218,28 @@ int CIrrDeviceSDL::findCharToPassToIrrlicht(int assumedChar, EKEY_CODE key) {
 void CIrrDeviceSDL::resetReceiveTextInputEvents() {
 	gui::IGUIElement *elem = GUIEnvironment->getFocus();
 	if (elem && elem->acceptsIME())
-		SDL_StartTextInput();
+	{
+		// IBus seems to have an issue where dead keys and compose keys do not
+		// work (specifically, the individual characters in the sequence are
+		// sent as text input events instead of the result) when
+		// SDL_StartTextInput() is called on the same input box.
+		core::rect<s32> pos = elem->getAbsolutePosition();
+		if (!SDL_IsTextInputActive() || lastElemPos != pos)
+		{
+			lastElemPos = pos;
+			SDL_Rect rect;
+			rect.x = pos.UpperLeftCorner.X;
+			rect.y = pos.UpperLeftCorner.Y;
+			rect.w = pos.getWidth();
+			rect.h = pos.getHeight();
+			SDL_SetTextInputRect(&rect);
+			SDL_StartTextInput();
+		}
+	}
 	else
+	{
 		SDL_StopTextInput();
+	}
 }
 
 //! constructor
@@ -229,7 +248,7 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	Window((SDL_Window*)param.WindowId), SDL_Flags(0),
 	MouseX(0), MouseY(0), MouseXRel(0), MouseYRel(0), MouseButtonStates(0),
 	Width(param.WindowSize.Width), Height(param.WindowSize.Height),
-	Resizable(param.WindowResizable == 1 ? true : false)
+	Resizable(param.WindowResizable == 1 ? true : false), CurrentTouchCount(0)
 {
 	#ifdef _DEBUG
 	setDebugName("CIrrDeviceSDL");
@@ -254,14 +273,21 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 		}
 	}
 
+	// Minetest has its own code to synthesize mouse events from touch events,
+	// so we prevent SDL from doing it.
+	SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "0");
+	SDL_SetHint(SDL_HINT_MOUSE_TOUCH_EVENTS, "0");
+
 	// create keymap
 	createKeyMap();
 
 	// create window
 	if (CreationParams.DriverType != video::EDT_NULL)
 	{
-		// create the window, only if we do not use the null device
-		createWindow();
+		if (!createWindow()) {
+			Close = true;
+			return;
+		}
 	}
 
 
@@ -555,7 +581,11 @@ bool CIrrDeviceSDL::run()
 
 			irrevent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 			irrevent.MouseInput.Event = irr::EMIE_MOUSE_WHEEL;
+#if SDL_VERSION_ATLEAST(2, 0, 18)
 			irrevent.MouseInput.Wheel = SDL_event.wheel.preciseY;
+#else
+			irrevent.MouseInput.Wheel = SDL_event.wheel.y;
+#endif
 			irrevent.MouseInput.Shift = (keymod & KMOD_SHIFT) != 0;
 			irrevent.MouseInput.Control = (keymod & KMOD_CTRL) != 0;
 			irrevent.MouseInput.X = MouseX;
@@ -737,6 +767,45 @@ bool CIrrDeviceSDL::run()
 			irrevent.EventType = irr::EET_USER_EVENT;
 			irrevent.UserEvent.UserData1 = reinterpret_cast<uintptr_t>(SDL_event.user.data1);
 			irrevent.UserEvent.UserData2 = reinterpret_cast<uintptr_t>(SDL_event.user.data2);
+
+			postEventFromUser(irrevent);
+			break;
+
+		case SDL_FINGERDOWN:
+			irrevent.EventType = EET_TOUCH_INPUT_EVENT;
+			irrevent.TouchInput.Event = ETIE_PRESSED_DOWN;
+			irrevent.TouchInput.ID = SDL_event.tfinger.fingerId;
+			irrevent.TouchInput.X = SDL_event.tfinger.x * Width;
+			irrevent.TouchInput.Y = SDL_event.tfinger.y * Height;
+			CurrentTouchCount++;
+			irrevent.TouchInput.touchedCount = CurrentTouchCount;
+
+			postEventFromUser(irrevent);
+			break;
+
+		case SDL_FINGERMOTION:
+			irrevent.EventType = EET_TOUCH_INPUT_EVENT;
+			irrevent.TouchInput.Event = ETIE_MOVED;
+			irrevent.TouchInput.ID = SDL_event.tfinger.fingerId;
+			irrevent.TouchInput.X = SDL_event.tfinger.x * Width;
+			irrevent.TouchInput.Y = SDL_event.tfinger.y * Height;
+			irrevent.TouchInput.touchedCount = CurrentTouchCount;
+
+			postEventFromUser(irrevent);
+			break;
+
+		case SDL_FINGERUP:
+			irrevent.EventType = EET_TOUCH_INPUT_EVENT;
+			irrevent.TouchInput.Event = ETIE_LEFT_UP;
+			irrevent.TouchInput.ID = SDL_event.tfinger.fingerId;
+			irrevent.TouchInput.X = SDL_event.tfinger.x * Width;
+			irrevent.TouchInput.Y = SDL_event.tfinger.y * Height;
+			// To match Android behavior, still count the pointer that was
+			// just released.
+			irrevent.TouchInput.touchedCount = CurrentTouchCount;
+			if (CurrentTouchCount > 0) {
+				CurrentTouchCount--;
+			}
 
 			postEventFromUser(irrevent);
 			break;

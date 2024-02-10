@@ -52,7 +52,7 @@ private:
 	bool readChunkTEXS();
 	bool readChunkBRUS();
 
-	void readString(core::stringc& newstring);
+	std::string readString();
 	void readFloats(f32* vec, u32 count);
 
 	core::array<SB3dChunk> B3dStack;

@@ -55,14 +55,6 @@ namespace video
 				return FeatureAvailable[IRR_GL_OES_framebuffer_object];
 			case EVDF_VERTEX_BUFFER_OBJECT:
 				return Version>100;
-			case EVDF_TEXTURE_COMPRESSED_DXT:
-				return false; // NV Tegra need improvements here
-			case EVDF_TEXTURE_COMPRESSED_PVRTC:
-				return FeatureAvailable[IRR_GL_IMG_texture_compression_pvrtc];
-			case EVDF_TEXTURE_COMPRESSED_ETC1:
-				return FeatureAvailable[IRR_GL_OES_compressed_ETC1_RGB8_texture];
-			case EVDF_TEXTURE_CUBEMAP:
-				return FeatureAvailable[IRR_GL_OES_texture_cube_map];
 			default:
 				return true;
 			};

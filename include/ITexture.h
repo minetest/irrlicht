@@ -292,11 +292,6 @@ public:
 		{
 		case ECF_A8R8G8B8:
 		case ECF_A1R5G5B5:
-		case ECF_DXT1:
-		case ECF_DXT2:
-		case ECF_DXT3:
-		case ECF_DXT4:
-		case ECF_DXT5:
 		case ECF_A16B16G16R16F:
 		case ECF_A32B32G32R32F:
 			status = true;

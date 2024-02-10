@@ -3962,29 +3962,6 @@ bool COpenGLDriver::getColorFormatParameters(ECOLOR_FORMAT format, GLint& intern
 		if (Version > 101)
 			pixelType = GL_UNSIGNED_INT_8_8_8_8_REV;
 		break;
-	case ECF_DXT1:
-		if (queryOpenGLFeature(COpenGLExtensionHandler::IRR_EXT_texture_compression_s3tc))
-		{
-			supported = true;
-			internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-			pixelFormat = GL_BGRA_EXT;
-			pixelType = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-		}
-		break;
-	case ECF_DXT2:
-	case ECF_DXT3:
-		supported = true;
-		internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-		pixelFormat = GL_BGRA_EXT;
-		pixelType = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-		break;
-	case ECF_DXT4:
-	case ECF_DXT5:
-		supported = true;
-		internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-		pixelFormat = GL_BGRA_EXT;
-		pixelType = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-		break;
 	case ECF_D16:
 		supported = true;
 		internalFormat = GL_DEPTH_COMPONENT16;

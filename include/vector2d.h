@@ -75,47 +75,47 @@ public:
 		return *(&X+index);
 	}
 
-	//! sort in order X, Y. Equality with rounding tolerance.
+	//! sort in order X, Y.
 	bool operator<=(const vector2d<T>&other) const
 	{
-		return (X<other.X || core::equals(X, other.X)) ||
-				(core::equals(X, other.X) && (Y<other.Y || core::equals(Y, other.Y)));
+		return !(*this > other);
 	}
 
-	//! sort in order X, Y. Equality with rounding tolerance.
+	//! sort in order X, Y.
 	bool operator>=(const vector2d<T>&other) const
 	{
-		return (X>other.X || core::equals(X, other.X)) ||
-				(core::equals(X, other.X) && (Y>other.Y || core::equals(Y, other.Y)));
+		return !(*this < other);
 	}
 
-	//! sort in order X, Y. Difference must be above rounding tolerance.
+	//! sort in order X, Y.
 	bool operator<(const vector2d<T>&other) const
 	{
-		return (X<other.X && !core::equals(X, other.X)) ||
-				(core::equals(X, other.X) && Y<other.Y && !core::equals(Y, other.Y));
+		return X < other.X || (X == other.X && Y < other.Y);
 	}
 
-	//! sort in order X, Y. Difference must be above rounding tolerance.
+	//! sort in order X, Y.
 	bool operator>(const vector2d<T>&other) const
 	{
-		return (X>other.X && !core::equals(X, other.X)) ||
-				(core::equals(X, other.X) && Y>other.Y && !core::equals(Y, other.Y));
+		return X > other.X || (X == other.X && Y > other.Y);
 	}
 
-	bool operator==(const vector2d<T>& other) const { return equals(other); }
-	bool operator!=(const vector2d<T>& other) const { return !equals(other); }
+	bool operator==(const vector2d<T>& other) const {
+		return X == other.X && Y == other.Y;
+	}
+
+	bool operator!=(const vector2d<T>& other) const {
+		return !(*this == other);
+	}
 
 	// functions
 
 	//! Checks if this vector equals the other one.
 	/** Takes floating point rounding errors into account.
 	\param other Vector to compare with.
-	\param tolerance Epsilon value for both - comparing X and Y.
 	\return True if the two vector are (almost) equal, else false. */
-	bool equals(const vector2d<T>& other, const T tolerance = (T)ROUNDING_ERROR_f32 ) const
+	bool equals(const vector2d<T>& other) const
 	{
-		return core::equals(X, other.X, tolerance) && core::equals(Y, other.Y, tolerance);
+		return core::equals(X, other.X) && core::equals(Y, other.Y);
 	}
 
 	vector2d<T>& set(T nx, T ny) {X=nx; Y=ny; return *this; }

@@ -36,6 +36,8 @@ namespace irr
 
 		virtual bool isWindowMinimized() const;
 
+		virtual bool isWindowVisible() const;
+
 		virtual void closeDevice();
 
 		virtual void setResizable(bool resize = false);
@@ -84,9 +86,10 @@ namespace irr
 		const ASensor* Accelerometer;
 		const ASensor* Gyroscope;
 
-		bool Focused;
 		bool Initialized;
+		bool Stopped;
 		bool Paused;
+		bool Focused;
 
 		JNIEnv* JNIEnvAttachedToVM;
 

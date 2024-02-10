@@ -51,6 +51,8 @@ CAnimatedMeshSceneNode::~CAnimatedMeshSceneNode()
 {
 	if (LoopCallBack)
 		LoopCallBack->drop();
+	if (Mesh)
+		Mesh->drop();
 }
 
 
@@ -469,21 +471,21 @@ IBoneSceneNode* CAnimatedMeshSceneNode::getJointNode(const c8* jointName)
 
 	ISkinnedMesh *skinnedMesh=(ISkinnedMesh*)Mesh;
 
-	const s32 number = skinnedMesh->getJointNumber(jointName);
+	const std::optional<u32> number = skinnedMesh->getJointNumber(jointName);
 
-	if (number == -1)
+	if (!number.has_value())
 	{
 		os::Printer::log("Joint with specified name not found in skinned mesh", jointName, ELL_DEBUG);
 		return 0;
 	}
 
-	if ((s32)JointChildSceneNodes.size() <= number)
+	if (JointChildSceneNodes.size() <= *number)
 	{
 		os::Printer::log("Joint was found in mesh, but is not loaded into node", jointName, ELL_WARNING);
 		return 0;
 	}
 
-	return JointChildSceneNodes[number];
+	return JointChildSceneNodes[*number];
 }
 
 

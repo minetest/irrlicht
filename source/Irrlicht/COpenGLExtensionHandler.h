@@ -1010,8 +1010,6 @@ class COpenGLExtensionHandler
 	//! show all features with availability
 	void dump(ELOG_LEVEL logLevel) const;
 
-	void dumpFramebufferFormats() const;
-
 	// Some variables for properties
 	bool StencilBuffer;
 	bool TextureCompressionExtension;

@@ -705,7 +705,6 @@ private:
 	typedef void (APIENTRYP PFNGLMULTIDRAWARRAYSINDIRECTCOUNTPROC_MT) (GLenum mode, const void * indirect, GLintptr drawcount, GLsizei maxdrawcount, GLsizei stride);
 	typedef void (APIENTRYP PFNGLMULTIDRAWELEMENTSINDIRECTCOUNTPROC_MT) (GLenum mode, GLenum type, const void * indirect, GLintptr drawcount, GLsizei maxdrawcount, GLsizei stride);
 	typedef void (APIENTRYP PFNGLPOLYGONOFFSETCLAMPPROC_MT) (GLfloat factor, GLfloat units, GLfloat clamp);
-	typedef void (APIENTRYP PFNGLGENPERFMONITORSEXPROC_MT) (GLsizei n, GLuint * monitors);
 	typedef void (APIENTRYP PFNGLPRIMITIVEBOUNDINGBOXPROC_MT) (GLfloat minX, GLfloat minY, GLfloat minZ, GLfloat minW, GLfloat maxX, GLfloat maxY, GLfloat maxZ, GLfloat maxW);
 	typedef GLuint64 (APIENTRYP PFNGLGETTEXTUREHANDLEPROC_MT) (GLuint texture);
 	typedef GLuint64 (APIENTRYP PFNGLGETTEXTURESAMPLERHANDLEPROC_MT) (GLuint texture, GLuint sampler);
@@ -781,9 +780,9 @@ public:
 	// Call this once after creating the context.
 	void LoadAllProcedures(irr::video::IContextManager *cmgr);
 	// Check if an extension is supported.
-	inline bool IsExtensionPresent(const std::string &ext)
+	inline bool IsExtensionPresent(const std::string &ext) const
 	{
-		return extensions.find(ext) != extensions.end();
+		return extensions.count(ext) > 0;
 	}
 
 	PFNGLCULLFACEPROC_MT CullFace = NULL;
@@ -1436,7 +1435,6 @@ public:
 	PFNGLMULTIDRAWARRAYSINDIRECTCOUNTPROC_MT MultiDrawArraysIndirectCount = NULL;
 	PFNGLMULTIDRAWELEMENTSINDIRECTCOUNTPROC_MT MultiDrawElementsIndirectCount = NULL;
 	PFNGLPOLYGONOFFSETCLAMPPROC_MT PolygonOffsetClamp = NULL;
-	PFNGLGENPERFMONITORSEXPROC_MT GenPerfMonitorsEX = NULL;
 	PFNGLPRIMITIVEBOUNDINGBOXPROC_MT PrimitiveBoundingBox = NULL;
 	PFNGLGETTEXTUREHANDLEPROC_MT GetTextureHandle = NULL;
 	PFNGLGETTEXTURESAMPLERHANDLEPROC_MT GetTextureSamplerHandle = NULL;
@@ -3020,6 +3018,16 @@ public:
 	static constexpr const GLenum TEXTURE_SRGB_DECODE = 0x8A48;
 	static constexpr const GLenum DECODE = 0x8A49;
 	static constexpr const GLenum SKIP_DECODE = 0x8A4A;
+	static constexpr const GLenum ALPHA8 = 0x803C;
+	static constexpr const GLenum LUMINANCE8 = 0x8040;
+	static constexpr const GLenum LUMINANCE8_ALPHA8 = 0x8045;
+	static constexpr const GLenum ALPHA32F = 0x8816;
+	static constexpr const GLenum LUMINANCE32F = 0x8818;
+	static constexpr const GLenum LUMINANCE_ALPHA32F = 0x8819;
+	static constexpr const GLenum ALPHA16F = 0x881C;
+	static constexpr const GLenum LUMINANCE16F = 0x881E;
+	static constexpr const GLenum LUMINANCE_ALPHA16F = 0x881F;
+	static constexpr const GLenum BGRA8 = 0x93A1;
 	static constexpr const GLenum INCLUSIVE = 0x8F10;
 	static constexpr const GLenum EXCLUSIVE = 0x8F11;
 	static constexpr const GLenum WINDOW_RECTANGLE = 0x8F12;
@@ -3044,10 +3052,7 @@ public:
 	static constexpr const GLenum GEOMETRY_LINKED_VERTICES_OUT = 0x8916;
 	static constexpr const GLenum GEOMETRY_LINKED_INPUT_TYPE = 0x8917;
 	static constexpr const GLenum GEOMETRY_LINKED_OUTPUT_TYPE = 0x8918;
-	static constexpr const GLenum ALPHA8 = 0x803C;
 	static constexpr const GLenum LUMINANCE4_ALPHA4 = 0x8043;
-	static constexpr const GLenum LUMINANCE8_ALPHA8 = 0x8045;
-	static constexpr const GLenum LUMINANCE8 = 0x8040;
 	static constexpr const GLenum FRAMEBUFFER_ATTACHMENT_TEXTURE_3D_ZOFFSET = 0x8CD4;
 	static constexpr const GLenum COMPRESSED_RGBA_ASTC_3x3x3 = 0x93C0;
 	static constexpr const GLenum COMPRESSED_RGBA_ASTC_4x3x3 = 0x93C1;
@@ -3070,7 +3075,6 @@ public:
 	static constexpr const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x5 = 0x93E8;
 	static constexpr const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x6 = 0x93E9;
 	static constexpr const GLenum INT_10_10_10_2 = 0x8DF7;
-	static constexpr const GLenum BGRA8 = 0x93A1;
 	static constexpr const GLenum MALI_PROGRAM_BINARY_ARM = 0x8F61;
 	static constexpr const GLenum MALI_SHADER_BINARY_ARM = 0x8F60;
 	static constexpr const GLenum FETCH_PER_SAMPLE_ARM = 0x8F65;
@@ -3080,8 +3084,37 @@ public:
 	static constexpr const GLenum SMAPHS_PROGRAM_BINARY_DMP = 0x9252;
 	static constexpr const GLenum DMP_PROGRAM_BINARY_DMP = 0x9253;
 	static constexpr const GLenum SHADER_BINARY_DMP = 0x9250;
+	static constexpr const GLenum SURFACE_COMPRESSION = 0x96C0;
+	static constexpr const GLenum SURFACE_COMPRESSION_FIXED_RATE_NONE = 0x96C1;
+	static constexpr const GLenum SURFACE_COMPRESSION_FIXED_RATE_DEFAULT = 0x96C2;
 	static constexpr const GLenum SAMPLER_EXTERNAL_2D_Y2Y = 0x8BE7;
 	static constexpr const GLenum GPU_DISJOINT = 0x8FBB;
+	static constexpr const GLenum SHADING_RATE_1X1_PIXELS = 0x96A6;
+	static constexpr const GLenum SHADING_RATE_1X2_PIXELS = 0x96A7;
+	static constexpr const GLenum SHADING_RATE_2X1_PIXELS = 0x96A8;
+	static constexpr const GLenum SHADING_RATE_2X2_PIXELS = 0x96A9;
+	static constexpr const GLenum SHADING_RATE_1X4_PIXELS = 0x96AA;
+	static constexpr const GLenum SHADING_RATE_4X1_PIXELS = 0x96AB;
+	static constexpr const GLenum SHADING_RATE_4X2_PIXELS = 0x96AC;
+	static constexpr const GLenum SHADING_RATE_2X4_PIXELS = 0x96AD;
+	static constexpr const GLenum SHADING_RATE_4X4_PIXELS = 0x96AE;
+	static constexpr const GLenum SHADING_RATE = 0x96D0;
+	static constexpr const GLenum SHADING_RATE_ATTACHMENT = 0x96D1;
+	static constexpr const GLenum FRAGMENT_SHADING_RATE_COMBINER_OP_KEEP = 0x96D2;
+	static constexpr const GLenum FRAGMENT_SHADING_RATE_COMBINER_OP_REPLACE = 0x96D3;
+	static constexpr const GLenum FRAGMENT_SHADING_RATE_COMBINER_OP_MIN = 0x96D4;
+	static constexpr const GLenum FRAGMENT_SHADING_RATE_COMBINER_OP_MAX = 0x96D5;
+	static constexpr const GLenum FRAGMENT_SHADING_RATE_COMBINER_OP_MUL = 0x96D6;
+	static constexpr const GLenum MIN_FRAGMENT_SHADING_RATE_ATTACHMENT_TEXEL_WIDTH = 0x96D7;
+	static constexpr const GLenum MAX_FRAGMENT_SHADING_RATE_ATTACHMENT_TEXEL_WIDTH = 0x96D8;
+	static constexpr const GLenum MIN_FRAGMENT_SHADING_RATE_ATTACHMENT_TEXEL_HEIGHT = 0x96D9;
+	static constexpr const GLenum MAX_FRAGMENT_SHADING_RATE_ATTACHMENT_TEXEL_HEIGHT = 0x96DA;
+	static constexpr const GLenum MAX_FRAGMENT_SHADING_RATE_ATTACHMENT_TEXEL_ASPECT_RATIO = 0x96DB;
+	static constexpr const GLenum MAX_FRAGMENT_SHADING_RATE_ATTACHMENT_LAYERS = 0x96DC;
+	static constexpr const GLenum FRAGMENT_SHADING_RATE_WITH_SHADER_DEPTH_STENCIL_WRITES_SUPPORTED = 0x96DD;
+	static constexpr const GLenum FRAGMENT_SHADING_RATE_WITH_SAMPLE_MASK_SUPPORTED = 0x96DE;
+	static constexpr const GLenum FRAGMENT_SHADING_RATE_ATTACHMENT_WITH_DEFAULT_FRAMEBUFFER_SUPPORTED = 0x96DF;
+	static constexpr const GLenum FRAGMENT_SHADING_RATE_NON_TRIVIAL_COMBINERS_SUPPORTED = 0x8F6F;
 	static constexpr const GLenum TEXTURE_TILING = 0x9580;
 	static constexpr const GLenum DEDICATED_MEMORY_OBJECT = 0x9581;
 	static constexpr const GLenum PROTECTED_MEMORY_OBJECT = 0x959B;
@@ -3136,12 +3169,19 @@ public:
 	static constexpr const GLenum COMPRESSED_SRGB_ALPHA_S3TC_DXT3 = 0x8C4E;
 	static constexpr const GLenum COMPRESSED_SRGB_ALPHA_S3TC_DXT5 = 0x8C4F;
 	static constexpr const GLenum TEXTURE_FORMAT_SRGB_OVERRIDE = 0x8FBF;
-	static constexpr const GLenum ALPHA32F = 0x8816;
-	static constexpr const GLenum LUMINANCE32F = 0x8818;
-	static constexpr const GLenum LUMINANCE_ALPHA32F = 0x8819;
-	static constexpr const GLenum ALPHA16F = 0x881C;
-	static constexpr const GLenum LUMINANCE16F = 0x881E;
-	static constexpr const GLenum LUMINANCE_ALPHA16F = 0x881F;
+	static constexpr const GLenum NUM_SURFACE_COMPRESSION_FIXED_RATES = 0x8F6E;
+	static constexpr const GLenum SURFACE_COMPRESSION_FIXED_RATE_1BPC = 0x96C4;
+	static constexpr const GLenum SURFACE_COMPRESSION_FIXED_RATE_2BPC = 0x96C5;
+	static constexpr const GLenum SURFACE_COMPRESSION_FIXED_RATE_3BPC = 0x96C6;
+	static constexpr const GLenum SURFACE_COMPRESSION_FIXED_RATE_4BPC = 0x96C7;
+	static constexpr const GLenum SURFACE_COMPRESSION_FIXED_RATE_5BPC = 0x96C8;
+	static constexpr const GLenum SURFACE_COMPRESSION_FIXED_RATE_6BPC = 0x96C9;
+	static constexpr const GLenum SURFACE_COMPRESSION_FIXED_RATE_7BPC = 0x96CA;
+	static constexpr const GLenum SURFACE_COMPRESSION_FIXED_RATE_8BPC = 0x96CB;
+	static constexpr const GLenum SURFACE_COMPRESSION_FIXED_RATE_9BPC = 0x96CC;
+	static constexpr const GLenum SURFACE_COMPRESSION_FIXED_RATE_10BPC = 0x96CD;
+	static constexpr const GLenum SURFACE_COMPRESSION_FIXED_RATE_11BPC = 0x96CE;
+	static constexpr const GLenum SURFACE_COMPRESSION_FIXED_RATE_12BPC = 0x96CF;
 	static constexpr const GLenum GCCSO_SHADER_BINARY_FJ = 0x9260;
 	static constexpr const GLenum STATE_RESTORE = 0x8BDC;
 	static constexpr const GLenum SHADER_BINARY_VIV = 0x8FC4;
@@ -3151,5 +3191,5 @@ public:
 	static constexpr const GLenum NONE = 0;
 };
 
-//Global GL procedures object.
+// Global GL procedures object.
 IRRLICHT_API extern OpenGLProcedures GL;

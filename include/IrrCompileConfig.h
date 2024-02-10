@@ -5,8 +5,8 @@
 #pragma once
 
 //! Identifies the IrrlichtMt fork customized for the Minetest engine
-#define IRRLICHT_VERSION_MT_REVISION 13
-#define IRRLICHT_VERSION_MT "mt13"
+#define IRRLICHT_VERSION_MT_REVISION 15
+#define IRRLICHT_VERSION_MT "mt15"
 
 //! Irrlicht SDK Version
 #define IRRLICHT_VERSION_MAJOR 1

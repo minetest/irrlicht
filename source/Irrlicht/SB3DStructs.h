@@ -39,7 +39,7 @@ struct SB3dChunk
 
 struct SB3dTexture
 {
-	core::stringc TextureName;
+	std::string TextureName;
 	s32 Flags;
 	s32 Blend;
 	f32 Xpos;
