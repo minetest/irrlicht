@@ -10,6 +10,7 @@
 #include "CImage.h"
 #include "irrString.h"
 
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
 namespace irr
 {
@@ -138,7 +139,8 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
 	if (header.ColorMapType)
 	{
 		// Create 32 bit palette
-		const irr::u16 paletteSize = core::max_((u16)256, header.ColorMapLength);	// ColorMapLength can lie, but so far we only use palette for 8-bit, so ensure it has 256 entries
+		// `core::max_()` is not used here because it takes its inputs as references. Since `header` is packed, use the macro `MAX()` instead:
+		const irr::u16 paletteSize = MAX((u16)256u, header.ColorMapLength); // ColorMapLength can lie, but so far we only use palette for 8-bit, so ensure it has 256 entries
 		palette = new u32[paletteSize];
 
 		if( paletteSize > header.ColorMapLength )
