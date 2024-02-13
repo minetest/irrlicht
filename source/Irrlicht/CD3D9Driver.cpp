@@ -395,7 +395,8 @@ bool CD3D9Driver::initDriver(HWND hwnd, bool pureSoftware)
 	// get caps
 	pID3DDevice->GetDeviceCaps(&Caps);
 
-	os::Printer::log("Currently available Video Memory (kB)", core::stringc(pID3DDevice->GetAvailableTextureMem()/1024).c_str());
+	// Uses 32-bit value, so maxes out around 4gb
+	os::Printer::log("At least available dedicated+shared system texture memory (kB)", core::stringc(pID3DDevice->GetAvailableTextureMem()/1024).c_str());
 
 	// disable stencilbuffer if necessary
 	if (Params.Stencilbuffer &&
