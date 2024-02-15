@@ -193,7 +193,18 @@ bool CIrrDeviceSDL::keyIsKnownSpecial(EKEY_CODE key)
 	}
 }
 
-int CIrrDeviceSDL::findCharToPassToIrrlicht(int assumedChar, EKEY_CODE key) {
+int CIrrDeviceSDL::findCharToPassToIrrlicht(int assumedChar, EKEY_CODE key)
+{
+	// special cases that always return a char regardless of how the SDL keycode
+	// looks
+	switch (key) {
+		case KEY_RETURN:
+		case KEY_ESCAPE:
+			return (int)key;
+		default:
+			break;
+	}
+
 	// SDL in-place ORs values with no character representation with 1<<30
 	// https://wiki.libsdl.org/SDL2/SDLKeycodeLookup
 	if (assumedChar & (1<<30))
@@ -722,6 +733,9 @@ bool CIrrDeviceSDL::run()
 					key = (EKEY_CODE)0;
 				else
 					key = (EKEY_CODE)KeyMap[idx].Win32Key;
+
+				if (key == (EKEY_CODE)0)
+					os::Printer::log("keycode not mapped", core::stringc(mp.SDLKey), ELL_DEBUG);
 
 				// Make sure to only input special characters if something is in focus, as SDL_TEXTINPUT handles normal unicode already
 				if (SDL_IsTextInputActive() && !keyIsKnownSpecial(key) && (SDL_event.key.keysym.mod & KMOD_CTRL) == 0)
@@ -1269,7 +1283,7 @@ void CIrrDeviceSDL::createKeyMap()
 	KeyMap.push_back(SKeyMap(SDLK_KP_9, KEY_NUMPAD9));
 	KeyMap.push_back(SKeyMap(SDLK_KP_MULTIPLY, KEY_MULTIPLY));
 	KeyMap.push_back(SKeyMap(SDLK_KP_PLUS, KEY_ADD));
-//	KeyMap.push_back(SKeyMap(SDLK_KP_, KEY_SEPARATOR));
+	KeyMap.push_back(SKeyMap(SDLK_KP_ENTER, KEY_RETURN));
 	KeyMap.push_back(SKeyMap(SDLK_KP_MINUS, KEY_SUBTRACT));
 	KeyMap.push_back(SKeyMap(SDLK_KP_PERIOD, KEY_DECIMAL));
 	KeyMap.push_back(SKeyMap(SDLK_KP_DIVIDE, KEY_DIVIDE));
