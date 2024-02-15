@@ -276,7 +276,7 @@ if(ENABLE_OPENGL OR ENABLE_OPENGL3)
 	find_package(OpenGL REQUIRED)
 endif()
 if(USE_SDL2)
-	find_package(SDL2 CONFIG REQUIRED)
+	find_package(SDL2 2.0.10 CONFIG REQUIRED)
 	message(STATUS "Found SDL2: ${SDL2_LIBRARIES}")
 endif()
 
