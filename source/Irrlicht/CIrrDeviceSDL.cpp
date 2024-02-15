@@ -741,14 +741,6 @@ bool CIrrDeviceSDL::run()
 				if (SDL_IsTextInputActive() && !keyIsKnownSpecial(key) && (SDL_event.key.keysym.mod & KMOD_CTRL) == 0)
 					break;
 
-#ifdef _IRR_WINDOWS_API_
-				// handle alt+f4 in Windows, because SDL seems not to
-				if ( (SDL_event.key.keysym.mod & KMOD_LALT) && key == KEY_F4)
-				{
-					Close = true;
-					break;
-				}
-#endif
 				irrevent.EventType = irr::EET_KEY_INPUT_EVENT;
 				irrevent.KeyInput.Key = key;
 				irrevent.KeyInput.PressedDown = (SDL_event.type == SDL_KEYDOWN);
