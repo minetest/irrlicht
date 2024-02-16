@@ -185,7 +185,7 @@ endif()
 
 if(ENABLE_OPENGL)
 	add_definitions(-D_IRR_COMPILE_WITH_OPENGL_)
-	set(OPENGL_DIRECT_LINK TRUE) # not yet possible to remove this
+	set(OPENGL_DIRECT_LINK TRUE) # driver relies on this
 	if(DEVICE STREQUAL "WINDOWS")
 		add_definitions(-D_IRR_COMPILE_WITH_WGL_MANAGER_)
 	elseif(DEVICE STREQUAL "X11")
@@ -267,6 +267,24 @@ endif()
 if(USE_SDL2)
 	find_package(SDL2 2.0.10 CONFIG REQUIRED)
 	message(STATUS "Found SDL2: ${SDL2_LIBRARIES}")
+endif()
+
+# More special config
+
+if(ENABLE_OPENGL AND DEVICE STREQUAL "SDL")
+	# The legacy GL driver requires some symbols from GL 4.5 to compile,
+	# which SDL only provides since 2.26.0 (Nov 2022).
+	# We have a fallback in case this isn't satisfied so test for it.
+	set(CMAKE_REQUIRED_INCLUDES ${SDL2_INCLUDE_DIRS})
+	unset(CHECK_GL_VERSION_4_5 CACHE)
+	check_cxx_source_compiles("#include <SDL_opengl.h>\n\
+#ifndef GL_VERSION_4_5\n\
+#error\n\
+#endif\n\
+int main() {}" CHECK_GL_VERSION_4_5)
+	if(CHECK_GL_VERSION_4_5)
+		add_definitions(-DIRR_PREFER_SDL_GL_HEADER)
+	endif()
 endif()
 
 # Platform-specific libs
