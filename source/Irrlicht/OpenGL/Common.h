@@ -5,9 +5,21 @@
 
 #pragma once
 
-#define GL_GLEXT_PROTOTYPES
-#include <SDL_video.h>
-#include <SDL_opengl.h>
+#include "irrTypes.h"
+// even though we have mt_opengl.h our driver code still uses GL_* constants
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
+	#include <GL/gl.h>
+	#include <GL/glext.h>
+#elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
+	#include <OpenGL/gl.h>
+	// not sure if this works without glext.h?
+#elif defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && !defined(_IRR_COMPILE_WITH_X11_DEVICE_)
+	#include <SDL_video.h>
+	#include <SDL_opengl.h>
+#else
+	#include <GL/gl.h>
+	#include <GL/glext.h>
+#endif
 
 namespace irr
 {

@@ -6,7 +6,7 @@
 
 #ifdef _IRR_COMPILE_WITH_OPENGL_
 
-#if defined(_IRR_WINDOWS_API_)
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
 		#define GL_GLEXT_LEGACY 1
