@@ -107,7 +107,7 @@ bool COpenGLDriver::genericDriverInit()
 	u32 i;
 
 	// load extensions
-	initExtensions(Params.Stencilbuffer);
+	initExtensions(ContextManager, Params.Stencilbuffer);
 
 	// reset cache handler
 	delete CacheHandler;
