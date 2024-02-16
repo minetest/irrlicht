@@ -176,7 +176,8 @@ else()
 		set(DEFAULT_WEBGL1 TRUE)
 	endif()
 	option(ENABLE_GLES2 "Enable OpenGL ES 2+" ${DEFAULT_GLES2})
-	option(ENABLE_WEBGL1 "Enable WebGL (requires GLES2)" ${DEFAULT_WEBGL1})
+	#option(ENABLE_WEBGL1 "Enable WebGL (requires GLES2)" ${DEFAULT_WEBGL1})
+	set(ENABLE_WEBGL1 FALSE) # not working currently
 	if(ENABLE_WEBGL1)
 		set(ENABLE_GLES2 TRUE)
 	endif()
@@ -242,7 +243,7 @@ if (ENABLE_GLES2)
 else()
 	message(STATUS "OpenGL ES 2: OFF")
 endif()
-message(STATUS "WebGL: ${ENABLE_WEBGL1}")
+#message(STATUS "WebGL: ${ENABLE_WEBGL1}")
 
 # Required libs
 
