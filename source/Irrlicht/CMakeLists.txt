@@ -192,7 +192,6 @@ if(ENABLE_OPENGL)
 		add_definitions(-D_IRR_COMPILE_WITH_GLX_MANAGER_)
 	elseif(DEVICE STREQUAL "OSX")
 		add_definitions(-D_IRR_COMPILE_WITH_NSOGL_MANAGER_)
-		# FIXME broken due to missing glext.h now!
 	endif()
 endif()
 
