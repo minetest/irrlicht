@@ -199,8 +199,6 @@ if(ENABLE_OPENGL3)
 	if (NOT USE_SDL2)
 		message(FATAL_ERROR "OpenGL 3 driver requires SDL2")
 	endif()
-	set(USE_SDLGL ON)
-	set(USE_SDLGL3 ON)
 endif()
 
 if(ENABLE_GLES1)
@@ -216,12 +214,8 @@ endif()
 
 if(ENABLE_GLES2)
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES2_)
-	set(OPENGLES2_DIRECT_LINK TRUE) # not yet possible to remove this
 	if(DEVICE MATCHES "^(WINDOWS|X11|ANDROID)$" OR EMSCRIPTEN)
 		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_)
-	elseif(DEVICE STREQUAL "SDL")
-		set(USE_SDLGL ON)
-		set(USE_SDLGLES2 ON)
 	endif()
 endif()
 
@@ -243,10 +237,8 @@ message(STATUS "Device: ${DEVICE}")
 message(STATUS "OpenGL: ${ENABLE_OPENGL}")
 message(STATUS "OpenGL 3: ${ENABLE_OPENGL3}")
 message(STATUS "OpenGL ES: ${ENABLE_GLES1}")
-if (USE_SDLGLES2)
+if (ENABLE_GLES2)
 	message(STATUS "OpenGL ES 2: ON (unified)")
-elseif (ENABLE_GLES2)
-	message(STATUS "OpenGL ES 2: ON (legacy)")
 else()
 	message(STATUS "OpenGL ES 2: OFF")
 endif()
@@ -347,6 +339,8 @@ set(IRRDRVROBJ
 	mt_opengl_loader.cpp
 )
 
+# the two legacy drivers
+
 if(ENABLE_OPENGL)
 	set(IRRDRVROBJ
 		${IRRDRVROBJ}
@@ -362,6 +356,33 @@ if(ENABLE_GLES1)
 		${IRRDRVROBJ}
 		COGLESDriver.cpp
 		COGLESExtensionHandler.cpp
+	)
+endif()
+
+# the unified drivers
+
+if(ENABLE_OPENGL3 OR ENABLE_GLES2)
+	set(IRRDRVROBJ
+		${IRRDRVROBJ}
+		OpenGL/Driver.cpp
+		OpenGL/ExtensionHandler.cpp
+		OpenGL/FixedPipelineRenderer.cpp
+		OpenGL/MaterialRenderer.cpp
+		OpenGL/Renderer2D.cpp
+	)
+endif()
+
+if(ENABLE_OPENGL3)
+	set(IRRDRVROBJ
+		${IRRDRVROBJ}
+		OpenGL3/Driver.cpp
+	)
+endif()
+
+if(ENABLE_GLES2)
+	set(IRRDRVROBJ
+		${IRRDRVROBJ}
+		OpenGLES2/Driver.cpp
 	)
 endif()
 
@@ -381,37 +402,6 @@ add_library(IRRVIDEOOBJ OBJECT
 	${IRRDRVROBJ}
 	${IRRIMAGEOBJ}
 )
-
-if(USE_SDLGL)
-	target_sources(IRRVIDEOOBJ PRIVATE
-		OpenGL/Driver.cpp
-		OpenGL/ExtensionHandler.cpp
-		OpenGL/FixedPipelineRenderer.cpp
-		OpenGL/MaterialRenderer.cpp
-		OpenGL/Renderer2D.cpp
-	)
-endif()
-
-if(USE_SDLGL3)
-	target_sources(IRRVIDEOOBJ PRIVATE
-		OpenGL3/Driver.cpp
-	)
-endif()
-
-if(USE_SDLGLES2)
-	target_sources(IRRVIDEOOBJ PRIVATE
-		OpenGLES2/Driver.cpp
-	)
-elseif(ENABLE_GLES2)
-	target_sources(IRRVIDEOOBJ PRIVATE
-		COGLES2Driver.cpp
-		COGLES2ExtensionHandler.cpp
-		COGLES2FixedPipelineRenderer.cpp
-		COGLES2MaterialRenderer.cpp
-		COGLES2Renderer2D.cpp
-		CWebGL1Driver.cpp
-	)
-endif()
 
 add_library(IRRIOOBJ OBJECT
 	CFileList.cpp
@@ -519,7 +509,6 @@ target_link_libraries(IrrlichtMt PRIVATE
 
 	"$<$<BOOL:${OPENGL_DIRECT_LINK}>:${OPENGL_LIBRARIES}>"
 	"$<$<BOOL:${OPENGLES_DIRECT_LINK}>:${OPENGLES_LIBRARY}>"
-	"$<$<BOOL:${OPENGLES2_DIRECT_LINK}>:${OPENGLES2_LIBRARIES}>"
 	${EGL_LIBRARY}
 
 	"$<$<PLATFORM_ID:Android>:-landroid -llog>"
