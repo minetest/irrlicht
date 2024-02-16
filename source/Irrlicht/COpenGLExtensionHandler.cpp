@@ -9,6 +9,7 @@
 #include "irrString.h"
 #include "SMaterial.h"
 #include "fast_atof.h"
+#include "IContextManager.h"
 
 namespace irr
 {
@@ -125,7 +126,7 @@ void COpenGLExtensionHandler::dump(ELOG_LEVEL logLevel) const
 }
 
 
-void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
+void COpenGLExtensionHandler::initExtensions(video::IContextManager *cmgr, bool stencilBuffer)
 {
 	const f32 ogl_ver = core::fast_atof(reinterpret_cast<const c8*>(glGetString(GL_VERSION)));
 	Version = static_cast<u16>(core::floor32(ogl_ver)*100+core::round32(core::fract(ogl_ver)*10.0f));
@@ -177,36 +178,7 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 		IsAtiRadeonX = (strncmp(renderer, "ATI RADEON X", 12) == 0) || (strncmp(renderer, "ATI MOBILITY RADEON X", 21) == 0);
 	}
 
-#ifdef _IRR_WINDOWS_API_
-	#define IRR_OGL_LOAD_EXTENSION(x) wglGetProcAddress(reinterpret_cast<const char*>(x))
-#elif defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && !defined(_IRR_COMPILE_WITH_X11_DEVICE_)
-	#define IRR_OGL_LOAD_EXTENSION(x) SDL_GL_GetProcAddress(reinterpret_cast<const char*>(x))
-#else
-	// Accessing the correct function is quite complex
-	// All libraries should support the ARB version, however
-	// since GLX 1.4 the non-ARB version is the official one
-	// So we have to check the runtime environment and
-	// choose the proper symbol
-	// In case you still have problems please enable the
-	// next line by uncommenting it
-	// #define _IRR_GETPROCADDRESS_WORKAROUND_
-
-	#ifndef _IRR_GETPROCADDRESS_WORKAROUND_
-	__GLXextFuncPtr (*IRR_OGL_LOAD_EXTENSION_FUNCP)(const GLubyte*)=0;
-	#ifdef GLX_VERSION_1_4
-		int major=0,minor=0;
-		if (glXGetCurrentDisplay())
-			glXQueryVersion(glXGetCurrentDisplay(), &major, &minor);
-		if ((major>1) || (minor>3))
-			IRR_OGL_LOAD_EXTENSION_FUNCP=glXGetProcAddress;
-		else
-	#endif
-			IRR_OGL_LOAD_EXTENSION_FUNCP=glXGetProcAddressARB;
-		#define IRR_OGL_LOAD_EXTENSION(X) IRR_OGL_LOAD_EXTENSION_FUNCP(reinterpret_cast<const GLubyte*>(X))
-	#else
-		#define IRR_OGL_LOAD_EXTENSION(X) glXGetProcAddressARB(reinterpret_cast<const GLubyte*>(X))
-	#endif // workaround
-#endif // Windows, SDL, or Linux
+	#define IRR_OGL_LOAD_EXTENSION(x) cmgr->getProcAddress(x)
 
 	// get multitexturing function pointers
 	pGlActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC) IRR_OGL_LOAD_EXTENSION("glActiveTextureARB");

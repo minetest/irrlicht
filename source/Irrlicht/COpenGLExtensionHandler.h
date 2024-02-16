@@ -19,6 +19,8 @@ namespace irr
 namespace video
 {
 
+class IContextManager;
+
 static const char* const OpenGLFeatureStrings[] = {
 	"GL_3DFX_multisample",
 	"GL_3DFX_tbuffer",
@@ -994,7 +996,7 @@ class COpenGLExtensionHandler
 	COpenGLExtensionHandler();
 
 	// deferred initialization
-	void initExtensions(bool stencilBuffer);
+	void initExtensions(video::IContextManager *cmgr, bool stencilBuffer);
 
 	const COpenGLCoreFeature& getFeature() const;
 

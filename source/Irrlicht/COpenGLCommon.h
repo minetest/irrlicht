@@ -12,7 +12,6 @@
 		#define GL_GLEXT_LEGACY 1
 	#include <GL/gl.h>
 		#include <GL/glext.h>
-	#include <GL/wglext.h>
 #elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
 		#define GL_GLEXT_LEGACY 1
 	#include <OpenGL/gl.h>
@@ -28,11 +27,8 @@
 		#endif
 #else
 		#define GL_GLEXT_LEGACY 1
-		#define GLX_GLXEXT_LEGACY 1
 	#include <GL/gl.h>
-	#include <GL/glx.h>
 	#include <GL/glext.h>
-	#include <GL/glxext.h>
 #endif
 
 #ifndef GL_ARB_shader_objects
