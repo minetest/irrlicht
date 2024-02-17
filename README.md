@@ -15,6 +15,7 @@ The following libraries are required to be installed:
 * OpenGL
   * or on mobile: OpenGL ES (can be optionally enabled on desktop too)
 * on Unix: X11
+* SDL2 (see below)
 
 Aside from standard search options (`ZLIB_INCLUDE_DIR`, `ZLIB_LIBRARY`, ...) the following options are available:
 * `BUILD_SHARED_LIBS` (default: `ON`) - Build IrrlichtMt as a shared library
@@ -23,7 +24,7 @@ Aside from standard search options (`ZLIB_INCLUDE_DIR`, `ZLIB_LIBRARY`, ...) the
 * `ENABLE_OPENGL3` (default: `OFF`) - Enable OpenGL 3+ driver
 * `ENABLE_GLES1` - Enable OpenGL ES driver, legacy
 * `ENABLE_GLES2` - Enable OpenGL ES 2+ driver
-* `USE_SDL2` (default: `OFF`) - Use SDL2 instead of native platform device
+* `USE_SDL2` (default: platform-dependent, usually `ON`) - Use SDL2 instead of older native device code
 
 e.g. on a Linux system you might want to build for local use like this:
 
@@ -40,7 +41,7 @@ It is highly recommended to use vcpkg as package manager.
 
 After you successfully built vcpkg you can easily install the required libraries:
 
-	vcpkg install zlib libjpeg-turbo libpng opengl-registry --triplet x64-windows
+	vcpkg install zlib libjpeg-turbo libpng sdl2 --triplet x64-windows
 	
 Run the following script in PowerShell:
 
