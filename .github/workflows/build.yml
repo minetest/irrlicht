@@ -258,7 +258,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: msvc-${{ matrix.config.arch }}
+          name: msvc-${{ matrix.config.arch }}-${{matrix.sdl.use}}
           path: artifact/
 
   android:
