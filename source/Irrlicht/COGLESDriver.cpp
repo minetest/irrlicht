@@ -1796,7 +1796,6 @@ void COGLES1Driver::setBasicRenderStates(const SMaterial& material, const SMater
 	// Anti aliasing
 	if (resetAllRenderStates || lastmaterial.AntiAliasing != material.AntiAliasing)
 	{
-//		if (FeatureAvailable[IRR_ARB_multisample]) {
 		if (material.AntiAliasing & EAAM_ALPHA_TO_COVERAGE)
 			glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 		else if (lastmaterial.AntiAliasing & EAAM_ALPHA_TO_COVERAGE)
