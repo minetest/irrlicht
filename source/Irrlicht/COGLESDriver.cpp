@@ -125,8 +125,6 @@ bool COGLES1Driver::genericDriverInit(const core::dimension2d<u32>& screenSize, 
 
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 	glHint(GL_GENERATE_MIPMAP_HINT, GL_FASTEST);
-	glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
-	glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
 	glDepthFunc(GL_LEQUAL);
 	glFrontFace(GL_CW);
 	glAlphaFunc(GL_GREATER, 0.f);
@@ -1798,33 +1796,15 @@ void COGLES1Driver::setBasicRenderStates(const SMaterial& material, const SMater
 	// Anti aliasing
 	if (resetAllRenderStates || lastmaterial.AntiAliasing != material.AntiAliasing)
 	{
-//		if (FeatureAvailable[IRR_ARB_multisample])
-		{
-			if (material.AntiAliasing & EAAM_ALPHA_TO_COVERAGE)
-				glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-			else if (lastmaterial.AntiAliasing & EAAM_ALPHA_TO_COVERAGE)
-				glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		if (material.AntiAliasing & EAAM_ALPHA_TO_COVERAGE)
+			glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		else if (lastmaterial.AntiAliasing & EAAM_ALPHA_TO_COVERAGE)
+			glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
-			if ((AntiAlias >= 2) && (material.AntiAliasing & (EAAM_SIMPLE|EAAM_QUALITY)))
-				glEnable(GL_MULTISAMPLE);
-			else
-				glDisable(GL_MULTISAMPLE);
-		}
-		if ((material.AntiAliasing & EAAM_LINE_SMOOTH) != (lastmaterial.AntiAliasing & EAAM_LINE_SMOOTH))
-		{
-			if (material.AntiAliasing & EAAM_LINE_SMOOTH)
-				glEnable(GL_LINE_SMOOTH);
-			else if (lastmaterial.AntiAliasing & EAAM_LINE_SMOOTH)
-				glDisable(GL_LINE_SMOOTH);
-		}
-		if ((material.AntiAliasing & EAAM_POINT_SMOOTH) != (lastmaterial.AntiAliasing & EAAM_POINT_SMOOTH))
-		{
-			if (material.AntiAliasing & EAAM_POINT_SMOOTH)
-				// often in software, and thus very slow
-				glEnable(GL_POINT_SMOOTH);
-			else if (lastmaterial.AntiAliasing & EAAM_POINT_SMOOTH)
-				glDisable(GL_POINT_SMOOTH);
-		}
+		if ((AntiAlias >= 2) && (material.AntiAliasing & (EAAM_SIMPLE|EAAM_QUALITY)))
+			glEnable(GL_MULTISAMPLE);
+		else
+			glDisable(GL_MULTISAMPLE);
 	}
 
 	// Texture parameters
