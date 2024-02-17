@@ -199,7 +199,7 @@ jobs:
     env:
       VCPKG_VERSION: 8eb57355a4ffb410a2e94c07b4dca2dffbee8e50
       # 2023.10.19
-      vcpkg_packages: zlib libpng libjpeg-turbo opengl-registry
+      vcpkg_packages: zlib libpng libjpeg-turbo
     strategy:
       fail-fast: false
       matrix:
@@ -216,6 +216,7 @@ jobs:
           -
             use: FALSE
             label: '(no SDL)'
+            vcpkg_packages: opengl-registry
           -
             use: TRUE
             label: '(with SDL)'
