@@ -1872,33 +1872,7 @@ void COGLES1Driver::setTextureRenderStates(const SMaterial& material, bool reset
 		if (resetAllRenderstates)
 			statesCache.IsCached = false;
 
-#ifdef GL_VERSION_2_1
-		if (Version >= 210)
-		{
-			if (!statesCache.IsCached || material.TextureLayers[i].LODBias != statesCache.LODBias)
-			{
-				if (material.TextureLayers[i].LODBias)
-				{
-					const float tmp = core::clamp(material.TextureLayers[i].LODBias * 0.125f, -MaxTextureLODBias, MaxTextureLODBias);
-					glTexParameterf(tmpTextureType, GL_TEXTURE_LOD_BIAS, tmp);
-				}
-				else
-					glTexParameterf(tmpTextureType, GL_TEXTURE_LOD_BIAS, 0.f);
-
-				statesCache.LODBias = material.TextureLayers[i].LODBias;
-			}
-		}
-		else if (FeatureAvailable[IRR_EXT_texture_lod_bias])
-		{
-			if (material.TextureLayers[i].LODBias)
-			{
-				const float tmp = core::clamp(material.TextureLayers[i].LODBias * 0.125f, -MaxTextureLODBias, MaxTextureLODBias);
-				glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, tmp);
-			}
-			else
-				glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0.f);
-		}
-#elif defined(GL_EXT_texture_lod_bias)
+#if defined(GL_EXT_texture_lod_bias)
 		if (FeatureAvailable[COGLESCoreExtensionHandler::IRR_GL_EXT_texture_lod_bias])
 		{
 			if (material.TextureLayers[i].LODBias)
