@@ -314,6 +314,10 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 			vsFile->read(*vertexShaderData, size);
 			(*vertexShaderData)[size] = 0;
 		}
+		{
+			auto tmp = std::string("Loaded ") + std::to_string(size) + " bytes for vertex shader " + vertexShaderName.c_str();
+			os::Printer::log(tmp.c_str(), ELL_INFORMATION);
+		}
 
 		size = fsFile->getSize();
 		if (size)
@@ -325,6 +329,10 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 			*fragmentShaderData = new c8[size+1];
 			fsFile->read(*fragmentShaderData, size);
 			(*fragmentShaderData)[size] = 0;
+		}
+		{
+			auto tmp = std::string("Loaded ") + std::to_string(size) + " bytes for fragment shader " + fragmentShaderName.c_str();
+			os::Printer::log(tmp.c_str(), ELL_INFORMATION);
 		}
 
 		vsFile->drop();
