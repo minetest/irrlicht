@@ -745,10 +745,10 @@ IFileList* CFileSystem::createFileList()
 
 		r = new CFileList(Path, true, false);
 
-        // uintptr_t is optional but supported by MinGW since 2007 or earlier.
-		uintptr_t hFile;
+        // intptr_t is optional but supported by MinGW since 2007 or earlier.
+		intptr_t hFile;
 		struct _tfinddata_t c_file;
-		if( (hFile = _tfindfirst( _T("*"), &c_file )) != (uintptr_t)(-1L) )
+		if( (hFile = _tfindfirst( _T("*"), &c_file )) != (intptr_t)(-1L) )
 		{
 			do
 			{
