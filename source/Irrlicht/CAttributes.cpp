@@ -172,26 +172,6 @@ E_ATTRIBUTE_TYPE CAttributes::getAttributeType(s32 index) const
 	return Attributes[index]->getType();
 }
 
-//! Returns the type of an attribute
-const wchar_t* CAttributes::getAttributeTypeString(const c8* attributeName, const wchar_t* defaultNotFound) const
-{
-	const IAttribute* att = getAttributeP(attributeName);
-	if (att)
-		return att->getTypeString();
-	else
-		return defaultNotFound;
-}
-
-//! Returns attribute type string by index.
-//! \param index: Index value, must be between 0 and getAttributeCount()-1.
-const wchar_t* CAttributes::getAttributeTypeString(s32 index, const wchar_t* defaultNotFound) const
-{
-	if ((u32)index >= Attributes.size())
-		return defaultNotFound;
-
-	return Attributes[index]->getTypeString();
-}
-
 //! Gets an attribute as integer value
 //! \param index: Index value, must be between 0 and getAttributeCount()-1.
 s32 CAttributes::getAttributeAsInt(s32 index) const

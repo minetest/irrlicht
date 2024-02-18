@@ -6,25 +6,10 @@
 #define __I_ATTRIBUTES_H_INCLUDED__
 
 #include "IReferenceCounted.h"
-#include "SColor.h"
-#include "vector3d.h"
-#include "vector2d.h"
-#include "line2d.h"
-#include "line3d.h"
-#include "triangle3d.h"
-#include "position2d.h"
-#include "rect.h"
-#include "dimension2d.h"
-#include "matrix4.h"
-#include "quaternion.h"
-#include "plane3d.h"
-#include "triangle3d.h"
-#include "line2d.h"
-#include "line3d.h"
-#include "irrString.h"
-#include "irrArray.h"
 #include "EAttributes.h"
-#include "path.h"
+
+// not needed here but I can't be bothered to clean the transitive includes up.
+#include "quaternion.h"
 
 namespace irr
 {
@@ -54,16 +39,6 @@ public:
 	//! Returns attribute type by index.
 	//! \param index: Index value, must be between 0 and getAttributeCount()-1.
 	virtual E_ATTRIBUTE_TYPE getAttributeType(s32 index) const = 0;
-
-	//! Returns the type string of the attribute
-	//! \param attributeName: String for the attribute type
-	//! \param defaultNotFound Value returned when attributeName was not found
-	virtual const wchar_t* getAttributeTypeString(const c8* attributeName, const wchar_t* defaultNotFound = L"unknown") const = 0;
-
-	//! Returns the type string of the attribute by index.
-	//! \param index: Index value, must be between 0 and getAttributeCount()-1.
-	//! \param defaultNotFound Value returned for an invalid index
-	virtual const wchar_t* getAttributeTypeString(s32 index, const wchar_t* defaultNotFound = L"unknown") const = 0;
 
 	//! Returns if an attribute with a name exists
 	virtual bool existsAttribute(const c8* attributeName) const = 0;

@@ -56,7 +56,6 @@ public:
 	core::stringc Name;
 
 	virtual E_ATTRIBUTE_TYPE getType() const = 0;
-	virtual const wchar_t* getTypeString() const = 0;
 };
 
 } // end namespace io

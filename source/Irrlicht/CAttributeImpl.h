@@ -62,11 +62,6 @@ public:
 		return EAT_BOOL;
 	}
 
-	const wchar_t* getTypeString() const override
-	{
-		return L"bool";
-	}
-
 	bool BoolValue;
 };
 
@@ -106,11 +101,6 @@ public:
 		return EAT_INT;
 	}
 
-	const wchar_t* getTypeString() const override
-	{
-		return L"int";
-	}
-
 	s32 Value;
 };
 
@@ -148,11 +138,6 @@ public:
 	E_ATTRIBUTE_TYPE getType() const override
 	{
 		return EAT_FLOAT;
-	}
-
-	const wchar_t* getTypeString() const override
-	{
-		return L"float";
 	}
 
 	f32 Value;

@@ -41,15 +41,6 @@ public:
 	//! \param index: Index value, must be between 0 and getAttributeCount()-1.
 	E_ATTRIBUTE_TYPE getAttributeType(s32 index) const override;
 
-	//! Returns the type string of the attribute
-	//! \param attributeName: String for the attribute type
-	//! \param defaultNotFound Value returned when attributeName was not found
-	const wchar_t* getAttributeTypeString(const c8* attributeName, const wchar_t* defaultNotFound = L"unknown") const override;
-
-	//! Returns the type string of the attribute by index.
-	//! \param index: Index value, must be between 0 and getAttributeCount()-1.
-	const wchar_t* getAttributeTypeString(s32 index, const wchar_t* defaultNotFound = L"unknown") const override;
-
 	//! Returns if an attribute with a name exists
 	bool existsAttribute(const c8* attributeName) const override;
 
