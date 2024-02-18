@@ -869,7 +869,7 @@ namespace video
 		//! Gets name of this video driver.
 		/** \return Returns the name of the video driver, e.g. in case
 		of the Direct3D8 driver, it would return "Direct3D 8.1". */
-		virtual const wchar_t* getName() const =0;
+		virtual const char* getName() const =0;
 
 		//! Adds an external image loader to the engine.
 		/** This is useful if the Irrlicht Engine should be able to load

@@ -290,9 +290,9 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		io::IReadFile* vsFile = FileSystem->createAndOpenFile(vsPath);
 		if ( !vsFile )
 		{
-			core::stringw warning(L"Warning: Missing shader files needed to simulate fixed function materials:\n");
-			warning += core::stringw(vsPath) + L"\n";
-			warning += L"Shaderpath can be changed in SIrrCreationParamters::OGLES2ShaderPath";
+			std::string warning("Warning: Missing shader files needed to simulate fixed function materials:\n");
+			warning.append(vsPath.c_str()).append("\n");
+			warning += "Shaderpath can be changed in SIrrCreationParamters::OGLES2ShaderPath";
 			os::Printer::log(warning.c_str(), ELL_WARNING);
 			return;
 		}
@@ -300,9 +300,9 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		io::IReadFile* fsFile = FileSystem->createAndOpenFile(fsPath);
 		if ( !fsFile )
 		{
-			core::stringw warning(L"Warning: Missing shader files needed to simulate fixed function materials:\n");
-			warning += core::stringw(fsPath) + L"\n";
-			warning += L"Shaderpath can be changed in SIrrCreationParamters::OGLES2ShaderPath";
+			std::string warning("Warning: Missing shader files needed to simulate fixed function materials:\n");
+			warning.append(fsPath.c_str()).append("\n");
+			warning += "Shaderpath can be changed in SIrrCreationParamters::OGLES2ShaderPath";
 			os::Printer::log(warning.c_str(), ELL_WARNING);
 			return;
 		}
@@ -1619,7 +1619,7 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 
 
 	//! \return Returns the name of the video driver.
-	const wchar_t* COpenGL3DriverBase::getName() const
+	const char* COpenGL3DriverBase::getName() const
 	{
 		return Name.c_str();
 	}

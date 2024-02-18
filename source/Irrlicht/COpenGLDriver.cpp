@@ -90,9 +90,9 @@ bool COpenGLDriver::genericDriverInit()
 	if (ContextManager)
 		ContextManager->grab();
 
-	Name=L"OpenGL ";
+	Name="OpenGL ";
 	Name.append(glGetString(GL_VERSION));
-	s32 pos=Name.findNext(L' ', 7);
+	s32 pos=Name.findNext(' ', 7);
 	if (pos != -1)
 		Name=Name.subString(0, pos);
 	printVersion();
@@ -2920,7 +2920,7 @@ void COpenGLDriver::setRenderStates2DMode(bool alpha, bool texture, bool alphaCh
 
 
 //! \return Returns the name of the video driver.
-const wchar_t* COpenGLDriver::getName() const
+const char* COpenGLDriver::getName() const
 {
 	return Name.c_str();
 }

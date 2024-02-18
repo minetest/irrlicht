@@ -839,9 +839,9 @@ const SColorf& CNullDriver::getAmbientLight() const
 //! \return Returns the name of the video driver. Example: In case of the DIRECT3D8
 //! driver, it would return "Direct3D8".
 
-const wchar_t* CNullDriver::getName() const
+const char* CNullDriver::getName() const
 {
-	return L"Irrlicht NullDevice";
+	return "Irrlicht NullDevice";
 }
 
 
@@ -1929,7 +1929,7 @@ IImage* CNullDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_REND
 // prints renderer version
 void CNullDriver::printVersion()
 {
-	core::stringw namePrint = L"Using renderer: ";
+	core::stringc namePrint = "Using renderer: ";
 	namePrint += getName();
 	os::Printer::log(namePrint.c_str(), ELL_INFORMATION);
 }

@@ -73,27 +73,6 @@ public:
 	filtered with these levels. If you want to be a text displayed,
 	independent on what level filter is set, use ELL_NONE. */
 	virtual void log(const c8* text, const c8* hint, ELOG_LEVEL ll=ELL_INFORMATION) = 0;
-	virtual void log(const c8* text, const wchar_t* hint, ELOG_LEVEL ll=ELL_INFORMATION) = 0;
-
-	//! Prints out a text into the log
-	/** \param text: Text to print out.
-	\param hint: Additional info. This string is added after a " :" to the
-	string.
-	\param ll: Log level of the text. If the text is an error, set
-	it to ELL_ERROR, if it is warning set it to ELL_WARNING, and if it
-	is just an informational text, set it to ELL_INFORMATION. Texts are
-	filtered with these levels. If you want to be a text displayed,
-	independent on what level filter is set, use ELL_NONE. */
-	virtual void log(const wchar_t* text, const wchar_t* hint, ELOG_LEVEL ll=ELL_INFORMATION) = 0;
-
-	//! Prints out a text into the log
-	/** \param text: Text to print out.
-	\param ll: Log level of the text. If the text is an error, set
-	it to ELL_ERROR, if it is warning set it to ELL_WARNING, and if it
-	is just an informational text, set it to ELL_INFORMATION. Texts are
-	filtered with these levels. If you want to be a text displayed,
-	independent on what level filter is set, use ELL_NONE. */
-	virtual void log(const wchar_t* text, ELOG_LEVEL ll=ELL_INFORMATION) = 0;
 };
 
 } // end namespace

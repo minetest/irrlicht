@@ -205,7 +205,7 @@ namespace video
 
 		//! \return Returns the name of the video driver. Example: In case of the Direct3D8
 		//! driver, it would return "Direct3D8.1".
-		const wchar_t* getName() const override;
+		const char* getName() const override;
 
 		//! Sets the dynamic ambient light color. The default color is
 		//! (0,0,0,0) which means it is dark.
@@ -439,7 +439,7 @@ namespace video
 
 		COpenGLCacheHandler* CacheHandler;
 
-		core::stringw Name;
+		core::stringc Name;
 		core::matrix4 Matrices[ETS_COUNT];
 		core::array<u8> ColorBuffer;
 

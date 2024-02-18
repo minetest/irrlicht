@@ -145,7 +145,7 @@ namespace video
 //			virtual void drawPixel(u32 x, u32 y, const SColor & color);
 
 		//! Returns the name of the video driver.
-		const wchar_t* getName() const override;
+		const char* getName() const override;
 
 		//! Returns the maximum texture size supported.
 		core::dimension2du getMaxTextureSize() const override;
@@ -352,7 +352,7 @@ namespace video
 		virtual void setViewPortRaw(u32 width, u32 height);
 
 		COGLES2CacheHandler* CacheHandler;
-		core::stringw Name;
+		core::stringc Name;
 		core::stringc VendorName;
 		SIrrlichtCreationParameters Params;
 

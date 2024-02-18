@@ -263,12 +263,6 @@ namespace os
 			Logger->log(message, ll);
 	}
 
-	void Printer::log(const wchar_t* message, ELOG_LEVEL ll)
-	{
-		if (Logger)
-			Logger->log(message, ll);
-	}
-
 	void Printer::log(const c8* message, const c8* hint, ELOG_LEVEL ll)
 	{
 		if (Logger)

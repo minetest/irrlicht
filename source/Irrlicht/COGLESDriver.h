@@ -136,7 +136,7 @@ namespace video
 					SColor color = SColor(255,255,255,255)) override;
 
 		//! Returns the name of the video driver.
-		const wchar_t* getName() const override;
+		const char* getName() const override;
 
 		//! Sets the dynamic ambient light color.
 		void setAmbientLight(const SColorf& color) override;
@@ -318,7 +318,7 @@ namespace video
 
 		COGLES1CacheHandler* CacheHandler;
 
-		core::stringw Name;
+		core::stringc Name;
 		core::matrix4 Matrices[ETS_COUNT];
 		core::array<u8> ColorBuffer;
 

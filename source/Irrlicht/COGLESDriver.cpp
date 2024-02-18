@@ -2041,7 +2041,7 @@ void COGLES1Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaCh
 
 
 //! \return Returns the name of the video driver.
-const wchar_t* COGLES1Driver::getName() const
+const char* COGLES1Driver::getName() const
 {
 	return Name.c_str();
 }

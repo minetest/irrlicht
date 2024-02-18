@@ -17,6 +17,9 @@ namespace io
 */
 typedef core::string<fschar_t> path;
 
+// Type only exists for historcal reasons, paths are always char now.
+static_assert(sizeof(fschar_t) == sizeof(char));
+
 //! Used in places where we identify objects by a filename, but don't actually work with the real filename
 /** Irrlicht is internally not case-sensitive when it comes to names.
     Also this class is a first step towards support for correctly serializing renamed objects.
@@ -61,11 +64,6 @@ struct SNamedPath
 	operator core::stringc() const
 	{
 		return core::stringc(getPath());
-	}
-	//! Implicit cast to io::path
-	operator core::stringw() const
-	{
-		return core::stringw(getPath());
 	}
 
 protected:
