@@ -486,10 +486,12 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		{
 			HWBuffer->vbo_verticesSize = bufferSize;
 
-			if (HWBuffer->Mapped_Vertex == scene::EHM_STATIC)
-				GL.BufferData(GL_ARRAY_BUFFER, bufferSize, buffer, GL_STATIC_DRAW);
-			else
-				GL.BufferData(GL_ARRAY_BUFFER, bufferSize, buffer, GL_DYNAMIC_DRAW);
+			GLenum usage = GL_STATIC_DRAW;
+			if (HWBuffer->Mapped_Index == scene::EHM_STREAM)
+				usage = GL_STREAM_DRAW;
+			else if (HWBuffer->Mapped_Index == scene::EHM_DYNAMIC)
+				usage = GL_DYNAMIC_DRAW;
+			GL.BufferData(GL_ARRAY_BUFFER, bufferSize, buffer, usage);
 		}
 
 		GL.BindBuffer(GL_ARRAY_BUFFER, 0);
@@ -549,10 +551,12 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		{
 			HWBuffer->vbo_indicesSize = indexCount * indexSize;
 
-			if (HWBuffer->Mapped_Index == scene::EHM_STATIC)
-				GL.BufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * indexSize, indices, GL_STATIC_DRAW);
-			else
-				GL.BufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * indexSize, indices, GL_DYNAMIC_DRAW);
+			GLenum usage = GL_STATIC_DRAW;
+			if (HWBuffer->Mapped_Index == scene::EHM_STREAM)
+				usage = GL_STREAM_DRAW;
+			else if (HWBuffer->Mapped_Index == scene::EHM_DYNAMIC)
+				usage = GL_DYNAMIC_DRAW;
+			GL.BufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * indexSize, indices, usage);
 		}
 
 		GL.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
