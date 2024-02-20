@@ -5,6 +5,8 @@
 #ifndef __E_MATERIAL_TYPES_H_INCLUDED__
 #define __E_MATERIAL_TYPES_H_INCLUDED__
 
+#include "irrTypes.h"
+
 namespace irr
 {
 namespace video
@@ -66,6 +68,9 @@ namespace video
 		"onetexture_blend",
 		0
 	};
+
+	constexpr u32 numBuiltInMaterials =
+		sizeof(sBuiltInMaterialTypeNames) / sizeof(char*) - 1;
 
 } // end namespace video
 } // end namespace irr
