@@ -54,8 +54,6 @@ public:
 
 	s32 getVertexShaderConstantID(const c8* name) override;
 	s32 getPixelShaderConstantID(const c8* name) override;
-	void setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount=1) override;
-	void setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount=1) override;
 	bool setVertexShaderConstant(s32 index, const f32* floats, int count) override;
 	bool setVertexShaderConstant(s32 index, const s32* ints, int count) override;
 	bool setVertexShaderConstant(s32 index, const u32* ints, int count) override;

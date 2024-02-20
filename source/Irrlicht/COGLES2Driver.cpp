@@ -2062,18 +2062,6 @@ COGLES2Driver::~COGLES2Driver()
 		return -1;
 	}
 
-	//! Sets a vertex shader constant.
-	void COGLES2Driver::setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
-	{
-		os::Printer::log("Error: Please call services->setVertexShaderConstant(), not VideoDriver->setPixelShaderConstant().");
-	}
-
-	//! Sets a pixel shader constant.
-	void COGLES2Driver::setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
-	{
-		os::Printer::log("Error: Please call services->setPixelShaderConstant(), not VideoDriver->setPixelShaderConstant().");
-	}
-
 	//! Sets a constant for the vertex shader based on an index.
 	bool COGLES2Driver::setVertexShaderConstant(s32 index, const f32* floats, int count)
 	{

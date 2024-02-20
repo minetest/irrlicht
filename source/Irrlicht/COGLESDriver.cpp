@@ -2374,25 +2374,6 @@ bool COGLES1Driver::setPixelShaderConstant(s32 index, const u32* ints, int count
 	return false;
 }
 
-//! Sets a vertex shader constant.
-void COGLES1Driver::setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
-{
-#ifdef GL_vertex_program
-	for (s32 i=0; i<constantAmount; ++i)
-		extGlProgramLocalParameter4fv(GL_VERTEX_PROGRAM, startRegister+i, &data[i*4]);
-#endif
-}
-
-//! Sets a pixel shader constant.
-void COGLES1Driver::setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
-{
-#ifdef GL_fragment_program
-	for (s32 i=0; i<constantAmount; ++i)
-		extGlProgramLocalParameter4fv(GL_FRAGMENT_PROGRAM, startRegister+i, &data[i*4]);
-#endif
-}
-
-
 //! Adds a new material renderer to the VideoDriver, using pixel and/or
 //! vertex shaders to render geometry.
 s32 COGLES1Driver::addShaderMaterial(const c8* vertexShaderProgram,
