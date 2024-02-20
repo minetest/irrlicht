@@ -41,6 +41,14 @@ IImageWriter* createImageWriterJPG();
 //! creates a writer which is able to save png images
 IImageWriter* createImageWriterPNG();
 
+namespace {
+	//! no-op material renderer
+	class CDummyMaterialRenderer : public IMaterialRenderer {
+	public:
+		CDummyMaterialRenderer() {}
+	};
+}
+
 
 //! constructor
 CNullDriver::CNullDriver(io::IFileSystem* io, const core::dimension2d<u32>& screenSize)
@@ -1525,7 +1533,7 @@ s32 CNullDriver::addMaterialRenderer(IMaterialRenderer* renderer, const char* na
 	r.Renderer = renderer;
 	r.Name = name;
 
-	if (name == 0 && (MaterialRenderers.size() < (sizeof(sBuiltInMaterialTypeNames) / sizeof(char*))-1 ))
+	if (name == 0 && MaterialRenderers.size() < numBuiltInMaterials)
 	{
 		// set name of built in renderer so that we don't have to implement name
 		// setting in all available renderers.
@@ -1542,8 +1550,7 @@ s32 CNullDriver::addMaterialRenderer(IMaterialRenderer* renderer, const char* na
 //! Sets the name of a material renderer.
 void CNullDriver::setMaterialRendererName(u32 idx, const char* name)
 {
-	if (idx < (sizeof(sBuiltInMaterialTypeNames) / sizeof(char*))-1 ||
-		idx >= MaterialRenderers.size())
+	if (idx < numBuiltInMaterials || idx >= MaterialRenderers.size())
 		return;
 
 	MaterialRenderers[idx].Name = name;
@@ -1784,6 +1791,27 @@ s32 CNullDriver::addHighLevelShaderMaterialFromFiles(
 	delete [] gs;
 
 	return result;
+}
+
+void CNullDriver::deleteShaderMaterial(s32 material)
+{
+	const u32 idx = (u32)material;
+	if (idx < numBuiltInMaterials || idx >= MaterialRenderers.size())
+		return;
+
+	// if this is the last material we can drop it without consequence
+	if (idx == MaterialRenderers.size() - 1) {
+		if (MaterialRenderers[idx].Renderer)
+			MaterialRenderers[idx].Renderer->drop();
+		MaterialRenderers.erase(idx);
+		return;
+	}
+	// otherwise replace with a dummy renderer, we have to preserve the IDs
+	auto &ref = MaterialRenderers[idx];
+	if (ref.Renderer)
+		ref.Renderer->drop();
+	ref.Renderer = new CDummyMaterialRenderer();
+	ref.Name.clear();
 }
 
 

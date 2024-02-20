@@ -356,6 +356,15 @@ public:
 			scene::EPT_TRIANGLES, scene::EPT_TRIANGLE_STRIP, 0,
 			callback, baseMaterial, userData);
 	}
+
+	//! Delete a shader material and associated data.
+	/**
+	After you have deleted a material it is invalid to still use and doing
+	so might result in a crash. The ID may be reused in the future when new
+	materials are added.
+	\param material Number of the material type. Must not be a built-in
+	material. */
+	virtual void deleteShaderMaterial(s32 material) = 0;
 };
 
 

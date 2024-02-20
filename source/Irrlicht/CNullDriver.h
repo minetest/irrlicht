@@ -525,6 +525,8 @@ namespace video
 			E_MATERIAL_TYPE baseMaterial = video::EMT_SOLID,
 			s32 userData = 0) override;
 
+		virtual void deleteShaderMaterial(s32 material) override;
+
 		//! Returns a pointer to the mesh manipulator.
 		scene::IMeshManipulator* getMeshManipulator() override;
 
