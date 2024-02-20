@@ -206,10 +206,6 @@ namespace video
 		bool setPixelShaderConstant(s32 index, const u32* ints, int count) override;
 
 		//! Adds a new material renderer to the VideoDriver
-		virtual s32 addShaderMaterial(const c8* vertexShaderProgram, const c8* pixelShaderProgram,
-				IShaderConstantSetCallBack* callback, E_MATERIAL_TYPE baseMaterial, s32 userData) override;
-
-		//! Adds a new material renderer to the VideoDriver
 		virtual s32 addHighLevelShaderMaterial(
 				const c8* vertexShaderProgram,
 				const c8* vertexShaderEntryPointName = 0,

@@ -2374,17 +2374,6 @@ bool COGLES1Driver::setPixelShaderConstant(s32 index, const u32* ints, int count
 	return false;
 }
 
-//! Adds a new material renderer to the VideoDriver, using pixel and/or
-//! vertex shaders to render geometry.
-s32 COGLES1Driver::addShaderMaterial(const c8* vertexShaderProgram,
-	const c8* pixelShaderProgram,
-	IShaderConstantSetCallBack* callback,
-	E_MATERIAL_TYPE baseMaterial, s32 userData)
-{
-	os::Printer::log("No shader support.");
-	return -1;
-}
-
 
 //! Adds a new material renderer to the VideoDriver, using GLSL to render geometry.
 s32 COGLES1Driver::addHighLevelShaderMaterial(
