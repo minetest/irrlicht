@@ -1739,18 +1739,6 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		return false;
 	}
 
-	//! Adds a new material renderer to the VideoDriver, using pixel and/or
-	//! vertex shaders to render geometry.
-	s32 COpenGL3DriverBase::addShaderMaterial(const c8* vertexShaderProgram,
-			const c8* pixelShaderProgram,
-			IShaderConstantSetCallBack* callback,
-			E_MATERIAL_TYPE baseMaterial, s32 userData)
-	{
-		os::Printer::log("No shader support.");
-		return -1;
-	}
-
-
 	//! Adds a new material renderer to the VideoDriver, using GLSL to render geometry.
 	s32 COpenGL3DriverBase::addHighLevelShaderMaterial(
 			const c8* vertexShaderProgram,

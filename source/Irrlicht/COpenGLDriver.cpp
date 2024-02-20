@@ -13,7 +13,6 @@
 
 #include "COpenGLCacheHandler.h"
 #include "COpenGLMaterialRenderer.h"
-#include "COpenGLShaderMaterialRenderer.h"
 #include "COpenGLSLMaterialRenderer.h"
 
 #include "COpenGLCoreTexture.h"
@@ -3421,23 +3420,6 @@ bool COpenGLDriver::setPixelShaderConstant(s32 index, const u32* ints, int count
 {
 	os::Printer::log("Error: Please call services->setPixelShaderConstant(), not VideoDriver->setPixelShaderConstant().");
 	return false;
-}
-
-
-//! Adds a new material renderer to the VideoDriver, using pixel and/or
-//! vertex shaders to render geometry.
-s32 COpenGLDriver::addShaderMaterial(const c8* vertexShaderProgram,
-	const c8* pixelShaderProgram,
-	IShaderConstantSetCallBack* callback,
-	E_MATERIAL_TYPE baseMaterial, s32 userData)
-{
-	s32 nr = -1;
-	COpenGLShaderMaterialRenderer* r = new COpenGLShaderMaterialRenderer(
-		this, nr, vertexShaderProgram, pixelShaderProgram,
-		callback, baseMaterial, userData);
-
-	r->drop();
-	return nr;
 }
 
 

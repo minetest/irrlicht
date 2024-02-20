@@ -355,7 +355,6 @@ if(ENABLE_OPENGL)
 		${IRRDRVROBJ}
 		COpenGLCacheHandler.cpp
 		COpenGLDriver.cpp
-		COpenGLShaderMaterialRenderer.cpp
 		COpenGLSLMaterialRenderer.cpp
 		COpenGLExtensionHandler.cpp
 	)

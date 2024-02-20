@@ -464,30 +464,6 @@ namespace video
 		//! Returns pointer to the IGPUProgrammingServices interface.
 		IGPUProgrammingServices* getGPUProgrammingServices() override;
 
-		//! Adds a new material renderer to the VideoDriver, using pixel and/or
-		//! vertex shaders to render geometry.
-		virtual s32 addShaderMaterial(const c8* vertexShaderProgram = 0,
-			const c8* pixelShaderProgram = 0,
-			IShaderConstantSetCallBack* callback = 0,
-			E_MATERIAL_TYPE baseMaterial = video::EMT_SOLID,
-			s32 userData=0) override;
-
-		//! Like IGPUProgrammingServices::addShaderMaterial(), but tries to load the
-		//! programs from files.
-		virtual s32 addShaderMaterialFromFiles(io::IReadFile* vertexShaderProgram = 0,
-			io::IReadFile* pixelShaderProgram = 0,
-			IShaderConstantSetCallBack* callback = 0,
-			E_MATERIAL_TYPE baseMaterial = video::EMT_SOLID,
-			s32 userData=0) override;
-
-		//! Like IGPUProgrammingServices::addShaderMaterial(), but tries to load the
-		//! programs from files.
-		virtual s32 addShaderMaterialFromFiles(const io::path& vertexShaderProgramFileName,
-			const io::path& pixelShaderProgramFileName,
-			IShaderConstantSetCallBack* callback = 0,
-			E_MATERIAL_TYPE baseMaterial = video::EMT_SOLID,
-			s32 userData=0) override;
-
 		//! Returns pointer to material renderer or null
 		IMaterialRenderer* getMaterialRenderer(u32 idx) const override;
 
@@ -497,8 +473,7 @@ namespace video
 		//! Returns name of the material renderer
 		const char* getMaterialRendererName(u32 idx) const override;
 
-		//! Adds a new material renderer to the VideoDriver, based on a high level shading
-		//! language. Currently only HLSL in D3D9 is supported.
+		//! Adds a new material renderer to the VideoDriver, based on a high level shading language.
 		virtual s32 addHighLevelShaderMaterial(
 			const c8* vertexShaderProgram,
 			const c8* vertexShaderEntryPointName = 0,
@@ -516,8 +491,6 @@ namespace video
 			E_MATERIAL_TYPE baseMaterial = video::EMT_SOLID,
 			s32 userData = 0) override;
 
-		//! Like IGPUProgrammingServices::addShaderMaterial() (look there for a detailed description),
-		//! but tries to load the programs from files.
 		virtual s32 addHighLevelShaderMaterialFromFiles(
 			const io::path& vertexShaderProgramFile,
 			const c8* vertexShaderEntryPointName = "main",
@@ -535,8 +508,6 @@ namespace video
 			E_MATERIAL_TYPE baseMaterial = video::EMT_SOLID,
 			s32 userData = 0) override;
 
-		//! Like IGPUProgrammingServices::addShaderMaterial() (look there for a detailed description),
-		//! but tries to load the programs from files.
 		virtual s32 addHighLevelShaderMaterialFromFiles(
 			io::IReadFile* vertexShaderProgram,
 			const c8* vertexShaderEntryPointName = "main",
