@@ -3384,20 +3384,6 @@ s32 COpenGLDriver::getPixelShaderConstantID(const c8* name)
 	return -1;
 }
 
-//! Sets a vertex shader constant.
-void COpenGLDriver::setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
-{
-	for (s32 i=0; i<constantAmount; ++i)
-		extGlProgramLocalParameter4fv(GL_VERTEX_PROGRAM_ARB, startRegister+i, &data[i*4]);
-}
-
-//! Sets a pixel shader constant.
-void COpenGLDriver::setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
-{
-	for (s32 i=0; i<constantAmount; ++i)
-		extGlProgramLocalParameter4fv(GL_FRAGMENT_PROGRAM_ARB, startRegister+i, &data[i*4]);
-}
-
 //! Sets a constant for the vertex shader based on an index.
 bool COpenGLDriver::setVertexShaderConstant(s32 index, const f32* floats, int count)
 {

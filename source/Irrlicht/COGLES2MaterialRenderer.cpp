@@ -345,16 +345,6 @@ s32 COGLES2MaterialRenderer::getPixelShaderConstantID(const c8* name)
 	return -1;
 }
 
-void COGLES2MaterialRenderer::setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
-{
-	os::Printer::log("Cannot set constant, please use high level shader call instead.", ELL_WARNING);
-}
-
-void COGLES2MaterialRenderer::setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount)
-{
-	os::Printer::log("Cannot set constant, use high level shader call.", ELL_WARNING);
-}
-
 bool COGLES2MaterialRenderer::setVertexShaderConstant(s32 index, const f32* floats, int count)
 {
 	return setPixelShaderConstant(index, floats, count);

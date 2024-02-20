@@ -187,12 +187,6 @@ namespace video
 		//! Get a pixel shader constant index.
 		s32 getPixelShaderConstantID(const c8* name) override;
 
-		//! Sets a vertex shader constant.
-		void setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount = 1) override;
-
-		//! Sets a pixel shader constant.
-		void setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount = 1) override;
-
 		//! Sets a constant for the vertex shader based on an index.
 		bool setVertexShaderConstant(s32 index, const f32* floats, int count) override;
 

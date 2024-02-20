@@ -201,12 +201,6 @@ namespace video
 		//! Uint interface for the above.
 		bool setPixelShaderConstant(s32 index, const u32* ints, int count) override;
 
-		//! Sets a vertex shader constant.
-		void setVertexShaderConstant(const f32* data, s32 startRegister, s32 constantAmount=1) override;
-
-		//! Sets a pixel shader constant.
-		void setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount=1) override;
-
 		//! Adds a new material renderer to the VideoDriver
 		virtual s32 addShaderMaterial(const c8* vertexShaderProgram, const c8* pixelShaderProgram,
 			IShaderConstantSetCallBack* callback, E_MATERIAL_TYPE baseMaterial, s32 userData) override;
