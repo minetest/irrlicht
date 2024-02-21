@@ -205,7 +205,7 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 
 		// print renderer information
 		VendorName = GL.GetString(GL_VENDOR);
-		os::Printer::log(VendorName.c_str(), ELL_INFORMATION);
+		os::Printer::log("Vendor", VendorName.c_str(), ELL_INFORMATION);
 
 		Version = getVersionFromOpenGL();
 	}
@@ -222,6 +222,7 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 	{
 		initVersion();
 		initFeatures();
+		printTextureFormats();
 
 		// reset cache handler
 		delete CacheHandler;
@@ -274,6 +275,22 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 		testGLError(__LINE__);
 
 		return true;
+	}
+
+	void COpenGL3DriverBase::printTextureFormats()
+	{
+		char buf[128];
+		for (u32 i = 0; i < static_cast<u32>(ECF_UNKNOWN); i++) {
+			auto &info = TextureFormats[i];
+			if (!info.InternalFormat) {
+				snprintf_irr(buf, sizeof(buf), "%s -> unsupported", ColorFormatNames[i]);
+			} else {
+				snprintf_irr(buf, sizeof(buf), "%s -> %#06x %#06x %#06x%s",
+					ColorFormatNames[i], info.InternalFormat, info.PixelFormat,
+					info.PixelType, info.Converter ? " (c)" : "");
+			}
+			os::Printer::log(buf, ELL_DEBUG);
+		}
 	}
 
 	void COpenGL3DriverBase::loadShaderData(const io::path& vertexShaderName, const io::path& fragmentShaderName, c8** vertexShaderData, c8** fragmentShaderData)

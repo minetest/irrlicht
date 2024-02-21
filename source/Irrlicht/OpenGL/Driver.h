@@ -272,7 +272,6 @@ namespace video
 		COpenGL3CacheHandler* getCacheHandler() const;
 
 	protected:
-		//! inits the opengl-es driver
 		virtual bool genericDriverInit(const core::dimension2d<u32>& screenSize, bool stencilBuffer);
 
 		void initVersion();
@@ -390,6 +389,8 @@ private:
 		ECOLOR_FORMAT ColorFormat;
 
 		IContextManager* ContextManager;
+
+		void printTextureFormats();
 
 		void addDummyMaterial(E_MATERIAL_TYPE type);
 
