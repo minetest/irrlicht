@@ -54,6 +54,8 @@ public:
 		KeepImage = Driver->getTextureCreationFlag(ETCF_ALLOW_MEMORY_COPY);
 
 		getImageValues(images[0]);
+		if (!InternalFormat)
+			return;
 
 		const core::array<IImage*>* tmpImages = &images;
 
@@ -160,6 +162,7 @@ public:
 		if ( !Driver->getColorFormatParameters(ColorFormat, InternalFormat, PixelFormat, PixelType, &Converter) )
 		{
 			os::Printer::log("COpenGLCoreTexture: Color format is not supported", ColorFormatNames[ColorFormat < ECF_UNKNOWN?ColorFormat:ECF_UNKNOWN], ELL_ERROR);
+			return;
 		}
 
 		GL.GenTextures(1, &TextureName);
@@ -503,7 +506,8 @@ protected:
 		if ( !Driver->getColorFormatParameters(ColorFormat, InternalFormat, PixelFormat, PixelType, &Converter) )
 		{
 			os::Printer::log("getImageValues: Color format is not supported", ColorFormatNames[ColorFormat < ECF_UNKNOWN?ColorFormat:ECF_UNKNOWN], ELL_ERROR);
-			// not quitting as it will use some alternative internal format
+			InternalFormat = 0;
+			return;
 		}
 
 		if (IImage::isCompressedFormat(image->getColorFormat()))
