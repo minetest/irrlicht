@@ -159,8 +159,8 @@ namespace video
 		bool BlendMinMaxSupported = false;
 
 	private:
-		void addExtension(std::string name);
-		void updateLegacyExtensionList();
+		void addExtension(std::string &&name);
+		void extensionsLoaded();
 
 		std::unordered_set<std::string> Extensions;
 	};

@@ -9,7 +9,10 @@
 #include "irrString.h"
 #include "SMaterial.h"
 #include "fast_atof.h"
+#include "os.h"
 #include <mt_opengl.h>
+
+// FIXME: this basically duplicates what mt_opengl.h already does
 
 namespace irr
 {
@@ -24,7 +27,7 @@ namespace video
 			pos = next + 1;
 		}
 		addExtension(pos);
-		updateLegacyExtensionList();
+		extensionsLoaded();
 	}
 
 	void COpenGL3ExtensionHandler::initExtensionsNew()
@@ -32,10 +35,10 @@ namespace video
 		int ext_count = GetInteger(GL_NUM_EXTENSIONS);
 		for (int k = 0; k < ext_count; k++)
 			addExtension(reinterpret_cast<const char *>(GL.GetStringi(GL_EXTENSIONS, k)));
-		updateLegacyExtensionList();
+		extensionsLoaded();
 	}
 
-	void COpenGL3ExtensionHandler::addExtension(std::string name) {
+	void COpenGL3ExtensionHandler::addExtension(std::string &&name) {
 		Extensions.emplace(std::move(name));
 	}
 
@@ -43,7 +46,10 @@ namespace video
 		return Extensions.find(name) != Extensions.end();
 	}
 
-	void COpenGL3ExtensionHandler::updateLegacyExtensionList() {
+	void COpenGL3ExtensionHandler::extensionsLoaded() {
+		os::Printer::log((std::string("Loaded ") + std::to_string(Extensions.size()) + " extensions:").c_str(), ELL_DEBUG);
+		for (const auto &it : Extensions)
+			os::Printer::log((std::string("  ") + it).c_str(), ELL_DEBUG);
 		for (size_t j = 0; j < IRR_OGLES_Feature_Count; ++j)
 			FeatureAvailable[j] = queryExtension(getFeatureString(j));
 	}
