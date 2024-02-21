@@ -31,6 +31,8 @@ namespace video {
 		else
 			initExtensionsOld();
 
+		static const GLenum BGRA8_EXT = 0x93A1;
+
 		if (Version.Major >= 3) {
 			// NOTE floating-point formats may not be suitable for render targets.
 			TextureFormats[ECF_A1R5G5B5] = {GL_RGB5_A1, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, CColorConverter::convert_A1R5G5B5toR5G5B5A1};
@@ -49,9 +51,9 @@ namespace video {
 			TextureFormats[ECF_D24S8] = {GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8};
 
 			if (FeatureAvailable[IRR_GL_EXT_texture_format_BGRA8888])
-				TextureFormats[ECF_A8R8G8B8] = {GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE};
-			else if (FeatureAvailable[IRR_GL_APPLE_texture_format_BGRA8888])
 				TextureFormats[ECF_A8R8G8B8] = {GL_BGRA, GL_BGRA, GL_UNSIGNED_BYTE};
+			else if (FeatureAvailable[IRR_GL_APPLE_texture_format_BGRA8888])
+				TextureFormats[ECF_A8R8G8B8] = {BGRA8_EXT, GL_BGRA, GL_UNSIGNED_BYTE};
 
 			if (FeatureAvailable[IRR_GL_OES_depth32])
 				TextureFormats[ECF_D32] = {GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT};
@@ -68,9 +70,9 @@ namespace video {
 			TextureFormats[ECF_A8R8G8B8] = {GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, CColorConverter::convert_A8R8G8B8toA8B8G8R8};
 
 			if (FeatureAvailable[IRR_GL_EXT_texture_format_BGRA8888])
-				TextureFormats[ECF_A8R8G8B8] = {GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE};
-			else if (FeatureAvailable[IRR_GL_APPLE_texture_format_BGRA8888])
 				TextureFormats[ECF_A8R8G8B8] = {GL_BGRA, GL_BGRA, GL_UNSIGNED_BYTE};
+			else if (FeatureAvailable[IRR_GL_APPLE_texture_format_BGRA8888])
+				TextureFormats[ECF_A8R8G8B8] = {BGRA8_EXT, GL_BGRA, GL_UNSIGNED_BYTE};
 
 			if (FeatureAvailable[IRR_GL_OES_texture_half_float]) {
 				TextureFormats[ECF_A16B16G16R16F] = {GL_RGBA, GL_RGBA, HALF_FLOAT_OES};
