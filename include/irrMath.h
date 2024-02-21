@@ -5,9 +5,9 @@
 #pragma once
 
 #include "irrTypes.h"
-#include <math.h>
+#include <cmath>
 #include <float.h>
-#include <stdlib.h> // for abs() etc.
+#include <cstdlib> // for abs() etc.
 #include <limits.h> // For INT_MAX / UINT_MAX
 #include <type_traits>
 
@@ -197,7 +197,7 @@ namespace core
 	template <class T, std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
 	inline bool equals(const T a, const T b, const T tolerance = roundingError<T>())
 	{
-		return abs(a - b) <= tolerance;
+		return std::abs(a - b) <= tolerance;
 	}
 
 	//! returns if a equals b, taking relative error in form of factor
