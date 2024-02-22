@@ -308,12 +308,13 @@ namespace video
 		: MaterialType(EMT_SOLID), AmbientColor(255,255,255,255), DiffuseColor(255,255,255,255),
 			EmissiveColor(0,0,0,0), SpecularColor(255,255,255,255),
 			Shininess(0.0f), MaterialTypeParam(0.0f), MaterialTypeParam2(0.0f), Thickness(1.0f),
-			ZBuffer(ECFN_LESSEQUAL), AntiAliasing(EAAM_SIMPLE), ColorMask(ECP_ALL),
-			ColorMaterial(ECM_DIFFUSE), BlendOperation(EBO_NONE), BlendFactor(0.0f),
+			AntiAliasing(EAAM_SIMPLE), ZBuffer(ECFN_LESSEQUAL), ZWriteEnable(EZW_AUTO),
+			ColorMask(ECP_ALL),	ColorMaterial(ECM_DIFFUSE), 
 			PolygonOffsetDepthBias(0.f), PolygonOffsetSlopeScale(0.f),
 			PolygonOffsetFactor(0), PolygonOffsetDirection(EPO_FRONT),
+			BlendOperation(EBO_NONE), BlendFactor(0.0f),
 			Wireframe(false), PointCloud(false), GouraudShading(true),
-			Lighting(true), ZWriteEnable(EZW_AUTO), BackfaceCulling(true), FrontfaceCulling(false),
+			Lighting(true), BackfaceCulling(true), FrontfaceCulling(false),
 			FogEnable(false), NormalizeNormals(false), UseMipMaps(true),
 			UserData(0)
 		{ }
@@ -386,16 +387,21 @@ namespace video
 		//! Thickness of non-3dimensional elements such as lines and points.
 		f32 Thickness;
 
+		//! Sets the antialiasing mode
+		/** Values are chosen from E_ANTI_ALIASING_MODE. Default is
+		EAAM_SIMPLE, i.e. simple multi-sample anti-aliasing. */
+		u8 AntiAliasing;
+
 		//! Is the ZBuffer enabled? Default: ECFN_LESSEQUAL
 		/** If you want to disable depth test for this material
 		just set this parameter to ECFN_DISABLED.
 		Values are from E_COMPARISON_FUNC. */
 		u8 ZBuffer;
 
-		//! Sets the antialiasing mode
-		/** Values are chosen from E_ANTI_ALIASING_MODE. Default is
-		EAAM_SIMPLE, i.e. simple multi-sample anti-aliasing. */
-		u8 AntiAliasing;
+		//! Is the zbuffer writable or is it read-only. Default: EZW_AUTO.
+		/** If this parameter is not EZW_OFF, you probably also want to set ZBuffer 
+		to values other than ECFN_DISABLED (which disables the zbuffer completely) */
+		E_ZWRITE ZWriteEnable:3;
 
 		//! Defines the enabled color planes
 		/** Values are defined as or'ed values of the E_COLOR_PLANE enum.
@@ -411,22 +417,6 @@ namespace video
 		diffuse light behavior of each face. The default, ECM_DIFFUSE, will result in
 		a very similar rendering as with lighting turned off, just with light shading. */
 		u8 ColorMaterial:3;
-
-		//! Store the blend operation of choice
-		/** Values to be chosen from E_BLEND_OPERATION. */
-		E_BLEND_OPERATION BlendOperation:8;
-
-		//! Store the blend factors
-		/** textureBlendFunc/textureBlendFuncSeparate functions should be used to write
-		properly blending factors to this parameter. 
-		Due to historical reasons this parameter is not used for material type 
-		EMT_ONETEXTURE_BLEND which uses MaterialTypeParam instead for the blend factor.
-		It's generally used only for materials without any blending otherwise (like EMT_SOLID).
-		It's main use is to allow having shader materials which can enable/disable 
-		blending after they have been created. 
-		When you set this you usually also have to set BlendOperation to a value != EBO_NONE
-		(setting it to EBO_ADD is probably the most common one value). */
-		f32 BlendFactor;
 
 		//! A constant z-buffer offset for a polygon/line/point
 		/** The range of the value is driver specific.
@@ -458,6 +448,22 @@ namespace video
 		Can be to front or to back, specified by values from E_POLYGON_OFFSET. 	*/
 		E_POLYGON_OFFSET PolygonOffsetDirection:2;
 
+		//! Store the blend operation of choice
+		/** Values to be chosen from E_BLEND_OPERATION. */
+		E_BLEND_OPERATION BlendOperation:8;
+
+		//! Store the blend factors
+		/** textureBlendFunc/textureBlendFuncSeparate functions should be used to write
+		properly blending factors to this parameter. 
+		Due to historical reasons this parameter is not used for material type 
+		EMT_ONETEXTURE_BLEND which uses MaterialTypeParam instead for the blend factor.
+		It's generally used only for materials without any blending otherwise (like EMT_SOLID).
+		It's main use is to allow having shader materials which can enable/disable 
+		blending after they have been created. 
+		When you set this you usually also have to set BlendOperation to a value != EBO_NONE
+		(setting it to EBO_ADD is probably the most common one value). */
+		f32 BlendFactor;
+
 		//! Draw as wireframe or filled triangles? Default: false
 		/** The user can access a material flag using
 		\code material.Wireframe=true \endcode
@@ -472,11 +478,6 @@ namespace video
 
 		//! Will this material be lighted? Default: true
 		bool Lighting:1;
-
-		//! Is the zbuffer writable or is it read-only. Default: EZW_AUTO.
-		/** If this parameter is not EZW_OFF, you probably also want to set ZBuffer 
-		to values other than ECFN_DISABLED (which disables the zbuffer completely) */
-		E_ZWRITE ZWriteEnable:3;
 
 		//! Is backface culling enabled? Default: true
 		bool BackfaceCulling:1;
