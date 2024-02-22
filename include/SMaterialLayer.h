@@ -52,7 +52,7 @@ namespace video
 		//! Default constructor
 		SMaterialLayer() : Texture(0), TextureWrapU(ETC_REPEAT), TextureWrapV(ETC_REPEAT), TextureWrapW(ETC_REPEAT),
 			BilinearFilter(true), TrilinearFilter(false), AnisotropicFilter(0), LODBias(0), 
-			TextureMatrix(0), TextureMatrixUsed(false)
+			TextureMatrixUsed(false), TextureMatrix(0)
 		{
 		}
 
@@ -243,13 +243,15 @@ namespace video
 
 	private:
 		friend class SMaterial;
-		irr::core::irrAllocator<irr::core::matrix4> MatrixAllocator;
+
+		// TextureMatrix memory stays until destructor even when unused to avoid unnecessary allocation/de-allocations
+		bool TextureMatrixUsed;	
 
 		//! Texture Matrix
 		/** Do not access this element directly as the internal
 		resource management has to cope with Null pointers etc. */
 		core::matrix4* TextureMatrix;
-		bool TextureMatrixUsed;	// TextureMatrix memory stays until destructor even when unused to avoid unnecessary allocation/de-allocations
+		irr::core::irrAllocator<irr::core::matrix4> MatrixAllocator;
 	};
 
 } // end namespace video
