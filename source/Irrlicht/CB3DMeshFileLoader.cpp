@@ -158,7 +158,7 @@ bool CB3DMeshFileLoader::readChunkNODE(CSkinnedMesh::SJoint *inJoint)
 	for ( u32 i=1; i < B3dStack.size(); ++i )
 		logStr += "-";
 	logStr += "read ChunkNODE";
-	os::Printer::log(logStr.c_str(), joint->Name.c_str(), ELL_DEBUG);
+	os::Printer::log(logStr.c_str(), joint->Name.value_or("").c_str(), ELL_DEBUG);
 #endif
 
 	f32 position[3], scale[3], rotation[4];
