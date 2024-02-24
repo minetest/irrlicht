@@ -125,7 +125,8 @@ namespace scene
 		//! Joints
 		struct SJoint
 		{
-			SJoint() : UseAnimationFrom(0), GlobalSkinningSpace(false),
+			SJoint() : Animatedscale(1,1,1),
+				UseAnimationFrom(0), GlobalSkinningSpace(false),
 				positionHint(-1),scaleHint(-1),rotationHint(-1)
 			{
 			}
