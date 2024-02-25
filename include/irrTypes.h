@@ -56,23 +56,19 @@ typedef double				f64;
 } // end namespace irr
 
 
-#include <wchar.h>
-//! Defines for s{w,n}printf_irr because s{w,n}printf methods do not match the ISO C
+//! Defines for snprintf_irr because snprintf method does not match the ISO C
 //! standard on Windows platforms.
 //! We want int snprintf_irr(char *str, size_t size, const char *format, ...);
-//! and int swprintf_irr(wchar_t *wcs, size_t maxlen, const wchar_t *format, ...);
 #if defined(_MSC_VER)
-#define swprintf_irr swprintf_s
 #define snprintf_irr sprintf_s
 #else
-#define swprintf_irr swprintf
 #define snprintf_irr snprintf
 #endif // _MSC_VER
 
 namespace irr
 {
 
-//! Type name for character type used by the file system.
+//! Type name for character type used by the file system (legacy).
 	typedef char fschar_t;
 	#define _IRR_TEXT(X) X
 

@@ -17,8 +17,6 @@
 #define IRRLICHT_VERSION_SVN alpha
 #define IRRLICHT_SDK_VERSION "1.9.0" IRRLICHT_VERSION_MT
 
-#include <stdio.h> // TODO: Although included elsewhere this is required at least for mingw
-
 #ifdef _WIN32
 #define IRRCALLCONV __stdcall
 #else
