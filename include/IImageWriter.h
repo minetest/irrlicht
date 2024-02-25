@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef _I_IMAGE_WRITER_H_INCLUDED__
-#define _I_IMAGE_WRITER_H_INCLUDED__
+#pragma once
 
 #include "IReferenceCounted.h"
 #include "irrString.h"
@@ -40,6 +39,3 @@ public:
 
 } // namespace video
 } // namespace irr
-
-#endif // _I_IMAGE_WRITER_H_INCLUDED__
-

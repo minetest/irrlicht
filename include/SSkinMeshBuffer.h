@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_SKIN_MESH_BUFFER_H_INCLUDED__
-#define __I_SKIN_MESH_BUFFER_H_INCLUDED__
+#pragma once
 
 #include "IMeshBuffer.h"
 #include "S3DVertex.h"
@@ -424,6 +423,3 @@ struct SSkinMeshBuffer : public IMeshBuffer
 
 } // end namespace scene
 } // end namespace irr
-
-#endif
-

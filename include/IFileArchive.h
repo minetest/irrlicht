@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_FILE_ARCHIVE_H_INCLUDED__
-#define __I_FILE_ARCHIVE_H_INCLUDED__
+#pragma once
 
 #include "IReadFile.h"
 #include "IFileList.h"
@@ -143,6 +142,3 @@ public:
 
 } // end namespace io
 } // end namespace irr
-
-#endif
-

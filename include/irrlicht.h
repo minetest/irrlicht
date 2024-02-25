@@ -26,8 +26,7 @@
   in the jpeglib, the zlib and libPng for further information.
 */
 
-#ifndef __IRRLICHT_H_INCLUDED__
-#define __IRRLICHT_H_INCLUDED__
+#pragma once
 
 #include "aabbox3d.h"
 #include "CMeshBuffer.h"
@@ -321,6 +320,3 @@ namespace irr
 /*! \file irrlicht.h
 	\brief Main header file of the irrlicht, the only file needed to include.
 */
-
-#endif
-

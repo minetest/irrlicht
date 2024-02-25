@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_FILE_SYSTEM_H_INCLUDED__
-#define __I_FILE_SYSTEM_H_INCLUDED__
+#pragma once
 
 #include "IReferenceCounted.h"
 #include "IFileArchive.h"
@@ -268,6 +267,3 @@ public:
 
 } // end namespace io
 } // end namespace irr
-
-#endif
-

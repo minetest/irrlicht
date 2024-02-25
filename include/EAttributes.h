@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __E_ATTRIBUTES_H_INCLUDED__
-#define __E_ATTRIBUTES_H_INCLUDED__
+#pragma once
 
 namespace irr
 {
@@ -31,5 +30,3 @@ enum E_ATTRIBUTE_TYPE
 
 } // end namespace io
 } // end namespace irr
-
-#endif

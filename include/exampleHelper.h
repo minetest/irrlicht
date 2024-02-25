@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __EXAMPLE_HELPER_H_INCLUDED__
-#define __EXAMPLE_HELPER_H_INCLUDED__
+#pragma once
 
 #include "path.h"
 
@@ -20,5 +19,3 @@ static io::path getExampleMediaPath()
 }
 
 } // end namespace irr
-
-#endif

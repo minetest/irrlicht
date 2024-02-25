@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __S_EXPOSED_VIDEO_DATA_H_INCLUDED__
-#define __S_EXPOSED_VIDEO_DATA_H_INCLUDED__
+#pragma once
 
 namespace irr
 {
@@ -78,7 +77,3 @@ struct SExposedVideoData
 
 } // end namespace video
 } // end namespace irr
-
-
-#endif
-

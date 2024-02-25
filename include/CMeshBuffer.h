@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __T_MESH_BUFFER_H_INCLUDED__
-#define __T_MESH_BUFFER_H_INCLUDED__
+#pragma once
 
 #include "irrArray.h"
 #include "IMeshBuffer.h"
@@ -293,7 +292,3 @@ namespace scene
 	typedef CMeshBuffer<video::S3DVertexTangents> SMeshBufferTangents;
 } // end namespace scene
 } // end namespace irr
-
-#endif
-
-

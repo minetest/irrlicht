@@ -1,5 +1,4 @@
-#ifndef __E_VERTEX_ATTRIBUTES_H_INCLUDED__
-#define __E_VERTEX_ATTRIBUTES_H_INCLUDED__
+#pragma once
 
 namespace irr
 {
@@ -34,5 +33,3 @@ const char* const sBuiltInVertexAttributeNames[] =
 
 } // end namespace video
 } // end namespace irr
-
-#endif //__E_VERTEX_ATTRIBUTES_H_INCLUDED__

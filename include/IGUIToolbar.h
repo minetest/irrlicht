@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_GUI_TOOL_BAR_H_INCLUDED__
-#define __I_GUI_TOOL_BAR_H_INCLUDED__
+#pragma once
 
 #include "IGUIElement.h"
 
@@ -35,6 +34,3 @@ namespace gui
 
 } // end namespace gui
 } // end namespace irr
-
-#endif
-

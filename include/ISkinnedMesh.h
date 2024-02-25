@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __I_SKINNED_MESH_H_INCLUDED__
-#define __I_SKINNED_MESH_H_INCLUDED__
+#pragma once
 
 #include "irrArray.h"
 #include "IBoneSceneNode.h"
@@ -222,6 +221,3 @@ namespace scene
 
 } // end namespace scene
 } // end namespace irr
-
-#endif
-

@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __E_MATERIAL_PROPS_H_INCLUDED__
-#define __E_MATERIAL_PROPS_H_INCLUDED__
+#pragma once
 
 namespace irr
 {
@@ -81,7 +80,3 @@ namespace video
 
 } // end namespace video
 } // end namespace irr
-
-
-#endif // __E_MATERIAL_PROPS_H_INCLUDED__
-

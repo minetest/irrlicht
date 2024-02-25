@@ -2,8 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __S_MATERIAL_H_INCLUDED__
-#define __S_MATERIAL_H_INCLUDED__
+#pragma once
 
 #include "SColor.h"
 #include "matrix4.h"
@@ -571,5 +570,3 @@ namespace video
 	IRRLICHT_API extern SMaterial IdentityMaterial;
 } // end namespace video
 } // end namespace irr
-
-#endif

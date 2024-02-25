@@ -1,5 +1,4 @@
-#ifndef __E_SHADER_TYPES_H_INCLUDED__
-#define __E_SHADER_TYPES_H_INCLUDED__
+#pragma once
 
 #include "irrTypes.h"
 
@@ -85,6 +84,3 @@ const c8* const GEOMETRY_SHADER_TYPE_NAMES[] = {
 
 } // end namespace video
 } // end namespace irr
-
-#endif // __E_SHADER_TYPES_H_INCLUDED__
-
