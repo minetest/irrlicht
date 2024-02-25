@@ -6,11 +6,11 @@
 
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <sys/utsname.h>
-#include <time.h>
-#include <locale.h>
+#include <ctime>
+#include <clocale>
 #include "IEventReceiver.h"
 #include "ISceneManager.h"
 #include "IGUIElement.h"

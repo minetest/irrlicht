@@ -6,9 +6,9 @@
 
 #include "irrTypes.h"
 #include <cmath>
-#include <float.h>
+#include <cfloat>
 #include <cstdlib> // for abs() etc.
-#include <limits.h> // For INT_MAX / UINT_MAX
+#include <climits> // For INT_MAX / UINT_MAX
 #include <type_traits>
 
 namespace irr

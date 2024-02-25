@@ -7,7 +7,7 @@
 #ifdef _IRR_WINDOWS_API_
 #include <windows.h>
 #else
-#include <string.h>
+#include <cstring>
 #include <unistd.h>
 #ifndef _IRR_ANDROID_PLATFORM_
 #include <sys/types.h>

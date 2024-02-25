@@ -16,8 +16,8 @@
 #include "irrString.h"
 #include "Keycodes.h"
 #include "COSOperator.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include "SIrrCreationParameters.h"
 #include <SDL_video.h>
 

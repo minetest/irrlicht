@@ -10,7 +10,7 @@
 #include "irrString.h"
 #include "os.h"
 
-#include <stdio.h> // required for jpeglib.h
+#include <cstdio> // required for jpeglib.h
 extern "C"
 {
 	#include <jpeglib.h>

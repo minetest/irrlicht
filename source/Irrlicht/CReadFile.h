@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <stdio.h>
+#include <cstdio>
 #include "IReadFile.h"
 #include "irrString.h"
 

@@ -12,7 +12,7 @@
 	#define bswap_32(X) SDL_Swap32(X)
 	#define bswap_64(X) SDL_Swap64(X)
 #elif defined(_IRR_WINDOWS_API_) && defined(_MSC_VER)
-	#include <stdlib.h>
+	#include <cstdlib>
 	#define bswap_16(X) _byteswap_ushort(X)
 	#define bswap_32(X) _byteswap_ulong(X)
 	#define bswap_64(X) _byteswap_uint64(X)
@@ -60,7 +60,7 @@ namespace os
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <time.h>
+#include <ctime>
 
 namespace irr
 {
@@ -171,7 +171,7 @@ namespace os
 // ----------------------------------------------------------------
 
 #include <emscripten.h>
-#include <time.h>
+#include <ctime>
 #include <sys/time.h>
 
 namespace irr
@@ -222,8 +222,8 @@ namespace os
 // linux/ansi version
 // ----------------------------------------------------------------
 
-#include <stdio.h>
-#include <time.h>
+#include <cstdio>
+#include <ctime>
 #include <sys/time.h>
 
 namespace irr
