@@ -1815,7 +1815,7 @@ void CNullDriver::updateAllHardwareBuffers()
 		SHWBufferLink *Link=Iterator.getNode()->getValue();
 
 		Link->LastUsed++;
-		if (Link->LastUsed>20000)
+		if (Link->LastUsed>20000 || Link->MeshBuffer->getReferenceCount() == 1)
 		{
 			deleteHardwareBuffer(Link);
 

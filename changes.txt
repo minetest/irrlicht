@@ -1,6 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- Hardware meshbuffers are now deleted when they hold the last reference to a meshbuffer
 - Variable order inside SMaterial and SMaterialLayer changed for better packing
 - line3d::getClosestPoint can now chose between using line or line segment
 - MY3D loader deprecated and disabled by default as MY3D tools can't be found on the web anymore. Also could always be used as external loader.
