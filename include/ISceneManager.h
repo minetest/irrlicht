@@ -12,7 +12,6 @@
 #include "dimension2d.h"
 #include "SColor.h"
 #include "ESceneNodeTypes.h"
-#include "EMeshWriterEnums.h"
 #include "SceneParameters.h"
 #include "ISkinnedMesh.h"
 
@@ -108,7 +107,6 @@ namespace scene
 	class IMeshLoader;
 	class IMeshManipulator;
 	class IMeshSceneNode;
-	class IMeshWriter;
 	class ISceneNode;
 	class ISceneNodeFactory;
 
