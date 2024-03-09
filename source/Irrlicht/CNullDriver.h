@@ -119,41 +119,12 @@ namespace video
 		virtual void draw3DLine(const core::vector3df& start,
 			const core::vector3df& end, SColor color = SColor(255,255,255,255)) override;
 
-		[[deprecated]] virtual void draw3DTriangle(const core::triangle3df& triangle,
-			SColor color = SColor(255,255,255,255)) {}
-
 		//! Draws a 3d axis aligned box.
 		virtual void draw3DBox(const core::aabbox3d<f32>& box,
 			SColor color = SColor(255,255,255,255)) override;
 
 		//! draws an 2d image
 		void draw2DImage(const video::ITexture* texture, const core::position2d<s32>& destPos, bool useAlphaChannelOfTexture) override;
-
-		//! draws a set of 2d images, using a color and the alpha
-		/** channel of the texture if desired. The images are drawn
-		beginning at pos and concatenated in one line. All drawings
-		are clipped against clipRect (if != 0).
-		The subtextures are defined by the array of sourceRects
-		and are chosen by the indices given.
-		\param texture: Texture to be drawn.
-		\param pos: Upper left 2d destination position where the image will be drawn.
-		\param sourceRects: Source rectangles of the image.
-		\param indices: List of indices which choose the actual rectangle used each time.
-		\param kerningWidth: offset on position
-		\param clipRect: Pointer to rectangle on the screen where the image is clipped to.
-		This pointer can be 0. Then the image is not clipped.
-		\param color: Color with which the image is colored.
-		Note that the alpha component is used: If alpha is other than 255, the image will be transparent.
-		\param useAlphaChannelOfTexture: If true, the alpha channel of the texture is
-		used to draw the image. */
-		[[deprecated]] virtual void draw2DImageBatch(const video::ITexture* texture,
-				const core::position2d<s32>& pos,
-				const core::array<core::rect<s32> >& sourceRects,
-				const core::array<s32>& indices,
-				s32 kerningWidth = 0,
-				const core::rect<s32>* clipRect = 0,
-				SColor color=SColor(255,255,255,255),
-				bool useAlphaChannelOfTexture=false) {}
 
 		//! Draws a set of 2d images, using a color and the alpha channel of the texture.
 		/** All drawings are clipped against clipRect (if != 0).
@@ -196,20 +167,10 @@ namespace video
 			SColor colorLeftUp, SColor colorRightUp, SColor colorLeftDown, SColor colorRightDown,
 			const core::rect<s32>* clip = 0) override;
 
-		//! Draws the outline of a 2d rectangle
-		[[deprecated]] virtual void draw2DRectangleOutline(const core::recti& pos, SColor color=SColor(255,255,255,255)) {}
-
 		//! Draws a 2d line.
 		virtual void draw2DLine(const core::position2d<s32>& start,
 					const core::position2d<s32>& end,
 					SColor color=SColor(255,255,255,255)) override;
-
-		//! Draws a pixel
-		[[deprecated]] virtual void drawPixel(u32 x, u32 y, const SColor & color) {}
-
-		//! Draws a non filled concyclic reqular 2d polygon.
-		[[deprecated]] virtual void draw2DPolygon(core::position2d<s32> center,
-			f32 radius, video::SColor Color, s32 vertexCount) {}
 
 		virtual void setFog(SColor color=SColor(0,255,255,255),
 				E_FOG_TYPE fogType=EFT_FOG_LINEAR,
@@ -256,22 +217,6 @@ namespace video
 
 		//! Adds an external image writer to the engine.
 		void addExternalImageWriter(IImageWriter* writer) override;
-
-		//! Draws a shadow volume into the stencil buffer. To draw a stencil shadow, do
-		//! this: First, draw all geometry. Then use this method, to draw the shadow
-		//! volume. Then, use IVideoDriver::drawStencilShadow() to visualize the shadow.
-		[[deprecated]] virtual void drawStencilShadowVolume(const core::array<core::vector3df>& triangles,
-			bool zfail=true, u32 debugDataVisible=0) {}
-
-		//! Fills the stencil shadow with color. After the shadow volume has been drawn
-		//! into the stencil buffer using IVideoDriver::drawStencilShadowVolume(), use this
-		//! to draw the color of the shadow.
-		[[deprecated]] virtual void drawStencilShadow(bool clearStencilBuffer=false,
-			video::SColor leftUpEdge = video::SColor(0,0,0,0),
-			video::SColor rightUpEdge = video::SColor(0,0,0,0),
-			video::SColor leftDownEdge = video::SColor(0,0,0,0),
-			video::SColor rightDownEdge = video::SColor(0,0,0,0)) {}
-
 
 		//! Removes a texture from the texture cache and deletes it, freeing lot of
 		//! memory.
@@ -604,10 +549,6 @@ namespace video
 		*/
 		virtual void convertColor(const void* sP, ECOLOR_FORMAT sF, s32 sN,
 				void* dP, ECOLOR_FORMAT dF) const override;
-
-		//! deprecated method
-		virtual ITexture* createRenderTargetTexture(const core::dimension2d<u32>& size,
-				const c8* name=0);
 
 		bool checkDriverReset() override {return false;}
 	protected:

@@ -124,16 +124,10 @@ namespace video
 				const core::position2d<s32>& end,
 				SColor color = SColor(255, 255, 255, 255)) override;
 
-		//! Draws a single pixel
-		void drawPixel(u32 x, u32 y, const SColor & color) override;
-
 		//! Draws a 3d line.
 		virtual void draw3DLine(const core::vector3df& start,
 				const core::vector3df& end,
 				SColor color = SColor(255, 255, 255, 255)) override;
-
-		//! Draws a pixel
-//			virtual void drawPixel(u32 x, u32 y, const SColor & color);
 
 		//! Returns the name of the video driver.
 		const char* getName() const override;

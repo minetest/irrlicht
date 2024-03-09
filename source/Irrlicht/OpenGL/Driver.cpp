@@ -1068,9 +1068,6 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 	void COpenGL3DriverBase::draw2DLine(const core::position2d<s32>& start,
 			const core::position2d<s32>& end, SColor color)
 	{
-		if (start==end)
-			drawPixel(start.X, start.Y, color);
-		else
 		{
 			chooseMaterial2D();
 			setMaterialTexture(0, 0);
@@ -1090,28 +1087,6 @@ COpenGL3DriverBase::~COpenGL3DriverBase()
 
 			drawArrays(GL_LINES, vtPrimitive, vertices, 2);
 		}
-	}
-
-
-	//! Draws a pixel
-	void COpenGL3DriverBase::drawPixel(u32 x, u32 y, const SColor &color)
-	{
-		const core::dimension2d<u32>& renderTargetSize = getCurrentRenderTargetSize();
-		if (x > (u32)renderTargetSize.Width || y > (u32)renderTargetSize.Height)
-			return;
-
-		chooseMaterial2D();
-		setMaterialTexture(0, 0);
-
-		setRenderStates2DMode(color.getAlpha() < 255, false, false);
-
-		f32 X = (f32)x / (f32)renderTargetSize.Width * 2.f - 1.f;
-		f32 Y = 2.f - (f32)y / (f32)renderTargetSize.Height * 2.f - 1.f;
-
-		S3DVertex vertices[1];
-		vertices[0] = S3DVertex(X, Y, 0, 0, 0, 1, color, 0, 0);
-
-		drawArrays(GL_POINTS, vtPrimitive, vertices, 1);
 	}
 
 	void COpenGL3DriverBase::drawQuad(const VertexType &vertexType, const S3DVertex (&vertices)[4])

@@ -96,15 +96,6 @@ namespace video
 
 		virtual void draw2DImage(const video::ITexture* texture, u32 layer, bool flip);
 
-		//! draws a set of 2d images
-		virtual void draw2DImageBatch(const video::ITexture* texture,
-				const core::position2d<s32>& pos,
-				const core::array<core::rect<s32> >& sourceRects,
-				const core::array<s32>& indices, s32 kerningWidth = 0,
-				const core::rect<s32>* clipRect=0,
-				SColor color=SColor(255,255,255,255),
-				bool useAlphaChannelOfTexture=false) override;
-
 		//! draws a set of 2d images, using a color and the alpha channel of the texture if desired.
 		virtual void draw2DImageBatch(const video::ITexture* texture,
 				const core::array<core::position2d<s32> >& positions,
@@ -127,9 +118,6 @@ namespace video
 					const core::position2d<s32>& end,
 					SColor color=SColor(255,255,255,255)) override;
 
-		//! Draws a single pixel
-		void drawPixel(u32 x, u32 y, const SColor & color) override;
-
 		//! Draws a 3d line.
 		virtual void draw3DLine(const core::vector3df& start,
 					const core::vector3df& end,
@@ -140,16 +128,6 @@ namespace video
 
 		//! Sets the dynamic ambient light color.
 		void setAmbientLight(const SColorf& color) override;
-
-		//! Draws a shadow volume into the stencil buffer.
-		void drawStencilShadowVolume(const core::array<core::vector3df>& triangles, bool zfail, u32 debugDataVisible=0) override;
-
-		//! Fills the stencil shadow with color.
-		virtual void drawStencilShadow(bool clearStencilBuffer=false,
-			video::SColor leftUpEdge = video::SColor(0,0,0,0),
-			video::SColor rightUpEdge = video::SColor(0,0,0,0),
-			video::SColor leftDownEdge = video::SColor(0,0,0,0),
-			video::SColor rightDownEdge = video::SColor(0,0,0,0)) override;
 
 		//! sets a viewport
 		void setViewPort(const core::rect<s32>& area) override;

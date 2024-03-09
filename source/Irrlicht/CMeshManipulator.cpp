@@ -8,7 +8,6 @@
 #include "CMeshBuffer.h"
 #include "SAnimatedMesh.h"
 #include "os.h"
-#include "triangle3d.h"
 
 namespace irr
 {

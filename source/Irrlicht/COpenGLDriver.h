@@ -153,31 +153,6 @@ namespace video
 				SColor color,
 				bool useAlphaChannelOfTexture) override;
 
-		//! draws a set of 2d images, using a color and the alpha
-		/** channel of the texture if desired. The images are drawn
-		beginning at pos and concatenated in one line. All drawings
-		are clipped against clipRect (if != 0).
-		The subtextures are defined by the array of sourceRects
-		and are chosen by the indices given.
-		\param texture: Texture to be drawn.
-		\param pos: Upper left 2d destination position where the image will be drawn.
-		\param sourceRects: Source rectangles of the image.
-		\param indices: List of indices which choose the actual rectangle used each time.
-		\param clipRect: Pointer to rectangle on the screen where the image is clipped to.
-		This pointer can be 0. Then the image is not clipped.
-		\param color: Color with which the image is colored.
-		Note that the alpha component is used: If alpha is other than 255, the image will be transparent.
-		\param useAlphaChannelOfTexture: If true, the alpha channel of the texture is
-		used to draw the image. */
-		virtual void draw2DImageBatch(const video::ITexture* texture,
-				const core::position2d<s32>& pos,
-				const core::array<core::rect<s32> >& sourceRects,
-				const core::array<s32>& indices,
-				s32 kerningWidth=0,
-				const core::rect<s32>* clipRect=0,
-				SColor color=SColor(255,255,255,255),
-				bool useAlphaChannelOfTexture=false) override;
-
 		//! draw an 2d rectangle
 		virtual void draw2DRectangle(SColor color, const core::rect<s32>& pos,
 			const core::rect<s32>* clip = 0) override;
@@ -191,9 +166,6 @@ namespace video
 		virtual void draw2DLine(const core::position2d<s32>& start,
 					const core::position2d<s32>& end,
 					SColor color=SColor(255,255,255,255)) override;
-
-		//! Draws a single pixel
-		void drawPixel(u32 x, u32 y, const SColor & color) override;
 
 		//! Draws a 3d box
 		void draw3DBox( const core::aabbox3d<f32>& box, SColor color = SColor(255,255,255,255 ) ) override;
@@ -211,20 +183,6 @@ namespace video
 		//! (0,0,0,0) which means it is dark.
 		//! \param color: New color of the ambient light.
 		void setAmbientLight(const SColorf& color) override;
-
-		//! Draws a shadow volume into the stencil buffer. To draw a stencil shadow, do
-		//! this: First, draw all geometry. Then use this method, to draw the shadow
-		//! volume. Then, use IVideoDriver::drawStencilShadow() to visualize the shadow.
-		void drawStencilShadowVolume(const core::array<core::vector3df>& triangles, bool zfail, u32 debugDataVisible=0) override;
-
-		//! Fills the stencil shadow with color. After the shadow volume has been drawn
-		//! into the stencil buffer using IVideoDriver::drawStencilShadowVolume(), use this
-		//! to draw the color of the shadow.
-		virtual void drawStencilShadow(bool clearStencilBuffer=false,
-			video::SColor leftUpEdge = video::SColor(0,0,0,0),
-			video::SColor rightUpEdge = video::SColor(0,0,0,0),
-			video::SColor leftDownEdge = video::SColor(0,0,0,0),
-			video::SColor rightDownEdge = video::SColor(0,0,0,0)) override;
 
 		//! sets a viewport
 		void setViewPort(const core::rect<s32>& area) override;

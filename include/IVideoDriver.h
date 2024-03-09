@@ -13,7 +13,6 @@
 #include "dimension2d.h"
 #include "position2d.h"
 #include "IMeshBuffer.h"
-#include "triangle3d.h"
 #include "EDriverTypes.h"
 #include "EDriverFeatures.h"
 #include "SExposedVideoData.h"
