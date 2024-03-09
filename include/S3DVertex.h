@@ -43,15 +43,15 @@ const char* const sBuiltInVertexTypeNames[] =
 struct S3DVertex
 {
 	//! default constructor
-	S3DVertex() : Color(0xffffffff) {}
+	constexpr S3DVertex() : Color(0xffffffff) {}
 
 	//! constructor
-	S3DVertex(f32 x, f32 y, f32 z, f32 nx, f32 ny, f32 nz, SColor c, f32 tu, f32 tv)
+	constexpr S3DVertex(f32 x, f32 y, f32 z, f32 nx, f32 ny, f32 nz, SColor c, f32 tu, f32 tv)
 		: Pos(x,y,z), Normal(nx,ny,nz), Color(c), TCoords(tu,tv) {}
 
 	//! constructor
-	S3DVertex(const core::vector3df& pos, const core::vector3df& normal,
-		SColor color, const core::vector2d<f32>& tcoords)
+	constexpr S3DVertex(const core::vector3df& pos, const core::vector3df& normal,
+		SColor color, const core::vector2df& tcoords)
 		: Pos(pos), Normal(normal), Color(color), TCoords(tcoords) {}
 
 	//! Position
@@ -64,21 +64,21 @@ struct S3DVertex
 	SColor Color;
 
 	//! Texture coordinates
-	core::vector2d<f32> TCoords;
+	core::vector2df TCoords;
 
-	bool operator==(const S3DVertex& other) const
+	constexpr bool operator==(const S3DVertex& other) const
 	{
 		return ((Pos == other.Pos) && (Normal == other.Normal) &&
 			(Color == other.Color) && (TCoords == other.TCoords));
 	}
 
-	bool operator!=(const S3DVertex& other) const
+	constexpr bool operator!=(const S3DVertex& other) const
 	{
 		return ((Pos != other.Pos) || (Normal != other.Normal) ||
 			(Color != other.Color) || (TCoords != other.TCoords));
 	}
 
-	bool operator<(const S3DVertex& other) const
+	constexpr bool operator<(const S3DVertex& other) const
 	{
 		return ((Pos < other.Pos) ||
 				((Pos == other.Pos) && (Normal < other.Normal)) ||
@@ -111,56 +111,58 @@ or other special materials.
 struct S3DVertex2TCoords : public S3DVertex
 {
 	//! default constructor
-	S3DVertex2TCoords() : S3DVertex() {}
+	constexpr S3DVertex2TCoords() : S3DVertex() {}
 
 	//! constructor with two different texture coords, but no normal
-	S3DVertex2TCoords(f32 x, f32 y, f32 z, SColor c, f32 tu, f32 tv, f32 tu2, f32 tv2)
+	constexpr S3DVertex2TCoords(f32 x, f32 y, f32 z, SColor c, f32 tu, f32 tv, f32 tu2, f32 tv2)
 		: S3DVertex(x,y,z, 0.0f, 0.0f, 0.0f, c, tu,tv), TCoords2(tu2,tv2) {}
 
 	//! constructor with two different texture coords, but no normal
-	S3DVertex2TCoords(const core::vector3df& pos, SColor color,
-		const core::vector2d<f32>& tcoords, const core::vector2d<f32>& tcoords2)
+	constexpr S3DVertex2TCoords(const core::vector3df& pos, SColor color,
+		const core::vector2df& tcoords, const core::vector2df& tcoords2)
 		: S3DVertex(pos, core::vector3df(), color, tcoords), TCoords2(tcoords2) {}
 
 	//! constructor with all values
-	S3DVertex2TCoords(const core::vector3df& pos, const core::vector3df& normal, const SColor& color,
-		const core::vector2d<f32>& tcoords, const core::vector2d<f32>& tcoords2)
+	constexpr S3DVertex2TCoords(const core::vector3df& pos, const core::vector3df& normal, const SColor& color,
+		const core::vector2df& tcoords, const core::vector2df& tcoords2)
 		: S3DVertex(pos, normal, color, tcoords), TCoords2(tcoords2) {}
 
 	//! constructor with all values
-	S3DVertex2TCoords(f32 x, f32 y, f32 z, f32 nx, f32 ny, f32 nz, SColor c, f32 tu, f32 tv, f32 tu2, f32 tv2)
+	constexpr S3DVertex2TCoords(f32 x, f32 y, f32 z, f32 nx, f32 ny, f32 nz,
+		SColor c, f32 tu, f32 tv, f32 tu2, f32 tv2)
 		: S3DVertex(x,y,z, nx,ny,nz, c, tu,tv), TCoords2(tu2,tv2) {}
 
 	//! constructor with the same texture coords and normal
-	S3DVertex2TCoords(f32 x, f32 y, f32 z, f32 nx, f32 ny, f32 nz, SColor c, f32 tu, f32 tv)
+	constexpr S3DVertex2TCoords(f32 x, f32 y, f32 z, f32 nx, f32 ny, f32 nz,
+		SColor c, f32 tu, f32 tv)
 		: S3DVertex(x,y,z, nx,ny,nz, c, tu,tv), TCoords2(tu,tv) {}
 
 	//! constructor with the same texture coords and normal
-	S3DVertex2TCoords(const core::vector3df& pos, const core::vector3df& normal,
-		SColor color, const core::vector2d<f32>& tcoords)
+	constexpr S3DVertex2TCoords(const core::vector3df& pos, const core::vector3df& normal,
+		SColor color, const core::vector2df& tcoords)
 		: S3DVertex(pos, normal, color, tcoords), TCoords2(tcoords) {}
 
 	//! constructor from S3DVertex
-	S3DVertex2TCoords(const S3DVertex& o) : S3DVertex(o) {}
+	constexpr S3DVertex2TCoords(const S3DVertex& o) : S3DVertex(o) {}
 
 	//! Second set of texture coordinates
-	core::vector2d<f32> TCoords2;
+	core::vector2df TCoords2;
 
 	//! Equality operator
-	bool operator==(const S3DVertex2TCoords& other) const
+	constexpr bool operator==(const S3DVertex2TCoords& other) const
 	{
 		return ((static_cast<S3DVertex>(*this)==static_cast<const S3DVertex&>(other)) &&
 			(TCoords2 == other.TCoords2));
 	}
 
 	//! Inequality operator
-	bool operator!=(const S3DVertex2TCoords& other) const
+	constexpr bool operator!=(const S3DVertex2TCoords& other) const
 	{
 		return ((static_cast<S3DVertex>(*this)!=static_cast<const S3DVertex&>(other)) ||
 			(TCoords2 != other.TCoords2));
 	}
 
-	bool operator<(const S3DVertex2TCoords& other) const
+	constexpr bool operator<(const S3DVertex2TCoords& other) const
 	{
 		return ((static_cast<S3DVertex>(*this) < other) ||
 				((static_cast<S3DVertex>(*this) == static_cast<const S3DVertex&>(other)) && (TCoords2 < other.TCoords2)));
@@ -194,19 +196,19 @@ struct S3DVertexTangents : public S3DVertex
 	S3DVertexTangents() : S3DVertex() { }
 
 	//! constructor
-	S3DVertexTangents(f32 x, f32 y, f32 z, f32 nx=0.0f, f32 ny=0.0f, f32 nz=0.0f,
+	constexpr S3DVertexTangents(f32 x, f32 y, f32 z, f32 nx=0.0f, f32 ny=0.0f, f32 nz=0.0f,
 			SColor c = 0xFFFFFFFF, f32 tu=0.0f, f32 tv=0.0f,
 			f32 tanx=0.0f, f32 tany=0.0f, f32 tanz=0.0f,
 			f32 bx=0.0f, f32 by=0.0f, f32 bz=0.0f)
 		: S3DVertex(x,y,z, nx,ny,nz, c, tu,tv), Tangent(tanx,tany,tanz), Binormal(bx,by,bz) { }
 
 	//! constructor
-	S3DVertexTangents(const core::vector3df& pos, SColor c,
+	constexpr S3DVertexTangents(const core::vector3df& pos, SColor c,
 		const core::vector2df& tcoords)
 		: S3DVertex(pos, core::vector3df(), c, tcoords) { }
 
 	//! constructor
-	S3DVertexTangents(const core::vector3df& pos,
+	constexpr S3DVertexTangents(const core::vector3df& pos,
 		const core::vector3df& normal, SColor c,
 		const core::vector2df& tcoords,
 		const core::vector3df& tangent=core::vector3df(),
@@ -214,7 +216,7 @@ struct S3DVertexTangents : public S3DVertex
 		: S3DVertex(pos, normal, c, tcoords), Tangent(tangent), Binormal(binormal) { }
 
 	//! constructor from S3DVertex
-	S3DVertexTangents(const S3DVertex& o) : S3DVertex(o) {}
+	constexpr S3DVertexTangents(const S3DVertex& o) : S3DVertex(o) {}
 
 	//! Tangent vector along the x-axis of the texture
 	core::vector3df Tangent;
@@ -222,21 +224,21 @@ struct S3DVertexTangents : public S3DVertex
 	//! Binormal vector (tangent x normal)
 	core::vector3df Binormal;
 
-	bool operator==(const S3DVertexTangents& other) const
+	constexpr bool operator==(const S3DVertexTangents& other) const
 	{
 		return ((static_cast<S3DVertex>(*this)==static_cast<const S3DVertex&>(other)) &&
 			(Tangent == other.Tangent) &&
 			(Binormal == other.Binormal));
 	}
 
-	bool operator!=(const S3DVertexTangents& other) const
+	constexpr bool operator!=(const S3DVertexTangents& other) const
 	{
 		return ((static_cast<S3DVertex>(*this)!=static_cast<const S3DVertex&>(other)) ||
 			(Tangent != other.Tangent) ||
 			(Binormal != other.Binormal));
 	}
 
-	bool operator<(const S3DVertexTangents& other) const
+	constexpr bool operator<(const S3DVertexTangents& other) const
 	{
 		return ((static_cast<S3DVertex>(*this) < other) ||
 				((static_cast<S3DVertex>(*this) == static_cast<const S3DVertex&>(other)) && (Tangent < other.Tangent)) ||

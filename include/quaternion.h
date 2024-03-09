@@ -32,10 +32,10 @@ class quaternion
 	public:
 
 		//! Default Constructor
-		quaternion() : X(0.0f), Y(0.0f), Z(0.0f), W(1.0f) {}
+		constexpr quaternion() : X(0.0f), Y(0.0f), Z(0.0f), W(1.0f) {}
 
 		//! Constructor
-		quaternion(f32 x, f32 y, f32 z, f32 w) : X(x), Y(y), Z(z), W(w) { }
+		constexpr quaternion(f32 x, f32 y, f32 z, f32 w) : X(x), Y(y), Z(z), W(w) { }
 
 		//! Constructor which converts Euler angles (radians) to a quaternion
 		quaternion(f32 x, f32 y, f32 z);
@@ -49,10 +49,19 @@ class quaternion
 #endif
 
 		//! Equality operator
-		bool operator==(const quaternion& other) const;
+		constexpr bool operator==(const quaternion& other) const
+		{
+			return ((X == other.X) &&
+				(Y == other.Y) &&
+				(Z == other.Z) &&
+				(W == other.W));
+		}
 
 		//! inequality operator
-		bool operator!=(const quaternion& other) const;
+		constexpr bool operator!=(const quaternion& other) const
+		{
+			return !(*this == other);
+		}
 
 #ifndef IRR_TEST_BROKEN_QUATERNION_USE
 		//! Matrix assignment operator
@@ -220,21 +229,6 @@ inline quaternion::quaternion(const matrix4& mat)
 	(*this) = mat;
 }
 #endif
-
-// equal operator
-inline bool quaternion::operator==(const quaternion& other) const
-{
-	return ((X == other.X) &&
-		(Y == other.Y) &&
-		(Z == other.Z) &&
-		(W == other.W));
-}
-
-// inequality operator
-inline bool quaternion::operator!=(const quaternion& other) const
-{
-	return !(*this == other);
-}
 
 #ifndef IRR_TEST_BROKEN_QUATERNION_USE
 // matrix assignment operator

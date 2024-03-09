@@ -23,13 +23,13 @@ class vector2d
 {
 public:
 	//! Default constructor (null vector)
-	vector2d() : X(0), Y(0) {}
+	constexpr vector2d() : X(0), Y(0) {}
 	//! Constructor with two different values
-	vector2d(T nx, T ny) : X(nx), Y(ny) {}
+	constexpr vector2d(T nx, T ny) : X(nx), Y(ny) {}
 	//! Constructor with the same value for both members
-	explicit vector2d(T n) : X(n), Y(n) {}
+	explicit constexpr vector2d(T n) : X(n), Y(n) {}
 
-	vector2d(const dimension2d<T>& other) : X(other.Width), Y(other.Height) {}
+	constexpr vector2d(const dimension2d<T>& other) : X(other.Width), Y(other.Height) {}
 
 	// operators
 
@@ -76,34 +76,34 @@ public:
 	}
 
 	//! sort in order X, Y.
-	bool operator<=(const vector2d<T>&other) const
+	constexpr bool operator<=(const vector2d<T>&other) const
 	{
 		return !(*this > other);
 	}
 
 	//! sort in order X, Y.
-	bool operator>=(const vector2d<T>&other) const
+	constexpr bool operator>=(const vector2d<T>&other) const
 	{
 		return !(*this < other);
 	}
 
 	//! sort in order X, Y.
-	bool operator<(const vector2d<T>&other) const
+	constexpr bool operator<(const vector2d<T>&other) const
 	{
 		return X < other.X || (X == other.X && Y < other.Y);
 	}
 
 	//! sort in order X, Y.
-	bool operator>(const vector2d<T>&other) const
+	constexpr bool operator>(const vector2d<T>&other) const
 	{
 		return X > other.X || (X == other.X && Y > other.Y);
 	}
 
-	bool operator==(const vector2d<T>& other) const {
+	constexpr bool operator==(const vector2d<T>& other) const {
 		return X == other.X && Y == other.Y;
 	}
 
-	bool operator!=(const vector2d<T>& other) const {
+	constexpr bool operator!=(const vector2d<T>& other) const {
 		return !(*this == other);
 	}
 

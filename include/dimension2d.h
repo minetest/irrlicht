@@ -20,16 +20,16 @@ namespace core
 	{
 		public:
 			//! Default constructor for empty dimension
-			dimension2d() : Width(0), Height(0) {}
+			constexpr dimension2d() : Width(0), Height(0) {}
 			//! Constructor with width and height
-			dimension2d(const T& width, const T& height)
+			constexpr dimension2d(const T& width, const T& height)
 				: Width(width), Height(height) {}
 
 			dimension2d(const vector2d<T>& other); // Defined in vector2d.h
 
 			//! Use this constructor only where you are sure that the conversion is valid.
 			template <class U>
-			explicit dimension2d(const dimension2d<U>& other) :
+			explicit constexpr dimension2d(const dimension2d<U>& other) :
 				Width((T)other.Width), Height((T)other.Height) { }
 
 			template <class U>

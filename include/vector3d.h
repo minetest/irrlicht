@@ -24,11 +24,11 @@ namespace core
 	{
 	public:
 		//! Default constructor (null vector).
-		vector3d() : X(0), Y(0), Z(0) {}
+		constexpr vector3d() : X(0), Y(0), Z(0) {}
 		//! Constructor with three different values
-		vector3d(T nx, T ny, T nz) : X(nx), Y(ny), Z(nz) {}
+		constexpr vector3d(T nx, T ny, T nz) : X(nx), Y(ny), Z(nz) {}
 		//! Constructor with the same value for all elements
-		explicit vector3d(T n) : X(n), Y(n), Z(n) {}
+		explicit constexpr vector3d(T n) : X(n), Y(n), Z(n) {}
 
 		// operators
 
@@ -69,37 +69,37 @@ namespace core
 		}
 
 		//! sort in order X, Y, Z.
-		bool operator<=(const vector3d<T>&other) const
+		constexpr bool operator<=(const vector3d<T>&other) const
 		{
 			return !(*this > other);
 		}
 
 		//! sort in order X, Y, Z.
-		bool operator>=(const vector3d<T>&other) const
+		constexpr bool operator>=(const vector3d<T>&other) const
 		{
 			return !(*this < other);
 		}
 
 		//! sort in order X, Y, Z.
-		bool operator<(const vector3d<T>&other) const
+		constexpr bool operator<(const vector3d<T>&other) const
 		{
 			return X < other.X || (X == other.X && Y < other.Y) ||
 					(X == other.X && Y == other.Y && Z < other.Z);
 		}
 
 		//! sort in order X, Y, Z.
-		bool operator>(const vector3d<T>&other) const
+		constexpr bool operator>(const vector3d<T>&other) const
 		{
 			return X > other.X || (X == other.X && Y > other.Y) ||
 					(X == other.X && Y == other.Y && Z > other.Z);
 		}
 
-		bool operator==(const vector3d<T>& other) const
+		constexpr bool operator==(const vector3d<T>& other) const
 		{
 			return X == other.X && Y == other.Y && Z == other.Z;
 		}
 
-		bool operator!=(const vector3d<T>& other) const
+		constexpr bool operator!=(const vector3d<T>& other) const
 		{
 			return !(*this == other);
 		}

@@ -27,24 +27,24 @@ namespace core
 	public:
 
 		//! Default constructor creating empty rectangle at (0,0)
-		rect() : UpperLeftCorner(0,0), LowerRightCorner(0,0) {}
+		constexpr rect() : UpperLeftCorner(0,0), LowerRightCorner(0,0) {}
 
 		//! Constructor with two corners
-		rect(T x, T y, T x2, T y2)
+		constexpr rect(T x, T y, T x2, T y2)
 			: UpperLeftCorner(x,y), LowerRightCorner(x2,y2) {}
 
 		//! Constructor with two corners
-		rect(const position2d<T>& upperLeft, const position2d<T>& lowerRight)
+		constexpr rect(const position2d<T>& upperLeft, const position2d<T>& lowerRight)
 			: UpperLeftCorner(upperLeft), LowerRightCorner(lowerRight) {}
 
 		//! Constructor with upper left corner and dimension
 		template <class U>
-		rect(const position2d<T>& pos, const dimension2d<U>& size)
+		constexpr rect(const position2d<T>& pos, const dimension2d<U>& size)
 			: UpperLeftCorner(pos), LowerRightCorner(pos.X + size.Width, pos.Y + size.Height) {}
 
 		//! Constructor with upper left at 0,0 and lower right using dimension
 		template <class U>
-		explicit rect(const dimension2d<U>& size)
+		explicit constexpr rect(const dimension2d<U>& size)
 			: UpperLeftCorner(0,0), LowerRightCorner(size.Width, size.Height) {}
 
 		//! move right by given numbers
@@ -78,14 +78,14 @@ namespace core
 		}
 
 		//! equality operator
-		bool operator==(const rect<T>& other) const
+		constexpr bool operator==(const rect<T>& other) const
 		{
 			return (UpperLeftCorner == other.UpperLeftCorner &&
 				LowerRightCorner == other.LowerRightCorner);
 		}
 
 		//! inequality operator
-		bool operator!=(const rect<T>& other) const
+		constexpr bool operator!=(const rect<T>& other) const
 		{
 			return (UpperLeftCorner != other.UpperLeftCorner ||
 				LowerRightCorner != other.LowerRightCorner);

@@ -62,7 +62,7 @@ namespace core
 			CMatrix4( eConstructor constructor = EM4CONST_IDENTITY );
 
 			//! Constructor with value initialization
-			CMatrix4(const T& r0c0, const T& r0c1, const T& r0c2, const T& r0c3,
+			constexpr CMatrix4(const T& r0c0, const T& r0c1, const T& r0c2, const T& r0c3,
 			         const T& r1c0, const T& r1c1, const T& r1c2, const T& r1c3,
 			         const T& r2c0, const T& r2c1, const T& r2c2, const T& r2c3,
 			         const T& r3c0, const T& r3c1, const T& r3c2, const T& r3c3)
@@ -119,10 +119,24 @@ namespace core
 			}
 
 			//! Returns true if other matrix is equal to this matrix.
-			bool operator==(const CMatrix4<T> &other) const;
+			constexpr bool operator==(const CMatrix4<T> &other) const
+			{
+#if defined ( USE_MATRIX_TEST )
+				if (definitelyIdentityMatrix && other.definitelyIdentityMatrix)
+					return true;
+#endif
+				for (s32 i = 0; i < 16; ++i)
+					if (M[i] != other.M[i])
+						return false;
+
+				return true;
+			}
 
 			//! Returns true if other matrix is not equal to this matrix.
-			bool operator!=(const CMatrix4<T> &other) const;
+			constexpr bool operator!=(const CMatrix4<T> &other) const
+			{
+				return !(*this == other);
+			}
 
 			//! Add another matrix.
 			CMatrix4<T> operator+(const CMatrix4<T>& other) const;
@@ -1507,28 +1521,6 @@ namespace core
 		definitelyIdentityMatrix=false;
 #endif
 		return *this;
-	}
-
-
-	template <class T>
-	inline bool CMatrix4<T>::operator==(const CMatrix4<T> &other) const
-	{
-#if defined ( USE_MATRIX_TEST )
-		if (definitelyIdentityMatrix && other.definitelyIdentityMatrix)
-			return true;
-#endif
-		for (s32 i = 0; i < 16; ++i)
-			if (M[i] != other.M[i])
-				return false;
-
-		return true;
-	}
-
-
-	template <class T>
-	inline bool CMatrix4<T>::operator!=(const CMatrix4<T> &other) const
-	{
-		return !(*this == other);
 	}
 
 

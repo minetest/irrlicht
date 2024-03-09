@@ -20,11 +20,11 @@ class line3d
 
 		//! Default constructor
 		/** line from (0,0,0) to (1,1,1) */
-		line3d() : start(0,0,0), end(1,1,1) {}
+		constexpr line3d() : start(0,0,0), end(1,1,1) {}
 		//! Constructor with two points
-		line3d(T xa, T ya, T za, T xb, T yb, T zb) : start(xa, ya, za), end(xb, yb, zb) {}
+		constexpr line3d(T xa, T ya, T za, T xb, T yb, T zb) : start(xa, ya, za), end(xb, yb, zb) {}
 		//! Constructor with two points as vectors
-		line3d(const vector3d<T>& start, const vector3d<T>& end) : start(start), end(end) {}
+		constexpr line3d(const vector3d<T>& start, const vector3d<T>& end) : start(start), end(end) {}
 
 		// operators
 
@@ -34,9 +34,9 @@ class line3d
 		line3d<T> operator-(const vector3d<T>& point) const { return line3d<T>(start - point, end - point); }
 		line3d<T>& operator-=(const vector3d<T>& point) { start -= point; end -= point; return *this; }
 
-		bool operator==(const line3d<T>& other) const
+		constexpr bool operator==(const line3d<T>& other) const
 		{ return (start==other.start && end==other.end) || (end==other.start && start==other.end);}
-		bool operator!=(const line3d<T>& other) const
+		constexpr bool operator!=(const line3d<T>& other) const
 		{ return !(start==other.start && end==other.end) || (end==other.start && start==other.end);}
 
 		// functions

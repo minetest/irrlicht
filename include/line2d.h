@@ -18,11 +18,11 @@ class line2d
 {
 	public:
 		//! Default constructor for line going from (0,0) to (1,1).
-		line2d() : start(0,0), end(1,1) {}
+		constexpr line2d() : start(0,0), end(1,1) {}
 		//! Constructor for line between the two points.
-		line2d(T xa, T ya, T xb, T yb) : start(xa, ya), end(xb, yb) {}
+		constexpr line2d(T xa, T ya, T xb, T yb) : start(xa, ya), end(xb, yb) {}
 		//! Constructor for line between the two points given as vectors.
-		line2d(const vector2d<T>& start, const vector2d<T>& end) : start(start), end(end) {}
+		constexpr line2d(const vector2d<T>& start, const vector2d<T>& end) : start(start), end(end) {}
 
 		// operators
 
@@ -32,9 +32,9 @@ class line2d
 		line2d<T> operator-(const vector2d<T>& point) const { return line2d<T>(start - point, end - point); }
 		line2d<T>& operator-=(const vector2d<T>& point) { start -= point; end -= point; return *this; }
 
-		bool operator==(const line2d<T>& other) const
+		constexpr bool operator==(const line2d<T>& other) const
 		{ return (start==other.start && end==other.end) || (end==other.start && start==other.end);}
-		bool operator!=(const line2d<T>& other) const
+		constexpr bool operator!=(const line2d<T>& other) const
 		{ return !(start==other.start && end==other.end) || (end==other.start && start==other.end);}
 
 		// functions

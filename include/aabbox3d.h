@@ -22,23 +22,26 @@ class aabbox3d
 	public:
 
 		//! Default Constructor.
-		aabbox3d(): MinEdge(-1,-1,-1), MaxEdge(1,1,1) {}
+		constexpr aabbox3d(): MinEdge(-1,-1,-1), MaxEdge(1,1,1) {}
 		//! Constructor with min edge and max edge.
-		aabbox3d(const vector3d<T>& min, const vector3d<T>& max): MinEdge(min), MaxEdge(max) {}
+		constexpr aabbox3d(const vector3d<T>& min, const vector3d<T>& max): MinEdge(min), MaxEdge(max) {}
 		//! Constructor with only one point.
-		aabbox3d(const vector3d<T>& init): MinEdge(init), MaxEdge(init) {}
+		constexpr aabbox3d(const vector3d<T>& init): MinEdge(init), MaxEdge(init) {}
 		//! Constructor with min edge and max edge as single values, not vectors.
-		aabbox3d(T minx, T miny, T minz, T maxx, T maxy, T maxz): MinEdge(minx, miny, minz), MaxEdge(maxx, maxy, maxz) {}
+		constexpr aabbox3d(T minx, T miny, T minz, T maxx, T maxy, T maxz):
+			MinEdge(minx, miny, minz), MaxEdge(maxx, maxy, maxz) {}
 
 		// operators
 		//! Equality operator
 		/** \param other box to compare with.
 		\return True if both boxes are equal, else false. */
-		inline bool operator==(const aabbox3d<T>& other) const { return (MinEdge == other.MinEdge && other.MaxEdge == MaxEdge);}
+		constexpr inline bool operator==(const aabbox3d<T>& other) const
+		{ return (MinEdge == other.MinEdge && other.MaxEdge == MaxEdge); }
 		//! Inequality operator
 		/** \param other box to compare with.
 		\return True if both boxes are different, else false. */
-		inline bool operator!=(const aabbox3d<T>& other) const { return !(MinEdge == other.MinEdge && other.MaxEdge == MaxEdge);}
+		constexpr inline bool operator!=(const aabbox3d<T>& other) const
+		{ return !(MinEdge == other.MinEdge && other.MaxEdge == MaxEdge); }
 
 		// functions
 

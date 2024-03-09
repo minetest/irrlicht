@@ -264,11 +264,11 @@ namespace video
 
 		//! Constructs the color from 4 values representing the alpha, red, green and blue component.
 		/** Must be values between 0 and 255. */
-		SColor (u32 a, u32 r, u32 g, u32 b)
+		constexpr SColor (u32 a, u32 r, u32 g, u32 b)
 			: color(((a & 0xff)<<24) | ((r & 0xff)<<16) | ((g & 0xff)<<8) | (b & 0xff)) {}
 
 		//! Constructs the color from a 32 bit value. Could be another color.
-		SColor(u32 clr)
+		constexpr SColor(u32 clr)
 			: color(clr) {}
 
 		//! Returns the alpha component of the color.
@@ -648,7 +648,7 @@ namespace video
 	class SColorHSL
 	{
 	public:
-		SColorHSL ( f32 h = 0.f, f32 s = 0.f, f32 l = 0.f )
+		constexpr SColorHSL ( f32 h = 0.f, f32 s = 0.f, f32 l = 0.f )
 			: Hue ( h ), Saturation ( s ), Luminance ( l ) {}
 
 		void fromRGB(const SColorf &color);
