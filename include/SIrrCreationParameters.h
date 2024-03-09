@@ -34,10 +34,8 @@ namespace irr
 			Stencilbuffer(true),
 			Vsync(false),
 			AntiAlias(0),
-			HandleSRGB(false),
 			WithAlphaChannel(false),
 			Doublebuffer(true),
-			IgnoreInput(false),
 			Stereobuffer(false),
 			EventReceiver(0),
 			WindowId(0),
@@ -74,10 +72,8 @@ namespace irr
 			Stencilbuffer = other.Stencilbuffer;
 			Vsync = other.Vsync;
 			AntiAlias = other.AntiAlias;
-			HandleSRGB = other.HandleSRGB;
 			WithAlphaChannel = other.WithAlphaChannel;
 			Doublebuffer = other.Doublebuffer;
-			IgnoreInput = other.IgnoreInput;
 			Stereobuffer = other.Stereobuffer;
 			EventReceiver = other.EventReceiver;
 			WindowId = other.WindowId;
@@ -158,21 +154,6 @@ namespace irr
 		Default value: 0 - disabled */
 		u8 AntiAlias;
 
-		//! Flag to enable proper sRGB and linear color handling
-		/** In most situations, it is desirable to have the color handling in
-		non-linear sRGB color space, and only do the intermediate color
-		calculations in linear RGB space. If this flag is enabled, the device and
-		driver try to assure that all color input and output are color corrected
-		and only the internal color representation is linear. This means, that
-		the color output is properly gamma-adjusted to provide the brighter
-		colors for monitor display. And that blending and lighting give a more
-		natural look, due to proper conversion from non-linear colors into linear
-		color space for blend operations. If this flag is enabled, all texture colors
-		(which are usually in sRGB space) are correctly displayed. However vertex colors
-		and other explicitly set values have to be manually encoded in linear color space.
-		Default value: false. */
-		bool HandleSRGB;
-
 		//! Whether the main framebuffer uses an alpha channel.
 		/** In some situations it might be desirable to get a color
 		buffer with an alpha channel, e.g. when rendering into a
@@ -191,13 +172,6 @@ namespace irr
 		doublebuffering is available, the drivers will fall back to
 		single buffers. Default value: true */
 		bool Doublebuffer;
-
-		//! Specifies if the device should ignore input events
-		/** This is only relevant when using external I/O handlers.
-		External windows need to take care of this themselves.
-		Currently only supported by X11.
-		Default value: false */
-		bool IgnoreInput;
 
 		//! Specifies if the device should use stereo buffers
 		/** Some high-end gfx cards support two framebuffers for direct
@@ -278,7 +252,7 @@ namespace irr
 
 		//! Define some private data storage.
 		/** Used when platform devices need access to OS specific data structures etc.
-		This is only used for Android at th emoment in order to access the native
+		This is only used for Android at the moment in order to access the native
 		Java RE. */
 		void *PrivateData;
 

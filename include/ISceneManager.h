@@ -602,11 +602,6 @@ namespace scene
 		See IReferenceCounted::drop() for more information. */
 		virtual ISceneManager* createNewSceneManager(bool cloneContent=false) = 0;
 
-		//! Get a mesh writer implementation if available
-		/** Note: You need to drop() the pointer after use again, see IReferenceCounted::drop()
-		for details. */
-		virtual IMeshWriter* createMeshWriter(EMESH_WRITER_TYPE type) = 0;
-
 		//! Get a skinned mesh, which is not available as header-only code
 		/** Note: You need to drop() the pointer after use again, see IReferenceCounted::drop()
 		for details. */

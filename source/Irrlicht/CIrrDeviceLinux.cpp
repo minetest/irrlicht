@@ -467,10 +467,9 @@ bool CIrrDeviceLinux::createWindow()
 	WndAttributes.colormap = colormap;
 	WndAttributes.border_pixel = 0;
 	WndAttributes.event_mask = StructureNotifyMask | FocusChangeMask | ExposureMask;
-	if (!CreationParams.IgnoreInput)
-		WndAttributes.event_mask |= PointerMotionMask |
-				ButtonPressMask | KeyPressMask |
-				ButtonReleaseMask | KeyReleaseMask;
+	WndAttributes.event_mask |= PointerMotionMask |
+			ButtonPressMask | KeyPressMask |
+			ButtonReleaseMask | KeyReleaseMask;
 
 	if (!CreationParams.WindowId)
 	{
@@ -513,14 +512,10 @@ bool CIrrDeviceLinux::createWindow()
 	{
 		// attach external window
 		XWindow = (Window)CreationParams.WindowId;
-		if (!CreationParams.IgnoreInput)
 		{
 			// Note: This might be further improved by using a InputOnly window instead of InputOutput.
 			// I think then it should be possible to render into the given parent window instead of
 			// creating a child-window.
-			// That could also be a third option for IgnoreInput in the CreationParams.
-			// But we need another window variable then and have to split input/output in
-			// the rest of the device code.
 			// Also... this does possibly leak.
 			Window child_window = XCreateWindow(XDisplay,
 					XWindow,

@@ -199,7 +199,7 @@ bool CFileSystem::addFileArchive(const io::path& filename, bool ignoreCase,
 	s32 i;
 
 	// do we know what type it should be?
-	if (archiveType == EFAT_UNKNOWN || archiveType == EFAT_FOLDER)
+	if (archiveType == EFAT_UNKNOWN)
 	{
 		// try to load archive based on file name
 		for (i = ArchiveLoader.size()-1; i >=0 ; --i)
@@ -295,7 +295,7 @@ bool CFileSystem::addFileArchive(IReadFile* file, bool ignoreCase,
 		bool ignorePaths, E_FILE_ARCHIVE_TYPE archiveType,
 		const core::stringc& password, IFileArchive** retArchive)
 {
-	if (!file || archiveType == EFAT_FOLDER)
+	if (!file)
 		return false;
 
 	if (file)

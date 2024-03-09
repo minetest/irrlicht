@@ -240,22 +240,10 @@ bool CWGLManager::initialize(const SIrrlichtCreationParameters& params, const SE
 			WGL_SAMPLES_3DFX,AntiAlias, // 20,21
 			WGL_SAMPLE_BUFFERS_3DFX, (Params.AntiAlias>0) ? 1 : 0,
 #endif
-#ifdef WGL_ARB_framebuffer_sRGB
-			WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB, Params.HandleSRGB ? 1:0,
-#elif defined(WGL_EXT_framebuffer_sRGB)
-			WGL_FRAMEBUFFER_SRGB_CAPABLE_EXT, Params.HandleSRGB ? 1:0,
-#endif
 //			WGL_DEPTH_FLOAT_EXT, 1,
 			0,0,0,0
 		};
 		int iAttrSize = sizeof(iAttributes)/sizeof(int);
-		const bool framebuffer_srgb_supported = ((wglExtensions.find("WGL_ARB_framebuffer_sRGB") != -1) ||
-			(wglExtensions.find("WGL_EXT_framebuffer_sRGB") != -1));
-		if (!framebuffer_srgb_supported)
-		{
-			memmove(&iAttributes[24],&iAttributes[26],sizeof(int)*(iAttrSize-26));
-			iAttrSize -= 2;
-		}
 		if (!multi_sample_supported)
 		{
 			memmove(&iAttributes[20],&iAttributes[24],sizeof(int)*(iAttrSize-24));

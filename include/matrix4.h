@@ -18,22 +18,6 @@
 // otherwise identity check will always compare the elements
 //#define USE_MATRIX_TEST
 
-// this is only for debugging purposes
-//#define USE_MATRIX_TEST_DEBUG
-
-#if defined( USE_MATRIX_TEST_DEBUG )
-
-struct MatrixTest
-{
-	MatrixTest () : ID(0), Calls(0) {}
-	char buf[256];
-	int Calls;
-	int ID;
-};
-static MatrixTest MTest;
-
-#endif
-
 namespace irr
 {
 namespace core
@@ -466,10 +450,6 @@ namespace core
 			//! Flag is this matrix is identity matrix
 			mutable u32 definitelyIdentityMatrix;
 #endif
-#if defined ( USE_MATRIX_TEST_DEBUG )
-			u32 id;
-			mutable u32 calls;
-#endif
 
 	};
 
@@ -478,9 +458,6 @@ namespace core
 	inline CMatrix4<T>::CMatrix4( eConstructor constructor )
 #if defined ( USE_MATRIX_TEST )
 		: definitelyIdentityMatrix(BIT_UNTESTED)
-#endif
-#if defined ( USE_MATRIX_TEST_DEBUG )
-		,id ( MTest.ID++), calls ( 0 )
 #endif
 	{
 		switch ( constructor )
@@ -501,9 +478,6 @@ namespace core
 	inline CMatrix4<T>::CMatrix4( const CMatrix4<T>& other, eConstructor constructor)
 #if defined ( USE_MATRIX_TEST )
 		: definitelyIdentityMatrix(BIT_UNTESTED)
-#endif
-#if defined ( USE_MATRIX_TEST_DEBUG )
-		,id ( MTest.ID++), calls ( 0 )
 #endif
 	{
 		switch ( constructor )

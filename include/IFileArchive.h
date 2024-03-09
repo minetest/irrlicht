@@ -29,21 +29,6 @@ enum E_FILE_ARCHIVE_TYPE
 	//! A gzip archive
 	EFAT_GZIP    = MAKE_IRR_ID('g','z','i','p'),
 
-	//! A virtual directory
-	EFAT_FOLDER  = MAKE_IRR_ID('f','l','d','r'),
-
-	//! An ID Software PAK archive
-	EFAT_PAK     = MAKE_IRR_ID('P','A','K', 0),
-
-	//! A Nebula Device archive
-	EFAT_NPK     = MAKE_IRR_ID('N','P','K', 0),
-
-	//! A Tape ARchive
-	EFAT_TAR     = MAKE_IRR_ID('T','A','R', 0),
-
-	//! A wad Archive, Quake2, Halflife
-	EFAT_WAD     = MAKE_IRR_ID('W','A','D', 0),
-
     //! An Android asset file archive
     EFAT_ANDROID_ASSET = MAKE_IRR_ID('A','S','S','E'),
 

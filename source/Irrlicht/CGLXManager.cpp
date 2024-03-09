@@ -63,11 +63,6 @@ os::Printer::log("GLX >= 1.3", ELL_DEBUG);
 				GLX_SAMPLE_BUFFERS_SGIS, 1,
 				GLX_SAMPLES_SGIS, Params.AntiAlias, // 18,19
 #endif
-//#ifdef GL_ARB_framebuffer_sRGB
-//					GLX_FRAMEBUFFER_SRGB_CAPABLE_ARB, Params.HandleSRGB,
-//#elif defined(GL_EXT_framebuffer_sRGB)
-//					GLX_FRAMEBUFFER_SRGB_CAPABLE_EXT, Params.HandleSRGB,
-//#endif
 				GLX_STEREO, Params.Stereobuffer?True:False,
 				None
 			};
@@ -209,11 +204,6 @@ os::Printer::log("GLX >= 1.3", ELL_DEBUG);
 				// GLX_USE_GL, which is silently ignored by glXChooseVisual
 				Params.Doublebuffer?GLX_DOUBLEBUFFER:GLX_USE_GL, // 14
 				Params.Stereobuffer?GLX_STEREO:GLX_USE_GL, // 15
-//#ifdef GL_ARB_framebuffer_sRGB
-//					Params.HandleSRGB?GLX_FRAMEBUFFER_SRGB_CAPABLE_ARB:GLX_USE_GL,
-//#elif defined(GL_EXT_framebuffer_sRGB)
-//					Params.HandleSRGB?GLX_FRAMEBUFFER_SRGB_CAPABLE_EXT:GLX_USE_GL,
-//#endif
 				None
 			};
 

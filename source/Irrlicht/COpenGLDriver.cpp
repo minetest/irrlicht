@@ -153,16 +153,6 @@ bool COpenGLDriver::genericDriverInit()
 #endif
 	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, 1);
 
-	Params.HandleSRGB &= ((FeatureAvailable[IRR_ARB_framebuffer_sRGB] || FeatureAvailable[IRR_EXT_framebuffer_sRGB]) &&
-		FeatureAvailable[IRR_EXT_texture_sRGB]);
-#if defined(GL_ARB_framebuffer_sRGB)
-	if (Params.HandleSRGB)
-		glEnable(GL_FRAMEBUFFER_SRGB);
-#elif defined(GL_EXT_framebuffer_sRGB)
-	if (Params.HandleSRGB)
-		glEnable(GL_FRAMEBUFFER_SRGB_EXT);
-#endif
-
 // This is a fast replacement for NORMALIZE_NORMALS
 //	if ((Version>101) || FeatureAvailable[IRR_EXT_rescale_normal])
 //		glEnable(GL_RESCALE_NORMAL_EXT);
@@ -3687,16 +3677,6 @@ bool COpenGLDriver::getColorFormatParameters(ECOLOR_FORMAT format, GLint& intern
 	default:
 		break;
 	}
-
-#if defined(GL_ARB_framebuffer_sRGB) || defined(GL_EXT_framebuffer_sRGB)
-	if (Params.HandleSRGB)
-	{
-		if (internalFormat == GL_RGBA)
-			internalFormat = GL_SRGB_ALPHA_EXT;
-		else if (internalFormat == GL_RGB)
-			internalFormat = GL_SRGB_EXT;
-	}
-#endif
 
 	return supported;
 }

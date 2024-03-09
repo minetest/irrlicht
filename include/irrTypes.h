@@ -87,23 +87,6 @@ namespace irr
 	#define _IRR_DEBUG_BREAK_IF( _CONDITION_ )
 #endif
 
-//! Defines a deprecated macro which generates a warning at compile time
-/** The usage is simple
-For typedef:		typedef _IRR_DEPRECATED_ int test1;
-For classes/structs:	class _IRR_DEPRECATED_ test2 { ... };
-For methods:		class test3 { _IRR_DEPRECATED_ virtual void foo() {} };
-For functions:		template<class T> _IRR_DEPRECATED_ void test4(void) {}
-**/
-#if defined(IGNORE_DEPRECATED_WARNING)
-#define _IRR_DEPRECATED_
-#elif defined(_MSC_VER)
-#define _IRR_DEPRECATED_ __declspec(deprecated)
-#elif defined(__GNUC__)
-#define _IRR_DEPRECATED_  __attribute__ ((deprecated))
-#else
-#define _IRR_DEPRECATED_
-#endif
-
 //! deprecated macro for virtual function override
 /** prefer to use the override keyword for new code */
 #define _IRR_OVERRIDE_ override
