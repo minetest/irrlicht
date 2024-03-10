@@ -25,8 +25,10 @@ CImage::CImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size, void* d
 	else
 	{
 		const u32 dataSize = getDataSizeFromFormat(Format, Size.Width, Size.Height);
+		const u32 allocSize = align_next(dataSize, 16);
 
-		Data = new u8[align_next(dataSize,16)];
+		// allocate as u32 to ensure enough alignment when casted
+		Data = reinterpret_cast<u8*>(new u32[allocSize / 4]);
 		memcpy(Data, data, dataSize);
 		DeleteMemory = true;
 	}
@@ -36,7 +38,10 @@ CImage::CImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size, void* d
 //! Constructor of empty image
 CImage::CImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size) : IImage(format, size, true)
 {
-	Data = new u8[align_next(getDataSizeFromFormat(Format, Size.Width, Size.Height),16)];
+	const u32 dataSize = getDataSizeFromFormat(Format, Size.Width, Size.Height);
+	const u32 allocSize = align_next(dataSize, 16);
+
+	Data = reinterpret_cast<u8*>(new u32[allocSize / 4]);
 	DeleteMemory = true;
 }
 
