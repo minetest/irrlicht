@@ -1,6 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- CImageLoaderBMP now supports loading 1-bit images with palette data
 - Hardware meshbuffers are now deleted when they hold the last reference to a meshbuffer
 - Variable order inside SMaterial and SMaterialLayer changed for better packing
 - line3d::getClosestPoint can now chose between using line or line segment

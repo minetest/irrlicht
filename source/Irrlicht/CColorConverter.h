@@ -18,7 +18,7 @@ class CColorConverter
 public:
 
 	//! converts a monochrome bitmap to A1R5G5B5
-	static void convert1BitTo16Bit(const u8* in, s16* out, u32 width, u32 height, u32 linepad=0, bool flip=false);
+	static void convert1BitTo16Bit(const u8* in, s16* out, u32 width, u32 height, u32 linepad=0, bool flip=false, s16 col0=(s16)0x8000, s16 col1=(s16)0xffff);
 
 	//! converts a 4 bit palettized image to A1R5G5B5
 	static void convert4BitTo16Bit(const u8* in, s16* out, u32 width, u32 height, const s32* palette, u32 linepad=0, bool flip=false);
@@ -32,7 +32,7 @@ public:
 	//! converts a 8 bit palettized or non palettized image (A8) into A8R8G8B8
 	static void convert8BitTo32Bit(const u8* in, u8* out, u32 width, u32 height, const u8* palette, u32 linepad = 0, bool flip=false);
 
-	//! converts R8G8B8 16 bit data to A1R5G5B5 data
+	//! converts 16bit data to 16bit data (can flip and do endian conversion)
 	static void convert16BitTo16Bit(const s16* in, s16* out, u32 width, u32 height, u32 linepad=0, bool flip=false);
 
 	//! copies R8G8B8 24 bit data to 24 data, and flips and

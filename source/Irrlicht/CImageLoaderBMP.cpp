@@ -414,7 +414,20 @@ IImage* CImageLoaderBMP::loadImage(io::IReadFile* file) const
 	case 1:
 		image = new CImage(ECF_A1R5G5B5, dim);
 		if (image)
-			CColorConverter::convert1BitTo16Bit(bmpData, (s16*)image->getData(), header.Width, header.Height, pitch, true);
+		{
+			s16 colors[2] = {(s16)0x8000, (s16)0xffff };	// off: only alpha set, on: all white
+			if ( paletteSize == 1 )
+			{
+				u8 in = 0;
+				CColorConverter::convert8BitTo16Bit(&in, colors, 1, 1, paletteData);
+			}
+			else if ( paletteSize >= 2 )
+			{
+				u8 in[2] = { 0, 1 };
+				CColorConverter::convert8BitTo16Bit(in, colors, 2, 1, paletteData);
+			}
+			CColorConverter::convert1BitTo16Bit(bmpData, (s16*)image->getData(), header.Width, header.Height, pitch, true, colors[0], colors[1]);
+		}
 		break;
 	case 4:
 		image = new CImage(ECF_A1R5G5B5, dim);

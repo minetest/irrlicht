@@ -12,7 +12,7 @@ namespace video
 {
 
 //! converts a monochrome bitmap to A1R5G5B5 data
-void CColorConverter::convert1BitTo16Bit(const u8* in, s16* out, u32 width, u32 height, u32 linepad, bool flip)
+void CColorConverter::convert1BitTo16Bit(const u8* in, s16* out, u32 width, u32 height, u32 linepad, bool flip, s16 col0, s16 col1)
 {
 	if (!in || !out)
 		return;
@@ -28,7 +28,7 @@ void CColorConverter::convert1BitTo16Bit(const u8* in, s16* out, u32 width, u32 
 
 		for (u32 x=0; x<width; ++x)
 		{
-			out[x] = *in>>shift & 0x01 ? (s16)0xffff : (s16)0x8000;
+			out[x] = *in>>shift & 0x01 ? col1 : col0;
 
 			if ((--shift)<0) // 8 pixel done
 			{
