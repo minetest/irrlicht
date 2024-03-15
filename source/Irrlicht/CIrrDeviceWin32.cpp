@@ -2135,11 +2135,29 @@ gui::ECURSOR_ICON CIrrDeviceWin32::CCursorControl::addIcon(const gui::SCursorSpr
 			irr::core::rect<s32> rectIcon = icon.SpriteBank->getPositions()[rectId];
 
 			HCURSOR hc = Device->TextureToCursor(HWnd, icon.SpriteBank->getTexture(texId), rectIcon, icon.HotSpot);
-			cW32.Frames.push_back( CursorFrameW32(hc) );
+			if ( hc != NULL )
+			{
+				cW32.Frames.push_back( CursorFrameW32(hc) );
+			}
+			else
+			{
+				core::stringc warning("addIcon could not convert texture to cursor for frame ");
+				warning += core::stringc(i);
+				warning += " error ";
+				warning += core::stringc(GetLastError());
+				os::Printer::log(warning.c_str(), ELL_WARNING);
+			}
 		}
 
-		Cursors.push_back( cW32 );
-		return (gui::ECURSOR_ICON)(Cursors.size() - 1);
+		if ( !cW32.Frames.empty() )
+		{
+			Cursors.push_back( cW32 );
+			return (gui::ECURSOR_ICON)(Cursors.size() - 1);
+		}
+		else
+		{
+			os::Printer::log("addIcon failed due to the lack of cursor frames", ELL_WARNING);
+		}
 	}
 	return gui::ECI_NORMAL;
 }
