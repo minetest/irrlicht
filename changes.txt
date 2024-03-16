@@ -1,6 +1,7 @@
 --------------------------
 Changes in 1.9 (not yet released)
 
+- obj/mtl loader no longer messes up bump textures when the name starts with a number
 - CImageLoaderBMP now supports loading 1-bit images with palette data
 - Hardware meshbuffers are now deleted when they hold the last reference to a meshbuffer
 - Variable order inside SMaterial and SMaterialLayer changed for better packing

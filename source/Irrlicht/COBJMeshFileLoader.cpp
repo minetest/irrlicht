@@ -387,9 +387,9 @@ const c8* COBJMeshFileLoader::readTextures(const c8* bufPtr, const c8* const buf
 	// map_Ks - specular color texture map
 	// map_Ka - ambient color texture map
 	// map_Ns - shininess texture map
-	if ((!strncmp(bufPtr,"map_bump",8)) || (!strncmp(bufPtr,"bump",4)))
+	if (!strncmp(bufPtr,"map_bump",8) || !strncmp(bufPtr,"map_Bump",8) || !strncmp(bufPtr,"bump",4))
 		type=1; // normal map
-	else if ((!strncmp(bufPtr,"map_d",5)) || (!strncmp(bufPtr,"map_opacity",11)))
+	else if (!strncmp(bufPtr,"map_d",5) || !strncmp(bufPtr,"map_opacity",11))
 		type=2; // opacity map
 	else if (!strncmp(bufPtr,"map_refl",8))
 		type=3; // reflection map
@@ -487,8 +487,15 @@ const c8* COBJMeshFileLoader::readTextures(const c8* bufPtr, const c8* const buf
 
 	if ((type==1) && (core::isdigit(textureNameBuf[0])))
 	{
-		currMaterial->Meshbuffer->Material.MaterialTypeParam=core::fast_atof(textureNameBuf);
-		bufPtr = goAndCopyNextWord(textureNameBuf, bufPtr, WORD_BUFFER_LENGTH, bufEnd);
+		// Haven't found that in any official mtl description, usually bump parameter should only be after -bm
+		// But I'll leave it (with added checks in 1.9) as maybe there are some exporters doing this and likely can't be a valid filename
+		const char *out=0;
+		irr::f32 bumpScale = core::fast_atof(textureNameBuf, &out);
+		if ( *out == 0 ) // name is only a number
+		{
+			currMaterial->Meshbuffer->Material.MaterialTypeParam=bumpScale;
+			bufPtr = goAndCopyNextWord(textureNameBuf, bufPtr, WORD_BUFFER_LENGTH, bufEnd);
+		}
 	}
 	if (clamp)
 		currMaterial->Meshbuffer->Material.setFlag(video::EMF_TEXTURE_WRAP, video::ETC_CLAMP);
