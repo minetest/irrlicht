@@ -4,13 +4,13 @@
 
 #pragma once
 
+#include <cstring> // memset, memcpy
 #include "irrMath.h"
 #include "vector3d.h"
 #include "vector2d.h"
 #include "plane3d.h"
 #include "aabbox3d.h"
 #include "rect.h"
-#include "irrString.h"
 #include "IrrCompileConfig.h" // for IRRLICHT_API
 
 // enable this to keep track of changes to the matrix
