@@ -13,26 +13,23 @@ namespace irr
 namespace scene
 {
 
-	class CSceneCollisionManager : public ISceneCollisionManager
-	{
-	public:
+class CSceneCollisionManager : public ISceneCollisionManager
+{
+public:
+	//! constructor
+	CSceneCollisionManager(ISceneManager *smanager, video::IVideoDriver *driver);
 
-		//! constructor
-		CSceneCollisionManager(ISceneManager* smanager, video::IVideoDriver* driver);
+	//! destructor
+	virtual ~CSceneCollisionManager();
 
-		//! destructor
-		virtual ~CSceneCollisionManager();
+	//! Returns a 3d ray which would go through the 2d screen coordinates.
+	virtual core::line3d<f32> getRayFromScreenCoordinates(
+			const core::position2d<s32> &pos, const ICameraSceneNode *camera = 0) override;
 
-		//! Returns a 3d ray which would go through the 2d screen coordinates.
-		virtual core::line3d<f32> getRayFromScreenCoordinates(
-			const core::position2d<s32> & pos, const ICameraSceneNode* camera = 0) override;
-
-	private:
-
-		ISceneManager* SceneManager;
-		video::IVideoDriver* Driver;
-	};
-
+private:
+	ISceneManager *SceneManager;
+	video::IVideoDriver *Driver;
+};
 
 } // end namespace scene
 } // end namespace irr

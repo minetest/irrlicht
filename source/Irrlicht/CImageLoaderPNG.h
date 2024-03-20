@@ -19,18 +19,16 @@ namespace video
 class CImageLoaderPng : public IImageLoader
 {
 public:
-
 	//! returns true if the file maybe is able to be loaded by this class
 	//! based on the file extension (e.g. ".png")
-	bool isALoadableFileExtension(const io::path& filename) const override;
+	bool isALoadableFileExtension(const io::path &filename) const override;
 
 	//! returns true if the file maybe is able to be loaded by this class
-	bool isALoadableFileFormat(io::IReadFile* file) const override;
+	bool isALoadableFileFormat(io::IReadFile *file) const override;
 
 	//! creates a surface from the file
-	IImage* loadImage(io::IReadFile* file) const override;
+	IImage *loadImage(io::IReadFile *file) const override;
 };
-
 
 } // end namespace video
 } // end namespace irr

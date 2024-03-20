@@ -6,7 +6,6 @@
 
 #include "os.h"
 
-
 #include "CFileList.h"
 #include "CReadFile.h"
 #include "coreutil.h"
@@ -18,25 +17,24 @@ namespace irr
 namespace io
 {
 
-
 // -----------------------------------------------------------------------------
 // zip loader
 // -----------------------------------------------------------------------------
 
 //! Constructor
-CArchiveLoaderZIP::CArchiveLoaderZIP(io::IFileSystem* fs)
-: FileSystem(fs)
+CArchiveLoaderZIP::CArchiveLoaderZIP(io::IFileSystem *fs) :
+		FileSystem(fs)
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("CArchiveLoaderZIP");
-	#endif
+#endif
 }
 
 //! returns true if the file maybe is able to be loaded by this class
-bool CArchiveLoaderZIP::isALoadableFileFormat(const io::path& filename) const
+bool CArchiveLoaderZIP::isALoadableFileFormat(const io::path &filename) const
 {
 	return core::hasFileExtension(filename, "zip", "pk3") ||
-	       core::hasFileExtension(filename, "gz", "tgz");
+		   core::hasFileExtension(filename, "gz", "tgz");
 }
 
 //! Check to see if the loader can create archives of this type.
@@ -45,17 +43,15 @@ bool CArchiveLoaderZIP::isALoadableFileFormat(E_FILE_ARCHIVE_TYPE fileType) cons
 	return (fileType == EFAT_ZIP || fileType == EFAT_GZIP);
 }
 
-
 //! Creates an archive from the filename
 /** \param file File handle to check.
 \return Pointer to newly created archive, or 0 upon error. */
-IFileArchive* CArchiveLoaderZIP::createArchive(const io::path& filename, bool ignoreCase, bool ignorePaths) const
+IFileArchive *CArchiveLoaderZIP::createArchive(const io::path &filename, bool ignoreCase, bool ignorePaths) const
 {
 	IFileArchive *archive = 0;
-	io::IReadFile* file = FileSystem->createAndOpenFile(filename);
+	io::IReadFile *file = FileSystem->createAndOpenFile(filename);
 
-	if (file)
-	{
+	if (file) {
 		archive = createArchive(file, ignoreCase, ignorePaths);
 		file->drop();
 	}
@@ -65,11 +61,10 @@ IFileArchive* CArchiveLoaderZIP::createArchive(const io::path& filename, bool ig
 
 //! creates/loads an archive from the file.
 //! \return Pointer to the created archive. Returns 0 if loading failed.
-IFileArchive* CArchiveLoaderZIP::createArchive(io::IReadFile* file, bool ignoreCase, bool ignorePaths) const
+IFileArchive *CArchiveLoaderZIP::createArchive(io::IReadFile *file, bool ignoreCase, bool ignorePaths) const
 {
 	IFileArchive *archive = 0;
-	if (file)
-	{
+	if (file) {
 		file->seek(0);
 
 		u16 sig;
@@ -92,39 +87,40 @@ IFileArchive* CArchiveLoaderZIP::createArchive(io::IReadFile* file, bool ignoreC
 /** Check might look into the file.
 \param file File handle to check.
 \return True if file seems to be loadable. */
-bool CArchiveLoaderZIP::isALoadableFileFormat(io::IReadFile* file) const
+bool CArchiveLoaderZIP::isALoadableFileFormat(io::IReadFile *file) const
 {
 	SZIPFileHeader header;
 
-	file->read( &header.Sig, 4 );
+	file->read(&header.Sig, 4);
 #ifdef __BIG_ENDIAN__
 	header.Sig = os::Byteswap::byteswap(header.Sig);
 #endif
 
-	return header.Sig == 0x04034b50 || // ZIP
-		   (header.Sig&0xffff) == 0x8b1f; // gzip
+	return header.Sig == 0x04034b50 ||		// ZIP
+		   (header.Sig & 0xffff) == 0x8b1f; // gzip
 }
 
 // -----------------------------------------------------------------------------
 // zip archive
 // -----------------------------------------------------------------------------
 
-CZipReader::CZipReader(IFileSystem* fs, IReadFile* file, bool ignoreCase, bool ignorePaths, bool isGZip)
- : CFileList((file ? file->getFileName() : io::path("")), ignoreCase, ignorePaths), FileSystem(fs), File(file), IsGZip(isGZip)
+CZipReader::CZipReader(IFileSystem *fs, IReadFile *file, bool ignoreCase, bool ignorePaths, bool isGZip) :
+		CFileList((file ? file->getFileName() : io::path("")), ignoreCase, ignorePaths), FileSystem(fs), File(file), IsGZip(isGZip)
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("CZipReader");
-	#endif
+#endif
 
-	if (File)
-	{
+	if (File) {
 		File->grab();
 
 		// load file entries
 		if (IsGZip)
-			while (scanGZipHeader()) { }
+			while (scanGZipHeader()) {
+			}
 		else
-			while (scanZipHeader()) { }
+			while (scanZipHeader()) {
+			}
 
 		sort();
 	}
@@ -136,18 +132,16 @@ CZipReader::~CZipReader()
 		File->drop();
 }
 
-
 //! get the archive type
 E_FILE_ARCHIVE_TYPE CZipReader::getType() const
 {
 	return IsGZip ? EFAT_GZIP : EFAT_ZIP;
 }
 
-const IFileList* CZipReader::getFileList() const
+const IFileList *CZipReader::getFileList() const
 {
 	return this;
 }
-
 
 //! scans for a local header, returns false if there is no more local file header.
 //! The gzip file format seems to think that there can be multiple files in a gzip file
@@ -160,8 +154,7 @@ bool CZipReader::scanGZipHeader()
 
 	// read header
 	SGZIPMemberHeader header;
-	if (File->read(&header, sizeof(SGZIPMemberHeader)) == sizeof(SGZIPMemberHeader))
-	{
+	if (File->read(&header, sizeof(SGZIPMemberHeader)) == sizeof(SGZIPMemberHeader)) {
 
 #ifdef __BIG_ENDIAN__
 		header.sig = os::Byteswap::byteswap(header.sig);
@@ -173,8 +166,7 @@ bool CZipReader::scanGZipHeader()
 			return false;
 
 		// now get the file info
-		if (header.flags & EGZF_EXTRA_FIELDS)
-		{
+		if (header.flags & EGZF_EXTRA_FIELDS) {
 			// read lenth of extra data
 			u16 dataLen;
 
@@ -190,38 +182,30 @@ bool CZipReader::scanGZipHeader()
 
 		io::path ZipFileName = "";
 
-		if (header.flags & EGZF_FILE_NAME)
-		{
+		if (header.flags & EGZF_FILE_NAME) {
 			c8 c;
 			File->read(&c, 1);
-			while (c)
-			{
+			while (c) {
 				ZipFileName.append(c);
 				File->read(&c, 1);
 			}
-		}
-		else
-		{
+		} else {
 			// no file name?
 			ZipFileName = Path;
 			core::deletePathFromFilename(ZipFileName);
 
 			// rename tgz to tar or remove gz extension
-			if (core::hasFileExtension(ZipFileName, "tgz"))
-			{
-				ZipFileName[ ZipFileName.size() - 2] = 'a';
-				ZipFileName[ ZipFileName.size() - 1] = 'r';
-			}
-			else if (core::hasFileExtension(ZipFileName, "gz"))
-			{
-				ZipFileName[ ZipFileName.size() - 3] = 0;
+			if (core::hasFileExtension(ZipFileName, "tgz")) {
+				ZipFileName[ZipFileName.size() - 2] = 'a';
+				ZipFileName[ZipFileName.size() - 1] = 'r';
+			} else if (core::hasFileExtension(ZipFileName, "gz")) {
+				ZipFileName[ZipFileName.size() - 3] = 0;
 				ZipFileName.validate();
 			}
 		}
 
-		if (header.flags & EGZF_COMMENT)
-		{
-			c8 c='a';
+		if (header.flags & EGZF_COMMENT) {
+			c8 c = 'a';
 			while (c)
 				File->read(&c, 1);
 		}
@@ -270,17 +254,17 @@ bool CZipReader::scanZipHeader(bool ignoreGPBits)
 	File->read(&entry.header, sizeof(SZIPFileHeader));
 
 #ifdef __BIG_ENDIAN__
-		entry.header.Sig = os::Byteswap::byteswap(entry.header.Sig);
-		entry.header.VersionToExtract = os::Byteswap::byteswap(entry.header.VersionToExtract);
-		entry.header.GeneralBitFlag = os::Byteswap::byteswap(entry.header.GeneralBitFlag);
-		entry.header.CompressionMethod = os::Byteswap::byteswap(entry.header.CompressionMethod);
-		entry.header.LastModFileTime = os::Byteswap::byteswap(entry.header.LastModFileTime);
-		entry.header.LastModFileDate = os::Byteswap::byteswap(entry.header.LastModFileDate);
-		entry.header.DataDescriptor.CRC32 = os::Byteswap::byteswap(entry.header.DataDescriptor.CRC32);
-		entry.header.DataDescriptor.CompressedSize = os::Byteswap::byteswap(entry.header.DataDescriptor.CompressedSize);
-		entry.header.DataDescriptor.UncompressedSize = os::Byteswap::byteswap(entry.header.DataDescriptor.UncompressedSize);
-		entry.header.FilenameLength = os::Byteswap::byteswap(entry.header.FilenameLength);
-		entry.header.ExtraFieldLength = os::Byteswap::byteswap(entry.header.ExtraFieldLength);
+	entry.header.Sig = os::Byteswap::byteswap(entry.header.Sig);
+	entry.header.VersionToExtract = os::Byteswap::byteswap(entry.header.VersionToExtract);
+	entry.header.GeneralBitFlag = os::Byteswap::byteswap(entry.header.GeneralBitFlag);
+	entry.header.CompressionMethod = os::Byteswap::byteswap(entry.header.CompressionMethod);
+	entry.header.LastModFileTime = os::Byteswap::byteswap(entry.header.LastModFileTime);
+	entry.header.LastModFileDate = os::Byteswap::byteswap(entry.header.LastModFileDate);
+	entry.header.DataDescriptor.CRC32 = os::Byteswap::byteswap(entry.header.DataDescriptor.CRC32);
+	entry.header.DataDescriptor.CompressedSize = os::Byteswap::byteswap(entry.header.DataDescriptor.CompressedSize);
+	entry.header.DataDescriptor.UncompressedSize = os::Byteswap::byteswap(entry.header.DataDescriptor.UncompressedSize);
+	entry.header.FilenameLength = os::Byteswap::byteswap(entry.header.FilenameLength);
+	entry.header.ExtraFieldLength = os::Byteswap::byteswap(entry.header.ExtraFieldLength);
 #endif
 
 	if (entry.header.Sig != 0x04034b50)
@@ -288,49 +272,45 @@ bool CZipReader::scanZipHeader(bool ignoreGPBits)
 
 	// read filename
 	{
-		c8 *tmp = new c8 [ entry.header.FilenameLength + 2 ];
+		c8 *tmp = new c8[entry.header.FilenameLength + 2];
 		File->read(tmp, entry.header.FilenameLength);
 		tmp[entry.header.FilenameLength] = 0;
 		ZipFileName = tmp;
-		delete [] tmp;
+		delete[] tmp;
 	}
 
 	if (entry.header.ExtraFieldLength)
 		File->seek(entry.header.ExtraFieldLength, true);
 
 	// if bit 3 was set, use CentralDirectory for setup
-	if (!ignoreGPBits && entry.header.GeneralBitFlag & ZIP_INFO_IN_DATA_DESCRIPTOR)
-	{
+	if (!ignoreGPBits && entry.header.GeneralBitFlag & ZIP_INFO_IN_DATA_DESCRIPTOR) {
 		SZIPFileCentralDirEnd dirEnd;
 		FileInfo.clear();
 		Files.clear();
 		// First place where the end record could be stored
-		File->seek(File->getSize()-22);
+		File->seek(File->getSize() - 22);
 		const char endID[] = {0x50, 0x4b, 0x05, 0x06, 0x0};
-		char tmp[5]={'\0'};
-		bool found=false;
+		char tmp[5] = {'\0'};
+		bool found = false;
 		// search for the end record ID
-		while (!found && File->getPos()>0)
-		{
-			int seek=8;
+		while (!found && File->getPos() > 0) {
+			int seek = 8;
 			File->read(tmp, 4);
-			switch (tmp[0])
-			{
+			switch (tmp[0]) {
 			case 0x50:
-				if (!strcmp(endID, tmp))
-				{
-					seek=4;
-					found=true;
+				if (!strcmp(endID, tmp)) {
+					seek = 4;
+					found = true;
 				}
 				break;
 			case 0x4b:
-				seek=5;
+				seek = 5;
 				break;
 			case 0x05:
-				seek=6;
+				seek = 6;
 				break;
 			case 0x06:
-				seek=7;
+				seek = 7;
 				break;
 			}
 			File->seek(-seek, true);
@@ -347,7 +327,8 @@ bool CZipReader::scanZipHeader(bool ignoreGPBits)
 #endif
 		FileInfo.reallocate(dirEnd.TotalEntries);
 		File->seek(dirEnd.Offset);
-		while (scanCentralDirectoryHeader()) { }
+		while (scanCentralDirectoryHeader()) {
+		}
 		return false;
 	}
 
@@ -356,16 +337,15 @@ bool CZipReader::scanZipHeader(bool ignoreGPBits)
 	// move forward length of data
 	File->seek(entry.header.DataDescriptor.CompressedSize, true);
 
-	#ifdef _DEBUG
-	//os::Debuginfo::print("added file from archive", ZipFileName.c_str());
-	#endif
+#ifdef _DEBUG
+// os::Debuginfo::print("added file from archive", ZipFileName.c_str());
+#endif
 
-	addItem(ZipFileName, entry.Offset, entry.header.DataDescriptor.UncompressedSize, ZipFileName.lastChar()=='/', FileInfo.size());
+	addItem(ZipFileName, entry.Offset, entry.header.DataDescriptor.UncompressedSize, ZipFileName.lastChar() == '/', FileInfo.size());
 	FileInfo.push_back(entry);
 
 	return true;
 }
-
 
 //! scans for a local header, returns false if there is no more local file header.
 bool CZipReader::scanCentralDirectoryHeader()
@@ -400,17 +380,16 @@ bool CZipReader::scanCentralDirectoryHeader()
 	const long pos = File->getPos();
 	File->seek(entry.RelativeOffsetOfLocalHeader);
 	scanZipHeader(true);
-	File->seek(pos+entry.FilenameLength+entry.ExtraFieldLength+entry.FileCommentLength);
-	FileInfo.getLast().header.DataDescriptor.CompressedSize=entry.CompressedSize;
-	FileInfo.getLast().header.DataDescriptor.UncompressedSize=entry.UncompressedSize;
-	FileInfo.getLast().header.DataDescriptor.CRC32=entry.CRC32;
-	Files.getLast().Size=entry.UncompressedSize;
+	File->seek(pos + entry.FilenameLength + entry.ExtraFieldLength + entry.FileCommentLength);
+	FileInfo.getLast().header.DataDescriptor.CompressedSize = entry.CompressedSize;
+	FileInfo.getLast().header.DataDescriptor.UncompressedSize = entry.UncompressedSize;
+	FileInfo.getLast().header.DataDescriptor.CRC32 = entry.CRC32;
+	Files.getLast().Size = entry.UncompressedSize;
 	return true;
 }
 
-
 //! opens a file by file name
-IReadFile* CZipReader::createAndOpenFile(const io::path& filename)
+IReadFile *CZipReader::createAndOpenFile(const io::path &filename)
 {
 	s32 index = findFile(filename, false);
 
@@ -421,130 +400,119 @@ IReadFile* CZipReader::createAndOpenFile(const io::path& filename)
 }
 
 //! opens a file by index
-IReadFile* CZipReader::createAndOpenFile(u32 index)
+IReadFile *CZipReader::createAndOpenFile(u32 index)
 {
 	// Irrlicht supports 0, 8, 12, 14, 99
-	//0 - The file is stored (no compression)
-	//1 - The file is Shrunk
-	//2 - The file is Reduced with compression factor 1
-	//3 - The file is Reduced with compression factor 2
-	//4 - The file is Reduced with compression factor 3
-	//5 - The file is Reduced with compression factor 4
-	//6 - The file is Imploded
-	//7 - Reserved for Tokenizing compression algorithm
-	//8 - The file is Deflated
-	//9 - Reserved for enhanced Deflating
-	//10 - PKWARE Date Compression Library Imploding
-	//12 - bzip2 - Compression Method from libbz2, WinZip 10
-	//14 - LZMA - Compression Method, WinZip 12
-	//96 - Jpeg compression - Compression Method, WinZip 12
-	//97 - WavPack - Compression Method, WinZip 11
-	//98 - PPMd - Compression Method, WinZip 10
-	//99 - AES encryption, WinZip 9
+	// 0 - The file is stored (no compression)
+	// 1 - The file is Shrunk
+	// 2 - The file is Reduced with compression factor 1
+	// 3 - The file is Reduced with compression factor 2
+	// 4 - The file is Reduced with compression factor 3
+	// 5 - The file is Reduced with compression factor 4
+	// 6 - The file is Imploded
+	// 7 - Reserved for Tokenizing compression algorithm
+	// 8 - The file is Deflated
+	// 9 - Reserved for enhanced Deflating
+	// 10 - PKWARE Date Compression Library Imploding
+	// 12 - bzip2 - Compression Method from libbz2, WinZip 10
+	// 14 - LZMA - Compression Method, WinZip 12
+	// 96 - Jpeg compression - Compression Method, WinZip 12
+	// 97 - WavPack - Compression Method, WinZip 11
+	// 98 - PPMd - Compression Method, WinZip 10
+	// 99 - AES encryption, WinZip 9
 
 	const SZipFileEntry &e = FileInfo[Files[index].ID];
 	char buf[64];
-	s16 actualCompressionMethod=e.header.CompressionMethod;
-	IReadFile* decrypted=0;
-	u8* decryptedBuf=0;
-	u32 decryptedSize=e.header.DataDescriptor.CompressedSize;
-	switch(actualCompressionMethod)
-	{
+	s16 actualCompressionMethod = e.header.CompressionMethod;
+	IReadFile *decrypted = 0;
+	u8 *decryptedBuf = 0;
+	u32 decryptedSize = e.header.DataDescriptor.CompressedSize;
+	switch (actualCompressionMethod) {
 	case 0: // no compression
-		{
-			if (decrypted)
-				return decrypted;
-			else
-				return createLimitReadFile(Files[index].FullName, File, e.Offset, decryptedSize);
-		}
-	case 8:
-		{
-			const u32 uncompressedSize = e.header.DataDescriptor.UncompressedSize;
-			c8* pBuf = new c8[ uncompressedSize ];
-			if (!pBuf)
-			{
-				snprintf_irr ( buf, 64, "Not enough memory for decompressing %s", Files[index].FullName.c_str() );
-				os::Printer::log( buf, ELL_ERROR);
-				if (decrypted)
-					decrypted->drop();
-				return 0;
-			}
-
-			u8 *pcData = decryptedBuf;
-			if (!pcData)
-			{
-				pcData = new u8[decryptedSize];
-				if (!pcData)
-				{
-					snprintf_irr ( buf, 64, "Not enough memory for decompressing %s", Files[index].FullName.c_str() );
-					os::Printer::log( buf, ELL_ERROR);
-					delete [] pBuf;
-					return 0;
-				}
-
-				//memset(pcData, 0, decryptedSize);
-				File->seek(e.Offset);
-				File->read(pcData, decryptedSize);
-			}
-
-			// Setup the inflate stream.
-			z_stream stream;
-			s32 err;
-
-			stream.next_in = (Bytef*)pcData;
-			stream.avail_in = (uInt)decryptedSize;
-			stream.next_out = (Bytef*)pBuf;
-			stream.avail_out = uncompressedSize;
-			stream.zalloc = (alloc_func)0;
-			stream.zfree = (free_func)0;
-
-			// Perform inflation. wbits < 0 indicates no zlib header inside the data.
-			err = inflateInit2(&stream, -MAX_WBITS);
-			if (err == Z_OK)
-			{
-				err = inflate(&stream, Z_FINISH);
-				inflateEnd(&stream);
-				if (err == Z_STREAM_END)
-					err = Z_OK;
-				err = Z_OK;
-				inflateEnd(&stream);
-			}
-
+	{
+		if (decrypted)
+			return decrypted;
+		else
+			return createLimitReadFile(Files[index].FullName, File, e.Offset, decryptedSize);
+	}
+	case 8: {
+		const u32 uncompressedSize = e.header.DataDescriptor.UncompressedSize;
+		c8 *pBuf = new c8[uncompressedSize];
+		if (!pBuf) {
+			snprintf_irr(buf, 64, "Not enough memory for decompressing %s", Files[index].FullName.c_str());
+			os::Printer::log(buf, ELL_ERROR);
 			if (decrypted)
 				decrypted->drop();
-			else
-				delete[] pcData;
+			return 0;
+		}
 
-			if (err != Z_OK)
-			{
-				snprintf_irr ( buf, 64, "Error decompressing %s", Files[index].FullName.c_str() );
-				os::Printer::log( buf, ELL_ERROR);
-				delete [] pBuf;
+		u8 *pcData = decryptedBuf;
+		if (!pcData) {
+			pcData = new u8[decryptedSize];
+			if (!pcData) {
+				snprintf_irr(buf, 64, "Not enough memory for decompressing %s", Files[index].FullName.c_str());
+				os::Printer::log(buf, ELL_ERROR);
+				delete[] pBuf;
 				return 0;
 			}
-			else
-				return FileSystem->createMemoryReadFile(pBuf, uncompressedSize, Files[index].FullName, true);
+
+			// memset(pcData, 0, decryptedSize);
+			File->seek(e.Offset);
+			File->read(pcData, decryptedSize);
 		}
-	case 12:
-		{
-			os::Printer::log("bzip2 decompression not supported. File cannot be read.", ELL_ERROR);
+
+		// Setup the inflate stream.
+		z_stream stream;
+		s32 err;
+
+		stream.next_in = (Bytef *)pcData;
+		stream.avail_in = (uInt)decryptedSize;
+		stream.next_out = (Bytef *)pBuf;
+		stream.avail_out = uncompressedSize;
+		stream.zalloc = (alloc_func)0;
+		stream.zfree = (free_func)0;
+
+		// Perform inflation. wbits < 0 indicates no zlib header inside the data.
+		err = inflateInit2(&stream, -MAX_WBITS);
+		if (err == Z_OK) {
+			err = inflate(&stream, Z_FINISH);
+			inflateEnd(&stream);
+			if (err == Z_STREAM_END)
+				err = Z_OK;
+			err = Z_OK;
+			inflateEnd(&stream);
+		}
+
+		if (decrypted)
+			decrypted->drop();
+		else
+			delete[] pcData;
+
+		if (err != Z_OK) {
+			snprintf_irr(buf, 64, "Error decompressing %s", Files[index].FullName.c_str());
+			os::Printer::log(buf, ELL_ERROR);
+			delete[] pBuf;
 			return 0;
-		}
-	case 14:
-		{
-			os::Printer::log("lzma decompression not supported. File cannot be read.", ELL_ERROR);
-			return 0;
-		}
+		} else
+			return FileSystem->createMemoryReadFile(pBuf, uncompressedSize, Files[index].FullName, true);
+	}
+	case 12: {
+		os::Printer::log("bzip2 decompression not supported. File cannot be read.", ELL_ERROR);
+		return 0;
+	}
+	case 14: {
+		os::Printer::log("lzma decompression not supported. File cannot be read.", ELL_ERROR);
+		return 0;
+	}
 	case 99:
 		// If we come here with an encrypted file, decryption support is missing
 		os::Printer::log("Decryption support not enabled. File cannot be read.", ELL_ERROR);
 		return 0;
 	default:
-		snprintf_irr ( buf, 64, "file has unsupported compression method. %s", Files[index].FullName.c_str() );
-		os::Printer::log( buf, ELL_ERROR);
+		snprintf_irr(buf, 64, "file has unsupported compression method. %s", Files[index].FullName.c_str());
+		os::Printer::log(buf, ELL_ERROR);
 		return 0;
 	};
-
 }
 
 } // end namespace io

@@ -17,44 +17,44 @@ namespace irr
 namespace video
 {
 
-	class COpenGLCacheHandler : public COpenGLCoreCacheHandler<COpenGLDriver, COpenGLTexture>
-	{
-	public:
-		COpenGLCacheHandler(COpenGLDriver* driver);
-		virtual ~COpenGLCacheHandler();
+class COpenGLCacheHandler : public COpenGLCoreCacheHandler<COpenGLDriver, COpenGLTexture>
+{
+public:
+	COpenGLCacheHandler(COpenGLDriver *driver);
+	virtual ~COpenGLCacheHandler();
 
-		// Alpha calls.
+	// Alpha calls.
 
-		void setAlphaFunc(GLenum mode, GLclampf ref);
+	void setAlphaFunc(GLenum mode, GLclampf ref);
 
-		void setAlphaTest(bool enable);
+	void setAlphaTest(bool enable);
 
-		// Client state calls.
+	// Client state calls.
 
-		void setClientState(bool vertex, bool normal, bool color, bool texCoord0);
+	void setClientState(bool vertex, bool normal, bool color, bool texCoord0);
 
-		// Matrix calls.
+	// Matrix calls.
 
-		void setMatrixMode(GLenum mode);
+	void setMatrixMode(GLenum mode);
 
-		// Texture calls.
+	// Texture calls.
 
-		void setClientActiveTexture(GLenum texture);
+	void setClientActiveTexture(GLenum texture);
 
-	protected:
-		GLenum AlphaMode;
-		GLclampf AlphaRef;
-		bool AlphaTest;
+protected:
+	GLenum AlphaMode;
+	GLclampf AlphaRef;
+	bool AlphaTest;
 
-		GLenum MatrixMode;
+	GLenum MatrixMode;
 
-		GLenum ClientActiveTexture;
+	GLenum ClientActiveTexture;
 
-		bool ClientStateVertex;
-		bool ClientStateNormal;
-		bool ClientStateColor;
-		bool ClientStateTexCoord0;
-	};
+	bool ClientStateVertex;
+	bool ClientStateNormal;
+	bool ClientStateColor;
+	bool ClientStateTexCoord0;
+};
 
 } // end namespace video
 } // end namespace irr

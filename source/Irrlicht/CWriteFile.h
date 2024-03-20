@@ -14,47 +14,45 @@ namespace irr
 namespace io
 {
 
-	/*!
-		Class for writing a real file to disk.
-	*/
-	class CWriteFile : public IWriteFile
-	{
-	public:
+/*!
+	Class for writing a real file to disk.
+*/
+class CWriteFile : public IWriteFile
+{
+public:
+	CWriteFile(const io::path &fileName, bool append);
 
-		CWriteFile(const io::path& fileName, bool append);
+	virtual ~CWriteFile();
 
-		virtual ~CWriteFile();
+	//! Reads an amount of bytes from the file.
+	size_t write(const void *buffer, size_t sizeToWrite) override;
 
-		//! Reads an amount of bytes from the file.
-		size_t write(const void* buffer, size_t sizeToWrite) override;
+	//! Changes position in file, returns true if successful.
+	bool seek(long finalPos, bool relativeMovement = false) override;
 
-		//! Changes position in file, returns true if successful.
-		bool seek(long finalPos, bool relativeMovement = false) override;
+	//! Returns the current position in the file.
+	long getPos() const override;
 
-		//! Returns the current position in the file.
-		long getPos() const override;
+	//! Returns name of file.
+	const io::path &getFileName() const override;
 
-		//! Returns name of file.
-		const io::path& getFileName() const override;
+	//! Flush the content of the buffer in the file
+	bool flush() override;
 
-		//! Flush the content of the buffer in the file
-		bool flush() override;
+	//! returns if file is open
+	bool isOpen() const;
 
-		//! returns if file is open
-		bool isOpen() const;
+	//! creator method
+	static IWriteFile *createWriteFile(const io::path &fileName, bool append);
 
-		//! creator method
-		static IWriteFile* createWriteFile(const io::path& fileName, bool append);
+private:
+	//! opens the file
+	void openFile(bool append);
 
-	private:
-
-		//! opens the file
-		void openFile(bool append);
-
-		io::path Filename;
-		FILE* File;
-		long FileSize;
-	};
+	io::path Filename;
+	FILE *File;
+	long FileSize;
+};
 
 } // end namespace io
 } // end namespace irr

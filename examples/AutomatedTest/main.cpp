@@ -28,14 +28,14 @@ static video::E_DRIVER_TYPE chooseDriver(core::stringc arg_)
 
 static inline void check(bool ok, const char *msg)
 {
-	if (!ok)
-	{
+	if (!ok) {
 		test_fail++;
 		device->getLogger()->log((core::stringc("FAILED TEST: ") + msg).c_str(), ELL_ERROR);
 	}
 }
 
-void run_unit_tests() {
+void run_unit_tests()
+{
 	std::cout << "Running unit tests:" << std::endl;
 	try {
 		test_irr_array();
@@ -72,35 +72,33 @@ int main(int argc, char *argv[])
 	device->setWindowCaption(L"Hello World!");
 	device->setResizable(true);
 
-	video::IVideoDriver* driver = device->getVideoDriver();
-	scene::ISceneManager* smgr = device->getSceneManager();
-	gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
+	video::IVideoDriver *driver = device->getVideoDriver();
+	scene::ISceneManager *smgr = device->getSceneManager();
+	gui::IGUIEnvironment *guienv = device->getGUIEnvironment();
 
-	guienv->addStaticText(L"sample text", core::rect<s32>(10,10,110,22), false);
+	guienv->addStaticText(L"sample text", core::rect<s32>(10, 10, 110, 22), false);
 
-	gui::IGUIButton* button = guienv->addButton(
-		core::rect<s32>(10,30,110,30 + 32), 0, -1, L"sample button",
-		L"sample tooltip");
+	gui::IGUIButton *button = guienv->addButton(
+			core::rect<s32>(10, 30, 110, 30 + 32), 0, -1, L"sample button",
+			L"sample tooltip");
 
-	gui::IGUIEditBox* editbox = guienv->addEditBox(L"",
-		core::rect<s32>(10,70,60,70 + 16));
+	gui::IGUIEditBox *editbox = guienv->addEditBox(L"",
+			core::rect<s32>(10, 70, 60, 70 + 16));
 
 	const io::path mediaPath = getExampleMediaPath();
 
 	auto mesh_file = device->getFileSystem()->createAndOpenFile(mediaPath + "coolguy_opt.x");
 	check(mesh_file, "mesh file loading");
-	scene::IAnimatedMesh* mesh = smgr->getMesh(mesh_file);
+	scene::IAnimatedMesh *mesh = smgr->getMesh(mesh_file);
 	check(mesh, "mesh loading");
 	if (mesh_file)
 		mesh_file->drop();
-	if (mesh)
-	{
-		video::ITexture* tex = driver->getTexture(mediaPath + "cooltexture.png");
+	if (mesh) {
+		video::ITexture *tex = driver->getTexture(mediaPath + "cooltexture.png");
 		check(tex, "texture loading");
-		scene::IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode(mesh);
-		if (node)
-		{
-			node->forEachMaterial([tex] (video::SMaterial &mat) {
+		scene::IAnimatedMeshSceneNode *node = smgr->addAnimatedMeshSceneNode(mesh);
+		if (node) {
+			node->forEachMaterial([tex](video::SMaterial &mat) {
 				mat.Lighting = false;
 				mat.setTexture(0, tex);
 			});
@@ -109,16 +107,14 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	smgr->addCameraSceneNode(0, core::vector3df(0,4,5), core::vector3df(0,2,0));
+	smgr->addCameraSceneNode(0, core::vector3df(0, 4, 5), core::vector3df(0, 2, 0));
 
 	s32 n = 0;
 	SEvent event;
 	device->getTimer()->start();
 
-	while (device->run())
-	{
-		if (device->getTimer()->getTime() >= 1000)
-		{
+	while (device->run()) {
+		if (device->getTimer()->getTime() >= 1000) {
 			device->getTimer()->setTime(0);
 			++n;
 			if (n == 1) // Tooltip display
@@ -129,8 +125,7 @@ int main(int argc, char *argv[])
 				event.MouseInput.X = button->getAbsolutePosition().getCenter().X;
 				event.MouseInput.Y = button->getAbsolutePosition().getCenter().Y;
 				device->postEventFromUser(event);
-			}
-			else if (n == 2) // Text input focus
+			} else if (n == 2) // Text input focus
 				guienv->setFocus(editbox);
 			else if (n == 3) // Keypress for Text input
 			{
@@ -142,13 +137,12 @@ int main(int argc, char *argv[])
 				device->postEventFromUser(event);
 				event.KeyInput.PressedDown = false;
 				device->postEventFromUser(event);
-			}
-			else
+			} else
 				device->closeDevice();
 		}
 
 		driver->beginScene(video::ECBF_COLOR | video::ECBF_DEPTH,
-			video::SColor(255,100,100,150));
+				video::SColor(255, 100, 100, 150));
 		smgr->drawAll();
 		guienv->drawAll();
 		driver->endScene();

@@ -27,13 +27,13 @@ public:
 	\param index is the zero based index of the file which name should
 	be returned. The index must be less than the amount getFileCount() returns.
 	\return File name of the file. Returns 0, if an error occurred. */
-	virtual const io::path& getFileName(u32 index) const = 0;
+	virtual const io::path &getFileName(u32 index) const = 0;
 
 	//! Gets the full name of a file in the list including the path, based on an index.
 	/** \param index is the zero based index of the file which name should
 	be returned. The index must be less than the amount getFileCount() returns.
 	\return File name of the file. Returns 0 if an error occurred. */
-	virtual const io::path& getFullFileName(u32 index) const = 0;
+	virtual const io::path &getFullFileName(u32 index) const = 0;
 
 	//! Returns the size of a file in the file list, based on an index.
 	/** \param index is the zero based index of the file which should be returned.
@@ -68,10 +68,10 @@ public:
 	\param isFolder True if you are searching for a directory path, false if you are searching for a file
 	\return Returns the index of the file in the file list, or -1 if
 	no matching name name was found. */
-	virtual s32 findFile(const io::path& filename, bool isFolder=false) const = 0;
+	virtual s32 findFile(const io::path &filename, bool isFolder = false) const = 0;
 
 	//! Returns the base path of the file list
-	virtual const io::path& getPath() const = 0;
+	virtual const io::path &getPath() const = 0;
 
 	//! Add as a file or folder to the list
 	/** \param fullPath The file name including path, from the root of the file list.
@@ -79,7 +79,7 @@ public:
 	\param offset The file offset inside an archive
 	\param size The size of the file in bytes.
 	\param id The ID of the file in the archive which owns it */
-	virtual u32 addItem(const io::path& fullPath, u32 offset, u32 size, bool isDirectory, u32 id=0) = 0;
+	virtual u32 addItem(const io::path &fullPath, u32 offset, u32 size, bool isDirectory, u32 id = 0) = 0;
 
 	//! Sorts the file list. You should call this after adding any items to the file list
 	virtual void sort() = 0;

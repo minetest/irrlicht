@@ -16,7 +16,6 @@ namespace irr
 namespace video
 {
 
-
 //! Enumeration flags used to tell the video driver with setTextureCreationFlag in which format textures should be created.
 enum E_TEXTURE_CREATION_FLAG
 {
@@ -66,7 +65,7 @@ enum E_TEXTURE_CREATION_FLAG
 
 	/** Discard any alpha layer and use non-alpha color format.
 	Warning: This may lead to getting 24-bit texture formats which
-	         are often badly supported by drivers. So it's generally
+			 are often badly supported by drivers. So it's generally
 			 not recommended to enable this flag.	*/
 	ETCF_NO_ALPHA_CHANNEL = 0x00000020,
 
@@ -176,10 +175,10 @@ and write a warning or an error message to the output buffer.
 class ITexture : public virtual IReferenceCounted
 {
 public:
-
 	//! constructor
-	ITexture(const io::path& name, E_TEXTURE_TYPE type) : NamedPath(name), DriverType(EDT_NULL), OriginalColorFormat(ECF_UNKNOWN),
-		ColorFormat(ECF_UNKNOWN), Pitch(0), HasMipMaps(false), IsRenderTarget(false), Source(ETS_UNKNOWN), Type(type)
+	ITexture(const io::path &name, E_TEXTURE_TYPE type) :
+			NamedPath(name), DriverType(EDT_NULL), OriginalColorFormat(ECF_UNKNOWN),
+			ColorFormat(ECF_UNKNOWN), Pitch(0), HasMipMaps(false), IsRenderTarget(false), Source(ETS_UNKNOWN), Type(type)
 	{
 	}
 
@@ -206,7 +205,7 @@ public:
 	\return Returns a pointer to the pixel data. The format of the pixel can
 	be determined by using getColorFormat(). 0 is returned, if
 	the texture cannot be locked. */
-	virtual void* lock(E_TEXTURE_LOCK_MODE mode = ETLM_READ_WRITE, u32 mipmapLevel=0, u32 layer = 0, E_TEXTURE_LOCK_FLAGS lockFlags = ETLF_FLIP_Y_UP_RTT) = 0;
+	virtual void *lock(E_TEXTURE_LOCK_MODE mode = ETLM_READ_WRITE, u32 mipmapLevel = 0, u32 layer = 0, E_TEXTURE_LOCK_FLAGS lockFlags = ETLF_FLIP_Y_UP_RTT) = 0;
 
 	//! Unlock function. Must be called after a lock() to the texture.
 	/** One should avoid to call unlock more than once before another lock.
@@ -223,7 +222,7 @@ public:
 	level. At least one pixel will be always kept.
 	\param layer It informs a texture about which cubemap or texture array layer
 	needs mipmap regeneration. */
-	virtual void regenerateMipMapLevels(void* data = 0, u32 layer = 0) = 0;
+	virtual void regenerateMipMapLevels(void *data = 0, u32 layer = 0) = 0;
 
 	//! Get original size of the texture.
 	/** The texture is usually scaled, if it was created with an unoptimal
@@ -233,11 +232,11 @@ public:
 	exact size of the original texture. Use ITexture::getSize() if you want
 	to know the real size it has now stored in the system.
 	\return The original size of the texture. */
-	const core::dimension2d<u32>& getOriginalSize() const { return OriginalSize; };
+	const core::dimension2d<u32> &getOriginalSize() const { return OriginalSize; };
 
 	//! Get dimension (=size) of the texture.
 	/** \return The size of the texture. */
-	const core::dimension2d<u32>& getSize() const { return Size; };
+	const core::dimension2d<u32> &getSize() const { return Size; };
 
 	//! Get driver type of texture.
 	/** This is the driver, which created the texture. This method is used
@@ -274,7 +273,7 @@ public:
 	bool isRenderTarget() const { return IsRenderTarget; }
 
 	//! Get name of texture (in most cases this is the filename)
-	const io::SNamedPath& getName() const { return NamedPath; }
+	const io::SNamedPath &getName() const { return NamedPath; }
 
 	//! Check where the last IVideoDriver::getTexture found this texture
 	E_TEXTURE_SOURCE getSource() const { return Source; }
@@ -287,8 +286,7 @@ public:
 	{
 		bool status = false;
 
-		switch (ColorFormat)
-		{
+		switch (ColorFormat) {
 		case ECF_A8R8G8B8:
 		case ECF_A1R5G5B5:
 		case ECF_A16B16G16R16F:
@@ -306,7 +304,6 @@ public:
 	E_TEXTURE_TYPE getType() const { return Type; }
 
 protected:
-
 	//! Helper function, helps to get the desired texture creation format from the flags.
 	/** \return Either ETCF_ALWAYS_32_BIT, ETCF_ALWAYS_16_BIT,
 	ETCF_OPTIMIZED_FOR_QUALITY, or ETCF_OPTIMIZED_FOR_SPEED. */
@@ -335,7 +332,6 @@ protected:
 	E_TEXTURE_SOURCE Source;
 	E_TEXTURE_TYPE Type;
 };
-
 
 } // end namespace video
 } // end namespace irr

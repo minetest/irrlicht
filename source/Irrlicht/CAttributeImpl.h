@@ -20,8 +20,7 @@ namespace io
 class CBoolAttribute : public IAttribute
 {
 public:
-
-	CBoolAttribute(const char* name, bool value)
+	CBoolAttribute(const char *name, bool value)
 	{
 		Name = name;
 		setBool(value);
@@ -69,8 +68,7 @@ public:
 class CIntAttribute : public IAttribute
 {
 public:
-
-	CIntAttribute(const char* name, s32 value)
+	CIntAttribute(const char *name, s32 value)
 	{
 		Name = name;
 		setInt(value);
@@ -108,8 +106,7 @@ public:
 class CFloatAttribute : public IAttribute
 {
 public:
-
-	CFloatAttribute(const char* name, f32 value)
+	CFloatAttribute(const char *name, f32 value)
 	{
 		Name = name;
 		setFloat(value);

@@ -18,8 +18,8 @@ class COpenGL3MaterialBaseCB : public IShaderConstantSetCallBack
 public:
 	COpenGL3MaterialBaseCB();
 
-	virtual void OnSetMaterial(const SMaterial& material);
-	virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData);
+	virtual void OnSetMaterial(const SMaterial &material);
+	virtual void OnSetConstants(IMaterialRendererServices *services, s32 userData);
 
 protected:
 	bool FirstUpdateBase;
@@ -60,8 +60,8 @@ class COpenGL3MaterialSolidCB : public COpenGL3MaterialBaseCB
 public:
 	COpenGL3MaterialSolidCB();
 
-	virtual void OnSetMaterial(const SMaterial& material);
-	virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData);
+	virtual void OnSetMaterial(const SMaterial &material);
+	virtual void OnSetConstants(IMaterialRendererServices *services, s32 userData);
 
 protected:
 	bool FirstUpdate;
@@ -81,8 +81,8 @@ class COpenGL3MaterialOneTextureBlendCB : public COpenGL3MaterialBaseCB
 public:
 	COpenGL3MaterialOneTextureBlendCB();
 
-	virtual void OnSetMaterial(const SMaterial& material);
-	virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData);
+	virtual void OnSetMaterial(const SMaterial &material);
+	virtual void OnSetConstants(IMaterialRendererServices *services, s32 userData);
 
 protected:
 	bool FirstUpdate;

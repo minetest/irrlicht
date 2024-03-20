@@ -24,51 +24,50 @@ inline bool checkImageDimensions(u32 width, u32 height)
 class CImage : public IImage
 {
 public:
-
 	//! constructor from raw image data
 	/** \param useForeignMemory: If true, the image will use the data pointer
 	directly and own it from now on, which means it will also try to delete [] the
 	data when the image will be destructed. If false, the memory will by copied. */
-	CImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size, void* data,
-		bool ownForeignMemory = true, bool deleteMemory = true);
+	CImage(ECOLOR_FORMAT format, const core::dimension2d<u32> &size, void *data,
+			bool ownForeignMemory = true, bool deleteMemory = true);
 
 	//! constructor for empty image
-	CImage(ECOLOR_FORMAT format, const core::dimension2d<u32>& size);
+	CImage(ECOLOR_FORMAT format, const core::dimension2d<u32> &size);
 
 	//! returns a pixel
 	SColor getPixel(u32 x, u32 y) const override;
 
 	//! sets a pixel
-	void setPixel(u32 x, u32 y, const SColor &color, bool blend = false ) override;
+	void setPixel(u32 x, u32 y, const SColor &color, bool blend = false) override;
 
 	//! copies this surface into another, if it has the exact same size and format.
-	bool copyToNoScaling(void *target, u32 width, u32 height, ECOLOR_FORMAT format, u32 pitch=0) const override;
+	bool copyToNoScaling(void *target, u32 width, u32 height, ECOLOR_FORMAT format, u32 pitch = 0) const override;
 
 	//! copies this surface into another, scaling it to fit.
-	void copyToScaling(void* target, u32 width, u32 height, ECOLOR_FORMAT format, u32 pitch=0) override;
+	void copyToScaling(void *target, u32 width, u32 height, ECOLOR_FORMAT format, u32 pitch = 0) override;
 
 	//! copies this surface into another, scaling it to fit.
-	void copyToScaling(IImage* target) override;
+	void copyToScaling(IImage *target) override;
 
 	//! copies this surface into another
-	void copyTo(IImage* target, const core::position2d<s32>& pos=core::position2d<s32>(0,0)) override;
+	void copyTo(IImage *target, const core::position2d<s32> &pos = core::position2d<s32>(0, 0)) override;
 
 	//! copies this surface into another
-	void copyTo(IImage* target, const core::position2d<s32>& pos, const core::rect<s32>& sourceRect, const core::rect<s32>* clipRect=0) override;
+	void copyTo(IImage *target, const core::position2d<s32> &pos, const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect = 0) override;
 
 	//! copies this surface into another, using the alpha mask, an cliprect and a color to add with
-	virtual void copyToWithAlpha(IImage* target, const core::position2d<s32>& pos,
-			const core::rect<s32>& sourceRect, const SColor &color,
-			const core::rect<s32>* clipRect = 0, bool combineAlpha=false) override;
+	virtual void copyToWithAlpha(IImage *target, const core::position2d<s32> &pos,
+			const core::rect<s32> &sourceRect, const SColor &color,
+			const core::rect<s32> *clipRect = 0, bool combineAlpha = false) override;
 
 	//! copies this surface into another, scaling it to fit, applying a box filter
-	void copyToScalingBoxFilter(IImage* target, s32 bias = 0, bool blend = false) override;
+	void copyToScalingBoxFilter(IImage *target, s32 bias = 0, bool blend = false) override;
 
 	//! fills the surface with given color
 	void fill(const SColor &color) override;
 
 private:
-	inline SColor getPixelBox ( s32 x, s32 y, s32 fx, s32 fy, s32 bias ) const;
+	inline SColor getPixelBox(s32 x, s32 y, s32 fx, s32 fy, s32 bias) const;
 };
 
 } // end namespace video

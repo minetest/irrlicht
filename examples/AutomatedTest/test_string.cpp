@@ -38,7 +38,7 @@ static void test_basics()
 	UASSERTSTR(s, "abcdef");
 	s = L"abcdef";
 	UASSERTSTR(s, "abcdef");
-	s = static_cast<const char*>(nullptr);
+	s = static_cast<const char *>(nullptr);
 	UASSERTSTR(s, "");
 	// operator+
 	s = s + stringc("foo");
@@ -163,7 +163,7 @@ static void test_methods()
 	UASSERTSTR(res[0], "a");
 	UASSERTSTR(res[2], "");
 	for (int i = 0; i < 3; i++)
-		UASSERTSTR(res[2*i+1], ",");
+		UASSERTSTR(res[2 * i + 1], ",");
 }
 
 static void test_conv()
@@ -180,9 +180,9 @@ static void test_conv()
 	wStringToUTF8(out2, L"†††");
 	UASSERTEQ(out2.size(), 9);
 	for (int i = 0; i < 3; i++) {
-		UASSERTEQ(static_cast<u8>(out2[3*i]), 0xe2);
-		UASSERTEQ(static_cast<u8>(out2[3*i+1]), 0x80);
-		UASSERTEQ(static_cast<u8>(out2[3*i+2]), 0xa0);
+		UASSERTEQ(static_cast<u8>(out2[3 * i]), 0xe2);
+		UASSERTEQ(static_cast<u8>(out2[3 * i + 1]), 0x80);
+		UASSERTEQ(static_cast<u8>(out2[3 * i + 2]), 0xa0);
 	}
 
 	// locale-dependent
