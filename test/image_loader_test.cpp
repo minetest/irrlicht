@@ -6,14 +6,16 @@
 
 using namespace irr;
 
-struct ImageDesc {
+struct ImageDesc
+{
 	const char *name;
 	video::ECOLOR_FORMAT format;
 	std::vector<u8> data;
 };
 
 template <typename T>
-std::vector<u8> to_byte_array(std::initializer_list<T> in_data) {
+std::vector<u8> to_byte_array(std::initializer_list<T> in_data)
+{
 	std::vector<u8> data;
 	data.resize(sizeof(T) * in_data.size());
 	memcpy(data.data(), in_data.begin(), data.size());
@@ -114,7 +116,7 @@ try {
 		throw std::runtime_error("Invalid arguments. Expected sample ID and image file name");
 
 	const ImageDesc *sample = nullptr;
-	for (auto &&image: test_images) {
+	for (auto &&image : test_images) {
 		if (strcmp(argv[1], image.name) == 0)
 			sample = &image;
 	}
