@@ -11,32 +11,30 @@ namespace irr
 namespace scene
 {
 
-	class CEmptySceneNode : public ISceneNode
-	{
-	public:
+class CEmptySceneNode : public ISceneNode
+{
+public:
+	//! constructor
+	CEmptySceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id);
 
-		//! constructor
-		CEmptySceneNode(ISceneNode* parent, ISceneManager* mgr, s32 id);
+	//! returns the axis aligned bounding box of this node
+	const core::aabbox3d<f32> &getBoundingBox() const override;
 
-		//! returns the axis aligned bounding box of this node
-		const core::aabbox3d<f32>& getBoundingBox() const override;
+	//! This method is called just before the rendering process of the whole scene.
+	void OnRegisterSceneNode() override;
 
-		//! This method is called just before the rendering process of the whole scene.
-		void OnRegisterSceneNode() override;
+	//! does nothing.
+	void render() override;
 
-		//! does nothing.
-		void render() override;
+	//! Returns type of the scene node
+	ESCENE_NODE_TYPE getType() const override { return ESNT_EMPTY; }
 
-		//! Returns type of the scene node
-		ESCENE_NODE_TYPE getType() const override { return ESNT_EMPTY; }
+	//! Creates a clone of this scene node and its children.
+	ISceneNode *clone(ISceneNode *newParent = 0, ISceneManager *newManager = 0) override;
 
-		//! Creates a clone of this scene node and its children.
-		ISceneNode* clone(ISceneNode* newParent=0, ISceneManager* newManager=0) override;
-
-	private:
-
-		core::aabbox3d<f32> Box;
-	};
+private:
+	core::aabbox3d<f32> Box;
+};
 
 } // end namespace scene
 } // end namespace irr

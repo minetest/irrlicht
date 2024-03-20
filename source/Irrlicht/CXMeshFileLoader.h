@@ -8,12 +8,11 @@
 #include "irrString.h"
 #include "CSkinnedMesh.h"
 
-
 namespace irr
 {
 namespace io
 {
-	class IReadFile;
+class IReadFile;
 } // end namespace io
 namespace scene
 {
@@ -23,23 +22,23 @@ class IMeshManipulator;
 class CXMeshFileLoader : public IMeshLoader
 {
 public:
-
 	//! Constructor
-	CXMeshFileLoader(scene::ISceneManager* smgr);
+	CXMeshFileLoader(scene::ISceneManager *smgr);
 
 	//! returns true if the file maybe is able to be loaded by this class
 	//! based on the file extension (e.g. ".cob")
-	bool isALoadableFileExtension(const io::path& filename) const override;
+	bool isALoadableFileExtension(const io::path &filename) const override;
 
 	//! creates/loads an animated mesh from the file.
 	//! \return Pointer to the created mesh. Returns 0 if loading failed.
 	//! If you no longer need the mesh, you should call IAnimatedMesh::drop().
 	//! See IReferenceCounted::drop() for more information.
-	IAnimatedMesh* createMesh(io::IReadFile* file) override;
+	IAnimatedMesh *createMesh(io::IReadFile *file) override;
 
 	struct SXMesh
 	{
-		SXMesh() : MaxSkinWeightsPerVertex(0), MaxSkinWeightsPerFace(0), BoneCount(0),AttachedJointID(-1),HasSkinning(false), HasVertexColors(false) {}
+		SXMesh() :
+				MaxSkinWeightsPerVertex(0), MaxSkinWeightsPerFace(0), BoneCount(0), AttachedJointID(-1), HasSkinning(false), HasVertexColors(false) {}
 		// this mesh contains triangulated texture data.
 		// because in an .x file, faces can be made of more than 3
 		// vertices, the indices data structure is triangulated during the
@@ -56,7 +55,7 @@ public:
 
 		core::array<u16> IndexCountPerFace; // default 3, but could be more
 
-		core::array<scene::SSkinMeshBuffer*> Buffers;
+		core::array<scene::SSkinMeshBuffer *> Buffers;
 
 		core::array<video::S3DVertex> Vertices;
 		core::array<core::vector2df> TCoords2;
@@ -77,10 +76,9 @@ public:
 	};
 
 private:
+	bool load(io::IReadFile *file);
 
-	bool load(io::IReadFile* file);
-
-	bool readFileIntoMemory(io::IReadFile* file);
+	bool readFileIntoMemory(io::IReadFile *file);
 
 	bool parseFile();
 
@@ -114,7 +112,7 @@ private:
 
 	bool parseDataObjectAnimationKey(ISkinnedMesh::SJoint *joint);
 
-	bool parseDataObjectTextureFilename(core::stringc& texturename);
+	bool parseDataObjectTextureFilename(core::stringc &texturename);
 
 	bool parseUnknownDataObject();
 
@@ -131,7 +129,7 @@ private:
 	//! reads header of dataobject including the opening brace.
 	//! returns false if error happened, and writes name of object
 	//! if there is one
-	bool readHeadOfDataObject(core::stringc* outname=0);
+	bool readHeadOfDataObject(core::stringc *outname = 0);
 
 	//! checks for closing curly brace, returns false if not there
 	bool checkForClosingBrace();
@@ -143,7 +141,7 @@ private:
 	bool checkForTwoFollowingSemicolons();
 
 	//! reads a x file style string
-	bool getNextTokenAsString(core::stringc& out);
+	bool getNextTokenAsString(core::stringc &out);
 
 	void readUntilEndOfLine();
 
@@ -151,17 +149,17 @@ private:
 	u32 readBinDWord();
 	u32 readInt();
 	f32 readFloat();
-	bool readVector2(core::vector2df& vec);
-	bool readVector3(core::vector3df& vec);
-	bool readMatrix(core::matrix4& mat);
-	bool readRGB(video::SColor& color);
-	bool readRGBA(video::SColor& color);
+	bool readVector2(core::vector2df &vec);
+	bool readVector3(core::vector3df &vec);
+	bool readMatrix(core::matrix4 &mat);
+	bool readRGB(video::SColor &color);
+	bool readRGBA(video::SColor &color);
 
-	CSkinnedMesh* AnimatedMesh;
+	CSkinnedMesh *AnimatedMesh;
 
-	c8* Buffer;
-	const c8* P;
-	c8* End;
+	c8 *Buffer;
+	const c8 *P;
+	c8 *End;
 	// counter for number arrays in binary format
 	u32 BinaryNumCount;
 	u32 Line;
@@ -171,7 +169,7 @@ private:
 
 	CSkinnedMesh::SJoint *CurFrame;
 
-	core::array<SXMesh*> Meshes;
+	core::array<SXMesh *> Meshes;
 
 	u32 MajorVersion;
 	u32 MinorVersion;

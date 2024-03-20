@@ -17,25 +17,21 @@ namespace video
 //! constructor
 CImageLoaderJPG::CImageLoaderJPG()
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("CImageLoaderJPG");
-	#endif
+#endif
 }
-
-
 
 //! destructor
 CImageLoaderJPG::~CImageLoaderJPG()
 {
 }
 
-
-
 //! returns true if the file maybe is able to be loaded by this class
 //! based on the file extension (e.g. ".tga")
-bool CImageLoaderJPG::isALoadableFileExtension(const io::path& filename) const
+bool CImageLoaderJPG::isALoadableFileExtension(const io::path &filename) const
 {
-	return core::hasFileExtension ( filename, "jpg", "jpeg" );
+	return core::hasFileExtension(filename, "jpg", "jpeg");
 }
 
 // struct for handling jpeg errors
@@ -48,57 +44,48 @@ struct irr_jpeg_error_mgr
 	jmp_buf setjmp_buffer;
 
 	// for having access to the filename when printing the error messages
-	core::stringc* filename;
+	core::stringc *filename;
 };
 
-void CImageLoaderJPG::init_source (j_decompress_ptr cinfo)
+void CImageLoaderJPG::init_source(j_decompress_ptr cinfo)
 {
 	// DO NOTHING
 }
 
-
-
-boolean CImageLoaderJPG::fill_input_buffer (j_decompress_ptr cinfo)
+boolean CImageLoaderJPG::fill_input_buffer(j_decompress_ptr cinfo)
 {
 	// DO NOTHING
 	return TRUE;
 }
 
-
-
-void CImageLoaderJPG::skip_input_data (j_decompress_ptr cinfo, long count)
+void CImageLoaderJPG::skip_input_data(j_decompress_ptr cinfo, long count)
 {
-	jpeg_source_mgr * src = cinfo->src;
-	if(count > 0)
-	{
+	jpeg_source_mgr *src = cinfo->src;
+	if (count > 0) {
 		src->bytes_in_buffer -= count;
 		src->next_input_byte += count;
 	}
 }
 
-
-
-void CImageLoaderJPG::term_source (j_decompress_ptr cinfo)
+void CImageLoaderJPG::term_source(j_decompress_ptr cinfo)
 {
 	// DO NOTHING
 }
 
-
-void CImageLoaderJPG::error_exit (j_common_ptr cinfo)
+void CImageLoaderJPG::error_exit(j_common_ptr cinfo)
 {
 	// unfortunately we need to use a goto rather than throwing an exception
 	// as gcc crashes under linux crashes when using throw from within
 	// extern c code
 
 	// Always display the message
-	(*cinfo->err->output_message) (cinfo);
+	(*cinfo->err->output_message)(cinfo);
 
 	// cinfo->err really points to a irr_error_mgr struct
-	irr_jpeg_error_mgr *myerr = (irr_jpeg_error_mgr*) cinfo->err;
+	irr_jpeg_error_mgr *myerr = (irr_jpeg_error_mgr *)cinfo->err;
 
 	longjmp(myerr->setjmp_buffer, 1);
 }
-
 
 void CImageLoaderJPG::output_message(j_common_ptr cinfo)
 {
@@ -107,13 +94,13 @@ void CImageLoaderJPG::output_message(j_common_ptr cinfo)
 	(*cinfo->err->format_message)(cinfo, temp1);
 	core::stringc errMsg("JPEG FATAL ERROR in ");
 
-	irr_jpeg_error_mgr* myerr = (irr_jpeg_error_mgr*)cinfo->err;
+	irr_jpeg_error_mgr *myerr = (irr_jpeg_error_mgr *)cinfo->err;
 	errMsg += *myerr->filename;
-	os::Printer::log(errMsg.c_str(),temp1, ELL_ERROR);
+	os::Printer::log(errMsg.c_str(), temp1, ELL_ERROR);
 }
 
 //! returns true if the file maybe is able to be loaded by this class
-bool CImageLoaderJPG::isALoadableFileFormat(io::IReadFile* file) const
+bool CImageLoaderJPG::isALoadableFileFormat(io::IReadFile *file) const
 {
 	if (!(file && file->seek(0)))
 		return false;
@@ -123,25 +110,25 @@ bool CImageLoaderJPG::isALoadableFileFormat(io::IReadFile* file) const
 }
 
 //! creates a surface from the file
-IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
+IImage *CImageLoaderJPG::loadImage(io::IReadFile *file) const
 {
 	if (!file)
 		return 0;
 
 	core::stringc filename = file->getFileName();
 
-	u8 **rowPtr=0;
-	u8* input = new u8[file->getSize()];
+	u8 **rowPtr = 0;
+	u8 *input = new u8[file->getSize()];
 	file->read(input, file->getSize());
 
 	// allocate and initialize JPEG decompression object
 	struct jpeg_decompress_struct cinfo;
 	struct irr_jpeg_error_mgr jerr;
 
-	//We have to set up the error handler first, in case the initialization
-	//step fails.  (Unlikely, but it could happen if you are out of memory.)
-	//This routine fills in the contents of struct jerr, and returns jerr's
-	//address which we place into the link field in cinfo.
+	// We have to set up the error handler first, in case the initialization
+	// step fails.  (Unlikely, but it could happen if you are out of memory.)
+	// This routine fills in the contents of struct jerr, and returns jerr's
+	// address which we place into the link field in cinfo.
 
 	cinfo.err = jpeg_std_error(&jerr.pub);
 	cinfo.err->error_exit = error_exit;
@@ -151,15 +138,14 @@ IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
 	// compatibility fudge:
 	// we need to use setjmp/longjmp for error handling as gcc-linux
 	// crashes when throwing within external c code
-	if (setjmp(jerr.setjmp_buffer))
-	{
+	if (setjmp(jerr.setjmp_buffer)) {
 		// If we get here, the JPEG code has signaled an error.
 		// We need to clean up the JPEG object and return.
 
 		jpeg_destroy_decompress(&cinfo);
 
-		delete [] input;
-		delete [] rowPtr;
+		delete[] input;
+		delete[] rowPtr;
 
 		// return null pointer
 		return 0;
@@ -173,7 +159,7 @@ IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
 
 	// Set up data pointer
 	jsrc.bytes_in_buffer = file->getSize();
-	jsrc.next_input_byte = (JOCTET*)input;
+	jsrc.next_input_byte = (JOCTET *)input;
 	cinfo.src = &jsrc;
 
 	jsrc.init_source = init_source;
@@ -190,20 +176,17 @@ IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
 	// read file parameters with jpeg_read_header()
 	jpeg_read_header(&cinfo, TRUE);
 
-	bool useCMYK=false;
-	if (cinfo.jpeg_color_space==JCS_CMYK)
-	{
-		cinfo.out_color_space=JCS_CMYK;
-		cinfo.out_color_components=4;
-		useCMYK=true;
+	bool useCMYK = false;
+	if (cinfo.jpeg_color_space == JCS_CMYK) {
+		cinfo.out_color_space = JCS_CMYK;
+		cinfo.out_color_components = 4;
+		useCMYK = true;
+	} else {
+		cinfo.out_color_space = JCS_RGB;
+		cinfo.out_color_components = 3;
 	}
-	else
-	{
-		cinfo.out_color_space=JCS_RGB;
-		cinfo.out_color_components=3;
-	}
-	cinfo.output_gamma=2.2;
-	cinfo.do_fancy_upsampling=FALSE;
+	cinfo.output_gamma = 2.2;
+	cinfo.do_fancy_upsampling = FALSE;
 
 	// reject unreasonable sizes
 	if (!checkImageDimensions(cinfo.image_width, cinfo.image_height))
@@ -218,22 +201,22 @@ IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
 	u32 height = cinfo.image_height;
 
 	// Allocate memory for buffer
-	u8* output = new u8[rowspan * height];
+	u8 *output = new u8[rowspan * height];
 
 	// Here we use the library's state variable cinfo.output_scanline as the
 	// loop counter, so that we don't have to keep track ourselves.
 	// Create array of row pointers for lib
-	rowPtr = new u8* [height];
+	rowPtr = new u8 *[height];
 
-	for( u32 i = 0; i < height; i++ )
-		rowPtr[i] = &output[ i * rowspan ];
+	for (u32 i = 0; i < height; i++)
+		rowPtr[i] = &output[i * rowspan];
 
 	u32 rowsRead = 0;
 
-	while( cinfo.output_scanline < cinfo.output_height )
-		rowsRead += jpeg_read_scanlines( &cinfo, &rowPtr[rowsRead], cinfo.output_height - rowsRead );
+	while (cinfo.output_scanline < cinfo.output_height)
+		rowsRead += jpeg_read_scanlines(&cinfo, &rowPtr[rowsRead], cinfo.output_height - rowsRead);
 
-	delete [] rowPtr;
+	delete[] rowPtr;
 	// Finish decompression
 
 	jpeg_finish_decompress(&cinfo);
@@ -243,41 +226,35 @@ IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
 	jpeg_destroy_decompress(&cinfo);
 
 	// convert image
-	IImage* image = 0;
-	if (useCMYK)
-	{
+	IImage *image = 0;
+	if (useCMYK) {
 		image = new CImage(ECF_R8G8B8,
 				core::dimension2d<u32>(width, height));
-		const u32 size = 3*width*height;
-		u8* data = (u8*)image->getData();
-		if (data)
-		{
-			for (u32 i=0,j=0; i<size; i+=3, j+=4)
-			{
+		const u32 size = 3 * width * height;
+		u8 *data = (u8 *)image->getData();
+		if (data) {
+			for (u32 i = 0, j = 0; i < size; i += 3, j += 4) {
 				// Also works without K, but has more contrast with K multiplied in
-//				data[i+0] = output[j+2];
-//				data[i+1] = output[j+1];
-//				data[i+2] = output[j+0];
-				data[i+0] = (char)(output[j+2]*(output[j+3]/255.f));
-				data[i+1] = (char)(output[j+1]*(output[j+3]/255.f));
-				data[i+2] = (char)(output[j+0]*(output[j+3]/255.f));
+				//				data[i+0] = output[j+2];
+				//				data[i+1] = output[j+1];
+				//				data[i+2] = output[j+0];
+				data[i + 0] = (char)(output[j + 2] * (output[j + 3] / 255.f));
+				data[i + 1] = (char)(output[j + 1] * (output[j + 3] / 255.f));
+				data[i + 2] = (char)(output[j + 0] * (output[j + 3] / 255.f));
 			}
 		}
-		delete [] output;
-	}
-	else
+		delete[] output;
+	} else
 		image = new CImage(ECF_R8G8B8,
 				core::dimension2d<u32>(width, height), output);
 
-	delete [] input;
+	delete[] input;
 
 	return image;
 }
 
-
-
 //! creates a loader which is able to load jpeg images
-IImageLoader* createImageLoaderJPG()
+IImageLoader *createImageLoaderJPG()
 {
 	return new CImageLoaderJPG();
 }

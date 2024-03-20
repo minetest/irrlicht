@@ -14,57 +14,54 @@ namespace irr
 namespace io
 {
 
-	/*!
-		Class for reading a real file from disk.
-	*/
-	class CReadFile : public IReadFile
+/*!
+	Class for reading a real file from disk.
+*/
+class CReadFile : public IReadFile
+{
+public:
+	CReadFile(const io::path &fileName);
+
+	virtual ~CReadFile();
+
+	//! returns how much was read
+	size_t read(void *buffer, size_t sizeToRead) override;
+
+	//! changes position in file, returns true if successful
+	bool seek(long finalPos, bool relativeMovement = false) override;
+
+	//! returns size of file
+	long getSize() const override;
+
+	//! returns if file is open
+	bool isOpen() const
 	{
-	public:
+		return File != 0;
+	}
 
-		CReadFile(const io::path& fileName);
+	//! returns where in the file we are.
+	long getPos() const override;
 
-		virtual ~CReadFile();
+	//! returns name of file
+	const io::path &getFileName() const override;
 
-		//! returns how much was read
-		size_t read(void* buffer, size_t sizeToRead) override;
+	//! Get the type of the class implementing this interface
+	EREAD_FILE_TYPE getType() const override
+	{
+		return ERFT_READ_FILE;
+	}
 
-		//! changes position in file, returns true if successful
-		bool seek(long finalPos, bool relativeMovement = false) override;
+	//! create read file on disk.
+	static IReadFile *createReadFile(const io::path &fileName);
 
-		//! returns size of file
-		long getSize() const override;
+private:
+	//! opens the file
+	void openFile();
 
-		//! returns if file is open
-		bool isOpen() const
-		{
-			return File != 0;
-		}
-
-		//! returns where in the file we are.
-		long getPos() const override;
-
-		//! returns name of file
-		const io::path& getFileName() const override;
-
-		//! Get the type of the class implementing this interface
-		EREAD_FILE_TYPE getType() const override
-		{
-			return ERFT_READ_FILE;
-		}
-
-		//! create read file on disk.
-		static IReadFile* createReadFile(const io::path& fileName);
-
-	private:
-
-		//! opens the file
-		void openFile();
-
-		FILE* File;
-		long FileSize;
-		io::path Filename;
-	};
+	FILE *File;
+	long FileSize;
+	io::path Filename;
+};
 
 } // end namespace io
 } // end namespace irr
-

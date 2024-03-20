@@ -15,10 +15,10 @@ namespace video
 
 /* COpenGLCacheHandler */
 
-COpenGLCacheHandler::COpenGLCacheHandler(COpenGLDriver* driver) :
-	COpenGLCoreCacheHandler<COpenGLDriver, COpenGLTexture>(driver), AlphaMode(GL_ALWAYS), AlphaRef(0.f), AlphaTest(false),
-	MatrixMode(GL_MODELVIEW), ClientActiveTexture(GL_TEXTURE0), ClientStateVertex(false),
-	ClientStateNormal(false), ClientStateColor(false), ClientStateTexCoord0(false)
+COpenGLCacheHandler::COpenGLCacheHandler(COpenGLDriver *driver) :
+		COpenGLCoreCacheHandler<COpenGLDriver, COpenGLTexture>(driver), AlphaMode(GL_ALWAYS), AlphaRef(0.f), AlphaTest(false),
+		MatrixMode(GL_MODELVIEW), ClientActiveTexture(GL_TEXTURE0), ClientStateVertex(false),
+		ClientStateNormal(false), ClientStateColor(false), ClientStateTexCoord0(false)
 {
 	// Initial OpenGL values from specification.
 
@@ -41,8 +41,7 @@ COpenGLCacheHandler::~COpenGLCacheHandler()
 
 void COpenGLCacheHandler::setAlphaFunc(GLenum mode, GLclampf ref)
 {
-	if (AlphaMode != mode || AlphaRef != ref)
-	{
+	if (AlphaMode != mode || AlphaRef != ref) {
 		glAlphaFunc(mode, ref);
 
 		AlphaMode = mode;
@@ -52,8 +51,7 @@ void COpenGLCacheHandler::setAlphaFunc(GLenum mode, GLclampf ref)
 
 void COpenGLCacheHandler::setAlphaTest(bool enable)
 {
-	if (AlphaTest != enable)
-	{
+	if (AlphaTest != enable) {
 		if (enable)
 			glEnable(GL_ALPHA_TEST);
 		else
@@ -64,8 +62,7 @@ void COpenGLCacheHandler::setAlphaTest(bool enable)
 
 void COpenGLCacheHandler::setClientState(bool vertex, bool normal, bool color, bool texCoord0)
 {
-	if (ClientStateVertex != vertex)
-	{
+	if (ClientStateVertex != vertex) {
 		if (vertex)
 			glEnableClientState(GL_VERTEX_ARRAY);
 		else
@@ -74,8 +71,7 @@ void COpenGLCacheHandler::setClientState(bool vertex, bool normal, bool color, b
 		ClientStateVertex = vertex;
 	}
 
-	if (ClientStateNormal != normal)
-	{
+	if (ClientStateNormal != normal) {
 		if (normal)
 			glEnableClientState(GL_NORMAL_ARRAY);
 		else
@@ -84,8 +80,7 @@ void COpenGLCacheHandler::setClientState(bool vertex, bool normal, bool color, b
 		ClientStateNormal = normal;
 	}
 
-	if (ClientStateColor != color)
-	{
+	if (ClientStateColor != color) {
 		if (color)
 			glEnableClientState(GL_COLOR_ARRAY);
 		else
@@ -94,8 +89,7 @@ void COpenGLCacheHandler::setClientState(bool vertex, bool normal, bool color, b
 		ClientStateColor = color;
 	}
 
-	if (ClientStateTexCoord0 != texCoord0)
-	{
+	if (ClientStateTexCoord0 != texCoord0) {
 		setClientActiveTexture(GL_TEXTURE0_ARB);
 
 		if (texCoord0)
@@ -109,8 +103,7 @@ void COpenGLCacheHandler::setClientState(bool vertex, bool normal, bool color, b
 
 void COpenGLCacheHandler::setMatrixMode(GLenum mode)
 {
-	if (MatrixMode != mode)
-	{
+	if (MatrixMode != mode) {
 		glMatrixMode(mode);
 		MatrixMode = mode;
 	}
@@ -118,8 +111,7 @@ void COpenGLCacheHandler::setMatrixMode(GLenum mode)
 
 void COpenGLCacheHandler::setClientActiveTexture(GLenum texture)
 {
-	if (ClientActiveTexture != texture)
-	{
+	if (ClientActiveTexture != texture) {
 		Driver->irrGlClientActiveTexture(texture);
 		ClientActiveTexture = texture;
 	}

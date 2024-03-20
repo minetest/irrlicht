@@ -14,30 +14,31 @@ namespace irr
 namespace video
 {
 
-CSDLManager::CSDLManager(CIrrDeviceSDL* device) : IContextManager(), SDLDevice(device)
+CSDLManager::CSDLManager(CIrrDeviceSDL *device) :
+		IContextManager(), SDLDevice(device)
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("CSDLManager");
-	#endif
+#endif
 }
 
-bool CSDLManager::initialize(const SIrrlichtCreationParameters& params, const SExposedVideoData& data)
+bool CSDLManager::initialize(const SIrrlichtCreationParameters &params, const SExposedVideoData &data)
 {
 	Data = data;
 	return true;
 }
 
-const SExposedVideoData& CSDLManager::getContext() const
+const SExposedVideoData &CSDLManager::getContext() const
 {
 	return Data;
 }
 
-bool CSDLManager::activateContext(const SExposedVideoData& videoData, bool restorePrimaryOnZero)
+bool CSDLManager::activateContext(const SExposedVideoData &videoData, bool restorePrimaryOnZero)
 {
 	return true;
 }
 
-void* CSDLManager::getProcAddress(const std::string &procName)
+void *CSDLManager::getProcAddress(const std::string &procName)
 {
 	return SDL_GL_GetProcAddress(procName.c_str());
 }

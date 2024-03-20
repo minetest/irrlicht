@@ -24,7 +24,6 @@ engine with new materials. */
 class IMaterialRenderer : public virtual IReferenceCounted
 {
 public:
-
 	//! Called by the IVideoDriver implementation the let the renderer set its needed render states.
 	/** This is called during the IVideoDriver::setMaterial() call.
 	When overriding this, you can set some renderstates or for example a
@@ -47,8 +46,8 @@ public:
 	fogenable.
 	\param services: Interface providing some methods for changing
 	advanced, internal states of a IVideoDriver. */
-	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services) {}
+	virtual void OnSetMaterial(const SMaterial &material, const SMaterial &lastMaterial,
+			bool resetAllRenderstates, IMaterialRendererServices *services) {}
 
 	//! Called every time before a new bunch of geometry is being drawn using this material with for example drawIndexedTriangleList() call.
 	/** OnSetMaterial should normally only be called if the renderer decides
@@ -68,7 +67,7 @@ public:
 	example if he doesn't support the specified vertex type. This is
 	actually done in D3D9 when using a normal mapped material with
 	a vertex type other than EVT_TANGENTS. */
-	virtual bool OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype) { return true; }
+	virtual bool OnRender(IMaterialRendererServices *service, E_VERTEX_TYPE vtxtype) { return true; }
 
 	//! Called by the IVideoDriver to unset this material.
 	/** Called during the IVideoDriver::setMaterial() call before the new
@@ -95,9 +94,8 @@ public:
 	//! Access the callback provided by the users when creating shader materials
 	/** \returns Returns either the users provided callback or 0 when no such
 	callback exists. Non-shader materials will always return 0.	*/
-	virtual IShaderConstantSetCallBack* getShaderConstantSetCallBack() const { return 0; }
+	virtual IShaderConstantSetCallBack *getShaderConstantSetCallBack() const { return 0; }
 };
-
 
 } // end namespace video
 } // end namespace irr

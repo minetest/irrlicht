@@ -14,12 +14,10 @@ namespace video
 
 class IVideoDriver;
 
-
 //! Interface providing some methods for changing advanced, internal states of a IVideoDriver.
 class IMaterialRendererServices
 {
 public:
-
 	//! Destructor
 	virtual ~IMaterialRendererServices() {}
 
@@ -33,12 +31,12 @@ public:
 	\param lastMaterial The material used until now.
 	\param resetAllRenderstates Set to true if all renderstates should be
 	set, regardless of their current state. */
-	virtual void setBasicRenderStates(const SMaterial& material,
-		const SMaterial& lastMaterial,
-		bool resetAllRenderstates) = 0;
+	virtual void setBasicRenderStates(const SMaterial &material,
+			const SMaterial &lastMaterial,
+			bool resetAllRenderstates) = 0;
 
 	//! Return an index constant for the vertex shader based on a uniform variable name.
-	virtual s32 getVertexShaderConstantID(const c8* name) = 0;
+	virtual s32 getVertexShaderConstantID(const c8 *name) = 0;
 
 	//! Sets a value for a vertex shader uniform variable.
 	/** \param index Index of the variable (as received from getVertexShaderConstantID)
@@ -46,16 +44,16 @@ public:
 	\param count Amount of floats in array.
 	\return True if successful.
 	*/
-	virtual bool setVertexShaderConstant(s32 index, const f32* floats, int count) = 0;
+	virtual bool setVertexShaderConstant(s32 index, const f32 *floats, int count) = 0;
 
 	//! Int interface for the above.
-	virtual bool setVertexShaderConstant(s32 index, const s32* ints, int count) = 0;
+	virtual bool setVertexShaderConstant(s32 index, const s32 *ints, int count) = 0;
 
 	//! Uint interface for the above.
-	virtual bool setVertexShaderConstant(s32 index, const u32* ints, int count) = 0;
+	virtual bool setVertexShaderConstant(s32 index, const u32 *ints, int count) = 0;
 
 	//! Return an index constant for the pixel shader for the given uniform variable name
-	virtual s32 getPixelShaderConstantID(const c8* name) = 0;
+	virtual s32 getPixelShaderConstantID(const c8 *name) = 0;
 
 	//! Sets a value for the given pixel shader uniform variable
 	/** This can be used if you used a high level shader language like GLSL
@@ -65,17 +63,17 @@ public:
 	\param floats Pointer to array of floats
 	\param count Amount of floats in array.
 	\return True if successful. */
-	virtual bool setPixelShaderConstant(s32 index, const f32* floats, int count) = 0;
+	virtual bool setPixelShaderConstant(s32 index, const f32 *floats, int count) = 0;
 
 	//! Int interface for the above.
-	virtual bool setPixelShaderConstant(s32 index, const s32* ints, int count) = 0;
+	virtual bool setPixelShaderConstant(s32 index, const s32 *ints, int count) = 0;
 
 	//! Uint interface for the above.
-	virtual bool setPixelShaderConstant(s32 index, const u32* ints, int count) = 0;
+	virtual bool setPixelShaderConstant(s32 index, const u32 *ints, int count) = 0;
 
 	//! Get pointer to the IVideoDriver interface
 	/** \return Pointer to the IVideoDriver interface */
-	virtual IVideoDriver* getVideoDriver() = 0;
+	virtual IVideoDriver *getVideoDriver() = 0;
 };
 
 } // end namespace video

@@ -11,24 +11,22 @@ namespace irr
 namespace io
 {
 
-
-CLimitReadFile::CLimitReadFile(IReadFile* alreadyOpenedFile, long pos,
-		long areaSize, const io::path& name)
-	: Filename(name), AreaStart(0), AreaEnd(0), Pos(0),
-	File(alreadyOpenedFile)
+CLimitReadFile::CLimitReadFile(IReadFile *alreadyOpenedFile, long pos,
+		long areaSize, const io::path &name) :
+		Filename(name),
+		AreaStart(0), AreaEnd(0), Pos(0),
+		File(alreadyOpenedFile)
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("CLimitReadFile");
-	#endif
+#endif
 
-	if (File)
-	{
+	if (File) {
 		File->grab();
 		AreaStart = pos;
 		AreaEnd = AreaStart + areaSize;
 	}
 }
-
 
 CLimitReadFile::~CLimitReadFile()
 {
@@ -36,9 +34,8 @@ CLimitReadFile::~CLimitReadFile()
 		File->drop();
 }
 
-
 //! returns how much was read
-size_t CLimitReadFile::read(void* buffer, size_t sizeToRead)
+size_t CLimitReadFile::read(void *buffer, size_t sizeToRead)
 {
 	if (0 == File)
 		return 0;
@@ -65,23 +62,19 @@ size_t CLimitReadFile::read(void* buffer, size_t sizeToRead)
 #endif
 }
 
-
 //! changes position in file, returns true if successful
 bool CLimitReadFile::seek(long finalPos, bool relativeMovement)
 {
 #if 1
-	Pos = core::s32_clamp(finalPos + (relativeMovement ? Pos : 0 ), 0, AreaEnd - AreaStart);
+	Pos = core::s32_clamp(finalPos + (relativeMovement ? Pos : 0), 0, AreaEnd - AreaStart);
 	return true;
 #else
 	const long pos = File->getPos();
 
-	if (relativeMovement)
-	{
+	if (relativeMovement) {
 		if (pos + finalPos > AreaEnd)
 			finalPos = AreaEnd - pos;
-	}
-	else
-	{
+	} else {
 		finalPos += AreaStart;
 		if (finalPos > AreaEnd)
 			return false;
@@ -91,13 +84,11 @@ bool CLimitReadFile::seek(long finalPos, bool relativeMovement)
 #endif
 }
 
-
 //! returns size of file
 long CLimitReadFile::getSize() const
 {
 	return AreaEnd - AreaStart;
 }
-
 
 //! returns where in the file we are.
 long CLimitReadFile::getPos() const
@@ -109,20 +100,16 @@ long CLimitReadFile::getPos() const
 #endif
 }
 
-
 //! returns name of file
-const io::path& CLimitReadFile::getFileName() const
+const io::path &CLimitReadFile::getFileName() const
 {
 	return Filename;
 }
 
-
-IReadFile* createLimitReadFile(const io::path& fileName, IReadFile* alreadyOpenedFile, long pos, long areaSize)
+IReadFile *createLimitReadFile(const io::path &fileName, IReadFile *alreadyOpenedFile, long pos, long areaSize)
 {
 	return new CLimitReadFile(alreadyOpenedFile, pos, areaSize, fileName);
 }
 
-
 } // end namespace io
 } // end namespace irr
-

@@ -8,7 +8,6 @@
 #include "irrString.h"
 #include "irrArray.h"
 
-
 namespace irr
 {
 namespace io
@@ -42,7 +41,7 @@ struct SFileListEntry
 	bool IsDirectory;
 
 	//! The == operator is provided so that CFileList can slowly search the list!
-	bool operator ==(const struct SFileListEntry& other) const
+	bool operator==(const struct SFileListEntry &other) const
 	{
 		if (IsDirectory != other.IsDirectory)
 			return false;
@@ -51,7 +50,7 @@ struct SFileListEntry
 	}
 
 	//! The < operator is provided so that CFileList can sort and quickly search the list.
-	bool operator <(const struct SFileListEntry& other) const
+	bool operator<(const struct SFileListEntry &other) const
 	{
 		if (IsDirectory != other.IsDirectory)
 			return IsDirectory;
@@ -60,17 +59,15 @@ struct SFileListEntry
 	}
 };
 
-
 //! Implementation of a file list
 class CFileList : public IFileList
 {
 public:
-
 	// CFileList methods
 
 	//! Constructor
 	/** \param path The path of this file archive */
-	CFileList(const io::path& path, bool ignoreCase, bool ignorePaths);
+	CFileList(const io::path &path, bool ignoreCase, bool ignorePaths);
 
 	//! Destructor
 	virtual ~CFileList();
@@ -81,7 +78,7 @@ public:
 	\param offset The offset where the file is stored in an archive
 	\param size The size of the file in bytes.
 	\param id The ID of the file in the archive which owns it */
-	u32 addItem(const io::path& fullPath, u32 offset, u32 size, bool isDirectory, u32 id=0) override;
+	u32 addItem(const io::path &fullPath, u32 offset, u32 size, bool isDirectory, u32 id = 0) override;
 
 	//! Sorts the file list. You should call this after adding any items to the file list
 	void sort() override;
@@ -90,10 +87,10 @@ public:
 	u32 getFileCount() const override;
 
 	//! Gets the name of a file in the list, based on an index.
-	const io::path& getFileName(u32 index) const override;
+	const io::path &getFileName(u32 index) const override;
 
 	//! Gets the full name of a file in the list, path included, based on an index.
-	const io::path& getFullFileName(u32 index) const override;
+	const io::path &getFullFileName(u32 index) const override;
 
 	//! Returns the ID of a file in the file list, based on an index.
 	u32 getID(u32 index) const override;
@@ -108,13 +105,12 @@ public:
 	u32 getFileOffset(u32 index) const override;
 
 	//! Searches for a file or folder within the list, returns the index
-	s32 findFile(const io::path& filename, bool isFolder) const override;
+	s32 findFile(const io::path &filename, bool isFolder) const override;
 
 	//! Returns the base path of the file list
-	const io::path& getPath() const override;
+	const io::path &getPath() const override;
 
 protected:
-
 	//! Ignore paths when adding or searching for files
 	bool IgnorePaths;
 
@@ -127,7 +123,6 @@ protected:
 	//! List of files
 	core::array<SFileListEntry> Files;
 };
-
 
 } // end namespace irr
 } // end namespace io

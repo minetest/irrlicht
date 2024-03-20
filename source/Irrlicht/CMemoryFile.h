@@ -14,90 +14,86 @@ namespace irr
 namespace io
 {
 
-	/*!
-		Class for reading from memory.
-	*/
-	class CMemoryReadFile : public IMemoryReadFile
+/*!
+	Class for reading from memory.
+*/
+class CMemoryReadFile : public IMemoryReadFile
+{
+public:
+	//! Constructor
+	CMemoryReadFile(const void *memory, long len, const io::path &fileName, bool deleteMemoryWhenDropped);
+
+	//! Destructor
+	virtual ~CMemoryReadFile();
+
+	//! returns how much was read
+	size_t read(void *buffer, size_t sizeToRead) override;
+
+	//! changes position in file, returns true if successful
+	bool seek(long finalPos, bool relativeMovement = false) override;
+
+	//! returns size of file
+	long getSize() const override;
+
+	//! returns where in the file we are.
+	long getPos() const override;
+
+	//! returns name of file
+	const io::path &getFileName() const override;
+
+	//! Get the type of the class implementing this interface
+	EREAD_FILE_TYPE getType() const override
 	{
-	public:
+		return ERFT_MEMORY_READ_FILE;
+	}
 
-		//! Constructor
-		CMemoryReadFile(const void* memory, long len, const io::path& fileName, bool deleteMemoryWhenDropped);
-
-		//! Destructor
-		virtual ~CMemoryReadFile();
-
-		//! returns how much was read
-		size_t read(void* buffer, size_t sizeToRead) override;
-
-		//! changes position in file, returns true if successful
-		bool seek(long finalPos, bool relativeMovement = false) override;
-
-		//! returns size of file
-		long getSize() const override;
-
-		//! returns where in the file we are.
-		long getPos() const override;
-
-		//! returns name of file
-		const io::path& getFileName() const override;
-
-		//! Get the type of the class implementing this interface
-		EREAD_FILE_TYPE getType() const override
-		{
-			return ERFT_MEMORY_READ_FILE;
-		}
-
-		//! Get direct access to internal buffer
-		const void *getBuffer() const override
-		{
-			return Buffer;
-		}
-
-	private:
-
-		const void *Buffer;
-		long Len;
-		long Pos;
-		io::path Filename;
-		bool deleteMemoryWhenDropped;
-	};
-
-	/*!
-		Class for writing to memory.
-	*/
-	class CMemoryWriteFile : public IWriteFile
+	//! Get direct access to internal buffer
+	const void *getBuffer() const override
 	{
-	public:
+		return Buffer;
+	}
 
-		//! Constructor
-		CMemoryWriteFile(void* memory, long len, const io::path& fileName, bool deleteMemoryWhenDropped);
+private:
+	const void *Buffer;
+	long Len;
+	long Pos;
+	io::path Filename;
+	bool deleteMemoryWhenDropped;
+};
 
-		//! Destructor
-		virtual ~CMemoryWriteFile();
+/*!
+	Class for writing to memory.
+*/
+class CMemoryWriteFile : public IWriteFile
+{
+public:
+	//! Constructor
+	CMemoryWriteFile(void *memory, long len, const io::path &fileName, bool deleteMemoryWhenDropped);
 
-		//! returns how much was written
-		size_t write(const void* buffer, size_t sizeToWrite) override;
+	//! Destructor
+	virtual ~CMemoryWriteFile();
 
-		//! changes position in file, returns true if successful
-		bool seek(long finalPos, bool relativeMovement = false) override;
+	//! returns how much was written
+	size_t write(const void *buffer, size_t sizeToWrite) override;
 
-		//! returns where in the file we are.
-		long getPos() const override;
+	//! changes position in file, returns true if successful
+	bool seek(long finalPos, bool relativeMovement = false) override;
 
-		//! returns name of file
-		const io::path& getFileName() const override;
+	//! returns where in the file we are.
+	long getPos() const override;
 
-		bool flush() override;
+	//! returns name of file
+	const io::path &getFileName() const override;
 
-	private:
+	bool flush() override;
 
-		void *Buffer;
-		long Len;
-		long Pos;
-		io::path Filename;
-		bool deleteMemoryWhenDropped;
-	};
+private:
+	void *Buffer;
+	long Len;
+	long Pos;
+	io::path Filename;
+	bool deleteMemoryWhenDropped;
+};
 
 } // end namespace io
 } // end namespace irr
