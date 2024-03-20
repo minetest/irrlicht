@@ -167,8 +167,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install deps
         run: |
-          brew update
+          brew update --auto-update
           brew install cmake libpng jpeg
+        env:
+          HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
 
       - name: Build
         run: |
@@ -185,8 +188,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install deps
         run: |
-          brew update
+          brew update --auto-update
           brew install cmake libpng jpeg sdl2
+        env:
+          HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
 
       - name: Build
         run: |
