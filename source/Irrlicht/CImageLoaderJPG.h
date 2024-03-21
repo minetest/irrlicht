@@ -6,7 +6,7 @@
 
 #include "IImageLoader.h"
 
-#include <cstdio>	 // required for jpeglib.h
+#include <cstdio>    // required for jpeglib.h
 #include <jpeglib.h> // use system lib
 #include <setjmp.h>
 

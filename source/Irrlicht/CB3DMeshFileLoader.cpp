@@ -698,9 +698,9 @@ bool CB3DMeshFileLoader::readChunkANIM()
 	os::Printer::log(logStr.c_str(), ELL_DEBUG);
 #endif
 
-	s32 animFlags;	// not stored\used
+	s32 animFlags;  // not stored\used
 	s32 animFrames; // not stored\used
-	f32 animFPS;	// not stored\used
+	f32 animFPS;    // not stored\used
 
 	B3DFile->read(&animFlags, sizeof(s32));
 	B3DFile->read(&animFrames, sizeof(s32));
@@ -871,7 +871,7 @@ bool CB3DMeshFileLoader::readChunkBRUS()
 			if (B3dMaterial.Textures[0]->Flags & 0x2) { // (Alpha mapped)
 				B3dMaterial.Material.MaterialType = video::EMT_TRANSPARENT_ALPHA_CHANNEL;
 				B3dMaterial.Material.ZWriteEnable = video::EZW_OFF;
-			} else if (B3dMaterial.Textures[0]->Flags & 0x4)								  //(Masked)
+			} else if (B3dMaterial.Textures[0]->Flags & 0x4)                                  //(Masked)
 				B3dMaterial.Material.MaterialType = video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF; // TODO: create color key texture
 			else if (B3dMaterial.alpha == 1.f)
 				B3dMaterial.Material.MaterialType = video::EMT_SOLID;

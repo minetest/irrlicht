@@ -35,10 +35,10 @@ public:
 	// Information about state of fixed pipeline activity.
 	enum E_OPENGL_FIXED_PIPELINE_STATE
 	{
-		EOFPS_ENABLE = 0,		 // fixed pipeline.
-		EOFPS_DISABLE,			 // programmable pipeline.
+		EOFPS_ENABLE = 0,        // fixed pipeline.
+		EOFPS_DISABLE,           // programmable pipeline.
 		EOFPS_ENABLE_TO_DISABLE, // switch from fixed to programmable pipeline.
-		EOFPS_DISABLE_TO_ENABLE	 // switch from programmable to fixed pipeline.
+		EOFPS_DISABLE_TO_ENABLE  // switch from programmable to fixed pipeline.
 	};
 
 	COpenGLDriver(const SIrrlichtCreationParameters &params, io::IFileSystem *io, IContextManager *contextManager);
@@ -65,7 +65,7 @@ public:
 		GLuint vbo_indicesID;  // tmp
 
 		GLuint vbo_verticesSize; // tmp
-		GLuint vbo_indicesSize;	 // tmp
+		GLuint vbo_indicesSize;  // tmp
 	};
 
 	//! updates hardware buffer if needed
@@ -392,8 +392,8 @@ private:
 	enum E_RENDER_MODE
 	{
 		ERM_NONE = 0, // no render state has been set yet.
-		ERM_2D,		  // 2d drawing rendermode
-		ERM_3D		  // 3d rendering mode
+		ERM_2D,       // 2d drawing rendermode
+		ERM_3D        // 3d rendering mode
 	};
 
 	E_RENDER_MODE CurrentRenderMode;

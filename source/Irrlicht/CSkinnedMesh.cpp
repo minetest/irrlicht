@@ -47,12 +47,12 @@ irr::u32 dropMiddleKeys(irr::core::array<T> &array, Cmp &cmp)
 		if (cmp(array[j], array[s]))
 			continue; // same key, handle later
 
-		if (j > s + 1)				   // had there been identical keys?
+		if (j > s + 1)                 // had there been identical keys?
 			array[n++] = array[j - 1]; // keep the last
-		array[n++] = array[j];		   // keep the new one
+		array[n++] = array[j];         // keep the new one
 		s = j;
 	}
-	if (array.size() > s + 1)				  // identical keys at the array end?
+	if (array.size() > s + 1)                 // identical keys at the array end?
 		array[n++] = array[array.size() - 1]; // keep the last
 
 	irr::u32 d = array.size() - n; // remove already copied keys

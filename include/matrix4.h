@@ -1618,9 +1618,9 @@ template <class T>
 inline CMatrix4<T> &CMatrix4<T>::buildProjectionMatrixOrthoLH(
 		f32 widthOfViewVolume, f32 heightOfViewVolume, f32 zNear, f32 zFar, bool zClipFromZero)
 {
-	_IRR_DEBUG_BREAK_IF(widthOfViewVolume == 0.f);	// divide by zero
+	_IRR_DEBUG_BREAK_IF(widthOfViewVolume == 0.f);  // divide by zero
 	_IRR_DEBUG_BREAK_IF(heightOfViewVolume == 0.f); // divide by zero
-	_IRR_DEBUG_BREAK_IF(zNear == zFar);				// divide by zero
+	_IRR_DEBUG_BREAK_IF(zNear == zFar);             // divide by zero
 	M[0] = (T)(2 / widthOfViewVolume);
 	M[1] = 0;
 	M[2] = 0;
@@ -1660,9 +1660,9 @@ template <class T>
 inline CMatrix4<T> &CMatrix4<T>::buildProjectionMatrixOrthoRH(
 		f32 widthOfViewVolume, f32 heightOfViewVolume, f32 zNear, f32 zFar, bool zClipFromZero)
 {
-	_IRR_DEBUG_BREAK_IF(widthOfViewVolume == 0.f);	// divide by zero
+	_IRR_DEBUG_BREAK_IF(widthOfViewVolume == 0.f);  // divide by zero
 	_IRR_DEBUG_BREAK_IF(heightOfViewVolume == 0.f); // divide by zero
-	_IRR_DEBUG_BREAK_IF(zNear == zFar);				// divide by zero
+	_IRR_DEBUG_BREAK_IF(zNear == zFar);             // divide by zero
 	M[0] = (T)(2 / widthOfViewVolume);
 	M[1] = 0;
 	M[2] = 0;
@@ -1702,9 +1702,9 @@ template <class T>
 inline CMatrix4<T> &CMatrix4<T>::buildProjectionMatrixPerspectiveRH(
 		f32 widthOfViewVolume, f32 heightOfViewVolume, f32 zNear, f32 zFar, bool zClipFromZero)
 {
-	_IRR_DEBUG_BREAK_IF(widthOfViewVolume == 0.f);	// divide by zero
+	_IRR_DEBUG_BREAK_IF(widthOfViewVolume == 0.f);  // divide by zero
 	_IRR_DEBUG_BREAK_IF(heightOfViewVolume == 0.f); // divide by zero
-	_IRR_DEBUG_BREAK_IF(zNear == zFar);				// divide by zero
+	_IRR_DEBUG_BREAK_IF(zNear == zFar);             // divide by zero
 	M[0] = (T)(2 * zNear / widthOfViewVolume);
 	M[1] = 0;
 	M[2] = 0;
@@ -1745,9 +1745,9 @@ template <class T>
 inline CMatrix4<T> &CMatrix4<T>::buildProjectionMatrixPerspectiveLH(
 		f32 widthOfViewVolume, f32 heightOfViewVolume, f32 zNear, f32 zFar, bool zClipFromZero)
 {
-	_IRR_DEBUG_BREAK_IF(widthOfViewVolume == 0.f);	// divide by zero
+	_IRR_DEBUG_BREAK_IF(widthOfViewVolume == 0.f);  // divide by zero
 	_IRR_DEBUG_BREAK_IF(heightOfViewVolume == 0.f); // divide by zero
-	_IRR_DEBUG_BREAK_IF(zNear == zFar);				// divide by zero
+	_IRR_DEBUG_BREAK_IF(zNear == zFar);             // divide by zero
 	M[0] = (T)(2 * zNear / widthOfViewVolume);
 	M[1] = 0;
 	M[2] = 0;

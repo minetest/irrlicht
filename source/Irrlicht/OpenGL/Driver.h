@@ -53,7 +53,7 @@ public:
 		}
 
 		u32 vbo_verticesID; // tmp
-		u32 vbo_indicesID;	// tmp
+		u32 vbo_indicesID;  // tmp
 
 		u32 vbo_verticesSize; // tmp
 		u32 vbo_indicesSize;  // tmp
@@ -368,8 +368,8 @@ private:
 	enum E_RENDER_MODE
 	{
 		ERM_NONE = 0, // no render state has been set yet.
-		ERM_2D,		  // 2d drawing rendermode
-		ERM_3D		  // 3d rendering mode
+		ERM_2D,       // 2d drawing rendermode
+		ERM_3D        // 3d rendering mode
 	};
 
 	E_RENDER_MODE CurrentRenderMode;

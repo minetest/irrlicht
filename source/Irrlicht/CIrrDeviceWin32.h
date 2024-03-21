@@ -136,7 +136,7 @@ public:
 				}
 #endif
 				if ((visible && info.flags == CURSOR_SHOWING) || // visible
-						(!visible && info.flags == 0))			 // hidden
+						(!visible && info.flags == 0))           // hidden
 				{
 					break;
 				}

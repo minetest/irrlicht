@@ -191,7 +191,7 @@ CGLXManager::CGLXManager(const SIrrlichtCreationParameters &params, const SExpos
 					// either present or not. As a no-op we use
 					// GLX_USE_GL, which is silently ignored by glXChooseVisual
 					Params.Doublebuffer ? GLX_DOUBLEBUFFER : GLX_USE_GL, // 14
-					Params.Stereobuffer ? GLX_STEREO : GLX_USE_GL,		 // 15
+					Params.Stereobuffer ? GLX_STEREO : GLX_USE_GL,       // 15
 					None,
 				};
 

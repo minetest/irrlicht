@@ -768,9 +768,9 @@ bool CXMeshFileLoader::parseDataObjectMesh(SXMesh &mesh)
 			s16 tangenttype = -1;
 			s16 binormaltype = -1;
 
-			(void)tangentpos;	// disable unused variable warnings
-			(void)binormalpos;	// disable unused variable warnings
-			(void)tangenttype;	// disable unused variable warnings
+			(void)tangentpos;   // disable unused variable warnings
+			(void)binormalpos;  // disable unused variable warnings
+			(void)tangenttype;  // disable unused variable warnings
 			(void)binormaltype; // disable unused variable warnings
 
 			for (j = 0; j < dcnt; ++j) {

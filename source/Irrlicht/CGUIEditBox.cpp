@@ -1358,7 +1358,7 @@ void CGUIEditBox::calculateScrollPos()
 		irr::u32 cursorWidth = font->getDimension(CursorChar.c_str()).Width;
 		core::stringw *txtLine = hasBrokenText ? &BrokenText[cursLine] : &Text;
 		s32 cPos = hasBrokenText ? CursorPos - BrokenTextPositions[cursLine] : CursorPos; // column
-		s32 cStart = font->getDimension(txtLine->subString(0, cPos).c_str()).Width;		  // pixels from text-start
+		s32 cStart = font->getDimension(txtLine->subString(0, cPos).c_str()).Width;       // pixels from text-start
 		s32 cEnd = cStart + cursorWidth;
 		s32 txtWidth = font->getDimension(txtLine->c_str()).Width;
 

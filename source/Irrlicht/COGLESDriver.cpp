@@ -1624,7 +1624,7 @@ void COGLES1Driver::setTextureRenderStates(const SMaterial &material, bool reset
 				E_TEXTURE_MIN_FILTER minFilter = material.TextureLayers[i].MinFilter;
 				glTexParameteri(tmpTextureType, GL_TEXTURE_MIN_FILTER,
 						minFilter == ETMINF_NEAREST_MIPMAP_NEAREST ? GL_NEAREST_MIPMAP_NEAREST : minFilter == ETMINF_LINEAR_MIPMAP_NEAREST ? GL_LINEAR_MIPMAP_NEAREST
-																						 : minFilter == ETMINF_NEAREST_MIPMAP_LINEAR	   ? GL_NEAREST_MIPMAP_LINEAR
+																						 : minFilter == ETMINF_NEAREST_MIPMAP_LINEAR       ? GL_NEAREST_MIPMAP_LINEAR
 																																		   : (assert(minFilter == ETMINF_LINEAR_MIPMAP_LINEAR), GL_LINEAR_MIPMAP_LINEAR));
 
 				statesCache.MinFilter = minFilter;

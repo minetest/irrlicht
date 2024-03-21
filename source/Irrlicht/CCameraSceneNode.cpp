@@ -26,7 +26,7 @@ CCameraSceneNode::CCameraSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 i
 
 	// set default projection
 	Fovy = core::PI / 2.5f; // Field of view, in radians.
-	Aspect = 4.0f / 3.0f;	// Aspect ratio.
+	Aspect = 4.0f / 3.0f;   // Aspect ratio.
 
 	const video::IVideoDriver *const d = mgr ? mgr->getVideoDriver() : 0;
 	if (d) {
