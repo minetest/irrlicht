@@ -182,22 +182,22 @@ EGLConfig CEGLManager::chooseConfig(EConfigStyle confStyle)
 	}
 
 	if (confStyle == ECS_EGL_CHOOSE_FIRST_LOWER_EXPECTATIONS) {
-		EGLint Attribs[] =
-				{
-						EGL_RED_SIZE, 8,
-						EGL_GREEN_SIZE, 8,
-						EGL_BLUE_SIZE, 8,
-						EGL_ALPHA_SIZE, Params.WithAlphaChannel ? 1 : 0,
-						EGL_BUFFER_SIZE, Params.Bits,
-						EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-						EGL_DEPTH_SIZE, Params.ZBufferBits,
-						EGL_STENCIL_SIZE, Params.Stencilbuffer,
-						EGL_SAMPLE_BUFFERS, Params.AntiAlias ? 1 : 0,
-						EGL_SAMPLES, Params.AntiAlias,
+		EGLint Attribs[] = {
+				EGL_RED_SIZE, 8,
+				EGL_GREEN_SIZE, 8,
+				EGL_BLUE_SIZE, 8,
+				EGL_ALPHA_SIZE, Params.WithAlphaChannel ? 1 : 0,
+				EGL_BUFFER_SIZE, Params.Bits,
+				EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+				EGL_DEPTH_SIZE, Params.ZBufferBits,
+				EGL_STENCIL_SIZE, Params.Stencilbuffer,
+				EGL_SAMPLE_BUFFERS, Params.AntiAlias ? 1 : 0,
+				EGL_SAMPLES, Params.AntiAlias,
 #ifdef EGL_VERSION_1_3
-						EGL_RENDERABLE_TYPE, eglOpenGLBIT,
+				EGL_RENDERABLE_TYPE, eglOpenGLBIT,
 #endif
-						EGL_NONE, 0};
+				EGL_NONE, 0,
+			};
 
 		EGLint numConfigs = 0;
 		u32 steps = 5;
@@ -488,12 +488,12 @@ bool CEGLManager::generateContext()
 		break;
 	}
 
-	EGLint ContextAttrib[] =
-			{
+	EGLint ContextAttrib[] = {
 #ifdef EGL_VERSION_1_3
-					EGL_CONTEXT_CLIENT_VERSION, OpenGLESVersion,
+			EGL_CONTEXT_CLIENT_VERSION, OpenGLESVersion,
 #endif
-					EGL_NONE, 0};
+			EGL_NONE, 0,
+		};
 
 	EglContext = eglCreateContext(EglDisplay, EglConfig, EGL_NO_CONTEXT, ContextAttrib);
 

@@ -40,13 +40,12 @@ enum E_BONE_SKINNING_SPACE
 };
 
 //! Names for bone animation modes
-const c8 *const BoneAnimationModeNames[] =
-		{
-				"automatic",
-				"animated",
-				"unanimated",
-				0,
-};
+const c8 *const BoneAnimationModeNames[] = {
+		"automatic",
+		"animated",
+		"unanimated",
+		0,
+	};
 
 //! Interface for bones used for skeletal animation.
 /** Used with ISkinnedMesh and IAnimatedMeshSceneNode. */

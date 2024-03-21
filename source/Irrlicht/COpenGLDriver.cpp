@@ -1133,12 +1133,12 @@ void COpenGLDriver::draw2DImage(const video::ITexture *texture, const core::rect
 			sourceRect.LowerRightCorner.X * invW,
 			sourceRect.LowerRightCorner.Y * invH);
 
-	const video::SColor temp[4] =
-			{
-					0xFFFFFFFF,
-					0xFFFFFFFF,
-					0xFFFFFFFF,
-					0xFFFFFFFF};
+	const video::SColor temp[4] = {
+			0xFFFFFFFF,
+			0xFFFFFFFF,
+			0xFFFFFFFF,
+			0xFFFFFFFF,
+		};
 
 	const video::SColor *const useColor = colors ? colors : temp;
 

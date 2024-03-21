@@ -41,44 +41,43 @@ CGLXManager::CGLXManager(const SIrrlichtCreationParameters &params, const SExpos
 		if (major == 1 && minor > 2 && glxChooseFBConfig) {
 			os::Printer::log("GLX >= 1.3", ELL_DEBUG);
 			// attribute array for the draw buffer
-			int visualAttrBuffer[] =
-			{
-				GLX_RENDER_TYPE,
-				GLX_RGBA_BIT,
-				GLX_RED_SIZE,
-				4,
-				GLX_GREEN_SIZE,
-				4,
-				GLX_BLUE_SIZE,
-				4,
-				GLX_ALPHA_SIZE,
-				Params.WithAlphaChannel ? 1 : 0,
-				GLX_DEPTH_SIZE,
-				Params.ZBufferBits, // 10,11
-				GLX_DOUBLEBUFFER,
-				Params.Doublebuffer ? True : False,
-				GLX_STENCIL_SIZE,
-				Params.Stencilbuffer ? 1 : 0,
+			int visualAttrBuffer[] = {
+					GLX_RENDER_TYPE,
+					GLX_RGBA_BIT,
+					GLX_RED_SIZE,
+					4,
+					GLX_GREEN_SIZE,
+					4,
+					GLX_BLUE_SIZE,
+					4,
+					GLX_ALPHA_SIZE,
+					Params.WithAlphaChannel ? 1 : 0,
+					GLX_DEPTH_SIZE,
+					Params.ZBufferBits, // 10,11
+					GLX_DOUBLEBUFFER,
+					Params.Doublebuffer ? True : False,
+					GLX_STENCIL_SIZE,
+					Params.Stencilbuffer ? 1 : 0,
 #if defined(GLX_VERSION_1_4) && defined(GLX_SAMPLE_BUFFERS) // we need to check the extension string!
-				GLX_SAMPLE_BUFFERS,
-				1,
-				GLX_SAMPLES,
-				Params.AntiAlias, // 18,19
+					GLX_SAMPLE_BUFFERS,
+					1,
+					GLX_SAMPLES,
+					Params.AntiAlias, // 18,19
 #elif defined(GLX_ARB_multisample)
-				GLX_SAMPLE_BUFFERS_ARB,
-				1,
-				GLX_SAMPLES_ARB,
-				Params.AntiAlias, // 18,19
+					GLX_SAMPLE_BUFFERS_ARB,
+					1,
+					GLX_SAMPLES_ARB,
+					Params.AntiAlias, // 18,19
 #elif defined(GLX_SGIS_multisample)
-				GLX_SAMPLE_BUFFERS_SGIS,
-				1,
-				GLX_SAMPLES_SGIS,
-				Params.AntiAlias, // 18,19
+					GLX_SAMPLE_BUFFERS_SGIS,
+					1,
+					GLX_SAMPLES_SGIS,
+					Params.AntiAlias, // 18,19
 #endif
-				GLX_STEREO,
-				Params.Stereobuffer ? True : False,
-				None
-			};
+					GLX_STEREO,
+					Params.Stereobuffer ? True : False,
+					None,
+				};
 
 			GLXFBConfig *configList = 0;
 			int nitems = 0;
@@ -180,21 +179,21 @@ CGLXManager::CGLXManager(const SIrrlichtCreationParameters &params, const SExpos
 #endif
 		{
 			// attribute array for the draw buffer
-			int visualAttrBuffer[] =
-					{
-							GLX_RGBA, GLX_USE_GL,
-							GLX_RED_SIZE, 4,
-							GLX_GREEN_SIZE, 4,
-							GLX_BLUE_SIZE, 4,
-							GLX_ALPHA_SIZE, Params.WithAlphaChannel ? 1 : 0,
-							GLX_DEPTH_SIZE, Params.ZBufferBits,
-							GLX_STENCIL_SIZE, Params.Stencilbuffer ? 1 : 0, // 12,13
-							// The following attributes have no flags, but are
-							// either present or not. As a no-op we use
-							// GLX_USE_GL, which is silently ignored by glXChooseVisual
-							Params.Doublebuffer ? GLX_DOUBLEBUFFER : GLX_USE_GL, // 14
-							Params.Stereobuffer ? GLX_STEREO : GLX_USE_GL,		 // 15
-							None};
+			int visualAttrBuffer[] = {
+					GLX_RGBA, GLX_USE_GL,
+					GLX_RED_SIZE, 4,
+					GLX_GREEN_SIZE, 4,
+					GLX_BLUE_SIZE, 4,
+					GLX_ALPHA_SIZE, Params.WithAlphaChannel ? 1 : 0,
+					GLX_DEPTH_SIZE, Params.ZBufferBits,
+					GLX_STENCIL_SIZE, Params.Stencilbuffer ? 1 : 0, // 12,13
+					// The following attributes have no flags, but are
+					// either present or not. As a no-op we use
+					// GLX_USE_GL, which is silently ignored by glXChooseVisual
+					Params.Doublebuffer ? GLX_DOUBLEBUFFER : GLX_USE_GL, // 14
+					Params.Stereobuffer ? GLX_STEREO : GLX_USE_GL,		 // 15
+					None,
+				};
 
 			VisualInfo = glXChooseVisual(display, screennr, visualAttrBuffer);
 			if (!VisualInfo) {

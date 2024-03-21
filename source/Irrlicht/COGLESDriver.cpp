@@ -846,12 +846,12 @@ void COGLES1Driver::draw2DImage(const video::ITexture *texture, const core::rect
 			sourceRect.LowerRightCorner.X * invW,
 			(isRTT ? sourceRect.UpperLeftCorner.Y : sourceRect.LowerRightCorner.Y) * invH);
 
-	const video::SColor temp[4] =
-			{
-					0xFFFFFFFF,
-					0xFFFFFFFF,
-					0xFFFFFFFF,
-					0xFFFFFFFF};
+	const video::SColor temp[4] = {
+			0xFFFFFFFF,
+			0xFFFFFFFF,
+			0xFFFFFFFF,
+			0xFFFFFFFF,
+		};
 
 	const video::SColor *const useColor = colors ? colors : temp;
 
@@ -2209,19 +2209,19 @@ core::dimension2du COGLES1Driver::getMaxTextureSize() const
 
 GLenum COGLES1Driver::getGLBlend(E_BLEND_FACTOR factor) const
 {
-	static GLenum const blendTable[] =
-			{
-					GL_ZERO,
-					GL_ONE,
-					GL_DST_COLOR,
-					GL_ONE_MINUS_DST_COLOR,
-					GL_SRC_COLOR,
-					GL_ONE_MINUS_SRC_COLOR,
-					GL_SRC_ALPHA,
-					GL_ONE_MINUS_SRC_ALPHA,
-					GL_DST_ALPHA,
-					GL_ONE_MINUS_DST_ALPHA,
-					GL_SRC_ALPHA_SATURATE};
+	static GLenum const blendTable[] = {
+			GL_ZERO,
+			GL_ONE,
+			GL_DST_COLOR,
+			GL_ONE_MINUS_DST_COLOR,
+			GL_SRC_COLOR,
+			GL_ONE_MINUS_SRC_COLOR,
+			GL_SRC_ALPHA,
+			GL_ONE_MINUS_SRC_ALPHA,
+			GL_DST_ALPHA,
+			GL_ONE_MINUS_DST_ALPHA,
+			GL_SRC_ALPHA_SATURATE,
+		};
 
 	return blendTable[factor];
 }

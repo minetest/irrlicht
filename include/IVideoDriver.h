@@ -107,12 +107,12 @@ enum E_FOG_TYPE
 	EFT_FOG_EXP2
 };
 
-const c8 *const FogTypeNames[] =
-		{
-				"FogExp",
-				"FogLinear",
-				"FogExp2",
-				0};
+const c8 *const FogTypeNames[] = {
+		"FogExp",
+		"FogLinear",
+		"FogExp2",
+		0,
+	};
 
 //! Interface to driver which is able to perform 2d and 3d graphics functions.
 /** This interface is one of the most important interfaces of

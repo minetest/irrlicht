@@ -198,30 +198,30 @@ bool CWGLManager::initialize(const SIrrlichtCreationParameters &params, const SE
 			Params.AntiAlias = 32;
 
 		f32 fAttributes[] = {0.0, 0.0};
-		s32 iAttributes[] =
-				{
-						WGL_DRAW_TO_WINDOW_ARB, 1,
-						WGL_SUPPORT_OPENGL_ARB, 1,
-						WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
-						WGL_COLOR_BITS_ARB, (Params.Bits == 32) ? 24 : 15,
-						WGL_ALPHA_BITS_ARB, (Params.Bits == 32) ? 8 : 1,
-						WGL_DEPTH_BITS_ARB, Params.ZBufferBits, // 10,11
-						WGL_STENCIL_BITS_ARB, Params.Stencilbuffer ? 1 : 0,
-						WGL_DOUBLE_BUFFER_ARB, Params.Doublebuffer ? 1 : 0,
-						WGL_STEREO_ARB, Params.Stereobuffer ? 1 : 0,
-						WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+		s32 iAttributes[] = {
+				WGL_DRAW_TO_WINDOW_ARB, 1,
+				WGL_SUPPORT_OPENGL_ARB, 1,
+				WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
+				WGL_COLOR_BITS_ARB, (Params.Bits == 32) ? 24 : 15,
+				WGL_ALPHA_BITS_ARB, (Params.Bits == 32) ? 8 : 1,
+				WGL_DEPTH_BITS_ARB, Params.ZBufferBits, // 10,11
+				WGL_STENCIL_BITS_ARB, Params.Stencilbuffer ? 1 : 0,
+				WGL_DOUBLE_BUFFER_ARB, Params.Doublebuffer ? 1 : 0,
+				WGL_STEREO_ARB, Params.Stereobuffer ? 1 : 0,
+				WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
 #ifdef WGL_ARB_multisample
-						WGL_SAMPLES_ARB, Params.AntiAlias, // 20,21
-						WGL_SAMPLE_BUFFERS_ARB, (Params.AntiAlias > 0) ? 1 : 0,
+				WGL_SAMPLES_ARB, Params.AntiAlias, // 20,21
+				WGL_SAMPLE_BUFFERS_ARB, (Params.AntiAlias > 0) ? 1 : 0,
 #elif defined(WGL_EXT_multisample)
-						WGL_SAMPLES_EXT, AntiAlias, // 20,21
-						WGL_SAMPLE_BUFFERS_EXT, (Params.AntiAlias > 0) ? 1 : 0,
+				WGL_SAMPLES_EXT, AntiAlias, // 20,21
+				WGL_SAMPLE_BUFFERS_EXT, (Params.AntiAlias > 0) ? 1 : 0,
 #elif defined(WGL_3DFX_multisample)
-						WGL_SAMPLES_3DFX, AntiAlias, // 20,21
-						WGL_SAMPLE_BUFFERS_3DFX, (Params.AntiAlias > 0) ? 1 : 0,
+				WGL_SAMPLES_3DFX, AntiAlias, // 20,21
+				WGL_SAMPLE_BUFFERS_3DFX, (Params.AntiAlias > 0) ? 1 : 0,
 #endif
-						//			WGL_DEPTH_FLOAT_EXT, 1,
-						0, 0, 0, 0};
+				//			WGL_DEPTH_FLOAT_EXT, 1,
+				0, 0, 0, 0,
+			};
 		int iAttrSize = sizeof(iAttributes) / sizeof(int);
 		if (!multi_sample_supported) {
 			memmove(&iAttributes[20], &iAttributes[24], sizeof(int) * (iAttrSize - 24));
@@ -349,12 +349,12 @@ bool CWGLManager::generateContext()
 	if (wglCreateContextAttribs_ARB) {
 		// with 3.0 all available profiles should be usable, higher versions impose restrictions
 		// we need at least 1.1
-		const int iAttribs[] =
-				{
-						WGL_CONTEXT_MAJOR_VERSION_ARB, 1,
-						WGL_CONTEXT_MINOR_VERSION_ARB, 1,
-						//			WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,	// enable to get a debug context (depends on driver if that does anything)
-						0};
+		const int iAttribs[] = {
+				WGL_CONTEXT_MAJOR_VERSION_ARB, 1,
+				WGL_CONTEXT_MINOR_VERSION_ARB, 1,
+				//			WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,	// enable to get a debug context (depends on driver if that does anything)
+				0,
+			};
 		hrc = wglCreateContextAttribs_ARB(HDc, 0, iAttribs);
 	} else
 #endif

@@ -219,11 +219,11 @@ enum E_COLOR_MATERIAL
 };
 
 //! Names for polygon offset direction
-const c8 *const PolygonOffsetDirectionNames[] =
-		{
-				"Back",
-				"Front",
-				0};
+const c8 *const PolygonOffsetDirectionNames[] = {
+		"Back",
+		"Front",
+		0,
+	};
 
 //! For SMaterial.ZWriteEnable
 enum E_ZWRITE
@@ -243,12 +243,12 @@ enum E_ZWRITE
 };
 
 //! Names for E_ZWRITE
-const c8 *const ZWriteNames[] =
-		{
-				"Off",
-				"Auto",
-				"On",
-				0};
+const c8 *const ZWriteNames[] = {
+		"Off",
+		"Auto",
+		"On",
+		0,
+	};
 
 //! Maximum number of texture an SMaterial can have.
 /** SMaterial might ignore some textures in most function, like assignment and comparison,

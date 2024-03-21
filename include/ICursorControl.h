@@ -41,22 +41,22 @@ enum ECURSOR_ICON
 };
 
 //! Names for ECURSOR_ICON
-const c8 *const GUICursorIconNames[ECI_COUNT + 1] =
-		{
-				"normal",
-				"cross",
-				"hand",
-				"help",
-				"ibeam",
-				"no",
-				"wait",
-				"sizeall",
-				"sizenesw",
-				"sizenwse",
-				"sizens",
-				"sizewe",
-				"sizeup",
-				0};
+const c8 *const GUICursorIconNames[ECI_COUNT + 1] = {
+		"normal",
+		"cross",
+		"hand",
+		"help",
+		"ibeam",
+		"no",
+		"wait",
+		"sizeall",
+		"sizenesw",
+		"sizenwse",
+		"sizens",
+		"sizewe",
+		"sizeup",
+		0,
+	};
 
 //! structure used to set sprites as cursors.
 struct SCursorSprite

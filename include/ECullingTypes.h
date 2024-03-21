@@ -22,14 +22,14 @@ enum E_CULLING_TYPE
 };
 
 //! Names for culling type
-const c8 *const AutomaticCullingNames[] =
-		{
-				"false",
-				"box",			  // camera box against node box
-				"frustum_box",	  // camera frustum against node box
-				"frustum_sphere", // camera frustum against node sphere
-				"occ_query",	  // occlusion query
-				0};
+const c8 *const AutomaticCullingNames[] = {
+		"false",
+		"box",			  // camera box against node box
+		"frustum_box",	  // camera frustum against node box
+		"frustum_sphere", // camera frustum against node sphere
+		"occ_query",	  // occlusion query
+		0,
+	};
 
 } // end namespace scene
 } // end namespace irr
