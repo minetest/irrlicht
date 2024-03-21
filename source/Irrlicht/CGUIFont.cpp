@@ -110,14 +110,14 @@ bool CGUIFont::load(io::IXMLReader* xml, const io::path& directory)
 				SGUISprite s;
 				core::rect<s32> rectangle;
 
-				a.underhang		= xml->getAttributeValueAsInt(L"u");
-				a.overhang		= xml->getAttributeValueAsInt(L"o");
-				a.spriteno		= SpriteBank->getSprites().size();
-				s32 texno		= xml->getAttributeValueAsInt(L"i");
+				a.underhang     = xml->getAttributeValueAsInt(L"u");
+				a.overhang      = xml->getAttributeValueAsInt(L"o");
+				a.spriteno      = SpriteBank->getSprites().size();
+				s32 texno       = xml->getAttributeValueAsInt(L"i");
 
 				// parse rectangle
-				core::stringc rectstr	= xml->getAttributeValue(L"r");
-				wchar_t ch		= xml->getAttributeValue(L"c")[0];
+				core::stringc rectstr   = xml->getAttributeValue(L"r");
+				wchar_t ch      = xml->getAttributeValue(L"c")[0];
 
 				const c8 *c = rectstr.c_str();
 				s32 val;

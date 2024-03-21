@@ -412,7 +412,7 @@ bool CIrrDeviceLinux::createWindow()
 		// create visual with standard X methods
 		os::Printer::log("Using plain X visual");
 		XVisualInfo visTempl; // Template to hold requested values
-		int visNumber;		  // Return value of available visuals
+		int visNumber;        // Return value of available visuals
 
 		visTempl.screen = Screennr;
 		// ARGB visuals should be avoided for usual applications
@@ -1439,18 +1439,18 @@ void CIrrDeviceLinux::createKeyMap()
 	KeyMap.push_back(SKeyMap(XK_quotedbl, 0)); //?
 	KeyMap.push_back(SKeyMap(XK_section, 0));  //?
 	KeyMap.push_back(SKeyMap(XK_numbersign, KEY_OEM_2));
-	KeyMap.push_back(SKeyMap(XK_dollar, 0));	//?
-	KeyMap.push_back(SKeyMap(XK_percent, 0));	//?
+	KeyMap.push_back(SKeyMap(XK_dollar, 0));    //?
+	KeyMap.push_back(SKeyMap(XK_percent, 0));   //?
 	KeyMap.push_back(SKeyMap(XK_ampersand, 0)); //?
 	KeyMap.push_back(SKeyMap(XK_apostrophe, KEY_OEM_7));
-	KeyMap.push_back(SKeyMap(XK_parenleft, 0));		  //?
-	KeyMap.push_back(SKeyMap(XK_parenright, 0));	  //?
-	KeyMap.push_back(SKeyMap(XK_asterisk, 0));		  //?
-	KeyMap.push_back(SKeyMap(XK_plus, KEY_PLUS));	  //?
-	KeyMap.push_back(SKeyMap(XK_comma, KEY_COMMA));	  //?
-	KeyMap.push_back(SKeyMap(XK_minus, KEY_MINUS));	  //?
+	KeyMap.push_back(SKeyMap(XK_parenleft, 0));       //?
+	KeyMap.push_back(SKeyMap(XK_parenright, 0));      //?
+	KeyMap.push_back(SKeyMap(XK_asterisk, 0));        //?
+	KeyMap.push_back(SKeyMap(XK_plus, KEY_PLUS));     //?
+	KeyMap.push_back(SKeyMap(XK_comma, KEY_COMMA));   //?
+	KeyMap.push_back(SKeyMap(XK_minus, KEY_MINUS));   //?
 	KeyMap.push_back(SKeyMap(XK_period, KEY_PERIOD)); //?
-	KeyMap.push_back(SKeyMap(XK_slash, KEY_OEM_2));	  //?
+	KeyMap.push_back(SKeyMap(XK_slash, KEY_OEM_2));   //?
 	KeyMap.push_back(SKeyMap(XK_0, KEY_KEY_0));
 	KeyMap.push_back(SKeyMap(XK_1, KEY_KEY_1));
 	KeyMap.push_back(SKeyMap(XK_2, KEY_KEY_2));
@@ -1465,11 +1465,11 @@ void CIrrDeviceLinux::createKeyMap()
 	KeyMap.push_back(SKeyMap(XK_semicolon, KEY_OEM_1));
 	KeyMap.push_back(SKeyMap(XK_less, KEY_OEM_102));
 	KeyMap.push_back(SKeyMap(XK_equal, KEY_PLUS));
-	KeyMap.push_back(SKeyMap(XK_greater, 0));	 //?
-	KeyMap.push_back(SKeyMap(XK_question, 0));	 //?
+	KeyMap.push_back(SKeyMap(XK_greater, 0));    //?
+	KeyMap.push_back(SKeyMap(XK_question, 0));   //?
 	KeyMap.push_back(SKeyMap(XK_at, KEY_KEY_2)); //?
-	KeyMap.push_back(SKeyMap(XK_mu, 0));		 //?
-	KeyMap.push_back(SKeyMap(XK_EuroSign, 0));	 //?
+	KeyMap.push_back(SKeyMap(XK_mu, 0));         //?
+	KeyMap.push_back(SKeyMap(XK_EuroSign, 0));   //?
 	KeyMap.push_back(SKeyMap(XK_A, KEY_KEY_A));
 	KeyMap.push_back(SKeyMap(XK_B, KEY_KEY_B));
 	KeyMap.push_back(SKeyMap(XK_C, KEY_KEY_C));
@@ -1501,7 +1501,7 @@ void CIrrDeviceLinux::createKeyMap()
 	KeyMap.push_back(SKeyMap(XK_bracketright, KEY_OEM_6));
 	KeyMap.push_back(SKeyMap(XK_asciicircum, KEY_OEM_5));
 	KeyMap.push_back(SKeyMap(XK_dead_circumflex, KEY_OEM_5));
-	KeyMap.push_back(SKeyMap(XK_degree, 0));			 //?
+	KeyMap.push_back(SKeyMap(XK_degree, 0));             //?
 	KeyMap.push_back(SKeyMap(XK_underscore, KEY_MINUS)); //?
 	KeyMap.push_back(SKeyMap(XK_grave, KEY_OEM_3));
 	KeyMap.push_back(SKeyMap(XK_dead_grave, KEY_OEM_3));
@@ -1637,8 +1637,8 @@ void CIrrDeviceLinux::pollJoysticks()
 		struct joystick js;
 		if (read(info.fd, &js, sizeof(js)) == sizeof(js)) {
 			info.persistentData.JoystickEvent.ButtonStates = js.b1 | (js.b2 << 1); /* should be a two-bit field */
-			info.persistentData.JoystickEvent.Axis[0] = js.x;					   /* X axis */
-			info.persistentData.JoystickEvent.Axis[1] = js.y;					   /* Y axis */
+			info.persistentData.JoystickEvent.Axis[0] = js.x;                      /* X axis */
+			info.persistentData.JoystickEvent.Axis[1] = js.y;                      /* Y axis */
 		}
 #else
 		struct js_event event;
@@ -1721,16 +1721,16 @@ const c8 *CIrrDeviceLinux::getTextFromSelection(Atom selection, core::stringc &t
 	unsigned long numItems, bytesLeft, dummy;
 	unsigned char *data = nullptr;
 	XGetWindowProperty(XDisplay, XWindow,
-			property_set,	 // property name
-			0,				 // offset
-			0,				 // length (we only check for data, so 0)
-			0,				 // Delete 0==false
+			property_set,    // property name
+			0,               // offset
+			0,               // length (we only check for data, so 0)
+			0,               // Delete 0==false
 			AnyPropertyType, // AnyPropertyType or property identifier
-			&type,			 // return type
-			&format,		 // return format
-			&numItems,		 // number items
-			&bytesLeft,		 // remaining bytes for partial reads
-			&data);			 // data
+			&type,           // return type
+			&format,         // return format
+			&numItems,       // number items
+			&bytesLeft,      // remaining bytes for partial reads
+			&data);          // data
 	if (data) {
 		XFree(data);
 		data = nullptr;
@@ -1936,11 +1936,11 @@ void CIrrDeviceLinux::initXInput2()
 Cursor CIrrDeviceLinux::TextureToMonochromeCursor(irr::video::ITexture *tex, const core::rect<s32> &sourceRect, const core::position2d<s32> &hotspot)
 {
 	XImage *sourceImage = XCreateImage(XDisplay, VisualInfo->visual,
-			1,		 // depth,
+			1,       // depth,
 			ZPixmap, // XYBitmap (depth=1), ZPixmap(depth=x)
 			0, 0, sourceRect.getWidth(), sourceRect.getHeight(),
 			32, // bitmap_pad,
-			0	// bytes_per_line (0 means continuous in memory)
+			0   // bytes_per_line (0 means continuous in memory)
 	);
 	sourceImage->data = new char[sourceImage->height * sourceImage->bytes_per_line];
 	XImage *maskImage = XCreateImage(XDisplay, VisualInfo->visual,
@@ -1948,7 +1948,7 @@ Cursor CIrrDeviceLinux::TextureToMonochromeCursor(irr::video::ITexture *tex, con
 			ZPixmap,
 			0, 0, sourceRect.getWidth(), sourceRect.getHeight(),
 			32, // bitmap_pad,
-			0	// bytes_per_line
+			0   // bytes_per_line
 	);
 	maskImage->data = new char[maskImage->height * maskImage->bytes_per_line];
 
@@ -2145,10 +2145,10 @@ void CIrrDeviceLinux::CCursorControl::initCursors()
 	Cursors.push_back(CursorX11(XCreateFontCursor(Device->XDisplay, XC_question_arrow)));
 	Cursors.push_back(CursorX11(XCreateFontCursor(Device->XDisplay, XC_xterm)));
 	Cursors.push_back(CursorX11(XCreateFontCursor(Device->XDisplay, XC_X_cursor))); //  (or XC_pirate?)
-	Cursors.push_back(CursorX11(XCreateFontCursor(Device->XDisplay, XC_watch)));	// (or XC_clock?)
+	Cursors.push_back(CursorX11(XCreateFontCursor(Device->XDisplay, XC_watch)));    // (or XC_clock?)
 	Cursors.push_back(CursorX11(XCreateFontCursor(Device->XDisplay, XC_fleur)));
 	Cursors.push_back(CursorX11(XCreateFontCursor(Device->XDisplay, XC_top_right_corner))); // NESW not available in X11
-	Cursors.push_back(CursorX11(XCreateFontCursor(Device->XDisplay, XC_top_left_corner)));	// NWSE not available in X11
+	Cursors.push_back(CursorX11(XCreateFontCursor(Device->XDisplay, XC_top_left_corner)));  // NWSE not available in X11
 	Cursors.push_back(CursorX11(XCreateFontCursor(Device->XDisplay, XC_sb_v_double_arrow)));
 	Cursors.push_back(CursorX11(XCreateFontCursor(Device->XDisplay, XC_sb_h_double_arrow)));
 	Cursors.push_back(CursorX11(XCreateFontCursor(Device->XDisplay, XC_sb_up_arrow))); // (or XC_center_ptr?)

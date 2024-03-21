@@ -464,9 +464,9 @@ struct SEvent
 			NUMBER_OF_BUTTONS = 32,
 
 			AXIS_X = 0, // e.g. analog stick 1 left to right
-			AXIS_Y,		// e.g. analog stick 1 top to bottom
-			AXIS_Z,		// e.g. throttle, or analog 2 stick 2 left to right
-			AXIS_R,		// e.g. rudder, or analog 2 stick 2 top to bottom
+			AXIS_Y,     // e.g. analog stick 1 top to bottom
+			AXIS_Z,     // e.g. throttle, or analog 2 stick 2 left to right
+			AXIS_R,     // e.g. rudder, or analog 2 stick 2 top to bottom
 			AXIS_U,
 			AXIS_V,
 			NUMBER_OF_AXES = 18 // (please tell Irrlicht maintainers if you absolutely need more axes)

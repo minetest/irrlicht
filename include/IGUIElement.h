@@ -706,7 +706,7 @@ protected:
 	void addChildToEnd(IGUIElement *child)
 	{
 		if (child) {
-			child->grab();	 // prevent destruction when removed
+			child->grab();   // prevent destruction when removed
 			child->remove(); // remove from old parent
 			child->LastParentRect = getAbsolutePosition();
 			child->Parent = this;

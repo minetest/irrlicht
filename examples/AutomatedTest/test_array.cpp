@@ -7,11 +7,11 @@ using core::array;
 static void test_basics()
 {
 	array<int> v;
-	v.push_back(1);	 // 1
+	v.push_back(1);  // 1
 	v.push_front(2); // 2, 1
-	v.insert(4, 0);	 // 4, 2, 1
-	v.insert(3, 1);	 // 4, 3, 2, 1
-	v.insert(0, 4);	 // 4, 3, 2, 1, 0
+	v.insert(4, 0);  // 4, 2, 1
+	v.insert(3, 1);  // 4, 3, 2, 1
+	v.insert(0, 4);  // 4, 3, 2, 1, 0
 	UASSERTEQ(v.size(), 5);
 	UASSERTEQ(v[0], 4);
 	UASSERTEQ(v[1], 3);

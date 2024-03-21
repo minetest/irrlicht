@@ -73,13 +73,13 @@ struct SZIPFileCentralDirFileHeader
 
 struct SZIPFileCentralDirEnd
 {
-	u32 Sig;		   // 'PK0506' end_of central dir signature			// (0x06054b50)
-	u16 NumberDisk;	   // number of this disk
+	u32 Sig;           // 'PK0506' end_of central dir signature			// (0x06054b50)
+	u16 NumberDisk;    // number of this disk
 	u16 NumberStart;   // number of the disk with the start of the central directory
-	u16 TotalDisk;	   // total number of entries in the central dir on this disk
+	u16 TotalDisk;     // total number of entries in the central dir on this disk
 	u16 TotalEntries;  // total number of entries in the central dir
-	u32 Size;		   // size of the central directory
-	u32 Offset;		   // offset of start of centraldirectory with respect to the starting disk number
+	u32 Size;          // size of the central directory
+	u32 Offset;        // offset of start of centraldirectory with respect to the starting disk number
 	u16 CommentLength; // zipfile comment length
 					   // zipfile comment (variable size)
 } PACK_STRUCT;
@@ -109,7 +109,7 @@ enum E_GZIP_FLAGS
 
 struct SGZIPMemberHeader
 {
-	u16 sig;			  // 0x8b1f
+	u16 sig;              // 0x8b1f
 	u8 compressionMethod; // 8 = deflate
 	u8 flags;
 	u32 time;

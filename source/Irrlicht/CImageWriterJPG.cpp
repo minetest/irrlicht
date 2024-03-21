@@ -27,7 +27,7 @@ typedef struct
 {
 	struct jpeg_destination_mgr pub; /* public fields */
 
-	io::IWriteFile *file;			/* target file */
+	io::IWriteFile *file;           /* target file */
 	JOCTET buffer[OUTPUT_BUF_SIZE]; /* image buffer */
 } mem_destination_mgr;
 

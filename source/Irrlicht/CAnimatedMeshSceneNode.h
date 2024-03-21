@@ -154,8 +154,8 @@ private:
 	f32 CurrentFrameNr;
 
 	u32 LastTimeMs;
-	u32 TransitionTime;	 // Transition time in millisecs
-	f32 Transiting;		 // is mesh transiting (plus cache of TransitionTime)
+	u32 TransitionTime;  // Transition time in millisecs
+	f32 Transiting;      // is mesh transiting (plus cache of TransitionTime)
 	f32 TransitingBlend; // 0-1, calculated on buildFrameNr
 
 	// 0-unused, 1-get joints only, 2-set joints only, 3-move and set

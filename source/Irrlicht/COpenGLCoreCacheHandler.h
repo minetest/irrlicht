@@ -16,7 +16,7 @@ namespace video
 
 enum ESetTextureActive
 {
-	EST_ACTIVE_ALWAYS,	 // texture unit always active after set call
+	EST_ACTIVE_ALWAYS,   // texture unit always active after set call
 	EST_ACTIVE_ON_CHANGE // texture unit only active after call when texture changed in cache
 };
 

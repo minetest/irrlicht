@@ -85,25 +85,25 @@ bool CWGLManager::initialize(const SIrrlichtCreationParameters &params, const SE
 
 	// Set up pixel format descriptor with desired parameters
 	PIXELFORMATDESCRIPTOR tmp_pfd = {
-			sizeof(PIXELFORMATDESCRIPTOR),						   // Size Of This Pixel Format Descriptor
-			1,													   // Version Number
-			(DWORD)(PFD_DRAW_TO_WINDOW |						   // Format Must Support Window
-					PFD_SUPPORT_OPENGL |						   // Format Must Support OpenGL
+			sizeof(PIXELFORMATDESCRIPTOR),                         // Size Of This Pixel Format Descriptor
+			1,                                                     // Version Number
+			(DWORD)(PFD_DRAW_TO_WINDOW |                           // Format Must Support Window
+					PFD_SUPPORT_OPENGL |                           // Format Must Support OpenGL
 					(Params.Doublebuffer ? PFD_DOUBLEBUFFER : 0) | // Must Support Double Buffering
-					(Params.Stereobuffer ? PFD_STEREO : 0)),	   // Must Support Stereo Buffer
-			PFD_TYPE_RGBA,										   // Request An RGBA Format
-			Params.Bits,										   // Select Our Color Depth
-			0, 0, 0, 0, 0, 0,									   // Color Bits Ignored
-			0,													   // No Alpha Buffer
-			0,													   // Shift Bit Ignored
-			0,													   // No Accumulation Buffer
-			0, 0, 0, 0,											   // Accumulation Bits Ignored
-			Params.ZBufferBits,									   // Z-Buffer (Depth Buffer)
-			BYTE(Params.Stencilbuffer ? 1 : 0),					   // Stencil Buffer Depth
-			0,													   // No Auxiliary Buffer
-			PFD_MAIN_PLANE,										   // Main Drawing Layer
-			0,													   // Reserved
-			0, 0, 0												   // Layer Masks Ignored
+					(Params.Stereobuffer ? PFD_STEREO : 0)),       // Must Support Stereo Buffer
+			PFD_TYPE_RGBA,                                         // Request An RGBA Format
+			Params.Bits,                                           // Select Our Color Depth
+			0, 0, 0, 0, 0, 0,                                      // Color Bits Ignored
+			0,                                                     // No Alpha Buffer
+			0,                                                     // Shift Bit Ignored
+			0,                                                     // No Accumulation Buffer
+			0, 0, 0, 0,                                            // Accumulation Bits Ignored
+			Params.ZBufferBits,                                    // Z-Buffer (Depth Buffer)
+			BYTE(Params.Stencilbuffer ? 1 : 0),                    // Stencil Buffer Depth
+			0,                                                     // No Auxiliary Buffer
+			PFD_MAIN_PLANE,                                        // Main Drawing Layer
+			0,                                                     // Reserved
+			0, 0, 0                                                // Layer Masks Ignored
 	};
 	pfd = tmp_pfd;
 

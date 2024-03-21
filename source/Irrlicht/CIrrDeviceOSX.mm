@@ -39,8 +39,8 @@
 struct JoystickComponent
 {
 	IOHIDElementCookie cookie; // unique value which identifies element, will NOT change
-	long min;				   // reported min value possible
-	long max;				   // reported max value possible
+	long min;                  // reported min value possible
+	long max;                  // reported max value possible
 
 	long minRead; // min read value
 	long maxRead; // max read value
@@ -67,7 +67,7 @@ struct JoystickInfo
 	IOHIDDeviceInterface **interface;
 	bool removed;
 	char joystickName[256];
-	long usage;		// usage page from IOUSBHID Parser.h which defines general usage
+	long usage;     // usage page from IOUSBHID Parser.h which defines general usage
 	long usagePage; // usage within above page from IOUSBHID Parser.h which defines specific usage
 
 	JoystickInfo() :

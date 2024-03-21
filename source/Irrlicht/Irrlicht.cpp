@@ -86,7 +86,7 @@ extern "C" IRRLICHT_API IrrlichtDevice *IRRCALLCONV createDeviceEx(const SIrrlic
 
 	if (dev && !dev->getVideoDriver() && params.DriverType != video::EDT_NULL) {
 		dev->closeDevice(); // destroy window
-		dev->run();			// consume quit message
+		dev->run();         // consume quit message
 		dev->drop();
 		dev = 0;
 	}

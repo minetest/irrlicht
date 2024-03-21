@@ -149,10 +149,10 @@ protected:
 	core::vector3df Target;
 	core::vector3df UpVector;
 
-	f32 Fovy;	// Field of view, in radians.
+	f32 Fovy;   // Field of view, in radians.
 	f32 Aspect; // Aspect ratio.
-	f32 ZNear;	// value of the near view-plane.
-	f32 ZFar;	// Z-value of the far view-plane.
+	f32 ZNear;  // value of the near view-plane.
+	f32 ZFar;   // Z-value of the far view-plane.
 
 	SViewFrustum ViewArea;
 	core::matrix4 Affector;

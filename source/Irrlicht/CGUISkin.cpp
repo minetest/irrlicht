@@ -67,7 +67,7 @@ CGUISkin::CGUISkin(EGUI_SKIN_TYPE type, video::IVideoDriver *driver) :
 		// 0x80a6a8af
 		Colors[EGDC_3D_DARK_SHADOW] = 0x60767982;
 		// Colors[EGDC_3D_FACE]			=	0xc0c9ccd4;		// tab background
-		Colors[EGDC_3D_FACE] = 0xc0cbd2d9;	 // tab background
+		Colors[EGDC_3D_FACE] = 0xc0cbd2d9;   // tab background
 		Colors[EGDC_3D_SHADOW] = 0x50e4e8f1; // tab background, and left-top highlight
 		Colors[EGDC_3D_HIGH_LIGHT] = 0x40c7ccdc;
 		Colors[EGDC_3D_LIGHT] = 0x802e313a;

@@ -48,7 +48,7 @@ public:
 		GLuint vbo_indicesID;  // tmp
 
 		GLuint vbo_verticesSize; // tmp
-		GLuint vbo_indicesSize;	 // tmp
+		GLuint vbo_indicesSize;  // tmp
 	};
 
 	bool updateVertexHardwareBuffer(SHWBufferLink_opengl *HWBuffer);
@@ -293,8 +293,8 @@ private:
 	enum E_RENDER_MODE
 	{
 		ERM_NONE = 0, // no render state has been set yet.
-		ERM_2D,		  // 2d drawing rendermode
-		ERM_3D		  // 3d rendering mode
+		ERM_2D,       // 2d drawing rendermode
+		ERM_3D        // 3d rendering mode
 	};
 
 	E_RENDER_MODE CurrentRenderMode;

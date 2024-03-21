@@ -68,7 +68,7 @@ private:
 	SExposedVideoData CurrentContext;
 	XVisualInfo *VisualInfo;
 	void *glxFBConfig; // GLXFBConfig
-	XID GlxWin;		   // GLXWindow
+	XID GlxWin;        // GLXWindow
 };
 }
 }
