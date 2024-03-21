@@ -533,17 +533,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		irr::s32 irrMessage;
 	};
 
-	static messageMap mouseMap[] =
-			{
-					{0, WM_LBUTTONDOWN, irr::EMIE_LMOUSE_PRESSED_DOWN},
-					{1, WM_LBUTTONUP, irr::EMIE_LMOUSE_LEFT_UP},
-					{0, WM_RBUTTONDOWN, irr::EMIE_RMOUSE_PRESSED_DOWN},
-					{1, WM_RBUTTONUP, irr::EMIE_RMOUSE_LEFT_UP},
-					{0, WM_MBUTTONDOWN, irr::EMIE_MMOUSE_PRESSED_DOWN},
-					{1, WM_MBUTTONUP, irr::EMIE_MMOUSE_LEFT_UP},
-					{2, WM_MOUSEMOVE, irr::EMIE_MOUSE_MOVED},
-					{3, WM_MOUSEWHEEL, irr::EMIE_MOUSE_WHEEL},
-					{-1, 0, 0}};
+	static messageMap mouseMap[] = {
+			{0, WM_LBUTTONDOWN, irr::EMIE_LMOUSE_PRESSED_DOWN},
+			{1, WM_LBUTTONUP, irr::EMIE_LMOUSE_LEFT_UP},
+			{0, WM_RBUTTONDOWN, irr::EMIE_RMOUSE_PRESSED_DOWN},
+			{1, WM_RBUTTONUP, irr::EMIE_RMOUSE_LEFT_UP},
+			{0, WM_MBUTTONDOWN, irr::EMIE_MMOUSE_PRESSED_DOWN},
+			{1, WM_MBUTTONUP, irr::EMIE_MMOUSE_LEFT_UP},
+			{2, WM_MOUSEMOVE, irr::EMIE_MOUSE_MOVED},
+			{3, WM_MOUSEWHEEL, irr::EMIE_MOUSE_WHEEL},
+			{-1, 0, 0},
+		};
 
 	// handle grouped events
 	messageMap *m = mouseMap;

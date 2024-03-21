@@ -88,27 +88,27 @@ enum ECOLOR_FORMAT
 };
 
 //! Names for ECOLOR_FORMAT types
-const c8 *const ColorFormatNames[ECF_UNKNOWN + 2] =
-		{
-				"A1R5G5B5",
-				"R5G6B5",
-				"R8G8B8",
-				"A8R8G8B8",
-				"R16F",
-				"G16R16F",
-				"A16B16G16R16F",
-				"R32F",
-				"G32R32F",
-				"A32B32G32R32F",
-				"R8",
-				"R8G8",
-				"R16",
-				"R16G16",
-				"D16",
-				"D32",
-				"D24S8",
-				"UNKNOWN",
-				0};
+const c8 *const ColorFormatNames[ECF_UNKNOWN + 2] = {
+		"A1R5G5B5",
+		"R5G6B5",
+		"R8G8B8",
+		"A8R8G8B8",
+		"R16F",
+		"G16R16F",
+		"A16B16G16R16F",
+		"R32F",
+		"G32R32F",
+		"A32B32G32R32F",
+		"R8",
+		"R8G8",
+		"R16",
+		"R16G16",
+		"D16",
+		"D32",
+		"D24S8",
+		"UNKNOWN",
+		0,
+	};
 
 //! Creates a 16 bit A1R5G5B5 color
 inline u16 RGBA16(u32 r, u32 g, u32 b, u32 a = 0xFF)

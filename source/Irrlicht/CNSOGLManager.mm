@@ -46,19 +46,19 @@ bool CNSOGLManager::generateSurface()
 		if (Params.WithAlphaChannel && Params.Bits == 32)
 			alphaSize = 8;
 
-		NSOpenGLPixelFormatAttribute Attribs[] =
-				{
-						NSOpenGLPFANoRecovery,
-						NSOpenGLPFAAccelerated,
-						NSOpenGLPFADoubleBuffer,
-						NSOpenGLPFADepthSize, static_cast<NSOpenGLPixelFormatAttribute>(depthSize),
-						NSOpenGLPFAColorSize, Params.Bits,
-						NSOpenGLPFAAlphaSize, static_cast<NSOpenGLPixelFormatAttribute>(alphaSize),
-						NSOpenGLPFASampleBuffers, 1,
-						NSOpenGLPFASamples, Params.AntiAlias,
-						NSOpenGLPFAStencilSize, static_cast<NSOpenGLPixelFormatAttribute>(Params.Stencilbuffer ? 1 : 0),
-						// NSOpenGLPFAFullScreen,
-						0};
+		NSOpenGLPixelFormatAttribute Attribs[] = {
+				NSOpenGLPFANoRecovery,
+				NSOpenGLPFAAccelerated,
+				NSOpenGLPFADoubleBuffer,
+				NSOpenGLPFADepthSize, static_cast<NSOpenGLPixelFormatAttribute>(depthSize),
+				NSOpenGLPFAColorSize, Params.Bits,
+				NSOpenGLPFAAlphaSize, static_cast<NSOpenGLPixelFormatAttribute>(alphaSize),
+				NSOpenGLPFASampleBuffers, 1,
+				NSOpenGLPFASamples, Params.AntiAlias,
+				NSOpenGLPFAStencilSize, static_cast<NSOpenGLPixelFormatAttribute>(Params.Stencilbuffer ? 1 : 0),
+				// NSOpenGLPFAFullScreen,
+				0,
+			};
 
 		u32 Steps = 6;
 

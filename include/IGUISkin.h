@@ -45,14 +45,13 @@ enum EGUI_SKIN_TYPE
 };
 
 //! Names for gui element types
-const c8 *const GUISkinTypeNames[EGST_COUNT + 1] =
-		{
-				"windowsClassic",
-				"windowsMetallic",
-				"burning",
-				"unknown",
-				0,
-};
+const c8 *const GUISkinTypeNames[EGST_COUNT + 1] = {
+		"windowsClassic",
+		"windowsMetallic",
+		"burning",
+		"unknown",
+		0,
+	};
 
 //! Enumeration for skin colors
 enum EGUI_DEFAULT_COLOR
@@ -114,35 +113,34 @@ enum EGUI_DEFAULT_COLOR
 };
 
 //! Names for default skin colors
-const c8 *const GUISkinColorNames[EGDC_COUNT + 1] =
-		{
-				"3DDarkShadow",
-				"3DShadow",
-				"3DFace",
-				"3DHighlight",
-				"3DLight",
-				"ActiveBorder",
-				"ActiveCaption",
-				"AppWorkspace",
-				"ButtonText",
-				"GrayText",
-				"Highlight",
-				"HighlightText",
-				"InactiveBorder",
-				"InactiveCaption",
-				"ToolTip",
-				"ToolTipBackground",
-				"ScrollBar",
-				"Window",
-				"WindowSymbol",
-				"Icon",
-				"IconHighlight",
-				"GrayWindowSymbol",
-				"Editable",
-				"GrayEditable",
-				"FocusedEditable",
-				0,
-};
+const c8 *const GUISkinColorNames[EGDC_COUNT + 1] = {
+		"3DDarkShadow",
+		"3DShadow",
+		"3DFace",
+		"3DHighlight",
+		"3DLight",
+		"ActiveBorder",
+		"ActiveCaption",
+		"AppWorkspace",
+		"ButtonText",
+		"GrayText",
+		"Highlight",
+		"HighlightText",
+		"InactiveBorder",
+		"InactiveCaption",
+		"ToolTip",
+		"ToolTipBackground",
+		"ScrollBar",
+		"Window",
+		"WindowSymbol",
+		"Icon",
+		"IconHighlight",
+		"GrayWindowSymbol",
+		"Editable",
+		"GrayEditable",
+		"FocusedEditable",
+		0,
+	};
 
 //! Enumeration for default sizes.
 enum EGUI_DEFAULT_SIZE
@@ -200,32 +198,32 @@ enum EGUI_DEFAULT_SIZE
 };
 
 //! Names for default skin sizes
-const c8 *const GUISkinSizeNames[EGDS_COUNT + 1] =
-		{
-				"ScrollBarSize",
-				"MenuHeight",
-				"WindowButtonWidth",
-				"CheckBoxWidth",
-				"MessageBoxWidth",
-				"MessageBoxHeight",
-				"ButtonWidth",
-				"ButtonHeight",
-				"TextDistanceX",
-				"TextDistanceY",
-				"TitleBarTextX",
-				"TitleBarTextY",
-				"MessageBoxGapSpace",
-				"MessageBoxMinTextWidth",
-				"MessageBoxMaxTextWidth",
-				"MessageBoxMinTextHeight",
-				"MessageBoxMaxTextHeight",
-				"ButtonPressedImageOffsetX",
-				"ButtonPressedImageOffsetY",
-				"ButtonPressedTextOffsetX",
-				"ButtonPressedTextOffsetY",
-				"ButtonPressedSpriteOffsetX",
-				"ButtonPressedSpriteOffsetY",
-				0};
+const c8 *const GUISkinSizeNames[EGDS_COUNT + 1] = {
+		"ScrollBarSize",
+		"MenuHeight",
+		"WindowButtonWidth",
+		"CheckBoxWidth",
+		"MessageBoxWidth",
+		"MessageBoxHeight",
+		"ButtonWidth",
+		"ButtonHeight",
+		"TextDistanceX",
+		"TextDistanceY",
+		"TitleBarTextX",
+		"TitleBarTextY",
+		"MessageBoxGapSpace",
+		"MessageBoxMinTextWidth",
+		"MessageBoxMaxTextWidth",
+		"MessageBoxMinTextHeight",
+		"MessageBoxMaxTextHeight",
+		"ButtonPressedImageOffsetX",
+		"ButtonPressedImageOffsetY",
+		"ButtonPressedTextOffsetX",
+		"ButtonPressedTextOffsetY",
+		"ButtonPressedSpriteOffsetX",
+		"ButtonPressedSpriteOffsetY",
+		0,
+	};
 
 enum EGUI_DEFAULT_TEXT
 {
@@ -251,17 +249,17 @@ enum EGUI_DEFAULT_TEXT
 };
 
 //! Names for default skin sizes
-const c8 *const GUISkinTextNames[EGDT_COUNT + 1] =
-		{
-				"MessageBoxOkay",
-				"MessageBoxCancel",
-				"MessageBoxYes",
-				"MessageBoxNo",
-				"WindowButtonClose",
-				"WindowButtonMaximize",
-				"WindowButtonMinimize",
-				"WindowButtonRestore",
-				0};
+const c8 *const GUISkinTextNames[EGDT_COUNT + 1] = {
+		"MessageBoxOkay",
+		"MessageBoxCancel",
+		"MessageBoxYes",
+		"MessageBoxNo",
+		"WindowButtonClose",
+		"WindowButtonMaximize",
+		"WindowButtonMinimize",
+		"WindowButtonRestore",
+		0,
+	};
 
 //! Customizable symbols for GUI
 enum EGUI_DEFAULT_ICON
@@ -318,32 +316,32 @@ enum EGUI_DEFAULT_ICON
 	EGDI_COUNT
 };
 
-const c8 *const GUISkinIconNames[EGDI_COUNT + 1] =
-		{
-				"windowMaximize",
-				"windowRestore",
-				"windowClose",
-				"windowMinimize",
-				"windowResize",
-				"cursorUp",
-				"cursorDown",
-				"cursorLeft",
-				"cursorRight",
-				"menuMore",
-				"checkBoxChecked",
-				"dropDown",
-				"smallCursorUp",
-				"smallCursorDown",
-				"radioButtonChecked",
-				"moreLeft",
-				"moreRight",
-				"moreUp",
-				"moreDown",
-				"expand",
-				"collapse",
-				"file",
-				"directory",
-				0};
+const c8 *const GUISkinIconNames[EGDI_COUNT + 1] = {
+		"windowMaximize",
+		"windowRestore",
+		"windowClose",
+		"windowMinimize",
+		"windowResize",
+		"cursorUp",
+		"cursorDown",
+		"cursorLeft",
+		"cursorRight",
+		"menuMore",
+		"checkBoxChecked",
+		"dropDown",
+		"smallCursorUp",
+		"smallCursorDown",
+		"radioButtonChecked",
+		"moreLeft",
+		"moreRight",
+		"moreUp",
+		"moreDown",
+		"expand",
+		"collapse",
+		"file",
+		"directory",
+		0,
+	};
 
 // Customizable fonts
 enum EGUI_DEFAULT_FONT
@@ -363,14 +361,14 @@ enum EGUI_DEFAULT_FONT
 	EGDF_COUNT
 };
 
-const c8 *const GUISkinFontNames[EGDF_COUNT + 1] =
-		{
-				"defaultFont",
-				"buttonFont",
-				"windowFont",
-				"menuFont",
-				"tooltipFont",
-				0};
+const c8 *const GUISkinFontNames[EGDF_COUNT + 1] = {
+		"defaultFont",
+		"buttonFont",
+		"windowFont",
+		"menuFont",
+		"tooltipFont",
+		0,
+	};
 
 //! A skin modifies the look of the GUI elements.
 class IGUISkin : virtual public IReferenceCounted

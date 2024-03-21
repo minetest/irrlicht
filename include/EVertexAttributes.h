@@ -19,16 +19,16 @@ enum E_VERTEX_ATTRIBUTES
 };
 
 //! Array holding the built in vertex attribute names
-const char *const sBuiltInVertexAttributeNames[] =
-		{
-				"inVertexPosition",
-				"inVertexNormal",
-				"inVertexColor",
-				"inTexCoord0",
-				"inTexCoord1",
-				"inVertexTangent",
-				"inVertexBinormal",
-				0};
+const char *const sBuiltInVertexAttributeNames[] = {
+		"inVertexPosition",
+		"inVertexNormal",
+		"inVertexColor",
+		"inTexCoord0",
+		"inTexCoord1",
+		"inVertexTangent",
+		"inVertexBinormal",
+		0,
+	};
 
 } // end namespace video
 } // end namespace irr
