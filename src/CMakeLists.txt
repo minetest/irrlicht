@@ -265,8 +265,27 @@ if(ENABLE_OPENGL OR ENABLE_OPENGL3)
 	find_package(OpenGL REQUIRED)
 endif()
 if(USE_SDL2)
-	find_package(SDL2 2.0.10 CONFIG REQUIRED)
+	find_package(SDL2 REQUIRED)
 	message(STATUS "Found SDL2: ${SDL2_LIBRARIES}")
+
+	# unfortunately older SDL does not provide its version to cmake, so check header.
+	set(CMAKE_REQUIRED_INCLUDES ${SDL2_INCLUDE_DIRS})
+	unset(CHECK_SDL_VERSION CACHE)
+	check_cxx_source_compiles("#include <SDL_version.h>\n\
+#if !SDL_VERSION_ATLEAST(2, 0, 10)\n\
+#error\n\
+#endif\n\
+int main() {}" CHECK_SDL_VERSION)
+	if(NOT CHECK_SDL_VERSION)
+		message(FATAL_ERROR "SDL2 is too old, required is at least 2.0.10!")
+	endif()
+
+	# ...no target either.
+	if(NOT TARGET SDL2::SDL2)
+		add_library(SDL2::SDL2 SHARED IMPORTED)
+		set_target_properties(SDL2::SDL2 PROPERTIES
+			IMPORTED_LOCATION "${SDL2_LIBRARIES}")
+	endif()
 endif()
 
 # More special config
