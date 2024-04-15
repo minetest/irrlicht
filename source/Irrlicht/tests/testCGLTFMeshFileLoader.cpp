@@ -1,4 +1,5 @@
 #include "CReadFile.h"
+#include "vector3d.h"
 
 #include <irrlicht.h>
 
@@ -54,8 +55,10 @@ TEST_CASE("load empty gltf file") {
 
 TEST_CASE("minimal triangle") {
 	auto path = GENERATE(
-		"source/Irrlicht/tests/assets/minimal_triangle.gltf",
-		"source/Irrlicht/tests/assets/triangle_with_vertex_stride.gltf");
+			"source/Irrlicht/tests/assets/minimal_triangle.gltf",
+			"source/Irrlicht/tests/assets/triangle_with_vertex_stride.gltf",
+			// Test non-indexed geometry.
+			"source/Irrlicht/tests/assets/triangle_without_indices.gltf");
 	INFO(path);
 	ScopedMesh sm(path);
 	REQUIRE(sm.getMesh() != nullptr);
@@ -161,6 +164,32 @@ TEST_CASE("blender cube scaled") {
 		CHECK(vertices[15].Pos == irr::core::vector3df{150.0f, 1.0f, -21.5f});
 		CHECK(vertices[18].Pos == irr::core::vector3df{150.0f, -1.0f, 21.5f});
 		CHECK(vertices[21].Pos == irr::core::vector3df{150.0f, 1.0f, 21.5f});
+	}
+}
+
+TEST_CASE("blender cube matrix transform") {
+	ScopedMesh sm("source/Irrlicht/tests/assets/blender_cube_matrix_transform.gltf");
+	REQUIRE(sm.getMesh() != nullptr);
+	REQUIRE(sm.getMesh()->getMeshBufferCount() == 1);
+	
+	SECTION("Transformation is correct") {
+		REQUIRE(sm.getMesh()->getMeshBuffer(0)->getVertexCount() == 24);
+		const auto* vertices = reinterpret_cast<irr::video::S3DVertex*>(
+			sm.getMesh()->getMeshBuffer(0)->getVertices());
+		const auto checkVertex = [&](const std::size_t i, irr::core::vector3df vec) {
+			// The transform scales by (1, 2, 3) and translates by (4, 5, 6).
+			CHECK(vertices[i].Pos == vec * irr::core::vector3df{1, 2, 3}
+					// The -6 is due to the coordinate system conversion.
+					+ irr::core::vector3df{4, 5, -6});
+		};
+		checkVertex(0, irr::core::vector3df{-1, -1, -1});
+		checkVertex(3, irr::core::vector3df{-1, 1, -1});
+		checkVertex(6, irr::core::vector3df{-1, -1, 1});
+		checkVertex(9, irr::core::vector3df{-1, 1, 1});
+		checkVertex(12, irr::core::vector3df{1, -1, -1});
+		checkVertex(15, irr::core::vector3df{1, 1, -1});
+		checkVertex(18, irr::core::vector3df{1, -1, 1});
+		checkVertex(21, irr::core::vector3df{1, 1, 1});
 	}
 }
 

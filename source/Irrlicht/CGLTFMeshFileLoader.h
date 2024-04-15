@@ -1,13 +1,12 @@
 #ifndef __C_GLTF_MESH_FILE_LOADER_INCLUDED__
 #define __C_GLTF_MESH_FILE_LOADER_INCLUDED__
 
-#include "IAnimatedMesh.h"
+#include "ISkinnedMesh.h"
 #include "IMeshLoader.h"
 #include "IReadFile.h"
 #include "irrTypes.h"
 #include "path.h"
 #include "S3DVertex.h"
-#include "SMesh.h"
 #include "vector2d.h"
 #include "vector3d.h"
 
@@ -52,26 +51,33 @@ private:
 	public:
 		using vertex_t = video::S3DVertex;
 
-		MeshExtractor(const tiniergltf::GlTF& model) noexcept;
+		MeshExtractor(const tiniergltf::GlTF &model,
+				ISkinnedMesh *mesh) noexcept
+			: m_gltf_model(model), m_irr_model(mesh) {};
 
-		MeshExtractor(const tiniergltf::GlTF&& model) noexcept;
+		MeshExtractor(const tiniergltf::GlTF &&model,
+				ISkinnedMesh *mesh) noexcept
+			: m_gltf_model(model), m_irr_model(mesh) {};
 
 		/* Gets indices for the given mesh/primitive.
 		 *
 		 * Values are return in Irrlicht winding order.
 		 */
-		std::vector<u16> getIndices(const std::size_t meshIdx,
+		std::optional<std::vector<u16>> getIndices(const std::size_t meshIdx,
 				const std::size_t primitiveIdx) const;
 
-		std::vector<vertex_t> getVertices(std::size_t meshIdx,
+		std::optional<std::vector<vertex_t>> getVertices(std::size_t meshIdx,
 				const std::size_t primitiveIdx) const;
 
 		std::size_t getMeshCount() const;
 
 		std::size_t getPrimitiveCount(const std::size_t meshIdx) const;
 
+		void loadNodes() const;
+
 	private:
-		tiniergltf::GlTF m_model;
+		const tiniergltf::GlTF m_gltf_model;
+		ISkinnedMesh *m_irr_model;
 
 		template <typename T>
 		static T readPrimitive(const BufferOffset& readFrom);
@@ -96,12 +102,6 @@ private:
 		void copyTCoords(const std::size_t accessorIdx,
 				std::vector<vertex_t>& vertices) const;
 
-		/* Get the scale factor from the glTF mesh information.
-		 *
-		 * Returns vec3(1.0, 1.0, 1.0) if no scale factor is present.
-		 */
-		core::vector3df getScale() const;
-
 		std::size_t getElemCount(const std::size_t accessorIdx) const;
 
 		std::size_t getByteStride(const std::size_t accessorIdx) const;
@@ -113,7 +113,7 @@ private:
 		std::optional<std::size_t> getIndicesAccessorIdx(const std::size_t meshIdx,
 				const std::size_t primitiveIdx) const;
 
-		std::size_t getPositionAccessorIdx(const std::size_t meshIdx,
+		std::optional<std::size_t> getPositionAccessorIdx(const std::size_t meshIdx,
 				const std::size_t primitiveIdx) const;
 
 		/* Get the accessor id of the normals of a primitive.
@@ -125,9 +125,15 @@ private:
 		 */
 		std::optional<std::size_t> getTCoordAccessorIdx(const std::size_t meshIdx,
 				const std::size_t primitiveIdx) const;
-	};
+		
+		void loadMesh(
+			std::size_t meshIdx,
+			ISkinnedMesh::SJoint *parentJoint) const;
 
-	void loadPrimitives(const MeshExtractor& parser, SMesh* mesh);
+		void loadNode(
+			const std::size_t nodeIdx,
+			ISkinnedMesh::SJoint *parentJoint) const;
+	};
 
 	std::optional<tiniergltf::GlTF> tryParseGLTF(io::IReadFile* file);
 };
