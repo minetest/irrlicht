@@ -31,11 +31,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
 	set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 	set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
-<<<<<<< HEAD:src/CMakeLists.txt
 	add_compile_options(-Wall -pipe -fno-exceptions)
-=======
 	add_compile_options(-Wall -pipe -fno-rtti)
->>>>>>> 1320fc97a (Move from tinygltf to tiniergltf (#13)):source/Irrlicht/CMakeLists.txt
 
 	# Enable SSE for floating point math on 32-bit x86 by default
 	# reasoning see minetest issue #11810 and https://gcc.gnu.org/wiki/FloatingPointMath
@@ -558,6 +555,7 @@ target_link_libraries(IrrlichtMt PRIVATE
 	${ZLIB_LIBRARY}
 	${JPEG_LIBRARY}
 	${PNG_LIBRARY}
+	tiniergltf::tiniergltf
 	"$<$<BOOL:${USE_SDL2}>:SDL2::SDL2>"
 
 	"$<$<BOOL:${OPENGL_DIRECT_LINK}>:${OPENGL_LIBRARIES}>"
