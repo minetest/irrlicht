@@ -1,6 +1,14 @@
 IrrlichtMt version 1.9
 ======================
 
+Notice
+------
+
+IrrlichtMt has been moved into the [main Minetest repository](https://github.com/minetest) during Minetest 5.9 development. This repository is an archive useful for building older versions of Minetest.
+
+About
+-----
+
 IrrlichtMt is the 3D engine of [Minetest](https://github.com/minetest).
 It is based on the [Irrlicht Engine](https://irrlicht.sourceforge.io/) but is now developed independently.
 It is intentionally not compatible to upstream and is planned to be eventually absorbed into Minetest.
